@@ -1,0 +1,16 @@
+*.md
+!README.md
+
+data/source_stories_en/
+data/source_stories_vi/
+
+scripts/
+generate_html_from_txt.py
+
+!data/stories.json
+
+__pycache__/
+*.pyc
+.vscode/
+.DS_Store
+Thumbs.db

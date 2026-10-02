@@ -1,0 +1,1362 @@
+/* ==========================================================================
+   LAND OF THE LUSTROUS (HOUSEKI NO KUNI) INSPIRED RETRO WEB DESIGN
+   Website: Sotheby's Mansion - Archive & Story Reader
+   Inspired by: https://www.landofthelustrous.com/anime.html
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&family=VT323&display=swap');
+
+:root {
+    /* Phong cách giấy ngà cổ điển (Warm Parchment / Retro Book Paper) dịu mắt */
+    --hnk-bg: #e6e2d8;
+    --hnk-box-bg: #ded9cd;
+    --hnk-box-card: #f2eee5;
+    --hnk-border: #1a1a1a;
+    --hnk-hover: #cfc9bc;
+    --hnk-accent: #2bace5;
+    --hnk-gold: #c69214;                 /* Light Linen Gold */
+    --hnk-text: #222222;
+    --hnk-muted: #5e5a52;
+    --hnk-stripe-border: #2c2a26;
+    --reader-box-bg: #f7f5ee;           /* Đã giảm độ chói, nền giấy dịu mắt hơn */
+    --reader-dialogue-bg: #ede9df;
+    --reader-action-color: #555047;
+    --tag-active-bg: #1a1a1a;
+    --tag-active-text: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.12);
+}
+
+/* ==========================================================================
+   DARK THEME (Warm, natural retro dark palette rooted in #222222)
+   ========================================================================== */
+[data-theme="dark"] {
+    --hnk-bg: #222222;                  /* Nền tổng thể chuẩn #222222 tự nhiên, không bị tím than */
+    --hnk-box-bg: #2a2a2a;              /* Hộp/thanh tiêu đề sắc xám ấm trung tính */
+    --hnk-box-card: #1c1c1c;            /* Nền thẻ truyện & lưới */
+    --hnk-border: #404040;              /* Viền retro tương phản vừa phải */
+    --hnk-hover: #353535;               /* Hiệu ứng rê chuột */
+    --hnk-accent: #2bace5;
+    --hnk-gold: #d4af37;                 /* Vàng hoàng kim ấm áp cổ điển */
+    --hnk-text: #e0ded8;                /* Màu chữ giấy ấm dịu mắt */
+    --hnk-muted: #949088;               /* Màu chữ phụ trầm */
+    --hnk-stripe-border: #484848;
+    --reader-box-bg: #1c1c1c;           /* Khung đọc truyện nền than tối tự nhiên */
+    --reader-dialogue-bg: #262626;      /* Hộp thoại mềm mại */
+    --reader-action-color: #aaa69d;     /* Chữ miêu tả dịu mắt */
+    --tag-active-bg: #d4af37;
+    --tag-active-text: #1a1a1a;
+    --shadow-color: rgba(0, 0, 0, 0.45);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--hnk-bg);
+    /* Subtle geometric diamond/dot pattern replicating graydiamond.png */
+    background-image: 
+        radial-gradient(#c8c2b3 1px, transparent 1px),
+        radial-gradient(#d5cfbf 1px, var(--hnk-bg) 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    color: var(--hnk-text);
+    font-family: Consolas, 'Share Tech Mono', Monaco, 'Lucida Console', 'Courier New', monospace;
+    line-height: 1.5;
+    text-align: center;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+[data-theme="dark"] body {
+    background-image: 
+        radial-gradient(#2d2d2d 1px, transparent 1px),
+        radial-gradient(#292929 1px, #222222 1px);
+}
+
+a {
+    color: var(--hnk-text);
+    text-decoration: none;
+}
+
+/* ==========================================================================
+   TABLES & NAVIGATION BAR (Signature HnK layout)
+   ========================================================================== */
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.row-full {
+    width: 94%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    color: var(--hnk-text);
+}
+
+.banner-table {
+    margin-top: 12px;
+    border: 3px double var(--hnk-border);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.banner-table td {
+    padding: 12px 10px;
+    vertical-align: middle;
+}
+
+.banner-side-img {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    display: inline-block;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+.banner-title-cell {
+    text-align: center;
+}
+
+.banner-logo-img {
+    max-height: 85px;
+    max-width: 90%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 6px;
+    filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.15));
+    transition: transform 0.2s ease;
+}
+
+[data-theme="dark"] .banner-logo-img {
+    max-height: 98px;
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+}
+
+.banner-subtitle-text {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--hnk-text);
+}
+
+/* Nav Table with hover cells */
+.nav-table {
+    margin-top: 6px;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.nav-table tr {
+    height: 68px;
+}
+
+.nav-table th {
+    border-right: 2px solid var(--hnk-border);
+    font-weight: normal;
+    padding: 0;
+    transition: background 0.15s ease;
+}
+
+.nav-table th:last-child {
+    border-right: none;
+}
+
+.nav-table th a,
+.nav-table th button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 4px;
+    color: var(--hnk-text);
+    font-size: 15px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 4px;
+}
+
+.nav-table th:hover,
+.nav-table th.active {
+    background-color: var(--hnk-hover);
+}
+
+.nav-table th:hover a,
+.nav-table th:hover button,
+.nav-table th.active a {
+    color: var(--hnk-text);
+}
+
+.nav-table i {
+    font-size: 20px;
+    color: var(--hnk-text);
+    transition: color 0.2s ease;
+}
+
+.nav-table th:hover i {
+    color: var(--hnk-text);
+}
+
+/* Section Title Strip */
+.section-strip-table {
+    margin-top: 14px;
+    margin-bottom: 20px;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.section-strip-table td {
+    padding: 10px 18px;
+    text-align: left;
+    color: var(--hnk-text);
+}
+
+.section-strip-title {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--hnk-text);
+}
+
+.section-strip-title i {
+    font-size: 20px;
+    color: var(--hnk-text);
+}
+
+/* ==========================================================================
+   HNK STYLE EPISODE / STORY GRID & TILES
+   (Directly inspired by landofthelustrous.com/anime.html)
+   ========================================================================== */
+
+.hnk-grid-container {
+    width: 94%;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 6px 6px 0px var(--shadow-color);
+    background-color: var(--hnk-box-card);
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-collapse: collapse;
+}
+
+.hnk-col {
+    position: relative;
+    background-color: var(--hnk-box-card);
+    border-right: 2px solid var(--hnk-border);
+    border-bottom: 2px solid var(--hnk-border);
+    overflow: hidden;
+    aspect-ratio: 2 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hnk-col:nth-child(6n) {
+    border-right: none;
+}
+
+/* Ẩn các cốt truyện chưa cập nhật / chưa mở khóa */
+.hnk-col.locked-tile {
+    display: none !important;
+}
+
+/* The Image inside tile */
+.hnk-col .tile-image {
+    width: 84%;
+    height: 84%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+    transition: opacity 0.25s ease, transform 0.3s ease;
+}
+
+/* Overlay card panel at the bottom appearing on hover */
+.hnk-col .middle {
+    position: absolute;
+    bottom: -1px;
+    left: -1px;
+    right: -1px;
+    width: calc(100% + 2px);
+    padding: 16px 10px 10px;
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.88) 30%, rgba(10, 10, 10, 0.98) 100%);
+    text-align: center;
+    transform: translateY(12px);
+    opacity: 0;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 5;
+    box-sizing: border-box;
+}
+
+.hnk-col .middle .text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.25;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    user-select: none;
+}
+
+.hnk-col .middle .subtext {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: #e0b84c; /* Gold highlight accent */
+    margin-top: 3px;
+    letter-spacing: 0.05em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Hover effects */
+.hnk-col:hover .tile-image {
+    opacity: 0.95;
+    transform: scale(1.04);
+}
+
+.hnk-col:hover .middle {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Tile badge for status / year */
+.hnk-tile-tag {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #f7f4ec;
+    color: #8f670a;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border: 1px solid #b89129;
+    letter-spacing: 0.05em;
+    z-index: 2;
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .hnk-tile-tag {
+    background: #1c1c1c;
+    border-color: #404040;
+    color: #d4af37;
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.4);
+}
+
+.hnk-tile-tag.tag-left {
+    right: auto;
+    left: 8px;
+    background: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    border: 1px solid var(--hnk-border);
+}
+
+[data-theme="dark"] .hnk-tile-tag.tag-left {
+    background: #2a2a2a;
+    color: #e0ded8;
+    border-color: #404040;
+}
+
+.locked-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    z-index: 3;
+}
+
+.locked-overlay span {
+    background: #000000;
+    color: #ffffff;
+    padding: 4px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid #fff;
+    letter-spacing: 0.1em;
+}
+
+[data-theme="dark"] .locked-overlay span {
+    background: #1c1c1c;
+    color: #949088;
+    border-color: #404040;
+}
+
+/* Bar labels under/above tiles like scans.html */
+.hnk-headers-row {
+    width: 94%;
+    max-width: 1200px;
+    margin: 14px auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.hnk-header-cell {
+    padding: 8px;
+    border: 2px solid var(--hnk-border);
+    border-bottom: none;
+    border-right: none;
+    background-color: var(--hnk-box-bg);
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* ==========================================================================
+   MAIN STORY BOOKS COLLAPSIBLE / TAB PANELS
+   ========================================================================== */
+
+.hnk-book-card {
+    width: 94%;
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    text-align: left;
+    overflow: hidden;
+}
+
+.hnk-book-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 20px;
+    cursor: pointer;
+    background-color: var(--hnk-box-bg);
+    transition: background-color 0.2s ease;
+    user-select: none;
+}
+
+.hnk-book-header:hover {
+    background-color: var(--hnk-hover);
+}
+
+.hnk-book-cover {
+    width: 70px;
+    height: 100px;
+    object-fit: contain;
+    border: none;
+    box-shadow: none;
+    flex-shrink: 0;
+    background: transparent;
+}
+
+.hnk-book-info {
+    flex: 1;
+}
+
+.hnk-book-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--hnk-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hnk-book-desc {
+    font-size: 14px;
+    color: var(--hnk-muted);
+    margin-top: 4px;
+}
+
+.hnk-book-toggle {
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--hnk-text);
+    background-color: #F2EEE5;
+    border: 1px solid var(--hnk-border);
+    padding: 6px 14px;
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    letter-spacing: 0.04em;
+    transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .hnk-book-toggle {
+    background-color: #262626;
+    border-color: #404040;
+    color: #e0ded8;
+}
+
+.hnk-book-header:hover .hnk-book-toggle {
+    background-color: var(--hnk-hover);
+    border-color: var(--hnk-border);
+}
+
+.hnk-book-toggle i {
+    color: var(--hnk-gold);
+    transition: transform 0.25s ease;
+}
+
+.hnk-book-card.open .hnk-book-toggle i {
+    transform: rotate(180deg);
+}
+
+.hnk-book-card.open .hnk-book-toggle {
+    background-color: #F2EEE5;
+}
+
+[data-theme="dark"] .hnk-book-card.open .hnk-book-toggle {
+    background-color: #262626;
+}
+
+.hnk-book-content {
+    border-top: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-card);
+    display: none;
+}
+
+.hnk-book-card.open .hnk-book-content {
+    display: block;
+}
+
+.hnk-book-content .hnk-grid-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+}
+
+/* Thông báo khi danh mục hoặc book chưa có nội dung cập nhật */
+.hnk-empty-msg {
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--hnk-muted);
+    font-size: 14px;
+    font-style: italic;
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+.hnk-grid-container:empty {
+    display: none;
+}
+
+/* ==========================================================================
+   HNK STYLE Q&A / FAQ BOXES (From index.html)
+   ========================================================================== */
+
+.hnk-faq-block {
+    width: 94%;
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    text-align: left;
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.hnk-faq-q {
+    padding: 12px 16px;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: -2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hnk-faq-q i {
+    color: var(--hnk-text);
+}
+
+.hnk-faq-a {
+    padding: 16px;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--reader-box-bg);
+    color: var(--hnk-text);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+/* ==========================================================================
+   STORY DETAIL PAGE (this-is-tomorrow.html)
+   ========================================================================== */
+
+.story-info-box {
+    width: 94%;
+    max-width: 1200px;
+    margin: 16px auto 20px;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 0;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--reader-box-bg);
+    color: var(--hnk-text);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    text-align: left;
+}
+
+.story-cover-pane {
+    background-color: var(--hnk-box-card);
+    border-right: 2px solid var(--hnk-border);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-cover-pane img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    background: var(--reader-box-bg);
+    display: block;
+}
+
+.story-details-pane {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.story-details-pane h2 {
+    font-size: 28px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    color: var(--hnk-text);
+}
+
+.story-subtitle {
+    font-size: 15px;
+    color: var(--hnk-muted);
+    font-style: italic;
+    margin-bottom: 14px;
+}
+
+.story-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.hnk-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background-color: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    border: 1px solid var(--hnk-border);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+}
+
+.hnk-tag i {
+    color: var(--hnk-text);
+}
+
+.hnk-tag.active {
+    background-color: var(--tag-active-bg);
+    color: var(--tag-active-text);
+    border-color: var(--tag-active-bg);
+}
+
+.hnk-tag.active i {
+    color: var(--tag-active-text);
+}
+
+.story-details-pane .synopsis-text {
+    font-size: 15px;
+    color: var(--hnk-text);
+    margin: 8px 0 20px;
+    line-height: 1.8;
+}
+
+.story-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px dashed var(--hnk-border);
+}
+
+.btn-hnk-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--hnk-gold);
+    color: #000000;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    transition: background 0.15s, transform 0.15s;
+    text-decoration: none;
+}
+
+.btn-hnk-primary:hover {
+    background: #e8c650;
+    color: #000000;
+    transform: translateY(-2px);
+}
+
+.btn-hnk-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 18px;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    transition: background 0.15s, transform 0.15s;
+    text-decoration: none;
+}
+
+.btn-hnk-secondary:hover {
+    background: var(--hnk-hover);
+    transform: translateY(-2px);
+}
+
+/* Chapter Table of Contents */
+.chapters-container {
+    width: 94%;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+}
+
+.chapter-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid var(--hnk-border);
+    background: var(--reader-box-bg);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    text-align: left;
+}
+
+.chapter-list-table th {
+    background: var(--hnk-box-bg);
+    border-bottom: 2px solid var(--hnk-border);
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    color: var(--hnk-text);
+}
+
+.chapter-list-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--hnk-border);
+    vertical-align: middle;
+    font-size: 15px;
+    color: var(--hnk-text);
+}
+
+.chapter-list-table tr:last-child td {
+    border-bottom: none;
+}
+
+.chapter-list-table tr:hover td {
+    background-color: var(--hnk-hover);
+}
+
+.chapter-idx {
+    font-weight: bold;
+    color: var(--hnk-text);
+    width: 90px;
+    white-space: nowrap;
+}
+
+.chapter-name-col a {
+    font-weight: bold;
+    color: var(--hnk-text);
+    font-size: 16px;
+    display: inline-block;
+    transition: color 0.15s;
+}
+
+.chapter-name-col a:hover {
+    color: var(--hnk-gold);
+    text-decoration: underline;
+}
+
+.chapter-name-col .chapter-desc {
+    font-size: 13px;
+    color: var(--hnk-muted);
+    margin-top: 3px;
+}
+
+.chapter-btn-col {
+    text-align: right;
+    width: 130px;
+}
+
+.btn-chapter-read {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    border: 1px solid var(--hnk-border);
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    transition: all 0.15s ease;
+}
+
+.btn-chapter-read:hover {
+    background: var(--hnk-gold);
+    color: #000000;
+    transform: translateY(-1px);
+}
+
+.btn-hnk-primary i,
+.btn-hnk-secondary i,
+.btn-chapter-read i,
+.reader-nav-table i,
+.scroll-top i {
+    color: inherit;
+}
+
+.btn-chapter-read:hover i,
+.btn-hnk-primary:hover i {
+    color: inherit;
+}
+
+/* ==========================================================================
+   CHAPTER READING PAGE (chapters/*.html)
+   ========================================================================== */
+
+.hnk-reader-container {
+    width: 94%;
+    max-width: 950px;
+    margin: 14px auto 30px;
+    text-align: left;
+}
+
+.hnk-reader-header-table {
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    margin-bottom: 16px;
+}
+
+.hnk-reader-header-table td {
+    padding: 12px 18px;
+}
+
+.hnk-reader-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: var(--hnk-text);
+}
+
+.hnk-reader-subtitle {
+    font-size: 14px;
+    color: var(--hnk-muted);
+    text-align: center;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.hnk-epigraph-box {
+    border: 2px solid var(--hnk-border);
+    background-color: var(--reader-box-bg);
+    color: var(--hnk-text);
+    padding: 20px 22px 16px;
+    margin-bottom: 16px;
+    font-style: italic;
+    line-height: 1.8;
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.hnk-epigraph-box .author {
+    display: block;
+    margin-top: 10px;
+    text-align: right;
+    font-family: 'Consolas', 'Courier New', monospace; /* Kiểu chữ máy đánh chữ/code retro */
+    font-size: 0.85rem;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.12em; /* Giãn cách chữ nhẹ */
+    text-transform: uppercase; /* In hoa tên tác giả */
+    color: var(--hnk-gold); /* Màu vàng gold thương hiệu */
+    opacity: 0.95;
+}
+
+/* Khung đọc truyện: Font sans-serif hiện đại, thanh thoát và dễ đọc */
+.hnk-content-box {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+}
+
+.dialogue-speaker {
+    display: inline-block;
+    font-weight: bold;
+    color: var(--hnk-text);
+    font-size: 15px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+    background-color: var(--hnk-box-bg);
+    border: 1px solid var(--hnk-border);
+    padding: 2px 8px 1px;
+    line-height: 1.2;
+    box-shadow: 1px 1px 0 var(--shadow-color);
+    font-family: inherit;
+}
+
+.dialogue {
+    padding: 14px 16px 12px 16px;
+    border-left: 4px solid var(--hnk-gold);
+    background-color: var(--reader-dialogue-bg);
+    color: var(--hnk-text);
+    margin: 0 0 16px;
+    min-height: 22px;
+    line-height: 1.8;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Định dạng chữ in đậm trong truyện */
+.dialogue-body strong,
+.action-text strong,
+.dialogue strong {
+    font-weight: 700;
+    color: var(--hnk-text);
+}
+
+[data-theme="dark"] .dialogue-body strong,
+[data-theme="dark"] .action-text strong,
+[data-theme="dark"] .dialogue strong {
+    color: #ffffff;
+}
+
+/* Location Tag - Tái hiện chuẩn xác phong cách Reverse: 1999 */
+.location-tag {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px 8px 16px;
+    margin: 26px 0 16px 0;
+    border-left: 3px solid var(--hnk-gold);
+    background: var(--hnk-box-bg);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--hnk-text);
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    clear: both;
+}
+
+[data-theme="dark"] .location-tag {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--hnk-gold);
+}
+
+.location-tag .location-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: var(--hnk-gold);
+}
+
+/* Kiểu văn bản dành cho Narrator / Lời dẫn */
+.action-text {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-style: italic;   /* Chữ nghiêng phân biệt với lời thoại */
+    font-size: 1rem;      /* Đồng bộ đúng kích thước với thoại thường */
+    line-height: 1.8;
+    color: var(--reader-action-color);
+    margin: 16px 0;
+    padding: 0;
+    border-left: none !important;
+    background: transparent !important;
+}
+
+/* ==========================================================================
+   VISUAL NOVEL: SCENE IMAGES & AVATAR DIALOGUES
+   ========================================================================== */
+
+/* Khung ảnh Scene / GIF minh hoạ phân cảnh */
+.scene-container {
+    text-align: center;
+    margin: 26px auto;
+    max-width: 100%;
+}
+
+.scene-img {
+    width: 100%;
+    max-height: 440px;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    border: 2px solid var(--hnk-border);
+    display: block;
+}
+
+.scene-caption {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--hnk-text);
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   ITEM / PROP / ARTIFACT DISPLAY
+   ========================================================================== */
+
+.item-container {
+    text-align: center;
+    margin: 24px auto;
+    max-width: 100%;
+}
+
+.item-img {
+    max-width: 320px;            /* Chiều rộng tối đa vừa vặn khung đọc, không bị choán chỗ */
+    max-height: 420px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: inline-block;
+    filter: drop-shadow(2px 3px 6px rgba(0, 0, 0, 0.25));
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.item-img:hover {
+    transform: scale(1.03);
+    filter: drop-shadow(3px 4px 10px rgba(0, 0, 0, 0.35));
+}
+
+[data-theme="dark"] .item-img {
+    filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.7));
+}
+
+.item-caption {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--hnk-muted);
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+}
+
+/* Hộp thoại hiển thị Avatar nhân vật chuẩn Visual Novel */
+.dialogue-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 16px 0;
+    padding: 12px 14px;
+    background-color: var(--reader-dialogue-bg);
+    border: 1px solid var(--hnk-border);
+    border-left: 4px solid var(--hnk-gold);
+    box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+/* Tăng kích thước hộp avatar để vừa vặn các tên dài */
+.dialogue-avatar-box {
+    flex-shrink: 0;
+    width: 82px;
+    text-align: center;
+}
+
+.dialogue-avatar-img {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--hnk-border);
+    object-fit: cover;
+    background-color: var(--hnk-box-card);
+    display: block;
+    margin: 0 auto;
+}
+
+.dialogue-avatar-name {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--hnk-text);
+    background: var(--hnk-box-bg);
+    border: 1px solid var(--hnk-border);
+    margin-top: 4px;
+    padding: 3px 2px;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-align: center;
+}
+
+.dialogue-body {
+    flex-grow: 1;
+    line-height: 1.8;
+    font-size: 16px;
+    color: var(--hnk-text);
+    padding-top: 2px;
+    text-align: left;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ==========================================================================
+   CHOICES & BRANCHING
+   ========================================================================== */
+
+.note-inline {
+    display: block;
+    font-style: italic;
+    color: var(--hnk-text);
+    padding: 0;
+    margin: 0;
+    line-height: 1.8;
+    border-left: none;
+    background: transparent;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.chapter-choice {
+    margin: 24px 0;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    padding: 16px;
+    box-shadow: 3px 3px 0px var(--shadow-color);
+}
+
+.chapter-choice-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--hnk-gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.choice-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.choice-btn {
+    background-color: var(--reader-box-bg);
+    color: var(--hnk-text);
+    border: 1px solid var(--hnk-border);
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.choice-btn:hover {
+    background-color: var(--hnk-hover);
+    transform: translateY(-1px);
+}
+
+.choice-btn.active {
+    background-color: var(--hnk-gold);
+    color: #000000;
+    border-color: var(--hnk-gold);
+}
+
+.choice-response-panel {
+    border-top: 1px dashed var(--hnk-border);
+    padding-top: 12px;
+}
+
+/* Reader navigation table */
+.reader-nav-table {
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.reader-nav-table td {
+    padding: 0;
+    text-align: center;
+}
+
+.reader-nav-table td a,
+.reader-nav-table td span {
+    display: block;
+    padding: 14px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--hnk-text);
+}
+
+.reader-nav-table td a:hover {
+    background-color: var(--hnk-hover);
+    color: var(--hnk-gold);
+}
+
+.reader-nav-table td.disabled span {
+    color: var(--hnk-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ==========================================================================
+   FOOTER (Retro HnK style)
+   ========================================================================== */
+
+footer.hnk-footer {
+    width: 94%;
+    max-width: 1200px;
+    margin: 30px auto 40px;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    padding: 18px 20px;
+    font-size: 14px;
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    text-align: center;
+}
+
+footer.hnk-footer p {
+    margin: 6px 0;
+}
+
+footer.hnk-footer a {
+    text-decoration: underline;
+    font-weight: bold;
+    color: var(--hnk-gold);
+}
+
+footer.hnk-footer a:hover {
+    background: var(--hnk-hover);
+}
+
+/* Scroll-to-top square button */
+.scroll-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    border: 2px solid var(--hnk-border);
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    text-decoration: none;
+    font-size: 18px;
+    transition: background 0.15s ease, transform 0.15s ease;
+    z-index: 100;
+}
+
+.scroll-top:hover {
+    background: var(--hnk-hover);
+    color: var(--hnk-gold);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 900px) {
+    .hnk-grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .hnk-col:nth-child(6n) {
+        border-right: 2px solid var(--hnk-border);
+    }
+    .hnk-col:nth-child(3n) {
+        border-right: none;
+    }
+    .story-info-box {
+        grid-template-columns: 1fr;
+    }
+    .story-cover-pane {
+        border-right: none;
+        border-bottom: 2px solid var(--hnk-border);
+    }
+}
+
+@media (max-width: 650px) {
+    .row-full, .hnk-grid-container, .hnk-faq-block, .story-info-box, .hnk-reader-container, footer.hnk-footer {
+        width: 98%;
+    }
+    .banner-side-img {
+        width: 75px;
+        height: 75px;
+    }
+    .banner-subtitle-text {
+        font-size: 13px;
+    }
+    .nav-table th a {
+        font-size: 14px;
+    }
+    .nav-table i {
+        font-size: 16px;
+    }
+    .hnk-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .hnk-col:nth-child(3n) {
+        border-right: 2px solid var(--hnk-border);
+    }
+    .hnk-col:nth-child(2n) {
+        border-right: none;
+    }
+    .hnk-col .middle .text {
+        font-size: 16px;
+    }
+}

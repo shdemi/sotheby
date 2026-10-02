@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sotheby's Mansion — Kho lưu trữ cốt truyện cổ điển.">
+    <link rel="icon" type="image/png" href="assets/brand/sotheby_mini.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="theme.js"></script>
+    <title>Sotheby's Mansion | Kho Lưu Trữ Cốt Truyện</title>
+</head>
+<body id="top">
+
+    <!-- Header Banner Table (HnK Double Border Style) -->
+    <table class="row-full banner-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="assets/brand/sotheby_mini.png" alt="Sotheby Mini" class="banner-side-img">
+            </td>
+            <td class="banner-title-cell" style="width: 70%;">
+                <a href="index.html">
+                    <img src="assets/brand/logo.webp" alt="Sotheby's Mansion" class="banner-logo-img">
+                </a>
+                <div class="banner-subtitle-text">Kho Lưu Trữ Cốt Truyện · Sotheby's Mansion</div>
+            </td>
+            <td style="width: 15%; text-align: center;">
+                <img src="assets/brand/sotheby_mini.png" alt="Sotheby Mini" class="banner-side-img">
+            </td>
+        </tr>
+    </table>
+
+    <!-- Clickable Navigation Menu -->
+    <table class="row-full nav-table">
+        <tr>
+            <th class="active">
+                <a href="index.html">
+                    <i class="fa fa-home"></i>
+                    <div>Trang chủ</div>
+                </a>
+            </th>
+            <th>
+                <a href="#stories">
+                    <i class="fa fa-book"></i>
+                    <div>Chính truyện</div>
+                </a>
+            </th>
+            <th>
+                <a href="#events">
+                    <i class="fa fa-calendar-check"></i>
+                    <div>Sự kiện</div>
+                </a>
+            </th>
+            <th>
+                <a href="#character-stories">
+                    <i class="fa fa-user-circle"></i>
+                    <div>Nhân vật</div>
+                </a>
+            </th>
+            <th>
+                <a href="#anecdotes">
+                    <i class="fa fa-scroll"></i>
+                    <div>Giai thoại</div>
+                </a>
+            </th>
+            <th>
+                <a href="#others">
+                    <i class="fa fa-compass"></i>
+                    <div>Khác</div>
+                </a>
+            </th>
+            <th>
+                <a href="#about">
+                    <i class="fa fa-info-circle"></i>
+                    <div>Giới thiệu</div>
+                </a>
+            </th>
+            <th style="width: 12%;">
+                <button class="theme-toggle-btn" type="button" aria-label="Đổi giao diện">
+                    <i class="fas fa-moon"></i>
+                    <div>Giao diện</div>
+                </button>
+            </th>
+        </tr>
+    </table>
+
+    <!-- Section: Cốt truyện chính -->
+    <table id="stories" class="row-full section-strip-table">
+        <tr>
+            <td>
+                <div class="section-strip-title">
+                    <i class="fas fa-book-open"></i> Cốt truyện chính (Main Story)
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Book 1: The Living and the Rest -->
+    <div class="hnk-book-card open" id="book-1">
+        <div class="hnk-book-header" onclick="toggleBook('book-1')">
+            <img src="assets/books/the-living-and-the-rest.webp" alt="The Living and the Rest" class="hnk-book-cover">
+            <div class="hnk-book-info">
+                <div class="hnk-book-title">
+                    The Living and the Rest
+                </div>
+                <div class="hnk-book-desc">Prologue, Chapters 1-7SP · Nhấn để thu gọn / mở rộng</div>
+            </div>
+            <div class="hnk-book-toggle">
+                <span>Danh sách chương</span> <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+        <div class="hnk-book-content">
+            <!-- Grid này được nạp động từ stories.json -->
+            <div class="hnk-grid-container" id="book-1-grid">
+                <div style="grid-column: 1 / -1; padding: 25px; text-align: center; color: var(--hnk-muted);">
+                    <i class="fas fa-spinner fa-spin"></i> Đang nạp danh mục truyện...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book 2: The Journey Back -->
+    <div class="hnk-book-card" id="book-2">
+        <div class="hnk-book-header" onclick="toggleBook('book-2')">
+            <img src="assets/books/the-journey-back.webp" alt="The Journey Back" class="hnk-book-cover">
+            <div class="hnk-book-info">
+                <div class="hnk-book-title">
+                    The Journey Back
+                </div>
+                <div class="hnk-book-desc">Chapters 8-10 · Nhấn để thu gọn / mở rộng</div>
+            </div>
+            <div class="hnk-book-toggle">
+                <span>Danh sách chương</span> <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+        <div class="hnk-book-content">
+            <div class="hnk-grid-container" id="book-2-grid">
+                <div class="hnk-col locked-tile">
+                    <span class="hnk-tile-tag tag-left">Chương 8</span>
+                    <span class="hnk-tile-tag">Sắp ra mắt</span>
+                    <div class="locked-overlay">
+                        <span>[ CHƯA CẬP NHẬT ]</span>
+                    </div>
+                    <div class="middle">
+                        <div class="text">Chapter 8</div>
+                        <span class="subtext">Đang biên soạn</span>
+                    </div>
+                </div>
+                <div class="hnk-col locked-tile">
+                    <span class="hnk-tile-tag tag-left">Chương 9</span>
+                    <span class="hnk-tile-tag">Sắp ra mắt</span>
+                    <div class="locked-overlay">
+                        <span>[ CHƯA CẬP NHẬT ]</span>
+                    </div>
+                    <div class="middle">
+                        <div class="text">Chapter 9</div>
+                        <span class="subtext">Đang biên soạn</span>
+                    </div>
+                </div>
+                <div class="hnk-col locked-tile">
+                    <span class="hnk-tile-tag tag-left">Chương 10</span>
+                    <span class="hnk-tile-tag">Sắp ra mắt</span>
+                    <div class="locked-overlay">
+                        <span>[ CHƯA CẬP NHẬT ]</span>
+                    </div>
+                    <div class="middle">
+                        <div class="text">Chapter 10</div>
+                        <span class="subtext">Đang biên soạn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book 3: The Roots of the Tale -->
+    <div class="hnk-book-card" id="book-3">
+        <div class="hnk-book-header" onclick="toggleBook('book-3')">
+            <img src="assets/books/the-roots-of-the-tale.webp" alt="The Roots of the Tale" class="hnk-book-cover">
+            <div class="hnk-book-info">
+                <div class="hnk-book-title">
+                    The Roots of the Tale
+                </div>
+                <div class="hnk-book-desc">Chapters 11-13 · Nhấn để thu gọn / mở rộng</div>
+            </div>
+            <div class="hnk-book-toggle">
+                <span>Danh sách chương</span> <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+        <div class="hnk-book-content">
+            <div class="hnk-grid-container" id="book-3-grid">
+                <div class="hnk-col locked-tile">
+                    <span class="hnk-tile-tag tag-left">Chương 11</span>
+                    <span class="hnk-tile-tag">Sắp ra mắt</span>
+                    <div class="locked-overlay">
+                        <span>[ CHƯA CẬP NHẬT ]</span>
+                    </div>
+                    <div class="middle">
+                        <div class="text">Chapter 11</div>
+                        <span class="subtext">Đang biên soạn</span>
+                    </div>
+                </div>
+                <div class="hnk-col locked-tile">
+                    <span class="hnk-tile-tag tag-left">Chương 12</span>
+                    <span class="hnk-tile-tag">Sắp ra mắt</span>
+                    <div class="locked-overlay">
+                        <span>[ CHƯA CẬP NHẬT ]</span>
+                    </div>
+                    <div class="middle">
+                        <div class="text">Chapter 12</div>
+                        <span class="subtext">Đang biên soạn</span>
+                    </div>
+                </div>
+                <div class="hnk-col locked-tile">
+                    <span class="hnk-tile-tag tag-left">Chương 13</span>
+                    <span class="hnk-tile-tag">Sắp ra mắt</span>
+                    <div class="locked-overlay">
+                        <span>[ CHƯA CẬP NHẬT ]</span>
+                    </div>
+                    <div class="middle">
+                        <div class="text">Chapter 13</div>
+                        <span class="subtext">Đang biên soạn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Cốt truyện sự kiện -->
+    <table id="events" class="row-full section-strip-table">
+        <tr>
+            <td>
+                <div class="section-strip-title">
+                    <i class="fas fa-calendar-check"></i> Cốt truyện sự kiện (Event Story)
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Dàn hàng ngang các truyện sự kiện -->
+    <div class="hnk-grid-container">
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Sự kiện</span>
+            <span class="hnk-tile-tag">Bảo tồn</span>
+            <img src="assets/covers/the-stories-has-nothing.png" alt="The Stories Has Nothing" class="tile-image">
+            <div class="middle">
+                <div class="text">The Stories Has Nothing</div>
+                <span class="subtext">Kho lưu trữ đặc biệt</span>
+            </div>
+        </div>
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Sự kiện</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Unknown Chronicle</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Sự kiện</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Mansion Secrets</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Cốt truyện nhân vật (Character Story) -->
+    <table id="character-stories" class="row-full section-strip-table">
+        <tr>
+            <td>
+                <div class="section-strip-title">
+                    <i class="fas fa-user-circle"></i> Cốt truyện nhân vật (Character Story)
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Lưới hiển thị cốt truyện nhân vật nạp động từ stories.json -->
+    <div class="hnk-grid-container" id="character-grid">
+        <div style="grid-column: 1 / -1; padding: 25px; text-align: center; color: var(--hnk-muted);">
+            <i class="fas fa-spinner fa-spin"></i> Đang nạp danh sách cốt truyện nhân vật...
+        </div>
+    </div>
+
+    <!-- Section: Giai thoại (Anecdotes) -->
+    <table id="anecdotes" class="row-full section-strip-table">
+        <tr>
+            <td>
+                <div class="section-strip-title">
+                    <i class="fas fa-scroll"></i> Giai thoại (Anecdotes)
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="hnk-grid-container">
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Giai thoại</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Anecdotes Archive</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Giai thoại</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Anecdotes Archive</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Giai thoại</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Anecdotes Archive</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Cốt truyện khác (Others) -->
+    <table id="others" class="row-full section-strip-table">
+        <tr>
+            <td>
+                <div class="section-strip-title">
+                    <i class="fas fa-compass"></i> Cốt truyện khác (Others)
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="hnk-grid-container">
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Khác</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Other Stories</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Khác</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Other Stories</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+        <div class="hnk-col locked-tile">
+            <span class="hnk-tile-tag tag-left">Khác</span>
+            <span class="hnk-tile-tag">Sắp ra mắt</span>
+            <div class="locked-overlay">
+                <span>[ CHƯA CẬP NHẬT ]</span>
+            </div>
+            <div class="middle">
+                <div class="text">Other Stories</div>
+                <span class="subtext">Đang biên soạn</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ / Giới thiệu phong cách HnK -->
+    <div id="about" class="hnk-faq-block" style="margin-top: 30px;">
+        <div class="hnk-faq-q">
+            <i class="fas fa-question-circle"></i> Sotheby's Mansion Archive là gì?
+        </div>
+        <div class="hnk-faq-a">
+            Đây là thư viện lưu trữ trực tuyến các biên niên sử và cốt truyện được bảo tồn cẩn mật bên trong Sotheby's Mansion, tái hiện trải nghiệm đọc với giao diện tối giản, hoài cổ.
+        </div>
+        <div class="hnk-faq-q">
+            <i class="fas fa-question-circle"></i> Bản quyền &amp; ghi nguồn
+        </div>
+        <div class="hnk-faq-a">
+            <em>Reverse: 1999</em> &amp; Related Assets © Bluepoch. Mọi tài sản, nhân vật và nội dung gốc thuộc về Bluepoch.
+            Đây là dự án của người hâm mộ, phi thương mại, không liên kết với Bluepoch.
+        </div>
+    </div>
+
+    <!-- Footer kiểu HnK -->
+    <footer class="hnk-footer">
+        <p><strong>SOTHEBY'S MANSION ARCHIVE</strong></p>
+        <p>Kho lưu trữ cốt truyện được bảo tồn bên trong Sotheby's Mansion.</p>
+        <p><em>Reverse: 1999</em> &amp; Related Assets © Bluepoch · Fan project, phi thương mại</p>
+        <p>© Sotheby's Mansion Archive · Lấy cảm hứng từ phong cách web cổ điển</p>
+    </footer>
+
+    <!-- Nút cuộn lên đầu trang -->
+    <a href="#top" class="scroll-top" title="Lên đầu trang">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- Controller Scripts -->
+    <script>
+        function toggleBook(bookId) {
+            const card = document.getElementById(bookId);
+            if (card) {
+                card.classList.toggle('open');
+            }
+        }
+
+        // Tự động tải dữ liệu từ stories.json để render Book 1 & Character Stories
+        document.addEventListener('DOMContentLoaded', async () => {
+            const book1Grid = document.getElementById('book-1-grid');
+            const charGrid = document.getElementById('character-grid');
+
+            try {
+                const res = await fetch('data/stories.json?t=' + Date.now());
+                if (!res.ok) throw new Error('Không thể tải file stories.json');
+                const data = await res.json();
+                const stories = data.stories || {};
+
+                // 1. RENDER BOOK 1 (MAIN STORIES)
+                if (book1Grid) {
+                    const book1StoryKeys = [
+                        'this-is-tomorrow',
+                        'in-our-time',
+                        'tender-is-the-night',
+                        'nouvelles-et-textes-pour-rien',
+                        'el-oro-de-los-tigres',
+                        'the-prisoner-in-the-cave'
+                    ];
+
+                    const fallbackMap = {
+                        'nouvelles-et-textes-pour-rien': { title: 'Nouvelles et Textes pour Rien', year: 'Chương 3', tag: 'Đang biên soạn', cover: 'assets/covers/chapter-3.png' },
+                        'el-oro-de-los-tigres': { title: 'El Oro de los Tigres', year: 'Chương 4', tag: 'Đang biên soạn', cover: 'assets/covers/chapter-4.png' },
+                        'the-prisoner-in-the-cave': { title: 'The Prisoner in the Cave', year: 'Chương 5', tag: 'Đang biên soạn', cover: 'assets/covers/chapter-5.png' }
+                    };
+
+                    let htmlBook1 = '';
+                    for (const key of book1StoryKeys) {
+                        const story = stories[key] || fallbackMap[key];
+                        if (!story) continue;
+
+                        const hasChapters = story.chapters && story.chapters.length > 0;
+                        const isLocked = !hasChapters || story.status === 'Sắp ra mắt';
+                        const targetUrl = isLocked ? 'javascript:void(0)' : `story.html?id=${story.id || key}`;
+                        const lockedClass = isLocked ? 'locked-tile' : '';
+                        const yearDisplay = story.year || '----';
+                        const statusDisplay = story.status || 'Sắp ra mắt';
+                        const subtextDisplay = story.subtitle || (story.status === 'Sắp ra mắt' ? 'Đang biên soạn' : (story.tag || ''));
+
+                        htmlBook1 += `
+                            <div class="hnk-col ${lockedClass}">
+                                <a href="${targetUrl}" style="display:contents;">
+                                    <span class="hnk-tile-tag tag-left">${yearDisplay}</span>
+                                    <span class="hnk-tile-tag">${statusDisplay}</span>
+                                    <img src="${story.cover}" alt="${story.title}" class="tile-image" loading="lazy" onerror="this.src='assets/brand/sotheby_mini.png'">
+                                    ${isLocked ? `
+                                    <div class="locked-overlay">
+                                        <span>[ CHƯA CẬP NHẬT ]</span>
+                                    </div>` : ''}
+                                    <div class="middle">
+                                        <div class="text">${story.title}</div>
+                                        <span class="subtext">${subtextDisplay}</span>
+                                    </div>
+                                </a>
+                            </div>
+                        `;
+                    }
+                    book1Grid.innerHTML = htmlBook1;
+                }
+
+                // 2. RENDER CỐT TRUYỆN NHÂN VẬT (CHARACTER STORIES)
+                if (charGrid) {
+                    let charHtml = '';
+
+                    // Lọc tất cả các truyện thuộc danh mục nhân vật
+                    const charStories = Object.entries(stories).filter(([id, story]) => {
+                        return (story.category === 'character') || 
+                               (story.tag && story.tag.toLowerCase().includes('character')) ||
+                               id.includes('see-you-in-the-new-world') ||
+                               id.includes('cornerstone');
+                    });
+
+                    if (charStories.length > 0) {
+                        for (const [storyId, story] of charStories) {
+                            const hasChapters = story.chapters && story.chapters.length > 0;
+                            const isLocked = !hasChapters || story.status === 'Sắp ra mắt';
+                            const targetUrl = isLocked ? 'javascript:void(0)' : `story.html?id=${storyId}`;
+                            const lockedClass = isLocked ? 'locked-tile' : '';
+                            const coverImg = story.cover || 'assets/brand/sotheby_mini.png';
+                            
+                            // Tag góc trái
+                            const leftTagDisplay = 'Nhân vật';
+                            const statusDisplay = story.status || 'Hoàn thành';
+                            // Ưu tiên hiển thị đúng theo trường "tag" trong stories.json
+                            const subtextDisplay = story.tag || story.subtitle || 'Character Story';
+
+                            charHtml += `
+                                <div class="hnk-col ${lockedClass}">
+                                    <a href="${targetUrl}" style="display:contents;">
+                                        <span class="hnk-tile-tag tag-left">${leftTagDisplay}</span>
+                                        <span class="hnk-tile-tag">${statusDisplay}</span>
+                                        <img src="${coverImg}" alt="${story.title}" class="tile-image" loading="lazy" onerror="this.src='assets/brand/sotheby_mini.png'">
+                                        ${isLocked ? `
+                                        <div class="locked-overlay">
+                                            <span>[ CHƯA CẬP NHẬT ]</span>
+                                        </div>` : ''}
+                                        <div class="middle">
+                                            <div class="text">${story.title}</div>
+                                            <span class="subtext">${subtextDisplay}</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    // Thêm 2 ô giữ chỗ [ CHƯA CẬP NHẬT ] cho chuẩn bố cục lưới HnK
+                    charHtml += `
+                        <div class="hnk-col locked-tile">
+                            <span class="hnk-tile-tag tag-left">Nhân vật</span>
+                            <span class="hnk-tile-tag">Sắp ra mắt</span>
+                            <div class="locked-overlay">
+                                <span>[ CHƯA CẬP NHẬT ]</span>
+                            </div>
+                            <div class="middle">
+                                <div class="text">Character Archive</div>
+                                <span class="subtext">Đang biên soạn</span>
+                            </div>
+                        </div>
+                        <div class="hnk-col locked-tile">
+                            <span class="hnk-tile-tag tag-left">Nhân vật</span>
+                            <span class="hnk-tile-tag">Sắp ra mắt</span>
+                            <div class="locked-overlay">
+                                <span>[ CHƯA CẬP NHẬT ]</span>
+                            </div>
+                            <div class="middle">
+                                <div class="text">Character Archive</div>
+                                <span class="subtext">Đang biên soạn</span>
+                            </div>
+                        </div>
+                    `;
+
+                    charGrid.innerHTML = charHtml;
+                }
+
+            } catch (err) {
+                console.error('Lỗi khi nạp dữ liệu truyện:', err);
+                if (book1Grid) {
+                    book1Grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; padding: 25px; text-align: center; color: var(--hnk-muted);">
+                            Không thể kết nối đến kho dữ liệu. Vui lòng tải lại trang.
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

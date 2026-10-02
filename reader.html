@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trình đọc cốt truyện Sotheby's Mansion.">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Crimson+Pro:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <title>Trình Đọc | Sotheby's Mansion</title>
+    <link rel="icon" type="image/png" href="assets/brand/sotheby_mini.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="theme.js"></script>
+</head>
+<body id="top">
+
+    <!-- Header Banner Table (HnK Style) -->
+    <table class="row-full banner-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="assets/brand/sotheby_mini.png" alt="Sotheby Mini" class="banner-side-img">
+            </td>
+            <td class="banner-title-cell" style="width: 70%;">
+                <a href="index.html">
+                    <img src="assets/brand/logo.webp" alt="Sotheby's Mansion" class="banner-logo-img">
+                </a>
+                <div class="banner-subtitle-text">Kho Lưu Trữ Cốt Truyện · Sotheby's Mansion</div>
+            </td>
+            <td style="width: 15%; text-align: center;">
+                <img src="assets/brand/sotheby_mini.png" alt="Sotheby Mini" class="banner-side-img">
+            </td>
+        </tr>
+    </table>
+
+    <!-- Clickable Navigation Menu -->
+    <table class="row-full nav-table">
+        <tr>
+            <th>
+                <a href="index.html">
+                    <i class="fa fa-home"></i>
+                    <div>Trang chủ</div>
+                </a>
+            </th>
+            <th class="active">
+                <a id="nav-story-link" href="index.html#stories">
+                    <i class="fa fa-book"></i>
+                    <div id="nav-story-title">Chính truyện</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#events">
+                    <i class="fa fa-calendar-check"></i>
+                    <div>Sự kiện</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#character-stories">
+                    <i class="fa fa-user-circle"></i>
+                    <div>Nhân vật</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#anecdotes">
+                    <i class="fa fa-scroll"></i>
+                    <div>Giai thoại</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#others">
+                    <i class="fa fa-compass"></i>
+                    <div>Khác</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#about">
+                    <i class="fa fa-info-circle"></i>
+                    <div>Giới thiệu</div>
+                </a>
+            </th>
+            <th style="width: 12%;">
+                <button class="theme-toggle-btn" type="button" aria-label="Đổi giao diện">
+                    <i class="fas fa-moon"></i>
+                    <div>Giao diện</div>
+                </button>
+            </th>
+        </tr>
+    </table>
+
+    <div class="hnk-reader-container">
+        <!-- Chapter Header Box -->
+        <table class="row-full hnk-reader-header-table">
+            <tr>
+                <td style="width: 25%; text-align: left;">
+                    <a id="btn-back-toc" href="index.html" class="btn-chapter-read">
+                        <i class="fas fa-list"></i> Mục lục
+                    </a>
+                </td>
+                <td style="width: 50%; text-align: center;">
+                    <div id="reader-subtitle" class="hnk-reader-subtitle">Đang tải...</div>
+                    <div id="reader-title" class="hnk-reader-title">Đang nạp dữ liệu...</div>
+                </td>
+                <td style="width: 25%; text-align: right;">
+                    <span class="hnk-tag active"><i class="fas fa-book-reader"></i> Reader</span>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Epigraph Box -->
+        <div id="reader-epigraph" class="hnk-epigraph-box" style="display: none;"></div>
+
+        <!-- Main Chapter Content Box -->
+        <div id="reader-content" class="hnk-content-box">
+            <div style="text-align: center; padding: 40px; color: var(--hnk-muted);">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <div style="margin-top: 10px;">Đang tải chương...</div>
+            </div>
+        </div>
+        
+        <!-- Chapter Navigation Table -->
+        <table class="row-full reader-nav-table">
+            <tr>
+                <td id="nav-prev" style="width: 33%;" class="disabled">
+                    <span><i class="fas fa-arrow-left"></i> Chương trước</span>
+                </td>
+                <td style="width: 34%;">
+                    <a id="nav-toc" href="index.html">
+                        <i class="fas fa-list"></i> Mục lục chương
+                    </a>
+                </td>
+                <td id="nav-next" style="width: 33%;" class="disabled">
+                    <span>Chương sau <i class="fas fa-arrow-right"></i></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Footer kiểu Retro HnK -->
+    <footer class="hnk-footer">
+        <p><strong>SOTHEBY'S MANSION ARCHIVE</strong></p>
+        <p id="footer-text">© Sotheby's Mansion Archive</p>
+        <p>All content preserved for archival and educational purposes.</p>
+    </footer>
+
+    <a href="#top" class="scroll-top" aria-label="Lên đầu trang"><i class="fas fa-chevron-up"></i></a>
+
+    <!-- Engine tải trang tĩnh thuần túy (Static Loader 100%) -->
+    <script>
+        (async function initReader() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const storyId = urlParams.get('story') || 'this-is-tomorrow';
+            const chapterId = urlParams.get('chapter') || '1';
+
+            try {
+                // 1. Tải metadata truyện từ stories.json
+                const res = await fetch('data/stories.json?t=' + Date.now());
+                const data = await res.json();
+                const story = (data.stories && data.stories[storyId]) ? data.stories[storyId] : null;
+
+                if (!story) {
+                    throw new Error("Không tìm thấy dữ liệu bộ truyện: " + storyId);
+                }
+
+                const category = story.category || 'mainline';
+
+                // Cập nhật Nav Bar & Header
+                document.title = `Chương ${chapterId} | ${story.title} | Sotheby's Mansion`;
+                document.getElementById('nav-story-title').textContent = story.title;
+                const tocUrl = `story.html?id=${storyId}`;
+                document.getElementById('nav-story-link').href = tocUrl;
+                document.getElementById('btn-back-toc').href = tocUrl;
+                document.getElementById('nav-toc').href = tocUrl;
+                document.getElementById('reader-subtitle').textContent = `${story.title} · ${story.year || ''}`;
+                document.getElementById('footer-text').textContent = `© Sotheby's Mansion Archive | ${story.title} (${story.year || ''})`;
+
+                // Tìm thông tin chương hiện tại
+                const chapters = story.chapters || [];
+                const currentIndex = chapters.findIndex(c => String(c.id) === String(chapterId));
+                const chapterInfo = chapters[currentIndex];
+                const chapterTitle = chapterInfo ? chapterInfo.title : `Chương ${chapterId}`;
+                document.getElementById('reader-title').textContent = `Chương ${chapterId}: ${chapterTitle}`;
+
+                // Nút Chương trước / Chương sau
+                const navPrev = document.getElementById('nav-prev');
+                const navNext = document.getElementById('nav-next');
+
+                if (currentIndex > 0) {
+                    const prevCh = chapters[currentIndex - 1];
+                    navPrev.className = '';
+                    navPrev.innerHTML = `<a href="chapters/${category}/${storyId}/chapter-${prevCh.id}.html"><i class="fas fa-arrow-left"></i> Chương ${prevCh.id}</a>`;
+                } else {
+                    navPrev.className = 'disabled';
+                    navPrev.innerHTML = `<span><i class="fas fa-arrow-left"></i> Chương trước</span>`;
+                }
+
+                if (currentIndex >= 0 && currentIndex < chapters.length - 1) {
+                    const nextCh = chapters[currentIndex + 1];
+                    navNext.className = '';
+                    navNext.innerHTML = `<a href="chapters/${category}/${storyId}/chapter-${nextCh.id}.html">Chương ${nextCh.id} <i class="fas fa-arrow-right"></i></a>`;
+                } else {
+                    navNext.className = 'disabled';
+                    navNext.innerHTML = `<span>Chương sau <i class="fas fa-arrow-right"></i></span>`;
+                }
+
+                // 2. Nạp nội dung trực tiếp từ file HTML tĩnh đã sinh
+                const generatedPath = `chapters/${category}/${storyId}/chapter-${chapterId}.html?t=` + Date.now();
+                const genRes = await fetch(generatedPath);
+                
+                if (!genRes.ok) {
+                    // Nếu chưa sinh trang theo thư mục con, thử fallback về thư mục cũ
+                    const fallbackPath = `chapters/${storyId}/chapter-${chapterId}.html?t=` + Date.now();
+                    const fbRes = await fetch(fallbackPath);
+                    if (!fbRes.ok) {
+                        throw new Error(`Chưa tìm thấy file HTML tĩnh cho Chương ${chapterId}. Vui lòng chạy lại script python để tạo trang!`);
+                    }
+                    return loadHtmlContent(await fbRes.text());
+                }
+
+                loadHtmlContent(await genRes.text());
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('reader-content').innerHTML = `
+                    <div style="padding: 30px; text-align: center; color: #b71c1c;">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        <p style="margin-top: 15px; font-weight: bold;">Không thể tải chương này!</p>
+                        <p style="font-size: 14px; color: var(--hnk-muted);">${err.message}</p>
+                        <a href="story.html?id=${storyId}" class="btn-chapter-read" style="margin-top: 15px;">Quay lại mục lục</a>
+                    </div>
+                `;
+            }
+        })();
+
+        // Trích xuất nội dung từ trang HTML tĩnh
+        function loadHtmlContent(htmlString) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const genContent = doc.querySelector('.hnk-content-box');
+            const genEpigraph = doc.querySelector('.hnk-epigraph-box');
+
+            if (genEpigraph) {
+                document.getElementById('reader-epigraph').innerHTML = genEpigraph.innerHTML;
+                document.getElementById('reader-epigraph').style.display = 'block';
+            } else {
+                document.getElementById('reader-epigraph').style.display = 'none';
+            }
+
+            if (genContent) {
+                document.getElementById('reader-content').innerHTML = genContent.innerHTML;
+            }
+
+            // Gán hàm xử lý lựa chọn tương tác
+            window.switchChoice = function(btn, blockId) {
+                const block = document.getElementById(blockId);
+                if (!block) return;
+                block.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                block.querySelectorAll('.choice-response-panel').forEach(p => p.style.display = 'none');
+                const targetId = btn.getAttribute('data-target');
+                const panel = document.getElementById(targetId);
+                if (panel) panel.style.display = 'block';
+            };
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+{
+  "stories": {
+    "this-is-tomorrow": {
+      "id": "this-is-tomorrow",
+      "title": "This is Tomorrow",
+      "subtitle": "\"The Storm is coming.\"",
+      "year": "1966",
+      "status": "Đang hoàn thiện",
+      "tag": "Main Story · Prologue",
+      "cover": "assets/covers/this-is-tomorrow.png",
+      "synopsis": "Năm 1966, kỷ nguyên Rock 'n' Roll cuồng nhiệt tại London. Những giai điệu tự do vang lên trên con tàu hải tặc APPLe cùng thuyền trưởng Regulus, trước khi cơn bão thời gian \"The Storm\" định mệnh quét qua tất cả...",
+      "chapters": [
+        {
+          "id": "1",
+          "title": "Prologue · 01 · Rock 'n' Roll Radio",
+          "desc": ""
+        },
+        {
+          "id": "2",
+          "title": "Prologue · 02 · King's Trail",
+          "desc": ""
+        },
+        {
+          "id": "3",
+          "title": "Prologue · 03 · Teleport",
+          "desc": ""
+        },
+        {
+          "id": "4",
+          "title": "Prologue · 04 · Invisible Pirate",
+          "desc": ""
+        },
+        {
+          "id": "5",
+          "title": "Prologue · 05 · The Storm Overture",
+          "desc": ""
+        },
+        {
+          "id": "6",
+          "title": "Prologue · 06 · The Living Past",
+          "desc": ""
+        }
+      ],
+      "category": "mainline"
+    },
+    "in-our-time": {
+      "id": "in-our-time",
+      "title": "In Our Time",
+      "subtitle": "1929 · Leave the rest to me",
+      "year": "1929",
+      "status": "Đang hoàn thiện",
+      "tag": "Main Story · Chapter 1",
+      "cover": "assets/covers/in-our-time.png",
+      "synopsis": "Năm 1929, phố Wall trước thềm Đại khủng hoảng. Cơn bão lại một lần nữa đưa Vertin đến với một kỷ nguyên mới.",
+      "chapters": [
+        {
+          "id": "1",
+          "title": "10101 · Wretched Brats",
+          "desc": ""
+        },
+        {
+          "id": "2",
+          "title": "10102 · Dr. Papper",
+          "desc": ""
+        },
+        {
+          "id": "3",
+          "title": "10103 · Chicago Rescue",
+          "desc": ""
+        },
+        {
+          "id": "4",
+          "title": "10104 · Sharpodonty and Black Wine",
+          "desc": ""
+        },
+        {
+          "id": "5",
+          "title": "10105 · The Rosa Killer",
+          "desc": ""
+        },
+        {
+          "id": "6",
+          "title": "10106 · Scorched Woods",
+          "desc": ""
+        },
+        {
+          "id": "7",
+          "title": "10107 · Druvis III",
+          "desc": ""
+        },
+        {
+          "id": "8",
+          "title": "10108 · Security Carnival",
+          "desc": ""
+        },
+        {
+          "id": "9",
+          "title": "10109 · The Origin Butterfly",
+          "desc": ""
+        },
+        {
+          "id": "10",
+          "title": "10110 · Charge Baby, Charge!",
+          "desc": ""
+        },
+        {
+          "id": "11",
+          "title": "10111 · Appetizers",
+          "desc": ""
+        },
+        {
+          "id": "12",
+          "title": "10112 · The Rattenfanger",
+          "desc": ""
+        },
+        {
+          "id": "13",
+          "title": "10113 · The Eye of the Storm",
+          "desc": ""
+        },
+        {
+          "id": "14",
+          "title": "10115 · Heaven Apostles",
+          "desc": ""
+        },
+        {
+          "id": "15",
+          "title": "10120 · Underground Labyrinth",
+          "desc": ""
+        },
+        {
+          "id": "16",
+          "title": "10121 · To the New World",
+          "desc": ""
+        }
+      ],
+      "category": "mainline"
+    },
+    "tender-is-the-night": {
+      "id": "tender-is-the-night",
+      "title": "Tender is the Night",
+      "subtitle": "1929 · Don't forget me",
+      "year": "1929",
+      "status": "Sắp ra mắt",
+      "tag": "Main Story · Chapter 2",
+      "cover": "assets/covers/tender-is-the-night.png",
+      "synopsis": "Những đêm dạ vũ lấp lánh tại Chicago của thời kỳ cấm rượu Jazz Age.",
+      "chapters": []
+    },
+    "vereinsamt": {
+      "id": "vereinsamt",
+      "title": "Vereinsamt",
+      "subtitle": "",
+      "year": "1999",
+      "status": "Đang biên soạn",
+      "tag": "Main Story",
+      "cover": "assets/covers/vereinsamt.png",
+      "synopsis": "",
+      "chapters": [
+        {
+          "id": "1",
+          "title": "10701 · The Secret of the Diagonal",
+          "desc": ""
+        },
+        {
+          "id": "2",
+          "title": "10702 · The Blue and the Grey",
+          "desc": ""
+        },
+        {
+          "id": "3",
+          "title": "10703 · Bring the Gavel Down",
+          "desc": ""
+        },
+        {
+          "id": "4",
+          "title": "10704 · The Beginning of a Proof",
+          "desc": ""
+        },
+        {
+          "id": "5",
+          "title": "10705 · Four Cross-Checks",
+          "desc": ""
+        },
+        {
+          "id": "6",
+          "title": "10706 · Pride and Prejudice",
+          "desc": ""
+        },
+        {
+          "id": "7",
+          "title": "10707 · Maze of The Minotaur",
+          "desc": ""
+        },
+        {
+          "id": "8",
+          "title": "10708 · Oracles at Delphi",
+          "desc": ""
+        },
+        {
+          "id": "9",
+          "title": "10709 · Outside the Limits",
+          "desc": ""
+        },
+        {
+          "id": "10",
+          "title": "10710 · Returned to the Earth",
+          "desc": ""
+        },
+        {
+          "id": "11",
+          "title": "10711 · The Rolling Boulder",
+          "desc": ""
+        },
+        {
+          "id": "12",
+          "title": "10712 · The Party of Beans",
+          "desc": ""
+        },
+        {
+          "id": "13",
+          "title": "10713 · The Wave of Art",
+          "desc": ""
+        },
+        {
+          "id": "14",
+          "title": "10714 · A Sandstorm in a Room",
+          "desc": ""
+        },
+        {
+          "id": "15",
+          "title": "10715 · The Pioneers",
+          "desc": ""
+        },
+        {
+          "id": "16",
+          "title": "10716 · To Open the Flood Gates",
+          "desc": ""
+        },
+        {
+          "id": "17",
+          "title": "10717 · The \"Storm\" Speech",
+          "desc": ""
+        },
+        {
+          "id": "18",
+          "title": "10718 · Numbers in Everything",
+          "desc": ""
+        },
+        {
+          "id": "19",
+          "title": "10719 · The Fork in the Road",
+          "desc": ""
+        },
+        {
+          "id": "20",
+          "title": "10720 · A Greek Tragedy",
+          "desc": ""
+        },
+        {
+          "id": "21",
+          "title": "10721 · A Homage Paid",
+          "desc": ""
+        },
+        {
+          "id": "22",
+          "title": "10722 · The Ones Who Pray",
+          "desc": ""
+        },
+        {
+          "id": "23",
+          "title": "10723 · The Rosetta Stone",
+          "desc": ""
+        },
+        {
+          "id": "24",
+          "title": "10724 · The Cycle of History",
+          "desc": ""
+        },
+        {
+          "id": "25",
+          "title": "10725 · The First Circle",
+          "desc": ""
+        },
+        {
+          "id": "26",
+          "title": "10726 · Mirror and Curtains",
+          "desc": ""
+        },
+        {
+          "id": "27",
+          "title": "10727 · Hymnus Ad Bacchum",
+          "desc": ""
+        },
+        {
+          "id": "28",
+          "title": "10728 · The Two Numbers",
+          "desc": ""
+        },
+        {
+          "id": "29",
+          "title": "10729 · The Umbrella and the Knot",
+          "desc": ""
+        },
+        {
+          "id": "30",
+          "title": "10730 · And Now, the Curtain Call",
+          "desc": ""
+        },
+        {
+          "id": "31",
+          "title": "1910105 · The Solver",
+          "desc": ""
+        }
+      ],
+      "category": "mainline"
+    },
+    "see-you-in-the-new-world": {
+      "id": "see-you-in-the-new-world",
+      "title": "Gặp Bạn ở Thế Giới Mới",
+      "subtitle": "",
+      "year": "?",
+      "status": "Hoàn thành",
+      "tag": "Cornerstone",
+      "cover": "assets/covers/see-you-in-the-new-world.webp",
+      "synopsis": "Xây dựng. Thăng hoa. Phân rã. Giấc mộng xưa của ngày hôm qua. Cứ thế được khắc ghi. Chỉ nỗi niềm khôn nguôi còn vương lại, Đón chào khúc dạo đầu của ngày mai.",
+      "chapters": [
+        {
+          "id": "1",
+          "title": "Một Trăm Nghìn Tỷ Bản Phác Thảo",
+          "desc": ""
+        },
+        {
+          "id": "2",
+          "title": "Thiêu Đốt Từ Hai Đầu",
+          "desc": ""
+        },
+        {
+          "id": "3",
+          "title": "Cuộc Đụng Độ Thứ Năm",
+          "desc": ""
+        },
+        {
+          "id": "4",
+          "title": "Một Thiên Đường Kiến Trúc",
+          "desc": ""
+        },
+        {
+          "id": "5",
+          "title": "Giọt Lệ của Vkhutemas",
+          "desc": ""
+        },
+        {
+          "id": "6",
+          "title": "Sự Khai Sinh Của Kiến Trúc",
+          "desc": ""
+        },
+        {
+          "id": "7",
+          "title": "Đừng Tàn Nhẫn Với Tôi",
+          "desc": ""
+        },
+        {
+          "id": "8",
+          "title": "Xin Hãy Dõi Theo Chúng Tôi",
+          "desc": ""
+        }
+      ],
+      "category": "character"
+    }
+  }
+}

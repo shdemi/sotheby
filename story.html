@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chi tiết truyện - Sotheby's Mansion.">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Crimson+Pro:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <title>Chi Tiết Truyện | Sotheby's Mansion</title>
+    <link rel="icon" type="image/png" href="assets/brand/sotheby_mini.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="theme.js"></script>
+</head>
+<body id="top">
+
+    <!-- Header Banner Table (HnK Style) -->
+    <table class="row-full banner-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="assets/brand/sotheby_mini.png" alt="Sotheby Mini" class="banner-side-img">
+            </td>
+            <td class="banner-title-cell" style="width: 70%;">
+                <a href="index.html">
+                    <img src="assets/brand/logo.webp" alt="Sotheby's Mansion" class="banner-logo-img">
+                </a>
+                <div class="banner-subtitle-text">Kho Lưu Trữ Cốt Truyện · Sotheby's Mansion</div>
+            </td>
+            <td style="width: 15%; text-align: center;">
+                <img src="assets/brand/sotheby_mini.png" alt="Sotheby Mini" class="banner-side-img">
+            </td>
+        </tr>
+    </table>
+
+    <!-- Clickable Navigation Menu -->
+    <table class="row-full nav-table">
+        <tr>
+            <th>
+                <a href="index.html">
+                    <i class="fa fa-home"></i>
+                    <div>Trang chủ</div>
+                </a>
+            </th>
+            <th class="active">
+                <a href="index.html#stories">
+                    <i class="fa fa-book"></i>
+                    <div>Chính truyện</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#events">
+                    <i class="fa fa-calendar-check"></i>
+                    <div>Sự kiện</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#character-stories">
+                    <i class="fa fa-user-circle"></i>
+                    <div>Nhân vật</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#anecdotes">
+                    <i class="fa fa-scroll"></i>
+                    <div>Giai thoại</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#others">
+                    <i class="fa fa-compass"></i>
+                    <div>Khác</div>
+                </a>
+            </th>
+            <th>
+                <a href="index.html#about">
+                    <i class="fa fa-info-circle"></i>
+                    <div>Giới thiệu</div>
+                </a>
+            </th>
+            <th style="width: 12%;">
+                <button class="theme-toggle-btn" type="button" aria-label="Đổi giao diện">
+                    <i class="fas fa-moon"></i>
+                    <div>Giao diện</div>
+                </button>
+            </th>
+        </tr>
+    </table>
+
+    <!-- Story Info Box (Profile Header) -->
+    <section class="story-info-box" id="story-info-box">
+        <div class="story-cover-pane">
+            <img id="story-cover" src="assets/brand/sotheby_mini.png" alt="Cover">
+        </div>
+        <div class="story-details-pane">
+            <div>
+                <h2 id="story-title">Đang tải...</h2>
+                <div class="story-subtitle" id="story-subtitle">...</div>
+                <div class="story-badge-row">
+                    <span class="hnk-tag" id="story-year"><i class="fas fa-calendar-alt"></i> ----</span>
+                    <span class="hnk-tag active" id="story-status"><i class="fas fa-check-circle"></i> Trạng thái</span>
+                    <span class="hnk-tag" id="story-total-chapters"><i class="fas fa-layer-group"></i> 0 Chương</span>
+                    <span class="hnk-tag" id="story-tag"><i class="fas fa-bookmark"></i> Main Story</span>
+                </div>
+                <div class="synopsis-text" id="story-synopsis">
+                    Đang nạp tóm tắt cốt truyện...
+                </div>
+            </div>
+            <div class="story-actions-row" id="story-actions">
+                <!-- Nút đọc tự sinh bằng JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Table of Contents Section Strip -->
+    <table class="row-full section-strip-table">
+        <tr>
+            <td>
+                <div class="section-strip-title">
+                    <i class="fas fa-list-ul"></i> Mục lục các chương (Table of Contents)
+                </div>
+            </td>
+        </tr>
+    </table>
+        
+    <!-- Chapter List Table -->
+    <div class="chapters-container">
+        <table class="chapter-list-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Số chương</th>
+                    <th style="width: 65%;">Tên chương & tóm lược</th>
+                    <th style="width: 20%; text-align: right;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="chapter-list-tbody">
+                <tr>
+                    <td colspan="3" style="text-align: center; padding: 25px; color: #666;">
+                        <i class="fas fa-spinner fa-spin"></i> Đang tải danh sách chương...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer kiểu Retro HnK -->
+    <footer class="hnk-footer">
+        <p><strong>SOTHEBY'S MANSION ARCHIVE</strong></p>
+        <p id="footer-text">© Sotheby's Mansion Archive</p>
+        <p>All content preserved for archival and educational purposes.</p>
+    </footer>
+
+    <a href="#top" class="scroll-top" aria-label="Lên đầu trang"><i class="fas fa-chevron-up"></i></a>
+
+    <!-- Dynamic Story Controller (Static-First 100%) -->
+    <script>
+        (async function initStory() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const storyId = urlParams.get('id') || 'this-is-tomorrow';
+
+            try {
+                const res = await fetch('data/stories.json?t=' + Date.now());
+                const data = await res.json();
+                const story = data.stories[storyId];
+
+                if (!story) {
+                    throw new Error("Không tìm thấy bộ truyện mang mã: " + storyId);
+                }
+
+                // Xác định category chuẩn để điều hướng đúng thư mục
+                const category = story.category || 'mainline';
+
+                // Cập nhật DOM
+                document.title = `${story.title} | Sotheby's Mansion`;
+                document.getElementById('story-cover').src = story.cover;
+                document.getElementById('story-cover').alt = story.title;
+                document.getElementById('story-title').textContent = story.title;
+                document.getElementById('story-subtitle').textContent = story.subtitle || '';
+                document.getElementById('story-year').innerHTML = `<i class="fas fa-calendar-alt"></i> ${story.year || '----'}`;
+                document.getElementById('story-status').innerHTML = `<i class="fas fa-check-circle"></i> ${story.status || 'Hoàn thành'}`;
+                document.getElementById('story-total-chapters').innerHTML = `<i class="fas fa-layer-group"></i> ${story.chapters ? story.chapters.length : 0} Chương`;
+                document.getElementById('story-tag').innerHTML = `<i class="fas fa-bookmark"></i> ${story.tag || 'Story Archive'}`;
+                document.getElementById('story-synopsis').textContent = story.synopsis || 'Chưa có tóm tắt cốt truyện.';
+                document.getElementById('footer-text').textContent = `© Sotheby's Mansion Archive | ${story.title} (${story.year || ''})`;
+
+                // Render Actions Button: Dẫn trực tiếp đến file HTML tĩnh
+                const actionsContainer = document.getElementById('story-actions');
+                if (story.chapters && story.chapters.length > 0) {
+                    const firstCh = story.chapters[0].id;
+                    const latestCh = story.chapters[story.chapters.length - 1].id;
+                    const firstUrl = `chapters/${category}/${story.id}/chapter-${firstCh}.html`;
+                    const latestUrl = `chapters/${category}/${story.id}/chapter-${latestCh}.html`;
+
+                    actionsContainer.innerHTML = `
+                        <a href="${firstUrl}" class="btn-hnk-primary">
+                            <i class="fas fa-book-open"></i> Đọc từ đầu (Chương ${firstCh})
+                        </a>
+                        <a href="${latestUrl}" class="btn-hnk-secondary">
+                            <i class="fas fa-history"></i> Chương mới nhất (Chương ${latestCh})
+                        </a>
+                    `;
+                } else {
+                    actionsContainer.innerHTML = `<span class="hnk-tag">Truyện đang được biên soạn...</span>`;
+                }
+
+                // Render Chapter Table: Trỏ thẳng tới chapters/<category>/<story_id>/chapter-<id>.html
+                const tbody = document.getElementById('chapter-list-tbody');
+                if (!story.chapters || story.chapters.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 25px; color: #888;">Chưa có chương nào được mở khoá.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = story.chapters.map(ch => {
+                    const chUrl = `chapters/${category}/${story.id}/chapter-${ch.id}.html`;
+                    return `
+                        <tr>
+                            <td class="chapter-idx">Chương ${ch.id}</td>
+                            <td class="chapter-name-col">
+                                <a href="${chUrl}">${ch.title}</a>
+                                <div class="chapter-desc">${ch.desc || ''}</div>
+                            </td>
+                            <td class="chapter-btn-col">
+                                <a href="${chUrl}" class="btn-chapter-read">
+                                    <i class="fas fa-book-reader"></i> Đọc
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('story-info-box').innerHTML = `
+                    <div style="padding: 30px; text-align: center; width: 100%;">
+                        <p style="color: #b71c1c; font-weight: bold;">Lỗi nạp truyện: ${err.message}</p>
+                        <a href="index.html" class="btn-hnk-secondary" style="margin-top: 15px;">Quay lại Trang Chủ</a>
+                    </div>
+                `;
+            }
+        })();
+    </script>
+</body>
+</html>
