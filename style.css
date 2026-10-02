@@ -1330,33 +1330,140 @@ footer.hnk-footer a:hover {
     }
 }
 
+/* ==========================================================================
+   TỐI ƯU GIAO DIỆN DI ĐỘNG (Dưới 650px)
+   ========================================================================== */
 @media (max-width: 650px) {
-    .row-full, .hnk-grid-container, .hnk-faq-block, .story-info-box, .hnk-reader-container, footer.hnk-footer {
-        width: 98%;
+    /* Đảm bảo toàn bộ các khung container ôm sát lề màn hình vừa vặn */
+    .row-full, 
+    .hnk-grid-container, 
+    .hnk-faq-block, 
+    .story-info-box, 
+    .hnk-reader-container, 
+    .hnk-book-card,
+    footer.hnk-footer {
+        width: 95% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
+
+    /* 1. SỬA BANNER: Giảm kích thước 2 ảnh chibi để nhường chỗ cho Logo */
     .banner-side-img {
-        width: 75px;
-        height: 75px;
+        width: 50px !important;
+        height: 50px !important;
+    }
+    .banner-logo-img {
+        max-height: 55px !important;
+        margin-bottom: 2px !important;
     }
     .banner-subtitle-text {
-        font-size: 13px;
+        font-size: 10px !important;
+        letter-spacing: 0.08em !important;
     }
-    .nav-table th a {
-        font-size: 14px;
+    .banner-table td {
+        padding: 6px 4px !important;
+    }
+
+    /* 2. SỬA THANH MENU: Chuyển sang dạng thanh cuộn ngang mượt mà, không rớt chữ */
+    .nav-table {
+        display: block !important;
+        width: 95% !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+    }
+    .nav-table::-webkit-scrollbar {
+        display: none; /* Ẩn thanh cuộn trên Chrome/Safari */
+    }
+    .nav-table tbody,
+    .nav-table tr {
+        display: flex !important;
+        width: max-content !important;
+        height: 56px !important;
+    }
+    .nav-table th {
+        display: inline-flex !important;
+        flex: 0 0 auto !important;
+        min-width: 76px !important;
+        border-right: 2px solid var(--hnk-border) !important;
+    }
+    .nav-table th a,
+    .nav-table th button {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+        white-space: nowrap !important;
+        gap: 3px !important;
     }
     .nav-table i {
-        font-size: 16px;
+        font-size: 16px !important;
     }
+
+    /* 3. SỬA PHẦN THẺ SÁCH (The Living and the Rest) KHÔNG BỊ CO ĐỨNG */
+    .hnk-book-header {
+        display: flex !important;
+        flex-direction: column !important; /* Xếp dọc các thành phần trên di động */
+        align-items: center !important;
+        text-align: center !important;
+        gap: 12px !important;
+        padding: 16px 12px !important;
+    }
+    .hnk-book-cover {
+        width: 90px !important;
+        height: auto !important;
+    }
+    .hnk-book-info {
+        width: 100% !important;
+    }
+    .hnk-book-title {
+        font-size: 18px !important;
+        justify-content: center !important;
+        text-align: center !important;
+        word-break: normal !important;
+        white-space: normal !important;
+    }
+    .hnk-book-desc {
+        font-size: 13px !important;
+        text-align: center !important;
+        margin-top: 6px !important;
+    }
+    .hnk-book-toggle {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 8px 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. SỬA LƯỚI TRUYỆN (Grid Tiles) */
     .hnk-grid-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr) !important;
     }
     .hnk-col:nth-child(3n) {
-        border-right: 2px solid var(--hnk-border);
+        border-right: 2px solid var(--hnk-border) !important;
     }
     .hnk-col:nth-child(2n) {
-        border-right: none;
+        border-right: none !important;
     }
     .hnk-col .middle .text {
-        font-size: 16px;
+        font-size: 13px !important;
+    }
+
+    /* 5. SỬA KHUNG HỘP THOẠI TRUYỆN TRÊN ĐIỆN THOẠI */
+    .dialogue-row {
+        gap: 10px !important;
+        padding: 10px 8px !important;
+    }
+    .dialogue-avatar-box {
+        width: 65px !important;
+    }
+    .dialogue-avatar-img {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    .dialogue-avatar-name {
+        font-size: 9px !important;
+    }
+    .dialogue-body {
+        font-size: 15px !important;
     }
 }
