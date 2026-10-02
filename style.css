@@ -66,7 +66,7 @@ body {
     background-size: 20px 20px;
     background-position: 0 0, 10px 10px;
     color: var(--hnk-text);
-    /* Sử dụng font Inter để hỗ trợ đầy đủ dấu tiếng Việt mượt mà */
+    /* Sử dụng font Inter để hỗ trợ đầy đủ bộ dấu tiếng Việt mượt mà */
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     text-align: center;
@@ -568,145 +568,6 @@ table {
 }
 
 /* ==========================================================================
-   STORY DETAIL PAGE & CHAPTER LIST TABLE
-   ========================================================================== */
-
-.story-info-box {
-    width: 94%;
-    max-width: 1200px;
-    margin: 16px auto 20px;
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 0;
-    border: 2px solid var(--hnk-border);
-    background-color: var(--reader-box-bg);
-    color: var(--hnk-text);
-    box-shadow: 4px 4px 0px var(--shadow-color);
-    text-align: left;
-}
-
-.story-cover-pane {
-    background-color: var(--hnk-box-card);
-    border-right: 2px solid var(--hnk-border);
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.story-cover-pane img {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    border: 2px solid var(--hnk-border);
-    box-shadow: 4px 4px 0px var(--shadow-color);
-    background: var(--reader-box-bg);
-    display: block;
-}
-
-.story-details-pane {
-    padding: 24px 28px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.story-details-pane h2 {
-    font-size: 28px;
-    margin-bottom: 6px;
-    font-weight: bold;
-    letter-spacing: 0.05em;
-    color: var(--hnk-text);
-}
-
-.chapters-container {
-    width: 94%;
-    max-width: 1200px;
-    margin: 0 auto 30px;
-}
-
-.chapter-list-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 2px solid var(--hnk-border);
-    background: var(--reader-box-bg);
-    box-shadow: 4px 4px 0px var(--shadow-color);
-    text-align: left;
-}
-
-.chapter-list-table th {
-    background: var(--hnk-box-bg);
-    border-bottom: 2px solid var(--hnk-border);
-    padding: 12px 16px;
-    font-size: 15px;
-    font-weight: bold;
-    letter-spacing: 0.05em;
-    color: var(--hnk-text);
-}
-
-.chapter-list-table td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--hnk-border);
-    vertical-align: middle;
-    font-size: 15px;
-    color: var(--hnk-text);
-}
-
-.chapter-list-table tr:last-child td {
-    border-bottom: none;
-}
-
-.chapter-list-table tr:hover td {
-    background-color: var(--hnk-hover);
-}
-
-.chapter-idx {
-    font-weight: bold;
-    color: var(--hnk-text);
-    width: 90px;
-    white-space: nowrap;
-}
-
-.chapter-name-col a {
-    font-weight: bold;
-    color: var(--hnk-text);
-    font-size: 16px;
-    display: inline-block;
-    transition: color 0.15s;
-}
-
-.chapter-name-col a:hover {
-    color: var(--hnk-gold);
-    text-decoration: underline;
-}
-
-.chapter-btn-col {
-    text-align: right;
-    width: 130px;
-}
-
-.btn-chapter-read {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    background: var(--hnk-box-bg);
-    color: var(--hnk-text);
-    border: 1px solid var(--hnk-border);
-    font-size: 13px;
-    font-weight: bold;
-    text-decoration: none;
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transition: all 0.15s ease;
-}
-
-.btn-chapter-read:hover {
-    background: var(--hnk-gold);
-    color: #000000;
-    transform: translateY(-1px);
-}
-
-/* ==========================================================================
    FOOTER (Retro HnK style)
    ========================================================================== */
 
@@ -776,122 +637,129 @@ footer.hnk-footer a:hover {
     .hnk-col:nth-child(3n) {
         border-right: none;
     }
-    .story-info-box {
-        grid-template-columns: 1fr;
-    }
-    .story-cover-pane {
-        border-right: none;
-        border-bottom: 2px solid var(--hnk-border);
-    }
 }
 
 /* ==========================================================================
-   TỐI ƯU GIAO DIỆN DI ĐỘNG: GỌN GÀNG, NHỎ NHẮN & SỬA LỖI FONT TRIỆT ĐỂ (Dưới 650px)
+   TỐI ƯU GIAO DIỆN DI ĐỘNG & HIỂN THỊ 6 CHAPTER / 1 HÀNG (Dưới 650px)
    ========================================================================== */
 @media (max-width: 650px) {
-    /* Ép tất cả các thành phần chữ sang font Inter để khử lỗi font tiếng Việt hoàn toàn */
-    body, h1, h2, h3, h4, p, span, div, a, td, th, button {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    }
-
-    /* Thu hẹp viền 2 bên màn hình */
     .row-full, 
     .hnk-faq-block, 
     .hnk-book-card,
-    .chapters-container,
-    .story-info-box,
     footer.hnk-footer {
-        width: 92% !important;
+        width: 95% !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
 
-    /* 1. ẨN HOÀN TOÀN THANH MENU ĐIỀU HƯỚNG TRÊN ĐIỆN THOẠI */
-    .nav-table {
-        display: none !important;
-    }
-
-    /* 2. BANNER NHỎ XINH */
+    /* 1. BANNER THU NHỎ GỌN GÀNG */
     .banner-table {
-        margin-top: 10px !important;
-        box-shadow: 2px 2px 0px var(--shadow-color) !important;
+        margin-top: 8px !important;
     }
     .banner-side-img {
-        width: 36px !important;
-        height: 36px !important;
+        width: 44px !important;
+        height: 44px !important;
     }
     .banner-logo-img {
-        max-height: 38px !important;
+        max-height: 48px !important;
         margin-bottom: 2px !important;
     }
     .banner-subtitle-text {
-        font-size: 8.5px !important;
-        letter-spacing: 0.04em !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.05em !important;
     }
     .banner-table td {
-        padding: 4px !important;
+        padding: 4px 2px !important;
     }
 
-    /* 3. TIÊU ĐỀ PHÂN ĐOẠN (CỐT TRUYỆN CHÍNH, SỰ KIỆN...) */
+    /* 2. THANH MENU VUỐT NGANG MƯỢT MÀ */
+    .nav-table {
+        display: block !important;
+        width: 95% !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .nav-table::-webkit-scrollbar {
+        display: none;
+    }
+    .nav-table tbody,
+    .nav-table tr {
+        display: flex !important;
+        width: max-content !important;
+        height: 48px !important;
+    }
+    .nav-table th {
+        display: inline-flex !important;
+        flex: 0 0 auto !important;
+        min-width: 65px !important;
+        border-right: 2px solid var(--hnk-border) !important;
+    }
+    .nav-table th a,
+    .nav-table th button {
+        padding: 4px 6px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        gap: 2px !important;
+    }
+    .nav-table i {
+        font-size: 14px !important;
+    }
+
+    /* 3. TIÊU ĐỀ PHÂN ĐOẠN */
     .section-strip-table {
-        margin-top: 12px !important;
-        margin-bottom: 10px !important;
-        box-shadow: 2px 2px 0px var(--shadow-color) !important;
+        margin-top: 10px !important;
+        margin-bottom: 12px !important;
     }
     .section-strip-table td {
-        padding: 6px 12px !important;
+        padding: 8px 12px !important;
     }
     .section-strip-title {
-        font-size: 13px !important;
-        gap: 6px !important;
-        letter-spacing: 0.03em !important;
+        font-size: 14.5px !important;
+        gap: 8px !important;
     }
     .section-strip-title i {
-        font-size: 13px !important;
+        font-size: 14px !important;
     }
 
-    /* 4. BOOK CARD (THE LIVING AND THE REST...) */
+    /* 4. BOOK CARD (Thẻ sách) */
     .hnk-book-card {
-        margin-bottom: 12px !important;
-        box-shadow: 2px 2px 0px var(--shadow-color) !important;
+        margin-bottom: 14px !important;
     }
     .hnk-book-header {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         text-align: center !important;
-        gap: 8px !important;
-        padding: 12px 10px !important;
+        gap: 10px !important;
+        padding: 14px 10px !important;
     }
     .hnk-book-cover {
-        width: 55px !important;
+        width: 70px !important;
         height: auto !important;
     }
     .hnk-book-info {
         width: 100% !important;
     }
     .hnk-book-title {
-        font-size: 14px !important;
+        font-size: 16px !important;
         justify-content: center !important;
         text-align: center !important;
-        font-weight: 700 !important;
     }
     .hnk-book-desc {
-        font-size: 11px !important;
+        font-size: 11.5px !important;
         text-align: center !important;
-        margin-top: 3px !important;
-        line-height: 1.4 !important;
+        margin-top: 4px !important;
     }
     .hnk-book-toggle {
-        width: 85% !important;
-        max-width: 240px !important;
+        width: 100% !important;
         justify-content: center !important;
-        padding: 5px 0 !important;
-        font-size: 11.5px !important;
-        box-shadow: 1px 1px 0px var(--shadow-color) !important;
+        padding: 7px 0 !important;
+        font-size: 12px !important;
     }
 
-    /* 5. HIỂN THỊ 6 CHAPTER TRÊN 1 HÀNG VUỐT NGANG */
+    /* 5. HIỂN THỊ CẢ 6 CHAPTER TRÊN 1 HÀNG VUỐT NGANG NHƯ PC */
     .hnk-grid-container {
         display: flex !important;
         flex-direction: row !important;
@@ -902,16 +770,17 @@ footer.hnk-footer a:hover {
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
         width: 100% !important;
-        box-shadow: 3px 3px 0px var(--shadow-color) !important;
         border-right: 2px solid var(--hnk-border) !important;
         border-bottom: 2px solid var(--hnk-border) !important;
     }
     .hnk-grid-container::-webkit-scrollbar {
         display: none;
     }
+
+    /* Kích thước mỗi ô trong hàng 6 ô */
     .hnk-col {
-        flex: 0 0 105px !important;
-        width: 105px !important;
+        flex: 0 0 120px !important;   /* Độ rộng 120px cân đối trên màn hình điện thoại */
+        width: 120px !important;
         aspect-ratio: 2 / 3 !important;
         scroll-snap-align: start;
         border-right: 2px solid var(--hnk-border) !important;
@@ -921,111 +790,54 @@ footer.hnk-footer a:hover {
         border-right: none !important;
     }
     .hnk-col .tile-image {
-        width: 80% !important;
-        height: 80% !important;
+        width: 82% !important;
+        height: 82% !important;
     }
     .hnk-col .middle {
-        opacity: 1 !important;
+        opacity: 1 !important;         /* Trên màn hình cảm ứng luôn hiện tên chương */
         transform: translateY(0) !important;
-        padding: 6px 3px 4px !important;
+        padding: 8px 4px 6px !important;
     }
     .hnk-col .middle .text {
-        font-size: 9.5px !important;
+        font-size: 10.5px !important;
         line-height: 1.2 !important;
     }
     .hnk-col .middle .subtext {
-        font-size: 8px !important;
+        font-size: 8.5px !important;
+        margin-top: 2px !important;
     }
-
-    /* 6. SỬA LỖI NHÃN TAG BỊ ĐÈ CHỒNG LÊN NHAU */
     .hnk-tile-tag {
-        font-size: 8px !important;
-        padding: 1px 3px !important;
-        max-width: 58% !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        top: 3px !important;
-        right: 3px !important;
-        line-height: 1.2 !important;
+        font-size: 9px !important;
+        padding: 1px 4px !important;
+        top: 4px !important;
+        right: 4px !important;
     }
     .hnk-tile-tag.tag-left {
-        top: 3px !important;
-        left: 3px !important;
-        right: auto !important;
-        max-width: 38% !important;
+        top: 4px !important;
+        left: 4px !important;
     }
 
-    /* 7. SỬA LỖI BẢNG DANH SÁCH CHƯƠNG BỊ DÍNH CHỮ & TRÀN VIỀN */
-    .chapter-list-table {
-        table-layout: auto !important;
-        width: 100% !important;
-    }
-    .chapter-list-table th,
-    .chapter-list-table td {
-        padding: 8px 6px !important;
-        font-size: 12.5px !important;
-    }
-    .chapter-idx {
-        width: auto !important;
-        min-width: 65px !important;
-        font-size: 11.5px !important;
-        padding-right: 4px !important;
-        white-space: nowrap !important;
-        vertical-align: middle !important;
-    }
-    .chapter-name-col {
-        padding-left: 6px !important;
-        padding-right: 6px !important;
-        word-break: break-word !important;
-    }
-    .chapter-name-col a {
-        font-size: 12.5px !important;
-        line-height: 1.35 !important;
-    }
-    .chapter-btn-col {
-        width: 55px !important;
-        text-align: center !important;
-        padding-right: 6px !important;
-    }
-    .btn-chapter-read {
-        padding: 4px 7px !important;
-        font-size: 11px !important;
-        gap: 3px !important;
-        box-shadow: 1px 1px 0px var(--shadow-color) !important;
-    }
-
-    /* 8. FAQ & FOOTER THU GỌN VỪA VẶN */
+    /* 6. FAQ & FOOTER NHỎ GỌN, DỄ ĐỌC */
     .hnk-faq-block {
-        margin-top: 16px !important;
-        margin-bottom: 10px !important;
-        box-shadow: 2px 2px 0px var(--shadow-color) !important;
+        margin-top: 18px !important;
+        margin-bottom: 12px !important;
     }
     .hnk-faq-q {
-        font-size: 12.5px !important;
-        padding: 7px 10px !important;
+        font-size: 13.5px !important;
+        padding: 8px 10px !important;
         gap: 6px !important;
     }
     .hnk-faq-a {
-        font-size: 11.5px !important;
-        line-height: 1.55 !important;
-        padding: 8px 10px !important;
+        font-size: 12.5px !important;
+        line-height: 1.6 !important;
+        padding: 10px 12px !important;
     }
     footer.hnk-footer {
-        font-size: 10px !important;
-        padding: 12px 8px !important;
-        margin: 16px auto 25px !important;
-        box-shadow: 2px 2px 0px var(--shadow-color) !important;
+        font-size: 11px !important;
+        padding: 14px 10px !important;
+        margin: 20px auto 30px !important;
     }
     footer.hnk-footer p {
-        margin: 3px 0 !important;
-    }
-    .scroll-top {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 13px !important;
-        bottom: 12px !important;
-        right: 12px !important;
-        box-shadow: 2px 2px 0px var(--shadow-color) !important;
+        margin: 4px 0 !important;
     }
 }
