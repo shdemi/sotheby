@@ -60,14 +60,14 @@ html {
 
 body {
     background-color: var(--hnk-bg);
+    /* Subtle geometric diamond/dot pattern replicating graydiamond.png */
     background-image: 
         radial-gradient(#c8c2b3 1px, transparent 1px),
         radial-gradient(#d5cfbf 1px, var(--hnk-bg) 1px);
     background-size: 20px 20px;
     background-position: 0 0, 10px 10px;
     color: var(--hnk-text);
-    /* Sử dụng font Inter để hỗ trợ đầy đủ bộ dấu tiếng Việt mượt mà */
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: Consolas, 'Share Tech Mono', Monaco, 'Lucida Console', 'Courier New', monospace;
     line-height: 1.5;
     text-align: center;
     width: 100%;
@@ -147,9 +147,9 @@ table {
 }
 
 .banner-subtitle-text {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--hnk-text);
 }
@@ -187,7 +187,7 @@ table {
     gap: 4px;
     color: var(--hnk-text);
     font-size: 15px;
-    font-weight: 600;
+    font-weight: bold;
     background: none;
     border: none;
     cursor: pointer;
@@ -231,8 +231,8 @@ table {
 }
 
 .section-strip-title {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: bold;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -314,11 +314,11 @@ table {
 }
 
 .hnk-col .middle .text {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     line-height: 1.25;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     user-select: none;
@@ -326,11 +326,11 @@ table {
 
 .hnk-col .middle .subtext {
     display: block;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
-    color: #e0b84c;
+    color: #e0b84c; /* Gold highlight accent */
     margin-top: 3px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
@@ -348,15 +348,15 @@ table {
 /* Tile badge for status / year */
 .hnk-tile-tag {
     position: absolute;
-    top: 6px;
-    right: 6px;
+    top: 8px;
+    right: 8px;
     background: #f7f4ec;
     color: #8f670a;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
-    padding: 2px 6px;
+    padding: 3px 8px;
     border: 1px solid #b89129;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.05em;
     z-index: 2;
     box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
 }
@@ -370,7 +370,7 @@ table {
 
 .hnk-tile-tag.tag-left {
     right: auto;
-    left: 6px;
+    left: 8px;
     background: var(--hnk-box-bg);
     color: var(--hnk-text);
     border: 1px solid var(--hnk-border);
@@ -396,17 +396,37 @@ table {
 .locked-overlay span {
     background: #000000;
     color: #ffffff;
-    padding: 4px 10px;
-    font-size: 12px;
+    padding: 4px 12px;
+    font-size: 14px;
     font-weight: bold;
     border: 1px solid #fff;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
 }
 
 [data-theme="dark"] .locked-overlay span {
     background: #1c1c1c;
     color: #949088;
     border-color: #404040;
+}
+
+/* Bar labels under/above tiles like scans.html */
+.hnk-headers-row {
+    width: 94%;
+    max-width: 1200px;
+    margin: 14px auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.hnk-header-cell {
+    padding: 8px;
+    border: 2px solid var(--hnk-border);
+    border-bottom: none;
+    border-right: none;
+    background-color: var(--hnk-box-bg);
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* ==========================================================================
@@ -454,8 +474,8 @@ table {
 }
 
 .hnk-book-title {
-    font-size: 19px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: bold;
     color: var(--hnk-text);
     display: flex;
     align-items: center;
@@ -463,14 +483,14 @@ table {
 }
 
 .hnk-book-desc {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--hnk-muted);
     margin-top: 4px;
 }
 
 .hnk-book-toggle {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: bold;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -529,8 +549,23 @@ table {
     box-shadow: none;
 }
 
+/* Thông báo khi danh mục hoặc book chưa có nội dung cập nhật */
+.hnk-empty-msg {
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--hnk-muted);
+    font-size: 14px;
+    font-style: italic;
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+.hnk-grid-container:empty {
+    display: none;
+}
+
 /* ==========================================================================
-   HNK STYLE Q&A / FAQ BOXES
+   HNK STYLE Q&A / FAQ BOXES (From index.html)
    ========================================================================== */
 
 .hnk-faq-block {
@@ -546,8 +581,8 @@ table {
     border: 2px solid var(--hnk-border);
     background-color: var(--hnk-box-bg);
     color: var(--hnk-text);
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: bold;
     margin-bottom: -2px;
     display: flex;
     align-items: center;
@@ -563,8 +598,656 @@ table {
     border: 2px solid var(--hnk-border);
     background-color: var(--reader-box-bg);
     color: var(--hnk-text);
-    font-size: 14.5px;
+    font-size: 16px;
     line-height: 1.7;
+}
+
+/* ==========================================================================
+   STORY DETAIL PAGE (this-is-tomorrow.html)
+   ========================================================================== */
+
+.story-info-box {
+    width: 94%;
+    max-width: 1200px;
+    margin: 16px auto 20px;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 0;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--reader-box-bg);
+    color: var(--hnk-text);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    text-align: left;
+}
+
+.story-cover-pane {
+    background-color: var(--hnk-box-card);
+    border-right: 2px solid var(--hnk-border);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-cover-pane img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    background: var(--reader-box-bg);
+    display: block;
+}
+
+.story-details-pane {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.story-details-pane h2 {
+    font-size: 28px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    color: var(--hnk-text);
+}
+
+.story-subtitle {
+    font-size: 15px;
+    color: var(--hnk-muted);
+    font-style: italic;
+    margin-bottom: 14px;
+}
+
+.story-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.hnk-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background-color: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    border: 1px solid var(--hnk-border);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+}
+
+.hnk-tag i {
+    color: var(--hnk-text);
+}
+
+.hnk-tag.active {
+    background-color: var(--tag-active-bg);
+    color: var(--tag-active-text);
+    border-color: var(--tag-active-bg);
+}
+
+.hnk-tag.active i {
+    color: var(--tag-active-text);
+}
+
+.story-details-pane .synopsis-text {
+    font-size: 15px;
+    color: var(--hnk-text);
+    margin: 8px 0 20px;
+    line-height: 1.8;
+}
+
+.story-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px dashed var(--hnk-border);
+}
+
+.btn-hnk-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--hnk-gold);
+    color: #000000;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    transition: background 0.15s, transform 0.15s;
+    text-decoration: none;
+}
+
+.btn-hnk-primary:hover {
+    background: #e8c650;
+    color: #000000;
+    transform: translateY(-2px);
+}
+
+.btn-hnk-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 18px;
+    border: 2px solid var(--hnk-border);
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    transition: background 0.15s, transform 0.15s;
+    text-decoration: none;
+}
+
+.btn-hnk-secondary:hover {
+    background: var(--hnk-hover);
+    transform: translateY(-2px);
+}
+
+/* Chapter Table of Contents */
+.chapters-container {
+    width: 94%;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+}
+
+.chapter-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid var(--hnk-border);
+    background: var(--reader-box-bg);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    text-align: left;
+}
+
+.chapter-list-table th {
+    background: var(--hnk-box-bg);
+    border-bottom: 2px solid var(--hnk-border);
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    color: var(--hnk-text);
+}
+
+.chapter-list-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--hnk-border);
+    vertical-align: middle;
+    font-size: 15px;
+    color: var(--hnk-text);
+}
+
+.chapter-list-table tr:last-child td {
+    border-bottom: none;
+}
+
+.chapter-list-table tr:hover td {
+    background-color: var(--hnk-hover);
+}
+
+.chapter-idx {
+    font-weight: bold;
+    color: var(--hnk-text);
+    width: 90px;
+    white-space: nowrap;
+}
+
+.chapter-name-col a {
+    font-weight: bold;
+    color: var(--hnk-text);
+    font-size: 16px;
+    display: inline-block;
+    transition: color 0.15s;
+}
+
+.chapter-name-col a:hover {
+    color: var(--hnk-gold);
+    text-decoration: underline;
+}
+
+.chapter-name-col .chapter-desc {
+    font-size: 13px;
+    color: var(--hnk-muted);
+    margin-top: 3px;
+}
+
+.chapter-btn-col {
+    text-align: right;
+    width: 130px;
+}
+
+.btn-chapter-read {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    border: 1px solid var(--hnk-border);
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    transition: all 0.15s ease;
+}
+
+.btn-chapter-read:hover {
+    background: var(--hnk-gold);
+    color: #000000;
+    transform: translateY(-1px);
+}
+
+.btn-hnk-primary i,
+.btn-hnk-secondary i,
+.btn-chapter-read i,
+.reader-nav-table i,
+.scroll-top i {
+    color: inherit;
+}
+
+.btn-chapter-read:hover i,
+.btn-hnk-primary:hover i {
+    color: inherit;
+}
+
+/* ==========================================================================
+   CHAPTER READING PAGE (chapters/*.html)
+   ========================================================================== */
+
+.hnk-reader-container {
+    width: 94%;
+    max-width: 950px;
+    margin: 14px auto 30px;
+    text-align: left;
+}
+
+.hnk-reader-header-table {
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    color: var(--hnk-text);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    margin-bottom: 16px;
+}
+
+.hnk-reader-header-table td {
+    padding: 12px 18px;
+}
+
+.hnk-reader-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: var(--hnk-text);
+}
+
+.hnk-reader-subtitle {
+    font-size: 14px;
+    color: var(--hnk-muted);
+    text-align: center;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.hnk-epigraph-box {
+    border: 2px solid var(--hnk-border);
+    background-color: var(--reader-box-bg);
+    color: var(--hnk-text);
+    padding: 20px 22px 16px;
+    margin-bottom: 16px;
+    font-style: italic;
+    line-height: 1.8;
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.hnk-epigraph-box .author {
+    display: block;
+    margin-top: 10px;
+    text-align: right;
+    font-family: 'Consolas', 'Courier New', monospace; /* Kiểu chữ máy đánh chữ/code retro */
+    font-size: 0.85rem;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.12em; /* Giãn cách chữ nhẹ */
+    text-transform: uppercase; /* In hoa tên tác giả */
+    color: var(--hnk-gold); /* Màu vàng gold thương hiệu */
+    opacity: 0.95;
+}
+
+/* Khung đọc truyện: Font sans-serif hiện đại, thanh thoát và dễ đọc */
+.hnk-content-box {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+}
+
+.dialogue-speaker {
+    display: inline-block;
+    font-weight: bold;
+    color: var(--hnk-text);
+    font-size: 15px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+    background-color: var(--hnk-box-bg);
+    border: 1px solid var(--hnk-border);
+    padding: 2px 8px 1px;
+    line-height: 1.2;
+    box-shadow: 1px 1px 0 var(--shadow-color);
+    font-family: inherit;
+}
+
+.dialogue {
+    padding: 14px 16px 12px 16px;
+    border-left: 4px solid var(--hnk-gold);
+    background-color: var(--reader-dialogue-bg);
+    color: var(--hnk-text);
+    margin: 0 0 16px;
+    min-height: 22px;
+    line-height: 1.8;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Định dạng chữ in đậm trong truyện */
+.dialogue-body strong,
+.action-text strong,
+.dialogue strong {
+    font-weight: 700;
+    color: var(--hnk-text);
+}
+
+[data-theme="dark"] .dialogue-body strong,
+[data-theme="dark"] .action-text strong,
+[data-theme="dark"] .dialogue strong {
+    color: #ffffff;
+}
+
+/* Location Tag - Tái hiện chuẩn xác phong cách Reverse: 1999 */
+.location-tag {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px 8px 16px;
+    margin: 26px 0 16px 0;
+    border-left: 3px solid var(--hnk-gold);
+    background: var(--hnk-box-bg);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--hnk-text);
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    clear: both;
+}
+
+[data-theme="dark"] .location-tag {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--hnk-gold);
+}
+
+.location-tag .location-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: var(--hnk-gold);
+}
+
+/* Kiểu văn bản dành cho Narrator / Lời dẫn */
+.action-text {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-style: italic;   /* Chữ nghiêng phân biệt với lời thoại */
+    font-size: 1rem;      /* Đồng bộ đúng kích thước với thoại thường */
+    line-height: 1.8;
+    color: var(--reader-action-color);
+    margin: 16px 0;
+    padding: 0;
+    border-left: none !important;
+    background: transparent !important;
+}
+
+/* ==========================================================================
+   VISUAL NOVEL: SCENE IMAGES & AVATAR DIALOGUES
+   ========================================================================== */
+
+/* Khung ảnh Scene / GIF minh hoạ phân cảnh */
+.scene-container {
+    text-align: center;
+    margin: 26px auto;
+    max-width: 100%;
+}
+
+.scene-img {
+    width: 100%;
+    max-height: 440px;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    border: 2px solid var(--hnk-border);
+    display: block;
+}
+
+.scene-caption {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--hnk-text);
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   ITEM / PROP / ARTIFACT DISPLAY
+   ========================================================================== */
+
+.item-container {
+    text-align: center;
+    margin: 24px auto;
+    max-width: 100%;
+}
+
+.item-img {
+    max-width: 320px;            /* Chiều rộng tối đa vừa vặn khung đọc, không bị choán chỗ */
+    max-height: 420px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: inline-block;
+    filter: drop-shadow(2px 3px 6px rgba(0, 0, 0, 0.25));
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.item-img:hover {
+    transform: scale(1.03);
+    filter: drop-shadow(3px 4px 10px rgba(0, 0, 0, 0.35));
+}
+
+[data-theme="dark"] .item-img {
+    filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.7));
+}
+
+.item-caption {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--hnk-muted);
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+}
+
+/* Hộp thoại hiển thị Avatar nhân vật chuẩn Visual Novel */
+.dialogue-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 16px 0;
+    padding: 12px 14px;
+    background-color: var(--reader-dialogue-bg);
+    border: 1px solid var(--hnk-border);
+    border-left: 4px solid var(--hnk-gold);
+    box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+/* Tăng kích thước hộp avatar để vừa vặn các tên dài */
+.dialogue-avatar-box {
+    flex-shrink: 0;
+    width: 82px;
+    text-align: center;
+}
+
+.dialogue-avatar-img {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--hnk-border);
+    object-fit: cover;
+    background-color: var(--hnk-box-card);
+    display: block;
+    margin: 0 auto;
+}
+
+.dialogue-avatar-name {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--hnk-text);
+    background: var(--hnk-box-bg);
+    border: 1px solid var(--hnk-border);
+    margin-top: 4px;
+    padding: 3px 2px;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-align: center;
+}
+
+.dialogue-body {
+    flex-grow: 1;
+    line-height: 1.8;
+    font-size: 16px;
+    color: var(--hnk-text);
+    padding-top: 2px;
+    text-align: left;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ==========================================================================
+   CHOICES & BRANCHING
+   ========================================================================== */
+
+.note-inline {
+    display: block;
+    font-style: italic;
+    color: var(--hnk-text);
+    padding: 0;
+    margin: 0;
+    line-height: 1.8;
+    border-left: none;
+    background: transparent;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.chapter-choice {
+    margin: 24px 0;
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    padding: 16px;
+    box-shadow: 3px 3px 0px var(--shadow-color);
+}
+
+.chapter-choice-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--hnk-gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.choice-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.choice-btn {
+    background-color: var(--reader-box-bg);
+    color: var(--hnk-text);
+    border: 1px solid var(--hnk-border);
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.choice-btn:hover {
+    background-color: var(--hnk-hover);
+    transform: translateY(-1px);
+}
+
+.choice-btn.active {
+    background-color: var(--hnk-gold);
+    color: #000000;
+    border-color: var(--hnk-gold);
+}
+
+.choice-response-panel {
+    border-top: 1px dashed var(--hnk-border);
+    padding-top: 12px;
+}
+
+/* Reader navigation table */
+.reader-nav-table {
+    border: 2px solid var(--hnk-border);
+    background-color: var(--hnk-box-bg);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.reader-nav-table td {
+    padding: 0;
+    text-align: center;
+}
+
+.reader-nav-table td a,
+.reader-nav-table td span {
+    display: block;
+    padding: 14px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--hnk-text);
+}
+
+.reader-nav-table td a:hover {
+    background-color: var(--hnk-hover);
+    color: var(--hnk-gold);
+}
+
+.reader-nav-table td.disabled span {
+    color: var(--hnk-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
 /* ==========================================================================
@@ -579,7 +1262,7 @@ footer.hnk-footer {
     background-color: var(--hnk-box-bg);
     color: var(--hnk-text);
     padding: 18px 20px;
-    font-size: 13px;
+    font-size: 14px;
     box-shadow: 4px 4px 0px var(--shadow-color);
     text-align: center;
 }
@@ -590,7 +1273,7 @@ footer.hnk-footer p {
 
 footer.hnk-footer a {
     text-decoration: underline;
-    font-weight: 600;
+    font-weight: bold;
     color: var(--hnk-gold);
 }
 
@@ -598,13 +1281,13 @@ footer.hnk-footer a:hover {
     background: var(--hnk-hover);
 }
 
-/* Scroll-to-top button */
+/* Scroll-to-top square button */
 .scroll-top {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -613,7 +1296,7 @@ footer.hnk-footer a:hover {
     border: 2px solid var(--hnk-border);
     box-shadow: 3px 3px 0px var(--shadow-color);
     text-decoration: none;
-    font-size: 16px;
+    font-size: 18px;
     transition: background 0.15s ease, transform 0.15s ease;
     z-index: 100;
 }
@@ -625,8 +1308,9 @@ footer.hnk-footer a:hover {
 }
 
 /* ==========================================================================
-   RESPONSIVE DESIGN CHO TABLET (Dưới 900px)
+   RESPONSIVE DESIGN
    ========================================================================== */
+
 @media (max-width: 900px) {
     .hnk-grid-container {
         grid-template-columns: repeat(3, 1fr);
@@ -637,14 +1321,25 @@ footer.hnk-footer a:hover {
     .hnk-col:nth-child(3n) {
         border-right: none;
     }
+    .story-info-box {
+        grid-template-columns: 1fr;
+    }
+    .story-cover-pane {
+        border-right: none;
+        border-bottom: 2px solid var(--hnk-border);
+    }
 }
 
 /* ==========================================================================
-   TỐI ƯU GIAO DIỆN DI ĐỘNG & HIỂN THỊ 6 CHAPTER / 1 HÀNG (Dưới 650px)
+   TỐI ƯU GIAO DIỆN DI ĐỘNG (Dưới 650px)
    ========================================================================== */
 @media (max-width: 650px) {
+    /* Đảm bảo toàn bộ các khung container ôm sát lề màn hình vừa vặn */
     .row-full, 
+    .hnk-grid-container, 
     .hnk-faq-block, 
+    .story-info-box, 
+    .hnk-reader-container, 
     .hnk-book-card,
     footer.hnk-footer {
         width: 95% !important;
@@ -652,192 +1347,123 @@ footer.hnk-footer a:hover {
         margin-right: auto !important;
     }
 
-    /* 1. BANNER THU NHỎ GỌN GÀNG */
-    .banner-table {
-        margin-top: 8px !important;
-    }
+    /* 1. SỬA BANNER: Giảm kích thước 2 ảnh chibi để nhường chỗ cho Logo */
     .banner-side-img {
-        width: 44px !important;
-        height: 44px !important;
+        width: 50px !important;
+        height: 50px !important;
     }
     .banner-logo-img {
-        max-height: 48px !important;
+        max-height: 55px !important;
         margin-bottom: 2px !important;
     }
     .banner-subtitle-text {
-        font-size: 9.5px !important;
-        letter-spacing: 0.05em !important;
+        font-size: 10px !important;
+        letter-spacing: 0.08em !important;
     }
     .banner-table td {
-        padding: 4px 2px !important;
+        padding: 6px 4px !important;
     }
 
-    /* 2. THANH MENU VUỐT NGANG MƯỢT MÀ */
+    /* 2. SỬA THANH MENU: Chuyển sang dạng thanh cuộn ngang mượt mà, không rớt chữ */
     .nav-table {
         display: block !important;
         width: 95% !important;
         overflow-x: auto !important;
         white-space: nowrap !important;
         -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+        scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
     }
     .nav-table::-webkit-scrollbar {
-        display: none;
+        display: none; /* Ẩn thanh cuộn trên Chrome/Safari */
     }
     .nav-table tbody,
     .nav-table tr {
         display: flex !important;
         width: max-content !important;
-        height: 48px !important;
+        height: 56px !important;
     }
     .nav-table th {
         display: inline-flex !important;
         flex: 0 0 auto !important;
-        min-width: 65px !important;
+        min-width: 76px !important;
         border-right: 2px solid var(--hnk-border) !important;
     }
     .nav-table th a,
     .nav-table th button {
-        padding: 4px 6px !important;
-        font-size: 11px !important;
+        padding: 6px 10px !important;
+        font-size: 12px !important;
         white-space: nowrap !important;
-        gap: 2px !important;
+        gap: 3px !important;
     }
     .nav-table i {
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
-    /* 3. TIÊU ĐỀ PHÂN ĐOẠN */
-    .section-strip-table {
-        margin-top: 10px !important;
-        margin-bottom: 12px !important;
-    }
-    .section-strip-table td {
-        padding: 8px 12px !important;
-    }
-    .section-strip-title {
-        font-size: 14.5px !important;
-        gap: 8px !important;
-    }
-    .section-strip-title i {
-        font-size: 14px !important;
-    }
-
-    /* 4. BOOK CARD (Thẻ sách) */
-    .hnk-book-card {
-        margin-bottom: 14px !important;
-    }
+    /* 3. SỬA PHẦN THẺ SÁCH (The Living and the Rest) KHÔNG BỊ CO ĐỨNG */
     .hnk-book-header {
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: column !important; /* Xếp dọc các thành phần trên di động */
         align-items: center !important;
         text-align: center !important;
-        gap: 10px !important;
-        padding: 14px 10px !important;
+        gap: 12px !important;
+        padding: 16px 12px !important;
     }
     .hnk-book-cover {
-        width: 70px !important;
+        width: 90px !important;
         height: auto !important;
     }
     .hnk-book-info {
         width: 100% !important;
     }
     .hnk-book-title {
-        font-size: 16px !important;
+        font-size: 18px !important;
         justify-content: center !important;
         text-align: center !important;
+        word-break: normal !important;
+        white-space: normal !important;
     }
     .hnk-book-desc {
-        font-size: 11.5px !important;
+        font-size: 13px !important;
         text-align: center !important;
-        margin-top: 4px !important;
+        margin-top: 6px !important;
     }
     .hnk-book-toggle {
         width: 100% !important;
         justify-content: center !important;
-        padding: 7px 0 !important;
-        font-size: 12px !important;
+        padding: 8px 0 !important;
+        box-sizing: border-box !important;
     }
 
-    /* 5. HIỂN THỊ CẢ 6 CHAPTER TRÊN 1 HÀNG VUỐT NGANG NHƯ PC */
+    /* 4. SỬA LƯỚI TRUYỆN (Grid Tiles) */
     .hnk-grid-container {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-        width: 100% !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .hnk-col:nth-child(3n) {
         border-right: 2px solid var(--hnk-border) !important;
-        border-bottom: 2px solid var(--hnk-border) !important;
     }
-    .hnk-grid-container::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Kích thước mỗi ô trong hàng 6 ô */
-    .hnk-col {
-        flex: 0 0 120px !important;   /* Độ rộng 120px cân đối trên màn hình điện thoại */
-        width: 120px !important;
-        aspect-ratio: 2 / 3 !important;
-        scroll-snap-align: start;
-        border-right: 2px solid var(--hnk-border) !important;
-        border-bottom: none !important;
-    }
-    .hnk-col:last-child {
+    .hnk-col:nth-child(2n) {
         border-right: none !important;
     }
-    .hnk-col .tile-image {
-        width: 82% !important;
-        height: 82% !important;
-    }
-    .hnk-col .middle {
-        opacity: 1 !important;         /* Trên màn hình cảm ứng luôn hiện tên chương */
-        transform: translateY(0) !important;
-        padding: 8px 4px 6px !important;
-    }
     .hnk-col .middle .text {
-        font-size: 10.5px !important;
-        line-height: 1.2 !important;
-    }
-    .hnk-col .middle .subtext {
-        font-size: 8.5px !important;
-        margin-top: 2px !important;
-    }
-    .hnk-tile-tag {
-        font-size: 9px !important;
-        padding: 1px 4px !important;
-        top: 4px !important;
-        right: 4px !important;
-    }
-    .hnk-tile-tag.tag-left {
-        top: 4px !important;
-        left: 4px !important;
+        font-size: 13px !important;
     }
 
-    /* 6. FAQ & FOOTER NHỎ GỌN, DỄ ĐỌC */
-    .hnk-faq-block {
-        margin-top: 18px !important;
-        margin-bottom: 12px !important;
+    /* 5. SỬA KHUNG HỘP THOẠI TRUYỆN TRÊN ĐIỆN THOẠI */
+    .dialogue-row {
+        gap: 10px !important;
+        padding: 10px 8px !important;
     }
-    .hnk-faq-q {
-        font-size: 13.5px !important;
-        padding: 8px 10px !important;
-        gap: 6px !important;
+    .dialogue-avatar-box {
+        width: 65px !important;
     }
-    .hnk-faq-a {
-        font-size: 12.5px !important;
-        line-height: 1.6 !important;
-        padding: 10px 12px !important;
+    .dialogue-avatar-img {
+        width: 60px !important;
+        height: 60px !important;
     }
-    footer.hnk-footer {
-        font-size: 11px !important;
-        padding: 14px 10px !important;
-        margin: 20px auto 30px !important;
+    .dialogue-avatar-name {
+        font-size: 9px !important;
     }
-    footer.hnk-footer p {
-        margin: 4px 0 !important;
+    .dialogue-body {
+        font-size: 15px !important;
     }
 }
