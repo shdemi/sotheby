@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="theme.js"></script>
-    <title>Sotheby's Mansion | Kho Lưu Trữ Cốt Truyện</title>
+    <title>Sotheby's Mansion</title>
 </head>
 <body id="top">
 
@@ -19,7 +19,7 @@
                 <img src="assets/brand/sotheby_mini.png" alt="Sotheby Mini" class="banner-side-img">
             </td>
             <td class="banner-title-cell" style="width: 70%;">
-                <a href="index.html">
+                <a href="/">
                     <img src="assets/brand/logo.webp" alt="Sotheby's Mansion" class="banner-logo-img">
                 </a>
                 <div class="banner-subtitle-text">Kho Lưu Trữ Cốt Truyện · Sotheby's Mansion</div>
@@ -34,7 +34,7 @@
     <table class="row-full nav-table">
         <tr>
             <th class="active">
-                <a href="index.html">
+                <a href="/">
                     <i class="fa fa-home"></i>
                     <div>Trang chủ</div>
                 </a>
@@ -488,7 +488,6 @@
                 if (charGrid) {
                     let charHtml = '';
 
-                    // Lọc tất cả các truyện thuộc danh mục nhân vật
                     const charStories = Object.entries(stories).filter(([id, story]) => {
                         return (story.category === 'character') || 
                                (story.tag && story.tag.toLowerCase().includes('character')) ||
@@ -504,10 +503,8 @@
                             const lockedClass = isLocked ? 'locked-tile' : '';
                             const coverImg = story.cover || 'assets/brand/sotheby_mini.png';
                             
-                            // Tag góc trái
                             const leftTagDisplay = 'Nhân vật';
                             const statusDisplay = story.status || 'Hoàn thành';
-                            // Ưu tiên hiển thị đúng theo trường "tag" trong stories.json
                             const subtextDisplay = story.tag || story.subtitle || 'Character Story';
 
                             charHtml += `
@@ -530,7 +527,6 @@
                         }
                     }
 
-                    // Thêm 2 ô giữ chỗ [ CHƯA CẬP NHẬT ] cho chuẩn bố cục lưới HnK
                     charHtml += `
                         <div class="hnk-col locked-tile">
                             <span class="hnk-tile-tag tag-left">Nhân vật</span>
