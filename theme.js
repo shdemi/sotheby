@@ -6,6 +6,22 @@
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
     applyTheme(savedTheme);
 
+    function resolveBrandAssetPath(filename) {
+        const isChapterPage = /(?:^|\/)chapters\//.test(window.location.pathname);
+        const basePrefix = isChapterPage ? '../../../' : '';
+        return new URL(basePrefix + 'assets/brand/' + filename, window.location.href).href;
+    }
+
+    function updateBannerLogo(theme) {
+        const logoPath = theme === 'dark' ? 'logo_orig.webp' : 'logo.webp';
+        document.querySelectorAll('.banner-logo-img').forEach(img => {
+            img.src = resolveBrandAssetPath(logoPath);
+            img.onerror = () => {
+                img.src = resolveBrandAssetPath(logoPath);
+            };
+        });
+    }
+
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -13,6 +29,7 @@
             document.documentElement.removeAttribute('data-theme');
         }
         updateToggleButtons(theme);
+        updateBannerLogo(theme);
     }
 
     function toggleTheme() {
@@ -44,9 +61,9 @@
                 toggleTheme();
             });
         });
-        // Cập nhật lại nhãn nút đúng theme hiện hành
         const current = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
         updateToggleButtons(current);
+        updateBannerLogo(current);
     });
 
     // Expose toggle function ra window nếu cần gọi trực tiếp

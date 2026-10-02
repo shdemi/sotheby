@@ -124,6 +124,11 @@ table {
     object-fit: contain;
     display: inline-block;
     filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+[data-theme="dark"] .banner-side-img {
+    filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.22));
 }
 
 .banner-title-cell {
@@ -1223,11 +1228,21 @@ table {
     border: 2px solid var(--hnk-border);
     background-color: var(--hnk-box-bg);
     box-shadow: 4px 4px 0px var(--shadow-color);
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+    overflow: hidden;
 }
 
 .reader-nav-table td {
     padding: 0;
     text-align: center;
+    border-right: 1px solid var(--hnk-border);
+}
+
+.reader-nav-table td:last-child {
+    border-right: none;
 }
 
 .reader-nav-table td a,
@@ -1334,6 +1349,35 @@ footer.hnk-footer a:hover {
    TỐI ƯU GIAO DIỆN DI ĐỘNG (Dưới 650px)
    ========================================================================== */
 @media (max-width: 650px) {
+    body {
+        font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+        font-size: 15px;
+    }
+
+    .hnk-content-box,
+    .dialogue,
+    .action-text,
+    .note-inline,
+    .dialogue-body,
+    .scene-caption,
+    .item-caption,
+    .story-details-pane,
+    .story-subtitle,
+    .hnk-faq-a,
+    .chapter-list-table td,
+    .chapter-list-table th,
+    .hnk-book-desc,
+    .banner-subtitle-text,
+    .story-details-pane h2,
+    .chapter-name-col a,
+    .chapter-name-col .chapter-desc,
+    .hnk-tag,
+    .btn-hnk-primary,
+    .btn-hnk-secondary,
+    .btn-chapter-read {
+        font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    }
+
     /* Đảm bảo toàn bộ các khung container ôm sát lề màn hình vừa vặn */
     .row-full, 
     .hnk-grid-container, 
@@ -1364,11 +1408,27 @@ footer.hnk-footer a:hover {
         padding: 6px 4px !important;
     }
 
+    .section-strip-table td {
+        padding: 8px 12px !important;
+    }
+    .section-strip-title {
+        font-size: 18px !important;
+        line-height: 1.25 !important;
+        letter-spacing: 0.03em !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+        gap: 8px !important;
+    }
+    .section-strip-title i {
+        font-size: 18px !important;
+        flex-shrink: 0 !important;
+    }
+
     /* 2. SỬA THANH MENU: Chuyển sang dạng thanh cuộn ngang mượt mà, không rớt chữ */
     .nav-table {
         display: block !important;
         width: 95% !important;
-        overflow-x: auto !important;
+        overflow-x: hidden !important;
         white-space: nowrap !important;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
@@ -1379,24 +1439,184 @@ footer.hnk-footer a:hover {
     .nav-table tbody,
     .nav-table tr {
         display: flex !important;
-        width: max-content !important;
+        width: 100% !important;
         height: 56px !important;
     }
     .nav-table th {
-        display: inline-flex !important;
+        display: none !important;
         flex: 0 0 auto !important;
-        min-width: 76px !important;
+        min-width: 0 !important;
         border-right: 2px solid var(--hnk-border) !important;
+    }
+    .nav-table th:first-child,
+    .nav-table th:last-child {
+        display: inline-flex !important;
+        flex: 1 1 48% !important;
+        width: 48% !important;
+        min-width: 0 !important;
+        border-right: 1px solid var(--hnk-border) !important;
+        border-left: 1px solid var(--hnk-border) !important;
+        box-sizing: border-box !important;
+    }
+    .nav-table th:first-child {
+        border-left: none !important;
+    }
+    .nav-table th:first-child a,
+    .nav-table th:last-child button {
+        width: 100% !important;
+        min-height: 52px !important;
+        padding: 6px 4px !important;
+    }
+    .nav-table th:last-child {
+        border-left: 1px solid var(--hnk-border) !important;
+    }
+    .nav-table th:last-child button {
+        background: transparent !important;
+        padding: 6px 4px !important;
     }
     .nav-table th a,
     .nav-table th button {
-        padding: 6px 10px !important;
+        padding: 6px 8px !important;
         font-size: 12px !important;
         white-space: nowrap !important;
         gap: 3px !important;
     }
+    .nav-table th a div,
+    .nav-table th button div {
+        line-height: 1.1 !important;
+    }
+    .nav-table th:not(:first-child):not(:last-child) {
+        display: none !important;
+    }
+    .nav-table th:last-child .theme-toggle-btn div {
+        font-size: 0 !important;
+    }
+    .nav-table th:last-child .theme-toggle-btn div::before {
+        content: "Tối";
+        font-size: 11px !important;
+        display: inline-block;
+    }
+    .nav-table th:last-child .theme-toggle-btn i {
+        font-size: 14px !important;
+    }
     .nav-table i {
         font-size: 16px !important;
+    }
+
+    /* 3. SỬA DANH SÁCH CHƯƠNG TRÊN MOBILE: không bị dàn hàng quá rộng và chồng lên nhau */
+    .hnk-reader-header-table,
+    .hnk-reader-header-table tr,
+    .hnk-reader-header-table td {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .hnk-reader-header-table td {
+        text-align: center !important;
+        padding: 10px 12px !important;
+    }
+    .hnk-reader-header-table .btn-chapter-read {
+        display: inline-flex !important;
+        width: auto !important;
+        justify-content: center !important;
+        margin-bottom: 4px !important;
+    }
+    .hnk-reader-title {
+        font-size: 25px !important;
+        line-height: 1.25 !important;
+        letter-spacing: 0.02em !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+    }
+    .hnk-reader-subtitle {
+        font-size: 11px !important;
+        letter-spacing: 0.08em !important;
+    }
+    .hnk-tag.active {
+        display: inline-flex !important;
+        margin-top: 2px !important;
+    }
+
+    .chapter-list-table,
+    .chapter-list-table thead,
+    .chapter-list-table tbody,
+    .chapter-list-table tr,
+    .chapter-list-table th,
+    .chapter-list-table td {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .chapter-list-table thead {
+        display: none !important;
+    }
+    .chapter-list-table tr {
+        border-bottom: 1px solid var(--hnk-border) !important;
+        padding: 12px 10px !important;
+        background: var(--reader-box-bg) !important;
+    }
+    .chapter-list-table td {
+        border: none !important;
+        padding: 6px 0 !important;
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+    }
+    .chapter-idx {
+        font-size: 13px !important;
+        font-weight: bold !important;
+        color: var(--hnk-text) !important;
+        width: 100% !important;
+        white-space: normal !important;
+    }
+    .chapter-name-col a {
+        display: block !important;
+        font-size: 17px !important;
+        line-height: 1.35 !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+    }
+    .chapter-name-col .chapter-desc {
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+        margin-top: 6px !important;
+    }
+    .chapter-btn-col {
+        text-align: left !important;
+        width: 100% !important;
+        padding-top: 10px !important;
+    }
+    .btn-chapter-read {
+        display: inline-flex !important;
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Chia đều 3 cột cho thanh chuyển chương trên điện thoại */
+    .reader-nav-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    .reader-nav-table td {
+        width: 33.33% !important;
+        text-align: center !important;
+        border-right: 1px solid var(--hnk-border) !important;
+    }
+
+    .reader-nav-table td:last-child {
+        border-right: none !important;
+    }
+
+    .reader-nav-table td a,
+    .reader-nav-table td span {
+        display: block !important;
+        padding: 10px 4px !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
     }
 
     /* 3. SỬA PHẦN THẺ SÁCH (The Living and the Rest) KHÔNG BỊ CO ĐỨNG */
