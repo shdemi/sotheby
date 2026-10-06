@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sotheby's Mansion</title>
+  <link rel="icon" type="image/webp" href="images/web_icon.webp" />
+  <meta name="description" content="Minimal character roster dashboard with an editorial, warm-neutral aesthetic." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <!-- html2canvas for exporting high quality screenshot -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <!-- Floating Controls & Toolbar -->
+  <header class="top-controls no-export">
+    <div class="header-left">
+      <div class="app-brand">
+        <div class="app-brand-icon-box">
+          <img src="images/web_icon.webp" alt="Icon" class="app-brand-icon" />
+        </div>
+        <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
+      </div>
+      <span class="stat-badge" id="roster-stat">0 Owned</span>
+
+      <!-- Ownership Filter Buttons -->
+      <div class="filter-btn-group" id="filter-ownership-group">
+        <button type="button" class="filter-btn active" data-ownership="all">All</button>
+        <button type="button" class="filter-btn" data-ownership="owned">Owned</button>
+        <button type="button" class="filter-btn" data-ownership="unowned">Unowned</button>
+      </div>
+
+      <!-- Rarity Filter Buttons -->
+      <div class="filter-btn-group" id="filter-rarity-group">
+        <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+        <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+        <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+        <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+        <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <input type="text" id="filter-search" class="search-input" placeholder="Quick search..." />
+      <input type="text" id="input-board-title" class="search-input" placeholder="Input Name or ID" />
+      
+      <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters">
+        Character Roster
+      </button>
+
+      <button class="btn btn-secondary" id="btn-export-data" title="Export roster to JSON">
+        Export JSON
+      </button>
+
+      <label class="btn btn-secondary" style="cursor: pointer;" title="Import roster from JSON">
+        Import JSON
+        <input type="file" id="input-import-file" accept=".json" style="display: none;" />
+      </label>
+
+      <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG">
+        Export PNG
+      </button>
+      
+      <button class="btn btn-danger" id="btn-reset-data" title="Reset all data">
+        Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Showcase Board (This whole container will be captured in PNG export) -->
+  <main class="showcase-wrapper">
+    <div id="showcase-board" class="showcase-board">
+      <div class="board-header">
+        <span class="board-title" id="board-title-label">Suitcase</span>
+      </div>
+
+      <!-- Tier: R15 -->
+      <section class="tier-row" data-tier="R15">
+        <div class="tier-label tier-r15">R15</div>
+        <div class="tier-content" id="tier-r15-list"></div>
+      </section>
+
+      <!-- Tier: R11 - 14 -->
+      <section class="tier-row" data-tier="R11-14">
+        <div class="tier-label tier-r11-14">R11 - 14</div>
+        <div class="tier-content" id="tier-r11-14-list"></div>
+      </section>
+
+      <!-- Tier: R10 -->
+      <section class="tier-row" data-tier="R10">
+        <div class="tier-label tier-r10">R10</div>
+        <div class="tier-content" id="tier-r10-list"></div>
+      </section>
+
+      <!-- Tier: R1 - 9 -->
+      <section class="tier-row" data-tier="R1-9">
+        <div class="tier-label tier-r1-9">R1 - 9</div>
+        <div class="tier-content" id="tier-r1-9-list"></div>
+      </section>
+
+      <!-- Tier: Unowned -->
+      <section class="tier-row" data-tier="Unowned">
+        <div class="tier-label tier-unowned">Unowned</div>
+        <div class="tier-content" id="tier-unowned-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer Info / Credits -->
+  <footer class="app-footer no-export">
+    <p>Sotheby's Mansion is not affiliated with BluePoch. All images and data belong to their respective owners.</p>
+    <p>Inspired by <a href="https://github.com/myssal" target="_blank" rel="noopener noreferrer">https://github.com/myssal</a></p>
+    <p>Artist: @rusticwindfall</p>
+    <p>Developed by shdemi, assisted by 91</p>
+  </footer>
+
+  <!-- Edit Character Modal (Pop-up when clicking a character) -->
+  <div id="edit-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-char-preview">
+          <img id="modal-char-img" src="" alt="preview" />
+          <div>
+            <h2 id="modal-char-name" class="modal-char-title">Character Name</h2>
+            <span id="modal-char-status" class="modal-char-sub">Owned</span>
+          </div>
+        </div>
+        <button class="modal-close" id="modal-btn-close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Ownership Toggle -->
+        <div class="setting-group">
+          <label class="setting-label">Status</label>
+          <div class="toggle-group">
+            <button type="button" class="btn-toggle active" id="btn-status-unowned">Unowned</button>
+            <button type="button" class="btn-toggle" id="btn-status-owned">Owned</button>
+          </div>
+        </div>
+
+        <!-- Insight (I0 - I3) -->
+        <div class="setting-group" id="group-insight">
+          <div class="setting-label-row">
+            <label class="setting-label">Insight (I)</label>
+            <span class="setting-val-display" id="display-insight">I3</span>
+          </div>
+          <div class="insight-quick-picks">
+            <button type="button" class="btn-pill-i" data-i="0" title="Insight 0"><img src="images/insight_icon/I0.png" alt="I0" class="insight-btn-img" /></button>
+            <button type="button" class="btn-pill-i" data-i="1" title="Insight 1"><img src="images/insight_icon/I1.png" alt="I1" class="insight-btn-img" /></button>
+            <button type="button" class="btn-pill-i" data-i="2" title="Insight 2"><img src="images/insight_icon/I2.png" alt="I2" class="insight-btn-img" /></button>
+            <button type="button" class="btn-pill-i" data-i="3" title="Insight 3"><img src="images/insight_icon/I3.png" alt="I3" class="insight-btn-img" /></button>
+          </div>
+        </div>
+
+        <!-- Character Level (Lv. 1 - Lv. 30/40/50/60 depending on Insight) -->
+        <div class="setting-group" id="group-level">
+          <div class="setting-label-row">
+            <label class="setting-label">Level (Lv.)</label>
+            <span class="setting-val-display" id="display-level">Lv.60</span>
+          </div>
+          <input type="range" id="input-level" min="1" max="60" value="60" class="custom-slider" style="margin-top: 8px;" />
+        </div>
+
+        <!-- Resonance (R1 - R15) -->
+        <div class="setting-group" id="group-resonance">
+          <div class="setting-label-row">
+            <label class="setting-label">Resonance Level (R)</label>
+            <span class="setting-val-display" id="display-resonance">R10</span>
+          </div>
+          <input type="range" id="input-resonance" min="1" max="15" value="10" class="custom-slider" style="margin-top: 8px;" />
+        </div>
+
+        <div class="setting-group" id="group-pattern">
+          <div class="setting-label-row">
+            <label class="setting-label">Pattern</label>
+          </div>
+          <div class="resonance-box-legend" aria-label="Pattern type legend">
+            <button type="button" class="resonance-box-choice none active" data-box-kind="none">None</button>
+            <button type="button" class="resonance-box-choice offensive" data-box-kind="offensive">Offensive</button>
+            <button type="button" class="resonance-box-choice defensive" data-box-kind="defensive">Defensive</button>
+            <button type="button" class="resonance-box-choice hp" data-box-kind="hp">HP</button>
+            <button type="button" class="resonance-box-choice equibalance" data-box-kind="equibalance">Equibalance</button>
+          </div>
+        </div>
+
+        <!-- Portrait (P0 - P5) -->
+        <div class="setting-group" id="group-portrait">
+          <div class="setting-label-row">
+            <label class="setting-label">Portrait (P)</label>
+            <span class="setting-val-display" id="display-portrait">P0</span>
+          </div>
+          <div class="portrait-bar-preview" id="modal-portrait-bar-preview">
+            <!-- 5 bars -->
+            <span class="bar active"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+          <div class="portrait-quick-picks">
+            <button type="button" class="btn-pill-p" data-p="0">P0</button>
+            <button type="button" class="btn-pill-p" data-p="1">P1</button>
+            <button type="button" class="btn-pill-p" data-p="2">P2</button>
+            <button type="button" class="btn-pill-p" data-p="3">P3</button>
+            <button type="button" class="btn-pill-p" data-p="4">P4</button>
+            <button type="button" class="btn-pill-p" data-p="5">P5</button>
+          </div>
+        </div>
+
+        <!-- Euphoria (E1, E2) -->
+        <div class="setting-group" id="group-euphoria">
+          <label class="setting-label">Euphoria</label>
+          <div class="euphoria-checkboxes">
+            <label class="check-container">
+              <input type="checkbox" id="check-e1" />
+              <span class="check-box"></span>
+              <span class="check-text">Euphoria 1 (E1)</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-e2" />
+              <span class="check-box"></span>
+              <span class="check-text">Euphoria 2 (E2)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-block" id="modal-btn-save">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage / Add All Characters Roster Modal -->
+  <div id="roster-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card modal-card-large">
+      <div class="modal-header">
+        <h2>Character Roster Manager</h2>
+        <button class="modal-close" id="roster-btn-close">&times;</button>
+      </div>
+      <div class="roster-toolbar">
+        <div class="roster-toolbar-left">
+          <input type="text" id="roster-search" class="search-input" placeholder="Search characters..." />
+          <!-- Rarity Filter for Roster Manager -->
+          <div class="filter-btn-group" id="roster-filter-rarity-group">
+            <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+            <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+            <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+            <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+            <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+          </div>
+        </div>
+        <div class="roster-quick-actions">
+          <button class="btn btn-secondary btn-sm" id="btn-select-all">Set All Owned</button>
+          <button class="btn btn-secondary btn-sm" id="btn-unselect-all">Set All Unowned</button>
+        </div>
+      </div>
+      <div class="roster-grid" id="roster-grid-list">
+        <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
