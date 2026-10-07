@@ -40,6 +40,26 @@
         <button type="button" class="filter-btn" data-rarity="3">✦3</button>
         <button type="button" class="filter-btn" data-rarity="2">✦2</button>
       </div>
+
+      <!-- Option Button -->
+      <button type="button" class="btn btn-secondary" id="btn-options" title="Display Options" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
+        Options
+      </button>
+
+      <!-- Customize Button -->
+      <button type="button" class="btn btn-secondary" id="btn-customize" title="Customize Colors & Typography" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
+        Customize
+      </button>
+
+      <!-- Listing Button -->
+      <button type="button" class="btn btn-secondary" id="btn-listing" title="Customize Tier Listing" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
+        Listing
+      </button>
+
+      <!-- Future Sight Button -->
+      <button type="button" class="btn btn-secondary" id="btn-future-sight" title="Toggle CN Future Sight content" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
+        Future Sight
+      </button>
     </div>
 
     <div class="header-actions">
@@ -47,7 +67,7 @@
       <input type="text" id="input-board-title" class="search-input" placeholder="Input Name or ID" />
       
       <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters">
-        Character Roster
+        Quick Edit
       </button>
 
       <button class="btn btn-secondary" id="btn-export-data" title="Export roster to JSON">
@@ -76,35 +96,8 @@
         <span class="board-title" id="board-title-label">Suitcase</span>
       </div>
 
-      <!-- Tier: R15 -->
-      <section class="tier-row" data-tier="R15">
-        <div class="tier-label tier-r15">R15</div>
-        <div class="tier-content" id="tier-r15-list"></div>
-      </section>
-
-      <!-- Tier: R11 - 14 -->
-      <section class="tier-row" data-tier="R11-14">
-        <div class="tier-label tier-r11-14">R11 - 14</div>
-        <div class="tier-content" id="tier-r11-14-list"></div>
-      </section>
-
-      <!-- Tier: R10 -->
-      <section class="tier-row" data-tier="R10">
-        <div class="tier-label tier-r10">R10</div>
-        <div class="tier-content" id="tier-r10-list"></div>
-      </section>
-
-      <!-- Tier: R1 - 9 -->
-      <section class="tier-row" data-tier="R1-9">
-        <div class="tier-label tier-r1-9">R1 - 9</div>
-        <div class="tier-content" id="tier-r1-9-list"></div>
-      </section>
-
-      <!-- Tier: Unowned -->
-      <section class="tier-row" data-tier="Unowned">
-        <div class="tier-label tier-unowned">Unowned</div>
-        <div class="tier-content" id="tier-unowned-list"></div>
-      </section>
+      <!-- Tier rows will be rendered dynamically based on listing configuration -->
+      <div id="tier-rows-container"></div>
     </div>
   </main>
 
@@ -112,7 +105,7 @@
   <footer class="app-footer no-export">
     <p>Sotheby's Mansion is not affiliated with BluePoch. All images and data belong to their respective owners.</p>
     <p>Inspired by <a href="https://github.com/myssal" target="_blank" rel="noopener noreferrer">https://github.com/myssal</a></p>
-    <p>Artist: @rusticwindfall</p>
+    <p>Artist: ena</p>
     <p>Developed by shdemi, assisted by 91</p>
   </footer>
 
@@ -140,10 +133,19 @@
           </div>
         </div>
 
+        <!-- Skin -->
+        <div class="setting-group" id="group-skin">
+          <div class="setting-label-row">
+            <label class="setting-label">Garment</label>
+            <span class="setting-val-display" id="display-skin">Default</span>
+          </div>
+          <div class="skin-quick-picks" id="skin-quick-picks"></div>
+        </div>
+
         <!-- Insight (I0 - I3) -->
         <div class="setting-group" id="group-insight">
           <div class="setting-label-row">
-            <label class="setting-label">Insight (I)</label>
+            <label class="setting-label">Insight</label>
             <span class="setting-val-display" id="display-insight">I3</span>
           </div>
           <div class="insight-quick-picks">
@@ -157,7 +159,7 @@
         <!-- Character Level (Lv. 1 - Lv. 30/40/50/60 depending on Insight) -->
         <div class="setting-group" id="group-level">
           <div class="setting-label-row">
-            <label class="setting-label">Level (Lv.)</label>
+            <label class="setting-label">Level</label>
             <span class="setting-val-display" id="display-level">Lv.60</span>
           </div>
           <input type="range" id="input-level" min="1" max="60" value="60" class="custom-slider" style="margin-top: 8px;" />
@@ -166,7 +168,7 @@
         <!-- Resonance (R1 - R15) -->
         <div class="setting-group" id="group-resonance">
           <div class="setting-label-row">
-            <label class="setting-label">Resonance Level (R)</label>
+            <label class="setting-label">Resonance / Reasoning</label>
             <span class="setting-val-display" id="display-resonance">R10</span>
           </div>
           <input type="range" id="input-resonance" min="1" max="15" value="10" class="custom-slider" style="margin-top: 8px;" />
@@ -174,13 +176,22 @@
 
         <div class="setting-group" id="group-pattern">
           <div class="setting-label-row">
-            <label class="setting-label">Pattern</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <label class="setting-label">Pattern</label>
+              <button type="button" class="btn-help-icon" id="btn-pattern-help" title="Pattern explanation">?</button>
+            </div>
+          </div>
+          <div id="pattern-help-box" class="pattern-help-box" style="display: none;">
+            <p><strong>In the game:</strong></p>
+            <p>• Only <strong>Stupefaction</strong> is yellow</p>
+            <p>• Only <strong>Equibalance</strong> is blue</p>
+            <p>• Others are either orange or green</p>
           </div>
           <div class="resonance-box-legend" aria-label="Pattern type legend">
             <button type="button" class="resonance-box-choice none active" data-box-kind="none">None</button>
             <button type="button" class="resonance-box-choice offensive" data-box-kind="offensive">Offensive</button>
             <button type="button" class="resonance-box-choice defensive" data-box-kind="defensive">Defensive</button>
-            <button type="button" class="resonance-box-choice hp" data-box-kind="hp">HP</button>
+            <button type="button" class="resonance-box-choice hp" data-box-kind="hp">Stupefaction</button>
             <button type="button" class="resonance-box-choice equibalance" data-box-kind="equibalance">Equibalance</button>
           </div>
         </div>
@@ -188,16 +199,8 @@
         <!-- Portrait (P0 - P5) -->
         <div class="setting-group" id="group-portrait">
           <div class="setting-label-row">
-            <label class="setting-label">Portrait (P)</label>
+            <label class="setting-label">Portrait</label>
             <span class="setting-val-display" id="display-portrait">P0</span>
-          </div>
-          <div class="portrait-bar-preview" id="modal-portrait-bar-preview">
-            <!-- 5 bars -->
-            <span class="bar active"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
           </div>
           <div class="portrait-quick-picks">
             <button type="button" class="btn-pill-p" data-p="0">P0</button>
@@ -216,19 +219,253 @@
             <label class="check-container">
               <input type="checkbox" id="check-e1" />
               <span class="check-box"></span>
-              <span class="check-text">Euphoria 1 (E1)</span>
+              <span class="check-text" id="label-text-e1">Euphoria 1 (E1)</span>
             </label>
             <label class="check-container">
               <input type="checkbox" id="check-e2" />
               <span class="check-box"></span>
-              <span class="check-text">Euphoria 2 (E2)</span>
+              <span class="check-text" id="label-text-e2">Euphoria 2 (E2)</span>
             </label>
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-primary btn-block" id="modal-btn-save">Apply</button>
+        <button class="btn btn-primary btn-block" id="modal-btn-save">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options Modal -->
+  <div id="options-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card" style="max-width: 380px;">
+      <div class="modal-header">
+        <h2>Display Options</h2>
+        <button class="modal-close" id="options-btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label class="setting-label">Display Filters</label>
+          <div class="euphoria-checkboxes" style="flex-direction: column; gap: 10px; margin-top: 4px;">
+            <label class="check-container">
+              <input type="checkbox" id="check-show-rarity-line" />
+              <span class="check-box"></span>
+              <span class="check-text">Show Rarity Line</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-insight" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Insight</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-level" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Level</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-resonance" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Resonance</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-euphoria" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Euphoria</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-portrait" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Portrait Bar</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-names" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Character Names</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-skin" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Garments</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-group" style="margin-top: 6px;">
+          <div class="setting-label-row">
+            <label class="setting-label">Preset Insight / Level Hiding</label>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-hide">Add</button>
+          </div>
+          <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px; margin-top: 4px;">
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-i3-lv60" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide I3 Lv.60</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-i3-lv30" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide I3 Lv.30</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-i2-lv50" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide I2 Lv.50</span>
+            </label>
+          </div>
+          <!-- Custom User-Added Insight/Level Rules -->
+          <div id="custom-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-block" id="options-btn-done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customize Modal (Showcase Colors, Typography, Title Size) -->
+  <div id="customize-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2>Customize Showcase</h2>
+        <button class="modal-close" id="customize-btn-close">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <div class="setting-group">
+          <div class="setting-label-row">
+            <label class="setting-label">Colors & Typography</label>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-custom-appearance">Reset Defaults</button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+            <!-- Board Font -->
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Font</span>
+              <select id="select-board-font" class="listing-tier-select" style="max-width: 190px;">
+                <option value="default">Default (Noto Sans / Mono)</option>
+                <option value="mono">JetBrains Mono</option>
+                <option value="serif">Noto Serif TC</option>
+                <option value="sans">Segoe UI / System Sans</option>
+                <option value="georgia">Georgia</option>
+                <option value="courier">Courier New</option>
+              </select>
+            </div>
+
+            <!-- Board Title Text Size -->
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title Text Size</span>
+                <span id="display-board-title-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.74rem</span>
+              </div>
+              <input type="range" id="input-board-title-size" min="0.5" max="2.0" step="0.05" value="0.74" class="custom-slider" />
+            </div>
+
+            <!-- Tier Label Text Size -->
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Tier Label Text Size</span>
+                <span id="display-tier-label-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.70rem</span>
+              </div>
+              <input type="range" id="input-tier-label-size" min="0.4" max="1.8" step="0.05" value="0.7" class="custom-slider" />
+            </div>
+
+            <!-- Board Background & Title Color -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                <span>Board Background</span>
+                <input type="color" id="color-board-bg" value="#111111" class="listing-tier-color-input" />
+              </label>
+              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                <span>Board Title Color</span>
+                <input type="color" id="color-board-title" value="#f4efe9" class="listing-tier-color-input" />
+              </label>
+            </div>
+
+            <!-- Euphoria & Portrait Dash Color -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                <span>Euphoria Label</span>
+                <input type="color" id="color-euphoria-label" value="#04FFEE" class="listing-tier-color-input" />
+              </label>
+              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                <span>Portrait Bar (Active)</span>
+                <input type="color" id="color-portrait-bar" value="#FBAE31" class="listing-tier-color-input" />
+              </label>
+            </div>
+
+            <!-- Resonance Pattern Colors -->
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+              <span style="font-size: 0.66rem; font-weight: 700; font-family: var(--mono-font); text-transform: uppercase;">Resonance / Pattern Colors</span>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>None Pattern</span>
+                  <input type="color" id="color-pattern-none" value="#4F4F4F" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Offensive</span>
+                  <input type="color" id="color-pattern-offensive" value="#FBAE31" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Defensive</span>
+                  <input type="color" id="color-pattern-defensive" value="#2D8A5A" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Stupefaction</span>
+                  <input type="color" id="color-pattern-hp" value="#D4AD2B" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); grid-column: span 2;">
+                  <span>Equibalance</span>
+                  <input type="color" id="color-pattern-equibalance" value="#3B6DC7" class="listing-tier-color-input" />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-block" id="customize-btn-done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listing Custom Tiers Modal -->
+  <div id="listing-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card modal-card-large" style="max-width: 680px;">
+      <div class="modal-header">
+        <h2>Tier Listing Settings</h2>
+        <button class="modal-close" id="listing-btn-close">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <!-- Unbuilt Special Tier Option -->
+        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border);">
+          <label class="check-container">
+            <input type="checkbox" id="check-enable-unbuilt-tier" />
+            <span class="check-box"></span>
+            <span class="check-text" style="font-weight: 700;">Separate "Unbuilt" Tier (I0 Lv.1 R1)</span>
+          </label>
+          <div id="unbuilt-tier-config" style="display: none; margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="input-unbuilt-label" class="search-input" value="Unbuilt" placeholder="Tier label..." style="width: 140px;" />
+            <input type="color" id="input-unbuilt-color" value="#888888" style="width: 34px; height: 31px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
+          </div>
+        </div>
+
+        <!-- Custom Tier List Container -->
+        <div class="setting-group">
+          <div class="setting-label-row">
+            <label class="setting-label">Showcase Tiers (Top-to-Bottom Evaluation)</label>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier">+ Add Tier</button>
+          </div>
+          <div id="listing-tiers-list" class="listing-tiers-list">
+            <!-- Dynamic tier items -->
+          </div>
+        </div>
+
+        <div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--mono-font); line-height: 1.4;">
+          * Unowned tier is fixed at the bottom. Characters are placed in the first matching tier from top to bottom.
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 10px;">
+        <button class="btn btn-danger btn-sm" id="btn-reset-listing">Reset Default</button>
+        <button class="btn btn-primary" id="btn-save-listing" style="min-width: 120px;">Save & Apply</button>
       </div>
     </div>
   </div>
@@ -237,7 +474,7 @@
   <div id="roster-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card modal-card-large">
       <div class="modal-header">
-        <h2>Character Roster Manager</h2>
+        <h2>Quick Edit</h2>
         <button class="modal-close" id="roster-btn-close">&times;</button>
       </div>
       <div class="roster-toolbar">
@@ -254,6 +491,7 @@
         </div>
         <div class="roster-quick-actions">
           <button class="btn btn-secondary btn-sm" id="btn-select-all">Set All Owned</button>
+          <button class="btn btn-secondary btn-sm" id="btn-select-all-unbuilt">Set All Owned (Unbuilt)</button>
           <button class="btn btn-secondary btn-sm" id="btn-unselect-all">Set All Unowned</button>
         </div>
       </div>

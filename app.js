@@ -1,13 +1,24 @@
 // Keys & State
 const STORAGE_KEY = "r1999_character_roster_v2";
 
-let characterDb = {}; // from icon.json: { "Name": "path" }
+let characterDb = {}; // { "Name": "images/headicon_small/..." }
 let characterRarityMap = {}; // { "Name": 6 }
 let characterIdMap = {}; // { "Name": 3003 }
 let euphoriaOptionsByName = {}; // { "Name": [1,2] }
+let euphoriaNamesByTier = {}; // { "Name": { 1: "Pursuit", 2: "Conduit" } }
 let euphoriaAllowedNames = new Set();
+let futureSightData = { Character: [], Euphoria: [], Skin: [] };
+let futureSightChars = new Set();
+let futureSightEuphorias = new Map(); // name -> Set of future tiers e.g. "37" -> Set([1])
+let futureSightSkins = new Set(); // Set of skin IDs (Numbers) exclusive to future sight
+let excludedCharacters = new Set(); // Set of character names to exclude
 let userRoster = {};  // { "Name": { owned: true/false, insight: 3, level: 60, resonance: 10, portrait: 0, e1: false, e2: false } }
 let currentEditingName = null;
+let futureSightEnabled = false;
+
+const FUTURE_SIGHT_STORAGE_KEY = "r1999_future_sight_v1";
+
+let characterSkinsMap = {}; // { "Druvis III": [ { id: 300301, name: "Default", isDefault: true, iconUrl: "images/headicon_small/300301.png" }, ... ] }
 
 const NAME_ALIASES = {
   "37": ["37", "Thirty-seven"],
@@ -19,6 +30,11 @@ const NAME_ALIASES = {
   "Liang Yue": ["Liang Yue", "Liang"],
   "Vila": ["Vila", "Вила"],
   "Coppélia": ["Coppélia", "Coppelia"],
+  "Avgust": ["Avgust", "Авксивий"],
+  "Yenisei": ["Yenisei", "Енисей"],
+  "Matilda": ["Matilda", "Matilda Bouanich"],
+  "AliEn T": ["AliEn T", "aliEn T"],
+  "3F3F": ["3F3F", "???", "Machine D III"],
 };
 
 function getCharacterRarity(name) {
@@ -45,12 +61,18 @@ function getMaxLevelForInsight(insight) {
   }
 }
 
+function getMaxResonanceForInsight(insight) {
+  switch (Number(insight)) {
+    case 0: return 1;
+    case 1: return 5;
+    case 2: return 10;
+    case 3:
+    default: return 15;
+  }
+}
+
 // DOM Elements
-const r15List = document.getElementById("tier-r15-list");
-const r11to14List = document.getElementById("tier-r11-14-list");
-const r10List = document.getElementById("tier-r10-list");
-const r1to9List = document.getElementById("tier-r1-9-list");
-const unownedList = document.getElementById("tier-unowned-list");
+const tierRowsContainer = document.getElementById("tier-rows-container");
 
 const rosterStat = document.getElementById("roster-stat");
 const filterSearch = document.getElementById("filter-search");
@@ -60,6 +82,37 @@ const filterOwnershipBtns = document.querySelectorAll("#filter-ownership-group .
 const filterRarityBtns = document.querySelectorAll("#filter-rarity-group .filter-btn");
 
 const TITLE_STORAGE_KEY = "r1999_board_title_v1";
+const LISTING_STORAGE_KEY = "r1999_tier_listing_v1";
+
+const DEFAULT_TIERS_CONFIG = {
+  separateUnbuilt: false,
+  unbuiltLabel: "Unbuilt",
+  unbuiltColor: "#9a9a9a",
+  tiers: [
+    { id: "tier_r15", label: "R15", color: "#d1783d", rule: "r15" },
+    { id: "tier_r11_14", label: "R11 - 14", color: "#6d9b6c", rule: "r11-14" },
+    { id: "tier_r10", label: "R10", color: "#d7d7d7", rule: "r10" },
+    { id: "tier_r1_9", label: "R1 - 9", color: "#4a77c9", rule: "r1-9" },
+  ],
+};
+
+let listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
+
+function loadListingConfig() {
+  try {
+    const saved = localStorage.getItem(LISTING_STORAGE_KEY);
+    if (saved) {
+      listingConfig = { ...DEFAULT_TIERS_CONFIG, ...JSON.parse(saved) };
+    }
+  } catch (e) {
+    console.warn("Could not load listing config", e);
+    listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
+  }
+}
+
+function saveListingConfig() {
+  localStorage.setItem(LISTING_STORAGE_KEY, JSON.stringify(listingConfig));
+}
 
 let activeOwnershipFilter = "all"; // "all" | "owned" | "unowned"
 let activeRarityFilters = new Set(); // Set of active rarities (empty = all)
@@ -72,6 +125,9 @@ const modalCharName = document.getElementById("modal-char-name");
 const modalCharStatus = document.getElementById("modal-char-status");
 const btnStatusOwned = document.getElementById("btn-status-owned");
 const btnStatusUnowned = document.getElementById("btn-status-unowned");
+const groupSkin = document.getElementById("group-skin");
+const displaySkin = document.getElementById("display-skin");
+const skinQuickPicks = document.getElementById("skin-quick-picks");
 const groupInsight = document.getElementById("group-insight");
 const groupLevel = document.getElementById("group-level");
 const groupResonance = document.getElementById("group-resonance");
@@ -89,6 +145,8 @@ const displayPortrait = document.getElementById("display-portrait");
 const modalPortraitBarPreview = document.getElementById("modal-portrait-bar-preview");
 const checkE1 = document.getElementById("check-e1");
 const checkE2 = document.getElementById("check-e2");
+const labelTextE1 = document.getElementById("label-text-e1");
+const labelTextE2 = document.getElementById("label-text-e2");
 const modalBtnSave = document.getElementById("modal-btn-save");
 const resonanceBoxChoices = document.querySelectorAll(".resonance-box-choice");
 
@@ -100,6 +158,7 @@ const rosterSearch = document.getElementById("roster-search");
 const rosterGridList = document.getElementById("roster-grid-list");
 const rosterFilterRarityBtns = document.querySelectorAll("#roster-filter-rarity-group .filter-btn");
 const btnSelectAll = document.getElementById("btn-select-all");
+const btnSelectAllUnbuilt = document.getElementById("btn-select-all-unbuilt");
 const btnUnselectAll = document.getElementById("btn-unselect-all");
 
 let rosterActiveRarityFilters = new Set(); // Set of active rarities in Roster Manager
@@ -110,18 +169,218 @@ const btnExportData = document.getElementById("btn-export-data");
 const inputImportFile = document.getElementById("input-import-file");
 const btnResetData = document.getElementById("btn-reset-data");
 
+const OPTIONS_STORAGE_KEY = "r1999_display_options_v1";
+
+const DEFAULT_THEME_APPEARANCE = {
+  boardFont: "default",
+  boardTitleSize: 0.74,
+  tierLabelSize: 0.70,
+  boardBg: "#111111",
+  boardTitleColor: "#f4efe9",
+  euphoriaColor: "#04FFEE",
+  portraitBarColor: "#FBAE31",
+  patternNone: "#4F4F4F",
+  patternOffensive: "#FBAE31",
+  patternDefensive: "#2D8A5A",
+  patternHp: "#D4AD2B",
+  patternEquibalance: "#3B6DC7",
+};
+
+let displayOptions = {
+  hideInsight: false,
+  hideLevel: false,
+  hideResonance: false,
+  hideEuphoria: false,
+  hidePortrait: false,
+  hideNames: false,
+  hideSkin: false,
+  showRarityLine: false,
+  hideI3Lv60: false,
+  hideI3Lv30: false,
+  hideI2Lv50: false,
+  customHideRules: [], // array of { id, insight: 3, level: 59, enabled: true }
+  appearance: { ...DEFAULT_THEME_APPEARANCE },
+};
+
+function loadDisplayOptions() {
+  try {
+    const saved = localStorage.getItem(OPTIONS_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      displayOptions = {
+        ...displayOptions,
+        ...parsed,
+        appearance: { ...DEFAULT_THEME_APPEARANCE, ...(parsed.appearance || {}) },
+      };
+      if (!Array.isArray(displayOptions.customHideRules)) {
+        displayOptions.customHideRules = [];
+      }
+    }
+  } catch (e) {
+    console.warn("Could not parse display options", e);
+  }
+}
+
+function applyCustomAppearance() {
+  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+  const showcaseBoard = document.getElementById("showcase-board");
+  if (showcaseBoard) {
+    showcaseBoard.style.backgroundColor = app.boardBg || "#111111";
+    switch (app.boardFont) {
+      case "mono":
+        showcaseBoard.style.fontFamily = "var(--mono-font)";
+        break;
+      case "serif":
+        showcaseBoard.style.fontFamily = "var(--serif-font)";
+        break;
+      case "sans":
+        showcaseBoard.style.fontFamily = "var(--primary-font)";
+        break;
+      case "georgia":
+        showcaseBoard.style.fontFamily = "Georgia, serif";
+        break;
+      case "courier":
+        showcaseBoard.style.fontFamily = "'Courier New', Courier, monospace";
+        break;
+      case "default":
+      default:
+        showcaseBoard.style.fontFamily = "var(--main-font-family)";
+        break;
+    }
+  }
+
+  if (boardTitleLabel) {
+    boardTitleLabel.style.color = app.boardTitleColor || "rgba(244, 239, 233, 0.84)";
+    const size = app.boardTitleSize !== undefined ? app.boardTitleSize : 0.74;
+    boardTitleLabel.style.fontSize = `${size}rem`;
+  }
+
+  // Update root CSS variables for live styles
+  document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
+  document.documentElement.style.setProperty("--portrait-bar-active", app.portraitBarColor || "#FBAE31");
+}
+
+function saveDisplayOptions() {
+  localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(displayOptions));
+}
+
+function loadFutureSightState() {
+  const saved = localStorage.getItem(FUTURE_SIGHT_STORAGE_KEY);
+  futureSightEnabled = saved === "true"; // default false
+}
+
+function saveFutureSightState() {
+  localStorage.setItem(FUTURE_SIGHT_STORAGE_KEY, String(futureSightEnabled));
+}
+
+function buildFutureSightMap(data) {
+  futureSightChars = new Set();
+  futureSightEuphorias = new Map();
+  futureSightSkins = new Set();
+
+  if (!data || typeof data !== "object") return;
+
+  if (Array.isArray(data.Character)) {
+    data.Character.forEach((raw) => {
+      const canonical = resolveCharacterName(raw);
+      if (canonical) futureSightChars.add(canonical);
+    });
+  }
+
+  if (Array.isArray(data.Euphoria)) {
+    data.Euphoria.forEach((entry) => {
+      // Format is "CharacterName: tierNumber" e.g. "37: 1"
+      const parts = String(entry).split(":");
+      if (parts.length === 2) {
+        const canonical = resolveCharacterName(parts[0].trim());
+        const tier = Number(parts[1].trim());
+        if (canonical && !isNaN(tier)) {
+          if (!futureSightEuphorias.has(canonical)) {
+            futureSightEuphorias.set(canonical, new Set());
+          }
+          futureSightEuphorias.get(canonical).add(tier);
+        }
+      }
+    });
+  }
+
+  if (Array.isArray(data.Skin)) {
+    data.Skin.forEach((entry) => {
+      const skinId = Number(String(entry).trim());
+      if (!isNaN(skinId)) {
+        futureSightSkins.add(skinId);
+      }
+    });
+  }
+}
+
+function buildExcludeMap(data) {
+  excludedCharacters = new Set();
+  if (!data) return;
+
+  let list = [];
+  if (Array.isArray(data)) {
+    list = data;
+  } else if (typeof data === "object") {
+    if (Array.isArray(data.Character)) list = data.Character;
+    else if (Array.isArray(data.characters)) list = data.characters;
+    else if (Array.isArray(data.exclude)) list = data.exclude;
+    else list = Object.keys(data);
+  }
+
+  list.forEach((item) => {
+    if (item && typeof item === "string") {
+      const trimmed = item.trim();
+      if (trimmed) excludedCharacters.add(trimmed);
+    }
+  });
+}
+
+function isCharacterExcluded(name, item) {
+  if (!name) return false;
+  if (excludedCharacters.has(name)) return true;
+  for (const [standardName, aliases] of Object.entries(NAME_ALIASES)) {
+    if (standardName === name || aliases.includes(name)) {
+      if (excludedCharacters.has(standardName)) return true;
+      for (const al of aliases) {
+        if (excludedCharacters.has(al)) return true;
+      }
+    }
+  }
+  if (item) {
+    if (item.nameEng && excludedCharacters.has(item.nameEng)) return true;
+    if (item.name && excludedCharacters.has(item.name)) return true;
+    if (item.id && (excludedCharacters.has(String(item.id)) || excludedCharacters.has(item.id))) return true;
+  }
+  return false;
+}
+
 // Initial Setup
 async function initApp() {
   try {
-    const [iconRes, rarityRes, arcanistRes, euphoriaRes] = await Promise.all([
-      fetch("icon.json"),
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
+      fetch("data/future_sight.json").catch(() => null),
+      fetch("data/exclude_character.json").catch(() => null),
     ]);
 
-    const iconData = await iconRes.json();
-    characterDb = iconData.characters || {};
+    if (excludeRes && excludeRes.ok) {
+      try {
+        const excludeData = await excludeRes.json();
+        buildExcludeMap(excludeData);
+      } catch (e) {
+        console.warn("Could not parse exclude_character.json", e);
+      }
+    }
+
+    try {
+      const arcanistData = await arcanistRes.json();
+      buildArcanistData(arcanistData);
+    } catch (e) {
+      console.warn("Could not parse ArcanistMap.json", e);
+    }
 
     try {
       const rarityData = await rarityRes.json();
@@ -130,11 +389,13 @@ async function initApp() {
       console.warn("Could not parse characters_by_rarity.json", e);
     }
 
-    try {
-      const arcanistData = await arcanistRes.json();
-      buildIdMap(arcanistData);
-    } catch (e) {
-      console.warn("Could not parse ArcanistMap.json", e);
+    if (futureRes && futureRes.ok) {
+      try {
+        futureSightData = await futureRes.json();
+        buildFutureSightMap(futureSightData);
+      } catch (e) {
+        console.warn("Could not parse future_sight.json", e);
+      }
     }
 
     try {
@@ -145,6 +406,10 @@ async function initApp() {
     }
 
     loadTitle();
+    loadListingConfig();
+    loadFutureSightState();
+    loadDisplayOptions();
+    applyCustomAppearance();
     loadRoster();
     renderShowcase();
     setupEventListeners();
@@ -187,31 +452,103 @@ function buildRarityMap(rarityData) {
   }
 }
 
-function buildIdMap(arcanistData) {
-  characterIdMap = {};
-  if (Array.isArray(arcanistData)) {
-    arcanistData.forEach((item) => {
-      const eng = item.nameEng || item.engName;
-      if (eng && item.id) {
-        characterIdMap[eng] = item.id;
-      }
-      if (item.name && item.id) {
-        characterIdMap[item.name] = item.id;
-      }
-    });
-  }
+const CANONICAL_NAME_OVERRIDES = {
+  3066: "37",
+  3079: "6",
+  3074: "Ezra",
+  3094: "J",
+  3056: "Jessica",
+  3070: "Kaalaa Baunaa",
+  3110: "Liang Yue",
+  3087: "Vila",
+  3078: "Avgust",
+  3082: "Yenisei",
+  3041: "Matilda",
+  3034: "AliEn T",
+};
 
-  // Map alias names to standard names in icon.json
+function buildArcanistData(arcanistData) {
+  characterDb = {};
+  characterIdMap = {};
+  characterSkinsMap = {};
+
+  if (!Array.isArray(arcanistData)) return;
+
+  arcanistData.forEach((item) => {
+    if (!item || !item.id || item.id === 9998) return;
+
+    const charName = CANONICAL_NAME_OVERRIDES[item.id] || item.nameEng || item.name;
+    if (!charName) return;
+
+    if (isCharacterExcluded(charName, item)) return;
+
+    characterIdMap[charName] = item.id;
+    if (item.nameEng) characterIdMap[item.nameEng] = item.id;
+    if (item.name) characterIdMap[item.name] = item.id;
+
+    const rawSkins = Array.isArray(item.live2d) ? item.live2d : [];
+    const skins = [];
+
+    rawSkins.forEach((skin, idx) => {
+      const sId = String(skin.id || "");
+      if (!skin.id || sId.length > 6) return;
+
+      const isDefault = idx === 0 || skin.des === "初始皮肤" || sId.endsWith("01");
+      const skinName = isDefault
+        ? "Default"
+        : (skin.characterSkinNameEng || skin.characterSkin || skin.des || `Skin ${idx + 1}`);
+
+      skins.push({
+        id: skin.id,
+        name: skinName,
+        isDefault: isDefault,
+        iconUrl: `images/headicon_small/${skin.id}.png`,
+      });
+    });
+
+    characterSkinsMap[charName] = skins;
+
+    const defaultSkin = skins.find((s) => s.isDefault) || skins[0];
+    const defaultIcon = defaultSkin ? defaultSkin.iconUrl : `images/headicon_small/${item.id}01.png`;
+    characterDb[charName] = defaultIcon;
+  });
+
+  // Map alias names to standard character ID
   for (const [standardName, aliases] of Object.entries(NAME_ALIASES)) {
-    if (characterIdMap[standardName] === undefined) {
+    if (characterIdMap[standardName] !== undefined) {
       for (const al of aliases) {
-        if (characterIdMap[al] !== undefined) {
-          characterIdMap[standardName] = characterIdMap[al];
-          break;
+        if (characterIdMap[al] === undefined) {
+          characterIdMap[al] = characterIdMap[standardName];
         }
       }
     }
   }
+}
+
+function getCharacterSkins(name) {
+  const allSkins = characterSkinsMap[name] || [];
+  if (futureSightEnabled) {
+    return allSkins;
+  }
+  return allSkins.filter((s) => !futureSightSkins.has(Number(s.id)));
+}
+
+function getSkinInfo(name, skinId) {
+  const skins = getCharacterSkins(name);
+  if (!skins || skins.length === 0) return null;
+  return skins.find((s) => Number(s.id) === Number(skinId)) || null;
+}
+
+function getCardAvatarUrl(name, char, defaultUrl) {
+  const fallback = defaultUrl || characterDb[name];
+  if (!char || !char.owned || displayOptions.hideSkin || !char.skin) {
+    return fallback;
+  }
+  const skinInfo = getSkinInfo(name, char.skin);
+  if (!skinInfo || skinInfo.isDefault) {
+    return fallback;
+  }
+  return skinInfo.iconUrl || fallback;
 }
 
 function normalizeCharacterKey(name) {
@@ -243,6 +580,7 @@ function resolveCharacterName(name) {
 
 function buildEuphoriaMap(euphoriaData) {
   euphoriaOptionsByName = {};
+  euphoriaNamesByTier = {};
   euphoriaAllowedNames = new Set();
 
   if (!euphoriaData || typeof euphoriaData !== "object") return;
@@ -252,12 +590,26 @@ function buildEuphoriaMap(euphoriaData) {
     const tier = Number(level);
     if (!Number.isInteger(tier) || tier < 1 || tier > 2) return;
 
-    names.forEach((rawName) => {
+    names.forEach((rawEntry) => {
+      // rawEntry can be "CharacterName: EuphoriaName" or just "CharacterName"
+      let rawName = rawEntry;
+      let euName = "";
+      if (typeof rawEntry === "string" && rawEntry.includes(":")) {
+        const parts = rawEntry.split(":");
+        rawName = parts[0].trim();
+        euName = parts[1].trim();
+      }
+
       const canonical = resolveCharacterName(rawName);
       if (!canonical) return;
       if (!euphoriaOptionsByName[canonical]) euphoriaOptionsByName[canonical] = [];
+      if (!euphoriaNamesByTier[canonical]) euphoriaNamesByTier[canonical] = {};
+
       if (!euphoriaOptionsByName[canonical].includes(tier)) {
         euphoriaOptionsByName[canonical].push(tier);
+      }
+      if (euName) {
+        euphoriaNamesByTier[canonical][tier] = euName;
       }
       euphoriaAllowedNames.add(canonical);
     });
@@ -268,10 +620,26 @@ function buildEuphoriaMap(euphoriaData) {
   });
 }
 
+function getEuphoriaDisplayName(name, tier) {
+  const canonical = resolveCharacterName(name);
+  const specificName = euphoriaNamesByTier[canonical] && euphoriaNamesByTier[canonical][tier];
+  if (specificName) {
+    return `${specificName} (E${tier})`;
+  }
+  return `Euphoria ${tier} (E${tier})`;
+}
+
 function getEligibleEuphoriaLevels(name) {
   const canonical = resolveCharacterName(name);
   if (!canonical) return [];
-  return Array.isArray(euphoriaOptionsByName[canonical]) ? [...euphoriaOptionsByName[canonical]] : [];
+  const allLevels = Array.isArray(euphoriaOptionsByName[canonical]) ? [...euphoriaOptionsByName[canonical]] : [];
+  if (futureSightEnabled) {
+    return allLevels;
+  }
+  // Filter out tiers that belong to future sight
+  const futureTiers = futureSightEuphorias.get(canonical);
+  if (!futureTiers) return allLevels;
+  return allLevels.filter((t) => !futureTiers.has(t));
 }
 
 function isCharacterEligibleForEuphoria(name) {
@@ -280,7 +648,8 @@ function isCharacterEligibleForEuphoria(name) {
 
 function sanitizeEuphoriaState(name, char) {
   const eligibleLevels = getEligibleEuphoriaLevels(name);
-  if (!eligibleLevels.length) {
+  const meetsLevelRequirement = Number(char.insight) === 3 && Number(char.level) >= 30;
+  if (!eligibleLevels.length || !meetsLevelRequirement) {
     return {
       e1: false,
       e2: false,
@@ -304,8 +673,16 @@ function loadRoster() {
     }
   }
 
-  // Ensure all characters from icon.json exist in roster with default values (default unowned)
+  // Remove any excluded or non-existent characters from roster
   let changed = false;
+  for (const name in userRoster) {
+    if (isCharacterExcluded(name) || !characterDb[name]) {
+      delete userRoster[name];
+      changed = true;
+    }
+  }
+
+  // Ensure all characters exist in roster with default values (default unowned)
   for (const name in characterDb) {
     const rarity = getCharacterRarity(name);
     const maxInsight = getMaxInsightForRarity(rarity);
@@ -321,6 +698,7 @@ function loadRoster() {
         e1: false,
         e2: false,
         boxKind: "none",
+        skin: null,
       };
       changed = true;
     } else {
@@ -333,8 +711,17 @@ function loadRoster() {
         userRoster[name].level = charMaxLvl;
         changed = true;
       }
+      const charMaxRes = getMaxResonanceForInsight(userRoster[name].insight);
+      if (userRoster[name].resonance === undefined || userRoster[name].resonance > charMaxRes) {
+        userRoster[name].resonance = charMaxRes;
+        changed = true;
+      }
       if (userRoster[name].boxKind === undefined) {
         userRoster[name].boxKind = "none";
+        changed = true;
+      }
+      if (userRoster[name].skin === undefined) {
+        userRoster[name].skin = null;
         changed = true;
       }
 
@@ -429,16 +816,53 @@ function compareUnownedCharacters(nameA, nameB) {
   return nameA.localeCompare(nameB);
 }
 
+function isCharacterUnbuilt(char) {
+  return Number(char.insight || 0) === 0 && Number(char.level || 1) === 1 && Number(char.resonance || 1) === 1;
+}
+
+function matchesTierRule(rule, char, rarity) {
+  const res = Number(char.resonance || 1);
+  const lvl = Number(char.level || 1);
+  const insight = Number(char.insight || 0);
+  const boxKind = char.boxKind || "none";
+  const hasEuphoria = !!(char.e1 || char.e2);
+
+  switch (rule) {
+    case "r15": return res >= 15;
+    case "r14": return res === 14;
+    case "r13": return res === 13;
+    case "r12": return res === 12;
+    case "r11": return res === 11;
+    case "r10": return res === 10;
+    case "r11-14": return res >= 11 && res <= 14;
+    case "r11-13": return res >= 11 && res <= 13;
+    case "r1-9": return res >= 1 && res <= 9;
+    case "r10_pattern": return res === 10 && boxKind !== "none";
+    case "r10_no_pattern": return res === 10 && boxKind === "none";
+    case "r10_euphoria": return res === 10 && hasEuphoria;
+    case "has_euphoria": return hasEuphoria;
+    case "lv60": return lvl === 60;
+    case "non_lv60": return lvl < 60;
+    case "i3": return insight === 3;
+    case "i2": return insight === 2;
+    case "i1": return insight === 1;
+    case "i0": return insight === 0;
+    case "rarity_6": return rarity === 6;
+    case "rarity_5": return rarity === 5;
+    case "rarity_4": return rarity === 4;
+    case "rarity_3": return rarity === 3;
+    case "rarity_2": return rarity === 2;
+    case "rarity_2_4": return rarity >= 2 && rarity <= 4;
+    case "unbuilt": return isCharacterUnbuilt(char);
+    default: return true;
+  }
+}
+
 // Render Showcase Board
 function renderShowcase() {
   const query = filterSearch.value.trim().toLowerCase();
 
-  // Clear all lists
-  r15List.innerHTML = "";
-  r11to14List.innerHTML = "";
-  r10List.innerHTML = "";
-  r1to9List.innerHTML = "";
-  unownedList.innerHTML = "";
+  tierRowsContainer.innerHTML = "";
 
   let ownedCount = 0;
   let totalCount = 0;
@@ -448,6 +872,11 @@ function renderShowcase() {
   const unownedNames = [];
 
   allNames.forEach((name) => {
+    if (!futureSightEnabled && futureSightChars.has(name)) return;
+
+    const rarity = getCharacterRarity(name);
+    if (activeRarityFilters.size > 0 && !activeRarityFilters.has(rarity)) return;
+
     totalCount++;
     const char = userRoster[name] || { owned: false };
     if (char.owned) {
@@ -464,13 +893,45 @@ function renderShowcase() {
   // Sort unowned characters solely by Release ID (newest to oldest)
   unownedNames.sort(compareUnownedCharacters);
 
-  // Filter and populate owned characters
+  // Build Tier buckets based on listingConfig
+  const tierBuckets = [];
+
+  // Custom tiers
+  (listingConfig.tiers || []).forEach((t) => {
+    tierBuckets.push({
+      id: t.id,
+      label: t.label,
+      color: t.color || "#ffffff",
+      rule: t.rule,
+      cards: [],
+    });
+  });
+
+  // Optional Unbuilt tier (evaluated after custom tiers or explicitly)
+  let unbuiltBucket = null;
+  if (listingConfig.separateUnbuilt) {
+    unbuiltBucket = {
+      id: "tier_unbuilt_special",
+      label: listingConfig.unbuiltLabel || "Unbuilt",
+      color: listingConfig.unbuiltColor || "#9a9a9a",
+      cards: [],
+    };
+  }
+
+  // Fallback bucket for any owned characters not matched by above tiers
+  const remainingBucket = {
+    id: "tier_other",
+    label: "Other",
+    color: "#a0a0a0",
+    cards: [],
+  };
+
+  // Populate owned cards into the first matching tier
   ownedNames.forEach((name) => {
     if (query && !name.toLowerCase().includes(query)) return;
     if (activeOwnershipFilter === "unowned") return;
-    const rarity = getCharacterRarity(name);
-    if (activeRarityFilters.size > 0 && !activeRarityFilters.has(rarity)) return;
 
+    const rarity = getCharacterRarity(name);
     const char = userRoster[name] || {
       owned: true,
       insight: 3,
@@ -484,40 +945,85 @@ function renderShowcase() {
     const iconUrl = characterDb[name];
     const card = createCharacterCard(name, char, iconUrl);
 
-    if (char.resonance >= 15) {
-      r15List.appendChild(card);
-    } else if (char.resonance >= 11) {
-      r11to14List.appendChild(card);
-    } else if (char.resonance === 10) {
-      r10List.appendChild(card);
-    } else {
-      r1to9List.appendChild(card);
+    // If separate unbuilt is on and char is unbuilt, place into unbuiltBucket
+    if (unbuiltBucket && isCharacterUnbuilt(char)) {
+      unbuiltBucket.cards.push(card);
+      return;
+    }
+
+    let matched = false;
+    for (const bucket of tierBuckets) {
+      if (matchesTierRule(bucket.rule, char, rarity)) {
+        bucket.cards.push(card);
+        matched = true;
+        break;
+      }
+    }
+
+    if (!matched) {
+      remainingBucket.cards.push(card);
     }
   });
 
-  // Filter and populate unowned characters
-  unownedNames.forEach((name) => {
-    if (query && !name.toLowerCase().includes(query)) return;
-    if (activeOwnershipFilter === "owned") return;
-    const rarity = getCharacterRarity(name);
-    if (activeRarityFilters.size > 0 && !activeRarityFilters.has(rarity)) return;
-
-    const char = userRoster[name] || {
-      owned: false,
-      insight: 3,
-      level: 60,
-      resonance: 10,
-      portrait: 0,
-      e1: false,
-      e2: false,
-      boxKind: "none",
-    };
-    const iconUrl = characterDb[name];
-    const card = createCharacterCard(name, char, iconUrl);
-    unownedList.appendChild(card);
+  // Render all owned tier sections
+  tierBuckets.forEach((bucket) => {
+    renderTierRowSection(bucket.label, bucket.color, bucket.cards);
   });
 
+  if (unbuiltBucket) {
+    renderTierRowSection(unbuiltBucket.label, unbuiltBucket.color, unbuiltBucket.cards);
+  }
+
+  if (remainingBucket.cards.length > 0) {
+    renderTierRowSection(remainingBucket.label, remainingBucket.color, remainingBucket.cards);
+  }
+
+  // Render Unowned Tier (Fixed at the bottom)
+  if (activeOwnershipFilter !== "owned") {
+    const unownedCards = [];
+    unownedNames.forEach((name) => {
+      if (query && !name.toLowerCase().includes(query)) return;
+      const char = userRoster[name] || {
+        owned: false,
+        insight: 3,
+        level: 60,
+        resonance: 10,
+        portrait: 0,
+        e1: false,
+        e2: false,
+        boxKind: "none",
+      };
+      const iconUrl = characterDb[name];
+      const card = createCharacterCard(name, char, iconUrl);
+      unownedCards.push(card);
+    });
+    renderTierRowSection("Unowned", "#9a9a9a", unownedCards);
+  }
+
   rosterStat.textContent = `${ownedCount}/${totalCount} Owned`;
+}
+
+function renderTierRowSection(label, color, cards) {
+  const section = document.createElement("section");
+  section.className = "tier-row";
+
+  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+  const tierSize = app.tierLabelSize !== undefined ? app.tierLabelSize : 0.70;
+
+  const labelEl = document.createElement("div");
+  labelEl.className = "tier-label";
+  labelEl.textContent = label;
+  labelEl.style.color = color;
+  labelEl.style.fontSize = `${tierSize}rem`;
+
+  const contentEl = document.createElement("div");
+  contentEl.className = "tier-content";
+
+  cards.forEach((card) => contentEl.appendChild(card));
+
+  section.appendChild(labelEl);
+  section.appendChild(contentEl);
+  tierRowsContainer.appendChild(section);
 }
 
 // Create Character Card Element
@@ -538,40 +1044,77 @@ function createCharacterCard(name, char, iconUrl) {
   const resonanceColor = getCardResonanceTextColor(boxKind);
 
   // Portrait dashes: 5 total slots (P0 = 0 dashes, P1 = 1 active dash, ... P5 = 5 active dashes)
-  const dashesHtml = char.owned
+  const dashesHtml = (char.owned && !displayOptions.hidePortrait)
     ? Array.from({ length: 5 }, (_, i) => `<span class="portrait-dash ${i < char.portrait ? "active" : ""}"></span>`).join("")
     : "";
 
   let topHeaderHtml = "";
   if (!char.owned) {
-    topHeaderHtml = `<div class="char-top-info"><span class="char-unowned-name">${escapeHtml(name)}</span></div>`;
+    topHeaderHtml = `<div class="char-top-info">${!displayOptions.hideNames ? `<span class="char-unowned-name">${escapeHtml(name)}</span>` : ""}</div>`;
   } else {
+    const showResonance = !displayOptions.hideResonance;
+    const showEuphoria = !displayOptions.hideEuphoria && !!euphoriaText;
     topHeaderHtml = `
       <div class="char-top-info">
-        <span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">R${char.resonance}</span>
-        <div class="badge-insight-level">
-          <img src="images/insight_icon/I${insightVal}.png" alt="I${insightVal}" class="badge-insight-img" />
-          <span class="badge-level-text">${levelVal}</span>
-        </div>
+        ${showResonance ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">R${char.resonance}</span>` : `<span></span>`}
+        ${showEuphoria ? `<span class="badge-euphoria">${euphoriaText}</span>` : ""}
       </div>
     `;
   }
 
   let portraitBarHtml = "";
-  if (char.owned) {
+  if (char.owned && !displayOptions.hidePortrait) {
     portraitBarHtml = `
       <div class="char-portrait-bar-below">
         ${dashesHtml}
       </div>
-      ${euphoriaText ? `<div class="char-bottom-euphoria"><span class="badge-euphoria-bottom">${euphoriaText}</span></div>` : ""}
     `;
   }
+
+  const matchesCustomRule = (displayOptions.customHideRules || []).some(
+    (rule) => rule.enabled && Number(rule.insight) === Number(insightVal) && Number(rule.level) === Number(levelVal)
+  );
+
+  const isHiddenByPreset =
+    (displayOptions.hideI3Lv60 && Number(insightVal) === 3 && Number(levelVal) === 60) ||
+    (displayOptions.hideI3Lv30 && Number(insightVal) === 3 && Number(levelVal) === 30) ||
+    (displayOptions.hideI2Lv50 && Number(insightVal) === 2 && Number(levelVal) === 50) ||
+    matchesCustomRule;
+
+  const showInsight = !displayOptions.hideInsight && !isHiddenByPreset && Number(insightVal) > 0;
+  const showLevel = !displayOptions.hideLevel && !isHiddenByPreset;
+
+  const insightIconHtml = showInsight ? `
+    <span class="char-info-insight">
+      <img src="images/insight_icon/I${insightVal}.png" alt="I${insightVal}" class="badge-insight-img" />
+    </span>
+  ` : "";
+
+  const levelTextHtml = showLevel ? `
+    <span class="char-info-level">${levelVal}</span>
+  ` : "";
+
+  const insightLevelOverlay = (char.owned && (showInsight || showLevel)) ? `
+    <div class="char-info-overlay">
+      ${insightIconHtml}
+      ${levelTextHtml}
+    </div>
+  ` : "";
+
+  const rarityVal = getCharacterRarity(name);
+  const rarityLineHtml = displayOptions.showRarityLine ? `
+    <div class="char-rarity-line rarity-${rarityVal}"></div>
+  ` : "";
+
+  const avatarUrl = getCardAvatarUrl(name, char, iconUrl);
 
   card.innerHTML = `
     ${topHeaderHtml}
     <div class="char-avatar-box">
-      <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img" loading="lazy" />
+      <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
+      ${insightLevelOverlay}
     </div>
+    ${rarityLineHtml}
     ${portraitBarHtml}
   `;
 
@@ -604,44 +1147,131 @@ function openEditModal(name) {
   const rawLevel = char.level !== undefined ? Number(char.level) : maxLvl;
   const level = Math.min(Math.max(1, rawLevel), maxLvl);
 
+  const maxRes = getMaxResonanceForInsight(insight);
+  const rawRes = Math.max(1, Number(char.resonance || 1));
+  const resonance = Math.min(rawRes, maxRes);
+
   const sanitizedEuphoria = sanitizeEuphoriaState(name, char);
+
+  const charSkins = getCharacterSkins(name);
+  const defaultSkin = charSkins.find((s) => s.isDefault) || charSkins[0];
+  const defaultSkinId = defaultSkin ? defaultSkin.id : null;
+  const currentSkinId = (char.skin !== undefined && char.skin !== null && charSkins.some((s) => Number(s.id) === Number(char.skin)))
+    ? char.skin
+    : defaultSkinId;
+
   tempEditState = {
     ...char,
     insight: insight,
     level: level,
-    resonance: Math.max(1, Number(char.resonance || 1)),
+    resonance: resonance,
     boxKind: char.boxKind || "none",
     e1: sanitizedEuphoria.e1,
     e2: sanitizedEuphoria.e2,
+    skin: currentSkinId,
   };
 
   modalCharName.textContent = name;
-  modalCharImg.src = characterDb[name];
   modalCharStatus.textContent = tempEditState.owned ? "Owned" : "Unowned";
 
+  renderSkinSelector(name);
   updateModalView();
   editModal.style.display = "flex";
 }
 
+function renderSkinSelector(name) {
+  if (!skinQuickPicks) return;
+  skinQuickPicks.innerHTML = "";
+  const charSkins = getCharacterSkins(name);
+
+  if (!charSkins || charSkins.length === 0) {
+    if (groupSkin) groupSkin.style.display = "none";
+    return;
+  }
+
+  charSkins.forEach((skin) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn-pill-skin";
+    btn.dataset.skinId = String(skin.id);
+    btn.title = skin.name;
+
+    const img = document.createElement("img");
+    img.src = skin.iconUrl;
+    img.alt = skin.name;
+    img.className = "skin-btn-img";
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = characterDb[name];
+    };
+
+    btn.appendChild(img);
+
+    btn.addEventListener("click", () => {
+      tempEditState.skin = skin.id;
+      updateSkinSelectionUI(name);
+    });
+
+    skinQuickPicks.appendChild(btn);
+  });
+
+  updateSkinSelectionUI(name);
+}
+
+function updateSkinSelectionUI(name) {
+  const charSkins = getCharacterSkins(name);
+  const selectedSkin = charSkins.find((s) => Number(s.id) === Number(tempEditState.skin)) || charSkins[0];
+
+  if (displaySkin) {
+    displaySkin.textContent = selectedSkin ? selectedSkin.name : "Default";
+  }
+
+  document.querySelectorAll(".btn-pill-skin").forEach((btn) => {
+    const btnSkinId = Number(btn.dataset.skinId);
+    const isSelected = selectedSkin && btnSkinId === selectedSkin.id;
+    btn.classList.toggle("active", isSelected);
+  });
+
+  // Update modal preview image
+  if (modalCharImg) {
+    if (tempEditState.owned && selectedSkin && !selectedSkin.isDefault) {
+      modalCharImg.src = selectedSkin.iconUrl;
+      modalCharImg.onerror = () => {
+        modalCharImg.onerror = null;
+        modalCharImg.src = characterDb[name];
+      };
+    } else {
+      modalCharImg.src = characterDb[name];
+    }
+  }
+}
+
 function updateModalView() {
+  const charSkins = currentEditingName ? getCharacterSkins(currentEditingName) : [];
   if (tempEditState.owned) {
     btnStatusOwned.classList.add("active");
     btnStatusUnowned.classList.remove("active");
+    if (groupSkin) groupSkin.style.display = charSkins.length > 0 ? "flex" : "none";
     groupInsight.style.display = "flex";
     groupLevel.style.display = "flex";
     groupResonance.style.display = "flex";
     groupPattern.style.display = tempEditState.resonance >= 10 ? "flex" : "none";
     groupPortrait.style.display = "flex";
     groupEuphoria.style.display = "flex";
+    if (currentEditingName) updateSkinSelectionUI(currentEditingName);
   } else {
     btnStatusOwned.classList.remove("active");
     btnStatusUnowned.classList.add("active");
+    if (groupSkin) groupSkin.style.display = "none";
     groupInsight.style.display = "none";
     groupLevel.style.display = "none";
     groupResonance.style.display = "none";
     groupPattern.style.display = "none";
     groupPortrait.style.display = "none";
     groupEuphoria.style.display = "none";
+    if (currentEditingName && modalCharImg) {
+      modalCharImg.src = characterDb[currentEditingName];
+    }
   }
 
   // Insight based on Rarity limit (6✦ & 5✦: I0-I3; 4✦, 3✦, 2✦: I0-I2)
@@ -679,7 +1309,17 @@ function updateModalView() {
   displayLevel.textContent = `Lv.${tempEditState.level}`;
 
   // Resonance
+  const maxRes = getMaxResonanceForInsight(currentInsight);
+  inputResonance.min = "1";
+  inputResonance.max = String(maxRes);
+  if (tempEditState.resonance > maxRes) {
+    tempEditState.resonance = maxRes;
+  }
+  if (!tempEditState.resonance || tempEditState.resonance < 1) {
+    tempEditState.resonance = 1;
+  }
   inputResonance.value = tempEditState.resonance;
+  inputResonance.disabled = maxRes <= 1;
   displayResonance.textContent = `R${tempEditState.resonance}`;
   displayResonance.style.color = getResonanceTextColor(tempEditState.boxKind || "none");
 
@@ -689,7 +1329,13 @@ function updateModalView() {
   }
 
   document.querySelectorAll(".btn-pill").forEach((btn) => {
-    const isActive = Number(btn.dataset.r) === tempEditState.resonance;
+    const btnRes = Number(btn.dataset.r);
+    if (btnRes > maxRes) {
+      btn.style.display = "none";
+    } else {
+      btn.style.display = "";
+    }
+    const isActive = btnRes === tempEditState.resonance;
     btn.classList.toggle("active", isActive);
     btn.classList.remove("none", "offensive", "defensive", "hp", "equibalance");
     if (isActive) btn.classList.add(tempEditState.boxKind || "none");
@@ -705,22 +1351,19 @@ function updateModalView() {
     btn.classList.toggle("active", Number(btn.dataset.p) === tempEditState.portrait);
   });
 
-  // Portrait bar in modal
-  modalPortraitBarPreview.innerHTML = Array.from(
-    { length: 5 },
-    (_, i) => `<span class="bar ${i < tempEditState.portrait ? "active" : ""}"></span>`
-  ).join("");
-
   // Euphoria
   const eligibleEuphoriaLevels = getEligibleEuphoriaLevels(currentEditingName || "");
-  const isEuphoriaEligible = eligibleEuphoriaLevels.length > 0;
+  const meetsLevelRequirement = Number(currentInsight) === 3 && Number(tempEditState.level) >= 30;
+  const isEuphoriaEligible = eligibleEuphoriaLevels.length > 0 && meetsLevelRequirement;
   if (tempEditState.owned) {
     groupEuphoria.style.display = isEuphoriaEligible ? "flex" : "none";
   }
 
-  if (!isEuphoriaEligible) {
-    tempEditState.e1 = false;
-    tempEditState.e2 = false;
+  if (labelTextE1) {
+    labelTextE1.textContent = getEuphoriaDisplayName(currentEditingName || "", 1);
+  }
+  if (labelTextE2) {
+    labelTextE2.textContent = getEuphoriaDisplayName(currentEditingName || "", 2);
   }
 
   checkE1.checked = !!tempEditState.e1 && eligibleEuphoriaLevels.includes(1);
@@ -732,13 +1375,16 @@ function updateModalView() {
 function closeEditModal() {
   editModal.style.display = "none";
   currentEditingName = null;
+  const patternHelpBox = document.getElementById("pattern-help-box");
+  if (patternHelpBox) patternHelpBox.style.display = "none";
 }
 
 function saveEditModal() {
   if (!currentEditingName) return;
   const eligibleEuphoriaLevels = getEligibleEuphoriaLevels(currentEditingName);
-  const finalE1 = eligibleEuphoriaLevels.includes(1) && checkE1.checked;
-  const finalE2 = eligibleEuphoriaLevels.includes(2) && checkE2.checked;
+  const meetsLevelRequirement = Number(tempEditState.insight) === 3 && Number(inputLevel.value) >= 30;
+  const finalE1 = meetsLevelRequirement && eligibleEuphoriaLevels.includes(1) && checkE1.checked;
+  const finalE2 = meetsLevelRequirement && eligibleEuphoriaLevels.includes(2) && checkE2.checked;
 
   userRoster[currentEditingName] = {
     owned: tempEditState.owned,
@@ -749,6 +1395,7 @@ function saveEditModal() {
     e1: finalE1,
     e2: finalE2,
     boxKind: tempEditState.boxKind || "none",
+    skin: tempEditState.skin,
   };
   saveRoster();
   renderShowcase();
@@ -773,6 +1420,7 @@ function renderRosterManager() {
   const sortedNames = Object.keys(characterDb).sort(compareUnownedCharacters);
 
   sortedNames.forEach((name) => {
+    if (!futureSightEnabled && futureSightChars.has(name)) return;
     if (query && !name.toLowerCase().includes(query)) return;
     const rarity = getCharacterRarity(name);
     if (rosterActiveRarityFilters.size > 0 && !rosterActiveRarityFilters.has(rarity)) return;
@@ -845,6 +1493,10 @@ function setupEventListeners() {
       if (!tempEditState.level || tempEditState.level > maxLvl) {
         tempEditState.level = maxLvl;
       }
+      const maxRes = getMaxResonanceForInsight(newInsight);
+      if (!tempEditState.resonance || tempEditState.resonance > maxRes) {
+        tempEditState.resonance = maxRes;
+      }
       updateModalView();
     });
   });
@@ -853,6 +1505,7 @@ function setupEventListeners() {
   inputLevel.addEventListener("input", (e) => {
     tempEditState.level = Number(e.target.value);
     displayLevel.textContent = `Lv.${tempEditState.level}`;
+    updateModalView();
   });
 
   // Status toggle
@@ -892,10 +1545,480 @@ function setupEventListeners() {
     });
   });
 
+  // Pattern help toggle
+  const btnPatternHelp = document.getElementById("btn-pattern-help");
+  const patternHelpBox = document.getElementById("pattern-help-box");
+  btnPatternHelp.addEventListener("click", () => {
+    const isShown = patternHelpBox.style.display !== "none";
+    patternHelpBox.style.display = isShown ? "none" : "block";
+  });
+
+  // Euphoria checkbox change handlers to persist selection in state
+  checkE1.addEventListener("change", () => {
+    tempEditState.e1 = checkE1.checked;
+  });
+  checkE2.addEventListener("change", () => {
+    tempEditState.e2 = checkE2.checked;
+  });
+
   modalBtnClose.addEventListener("click", closeEditModal);
   modalBtnSave.addEventListener("click", saveEditModal);
   editModal.addEventListener("click", (e) => {
     if (e.target === editModal) closeEditModal();
+  });
+
+  // Options Modal
+  const btnOptions = document.getElementById("btn-options");
+  const optionsModal = document.getElementById("options-modal");
+  const optionsBtnClose = document.getElementById("options-btn-close");
+  const optionsBtnDone = document.getElementById("options-btn-done");
+  const checkHideInsight = document.getElementById("check-hide-insight");
+  const checkHideLevel = document.getElementById("check-hide-level");
+  const checkHideResonance = document.getElementById("check-hide-resonance");
+  const checkHideEuphoria = document.getElementById("check-hide-euphoria");
+  const checkHidePortrait = document.getElementById("check-hide-portrait");
+  const checkHideNames = document.getElementById("check-hide-names");
+  const checkHideSkin = document.getElementById("check-hide-skin");
+  const checkShowRarityLine = document.getElementById("check-show-rarity-line");
+  const checkHideI3Lv60 = document.getElementById("check-hide-i3-lv60");
+  const checkHideI3Lv30 = document.getElementById("check-hide-i3-lv30");
+  const checkHideI2Lv50 = document.getElementById("check-hide-i2-lv50");
+
+  function openOptionsModal() {
+    checkHideInsight.checked = !!displayOptions.hideInsight;
+    checkHideLevel.checked = !!displayOptions.hideLevel;
+    checkHideResonance.checked = !!displayOptions.hideResonance;
+    checkHideEuphoria.checked = !!displayOptions.hideEuphoria;
+    checkHidePortrait.checked = !!displayOptions.hidePortrait;
+    checkHideNames.checked = !!displayOptions.hideNames;
+    if (checkHideSkin) checkHideSkin.checked = !!displayOptions.hideSkin;
+    checkShowRarityLine.checked = !!displayOptions.showRarityLine;
+    checkHideI3Lv60.checked = !!displayOptions.hideI3Lv60;
+    checkHideI3Lv30.checked = !!displayOptions.hideI3Lv30;
+    checkHideI2Lv50.checked = !!displayOptions.hideI2Lv50;
+    tempCustomHideRules = JSON.parse(JSON.stringify(displayOptions.customHideRules || []));
+    renderCustomHideRulesUI();
+    optionsModal.style.display = "flex";
+  }
+
+  function closeOptionsModal() {
+    optionsModal.style.display = "none";
+  }
+
+  const customHideRulesList = document.getElementById("custom-hide-rules-list");
+  const btnAddCustomHide = document.getElementById("btn-add-custom-hide");
+  let tempCustomHideRules = [];
+
+  function renderCustomHideRulesUI() {
+    customHideRulesList.innerHTML = "";
+    tempCustomHideRules.forEach((rule, idx) => {
+      const row = document.createElement("div");
+      row.style.display = "flex";
+      row.style.alignItems = "center";
+      row.style.gap = "8px";
+      row.style.background = "rgba(0,0,0,0.03)";
+      row.style.padding = "6px 8px";
+      row.style.border = "1px solid var(--panel-border)";
+
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.checked = !!rule.enabled;
+      check.addEventListener("change", () => {
+        rule.enabled = check.checked;
+      });
+
+      const labelInsight = document.createElement("span");
+      labelInsight.style.fontSize = "0.7rem";
+      labelInsight.style.fontFamily = "var(--mono-font)";
+      labelInsight.textContent = "Insight:";
+
+      const selInsight = document.createElement("select");
+      selInsight.className = "listing-tier-select";
+      selInsight.style.minWidth = "60px";
+      selInsight.style.padding = "4px";
+      [0, 1, 2, 3].forEach((i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `I${i}`;
+        if (Number(rule.insight) === i) opt.selected = true;
+        selInsight.appendChild(opt);
+      });
+      selInsight.addEventListener("change", () => {
+        rule.insight = Number(selInsight.value);
+        // adjust level max
+        const maxLvl = getMaxLevelForInsight(rule.insight);
+        if (rule.level > maxLvl) {
+          rule.level = maxLvl;
+          inputLvl.value = maxLvl;
+        }
+        inputLvl.max = maxLvl;
+      });
+
+      const labelLvl = document.createElement("span");
+      labelLvl.style.fontSize = "0.7rem";
+      labelLvl.style.fontFamily = "var(--mono-font)";
+      labelLvl.textContent = "Lv:";
+
+      const inputLvl = document.createElement("input");
+      inputLvl.type = "number";
+      inputLvl.className = "search-input";
+      inputLvl.style.width = "50px";
+      inputLvl.style.height = "26px";
+      inputLvl.style.padding = "2px 4px";
+      inputLvl.min = "1";
+      inputLvl.max = String(getMaxLevelForInsight(rule.insight));
+      inputLvl.value = rule.level;
+      inputLvl.addEventListener("input", (e) => {
+        rule.level = Number(e.target.value);
+      });
+
+      const btnDel = document.createElement("button");
+      btnDel.type = "button";
+      btnDel.className = "btn-tier-del";
+      btnDel.innerHTML = "&times;";
+      btnDel.title = "Delete Rule";
+      btnDel.addEventListener("click", () => {
+        tempCustomHideRules.splice(idx, 1);
+        renderCustomHideRulesUI();
+      });
+
+      row.appendChild(check);
+      row.appendChild(labelInsight);
+      row.appendChild(selInsight);
+      row.appendChild(labelLvl);
+      row.appendChild(inputLvl);
+      row.appendChild(btnDel);
+
+      customHideRulesList.appendChild(row);
+    });
+  }
+
+  btnAddCustomHide.addEventListener("click", () => {
+    tempCustomHideRules.push({
+      id: "hide_" + Date.now(),
+      insight: 3,
+      level: 59,
+      enabled: true,
+    });
+    renderCustomHideRulesUI();
+  });
+
+  btnOptions.addEventListener("click", openOptionsModal);
+  optionsBtnClose.addEventListener("click", closeOptionsModal);
+  optionsBtnDone.addEventListener("click", () => {
+    displayOptions.hideInsight = checkHideInsight.checked;
+    displayOptions.hideLevel = checkHideLevel.checked;
+    displayOptions.hideResonance = checkHideResonance.checked;
+    displayOptions.hideEuphoria = checkHideEuphoria.checked;
+    displayOptions.hidePortrait = checkHidePortrait.checked;
+    displayOptions.hideNames = checkHideNames.checked;
+    if (checkHideSkin) displayOptions.hideSkin = checkHideSkin.checked;
+    displayOptions.showRarityLine = checkShowRarityLine.checked;
+    displayOptions.hideI3Lv60 = checkHideI3Lv60.checked;
+    displayOptions.hideI3Lv30 = checkHideI3Lv30.checked;
+    displayOptions.hideI2Lv50 = checkHideI2Lv50.checked;
+    displayOptions.customHideRules = tempCustomHideRules;
+    saveDisplayOptions();
+    renderShowcase();
+    closeOptionsModal();
+  });
+
+  optionsModal.addEventListener("click", (e) => {
+    if (e.target === optionsModal) closeOptionsModal();
+  });
+
+  // Customize Modal
+  const btnCustomize = document.getElementById("btn-customize");
+  const customizeModal = document.getElementById("customize-modal");
+  const customizeBtnClose = document.getElementById("customize-btn-close");
+  const customizeBtnDone = document.getElementById("customize-btn-done");
+  const selectBoardFont = document.getElementById("select-board-font");
+  const inputBoardTitleSize = document.getElementById("input-board-title-size");
+  const displayBoardTitleSize = document.getElementById("display-board-title-size");
+  const inputTierLabelSize = document.getElementById("input-tier-label-size");
+  const displayTierLabelSize = document.getElementById("display-tier-label-size");
+  const colorBoardBg = document.getElementById("color-board-bg");
+  const colorBoardTitle = document.getElementById("color-board-title");
+  const colorEuphoriaLabel = document.getElementById("color-euphoria-label");
+  const colorPortraitBar = document.getElementById("color-portrait-bar");
+  const colorPatternNone = document.getElementById("color-pattern-none");
+  const colorPatternOffensive = document.getElementById("color-pattern-offensive");
+  const colorPatternDefensive = document.getElementById("color-pattern-defensive");
+  const colorPatternHp = document.getElementById("color-pattern-hp");
+  const colorPatternEquibalance = document.getElementById("color-pattern-equibalance");
+  const btnResetCustomAppearance = document.getElementById("btn-reset-custom-appearance");
+
+  function syncAppearanceFormWithState(app) {
+    selectBoardFont.value = app.boardFont || "default";
+    const titleSize = app.boardTitleSize !== undefined ? app.boardTitleSize : 0.74;
+    inputBoardTitleSize.value = titleSize;
+    displayBoardTitleSize.textContent = `${titleSize}rem`;
+
+    const tierSize = app.tierLabelSize !== undefined ? app.tierLabelSize : 0.70;
+    inputTierLabelSize.value = tierSize;
+    displayTierLabelSize.textContent = `${tierSize}rem`;
+
+    colorBoardBg.value = app.boardBg || "#111111";
+    colorBoardTitle.value = app.boardTitleColor || "#f4efe9";
+    colorEuphoriaLabel.value = app.euphoriaColor || "#04FFEE";
+    colorPortraitBar.value = app.portraitBarColor || "#FBAE31";
+    colorPatternNone.value = app.patternNone || "#4F4F4F";
+    colorPatternOffensive.value = app.patternOffensive || "#FBAE31";
+    colorPatternDefensive.value = app.patternDefensive || "#2D8A5A";
+    colorPatternHp.value = app.patternHp || "#D4AD2B";
+    colorPatternEquibalance.value = app.patternEquibalance || "#3B6DC7";
+  }
+
+  function readAppearanceForm() {
+    return {
+      boardFont: selectBoardFont.value,
+      boardTitleSize: Number(inputBoardTitleSize.value),
+      tierLabelSize: Number(inputTierLabelSize.value),
+      boardBg: colorBoardBg.value,
+      boardTitleColor: colorBoardTitle.value,
+      euphoriaColor: colorEuphoriaLabel.value,
+      portraitBarColor: colorPortraitBar.value,
+      patternNone: colorPatternNone.value,
+      patternOffensive: colorPatternOffensive.value,
+      patternDefensive: colorPatternDefensive.value,
+      patternHp: colorPatternHp.value,
+      patternEquibalance: colorPatternEquibalance.value,
+    };
+  }
+
+  inputBoardTitleSize.addEventListener("input", (e) => {
+    displayBoardTitleSize.textContent = `${e.target.value}rem`;
+  });
+
+  inputTierLabelSize.addEventListener("input", (e) => {
+    displayTierLabelSize.textContent = `${e.target.value}rem`;
+  });
+
+  btnResetCustomAppearance.addEventListener("click", () => {
+    syncAppearanceFormWithState(DEFAULT_THEME_APPEARANCE);
+  });
+
+  function openCustomizeModal() {
+    syncAppearanceFormWithState(displayOptions.appearance || DEFAULT_THEME_APPEARANCE);
+    customizeModal.style.display = "flex";
+  }
+
+  function closeCustomizeModal() {
+    customizeModal.style.display = "none";
+  }
+
+  btnCustomize.addEventListener("click", openCustomizeModal);
+  customizeBtnClose.addEventListener("click", closeCustomizeModal);
+  customizeBtnDone.addEventListener("click", () => {
+    displayOptions.appearance = readAppearanceForm();
+    saveDisplayOptions();
+    applyCustomAppearance();
+    renderShowcase();
+    closeCustomizeModal();
+  });
+
+  customizeModal.addEventListener("click", (e) => {
+    if (e.target === customizeModal) closeCustomizeModal();
+  });
+
+  optionsModal.addEventListener("click", (e) => {
+    if (e.target === optionsModal) closeOptionsModal();
+  });
+
+  // Listing Modal
+  const btnListing = document.getElementById("btn-listing");
+  const listingModal = document.getElementById("listing-modal");
+  const listingBtnClose = document.getElementById("listing-btn-close");
+  const listingBtnSave = document.getElementById("btn-save-listing");
+  const listingBtnReset = document.getElementById("btn-reset-listing");
+  const btnAddTier = document.getElementById("btn-add-tier");
+  const listingTiersList = document.getElementById("listing-tiers-list");
+  const checkEnableUnbuilt = document.getElementById("check-enable-unbuilt-tier");
+  const unbuiltTierConfig = document.getElementById("unbuilt-tier-config");
+  const inputUnbuiltLabel = document.getElementById("input-unbuilt-label");
+  const inputUnbuiltColor = document.getElementById("input-unbuilt-color");
+
+  const TIER_RULE_OPTIONS = [
+    { value: "r15", label: "Resonance: R15" },
+    { value: "r11-14", label: "Resonance: R11 - 14" },
+    { value: "r10", label: "Resonance: R10" },
+    { value: "r10_pattern", label: "R10 + Pattern (Has Pattern)" },
+    { value: "r10_no_pattern", label: "R10 + No Pattern" },
+    { value: "r10_euphoria", label: "R10 + Euphoria" },
+    { value: "r1-9", label: "Resonance: R1 - 9" },
+    { value: "has_euphoria", label: "Euphoria: Has Euphoria" },
+    { value: "lv60", label: "Level: Lv.60" },
+    { value: "non_lv60", label: "Level: Non-Lv.60 (< Lv.60)" },
+    { value: "i3", label: "Insight: Insight 3 (I3)" },
+    { value: "i2", label: "Insight: Insight 2 (I2)" },
+    { value: "i1", label: "Insight: Insight 1 (I1)" },
+    { value: "i0", label: "Insight: Insight 0 (I0)" },
+    { value: "rarity_6", label: "Rarity: 6✦" },
+    { value: "rarity_5", label: "Rarity: 5✦" },
+    { value: "rarity_2_4", label: "Rarity: 2✦ - 4✦" },
+    { value: "unbuilt", label: "Unbuilt (I0 Lv.1 R1)" },
+  ];
+
+  let tempListingTiers = [];
+
+  function renderListingTiersEditor() {
+    listingTiersList.innerHTML = "";
+    tempListingTiers.forEach((tier, index) => {
+      const row = document.createElement("div");
+      row.className = "listing-tier-item";
+
+      const handleDiv = document.createElement("div");
+      handleDiv.className = "listing-tier-handle";
+
+      const btnUp = document.createElement("button");
+      btnUp.type = "button";
+      btnUp.className = "btn-tier-move";
+      btnUp.textContent = "▲";
+      btnUp.disabled = index === 0;
+      btnUp.addEventListener("click", () => {
+        const temp = tempListingTiers[index - 1];
+        tempListingTiers[index - 1] = tempListingTiers[index];
+        tempListingTiers[index] = temp;
+        renderListingTiersEditor();
+      });
+
+      const btnDown = document.createElement("button");
+      btnDown.type = "button";
+      btnDown.className = "btn-tier-move";
+      btnDown.textContent = "▼";
+      btnDown.disabled = index === tempListingTiers.length - 1;
+      btnDown.addEventListener("click", () => {
+        const temp = tempListingTiers[index + 1];
+        tempListingTiers[index + 1] = tempListingTiers[index];
+        tempListingTiers[index] = temp;
+        renderListingTiersEditor();
+      });
+
+      handleDiv.appendChild(btnUp);
+      handleDiv.appendChild(btnDown);
+
+      const labelInput = document.createElement("input");
+      labelInput.type = "text";
+      labelInput.className = "listing-tier-label-input";
+      labelInput.value = tier.label;
+      labelInput.placeholder = "Label...";
+      labelInput.addEventListener("input", (e) => {
+        tier.label = e.target.value;
+      });
+
+      const colorInput = document.createElement("input");
+      colorInput.type = "color";
+      colorInput.className = "listing-tier-color-input";
+      colorInput.value = tier.color || "#ffffff";
+      colorInput.addEventListener("input", (e) => {
+        tier.color = e.target.value;
+      });
+
+      const selectRule = document.createElement("select");
+      selectRule.className = "listing-tier-select";
+      TIER_RULE_OPTIONS.forEach((opt) => {
+        const optionEl = document.createElement("option");
+        optionEl.value = opt.value;
+        optionEl.textContent = opt.label;
+        if (opt.value === tier.rule) optionEl.selected = true;
+        selectRule.appendChild(optionEl);
+      });
+      selectRule.addEventListener("change", (e) => {
+        tier.rule = e.target.value;
+      });
+
+      const btnDel = document.createElement("button");
+      btnDel.type = "button";
+      btnDel.className = "btn-tier-del";
+      btnDel.innerHTML = "&times;";
+      btnDel.title = "Delete Tier";
+      btnDel.addEventListener("click", () => {
+        tempListingTiers.splice(index, 1);
+        renderListingTiersEditor();
+      });
+
+      row.appendChild(handleDiv);
+      row.appendChild(labelInput);
+      row.appendChild(colorInput);
+      row.appendChild(selectRule);
+      row.appendChild(btnDel);
+
+      listingTiersList.appendChild(row);
+    });
+  }
+
+  function openListingModal() {
+    tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers || []));
+    checkEnableUnbuilt.checked = !!listingConfig.separateUnbuilt;
+    unbuiltTierConfig.style.display = checkEnableUnbuilt.checked ? "flex" : "none";
+    inputUnbuiltLabel.value = listingConfig.unbuiltLabel || "Unbuilt";
+    inputUnbuiltColor.value = listingConfig.unbuiltColor || "#9a9a9a";
+    renderListingTiersEditor();
+    listingModal.style.display = "flex";
+  }
+
+  function closeListingModal() {
+    listingModal.style.display = "none";
+  }
+
+  checkEnableUnbuilt.addEventListener("change", () => {
+    unbuiltTierConfig.style.display = checkEnableUnbuilt.checked ? "flex" : "none";
+  });
+
+  btnAddTier.addEventListener("click", () => {
+    tempListingTiers.push({
+      id: "tier_" + Date.now(),
+      label: "New Tier",
+      color: "#e0e0e0",
+      rule: "r10",
+    });
+    renderListingTiersEditor();
+  });
+
+  btnListing.addEventListener("click", openListingModal);
+  listingBtnClose.addEventListener("click", closeListingModal);
+  listingModal.addEventListener("click", (e) => {
+    if (e.target === listingModal) closeListingModal();
+  });
+
+  listingBtnSave.addEventListener("click", () => {
+    listingConfig.separateUnbuilt = checkEnableUnbuilt.checked;
+    listingConfig.unbuiltLabel = inputUnbuiltLabel.value.trim() || "Unbuilt";
+    listingConfig.unbuiltColor = inputUnbuiltColor.value;
+    listingConfig.tiers = tempListingTiers;
+    saveListingConfig();
+    renderShowcase();
+    closeListingModal();
+  });
+
+  listingBtnReset.addEventListener("click", () => {
+    if (confirm("Reset showcase tiers to defaults (R15, R11-14, R10, R1-9)?")) {
+      listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
+      tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers));
+      checkEnableUnbuilt.checked = false;
+      unbuiltTierConfig.style.display = "none";
+      inputUnbuiltLabel.value = "Unbuilt";
+      inputUnbuiltColor.value = "#9a9a9a";
+      renderListingTiersEditor();
+    }
+  });
+
+  // Future Sight Toggle Button
+  const btnFutureSight = document.getElementById("btn-future-sight");
+  function updateFutureSightBtnUI() {
+    if (futureSightEnabled) {
+      btnFutureSight.classList.add("active");
+    } else {
+      btnFutureSight.classList.remove("active");
+    }
+  }
+  updateFutureSightBtnUI();
+
+  btnFutureSight.addEventListener("click", () => {
+    futureSightEnabled = !futureSightEnabled;
+    saveFutureSightState();
+    updateFutureSightBtnUI();
+    renderShowcase();
   });
 
   // Roster Manager
@@ -922,14 +2045,49 @@ function setupEventListeners() {
   });
 
   btnSelectAll.addEventListener("click", () => {
-    for (const name in userRoster) userRoster[name].owned = true;
+    for (const name in userRoster) {
+      const rarity = getCharacterRarity(name);
+      if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+        const maxInsight = getMaxInsightForRarity(rarity);
+        const maxLvl = getMaxLevelForInsight(maxInsight);
+        const maxRes = getMaxResonanceForInsight(maxInsight);
+        userRoster[name].owned = true;
+        userRoster[name].insight = maxInsight;
+        userRoster[name].level = maxLvl;
+        userRoster[name].resonance = Math.min(10, maxRes);
+        userRoster[name].e1 = false;
+        userRoster[name].e2 = false;
+        userRoster[name].boxKind = "none";
+      }
+    }
+    saveRoster();
+    renderRosterManager();
+    renderShowcase();
+  });
+
+  btnSelectAllUnbuilt.addEventListener("click", () => {
+    for (const name in userRoster) {
+      const rarity = getCharacterRarity(name);
+      if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+        userRoster[name].owned = true;
+        userRoster[name].insight = 0;
+        userRoster[name].level = 1;
+        userRoster[name].resonance = 1;
+        userRoster[name].boxKind = "none";
+      }
+    }
     saveRoster();
     renderRosterManager();
     renderShowcase();
   });
 
   btnUnselectAll.addEventListener("click", () => {
-    for (const name in userRoster) userRoster[name].owned = false;
+    for (const name in userRoster) {
+      const rarity = getCharacterRarity(name);
+      if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+        userRoster[name].owned = false;
+      }
+    }
     saveRoster();
     renderRosterManager();
     renderShowcase();
@@ -942,8 +2100,9 @@ function setupEventListeners() {
     btnExportImage.disabled = true;
 
     try {
+      const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
       const canvas = await html2canvas(board, {
-        backgroundColor: "#000000",
+        backgroundColor: app.boardBg || "#111111",
         scale: 2, // high quality
         useCORS: true,
         logging: false,
@@ -980,14 +2139,18 @@ function setupEventListeners() {
     reader.onload = (event) => {
       try {
         const imported = JSON.parse(event.target.result);
-        if (typeof imported === "object") {
+        if (typeof imported === "object" && imported !== null && !Array.isArray(imported)) {
           userRoster = imported;
-          saveRoster();
+          loadRoster(); // sanitizes missing characters, level/insight/resonance caps
           renderShowcase();
           alert("Roster imported successfully!");
+        } else {
+          alert("Invalid roster format. Please select a valid JSON roster file.");
         }
       } catch (err) {
         alert("Invalid JSON file.");
+      } finally {
+        inputImportFile.value = ""; // Reset file input so re-importing the same file works
       }
     };
     reader.readAsText(file);
@@ -995,8 +2158,9 @@ function setupEventListeners() {
 
   // Reset Data
   btnResetData.addEventListener("click", () => {
-    if (confirm("Are you sure you want to reset all character levels to default?")) {
+    if (confirm("Are you sure you want to reset all character settings to their defaults? This will also reset ownership status.")) {
       localStorage.removeItem(STORAGE_KEY);
+      userRoster = {};
       loadRoster();
       renderShowcase();
     }
@@ -1005,35 +2169,37 @@ function setupEventListeners() {
 
 // Outside modal label: white default for None, else pattern colors.
 function getResonanceTextColor(boxKind) {
+  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
   switch (boxKind) {
     case "offensive":
-      return "#FBAE31";
+      return app.patternOffensive || "#FBAE31";
     case "defensive":
-      return "#2d8a5a";
+      return app.patternDefensive || "#2d8a5a";
     case "hp":
-      return "#d4ad2b";
+      return app.patternHp || "#d4ad2b";
     case "equibalance":
-      return "#3b6dc7";
+      return app.patternEquibalance || "#3b6dc7";
     case "none":
     default:
-      return "#4f4f4f";
+      return app.patternNone || "#4f4f4f";
   }
 }
 
 // Inside roster card label: gray default for None, else pattern colors.
 function getCardResonanceTextColor(boxKind) {
+  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
   switch (boxKind) {
     case "offensive":
-      return "#FBAE31";
+      return app.patternOffensive || "#FBAE31";
     case "defensive":
-      return "#2d8a5a";
+      return app.patternDefensive || "#2d8a5a";
     case "hp":
-      return "#d4ad2b";
+      return app.patternHp || "#d4ad2b";
     case "equibalance":
-      return "#3b6dc7";
+      return app.patternEquibalance || "#3b6dc7";
     case "none":
     default:
-      return "#4f4f4f";
+      return app.patternNone || "#4f4f4f";
   }
 }
 
