@@ -18,7 +18,7 @@
   <header class="top-controls no-export" id="top-controls">
     <!-- Primary Bar (Always visible) -->
     <div class="header-primary-bar">
-      <!-- Row 1: Brand & Top Info -->
+      <!-- Row 1: Brand & Logo -->
       <div class="header-brand-row">
         <div class="app-brand">
           <div class="app-brand-icon-box">
@@ -26,19 +26,12 @@
           </div>
           <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
         </div>
-        <div class="header-brand-right">
-          <span class="stat-badge" id="roster-stat">0 Owned</span>
-          <button type="button" class="btn btn-secondary btn-tools-toggle" id="btn-tools-toggle" title="More Tools & Settings" aria-expanded="false">
-            <span class="toggle-text">Tools</span>
-            <span class="toggle-icon">▾</span>
-          </button>
-        </div>
       </div>
 
       <!-- Controls Row A: Search, Quick Edit, Export PNG -->
       <div class="header-actions-row">
         <div class="header-search-wrap">
-          <input type="text" id="filter-search" class="search-input" placeholder="Quick search..." />
+          <input type="text" id="filter-search" class="search-input" placeholder="Search Characters" />
         </div>
         <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters">
           Quick Edit
@@ -48,23 +41,20 @@
         </button>
       </div>
 
-      <!-- Controls Row B: Filters (Ownership & Rarity) -->
-      <div class="header-filters-row">
-        <!-- Ownership Filter Buttons -->
-        <div class="filter-btn-group" id="filter-ownership-group">
-          <button type="button" class="filter-btn active" data-ownership="all">All</button>
-          <button type="button" class="filter-btn" data-ownership="owned">Owned</button>
-          <button type="button" class="filter-btn" data-ownership="unowned">Unowned</button>
+      <!-- Controls Row B: Roster Stats & Tools Button -->
+      <div class="header-stats-row">
+        <div class="stat-badge-wrap">
+          <span class="stat-badge" id="roster-stat" style="cursor: pointer;">0 Owned</span>
+          <div class="stat-badge-tooltip" id="roster-stat-tooltip">
+            <div>Lv. 60: 0</div>
+            <div>R10+: 0</div>
+            <div>Eupho unlocked: 0</div>
+          </div>
         </div>
-
-        <!-- Rarity Filter Buttons -->
-        <div class="filter-btn-group" id="filter-rarity-group">
-          <button type="button" class="filter-btn" data-rarity="6">✦6</button>
-          <button type="button" class="filter-btn" data-rarity="5">✦5</button>
-          <button type="button" class="filter-btn" data-rarity="4">✦4</button>
-          <button type="button" class="filter-btn" data-rarity="3">✦3</button>
-          <button type="button" class="filter-btn" data-rarity="2">✦2</button>
-        </div>
+        <button type="button" class="btn btn-secondary btn-tools-toggle" id="btn-tools-toggle" title="More Tools & Settings" aria-expanded="false">
+          <span class="toggle-text">Tools</span>
+          <span class="toggle-icon">▾</span>
+        </button>
       </div>
     </div>
 
@@ -75,18 +65,28 @@
           Options
         </button>
         <button type="button" class="btn btn-secondary" id="btn-customize" title="Customize Colors & Typography">
-          Customize
+          Styling
         </button>
         <button type="button" class="btn btn-secondary" id="btn-listing" title="Customize Tier Listing">
-          Listing
-        </button>
-        <button type="button" class="btn btn-secondary" id="btn-future-sight" title="Toggle CN Future Sight content">
-          Future Sight
+          Tiers
         </button>
       </div>
 
-      <div class="secondary-tools-group tools-title-group">
-        <input type="text" id="input-board-title" class="search-input" placeholder="Input Name or ID" />
+      <!-- Filters (Ownership & Rarity, Old Rename Suitcase position) -->
+      <div class="secondary-tools-group tools-filters-group">
+        <div class="filter-btn-group" id="filter-ownership-group">
+          <button type="button" class="filter-btn active" data-ownership="all">All</button>
+          <button type="button" class="filter-btn" data-ownership="owned">Owned</button>
+          <button type="button" class="filter-btn" data-ownership="unowned">Unowned</button>
+        </div>
+
+        <div class="filter-btn-group" id="filter-rarity-group">
+          <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+          <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+          <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+          <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+          <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+        </div>
       </div>
 
       <div class="secondary-tools-group tools-data-group">
@@ -197,10 +197,10 @@
             </div>
           </div>
           <div id="pattern-help-box" class="pattern-help-box" style="display: none;">
-            <p><strong>In the game:</strong></p>
-            <p>• Only <strong>Stupefaction</strong> is yellow</p>
-            <p>• Only <strong>Equibalance</strong> is blue</p>
-            <p>• Others are either orange or green</p>
+            <p>• Offensive: <strong>Aspirational, Delirament, Elucidation, Genuinity, Hyper, Hyperphrenia, Inspire</strong></p>
+            <p>• Defensive: <strong>Equanimity, Mercy, Overindulgence, Prudentiality, Quiescence</strong></p>
+            <p>• <strong>Stupefaction</strong> is yellow.</p>
+            <p>• <strong>Equibalance</strong> is blue.</p>
           </div>
           <div class="resonance-box-legend" aria-label="Pattern type legend">
             <button type="button" class="resonance-box-choice none active" data-box-kind="none">None</button>
@@ -262,6 +262,21 @@
         <div class="setting-group">
           <label class="setting-label">Display Filters</label>
           <div class="euphoria-checkboxes" style="flex-direction: column; gap: 10px; margin-top: 4px;">
+            <label class="check-container">
+              <input type="checkbox" id="check-future-sight" />
+              <span class="check-box"></span>
+              <span class="check-text">Show CN Contents</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-show-pattern-bg" />
+              <span class="check-box"></span>
+              <span class="check-text">Show Character's Background (Pattern Color)</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-show-pattern-border" />
+              <span class="check-box"></span>
+              <span class="check-text">Show Character's Border (Pattern Color)</span>
+            </label>
             <label class="check-container">
               <input type="checkbox" id="check-show-rarity-line" />
               <span class="check-box"></span>
@@ -330,6 +345,27 @@
           <!-- Custom User-Added Insight/Level Rules -->
           <div id="custom-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;"></div>
         </div>
+
+        <div class="setting-group" style="margin-top: 10px;">
+          <div class="setting-label-row">
+            <label class="setting-label">Preset Resonance Hiding</label>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-res-hide">Add</button>
+          </div>
+          <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px; margin-top: 4px;">
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-r15" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide R15</span>
+            </label>
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-r10" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide R10</span>
+            </label>
+          </div>
+          <!-- Custom User-Added Resonance Rules -->
+          <div id="custom-res-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;"></div>
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary btn-block" id="options-btn-done">Done</button>
@@ -341,7 +377,7 @@
   <div id="customize-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card" style="max-width: 440px;">
       <div class="modal-header">
-        <h2>Customize Showcase</h2>
+        <h2>Styling</h2>
         <button class="modal-close" id="customize-btn-close">&times;</button>
       </div>
       <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
@@ -352,6 +388,12 @@
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+            <!-- Rename Board / Suitcase -->
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title</span>
+              <input type="text" id="input-board-title" class="search-input" placeholder="Rename Suitcase" style="max-width: 190px;" />
+            </div>
+
             <!-- Board Font -->
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Font</span>
@@ -360,6 +402,7 @@
                 <option value="mono">JetBrains Mono</option>
                 <option value="serif">Noto Serif TC</option>
                 <option value="sans">Segoe UI / System Sans</option>
+                <option value="arial">Arial</option>
                 <option value="georgia">Georgia</option>
                 <option value="courier">Courier New</option>
               </select>
@@ -395,16 +438,153 @@
               </label>
             </div>
 
+            <!-- Board Header -->
+            <div class="custom-style-section">
+              <span class="custom-style-section-title">Board Title Header Box</span>
+              <div class="custom-style-grid">
+                <label class="custom-style-row">
+                  <span>Background</span>
+                  <div class="custom-style-color-cell">
+                    <input type="color" id="color-board-header-bg" value="#000000" class="listing-tier-color-input" />
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-board-header-bg" title="Set Transparent">Clear</button>
+                  </div>
+                </label>
+                <label class="custom-style-row">
+                  <span>Border Color</span>
+                  <div class="custom-style-color-cell">
+                    <input type="color" id="color-board-header-border" value="#333333" class="listing-tier-color-input" />
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-board-header-border" title="Set Default / Transparent">Clear</button>
+                  </div>
+                </label>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <div class="custom-style-row">
+                  <span>Border Width</span>
+                  <span id="display-board-header-border-width" style="font-weight: 700;">1px</span>
+                </div>
+                <input type="range" id="input-board-header-border-width" min="0" max="6" step="1" value="1" class="custom-slider" />
+              </div>
+            </div>
+
+            <!-- Tier Row Frame (Khung chứa Tier & Nhân vật) -->
+            <div class="custom-style-section">
+              <span class="custom-style-section-title">Tier Row Box</span>
+              <div class="custom-style-grid">
+                <label class="custom-style-row">
+                  <span>Background</span>
+                  <div class="custom-style-color-cell">
+                    <input type="color" id="color-tier-box-bg" value="#000000" class="listing-tier-color-input" />
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-tier-box-bg" title="Set Transparent">Clear</button>
+                  </div>
+                </label>
+                <label class="custom-style-row">
+                  <span>Border Color</span>
+                  <div class="custom-style-color-cell">
+                    <input type="color" id="color-tier-box-border" value="#222222" class="listing-tier-color-input" />
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-tier-box-border" title="Set Default / Transparent">Clear</button>
+                  </div>
+                </label>
+              </div>
+              <div class="custom-style-grid">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Border Width</span>
+                    <span id="display-tier-box-border-width" style="font-weight: 700;">1px</span>
+                  </div>
+                  <input type="range" id="input-tier-box-border-width" min="0" max="8" step="1" value="1" class="custom-slider" />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Border Radius</span>
+                    <span id="display-tier-box-radius" style="font-weight: 700;">0px</span>
+                  </div>
+                  <input type="range" id="input-tier-box-radius" min="0" max="24" step="1" value="0" class="custom-slider" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Spacing (Khoảng cách) -->
+            <div class="custom-style-section">
+              <span class="custom-style-section-title">Spacing</span>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Header & Tier Rows Gap</span>
+                    <span id="display-spacing-header-tier" style="font-weight: 700;">20px</span>
+                  </div>
+                  <input type="range" id="input-spacing-header-tier" min="0" max="60" step="1" value="20" class="custom-slider" />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Between Tier Rows Gap</span>
+                    <span id="display-spacing-tier-gap" style="font-weight: 700;">14px</span>
+                  </div>
+                  <input type="range" id="input-spacing-tier-gap" min="0" max="50" step="1" value="14" class="custom-slider" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Character -->
+            <div class="custom-style-section">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="custom-style-section-title">Insight, Lv. Badge</span>
+                <label class="check-container" style="margin: 0;">
+                  <input type="checkbox" id="check-char-info-bg-enabled" checked />
+                  <span class="check-box"></span>
+                  <span class="check-text" style="font-size: 0.65rem;">Enable BG</span>
+                </label>
+              </div>
+              <div class="custom-style-grid" id="char-info-bg-controls">
+                <label class="custom-style-row">
+                  <span>Background Color</span>
+                  <input type="color" id="color-char-info-bg" value="#121212" class="listing-tier-color-input" />
+                </label>
+                <label class="custom-style-row">
+                  <span>Border Color</span>
+                  <div class="custom-style-color-cell">
+                    <input type="color" id="color-char-info-border" value="#ffffff" class="listing-tier-color-input" />
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-char-info-border" title="Set Transparent">Clear</button>
+                  </div>
+                </label>
+              </div>
+              <div class="custom-style-grid">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Border Width</span>
+                    <span id="display-char-info-border-width" style="font-weight: 700;">0px</span>
+                  </div>
+                  <input type="range" id="input-char-info-border-width" min="0" max="4" step="0.5" value="0" class="custom-slider" />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Border Radius</span>
+                    <span id="display-char-info-radius" style="font-weight: 700;">0px</span>
+                  </div>
+                  <input type="range" id="input-char-info-radius" min="0" max="12" step="1" value="0" class="custom-slider" />
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px;" id="char-info-bg-opacity-row">
+                <div class="custom-style-row">
+                  <span>Background Opacity (Transparency)</span>
+                  <span id="display-char-info-bg-opacity" style="font-weight: 700;">22%</span>
+                </div>
+                <input type="range" id="input-char-info-bg-opacity" min="0" max="1" step="0.02" value="0.22" class="custom-slider" />
+              </div>
+            </div>
+
             <!-- Euphoria & Portrait Dash Color -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                <span>Euphoria Label</span>
-                <input type="color" id="color-euphoria-label" value="#04FFEE" class="listing-tier-color-input" />
-              </label>
-              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                <span>Portrait Bar (Active)</span>
-                <input type="color" id="color-portrait-bar" value="#FBAE31" class="listing-tier-color-input" />
-              </label>
+            <div class="custom-style-section">
+              <span class="custom-style-section-title">Accents & Badges</span>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Euphoria Label</span>
+                  <input type="color" id="color-euphoria-label" value="#04FFEE" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Portrait Bar (Active)</span>
+                  <input type="color" id="color-portrait-bar" value="#FBAE31" class="listing-tier-color-input" />
+                </label>
+              </div>
             </div>
 
             <!-- Resonance Pattern Colors -->
@@ -463,6 +643,14 @@
           </div>
         </div>
 
+        <!-- Unowned Tier Color Option -->
+        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border); margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 0.72rem; font-family: var(--mono-font);">Unowned Tier Color</span>
+            <input type="color" id="input-unowned-color" value="#9a9a9a" style="width: 34px; height: 31px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
+          </div>
+        </div>
+
         <!-- Custom Tier List Container -->
         <div class="setting-group">
           <div class="setting-label-row">
@@ -507,6 +695,7 @@
         <div class="roster-quick-actions">
           <button class="btn btn-secondary btn-sm" id="btn-select-all">Set All Owned</button>
           <button class="btn btn-secondary btn-sm" id="btn-select-all-unbuilt">Set All Owned (Unbuilt)</button>
+          <button class="btn btn-secondary btn-sm" id="btn-set-all-p5">Set All P5</button>
           <button class="btn btn-secondary btn-sm" id="btn-unselect-all">Set All Unowned</button>
         </div>
       </div>

@@ -88,6 +88,7 @@ const DEFAULT_TIERS_CONFIG = {
   separateUnbuilt: false,
   unbuiltLabel: "Unbuilt",
   unbuiltColor: "#9a9a9a",
+  unownedColor: "#9a9a9a",
   tiers: [
     { id: "tier_r15", label: "R15", color: "#d1783d", rule: "r15" },
     { id: "tier_r11_14", label: "R11 - 14", color: "#6d9b6c", rule: "r11-14" },
@@ -159,6 +160,7 @@ const rosterGridList = document.getElementById("roster-grid-list");
 const rosterFilterRarityBtns = document.querySelectorAll("#roster-filter-rarity-group .filter-btn");
 const btnSelectAll = document.getElementById("btn-select-all");
 const btnSelectAllUnbuilt = document.getElementById("btn-select-all-unbuilt");
+const btnSetAllP5 = document.getElementById("btn-set-all-p5");
 const btnUnselectAll = document.getElementById("btn-unselect-all");
 
 let rosterActiveRarityFilters = new Set(); // Set of active rarities in Roster Manager
@@ -177,6 +179,30 @@ const DEFAULT_THEME_APPEARANCE = {
   tierLabelSize: 0.70,
   boardBg: "#111111",
   boardTitleColor: "#f4efe9",
+
+  // Board Header Box
+  boardHeaderBg: "transparent",
+  boardHeaderBorderColor: "rgba(255, 255, 255, 0.1)",
+  boardHeaderBorderWidth: 1,
+
+  // Tier Box (Khung chứa từng tier & nhân vật)
+  tierBoxBg: "transparent",
+  tierBoxBorderColor: "rgba(255, 255, 255, 0.04)",
+  tierBoxBorderWidth: 1,
+  tierBoxRadius: 0,
+
+  // Spacing
+  spacingHeaderToTiers: 20,
+  spacingBetweenTierRows: 14,
+
+  // Character Info Badge (I/Lv Overlay)
+  charInfoBgEnabled: true,
+  charInfoBg: "#121212",
+  charInfoBgOpacity: 0.22,
+  charInfoBorderColor: "transparent",
+  charInfoBorderWidth: 0,
+  charInfoRadius: 0,
+
   euphoriaColor: "#04FFEE",
   portraitBarColor: "#FBAE31",
   patternNone: "#4F4F4F",
@@ -194,11 +220,16 @@ let displayOptions = {
   hidePortrait: false,
   hideNames: false,
   hideSkin: false,
+  showPatternBg: false,
+  showPatternBorder: false,
   showRarityLine: false,
   hideI3Lv60: false,
   hideI3Lv30: false,
   hideI2Lv50: false,
   customHideRules: [], // array of { id, insight: 3, level: 59, enabled: true }
+  hideR15: false,
+  hideR10: false,
+  customResHideRules: [], // array of { id, resonance: 10, enabled: true }
   appearance: { ...DEFAULT_THEME_APPEARANCE },
 };
 
@@ -215,45 +246,99 @@ function loadDisplayOptions() {
       if (!Array.isArray(displayOptions.customHideRules)) {
         displayOptions.customHideRules = [];
       }
+      if (!Array.isArray(displayOptions.customResHideRules)) {
+        displayOptions.customResHideRules = [];
+      }
     }
   } catch (e) {
     console.warn("Could not parse display options", e);
   }
 }
 
+function getBoardFontFamily(fontKey) {
+  switch (fontKey) {
+    case "mono":
+      return "var(--mono-font)";
+    case "serif":
+      return "var(--serif-font)";
+    case "sans":
+      return "var(--primary-font)";
+    case "arial":
+      return 'Arial, "Helvetica Neue", Helvetica, sans-serif';
+    case "georgia":
+      return 'Georgia, "Noto Serif TC", serif';
+    case "courier":
+      return '"Courier New", Courier, monospace';
+    case "default":
+    default:
+      return "var(--mono-font)";
+  }
+}
+
+function hexToRgba(color, alpha) {
+  if (!color || color === "transparent") return "transparent";
+  const numAlpha = alpha !== undefined ? Number(alpha) : 1;
+  const clampedAlpha = Math.max(0, Math.min(1, isNaN(numAlpha) ? 1 : numAlpha));
+  if (color.startsWith("rgba")) {
+    const match = color.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if (match) {
+      return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${clampedAlpha})`;
+    }
+  }
+  let hex = color.replace("#", "");
+  if (hex.length === 3) {
+    hex = hex.split("").map((c) => c + c).join("");
+  }
+  if (hex.length === 6) {
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${clampedAlpha})`;
+  }
+  return color;
+}
+
 function applyCustomAppearance() {
   const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
   const showcaseBoard = document.getElementById("showcase-board");
+  const fontValue = getBoardFontFamily(app.boardFont);
+
+  document.documentElement.style.setProperty("--board-font", fontValue);
+
   if (showcaseBoard) {
     showcaseBoard.style.backgroundColor = app.boardBg || "#111111";
-    switch (app.boardFont) {
-      case "mono":
-        showcaseBoard.style.fontFamily = "var(--mono-font)";
-        break;
-      case "serif":
-        showcaseBoard.style.fontFamily = "var(--serif-font)";
-        break;
-      case "sans":
-        showcaseBoard.style.fontFamily = "var(--primary-font)";
-        break;
-      case "georgia":
-        showcaseBoard.style.fontFamily = "Georgia, serif";
-        break;
-      case "courier":
-        showcaseBoard.style.fontFamily = "'Courier New', Courier, monospace";
-        break;
-      case "default":
-      default:
-        showcaseBoard.style.fontFamily = "var(--main-font-family)";
-        break;
-    }
+    showcaseBoard.style.setProperty("--board-font", fontValue);
+    showcaseBoard.style.fontFamily = fontValue;
   }
 
   if (boardTitleLabel) {
     boardTitleLabel.style.color = app.boardTitleColor || "rgba(244, 239, 233, 0.84)";
     const size = app.boardTitleSize !== undefined ? app.boardTitleSize : 0.74;
     boardTitleLabel.style.fontSize = `${size}rem`;
+    boardTitleLabel.style.fontFamily = fontValue;
   }
+
+  // Board Header Box Variables
+  document.documentElement.style.setProperty("--board-header-bg", app.boardHeaderBg || "transparent");
+  document.documentElement.style.setProperty("--board-header-border-color", app.boardHeaderBorderColor || "rgba(255, 255, 255, 0.1)");
+  document.documentElement.style.setProperty("--board-header-border-width", `${app.boardHeaderBorderWidth !== undefined ? app.boardHeaderBorderWidth : 1}px`);
+  document.documentElement.style.setProperty("--board-header-spacing", `${app.spacingHeaderToTiers !== undefined ? app.spacingHeaderToTiers : 20}px`);
+
+  // Tier Box Variables
+  document.documentElement.style.setProperty("--tier-box-bg", app.tierBoxBg || "transparent");
+  document.documentElement.style.setProperty("--tier-box-border-color", app.tierBoxBorderColor || "rgba(255, 255, 255, 0.04)");
+  document.documentElement.style.setProperty("--tier-box-border-width", `${app.tierBoxBorderWidth !== undefined ? app.tierBoxBorderWidth : 1}px`);
+  document.documentElement.style.setProperty("--tier-box-radius", `${app.tierBoxRadius !== undefined ? app.tierBoxRadius : 0}px`);
+  document.documentElement.style.setProperty("--tier-row-spacing", `${app.spacingBetweenTierRows !== undefined ? app.spacingBetweenTierRows : 14}px`);
+
+  // Character Info Badge Variables
+  const bgOpacity = app.charInfoBgOpacity !== undefined ? app.charInfoBgOpacity : 0.22;
+  const rawBg = app.charInfoBg || "#121212";
+  const charInfoBg = app.charInfoBgEnabled === false ? "transparent" : hexToRgba(rawBg, bgOpacity);
+  document.documentElement.style.setProperty("--char-info-bg", charInfoBg);
+  document.documentElement.style.setProperty("--char-info-border-color", app.charInfoBorderColor || "transparent");
+  document.documentElement.style.setProperty("--char-info-border-width", `${app.charInfoBorderWidth !== undefined ? app.charInfoBorderWidth : 0}px`);
+  document.documentElement.style.setProperty("--char-info-radius", `${app.charInfoRadius !== undefined ? app.charInfoRadius : 0}px`);
 
   // Update root CSS variables for live styles
   document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
@@ -866,6 +951,9 @@ function renderShowcase() {
 
   let ownedCount = 0;
   let totalCount = 0;
+  let lv60Count = 0;
+  let r10PlusCount = 0;
+  let euphoCount = 0;
 
   const allNames = Object.keys(characterDb);
   const ownedNames = [];
@@ -882,6 +970,9 @@ function renderShowcase() {
     if (char.owned) {
       ownedCount++;
       ownedNames.push(name);
+      if (Number(char.level) === 60) lv60Count++;
+      if (Number(char.resonance) >= 10) r10PlusCount++;
+      if (char.e1 || char.e2) euphoCount++;
     } else {
       unownedNames.push(name);
     }
@@ -997,10 +1088,20 @@ function renderShowcase() {
       const card = createCharacterCard(name, char, iconUrl);
       unownedCards.push(card);
     });
-    renderTierRowSection("Unowned", "#9a9a9a", unownedCards);
+    renderTierRowSection("Unowned", listingConfig.unownedColor || "#9a9a9a", unownedCards);
   }
 
   rosterStat.textContent = `${ownedCount}/${totalCount} Owned`;
+  rosterStat.removeAttribute("title");
+
+  const rosterStatTooltip = document.getElementById("roster-stat-tooltip");
+  if (rosterStatTooltip) {
+    rosterStatTooltip.innerHTML = `
+      <div>Lv. 60: ${lv60Count}</div>
+      <div>R10+: ${r10PlusCount}</div>
+      <div>Eupho unlocked: ${euphoCount}</div>
+    `;
+  }
 }
 
 function renderTierRowSection(label, color, cards) {
@@ -1015,6 +1116,7 @@ function renderTierRowSection(label, color, cards) {
   labelEl.textContent = label;
   labelEl.style.color = color;
   labelEl.style.fontSize = `${tierSize}rem`;
+  labelEl.style.fontFamily = getBoardFontFamily(app.boardFont);
 
   const contentEl = document.createElement("div");
   contentEl.className = "tier-content";
@@ -1026,13 +1128,24 @@ function renderTierRowSection(label, color, cards) {
   tierRowsContainer.appendChild(section);
 }
 
+function getPatternDisplayName(boxKind) {
+  switch (boxKind) {
+    case "offensive": return "Offensive";
+    case "defensive": return "Defensive";
+    case "hp": return "Stupefaction";
+    case "equibalance": return "Equibalance";
+    default: return "";
+  }
+}
+
 // Create Character Card Element
 function createCharacterCard(name, char, iconUrl) {
   const card = document.createElement("div");
   card.className = `char-card ${!char.owned ? "is-unowned" : ""}`;
   const insightVal = char.insight !== undefined ? char.insight : 3;
   const levelVal = char.level !== undefined ? char.level : 60;
-  card.title = `${name}\nInsight: I${insightVal} Lv.${levelVal}\nResonance: R${char.resonance}\nPortrait: P${char.portrait}`;
+  const rarityVal = getCharacterRarity(name);
+  const rarityStars = "✦".repeat(rarityVal || 0);
 
   // Euphoria / Pattern string e.g. "E1 E2" or "E1" or "E2"
   let euphoriaText = "";
@@ -1042,6 +1155,8 @@ function createCharacterCard(name, char, iconUrl) {
 
   const boxKind = char.boxKind || "none";
   const resonanceColor = getCardResonanceTextColor(boxKind);
+  const patternName = getPatternDisplayName(boxKind);
+  const patternSuffix = patternName ? ` · ${patternName}` : "";
 
   // Portrait dashes: 5 total slots (P0 = 0 dashes, P1 = 1 active dash, ... P5 = 5 active dashes)
   const dashesHtml = (char.owned && !displayOptions.hidePortrait)
@@ -1052,7 +1167,16 @@ function createCharacterCard(name, char, iconUrl) {
   if (!char.owned) {
     topHeaderHtml = `<div class="char-top-info">${!displayOptions.hideNames ? `<span class="char-unowned-name">${escapeHtml(name)}</span>` : ""}</div>`;
   } else {
-    const showResonance = !displayOptions.hideResonance;
+    const resVal = Number(char.resonance);
+    const matchesCustomResRule = (displayOptions.customResHideRules || []).some(
+      (rule) => rule.enabled && Number(rule.resonance) === resVal
+    );
+    const isResHiddenByPreset =
+      (displayOptions.hideR15 && resVal === 15) ||
+      (displayOptions.hideR10 && resVal === 10) ||
+      matchesCustomResRule;
+
+    const showResonance = !displayOptions.hideResonance && !isResHiddenByPreset;
     const showEuphoria = !displayOptions.hideEuphoria && !!euphoriaText;
     topHeaderHtml = `
       <div class="char-top-info">
@@ -1101,21 +1225,52 @@ function createCharacterCard(name, char, iconUrl) {
     </div>
   ` : "";
 
-  const rarityVal = getCharacterRarity(name);
   const rarityLineHtml = displayOptions.showRarityLine ? `
     <div class="char-rarity-line rarity-${rarityVal}"></div>
   ` : "";
 
   const avatarUrl = getCardAvatarUrl(name, char, iconUrl);
 
+  const avatarBoxStyles = [];
+  if (char.owned && boxKind && boxKind !== "none") {
+    if (displayOptions.showPatternBg) {
+      avatarBoxStyles.push(`background-color: ${resonanceColor}`);
+    }
+    if (displayOptions.showPatternBorder) {
+      avatarBoxStyles.push(`border: 1px solid ${resonanceColor}`);
+    }
+  }
+  const avatarBoxStyle = avatarBoxStyles.length > 0 ? ` style="${avatarBoxStyles.join("; ")};"` : "";
+
+  let tooltipHtml = "";
+  if (!char.owned) {
+    tooltipHtml = `
+      <div class="char-tooltip no-export">
+        <div>${escapeHtml(name)}</div>
+        <div>Unowned</div>
+      </div>
+    `;
+  } else {
+    tooltipHtml = `
+      <div class="char-tooltip no-export">
+        <div>${escapeHtml(name)}</div>
+        <div>Insight: I${insightVal} Lv.${levelVal}</div>
+        <div>Resonance: R${char.resonance}</div>
+        <div>Portrait: P${char.portrait}</div>
+        ${euphoriaText ? `<div>Euphoria: ${euphoriaText}</div>` : ""}
+      </div>
+    `;
+  }
+
   card.innerHTML = `
     ${topHeaderHtml}
-    <div class="char-avatar-box">
+    <div class="char-avatar-box"${avatarBoxStyle}>
       <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
       ${insightLevelOverlay}
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
+    ${tooltipHtml}
   `;
 
   card.addEventListener("click", () => openEditModal(name));
@@ -1579,12 +1734,28 @@ function setupEventListeners() {
   const checkHidePortrait = document.getElementById("check-hide-portrait");
   const checkHideNames = document.getElementById("check-hide-names");
   const checkHideSkin = document.getElementById("check-hide-skin");
+  const checkFutureSight = document.getElementById("check-future-sight");
+  const checkShowPatternBg = document.getElementById("check-show-pattern-bg");
+  const checkShowPatternBorder = document.getElementById("check-show-pattern-border");
   const checkShowRarityLine = document.getElementById("check-show-rarity-line");
   const checkHideI3Lv60 = document.getElementById("check-hide-i3-lv60");
   const checkHideI3Lv30 = document.getElementById("check-hide-i3-lv30");
   const checkHideI2Lv50 = document.getElementById("check-hide-i2-lv50");
+  const checkHideR15 = document.getElementById("check-hide-r15");
+  const checkHideR10 = document.getElementById("check-hide-r10");
+
+  const customHideRulesList = document.getElementById("custom-hide-rules-list");
+  const btnAddCustomHide = document.getElementById("btn-add-custom-hide");
+  let tempCustomHideRules = [];
+
+  const customResHideRulesList = document.getElementById("custom-res-hide-rules-list");
+  const btnAddCustomResHide = document.getElementById("btn-add-custom-res-hide");
+  let tempCustomResHideRules = [];
 
   function openOptionsModal() {
+    if (checkFutureSight) checkFutureSight.checked = !!futureSightEnabled;
+    if (checkShowPatternBg) checkShowPatternBg.checked = !!displayOptions.showPatternBg;
+    if (checkShowPatternBorder) checkShowPatternBorder.checked = !!displayOptions.showPatternBorder;
     checkHideInsight.checked = !!displayOptions.hideInsight;
     checkHideLevel.checked = !!displayOptions.hideLevel;
     checkHideResonance.checked = !!displayOptions.hideResonance;
@@ -1596,18 +1767,21 @@ function setupEventListeners() {
     checkHideI3Lv60.checked = !!displayOptions.hideI3Lv60;
     checkHideI3Lv30.checked = !!displayOptions.hideI3Lv30;
     checkHideI2Lv50.checked = !!displayOptions.hideI2Lv50;
+    if (checkHideR15) checkHideR15.checked = !!displayOptions.hideR15;
+    if (checkHideR10) checkHideR10.checked = !!displayOptions.hideR10;
+
     tempCustomHideRules = JSON.parse(JSON.stringify(displayOptions.customHideRules || []));
     renderCustomHideRulesUI();
+
+    tempCustomResHideRules = JSON.parse(JSON.stringify(displayOptions.customResHideRules || []));
+    renderCustomResHideRulesUI();
+
     optionsModal.style.display = "flex";
   }
 
   function closeOptionsModal() {
     optionsModal.style.display = "none";
   }
-
-  const customHideRulesList = document.getElementById("custom-hide-rules-list");
-  const btnAddCustomHide = document.getElementById("btn-add-custom-hide");
-  let tempCustomHideRules = [];
 
   function renderCustomHideRulesUI() {
     customHideRulesList.innerHTML = "";
@@ -1703,9 +1877,84 @@ function setupEventListeners() {
     renderCustomHideRulesUI();
   });
 
+  function renderCustomResHideRulesUI() {
+    if (!customResHideRulesList) return;
+    customResHideRulesList.innerHTML = "";
+    tempCustomResHideRules.forEach((rule, idx) => {
+      const row = document.createElement("div");
+      row.style.display = "flex";
+      row.style.alignItems = "center";
+      row.style.gap = "8px";
+      row.style.background = "rgba(0,0,0,0.03)";
+      row.style.padding = "6px 8px";
+      row.style.border = "1px solid var(--panel-border)";
+
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.checked = !!rule.enabled;
+      check.addEventListener("change", () => {
+        rule.enabled = check.checked;
+      });
+
+      const labelRes = document.createElement("span");
+      labelRes.style.fontSize = "0.7rem";
+      labelRes.style.fontFamily = "var(--mono-font)";
+      labelRes.textContent = "Resonance:";
+
+      const selRes = document.createElement("select");
+      selRes.className = "listing-tier-select";
+      selRes.style.minWidth = "70px";
+      selRes.style.padding = "4px";
+      for (let r = 15; r >= 1; r--) {
+        const opt = document.createElement("option");
+        opt.value = r;
+        opt.textContent = `R${r}`;
+        if (Number(rule.resonance) === r) opt.selected = true;
+        selRes.appendChild(opt);
+      }
+      selRes.addEventListener("change", () => {
+        rule.resonance = Number(selRes.value);
+      });
+
+      const btnDel = document.createElement("button");
+      btnDel.type = "button";
+      btnDel.className = "btn-tier-del";
+      btnDel.innerHTML = "&times;";
+      btnDel.title = "Delete Rule";
+      btnDel.addEventListener("click", () => {
+        tempCustomResHideRules.splice(idx, 1);
+        renderCustomResHideRulesUI();
+      });
+
+      row.appendChild(check);
+      row.appendChild(labelRes);
+      row.appendChild(selRes);
+      row.appendChild(btnDel);
+
+      customResHideRulesList.appendChild(row);
+    });
+  }
+
+  if (btnAddCustomResHide) {
+    btnAddCustomResHide.addEventListener("click", () => {
+      tempCustomResHideRules.push({
+        id: "res_hide_" + Date.now(),
+        resonance: 10,
+        enabled: true,
+      });
+      renderCustomResHideRulesUI();
+    });
+  }
+
   btnOptions.addEventListener("click", openOptionsModal);
   optionsBtnClose.addEventListener("click", closeOptionsModal);
   optionsBtnDone.addEventListener("click", () => {
+    if (checkFutureSight) {
+      futureSightEnabled = checkFutureSight.checked;
+      saveFutureSightState();
+    }
+    if (checkShowPatternBg) displayOptions.showPatternBg = checkShowPatternBg.checked;
+    if (checkShowPatternBorder) displayOptions.showPatternBorder = checkShowPatternBorder.checked;
     displayOptions.hideInsight = checkHideInsight.checked;
     displayOptions.hideLevel = checkHideLevel.checked;
     displayOptions.hideResonance = checkHideResonance.checked;
@@ -1718,6 +1967,9 @@ function setupEventListeners() {
     displayOptions.hideI3Lv30 = checkHideI3Lv30.checked;
     displayOptions.hideI2Lv50 = checkHideI2Lv50.checked;
     displayOptions.customHideRules = tempCustomHideRules;
+    if (checkHideR15) displayOptions.hideR15 = checkHideR15.checked;
+    if (checkHideR10) displayOptions.hideR10 = checkHideR10.checked;
+    displayOptions.customResHideRules = tempCustomResHideRules;
     saveDisplayOptions();
     renderShowcase();
     closeOptionsModal();
@@ -1739,6 +1991,43 @@ function setupEventListeners() {
   const displayTierLabelSize = document.getElementById("display-tier-label-size");
   const colorBoardBg = document.getElementById("color-board-bg");
   const colorBoardTitle = document.getElementById("color-board-title");
+
+  // Board Header Box Elements
+  const colorBoardHeaderBg = document.getElementById("color-board-header-bg");
+  const btnClearBoardHeaderBg = document.getElementById("btn-clear-board-header-bg");
+  const colorBoardHeaderBorder = document.getElementById("color-board-header-border");
+  const btnClearBoardHeaderBorder = document.getElementById("btn-clear-board-header-border");
+  const inputBoardHeaderBorderWidth = document.getElementById("input-board-header-border-width");
+  const displayBoardHeaderBorderWidth = document.getElementById("display-board-header-border-width");
+
+  // Tier Box Elements
+  const colorTierBoxBg = document.getElementById("color-tier-box-bg");
+  const btnClearTierBoxBg = document.getElementById("btn-clear-tier-box-bg");
+  const colorTierBoxBorder = document.getElementById("color-tier-box-border");
+  const btnClearTierBoxBorder = document.getElementById("btn-clear-tier-box-border");
+  const inputTierBoxBorderWidth = document.getElementById("input-tier-box-border-width");
+  const displayTierBoxBorderWidth = document.getElementById("display-tier-box-border-width");
+  const inputTierBoxRadius = document.getElementById("input-tier-box-radius");
+  const displayTierBoxRadius = document.getElementById("display-tier-box-radius");
+
+  // Spacing Elements
+  const inputSpacingHeaderTier = document.getElementById("input-spacing-header-tier");
+  const displaySpacingHeaderTier = document.getElementById("display-spacing-header-tier");
+  const inputSpacingTierGap = document.getElementById("input-spacing-tier-gap");
+  const displaySpacingTierGap = document.getElementById("display-spacing-tier-gap");
+
+  // Character Info Badge Elements
+  const checkCharInfoBgEnabled = document.getElementById("check-char-info-bg-enabled");
+  const colorCharInfoBg = document.getElementById("color-char-info-bg");
+  const colorCharInfoBorder = document.getElementById("color-char-info-border");
+  const btnClearCharInfoBorder = document.getElementById("btn-clear-char-info-border");
+  const inputCharInfoBorderWidth = document.getElementById("input-char-info-border-width");
+  const displayCharInfoBorderWidth = document.getElementById("display-char-info-border-width");
+  const inputCharInfoRadius = document.getElementById("input-char-info-radius");
+  const displayCharInfoRadius = document.getElementById("display-char-info-radius");
+  const inputCharInfoBgOpacity = document.getElementById("input-char-info-bg-opacity");
+  const displayCharInfoBgOpacity = document.getElementById("display-char-info-bg-opacity");
+
   const colorEuphoriaLabel = document.getElementById("color-euphoria-label");
   const colorPortraitBar = document.getElementById("color-portrait-bar");
   const colorPatternNone = document.getElementById("color-pattern-none");
@@ -1748,7 +2037,22 @@ function setupEventListeners() {
   const colorPatternEquibalance = document.getElementById("color-pattern-equibalance");
   const btnResetCustomAppearance = document.getElementById("btn-reset-custom-appearance");
 
+  let currentBoardHeaderBg = "transparent";
+  let currentBoardHeaderBorder = "rgba(255, 255, 255, 0.1)";
+  let currentTierBoxBg = "transparent";
+  let currentTierBoxBorder = "rgba(255, 255, 255, 0.04)";
+  let currentCharInfoBorder = "transparent";
+
+  function parseHexOrDefault(val, fallbackHex) {
+    if (!val || val === "transparent") return fallbackHex;
+    if (val.startsWith("#") && (val.length === 7 || val.length === 4)) return val;
+    return fallbackHex;
+  }
+
   function syncAppearanceFormWithState(app) {
+    if (inputBoardTitle) {
+      inputBoardTitle.value = localStorage.getItem(TITLE_STORAGE_KEY) || "";
+    }
     selectBoardFont.value = app.boardFont || "default";
     const titleSize = app.boardTitleSize !== undefined ? app.boardTitleSize : 0.74;
     inputBoardTitleSize.value = titleSize;
@@ -1760,6 +2064,66 @@ function setupEventListeners() {
 
     colorBoardBg.value = app.boardBg || "#111111";
     colorBoardTitle.value = app.boardTitleColor || "#f4efe9";
+
+    // Board Header Box
+    currentBoardHeaderBg = app.boardHeaderBg || "transparent";
+    colorBoardHeaderBg.value = parseHexOrDefault(currentBoardHeaderBg, "#000000");
+    currentBoardHeaderBorder = app.boardHeaderBorderColor || "rgba(255, 255, 255, 0.1)";
+    colorBoardHeaderBorder.value = parseHexOrDefault(currentBoardHeaderBorder, "#333333");
+    const bhBw = app.boardHeaderBorderWidth !== undefined ? app.boardHeaderBorderWidth : 1;
+    inputBoardHeaderBorderWidth.value = bhBw;
+    displayBoardHeaderBorderWidth.textContent = `${bhBw}px`;
+
+    // Tier Box
+    currentTierBoxBg = app.tierBoxBg || "transparent";
+    colorTierBoxBg.value = parseHexOrDefault(currentTierBoxBg, "#000000");
+    currentTierBoxBorder = app.tierBoxBorderColor || "rgba(255, 255, 255, 0.04)";
+    colorTierBoxBorder.value = parseHexOrDefault(currentTierBoxBorder, "#222222");
+    const tbBw = app.tierBoxBorderWidth !== undefined ? app.tierBoxBorderWidth : 1;
+    inputTierBoxBorderWidth.value = tbBw;
+    displayTierBoxBorderWidth.textContent = `${tbBw}px`;
+    const tbRad = app.tierBoxRadius !== undefined ? app.tierBoxRadius : 0;
+    inputTierBoxRadius.value = tbRad;
+    displayTierBoxRadius.textContent = `${tbRad}px`;
+
+    // Spacing
+    const spHeader = app.spacingHeaderToTiers !== undefined ? app.spacingHeaderToTiers : 20;
+    if (inputSpacingHeaderTier) inputSpacingHeaderTier.value = spHeader;
+    if (displaySpacingHeaderTier) displaySpacingHeaderTier.textContent = `${spHeader}px`;
+
+    const spTier = app.spacingBetweenTierRows !== undefined ? app.spacingBetweenTierRows : 14;
+    if (inputSpacingTierGap) inputSpacingTierGap.value = spTier;
+    if (displaySpacingTierGap) displaySpacingTierGap.textContent = `${spTier}px`;
+
+    // Character Info Badge
+    checkCharInfoBgEnabled.checked = app.charInfoBgEnabled !== false;
+    const bgControls = document.getElementById("char-info-bg-controls");
+    if (bgControls) bgControls.style.opacity = checkCharInfoBgEnabled.checked ? "1" : "0.5";
+    const bgOpacityRow = document.getElementById("char-info-bg-opacity-row");
+    if (bgOpacityRow) bgOpacityRow.style.opacity = checkCharInfoBgEnabled.checked ? "1" : "0.5";
+
+    colorCharInfoBg.value = parseHexOrDefault(app.charInfoBg, "#121212");
+    currentCharInfoBorder = app.charInfoBorderColor || "transparent";
+    colorCharInfoBorder.value = parseHexOrDefault(currentCharInfoBorder, "#ffffff");
+    const ciBw = app.charInfoBorderWidth !== undefined ? app.charInfoBorderWidth : 0;
+    inputCharInfoBorderWidth.value = ciBw;
+    displayCharInfoBorderWidth.textContent = `${ciBw}px`;
+    const ciRad = app.charInfoRadius !== undefined ? app.charInfoRadius : 0;
+    inputCharInfoRadius.value = ciRad;
+    displayCharInfoRadius.textContent = `${ciRad}px`;
+
+    let ciBgOpacity = app.charInfoBgOpacity;
+    if (ciBgOpacity === undefined) {
+      if (typeof app.charInfoBg === "string" && app.charInfoBg.startsWith("rgba")) {
+        const m = app.charInfoBg.match(/rgba\s*\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)/i);
+        ciBgOpacity = m ? parseFloat(m[1]) : 0.22;
+      } else {
+        ciBgOpacity = 0.22;
+      }
+    }
+    if (inputCharInfoBgOpacity) inputCharInfoBgOpacity.value = ciBgOpacity;
+    if (displayCharInfoBgOpacity) displayCharInfoBgOpacity.textContent = `${Math.round(ciBgOpacity * 100)}%`;
+
     colorEuphoriaLabel.value = app.euphoriaColor || "#04FFEE";
     colorPortraitBar.value = app.portraitBarColor || "#FBAE31";
     colorPatternNone.value = app.patternNone || "#4F4F4F";
@@ -1776,6 +2140,30 @@ function setupEventListeners() {
       tierLabelSize: Number(inputTierLabelSize.value),
       boardBg: colorBoardBg.value,
       boardTitleColor: colorBoardTitle.value,
+
+      // Board Header Box
+      boardHeaderBg: currentBoardHeaderBg,
+      boardHeaderBorderColor: currentBoardHeaderBorder,
+      boardHeaderBorderWidth: Number(inputBoardHeaderBorderWidth.value),
+
+      // Tier Box
+      tierBoxBg: currentTierBoxBg,
+      tierBoxBorderColor: currentTierBoxBorder,
+      tierBoxBorderWidth: Number(inputTierBoxBorderWidth.value),
+      tierBoxRadius: Number(inputTierBoxRadius.value),
+
+      // Spacing
+      spacingHeaderToTiers: inputSpacingHeaderTier ? Number(inputSpacingHeaderTier.value) : 20,
+      spacingBetweenTierRows: inputSpacingTierGap ? Number(inputSpacingTierGap.value) : 14,
+
+      // Character Info Badge
+      charInfoBgEnabled: checkCharInfoBgEnabled.checked,
+      charInfoBg: colorCharInfoBg.value,
+      charInfoBgOpacity: inputCharInfoBgOpacity ? Number(inputCharInfoBgOpacity.value) : 0.22,
+      charInfoBorderColor: currentCharInfoBorder,
+      charInfoBorderWidth: Number(inputCharInfoBorderWidth.value),
+      charInfoRadius: Number(inputCharInfoRadius.value),
+
       euphoriaColor: colorEuphoriaLabel.value,
       portraitBarColor: colorPortraitBar.value,
       patternNone: colorPatternNone.value,
@@ -1794,8 +2182,112 @@ function setupEventListeners() {
     displayTierLabelSize.textContent = `${e.target.value}rem`;
   });
 
+  // Board Header Box events
+  colorBoardHeaderBg.addEventListener("input", (e) => {
+    currentBoardHeaderBg = e.target.value;
+  });
+  btnClearBoardHeaderBg.addEventListener("click", () => {
+    currentBoardHeaderBg = "transparent";
+  });
+  colorBoardHeaderBorder.addEventListener("input", (e) => {
+    currentBoardHeaderBorder = e.target.value;
+  });
+  btnClearBoardHeaderBorder.addEventListener("click", () => {
+    currentBoardHeaderBorder = "transparent";
+  });
+  inputBoardHeaderBorderWidth.addEventListener("input", (e) => {
+    displayBoardHeaderBorderWidth.textContent = `${e.target.value}px`;
+  });
+
+  // Tier Box events
+  colorTierBoxBg.addEventListener("input", (e) => {
+    currentTierBoxBg = e.target.value;
+  });
+  btnClearTierBoxBg.addEventListener("click", () => {
+    currentTierBoxBg = "transparent";
+  });
+  colorTierBoxBorder.addEventListener("input", (e) => {
+    currentTierBoxBorder = e.target.value;
+  });
+  btnClearTierBoxBorder.addEventListener("click", () => {
+    currentTierBoxBorder = "transparent";
+  });
+  inputTierBoxBorderWidth.addEventListener("input", (e) => {
+    displayTierBoxBorderWidth.textContent = `${e.target.value}px`;
+  });
+  inputTierBoxRadius.addEventListener("input", (e) => {
+    displayTierBoxRadius.textContent = `${e.target.value}px`;
+  });
+
+  // Spacing events
+  if (inputSpacingHeaderTier) {
+    inputSpacingHeaderTier.addEventListener("input", (e) => {
+      displaySpacingHeaderTier.textContent = `${e.target.value}px`;
+    });
+  }
+  if (inputSpacingTierGap) {
+    inputSpacingTierGap.addEventListener("input", (e) => {
+      displaySpacingTierGap.textContent = `${e.target.value}px`;
+    });
+  }
+
+  // Character Info Badge events
+  checkCharInfoBgEnabled.addEventListener("change", (e) => {
+    const controls = document.getElementById("char-info-bg-controls");
+    if (controls) controls.style.opacity = e.target.checked ? "1" : "0.5";
+    const bgOpacityRow = document.getElementById("char-info-bg-opacity-row");
+    if (bgOpacityRow) bgOpacityRow.style.opacity = e.target.checked ? "1" : "0.5";
+  });
+  colorCharInfoBorder.addEventListener("input", (e) => {
+    currentCharInfoBorder = e.target.value;
+  });
+  btnClearCharInfoBorder.addEventListener("click", () => {
+    currentCharInfoBorder = "transparent";
+  });
+  inputCharInfoBorderWidth.addEventListener("input", (e) => {
+    displayCharInfoBorderWidth.textContent = `${e.target.value}px`;
+  });
+  inputCharInfoRadius.addEventListener("input", (e) => {
+    displayCharInfoRadius.textContent = `${e.target.value}px`;
+  });
+  if (inputCharInfoBgOpacity) {
+    inputCharInfoBgOpacity.addEventListener("input", (e) => {
+      displayCharInfoBgOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
+    });
+  }
+
+  selectBoardFont.addEventListener("change", (e) => {
+    const fontValue = getBoardFontFamily(e.target.value);
+    document.documentElement.style.setProperty("--board-font", fontValue);
+    const showcaseBoard = document.getElementById("showcase-board");
+    if (showcaseBoard) {
+      showcaseBoard.style.setProperty("--board-font", fontValue);
+      showcaseBoard.style.fontFamily = fontValue;
+    }
+    if (boardTitleLabel) {
+      boardTitleLabel.style.fontFamily = fontValue;
+    }
+    document.querySelectorAll(".tier-label").forEach((el) => {
+      el.style.fontFamily = fontValue;
+    });
+  });
+
   btnResetCustomAppearance.addEventListener("click", () => {
+    if (!confirm("Are you sure you want to reset all styling and appearance settings to defaults?")) return;
     syncAppearanceFormWithState(DEFAULT_THEME_APPEARANCE);
+    const fontValue = getBoardFontFamily(DEFAULT_THEME_APPEARANCE.boardFont);
+    document.documentElement.style.setProperty("--board-font", fontValue);
+    const showcaseBoard = document.getElementById("showcase-board");
+    if (showcaseBoard) {
+      showcaseBoard.style.setProperty("--board-font", fontValue);
+      showcaseBoard.style.fontFamily = fontValue;
+    }
+    if (boardTitleLabel) {
+      boardTitleLabel.style.fontFamily = fontValue;
+    }
+    document.querySelectorAll(".tier-label").forEach((el) => {
+      el.style.fontFamily = fontValue;
+    });
   });
 
   function openCustomizeModal() {
@@ -1837,6 +2329,7 @@ function setupEventListeners() {
   const unbuiltTierConfig = document.getElementById("unbuilt-tier-config");
   const inputUnbuiltLabel = document.getElementById("input-unbuilt-label");
   const inputUnbuiltColor = document.getElementById("input-unbuilt-color");
+  const inputUnownedColor = document.getElementById("input-unowned-color");
 
   const TIER_RULE_OPTIONS = [
     { value: "r15", label: "Resonance: R15" },
@@ -1953,6 +2446,7 @@ function setupEventListeners() {
     unbuiltTierConfig.style.display = checkEnableUnbuilt.checked ? "flex" : "none";
     inputUnbuiltLabel.value = listingConfig.unbuiltLabel || "Unbuilt";
     inputUnbuiltColor.value = listingConfig.unbuiltColor || "#9a9a9a";
+    if (inputUnownedColor) inputUnownedColor.value = listingConfig.unownedColor || "#9a9a9a";
     renderListingTiersEditor();
     listingModal.style.display = "flex";
   }
@@ -1985,6 +2479,7 @@ function setupEventListeners() {
     listingConfig.separateUnbuilt = checkEnableUnbuilt.checked;
     listingConfig.unbuiltLabel = inputUnbuiltLabel.value.trim() || "Unbuilt";
     listingConfig.unbuiltColor = inputUnbuiltColor.value;
+    if (inputUnownedColor) listingConfig.unownedColor = inputUnownedColor.value;
     listingConfig.tiers = tempListingTiers;
     saveListingConfig();
     renderShowcase();
@@ -1999,26 +2494,9 @@ function setupEventListeners() {
       unbuiltTierConfig.style.display = "none";
       inputUnbuiltLabel.value = "Unbuilt";
       inputUnbuiltColor.value = "#9a9a9a";
+      if (inputUnownedColor) inputUnownedColor.value = "#9a9a9a";
       renderListingTiersEditor();
     }
-  });
-
-  // Future Sight Toggle Button
-  const btnFutureSight = document.getElementById("btn-future-sight");
-  function updateFutureSightBtnUI() {
-    if (futureSightEnabled) {
-      btnFutureSight.classList.add("active");
-    } else {
-      btnFutureSight.classList.remove("active");
-    }
-  }
-  updateFutureSightBtnUI();
-
-  btnFutureSight.addEventListener("click", () => {
-    futureSightEnabled = !futureSightEnabled;
-    saveFutureSightState();
-    updateFutureSightBtnUI();
-    renderShowcase();
   });
 
   // Mobile Tools Drawer Toggle Button
@@ -2056,7 +2534,23 @@ function setupEventListeners() {
     });
   });
 
+  function getRosterFilterTargetText() {
+    if (rosterActiveRarityFilters.size === 0) {
+      return "all characters";
+    }
+    const rarities = [...rosterActiveRarityFilters]
+      .sort((a, b) => a - b)
+      .map((r) => `rarity ${r}`);
+    return `all ${rarities.join(", ")}`;
+  }
+
+  function confirmRosterBulkAction(actionText) {
+    const target = getRosterFilterTargetText();
+    return confirm(`Are you sure you want to set ${target} to ${actionText}?`);
+  }
+
   btnSelectAll.addEventListener("click", () => {
+    if (!confirmRosterBulkAction("owned")) return;
     for (const name in userRoster) {
       const rarity = getCharacterRarity(name);
       if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
@@ -2078,6 +2572,7 @@ function setupEventListeners() {
   });
 
   btnSelectAllUnbuilt.addEventListener("click", () => {
+    if (!confirmRosterBulkAction("owned (unbuilt)")) return;
     for (const name in userRoster) {
       const rarity = getCharacterRarity(name);
       if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
@@ -2093,7 +2588,23 @@ function setupEventListeners() {
     renderShowcase();
   });
 
+  if (btnSetAllP5) {
+    btnSetAllP5.addEventListener("click", () => {
+      if (!confirmRosterBulkAction("P5")) return;
+      for (const name in userRoster) {
+        const rarity = getCharacterRarity(name);
+        if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+          userRoster[name].portrait = 5;
+        }
+      }
+      saveRoster();
+      renderRosterManager();
+      renderShowcase();
+    });
+  }
+
   btnUnselectAll.addEventListener("click", () => {
+    if (!confirmRosterBulkAction("unowned")) return;
     for (const name in userRoster) {
       const rarity = getCharacterRarity(name);
       if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
@@ -2222,6 +2733,7 @@ function setupEventListeners() {
         onclone: (clonedDoc) => {
           const clonedImgs = clonedDoc.querySelectorAll("#showcase-board img");
           clonedImgs.forEach((img) => img.removeAttribute("loading"));
+          clonedDoc.querySelectorAll(".char-tooltip").forEach((el) => el.remove());
         },
       });
 
