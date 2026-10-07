@@ -71,19 +71,68 @@ body::before {
   border: 1px solid var(--panel-border);
   border-radius: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 18px;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  padding: 12px 18px;
+  gap: 10px;
   box-shadow: none;
 }
 
-.header-left {
+.header-primary-bar {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
+}
+
+.header-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-brand-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-tools-toggle {
+  display: none !important;
+}
+
+.header-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-search-wrap {
+  display: flex;
+}
+
+.header-filters-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-secondary-tools {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(17, 15, 12, 0.06);
+  flex-wrap: wrap;
+}
+
+.secondary-tools-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .filter-btn-group {
@@ -1317,6 +1366,41 @@ body::before {
   color: var(--text-primary);
 }
 
+/* Export Image Modal Preview */
+.export-help-tip {
+  font-family: var(--mono-font);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #111111;
+  background: rgba(215, 177, 85, 0.16);
+  border: 1px solid rgba(215, 177, 85, 0.4);
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.export-preview-container {
+  overflow-y: auto;
+  max-height: 55vh;
+  max-height: 55dvh;
+  border: 1px solid rgba(17, 15, 12, 0.1);
+  background: #111111;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  -webkit-overflow-scrolling: touch;
+}
+
+.export-preview-container img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+  -webkit-touch-callout: default !important;
+}
+
 /* Responsive Mobile-Only UI adjustments (phones and small screens) */
 @media screen and (max-width: 768px) {
   body {
@@ -1327,15 +1411,24 @@ body::before {
   .top-controls {
     margin: 8px auto 0;
     width: calc(100% - 16px);
-    padding: 10px 10px;
-    gap: 10px;
+    padding: 8px 10px;
+    gap: 7px;
+    border-radius: 0;
+    box-shadow: 0 4px 16px rgba(16, 13, 10, 0.06);
   }
 
-  .header-left {
-    width: 100%;
-    gap: 6px;
+  .header-primary-bar {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+  }
+
+  /* Row 1: Brand & Top Info */
+  .header-brand-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
   }
 
@@ -1344,57 +1437,191 @@ body::before {
   }
 
   .app-brand-icon-box {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
   }
 
   .app-brand-icon {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
   }
 
   .app-logo-img {
-    height: 28px;
+    height: 24px;
+  }
+
+  .header-brand-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .stat-badge {
-    height: 28px;
+    height: 26px;
     font-size: 0.58rem;
-    padding: 0 6px;
+    padding: 0 7px;
     letter-spacing: 0.04em;
   }
 
-  .filter-btn-group {
-    height: 28px;
-  }
-
-  .filter-btn {
+  .btn-tools-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 3px;
+    height: 26px;
+    padding: 0 8px;
     font-size: 0.6rem;
-    padding: 0 6px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    background: rgba(17, 15, 12, 0.04);
+    border: 1px solid var(--panel-border);
+    color: var(--text-primary);
+    transition: all 0.15s ease;
   }
 
-  /* Header action buttons on phone */
-  #btn-options,
-  #btn-customize,
-  #btn-listing,
-  #btn-future-sight {
-    height: 28px !important;
-    padding: 0 8px !important;
-    font-size: 0.62rem !important;
-    flex: 1 1 auto;
+  .top-controls.tools-open .btn-tools-toggle {
+    background: #2a2825;
+    color: #f7f7f7;
+    border-color: #2a2825;
   }
 
-  .header-actions {
+  /* Row 2: Search, Quick Edit, Export PNG */
+  .header-actions-row {
     width: 100%;
+    display: flex;
     gap: 6px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
   }
 
-  .search-input {
+  .header-search-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header-search-wrap .search-input {
     width: 100%;
     height: 30px;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
+    padding: 0 8px;
+  }
+
+  #btn-manage-all {
+    height: 30px;
+    padding: 0 9px;
+    font-size: 0.6rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+
+  #btn-export-image {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 0.6rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+
+  /* Row 3: Filters (Ownership & Rarity) */
+  .header-filters-row {
+    width: 100%;
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+  }
+
+  #filter-ownership-group {
+    flex: 1;
+    min-width: 0;
+    height: 28px;
+    display: flex;
+  }
+
+  #filter-ownership-group .filter-btn {
+    flex: 1;
+    padding: 0 4px;
+    font-size: 0.58rem;
+    text-align: center;
+  }
+
+  #filter-rarity-group {
+    flex: 1.35;
+    min-width: 0;
+    height: 28px;
+    display: flex;
+  }
+
+  #filter-rarity-group .filter-btn {
+    flex: 1;
+    padding: 0 2px;
+    font-size: 0.56rem;
+    text-align: center;
+  }
+
+  /* Secondary Tools Drawer */
+  .header-secondary-tools {
+    display: none;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(17, 15, 12, 0.15);
+    animation: toolsDrawerIn 0.18s ease-out;
+  }
+
+  .top-controls.tools-open .header-secondary-tools {
+    display: flex;
+  }
+
+  @keyframes toolsDrawerIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tools-config-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .tools-config-group .btn {
+    height: 28px !important;
+    padding: 0 6px !important;
+    font-size: 0.6rem !important;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+  }
+
+  .tools-title-group {
+    width: 100%;
+  }
+
+  .tools-title-group .search-input {
+    width: 100%;
+    height: 28px;
+    font-size: 0.68rem;
+  }
+
+  .tools-data-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .tools-data-group .btn {
+    height: 28px;
+    padding: 0 6px;
+    font-size: 0.6rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  #btn-reset-data {
+    grid-column: span 2;
   }
 
   .btn {
@@ -1516,16 +1743,21 @@ body::before {
 
   /* Modals Mobile Adaptation */
   .modal-backdrop {
-    padding: 8px;
-    align-items: flex-end;
+    padding: 12px 8px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
   .modal-card {
-    max-width: 100%;
+    width: 100%;
+    max-width: 100% !important;
     max-height: 90vh;
+    max-height: 90dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    margin: auto 0;
   }
 
   .modal-header {
@@ -1551,6 +1783,8 @@ body::before {
     gap: 12px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    flex: 1 1 auto;
+    max-height: none;
   }
 
   .resonance-box-legend {
@@ -1586,6 +1820,18 @@ body::before {
   /* Character Roster Manager Modal Mobile Adaptation */
   .modal-card-large {
     max-height: 92vh;
+    max-height: 92dvh;
+  }
+
+  .export-help-tip {
+    font-size: 0.62rem;
+    padding: 8px 10px;
+  }
+
+  .export-preview-container {
+    max-height: 50vh;
+    max-height: 50dvh;
+    padding: 4px;
   }
 
   .roster-toolbar {

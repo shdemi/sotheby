@@ -15,77 +15,92 @@
 </head>
 <body>
   <!-- Floating Controls & Toolbar -->
-  <header class="top-controls no-export">
-    <div class="header-left">
-      <div class="app-brand">
-        <div class="app-brand-icon-box">
-          <img src="images/web_icon.webp" alt="Icon" class="app-brand-icon" />
+  <header class="top-controls no-export" id="top-controls">
+    <!-- Primary Bar (Always visible) -->
+    <div class="header-primary-bar">
+      <!-- Row 1: Brand & Top Info -->
+      <div class="header-brand-row">
+        <div class="app-brand">
+          <div class="app-brand-icon-box">
+            <img src="images/web_icon.webp" alt="Icon" class="app-brand-icon" />
+          </div>
+          <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
         </div>
-        <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
-      </div>
-      <span class="stat-badge" id="roster-stat">0 Owned</span>
-
-      <!-- Ownership Filter Buttons -->
-      <div class="filter-btn-group" id="filter-ownership-group">
-        <button type="button" class="filter-btn active" data-ownership="all">All</button>
-        <button type="button" class="filter-btn" data-ownership="owned">Owned</button>
-        <button type="button" class="filter-btn" data-ownership="unowned">Unowned</button>
+        <div class="header-brand-right">
+          <span class="stat-badge" id="roster-stat">0 Owned</span>
+          <button type="button" class="btn btn-secondary btn-tools-toggle" id="btn-tools-toggle" title="More Tools & Settings" aria-expanded="false">
+            <span class="toggle-text">Tools</span>
+            <span class="toggle-icon">▾</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Rarity Filter Buttons -->
-      <div class="filter-btn-group" id="filter-rarity-group">
-        <button type="button" class="filter-btn" data-rarity="6">✦6</button>
-        <button type="button" class="filter-btn" data-rarity="5">✦5</button>
-        <button type="button" class="filter-btn" data-rarity="4">✦4</button>
-        <button type="button" class="filter-btn" data-rarity="3">✦3</button>
-        <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+      <!-- Controls Row A: Search, Quick Edit, Export PNG -->
+      <div class="header-actions-row">
+        <div class="header-search-wrap">
+          <input type="text" id="filter-search" class="search-input" placeholder="Quick search..." />
+        </div>
+        <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters">
+          Quick Edit
+        </button>
+        <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG">
+          Export PNG
+        </button>
       </div>
 
-      <!-- Option Button -->
-      <button type="button" class="btn btn-secondary" id="btn-options" title="Display Options" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
-        Options
-      </button>
+      <!-- Controls Row B: Filters (Ownership & Rarity) -->
+      <div class="header-filters-row">
+        <!-- Ownership Filter Buttons -->
+        <div class="filter-btn-group" id="filter-ownership-group">
+          <button type="button" class="filter-btn active" data-ownership="all">All</button>
+          <button type="button" class="filter-btn" data-ownership="owned">Owned</button>
+          <button type="button" class="filter-btn" data-ownership="unowned">Unowned</button>
+        </div>
 
-      <!-- Customize Button -->
-      <button type="button" class="btn btn-secondary" id="btn-customize" title="Customize Colors & Typography" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
-        Customize
-      </button>
-
-      <!-- Listing Button -->
-      <button type="button" class="btn btn-secondary" id="btn-listing" title="Customize Tier Listing" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
-        Listing
-      </button>
-
-      <!-- Future Sight Button -->
-      <button type="button" class="btn btn-secondary" id="btn-future-sight" title="Toggle CN Future Sight content" style="height: 31px; padding: 0 12px; font-size: 0.68rem;">
-        Future Sight
-      </button>
+        <!-- Rarity Filter Buttons -->
+        <div class="filter-btn-group" id="filter-rarity-group">
+          <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+          <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+          <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+          <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+          <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+        </div>
+      </div>
     </div>
 
-    <div class="header-actions">
-      <input type="text" id="filter-search" class="search-input" placeholder="Quick search..." />
-      <input type="text" id="input-board-title" class="search-input" placeholder="Input Name or ID" />
-      
-      <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters">
-        Quick Edit
-      </button>
+    <!-- Secondary Tools Panel (Collapsible drawer on mobile, integrated toolbar row on desktop) -->
+    <div class="header-secondary-tools" id="header-secondary-tools">
+      <div class="secondary-tools-group tools-config-group">
+        <button type="button" class="btn btn-secondary" id="btn-options" title="Display Options">
+          Options
+        </button>
+        <button type="button" class="btn btn-secondary" id="btn-customize" title="Customize Colors & Typography">
+          Customize
+        </button>
+        <button type="button" class="btn btn-secondary" id="btn-listing" title="Customize Tier Listing">
+          Listing
+        </button>
+        <button type="button" class="btn btn-secondary" id="btn-future-sight" title="Toggle CN Future Sight content">
+          Future Sight
+        </button>
+      </div>
 
-      <button class="btn btn-secondary" id="btn-export-data" title="Export roster to JSON">
-        Export JSON
-      </button>
+      <div class="secondary-tools-group tools-title-group">
+        <input type="text" id="input-board-title" class="search-input" placeholder="Input Name or ID" />
+      </div>
 
-      <label class="btn btn-secondary" style="cursor: pointer;" title="Import roster from JSON">
-        Import JSON
-        <input type="file" id="input-import-file" accept=".json" style="display: none;" />
-      </label>
-
-      <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG">
-        Export PNG
-      </button>
-      
-      <button class="btn btn-danger" id="btn-reset-data" title="Reset all data">
-        Reset
-      </button>
+      <div class="secondary-tools-group tools-data-group">
+        <button class="btn btn-secondary" id="btn-export-data" title="Export roster to JSON">
+          Export JSON
+        </button>
+        <label class="btn btn-secondary" style="cursor: pointer;" title="Import roster from JSON">
+          Import JSON
+          <input type="file" id="input-import-file" accept=".json" style="display: none;" />
+        </label>
+        <button class="btn btn-danger" id="btn-reset-data" title="Reset all data">
+          Reset
+        </button>
+      </div>
     </div>
   </header>
 
@@ -497,6 +512,29 @@
       </div>
       <div class="roster-grid" id="roster-grid-list">
         <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Image Preview Modal (especially for mobile/iOS saving) -->
+  <div id="export-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card modal-card-large" style="max-width: 640px;">
+      <div class="modal-header">
+        <h2>Export PNG</h2>
+        <button class="modal-close" id="export-modal-btn-close">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center; gap: 12px;">
+        <div class="export-help-tip" id="export-help-tip">
+          Tap and hold (long press) the image below and select <strong>Save to Photos</strong>, or use the buttons below.
+        </div>
+        <div class="export-preview-container" id="export-preview-container">
+          <img id="export-preview-img" src="" alt="Exported Showcase Board" />
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary" id="export-modal-btn-share" style="display: none;">Share / Save Image</button>
+        <button type="button" class="btn btn-primary" id="export-modal-btn-download">Download</button>
+        <button type="button" class="btn btn-secondary" id="export-modal-btn-close-action">Close</button>
       </div>
     </div>
   </div>

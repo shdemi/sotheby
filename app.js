@@ -2021,6 +2021,18 @@ function setupEventListeners() {
     renderShowcase();
   });
 
+  // Mobile Tools Drawer Toggle Button
+  const btnToolsToggle = document.getElementById("btn-tools-toggle");
+  const topControls = document.getElementById("top-controls");
+  if (btnToolsToggle && topControls) {
+    btnToolsToggle.addEventListener("click", () => {
+      const isOpen = topControls.classList.toggle("tools-open");
+      btnToolsToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      const icon = btnToolsToggle.querySelector(".toggle-icon");
+      if (icon) icon.textContent = isOpen ? "▴" : "▾";
+    });
+  }
+
   // Roster Manager
   btnManageAll.addEventListener("click", openRosterModal);
   rosterBtnClose.addEventListener("click", closeRosterModal);
@@ -2093,28 +2105,207 @@ function setupEventListeners() {
     renderShowcase();
   });
 
-  // Export PNG via html2canvas
+  // Export Modal Elements
+  const exportModal = document.getElementById("export-modal");
+  const exportModalBtnClose = document.getElementById("export-modal-btn-close");
+  const exportModalBtnCloseAction = document.getElementById("export-modal-btn-close-action");
+  const exportModalBtnShare = document.getElementById("export-modal-btn-share");
+  const exportModalBtnDownload = document.getElementById("export-modal-btn-download");
+  const exportPreviewImg = document.getElementById("export-preview-img");
+  const exportHelpTip = document.getElementById("export-help-tip");
+
+  let currentExportBlob = null;
+  let currentExportBlobUrl = null;
+  let currentExportFileName = "";
+
+  function closeExportModal() {
+    if (exportModal) exportModal.style.display = "none";
+  }
+
+  function triggerDownload(url, fileName) {
+    const link = document.createElement("a");
+    link.download = fileName;
+    link.href = url;
+    link.rel = "noopener";
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      if (link.parentNode) link.parentNode.removeChild(link);
+    }, 1000);
+  }
+
+  if (exportModalBtnClose) exportModalBtnClose.addEventListener("click", closeExportModal);
+  if (exportModalBtnCloseAction) exportModalBtnCloseAction.addEventListener("click", closeExportModal);
+  if (exportModal) {
+    exportModal.addEventListener("click", (e) => {
+      if (e.target === exportModal) closeExportModal();
+    });
+  }
+
+  if (exportModalBtnShare) {
+    exportModalBtnShare.addEventListener("click", async () => {
+      if (!currentExportBlob) return;
+      try {
+        const file = new File([currentExportBlob], currentExportFileName, { type: "image/png" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: "Sotheby's Mansion",
+          });
+        }
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.warn("Share failed:", err);
+        }
+      }
+    });
+  }
+
+  if (exportModalBtnDownload) {
+    exportModalBtnDownload.addEventListener("click", () => {
+      if (!currentExportBlobUrl) return;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      if (isIOS) {
+        const opened = window.open(currentExportBlobUrl, "_blank");
+        if (!opened) {
+          triggerDownload(currentExportBlobUrl, currentExportFileName);
+        }
+      } else {
+        triggerDownload(currentExportBlobUrl, currentExportFileName);
+      }
+    });
+  }
+
+  // Export PNG via html2canvas with mobile / iOS support
   btnExportImage.addEventListener("click", async () => {
     const board = document.getElementById("showcase-board");
+    if (!board) return;
+
     btnExportImage.textContent = "Rendering...";
     btnExportImage.disabled = true;
 
     try {
+      // 1. Ensure all images in the board are fully loaded
+      const imgs = Array.from(board.querySelectorAll("img"));
+      imgs.forEach((img) => {
+        if (img.loading === "lazy") img.loading = "eager";
+      });
+      await Promise.all(
+        imgs.map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            img.addEventListener("load", resolve, { once: true });
+            img.addEventListener("error", resolve, { once: true });
+          });
+        })
+      );
+
+      // 2. Safe scale calculation (iOS WebKit max single canvas dimension is 4096px)
+      const boardW = board.scrollWidth || board.offsetWidth;
+      const boardH = board.scrollHeight || board.offsetHeight;
+      const maxDim = Math.max(boardW, boardH);
+      const maxCanvasDim = 4096;
+      let scale = 2; // high-quality default
+      if (maxDim * scale > maxCanvasDim) {
+        scale = Math.max(1, Math.floor((maxCanvasDim / maxDim) * 100) / 100);
+      }
+
       const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
       const canvas = await html2canvas(board, {
         backgroundColor: app.boardBg || "#111111",
-        scale: 2, // high quality
+        scale: scale,
         useCORS: true,
         logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        onclone: (clonedDoc) => {
+          const clonedImgs = clonedDoc.querySelectorAll("#showcase-board img");
+          clonedImgs.forEach((img) => img.removeAttribute("loading"));
+        },
       });
 
-      const link = document.createElement("a");
-      link.download = `Sothebys_Mansion_${new Date().toISOString().slice(0, 10)}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      // 3. Convert canvas to Blob
+      let blob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, "image/png");
+      });
+      if (!blob) {
+        const dataUrl = canvas.toDataURL("image/png");
+        const res = await fetch(dataUrl);
+        blob = await res.blob();
+      }
+
+      const fileName = `Sothebys_Mansion_${new Date().toISOString().slice(0, 10)}.png`;
+      currentExportBlob = blob;
+      const oldBlobUrl = currentExportBlobUrl;
+      currentExportBlobUrl = URL.createObjectURL(blob);
+      if (oldBlobUrl) {
+        setTimeout(() => URL.revokeObjectURL(oldBlobUrl), 10000);
+      }
+      currentExportFileName = fileName;
+
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      const isMobileDevice = /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isSmallScreen = window.innerWidth <= 768;
+      const isMobile = isIOS || isMobileDevice || isSmallScreen;
+
+      // 4. Try native Web Share API on mobile
+      let canShareFile = false;
+      let shareFile = null;
+      if (typeof File !== "undefined" && navigator.canShare) {
+        try {
+          shareFile = new File([blob], fileName, { type: "image/png" });
+          canShareFile = navigator.canShare({ files: [shareFile] });
+        } catch (e) {
+          canShareFile = false;
+        }
+      }
+
+      let directShareSucceeded = false;
+      if (isMobile && canShareFile && shareFile) {
+        try {
+          await navigator.share({
+            files: [shareFile],
+            title: "Sotheby's Mansion",
+          });
+          directShareSucceeded = true;
+        } catch (shareErr) {
+          if (shareErr.name === "AbortError") {
+            return;
+          }
+          console.warn("Direct navigator.share could not be completed, opening preview modal:", shareErr);
+        }
+      }
+
+      if (directShareSucceeded) {
+        return;
+      }
+
+      // If on desktop and not shared, trigger instant file download
+      if (!isMobile) {
+        triggerDownload(currentExportBlobUrl, fileName);
+        return;
+      }
+
+      // On mobile / iOS (or fallback): show export preview modal
+      if (exportPreviewImg) exportPreviewImg.src = currentExportBlobUrl;
+      if (exportModalBtnShare) {
+        exportModalBtnShare.style.display = canShareFile ? "inline-flex" : "none";
+      }
+
+      if (exportHelpTip) {
+        if (isIOS) {
+          exportHelpTip.innerHTML = "💡 <strong>On iPhone / iPad:</strong> Tap and hold the image below and select <strong>Save to Photos</strong>, or tap <strong>Share / Save Image</strong>.";
+        } else {
+          exportHelpTip.innerHTML = "💡 Tap and hold the image to save, or use the buttons below.";
+        }
+      }
+
+      if (exportModal) exportModal.style.display = "flex";
     } catch (err) {
       console.error("Export failed:", err);
-      alert("Failed to export image.");
+      alert("Failed to export image. Please try again.");
     } finally {
       btnExportImage.textContent = "Export PNG";
       btnExportImage.disabled = false;
@@ -2123,11 +2314,10 @@ function setupEventListeners() {
 
   // Export JSON
   btnExportData.addEventListener("click", () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userRoster, null, 2));
-    const link = document.createElement("a");
-    link.download = `r1999_roster_${new Date().toISOString().slice(0, 10)}.json`;
-    link.href = dataStr;
-    link.click();
+    const jsonBlob = new Blob([JSON.stringify(userRoster, null, 2)], { type: "application/json" });
+    const blobUrl = URL.createObjectURL(jsonBlob);
+    triggerDownload(blobUrl, `r1999_roster_${new Date().toISOString().slice(0, 10)}.json`);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
   });
 
   // Import JSON
