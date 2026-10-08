@@ -851,10 +851,12 @@
           <img id="export-preview-img" src="" alt="Exported Showcase Board" />
         </div>
       </div>
-      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;">
-        <button type="button" class="btn btn-secondary" id="export-modal-btn-share" style="display: none;">Share / Save Image</button>
-        <button type="button" class="btn btn-primary" id="export-modal-btn-download">Download</button>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
         <button type="button" class="btn btn-secondary" id="export-modal-btn-close-action">Close</button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary" id="export-modal-btn-share" style="display: none;">Share</button>
+          <button type="button" class="btn btn-primary" id="export-modal-btn-download">Download PNG</button>
+        </div>
       </div>
     </div>
   </div>

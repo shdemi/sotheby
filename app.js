@@ -3117,6 +3117,12 @@ function setupEventListeners() {
     });
   }
 
+  // Allow clicking/tapping the preview image itself to trigger download on Android
+  if (exportPreviewImg) {
+    exportPreviewImg.style.cursor = "pointer";
+    exportPreviewImg.title = "Tap to download or long-press to save image";
+  }
+
   // Export PNG via html2canvas with mobile / iOS support
   btnExportImage.addEventListener("click", async () => {
     const board = document.getElementById("showcase-board");
@@ -3191,7 +3197,7 @@ function setupEventListeners() {
       const isSmallScreen = window.innerWidth <= 768;
       const isMobile = isIOS || isMobileDevice || isSmallScreen;
 
-      // 4. Try native Web Share API on mobile
+      // 4. Try native Web Share API capability
       let canShareFile = false;
       let shareFile = null;
       if (typeof File !== "undefined" && navigator.canShare) {
@@ -3203,33 +3209,23 @@ function setupEventListeners() {
         }
       }
 
-      let directShareSucceeded = false;
-      if (isMobile && canShareFile && shareFile) {
-        try {
-          await navigator.share({
-            files: [shareFile],
-            title: "Sotheby's Mansion",
-          });
-          directShareSucceeded = true;
-        } catch (shareErr) {
-          if (shareErr.name === "AbortError") {
-            return;
-          }
-          console.warn("Direct navigator.share could not be completed, opening preview modal:", shareErr);
-        }
-      }
-
-      if (directShareSucceeded) {
-        return;
-      }
-
-      // If on desktop and not shared, trigger instant file download
+      // If desktop, trigger download directly
       if (!isMobile) {
         triggerDownload(currentExportBlobUrl, fileName);
         return;
       }
 
-      // On mobile / iOS (or fallback): show export preview modal
+      // On Android / Mobile:
+      // Try auto-downloading directly first (so the image is immediately saved into Downloads / Gallery)
+      if (!isIOS) {
+        try {
+          triggerDownload(currentExportBlobUrl, fileName);
+        } catch (dlErr) {
+          console.warn("Auto download failed:", dlErr);
+        }
+      }
+
+      // Always display preview modal on mobile with buttons: Download, Share (if supported), Close
       if (exportPreviewImg) exportPreviewImg.src = currentExportBlobUrl;
       if (exportModalBtnShare) {
         exportModalBtnShare.style.display = canShareFile ? "inline-flex" : "none";
@@ -3239,7 +3235,7 @@ function setupEventListeners() {
         if (isIOS) {
           exportHelpTip.innerHTML = "💡 <strong>On iPhone / iPad:</strong> Tap and hold the image below and select <strong>Save to Photos</strong>, or tap <strong>Share / Save Image</strong>.";
         } else {
-          exportHelpTip.innerHTML = "💡 Tap and hold the image to save, or use the buttons below.";
+          exportHelpTip.innerHTML = "💡 <strong>Tip for Android:</strong> Tap <strong>Download</strong> below, or <strong>tap & hold (long press)</strong> on the image to select <strong>Download image / Save image</strong>.";
         }
       }
 
