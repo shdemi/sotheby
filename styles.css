@@ -446,13 +446,13 @@ body::before {
   font-weight: 700;
   letter-spacing: 0.28em;
   color: rgba(244, 239, 233, 0.84);
-  text-transform: uppercase;
+  text-transform: var(--board-title-case, uppercase);
 }
 
 /* Tier Row */
 .tier-row {
   display: grid;
-  grid-template-columns: 110px 1fr;
+  grid-template-columns: var(--tier-label-width, 110px) 1fr;
   align-items: center;
   gap: 14px;
   margin-bottom: var(--tier-row-spacing, 14px);
@@ -472,7 +472,7 @@ body::before {
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.22em;
-  text-transform: uppercase;
+  text-transform: var(--tier-label-case, uppercase);
   padding-top: 2px;
   opacity: 0.92;
 }

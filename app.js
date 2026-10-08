@@ -18,6 +18,8 @@ let futureSightEnabled = false;
 
 const FUTURE_SIGHT_STORAGE_KEY = "r1999_future_sight_v1";
 
+let customBoardBgImageUrl = null; // Session-only uploaded background image DataURL
+
 let characterSkinsMap = {}; // { "Druvis III": [ { id: 300301, name: "Default", isDefault: true, iconUrl: "images/headicon_small/300301.png" }, ... ] }
 
 const NAME_ALIASES = {
@@ -175,8 +177,10 @@ const OPTIONS_STORAGE_KEY = "r1999_display_options_v1";
 
 const DEFAULT_THEME_APPEARANCE = {
   boardFont: "default",
+  boardUppercase: true,
   boardTitleSize: 0.74,
   tierLabelSize: 0.70,
+  tierLabelWidth: 110,
   boardBg: "#111111",
   boardTitleColor: "#f4efe9",
 
@@ -186,8 +190,7 @@ const DEFAULT_THEME_APPEARANCE = {
   boardHeaderBorderWidth: 1,
 
   // Tier Box (Khung chứa từng tier & nhân vật)
-  tierBoxBg: "transparent",
-  tierBoxBorderColor: "rgba(255, 255, 255, 0.04)",
+  tierBoxOpacity: 1,
   tierBoxBorderWidth: 1,
   tierBoxRadius: 0,
 
@@ -210,6 +213,10 @@ const DEFAULT_THEME_APPEARANCE = {
   patternDefensive: "#2D8A5A",
   patternHp: "#D4AD2B",
   patternEquibalance: "#3B6DC7",
+
+  // Custom Resonance Label Color on Character Info
+  customResColorEnabled: false,
+  customResColor: "#ffffff",
 };
 
 let displayOptions = {
@@ -305,8 +312,22 @@ function applyCustomAppearance() {
 
   document.documentElement.style.setProperty("--board-font", fontValue);
 
+  const uppercaseValue = app.boardUppercase === false ? "none" : "uppercase";
+  document.documentElement.style.setProperty("--board-title-case", uppercaseValue);
+  document.documentElement.style.setProperty("--tier-label-case", uppercaseValue);
+  document.documentElement.style.setProperty("--tier-label-width", `${app.tierLabelWidth !== undefined ? app.tierLabelWidth : 110}px`);
+
   if (showcaseBoard) {
-    showcaseBoard.style.backgroundColor = app.boardBg || "#111111";
+    if (customBoardBgImageUrl) {
+      showcaseBoard.style.backgroundColor = "transparent";
+      showcaseBoard.style.backgroundImage = `url("${customBoardBgImageUrl}")`;
+      showcaseBoard.style.backgroundSize = "cover";
+      showcaseBoard.style.backgroundPosition = "center";
+      showcaseBoard.style.backgroundRepeat = "no-repeat";
+    } else {
+      showcaseBoard.style.backgroundImage = "none";
+      showcaseBoard.style.backgroundColor = app.boardBg || "#111111";
+    }
     showcaseBoard.style.setProperty("--board-font", fontValue);
     showcaseBoard.style.fontFamily = fontValue;
   }
@@ -316,6 +337,7 @@ function applyCustomAppearance() {
     const size = app.boardTitleSize !== undefined ? app.boardTitleSize : 0.74;
     boardTitleLabel.style.fontSize = `${size}rem`;
     boardTitleLabel.style.fontFamily = fontValue;
+    boardTitleLabel.style.textTransform = uppercaseValue;
   }
 
   // Board Header Box Variables
@@ -325,8 +347,10 @@ function applyCustomAppearance() {
   document.documentElement.style.setProperty("--board-header-spacing", `${app.spacingHeaderToTiers !== undefined ? app.spacingHeaderToTiers : 20}px`);
 
   // Tier Box Variables
-  document.documentElement.style.setProperty("--tier-box-bg", app.tierBoxBg || "transparent");
-  document.documentElement.style.setProperty("--tier-box-border-color", app.tierBoxBorderColor || "rgba(255, 255, 255, 0.04)");
+  const tbOpacity = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 1;
+  const tbRawBg = "#000000";
+  document.documentElement.style.setProperty("--tier-box-bg", hexToRgba(tbRawBg, tbOpacity));
+  document.documentElement.style.setProperty("--tier-box-border-color", "rgba(255, 255, 255, 0.04)");
   document.documentElement.style.setProperty("--tier-box-border-width", `${app.tierBoxBorderWidth !== undefined ? app.tierBoxBorderWidth : 1}px`);
   document.documentElement.style.setProperty("--tier-box-radius", `${app.tierBoxRadius !== undefined ? app.tierBoxRadius : 0}px`);
   document.documentElement.style.setProperty("--tier-row-spacing", `${app.spacingBetweenTierRows !== undefined ? app.spacingBetweenTierRows : 14}px`);
@@ -748,16 +772,7 @@ function sanitizeEuphoriaState(name, char) {
 }
 
 // Load Roster from LocalStorage or Generate Default
-function loadRoster() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      userRoster = JSON.parse(saved);
-    } catch (e) {
-      userRoster = {};
-    }
-  }
-
+function sanitizeRosterState() {
   // Remove any excluded or non-existent characters from roster
   let changed = false;
   for (const name in userRoster) {
@@ -822,6 +837,18 @@ function loadRoster() {
   if (changed) {
     saveRoster();
   }
+}
+
+function loadRoster() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      userRoster = JSON.parse(saved);
+    } catch (e) {
+      userRoster = {};
+    }
+  }
+  sanitizeRosterState();
 }
 
 function saveRoster() {
@@ -972,7 +999,8 @@ function renderShowcase() {
       ownedNames.push(name);
       if (Number(char.level) === 60) lv60Count++;
       if (Number(char.resonance) >= 10) r10PlusCount++;
-      if (char.e1 || char.e2) euphoCount++;
+      if (char.e1) euphoCount++;
+      if (char.e2) euphoCount++;
     } else {
       unownedNames.push(name);
     }
@@ -993,6 +1021,9 @@ function renderShowcase() {
       id: t.id,
       label: t.label,
       color: t.color || "#ffffff",
+      bgColor: t.bgColor || null,
+      borderColor: t.borderColor || null,
+      bold: !!t.bold,
       rule: t.rule,
       cards: [],
     });
@@ -1005,6 +1036,9 @@ function renderShowcase() {
       id: "tier_unbuilt_special",
       label: listingConfig.unbuiltLabel || "Unbuilt",
       color: listingConfig.unbuiltColor || "#9a9a9a",
+      bgColor: listingConfig.unbuiltBg || null,
+      borderColor: listingConfig.unbuiltBorder || null,
+      bold: !!listingConfig.unbuiltBold,
       cards: [],
     };
   }
@@ -1014,6 +1048,9 @@ function renderShowcase() {
     id: "tier_other",
     label: "Other",
     color: "#a0a0a0",
+    bgColor: null,
+    borderColor: null,
+    bold: false,
     cards: [],
   };
 
@@ -1058,15 +1095,15 @@ function renderShowcase() {
 
   // Render all owned tier sections
   tierBuckets.forEach((bucket) => {
-    renderTierRowSection(bucket.label, bucket.color, bucket.cards);
+    renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
   });
 
   if (unbuiltBucket) {
-    renderTierRowSection(unbuiltBucket.label, unbuiltBucket.color, unbuiltBucket.cards);
+    renderTierRowSection(unbuiltBucket.label, unbuiltBucket.color, unbuiltBucket.cards, unbuiltBucket.bgColor, unbuiltBucket.borderColor, unbuiltBucket.bold);
   }
 
   if (remainingBucket.cards.length > 0) {
-    renderTierRowSection(remainingBucket.label, remainingBucket.color, remainingBucket.cards);
+    renderTierRowSection(remainingBucket.label, remainingBucket.color, remainingBucket.cards, remainingBucket.bgColor, remainingBucket.borderColor, remainingBucket.bold);
   }
 
   // Render Unowned Tier (Fixed at the bottom)
@@ -1088,7 +1125,14 @@ function renderShowcase() {
       const card = createCharacterCard(name, char, iconUrl);
       unownedCards.push(card);
     });
-    renderTierRowSection("Unowned", listingConfig.unownedColor || "#9a9a9a", unownedCards);
+    renderTierRowSection(
+      "Unowned",
+      listingConfig.unownedColor || "#9a9a9a",
+      unownedCards,
+      listingConfig.unownedBg || null,
+      listingConfig.unownedBorder || null,
+      !!listingConfig.unownedBold
+    );
   }
 
   rosterStat.textContent = `${ownedCount}/${totalCount} Owned`;
@@ -1104,9 +1148,16 @@ function renderShowcase() {
   }
 }
 
-function renderTierRowSection(label, color, cards) {
+function renderTierRowSection(label, color, cards, customBg, customBorder, isBold) {
   const section = document.createElement("section");
   section.className = "tier-row";
+
+  if (customBg && customBg !== "transparent") {
+    section.style.background = customBg;
+  }
+  if (customBorder && customBorder !== "transparent") {
+    section.style.borderColor = customBorder;
+  }
 
   const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
   const tierSize = app.tierLabelSize !== undefined ? app.tierLabelSize : 0.70;
@@ -1117,6 +1168,9 @@ function renderTierRowSection(label, color, cards) {
   labelEl.style.color = color;
   labelEl.style.fontSize = `${tierSize}rem`;
   labelEl.style.fontFamily = getBoardFontFamily(app.boardFont);
+  if (isBold) {
+    labelEl.style.fontWeight = "900";
+  }
 
   const contentEl = document.createElement("div");
   contentEl.className = "tier-content";
@@ -1985,12 +2039,20 @@ function setupEventListeners() {
   const customizeBtnClose = document.getElementById("customize-btn-close");
   const customizeBtnDone = document.getElementById("customize-btn-done");
   const selectBoardFont = document.getElementById("select-board-font");
+  const checkBoardUppercase = document.getElementById("check-board-uppercase");
   const inputBoardTitleSize = document.getElementById("input-board-title-size");
   const displayBoardTitleSize = document.getElementById("display-board-title-size");
   const inputTierLabelSize = document.getElementById("input-tier-label-size");
   const displayTierLabelSize = document.getElementById("display-tier-label-size");
+  const inputTierLabelWidth = document.getElementById("input-tier-label-width");
+  const displayTierLabelWidth = document.getElementById("display-tier-label-width");
   const colorBoardBg = document.getElementById("color-board-bg");
   const colorBoardTitle = document.getElementById("color-board-title");
+
+  // Custom Board Background Image Upload Elements
+  const inputBoardBgImage = document.getElementById("input-board-bg-image");
+  const btnClearBoardBgImage = document.getElementById("btn-clear-board-bg-image");
+  const boardBgImageStatus = document.getElementById("board-bg-image-status");
 
   // Board Header Box Elements
   const colorBoardHeaderBg = document.getElementById("color-board-header-bg");
@@ -2000,11 +2062,9 @@ function setupEventListeners() {
   const inputBoardHeaderBorderWidth = document.getElementById("input-board-header-border-width");
   const displayBoardHeaderBorderWidth = document.getElementById("display-board-header-border-width");
 
-  // Tier Box Elements
-  const colorTierBoxBg = document.getElementById("color-tier-box-bg");
-  const btnClearTierBoxBg = document.getElementById("btn-clear-tier-box-bg");
-  const colorTierBoxBorder = document.getElementById("color-tier-box-border");
-  const btnClearTierBoxBorder = document.getElementById("btn-clear-tier-box-border");
+  // Tier Box Elements (Opacity replaces color & border color)
+  const inputTierBoxOpacity = document.getElementById("input-tier-box-opacity");
+  const displayTierBoxOpacity = document.getElementById("display-tier-box-opacity");
   const inputTierBoxBorderWidth = document.getElementById("input-tier-box-border-width");
   const displayTierBoxBorderWidth = document.getElementById("display-tier-box-border-width");
   const inputTierBoxRadius = document.getElementById("input-tier-box-radius");
@@ -2035,12 +2095,16 @@ function setupEventListeners() {
   const colorPatternDefensive = document.getElementById("color-pattern-defensive");
   const colorPatternHp = document.getElementById("color-pattern-hp");
   const colorPatternEquibalance = document.getElementById("color-pattern-equibalance");
+
+  // Custom Resonance Label Color Elements
+  const checkCustomResColor = document.getElementById("check-custom-res-color");
+  const customResColorRow = document.getElementById("custom-res-color-row");
+  const colorCustomResLabel = document.getElementById("color-custom-res-label");
+
   const btnResetCustomAppearance = document.getElementById("btn-reset-custom-appearance");
 
   let currentBoardHeaderBg = "transparent";
   let currentBoardHeaderBorder = "rgba(255, 255, 255, 0.1)";
-  let currentTierBoxBg = "transparent";
-  let currentTierBoxBorder = "rgba(255, 255, 255, 0.04)";
   let currentCharInfoBorder = "transparent";
 
   function parseHexOrDefault(val, fallbackHex) {
@@ -2054,6 +2118,9 @@ function setupEventListeners() {
       inputBoardTitle.value = localStorage.getItem(TITLE_STORAGE_KEY) || "";
     }
     selectBoardFont.value = app.boardFont || "default";
+    if (checkBoardUppercase) {
+      checkBoardUppercase.checked = app.boardUppercase !== false;
+    }
     const titleSize = app.boardTitleSize !== undefined ? app.boardTitleSize : 0.74;
     inputBoardTitleSize.value = titleSize;
     displayBoardTitleSize.textContent = `${titleSize}rem`;
@@ -2062,8 +2129,16 @@ function setupEventListeners() {
     inputTierLabelSize.value = tierSize;
     displayTierLabelSize.textContent = `${tierSize}rem`;
 
+    const tierWidth = app.tierLabelWidth !== undefined ? app.tierLabelWidth : 110;
+    if (inputTierLabelWidth) inputTierLabelWidth.value = tierWidth;
+    if (displayTierLabelWidth) displayTierLabelWidth.textContent = `${tierWidth}px`;
+
     colorBoardBg.value = app.boardBg || "#111111";
     colorBoardTitle.value = app.boardTitleColor || "#f4efe9";
+
+    if (boardBgImageStatus) {
+      boardBgImageStatus.textContent = customBoardBgImageUrl ? "Custom background active (session only)" : "No custom image selected";
+    }
 
     // Board Header Box
     currentBoardHeaderBg = app.boardHeaderBg || "transparent";
@@ -2075,10 +2150,9 @@ function setupEventListeners() {
     displayBoardHeaderBorderWidth.textContent = `${bhBw}px`;
 
     // Tier Box
-    currentTierBoxBg = app.tierBoxBg || "transparent";
-    colorTierBoxBg.value = parseHexOrDefault(currentTierBoxBg, "#000000");
-    currentTierBoxBorder = app.tierBoxBorderColor || "rgba(255, 255, 255, 0.04)";
-    colorTierBoxBorder.value = parseHexOrDefault(currentTierBoxBorder, "#222222");
+    const tbOp = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 1;
+    if (inputTierBoxOpacity) inputTierBoxOpacity.value = tbOp;
+    if (displayTierBoxOpacity) displayTierBoxOpacity.textContent = `${Math.round(tbOp * 100)}%`;
     const tbBw = app.tierBoxBorderWidth !== undefined ? app.tierBoxBorderWidth : 1;
     inputTierBoxBorderWidth.value = tbBw;
     displayTierBoxBorderWidth.textContent = `${tbBw}px`;
@@ -2131,13 +2205,26 @@ function setupEventListeners() {
     colorPatternDefensive.value = app.patternDefensive || "#2D8A5A";
     colorPatternHp.value = app.patternHp || "#D4AD2B";
     colorPatternEquibalance.value = app.patternEquibalance || "#3B6DC7";
+
+    // Custom Resonance Label Color
+    if (checkCustomResColor) {
+      checkCustomResColor.checked = !!app.customResColorEnabled;
+    }
+    if (customResColorRow) {
+      customResColorRow.style.display = app.customResColorEnabled ? "flex" : "none";
+    }
+    if (colorCustomResLabel) {
+      colorCustomResLabel.value = app.customResColor || "#ffffff";
+    }
   }
 
   function readAppearanceForm() {
     return {
       boardFont: selectBoardFont.value,
+      boardUppercase: checkBoardUppercase ? checkBoardUppercase.checked : true,
       boardTitleSize: Number(inputBoardTitleSize.value),
       tierLabelSize: Number(inputTierLabelSize.value),
+      tierLabelWidth: inputTierLabelWidth ? Number(inputTierLabelWidth.value) : 110,
       boardBg: colorBoardBg.value,
       boardTitleColor: colorBoardTitle.value,
 
@@ -2147,8 +2234,7 @@ function setupEventListeners() {
       boardHeaderBorderWidth: Number(inputBoardHeaderBorderWidth.value),
 
       // Tier Box
-      tierBoxBg: currentTierBoxBg,
-      tierBoxBorderColor: currentTierBoxBorder,
+      tierBoxOpacity: inputTierBoxOpacity ? Number(inputTierBoxOpacity.value) : 1,
       tierBoxBorderWidth: Number(inputTierBoxBorderWidth.value),
       tierBoxRadius: Number(inputTierBoxRadius.value),
 
@@ -2171,6 +2257,9 @@ function setupEventListeners() {
       patternDefensive: colorPatternDefensive.value,
       patternHp: colorPatternHp.value,
       patternEquibalance: colorPatternEquibalance.value,
+
+      customResColorEnabled: checkCustomResColor ? checkCustomResColor.checked : false,
+      customResColor: colorCustomResLabel ? colorCustomResLabel.value : "#ffffff",
     };
   }
 
@@ -2199,25 +2288,64 @@ function setupEventListeners() {
     displayBoardHeaderBorderWidth.textContent = `${e.target.value}px`;
   });
 
+  // Separator / Tier Label Width events
+  if (inputTierLabelWidth) {
+    inputTierLabelWidth.addEventListener("input", (e) => {
+      displayTierLabelWidth.textContent = `${e.target.value}px`;
+    });
+  }
+
+  // Board Background Image Upload events
+  if (inputBoardBgImage) {
+    inputBoardBgImage.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (uploadEvt) => {
+        customBoardBgImageUrl = uploadEvt.target.result;
+        if (boardBgImageStatus) {
+          boardBgImageStatus.textContent = "Custom background image loaded (session only)";
+        }
+        applyCustomAppearance();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (btnClearBoardBgImage) {
+    btnClearBoardBgImage.addEventListener("click", () => {
+      customBoardBgImageUrl = null;
+      if (inputBoardBgImage) inputBoardBgImage.value = "";
+      if (boardBgImageStatus) {
+        boardBgImageStatus.textContent = "No custom image selected";
+      }
+      applyCustomAppearance();
+    });
+  }
+
   // Tier Box events
-  colorTierBoxBg.addEventListener("input", (e) => {
-    currentTierBoxBg = e.target.value;
-  });
-  btnClearTierBoxBg.addEventListener("click", () => {
-    currentTierBoxBg = "transparent";
-  });
-  colorTierBoxBorder.addEventListener("input", (e) => {
-    currentTierBoxBorder = e.target.value;
-  });
-  btnClearTierBoxBorder.addEventListener("click", () => {
-    currentTierBoxBorder = "transparent";
-  });
+  if (inputTierBoxOpacity) {
+    inputTierBoxOpacity.addEventListener("input", (e) => {
+      if (displayTierBoxOpacity) {
+        displayTierBoxOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
+      }
+    });
+  }
   inputTierBoxBorderWidth.addEventListener("input", (e) => {
     displayTierBoxBorderWidth.textContent = `${e.target.value}px`;
   });
   inputTierBoxRadius.addEventListener("input", (e) => {
     displayTierBoxRadius.textContent = `${e.target.value}px`;
   });
+
+  // Custom Resonance Label Color events
+  if (checkCustomResColor) {
+    checkCustomResColor.addEventListener("change", (e) => {
+      if (customResColorRow) {
+        customResColorRow.style.display = e.target.checked ? "flex" : "none";
+      }
+    });
+  }
 
   // Spacing events
   if (inputSpacingHeaderTier) {
@@ -2329,7 +2457,69 @@ function setupEventListeners() {
   const unbuiltTierConfig = document.getElementById("unbuilt-tier-config");
   const inputUnbuiltLabel = document.getElementById("input-unbuilt-label");
   const inputUnbuiltColor = document.getElementById("input-unbuilt-color");
+  const inputUnbuiltBg = document.getElementById("input-unbuilt-bg");
+  const btnClearUnbuiltBg = document.getElementById("btn-clear-unbuilt-bg");
+  const inputUnbuiltBorder = document.getElementById("input-unbuilt-border");
+  const btnClearUnbuiltBorder = document.getElementById("btn-clear-unbuilt-border");
+  const checkUnbuiltBold = document.getElementById("check-unbuilt-bold");
+
   const inputUnownedColor = document.getElementById("input-unowned-color");
+  const inputUnownedBg = document.getElementById("input-unowned-bg");
+  const btnClearUnownedBg = document.getElementById("btn-clear-unowned-bg");
+  const inputUnownedBorder = document.getElementById("input-unowned-border");
+  const btnClearUnownedBorder = document.getElementById("btn-clear-unowned-border");
+  const checkUnownedBold = document.getElementById("check-unowned-bold");
+
+  let currentUnbuiltBg = null;
+  let currentUnbuiltBorder = null;
+  let currentUnownedBg = null;
+  let currentUnownedBorder = null;
+
+  if (btnClearUnbuiltBg) {
+    btnClearUnbuiltBg.addEventListener("click", () => {
+      currentUnbuiltBg = null;
+      if (inputUnbuiltBg) inputUnbuiltBg.value = "#000000";
+    });
+  }
+  if (inputUnbuiltBg) {
+    inputUnbuiltBg.addEventListener("input", (e) => {
+      currentUnbuiltBg = e.target.value;
+    });
+  }
+  if (btnClearUnbuiltBorder) {
+    btnClearUnbuiltBorder.addEventListener("click", () => {
+      currentUnbuiltBorder = null;
+      if (inputUnbuiltBorder) inputUnbuiltBorder.value = "#222222";
+    });
+  }
+  if (inputUnbuiltBorder) {
+    inputUnbuiltBorder.addEventListener("input", (e) => {
+      currentUnbuiltBorder = e.target.value;
+    });
+  }
+
+  if (btnClearUnownedBg) {
+    btnClearUnownedBg.addEventListener("click", () => {
+      currentUnownedBg = null;
+      if (inputUnownedBg) inputUnownedBg.value = "#000000";
+    });
+  }
+  if (inputUnownedBg) {
+    inputUnownedBg.addEventListener("input", (e) => {
+      currentUnownedBg = e.target.value;
+    });
+  }
+  if (btnClearUnownedBorder) {
+    btnClearUnownedBorder.addEventListener("click", () => {
+      currentUnownedBorder = null;
+      if (inputUnownedBorder) inputUnownedBorder.value = "#222222";
+    });
+  }
+  if (inputUnownedBorder) {
+    inputUnownedBorder.addEventListener("input", (e) => {
+      currentUnownedBorder = e.target.value;
+    });
+  }
 
   const TIER_RULE_OPTIONS = [
     { value: "r15", label: "Resonance: R15" },
@@ -2403,8 +2593,83 @@ function setupEventListeners() {
       colorInput.type = "color";
       colorInput.className = "listing-tier-color-input";
       colorInput.value = tier.color || "#ffffff";
+      colorInput.title = "Text Color";
       colorInput.addEventListener("input", (e) => {
         tier.color = e.target.value;
+      });
+
+      const labelBg = document.createElement("label");
+      labelBg.style.display = "flex";
+      labelBg.style.alignItems = "center";
+      labelBg.style.gap = "4px";
+      labelBg.style.fontSize = "0.62rem";
+      labelBg.style.fontFamily = "var(--mono-font)";
+      labelBg.title = "Tier Background Color";
+      labelBg.innerHTML = `<span>BG</span>`;
+
+      const bgInput = document.createElement("input");
+      bgInput.type = "color";
+      bgInput.className = "listing-tier-color-input";
+      bgInput.value = tier.bgColor || "#000000";
+      bgInput.addEventListener("input", (e) => {
+        tier.bgColor = e.target.value;
+      });
+
+      const btnClearBg = document.createElement("button");
+      btnClearBg.type = "button";
+      btnClearBg.className = "custom-color-clear-btn";
+      btnClearBg.textContent = "Clear";
+      btnClearBg.title = "Set transparent";
+      btnClearBg.addEventListener("click", () => {
+        tier.bgColor = null;
+        bgInput.value = "#000000";
+      });
+
+      labelBg.appendChild(bgInput);
+      labelBg.appendChild(btnClearBg);
+
+      const labelBorder = document.createElement("label");
+      labelBorder.style.display = "flex";
+      labelBorder.style.alignItems = "center";
+      labelBorder.style.gap = "4px";
+      labelBorder.style.fontSize = "0.62rem";
+      labelBorder.style.fontFamily = "var(--mono-font)";
+      labelBorder.title = "Tier Border Color";
+      labelBorder.innerHTML = `<span>Border</span>`;
+
+      const borderInput = document.createElement("input");
+      borderInput.type = "color";
+      borderInput.className = "listing-tier-color-input";
+      borderInput.value = tier.borderColor || "#222222";
+      borderInput.addEventListener("input", (e) => {
+        tier.borderColor = e.target.value;
+      });
+
+      const btnClearBorder = document.createElement("button");
+      btnClearBorder.type = "button";
+      btnClearBorder.className = "custom-color-clear-btn";
+      btnClearBorder.textContent = "Clear";
+      btnClearBorder.title = "Set default / transparent";
+      btnClearBorder.addEventListener("click", () => {
+        tier.borderColor = null;
+        borderInput.value = "#222222";
+      });
+
+      labelBorder.appendChild(borderInput);
+      labelBorder.appendChild(btnClearBorder);
+
+      const labelBold = document.createElement("label");
+      labelBold.className = "check-container";
+      labelBold.style.margin = "0";
+      labelBold.title = "Bold Text";
+      labelBold.innerHTML = `
+        <input type="checkbox" ${tier.bold ? "checked" : ""} />
+        <span class="check-box"></span>
+        <span class="check-text" style="font-size: 0.62rem; font-weight: 700;">BOLD</span>
+      `;
+      const boldCheck = labelBold.querySelector("input");
+      boldCheck.addEventListener("change", () => {
+        tier.bold = boldCheck.checked;
       });
 
       const selectRule = document.createElement("select");
@@ -2433,6 +2698,9 @@ function setupEventListeners() {
       row.appendChild(handleDiv);
       row.appendChild(labelInput);
       row.appendChild(colorInput);
+      row.appendChild(labelBg);
+      row.appendChild(labelBorder);
+      row.appendChild(labelBold);
       row.appendChild(selectRule);
       row.appendChild(btnDel);
 
@@ -2446,7 +2714,19 @@ function setupEventListeners() {
     unbuiltTierConfig.style.display = checkEnableUnbuilt.checked ? "flex" : "none";
     inputUnbuiltLabel.value = listingConfig.unbuiltLabel || "Unbuilt";
     inputUnbuiltColor.value = listingConfig.unbuiltColor || "#9a9a9a";
+    currentUnbuiltBg = listingConfig.unbuiltBg || null;
+    if (inputUnbuiltBg) inputUnbuiltBg.value = currentUnbuiltBg || "#000000";
+    currentUnbuiltBorder = listingConfig.unbuiltBorder || null;
+    if (inputUnbuiltBorder) inputUnbuiltBorder.value = currentUnbuiltBorder || "#222222";
+    if (checkUnbuiltBold) checkUnbuiltBold.checked = !!listingConfig.unbuiltBold;
+
     if (inputUnownedColor) inputUnownedColor.value = listingConfig.unownedColor || "#9a9a9a";
+    currentUnownedBg = listingConfig.unownedBg || null;
+    if (inputUnownedBg) inputUnownedBg.value = currentUnownedBg || "#000000";
+    currentUnownedBorder = listingConfig.unownedBorder || null;
+    if (inputUnownedBorder) inputUnownedBorder.value = currentUnownedBorder || "#222222";
+    if (checkUnownedBold) checkUnownedBold.checked = !!listingConfig.unownedBold;
+
     renderListingTiersEditor();
     listingModal.style.display = "flex";
   }
@@ -2479,7 +2759,15 @@ function setupEventListeners() {
     listingConfig.separateUnbuilt = checkEnableUnbuilt.checked;
     listingConfig.unbuiltLabel = inputUnbuiltLabel.value.trim() || "Unbuilt";
     listingConfig.unbuiltColor = inputUnbuiltColor.value;
+    listingConfig.unbuiltBg = currentUnbuiltBg;
+    listingConfig.unbuiltBorder = currentUnbuiltBorder;
+    listingConfig.unbuiltBold = checkUnbuiltBold ? checkUnbuiltBold.checked : false;
+
     if (inputUnownedColor) listingConfig.unownedColor = inputUnownedColor.value;
+    listingConfig.unownedBg = currentUnownedBg;
+    listingConfig.unownedBorder = currentUnownedBorder;
+    listingConfig.unownedBold = checkUnownedBold ? checkUnownedBold.checked : false;
+
     listingConfig.tiers = tempListingTiers;
     saveListingConfig();
     renderShowcase();
@@ -2494,7 +2782,19 @@ function setupEventListeners() {
       unbuiltTierConfig.style.display = "none";
       inputUnbuiltLabel.value = "Unbuilt";
       inputUnbuiltColor.value = "#9a9a9a";
+      currentUnbuiltBg = null;
+      currentUnbuiltBorder = null;
+      if (inputUnbuiltBg) inputUnbuiltBg.value = "#000000";
+      if (inputUnbuiltBorder) inputUnbuiltBorder.value = "#222222";
+      if (checkUnbuiltBold) checkUnbuiltBold.checked = false;
+
       if (inputUnownedColor) inputUnownedColor.value = "#9a9a9a";
+      currentUnownedBg = null;
+      currentUnownedBorder = null;
+      if (inputUnownedBg) inputUnownedBg.value = "#000000";
+      if (inputUnownedBorder) inputUnownedBorder.value = "#222222";
+      if (checkUnownedBold) checkUnownedBold.checked = false;
+
       renderListingTiersEditor();
     }
   });
@@ -2724,7 +3024,7 @@ function setupEventListeners() {
 
       const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
       const canvas = await html2canvas(board, {
-        backgroundColor: app.boardBg || "#111111",
+        backgroundColor: customBoardBgImageUrl ? null : (app.boardBg || "#111111"),
         scale: scale,
         useCORS: true,
         logging: false,
@@ -2824,17 +3124,24 @@ function setupEventListeners() {
     }
   });
 
-  // Export JSON
+  // Export JSON (Exports user roster, tier listing config, and display appearance options)
   btnExportData.addEventListener("click", () => {
-    const jsonBlob = new Blob([JSON.stringify(userRoster, null, 2)], { type: "application/json" });
+    const exportPayload = {
+      version: 2,
+      roster: userRoster,
+      listingConfig: listingConfig,
+      displayOptions: displayOptions,
+      boardTitle: localStorage.getItem(TITLE_STORAGE_KEY) || "Suitcase",
+    };
+    const jsonBlob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
     const blobUrl = URL.createObjectURL(jsonBlob);
     triggerDownload(blobUrl, `r1999_roster_${new Date().toISOString().slice(0, 10)}.json`);
     setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
   });
 
-  // Import JSON
+  // Import JSON (Supports both v2 payload and direct roster object v1)
   inputImportFile.addEventListener("change", (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files && e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
@@ -2842,8 +3149,34 @@ function setupEventListeners() {
       try {
         const imported = JSON.parse(event.target.result);
         if (typeof imported === "object" && imported !== null && !Array.isArray(imported)) {
-          userRoster = imported;
-          loadRoster(); // sanitizes missing characters, level/insight/resonance caps
+          // Detect whether imported file is v2 export format or direct roster map
+          if (imported.roster && typeof imported.roster === "object" && !Array.isArray(imported.roster)) {
+            userRoster = imported.roster;
+            if (imported.listingConfig && typeof imported.listingConfig === "object") {
+              listingConfig = { ...DEFAULT_TIERS_CONFIG, ...imported.listingConfig };
+              saveListingConfig();
+            }
+            if (imported.displayOptions && typeof imported.displayOptions === "object") {
+              displayOptions = {
+                ...displayOptions,
+                ...imported.displayOptions,
+                appearance: { ...DEFAULT_THEME_APPEARANCE, ...(imported.displayOptions.appearance || {}) },
+              };
+              saveDisplayOptions();
+            }
+            if (imported.boardTitle) {
+              localStorage.setItem(TITLE_STORAGE_KEY, imported.boardTitle);
+              if (boardTitleLabel) boardTitleLabel.textContent = imported.boardTitle;
+              if (inputBoardTitle) inputBoardTitle.value = imported.boardTitle;
+            }
+          } else {
+            // Direct roster map
+            userRoster = imported;
+          }
+
+          sanitizeRosterState();
+          saveRoster();
+          applyCustomAppearance();
           renderShowcase();
           alert("Roster imported successfully!");
         } else {
@@ -2887,9 +3220,12 @@ function getResonanceTextColor(boxKind) {
   }
 }
 
-// Inside roster card label: gray default for None, else pattern colors.
+// Inside roster card label: gray default for None, else pattern colors (or user custom color).
 function getCardResonanceTextColor(boxKind) {
   const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+  if (app.customResColorEnabled && app.customResColor) {
+    return app.customResColor;
+  }
   switch (boxKind) {
     case "offensive":
       return app.patternOffensive || "#FBAE31";
