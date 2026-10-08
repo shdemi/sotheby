@@ -264,34 +264,43 @@
               <span class="check-box"></span>
               <span class="check-text">Show CN Contents</span>
             </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-show-pattern-bg" />
-              <span class="check-box"></span>
-              <span class="check-text">Show Character's Background (Pattern Color)</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-show-pattern-border" />
-              <span class="check-box"></span>
-              <span class="check-text">Show Character's Border (Pattern Color)</span>
-            </label>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
+            
+            <!-- Collapsible: Show Character's Background & Border -->
+            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 2px 0;">
+              <button type="button" id="btn-toggle-char-decor" style="width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: none; padding: 7px 9px; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
+                <span>Show Character's Styling</span>
+                <span id="char-decor-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▾</span>
+              </button>
+              <div id="char-decor-collapse-content" style="display: flex; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
                 <label class="check-container" style="margin: 0;">
-                  <input type="checkbox" id="check-show-none-pattern-bg" />
+                  <input type="checkbox" id="check-show-pattern-bg" />
                   <span class="check-box"></span>
-                  <span class="check-text">Show Character's Background (None Pattern)</span>
+                  <span class="check-text">Show Background (Pattern Color)</span>
                 </label>
-                <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
                 <label class="check-container" style="margin: 0;">
-                  <input type="checkbox" id="check-show-none-pattern-border" />
+                  <input type="checkbox" id="check-show-pattern-border" />
                   <span class="check-box"></span>
-                  <span class="check-text">Show Character's Border (None Pattern)</span>
+                  <span class="check-text">Show Border (Pattern Color)</span>
                 </label>
-                <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-show-none-pattern-bg" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Show Background (None Pattern)</span>
+                  </label>
+                  <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-show-none-pattern-border" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Show Border (None Pattern)</span>
+                  </label>
+                  <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
+                </div>
               </div>
             </div>
+
             <label class="check-container">
               <input type="checkbox" id="check-show-rarity-line" />
               <span class="check-box"></span>
@@ -572,6 +581,18 @@
               </div>
             </div>
 
+            <!-- Character Card Size -->
+            <div class="custom-style-section">
+              <span class="custom-style-section-title">Character Card Size</span>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <div class="custom-style-row">
+                  <span>Size Scale</span>
+                  <span id="display-char-card-size" style="font-weight: 700;">1.00x</span>
+                </div>
+                <input type="range" id="input-char-card-size" min="0.6" max="1.6" step="0.05" value="1.0" class="custom-slider" />
+              </div>
+            </div>
+
             <!-- Character -->
             <div class="custom-style-section">
               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -703,6 +724,27 @@
                 <div id="custom-res-color-row" style="display: none; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); margin-top: 4px;">
                   <span>Resonance Label Color</span>
                   <input type="color" id="color-custom-res-label" value="#ffffff" class="listing-tier-color-input" />
+                </div>
+              </div>
+
+              <!-- Unowned Character Image Dimming in Export/Board -->
+              <div class="custom-style-section" style="margin-top: 4px; padding-top: 8px;">
+                <span class="custom-style-section-title">Unowned Characters Dimming (Board & PNG Export)</span>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <div class="custom-style-row">
+                      <span>Brightness</span>
+                      <span id="display-unowned-brightness" style="font-weight: 700;">42%</span>
+                    </div>
+                    <input type="range" id="input-unowned-brightness" min="0.05" max="1.0" step="0.02" value="0.42" class="custom-slider" />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <div class="custom-style-row">
+                      <span>Opacity</span>
+                      <span id="display-unowned-opacity" style="font-weight: 700;">82%</span>
+                    </div>
+                    <input type="range" id="input-unowned-opacity" min="0.1" max="1.0" step="0.02" value="0.82" class="custom-slider" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -857,6 +899,32 @@
           <button type="button" class="btn btn-secondary" id="export-modal-btn-share" style="display: none;">Share</button>
           <button type="button" class="btn btn-primary" id="export-modal-btn-download">Download PNG</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export JSON Option Modal (Export Theme vs Export Roster vs Export All) -->
+  <div id="export-json-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card" style="max-width: 380px;">
+      <div class="modal-header">
+        <h2>Export JSON</h2>
+        <button class="modal-close" id="export-json-btn-close">&times;</button>
+      </div>
+      <div class="modal-body" style="gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-theme" style="padding: 10px 14px;">
+            Export Theme Only
+          </button>
+          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-roster" style="padding: 10px 14px;">
+            Export Roster Only
+          </button>
+          <button type="button" class="btn btn-primary btn-block" id="btn-export-json-all" style="padding: 10px 14px;">
+            Export All
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" id="export-json-btn-cancel">Cancel</button>
       </div>
     </div>
   </div>

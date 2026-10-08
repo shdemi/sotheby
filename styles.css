@@ -44,10 +44,19 @@
   --board-header-border-width: 1px;
   --board-header-spacing: 20px;
 
+  /* Character Card scaling */
+  --char-card-scale: 1;
+  --char-card-width: 60px;
+  --char-avatar-size: 60px;
+
   --char-info-bg: rgba(18, 18, 18, 0.22);
   --char-info-border-color: transparent;
   --char-info-border-width: 0px;
   --char-info-radius: 0px;
+
+  /* Unowned dimming settings */
+  --unowned-char-brightness: 0.42;
+  --unowned-char-opacity: 0.82;
 }
 
 * {
@@ -454,13 +463,14 @@ body::before {
   display: grid;
   grid-template-columns: var(--tier-label-width, 110px) 1fr;
   align-items: center;
-  gap: 14px;
+  gap: calc(14px * var(--char-card-scale, 1));
   margin-bottom: var(--tier-row-spacing, 14px);
-  padding: 10px 12px;
-  min-height: 92px;
+  padding: calc(10px * var(--char-card-scale, 1)) calc(12px * var(--char-card-scale, 1));
+  min-height: calc(92px * var(--char-card-scale, 1));
   border: var(--tier-box-border-width, 1px) solid var(--tier-box-border-color, rgba(255, 255, 255, 0.04));
   border-radius: var(--tier-box-radius, 0px);
   background: var(--tier-box-bg, transparent);
+  box-sizing: border-box;
 }
 
 .tier-row:last-child {
@@ -487,14 +497,14 @@ body::before {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 12px 8px;
-  min-height: 72px;
+  gap: calc(12px * var(--char-card-scale, 1)) calc(8px * var(--char-card-scale, 1));
+  min-height: calc(72px * var(--char-card-scale, 1));
 }
 
 /* Character Card */
 .char-card {
   position: relative;
-  width: 60px;
+  width: var(--char-card-width, 60px);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -548,17 +558,17 @@ body::before {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 14px;
+  min-height: calc(14px * var(--char-card-scale, 1));
   margin-bottom: 1px;
   padding: 0;
   gap: 1px;
-  width: 60px;
+  width: var(--char-card-width, 60px);
   align-self: center;
   box-sizing: border-box;
 }
 
 .char-unowned-name {
-  font-size: 0.56rem;
+  font-size: calc(0.56rem * var(--char-card-scale, 1));
   font-weight: 700;
   color: rgba(244, 239, 233, 0.8);
   font-family: var(--board-font, var(--mono-font));
@@ -572,7 +582,7 @@ body::before {
 }
 
 .badge-resonance {
-  font-size: 0.64rem;
+  font-size: calc(0.64rem * var(--char-card-scale, 1));
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
@@ -590,14 +600,14 @@ body::before {
 }
 
 .badge-insight-img {
-  width: 13px;
-  height: 13px;
+  width: calc(13px * var(--char-card-scale, 1));
+  height: calc(13px * var(--char-card-scale, 1));
   object-fit: contain;
   display: block;
 }
 
 .badge-level-text {
-  font-size: 0.62rem;
+  font-size: calc(0.62rem * var(--char-card-scale, 1));
   font-weight: 700;
   color: #ffffff;
   font-family: var(--board-font, var(--mono-font));
@@ -607,7 +617,7 @@ body::before {
 }
 
 .badge-euphoria {
-  font-size: 0.52rem;
+  font-size: calc(0.52rem * var(--char-card-scale, 1));
   font-weight: 700;
   color: var(--accent-e);
   line-height: 1;
@@ -620,10 +630,10 @@ body::before {
 
 .char-avatar-box {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: var(--char-avatar-size, 60px);
+  height: var(--char-avatar-size, 60px);
   border-radius: 0;
-  background: #121212;
+  background: transparent;
   overflow: hidden;
   box-shadow: none;
   border: none;
@@ -640,7 +650,7 @@ body::before {
   align-items: center;
   justify-content: center;
   gap: 3px;
-  padding: 2px 5px 2px 3px;
+  padding: calc(2px * var(--char-card-scale, 1)) calc(5px * var(--char-card-scale, 1)) calc(2px * var(--char-card-scale, 1)) calc(3px * var(--char-card-scale, 1));
   border-radius: var(--char-info-radius, 0px);
   background: var(--char-info-bg, rgba(18, 18, 18, 0.22));
   border: var(--char-info-border-width, 0px) solid var(--char-info-border-color, transparent);
@@ -660,7 +670,7 @@ body::before {
 }
 
 .char-info-level {
-  font-size: 0.58rem;
+  font-size: calc(0.58rem * var(--char-card-scale, 1));
   font-weight: 700;
   color: #ffffff;
   font-family: var(--board-font, var(--mono-font));
@@ -679,8 +689,19 @@ body::before {
 }
 
 .char-card.is-unowned .char-avatar-img {
-  filter: grayscale(1) brightness(0.42) contrast(0.9);
-  opacity: 0.82;
+  filter: grayscale(1) brightness(var(--unowned-char-brightness, 0.42)) contrast(0.9);
+  opacity: var(--unowned-char-opacity, 0.82);
+}
+
+.char-unowned-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-color: #000000;
+  opacity: 0;
 }
 
 /* Rarity Indicator Line */
@@ -688,7 +709,7 @@ body::before {
   width: calc(100% + 4px);
   margin-left: -2px;
   margin-right: -2px;
-  height: 3px;
+  height: calc(3px * var(--char-card-scale, 1));
   margin-top: 0;
   border-radius: 0;
   box-sizing: border-box;
@@ -704,7 +725,7 @@ body::before {
 .char-portrait-bar-below {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  height: 3px;
+  height: calc(3px * var(--char-card-scale, 1));
   gap: 1px;
   margin-top: 2px;
   width: calc(100% + 2px);
@@ -730,12 +751,12 @@ body::before {
   justify-content: center;
   align-items: center;
   margin-top: 2px;
-  width: 60px;
+  width: var(--char-card-width, 60px);
   align-self: center;
 }
 
 .badge-euphoria-bottom {
-  font-size: 0.52rem;
+  font-size: calc(0.52rem * var(--char-card-scale, 1));
   font-weight: 700;
   color: var(--accent-e);
   line-height: 1;
@@ -1826,10 +1847,10 @@ body::before {
 
   .tier-row {
     grid-template-columns: 56px 1fr;
-    gap: 8px;
-    padding: 6px 4px;
+    gap: calc(8px * var(--char-card-scale, 1));
+    padding: calc(6px * var(--char-card-scale, 1)) calc(4px * var(--char-card-scale, 1));
     margin-bottom: var(--tier-row-spacing, 8px);
-    min-height: 60px;
+    min-height: calc(60px * var(--char-card-scale, 1));
   }
 
   .tier-label {
@@ -1841,41 +1862,41 @@ body::before {
   }
 
   .tier-content {
-    gap: 8px 4px;
-    min-height: 48px;
+    gap: calc(8px * var(--char-card-scale, 1)) calc(4px * var(--char-card-scale, 1));
+    min-height: calc(48px * var(--char-card-scale, 1));
   }
 
   /* Character Card scaling for small screens */
   .char-card {
-    width: 44px;
+    width: calc(44px * var(--char-card-scale, 1));
   }
 
   .char-top-info {
-    width: 44px;
-    min-height: 12px;
+    width: calc(44px * var(--char-card-scale, 1));
+    min-height: calc(12px * var(--char-card-scale, 1));
   }
 
   .char-unowned-name {
-    font-size: 0.44rem;
+    font-size: calc(0.44rem * var(--char-card-scale, 1));
     letter-spacing: 0;
   }
 
   .badge-resonance {
-    font-size: 0.52rem;
+    font-size: calc(0.52rem * var(--char-card-scale, 1));
   }
 
   .badge-insight-img {
-    width: 10px;
-    height: 10px;
+    width: calc(10px * var(--char-card-scale, 1));
+    height: calc(10px * var(--char-card-scale, 1));
   }
 
   .badge-level-text {
-    font-size: 0.5rem;
+    font-size: calc(0.5rem * var(--char-card-scale, 1));
   }
 
   .char-avatar-box {
-    width: 44px;
-    height: 44px;
+    width: calc(44px * var(--char-card-scale, 1));
+    height: calc(44px * var(--char-card-scale, 1));
   }
 
   .char-info-overlay {
@@ -1887,20 +1908,20 @@ body::before {
     width: calc(100% + 4px);
     margin-left: -2px;
     margin-right: -2px;
-    height: 2.5px;
+    height: calc(2.5px * var(--char-card-scale, 1));
   }
 
   .char-portrait-bar-below {
     width: calc(100% + 2px);
-    height: 2.5px;
+    height: calc(2.5px * var(--char-card-scale, 1));
   }
 
   .char-bottom-euphoria {
-    width: 44px;
+    width: calc(44px * var(--char-card-scale, 1));
   }
 
   .badge-euphoria-bottom {
-    font-size: 0.44rem;
+    font-size: calc(0.44rem * var(--char-card-scale, 1));
   }
 
   /* Modals Mobile Adaptation */

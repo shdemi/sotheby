@@ -199,6 +199,9 @@ const DEFAULT_THEME_APPEARANCE = {
   spacingHeaderToTiers: 20,
   spacingBetweenTierRows: 14,
 
+  // Character Card Scale Size
+  charCardScale: 1.0,
+
   // Character Info Badge (I/Lv Overlay)
   charInfoBgEnabled: true,
   charInfoBg: "#121212",
@@ -223,6 +226,10 @@ const DEFAULT_THEME_APPEARANCE = {
   // Custom Resonance Label Color on Character Info
   customResColorEnabled: false,
   customResColor: "#ffffff",
+
+  // Unowned Character Dimming
+  unownedBrightness: 0.42,
+  unownedOpacity: 0.82,
 };
 
 let displayOptions = {
@@ -368,6 +375,12 @@ function applyCustomAppearance() {
   document.documentElement.style.setProperty("--tier-box-radius", `${app.tierBoxRadius !== undefined ? app.tierBoxRadius : 0}px`);
   document.documentElement.style.setProperty("--tier-row-spacing", `${app.spacingBetweenTierRows !== undefined ? app.spacingBetweenTierRows : 14}px`);
 
+  // Character Card Scale
+  const charScale = app.charCardScale !== undefined ? app.charCardScale : 1.0;
+  document.documentElement.style.setProperty("--char-card-scale", charScale);
+  document.documentElement.style.setProperty("--char-card-width", `${Math.round(60 * charScale)}px`);
+  document.documentElement.style.setProperty("--char-avatar-size", `${Math.round(60 * charScale)}px`);
+
   // Character Info Badge Variables
   const bgOpacity = app.charInfoBgOpacity !== undefined ? app.charInfoBgOpacity : 0.22;
   const rawBg = app.charInfoBg || "#121212";
@@ -379,6 +392,8 @@ function applyCustomAppearance() {
 
   // Update root CSS variables for live styles
   document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
+  document.documentElement.style.setProperty("--unowned-char-brightness", app.unownedBrightness !== undefined ? app.unownedBrightness : 0.42);
+  document.documentElement.style.setProperty("--unowned-char-opacity", app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82);
 }
 
 function saveDisplayOptions() {
@@ -1356,11 +1371,14 @@ function createCharacterCard(name, char, iconUrl) {
     `;
   }
 
+  const unownedOverlayHtml = !char.owned ? `<div class="char-unowned-overlay"></div>` : "";
+
   card.innerHTML = `
     ${topHeaderHtml}
     <div class="char-avatar-box"${avatarBoxStyle}>
       <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
       ${insightLevelOverlay}
+      ${unownedOverlayHtml}
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
@@ -2076,6 +2094,20 @@ function setupEventListeners() {
     });
   }
 
+  const btnToggleCharDecor = document.getElementById("btn-toggle-char-decor");
+  const charDecorCollapseContent = document.getElementById("char-decor-collapse-content");
+  const charDecorArrow = document.getElementById("char-decor-arrow");
+
+  if (btnToggleCharDecor && charDecorCollapseContent) {
+    btnToggleCharDecor.addEventListener("click", () => {
+      const isVisible = charDecorCollapseContent.style.display !== "none";
+      charDecorCollapseContent.style.display = isVisible ? "none" : "flex";
+      if (charDecorArrow) {
+        charDecorArrow.textContent = isVisible ? "▸" : "▾";
+      }
+    });
+  }
+
   btnOptions.addEventListener("click", openOptionsModal);
   optionsBtnClose.addEventListener("click", closeOptionsModal);
   optionsBtnDone.addEventListener("click", () => {
@@ -2160,6 +2192,10 @@ function setupEventListeners() {
   const inputSpacingTierGap = document.getElementById("input-spacing-tier-gap");
   const displaySpacingTierGap = document.getElementById("display-spacing-tier-gap");
 
+  // Character Card Scale Elements
+  const inputCharCardSize = document.getElementById("input-char-card-size");
+  const displayCharCardSize = document.getElementById("display-char-card-size");
+
   // Character Info Badge Elements
   const checkCharInfoBgEnabled = document.getElementById("check-char-info-bg-enabled");
   const colorCharInfoBg = document.getElementById("color-char-info-bg");
@@ -2191,6 +2227,12 @@ function setupEventListeners() {
   const checkCustomResColor = document.getElementById("check-custom-res-color");
   const customResColorRow = document.getElementById("custom-res-color-row");
   const colorCustomResLabel = document.getElementById("color-custom-res-label");
+
+  // Unowned Characters Dimming Elements
+  const inputUnownedBrightness = document.getElementById("input-unowned-brightness");
+  const displayUnownedBrightness = document.getElementById("display-unowned-brightness");
+  const inputUnownedOpacity = document.getElementById("input-unowned-opacity");
+  const displayUnownedOpacity = document.getElementById("display-unowned-opacity");
 
   const btnResetCustomAppearance = document.getElementById("btn-reset-custom-appearance");
 
@@ -2263,6 +2305,11 @@ function setupEventListeners() {
     if (inputSpacingTierGap) inputSpacingTierGap.value = spTier;
     if (displaySpacingTierGap) displaySpacingTierGap.textContent = `${spTier}px`;
 
+    // Character Card Scale
+    const ccScale = app.charCardScale !== undefined ? app.charCardScale : 1.0;
+    if (inputCharCardSize) inputCharCardSize.value = ccScale;
+    if (displayCharCardSize) displayCharCardSize.textContent = `${Number(ccScale).toFixed(2)}x`;
+
     // Character Info Badge
     checkCharInfoBgEnabled.checked = app.charInfoBgEnabled !== false;
     const bgControls = document.getElementById("char-info-bg-controls");
@@ -2322,6 +2369,15 @@ function setupEventListeners() {
     if (colorCustomResLabel) {
       colorCustomResLabel.value = app.customResColor || "#ffffff";
     }
+
+    // Unowned Character Dimming
+    const unBright = app.unownedBrightness !== undefined ? app.unownedBrightness : 0.42;
+    if (inputUnownedBrightness) inputUnownedBrightness.value = unBright;
+    if (displayUnownedBrightness) displayUnownedBrightness.textContent = `${Math.round(unBright * 100)}%`;
+
+    const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82;
+    if (inputUnownedOpacity) inputUnownedOpacity.value = unOp;
+    if (displayUnownedOpacity) displayUnownedOpacity.textContent = `${Math.round(unOp * 100)}%`;
   }
 
   function readAppearanceForm() {
@@ -2349,6 +2405,9 @@ function setupEventListeners() {
       spacingHeaderToTiers: inputSpacingHeaderTier ? Number(inputSpacingHeaderTier.value) : 20,
       spacingBetweenTierRows: inputSpacingTierGap ? Number(inputSpacingTierGap.value) : 14,
 
+      // Character Card Scale
+      charCardScale: inputCharCardSize ? Number(inputCharCardSize.value) : 1.0,
+
       // Character Info Badge
       charInfoBgEnabled: checkCharInfoBgEnabled.checked,
       charInfoBg: colorCharInfoBg.value,
@@ -2373,6 +2432,9 @@ function setupEventListeners() {
 
       customResColorEnabled: checkCustomResColor ? checkCustomResColor.checked : false,
       customResColor: colorCustomResLabel ? colorCustomResLabel.value : "#ffffff",
+
+      unownedBrightness: inputUnownedBrightness ? Number(inputUnownedBrightness.value) : 0.42,
+      unownedOpacity: inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.82,
     };
   }
 
@@ -2458,6 +2520,15 @@ function setupEventListeners() {
     displayTierBoxRadius.textContent = `${e.target.value}px`;
   });
 
+  // Character Card Scale events
+  if (inputCharCardSize) {
+    inputCharCardSize.addEventListener("input", (e) => {
+      if (displayCharCardSize) {
+        displayCharCardSize.textContent = `${Number(e.target.value).toFixed(2)}x`;
+      }
+    });
+  }
+
   // Custom Portrait Colors by Rarity events
   if (checkCustomPortraitColors) {
     checkCustomPortraitColors.addEventListener("change", (e) => {
@@ -2472,6 +2543,23 @@ function setupEventListeners() {
     checkCustomResColor.addEventListener("change", (e) => {
       if (customResColorRow) {
         customResColorRow.style.display = e.target.checked ? "flex" : "none";
+      }
+    });
+  }
+
+  // Unowned Character Dimming events
+  if (inputUnownedBrightness) {
+    inputUnownedBrightness.addEventListener("input", (e) => {
+      if (displayUnownedBrightness) {
+        displayUnownedBrightness.textContent = `${Math.round(e.target.value * 100)}%`;
+      }
+    });
+  }
+
+  if (inputUnownedOpacity) {
+    inputUnownedOpacity.addEventListener("input", (e) => {
+      if (displayUnownedOpacity) {
+        displayUnownedOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
       }
     });
   }
@@ -3158,6 +3246,11 @@ function setupEventListeners() {
       }
 
       const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+      const unBright = app.unownedBrightness !== undefined ? app.unownedBrightness : 0.42;
+      const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82;
+      // Calculate black overlay opacity to replicate brightness dimming on canvas (1 - brightness)
+      const overlayDim = Math.max(0, Math.min(0.95, 1 - unBright));
+
       const canvas = await html2canvas(board, {
         backgroundColor: customBoardBgImageUrl ? null : (app.boardBg || "#111111"),
         scale: scale,
@@ -3169,6 +3262,19 @@ function setupEventListeners() {
           const clonedImgs = clonedDoc.querySelectorAll("#showcase-board img");
           clonedImgs.forEach((img) => img.removeAttribute("loading"));
           clonedDoc.querySelectorAll(".char-tooltip").forEach((el) => el.remove());
+
+          // Replicate unowned dimming on cloned elements for html2canvas
+          clonedDoc.querySelectorAll(".char-card.is-unowned").forEach((unownedCard) => {
+            const img = unownedCard.querySelector(".char-avatar-img");
+            if (img) {
+              img.style.opacity = String(unOp);
+            }
+            const overlay = unownedCard.querySelector(".char-unowned-overlay");
+            if (overlay) {
+              overlay.style.opacity = String(overlayDim);
+              overlay.style.backgroundColor = "#000000";
+            }
+          });
         },
       });
 
@@ -3249,22 +3355,87 @@ function setupEventListeners() {
     }
   });
 
-  // Export JSON (Exports user roster, tier listing config, and display appearance options)
-  btnExportData.addEventListener("click", () => {
-    const exportPayload = {
-      version: 2,
-      roster: userRoster,
-      listingConfig: listingConfig,
-      displayOptions: displayOptions,
-      boardTitle: localStorage.getItem(TITLE_STORAGE_KEY) || "Suitcase",
-    };
-    const jsonBlob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
-    const blobUrl = URL.createObjectURL(jsonBlob);
-    triggerDownload(blobUrl, `r1999_roster_${new Date().toISOString().slice(0, 10)}.json`);
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-  });
+  // Export JSON Modal Elements (Export Theme vs Export All)
+  const exportJsonModal = document.getElementById("export-json-modal");
+  const exportJsonBtnClose = document.getElementById("export-json-btn-close");
+  const exportJsonBtnCancel = document.getElementById("export-json-btn-cancel");
+  const btnExportJsonTheme = document.getElementById("btn-export-json-theme");
+  const btnExportJsonRoster = document.getElementById("btn-export-json-roster");
+  const btnExportJsonAll = document.getElementById("btn-export-json-all");
 
-  // Import JSON (Supports both v2 payload and direct roster object v1)
+  function closeExportJsonModal() {
+    if (exportJsonModal) exportJsonModal.style.display = "none";
+  }
+
+  if (btnExportData) {
+    btnExportData.addEventListener("click", () => {
+      if (exportJsonModal) {
+        exportJsonModal.style.display = "flex";
+      }
+    });
+  }
+
+  if (exportJsonBtnClose) exportJsonBtnClose.addEventListener("click", closeExportJsonModal);
+  if (exportJsonBtnCancel) exportJsonBtnCancel.addEventListener("click", closeExportJsonModal);
+  if (exportJsonModal) {
+    exportJsonModal.addEventListener("click", (e) => {
+      if (e.target === exportJsonModal) closeExportJsonModal();
+    });
+  }
+
+  // 1. Export Theme Only (Không bao gồm roster, cho người dùng chia sẻ UI)
+  if (btnExportJsonTheme) {
+    btnExportJsonTheme.addEventListener("click", () => {
+      const themePayload = {
+        version: 2,
+        isThemeOnly: true,
+        boardTitle: localStorage.getItem(TITLE_STORAGE_KEY) || "Suitcase",
+        listingConfig: listingConfig,
+        displayOptions: displayOptions,
+      };
+      const jsonBlob = new Blob([JSON.stringify(themePayload, null, 2)], { type: "application/json" });
+      const blobUrl = URL.createObjectURL(jsonBlob);
+      triggerDownload(blobUrl, `r1999_theme_${new Date().toISOString().slice(0, 10)}.json`);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      closeExportJsonModal();
+    });
+  }
+
+  // 2. Export Roster Only (Chỉ xuất danh sách nhân vật, không đổi UI/Theme của người nhận)
+  if (btnExportJsonRoster) {
+    btnExportJsonRoster.addEventListener("click", () => {
+      const rosterPayload = {
+        version: 2,
+        isRosterOnly: true,
+        roster: userRoster,
+      };
+      const jsonBlob = new Blob([JSON.stringify(rosterPayload, null, 2)], { type: "application/json" });
+      const blobUrl = URL.createObjectURL(jsonBlob);
+      triggerDownload(blobUrl, `r1999_roster_${new Date().toISOString().slice(0, 10)}.json`);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      closeExportJsonModal();
+    });
+  }
+
+  // 3. Export All (Full backup bao gồm cả roster và styling)
+  if (btnExportJsonAll) {
+    btnExportJsonAll.addEventListener("click", () => {
+      const exportPayload = {
+        version: 2,
+        roster: userRoster,
+        listingConfig: listingConfig,
+        displayOptions: displayOptions,
+        boardTitle: localStorage.getItem(TITLE_STORAGE_KEY) || "Suitcase",
+      };
+      const jsonBlob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
+      const blobUrl = URL.createObjectURL(jsonBlob);
+      triggerDownload(blobUrl, `r1999_full_backup_${new Date().toISOString().slice(0, 10)}.json`);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      closeExportJsonModal();
+    });
+  }
+
+  // Import JSON (Hỗ trợ: File theme độc lập, File full backup v2, File roster v1 cũ)
   inputImportFile.addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -3274,7 +3445,44 @@ function setupEventListeners() {
       try {
         const imported = JSON.parse(event.target.result);
         if (typeof imported === "object" && imported !== null && !Array.isArray(imported)) {
-          // Detect whether imported file is v2 export format or direct roster map
+          // Trường hợp 1: File Theme Only (không có hoặc không cần roster)
+          const isTheme = imported.isThemeOnly || (imported.listingConfig && imported.displayOptions && !imported.roster);
+
+          if (isTheme) {
+            if (imported.listingConfig && typeof imported.listingConfig === "object") {
+              listingConfig = { ...DEFAULT_TIERS_CONFIG, ...imported.listingConfig };
+              saveListingConfig();
+            }
+            if (imported.displayOptions && typeof imported.displayOptions === "object") {
+              displayOptions = {
+                ...displayOptions,
+                ...imported.displayOptions,
+                appearance: { ...DEFAULT_THEME_APPEARANCE, ...(imported.displayOptions.appearance || {}) },
+              };
+              saveDisplayOptions();
+            }
+            if (imported.boardTitle) {
+              localStorage.setItem(TITLE_STORAGE_KEY, imported.boardTitle);
+              if (boardTitleLabel) boardTitleLabel.textContent = imported.boardTitle;
+              if (inputBoardTitle) inputBoardTitle.value = imported.boardTitle;
+            }
+            applyCustomAppearance();
+            renderShowcase();
+            alert("Theme settings imported successfully! Your roster remains untouched.");
+            return;
+          }
+
+          // Trường hợp 2: File Roster Only (chỉ chứa roster, không thay đổi theme/styling)
+          if (imported.isRosterOnly && imported.roster && typeof imported.roster === "object" && !Array.isArray(imported.roster)) {
+            userRoster = imported.roster;
+            sanitizeRosterState();
+            saveRoster();
+            renderShowcase();
+            alert("Roster imported successfully! Your theme settings remain untouched.");
+            return;
+          }
+
+          // Trường hợp 3: File Full Backup v2 (chứa cả roster và config)
           if (imported.roster && typeof imported.roster === "object" && !Array.isArray(imported.roster)) {
             userRoster = imported.roster;
             if (imported.listingConfig && typeof imported.listingConfig === "object") {
@@ -3295,7 +3503,7 @@ function setupEventListeners() {
               if (inputBoardTitle) inputBoardTitle.value = imported.boardTitle;
             }
           } else {
-            // Direct roster map
+            // Trường hợp 4: Direct roster map v1 cũ
             userRoster = imported;
           }
 
@@ -3303,9 +3511,9 @@ function setupEventListeners() {
           saveRoster();
           applyCustomAppearance();
           renderShowcase();
-          alert("Roster imported successfully!");
+          alert("Data imported successfully!");
         } else {
-          alert("Invalid roster format. Please select a valid JSON roster file.");
+          alert("Invalid JSON format. Please select a valid JSON file.");
         }
       } catch (err) {
         alert("Invalid JSON file.");
