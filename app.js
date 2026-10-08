@@ -190,7 +190,7 @@ const DEFAULT_THEME_APPEARANCE = {
   boardHeaderBorderWidth: 1,
 
   // Tier Box (Khung chứa từng tier & nhân vật)
-  tierBoxOpacity: 1,
+  tierBoxOpacity: 0.1,
   tierBoxBorderWidth: 1,
   tierBoxRadius: 0,
 
@@ -347,7 +347,7 @@ function applyCustomAppearance() {
   document.documentElement.style.setProperty("--board-header-spacing", `${app.spacingHeaderToTiers !== undefined ? app.spacingHeaderToTiers : 20}px`);
 
   // Tier Box Variables
-  const tbOpacity = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 1;
+  const tbOpacity = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 0.1;
   const tbRawBg = "#000000";
   document.documentElement.style.setProperty("--tier-box-bg", hexToRgba(tbRawBg, tbOpacity));
   document.documentElement.style.setProperty("--tier-box-border-color", "rgba(255, 255, 255, 0.04)");
@@ -2150,7 +2150,7 @@ function setupEventListeners() {
     displayBoardHeaderBorderWidth.textContent = `${bhBw}px`;
 
     // Tier Box
-    const tbOp = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 1;
+    const tbOp = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 0.1;
     if (inputTierBoxOpacity) inputTierBoxOpacity.value = tbOp;
     if (displayTierBoxOpacity) displayTierBoxOpacity.textContent = `${Math.round(tbOp * 100)}%`;
     const tbBw = app.tierBoxBorderWidth !== undefined ? app.tierBoxBorderWidth : 1;
@@ -2234,7 +2234,7 @@ function setupEventListeners() {
       boardHeaderBorderWidth: Number(inputBoardHeaderBorderWidth.value),
 
       // Tier Box
-      tierBoxOpacity: inputTierBoxOpacity ? Number(inputTierBoxOpacity.value) : 1,
+      tierBoxOpacity: inputTierBoxOpacity ? Number(inputTierBoxOpacity.value) : 0.1,
       tierBoxBorderWidth: Number(inputTierBoxBorderWidth.value),
       tierBoxRadius: Number(inputTierBoxRadius.value),
 
@@ -3193,7 +3193,7 @@ function setupEventListeners() {
 
   // Reset Data
   btnResetData.addEventListener("click", () => {
-    if (confirm("Are you sure you want to reset all character settings to their defaults? This will also reset ownership status.")) {
+    if (confirm("Are you sure you want to reset all character settings to their defaults?")) {
       localStorage.removeItem(STORAGE_KEY);
       userRoster = {};
       loadRoster();
