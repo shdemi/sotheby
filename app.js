@@ -186,6 +186,7 @@ const DEFAULT_THEME_APPEARANCE = {
 
   // Board Header Box
   boardHeaderBg: "transparent",
+  boardHeaderBgOpacity: 1,
   boardHeaderBorderColor: "rgba(255, 255, 255, 0.1)",
   boardHeaderBorderWidth: 1,
 
@@ -207,7 +208,12 @@ const DEFAULT_THEME_APPEARANCE = {
   charInfoRadius: 0,
 
   euphoriaColor: "#04FFEE",
-  portraitBarColor: "#FBAE31",
+  customPortraitColorsEnabled: true,
+  portraitColorR6: "#DD9925",
+  portraitColorR5: "#C7AF6C",
+  portraitColorR4: "#6A4972",
+  portraitColorR3: "#545C7D",
+  portraitColorR2: "#496441",
   patternNone: "#4F4F4F",
   patternOffensive: "#FBAE31",
   patternDefensive: "#2D8A5A",
@@ -229,6 +235,10 @@ let displayOptions = {
   hideSkin: false,
   showPatternBg: false,
   showPatternBorder: false,
+  showNonePatternBg: false,
+  colorNonePatternBg: "#4F4F4F",
+  showNonePatternBorder: false,
+  colorNonePatternBorder: "#4F4F4F",
   showRarityLine: false,
   hideI3Lv60: false,
   hideI3Lv30: false,
@@ -341,7 +351,10 @@ function applyCustomAppearance() {
   }
 
   // Board Header Box Variables
-  document.documentElement.style.setProperty("--board-header-bg", app.boardHeaderBg || "transparent");
+  const bhOpacity = app.boardHeaderBgOpacity !== undefined ? app.boardHeaderBgOpacity : 1;
+  const rawBhBg = app.boardHeaderBg || "transparent";
+  const boardHeaderBgFinal = (rawBhBg === "transparent") ? "transparent" : hexToRgba(rawBhBg, bhOpacity);
+  document.documentElement.style.setProperty("--board-header-bg", boardHeaderBgFinal);
   document.documentElement.style.setProperty("--board-header-border-color", app.boardHeaderBorderColor || "rgba(255, 255, 255, 0.1)");
   document.documentElement.style.setProperty("--board-header-border-width", `${app.boardHeaderBorderWidth !== undefined ? app.boardHeaderBorderWidth : 1}px`);
   document.documentElement.style.setProperty("--board-header-spacing", `${app.spacingHeaderToTiers !== undefined ? app.spacingHeaderToTiers : 20}px`);
@@ -366,7 +379,6 @@ function applyCustomAppearance() {
 
   // Update root CSS variables for live styles
   document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
-  document.documentElement.style.setProperty("--portrait-bar-active", app.portraitBarColor || "#FBAE31");
 }
 
 function saveDisplayOptions() {
@@ -1152,14 +1164,16 @@ function renderTierRowSection(label, color, cards, customBg, customBorder, isBol
   const section = document.createElement("section");
   section.className = "tier-row";
 
+  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+  const tbOpacity = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 0.1;
+
   if (customBg && customBg !== "transparent") {
-    section.style.background = customBg;
+    section.style.background = hexToRgba(customBg, tbOpacity);
   }
   if (customBorder && customBorder !== "transparent") {
     section.style.borderColor = customBorder;
   }
 
-  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
   const tierSize = app.tierLabelSize !== undefined ? app.tierLabelSize : 0.70;
 
   const labelEl = document.createElement("div");
@@ -1209,12 +1223,26 @@ function createCharacterCard(name, char, iconUrl) {
 
   const boxKind = char.boxKind || "none";
   const resonanceColor = getCardResonanceTextColor(boxKind);
+  const patternColor = getResonanceTextColor(boxKind);
   const patternName = getPatternDisplayName(boxKind);
   const patternSuffix = patternName ? ` · ${patternName}` : "";
 
   // Portrait dashes: 5 total slots (P0 = 0 dashes, P1 = 1 active dash, ... P5 = 5 active dashes)
+  let activeDashColor = "";
+  if (displayOptions.appearance && displayOptions.appearance.customPortraitColorsEnabled) {
+    switch (rarityVal) {
+      case 6: activeDashColor = displayOptions.appearance.portraitColorR6 || "#DD9925"; break;
+      case 5: activeDashColor = displayOptions.appearance.portraitColorR5 || "#C7AF6C"; break;
+      case 4: activeDashColor = displayOptions.appearance.portraitColorR4 || "#6A4972"; break;
+      case 3: activeDashColor = displayOptions.appearance.portraitColorR3 || "#545C7D"; break;
+      case 2: activeDashColor = displayOptions.appearance.portraitColorR2 || "#496441"; break;
+      default: activeDashColor = ""; break;
+    }
+  }
+  const dashStyle = activeDashColor ? ` style="background-color: ${activeDashColor};"` : "";
+
   const dashesHtml = (char.owned && !displayOptions.hidePortrait)
-    ? Array.from({ length: 5 }, (_, i) => `<span class="portrait-dash ${i < char.portrait ? "active" : ""}"></span>`).join("")
+    ? Array.from({ length: 5 }, (_, i) => `<span class="portrait-dash ${i < char.portrait ? "active" : ""}"${i < char.portrait ? dashStyle : ""}></span>`).join("")
     : "";
 
   let topHeaderHtml = "";
@@ -1286,12 +1314,24 @@ function createCharacterCard(name, char, iconUrl) {
   const avatarUrl = getCardAvatarUrl(name, char, iconUrl);
 
   const avatarBoxStyles = [];
-  if (char.owned && boxKind && boxKind !== "none") {
-    if (displayOptions.showPatternBg) {
-      avatarBoxStyles.push(`background-color: ${resonanceColor}`);
-    }
-    if (displayOptions.showPatternBorder) {
-      avatarBoxStyles.push(`border: 1px solid ${resonanceColor}`);
+  if (char.owned) {
+    if (boxKind && boxKind !== "none") {
+      if (displayOptions.showPatternBg) {
+        avatarBoxStyles.push(`background-color: ${patternColor}`);
+      }
+      if (displayOptions.showPatternBorder) {
+        avatarBoxStyles.push(`border: 1px solid ${patternColor}`);
+      }
+    } else {
+      // None Pattern characters
+      if (displayOptions.showNonePatternBg) {
+        const noneBgColor = displayOptions.colorNonePatternBg || "#4F4F4F";
+        avatarBoxStyles.push(`background-color: ${noneBgColor}`);
+      }
+      if (displayOptions.showNonePatternBorder) {
+        const noneBorderColor = displayOptions.colorNonePatternBorder || "#4F4F4F";
+        avatarBoxStyles.push(`border: 1px solid ${noneBorderColor}`);
+      }
     }
   }
   const avatarBoxStyle = avatarBoxStyles.length > 0 ? ` style="${avatarBoxStyles.join("; ")};"` : "";
@@ -1791,6 +1831,10 @@ function setupEventListeners() {
   const checkFutureSight = document.getElementById("check-future-sight");
   const checkShowPatternBg = document.getElementById("check-show-pattern-bg");
   const checkShowPatternBorder = document.getElementById("check-show-pattern-border");
+  const checkShowNonePatternBg = document.getElementById("check-show-none-pattern-bg");
+  const colorNonePatternBg = document.getElementById("color-none-pattern-bg");
+  const checkShowNonePatternBorder = document.getElementById("check-show-none-pattern-border");
+  const colorNonePatternBorder = document.getElementById("color-none-pattern-border");
   const checkShowRarityLine = document.getElementById("check-show-rarity-line");
   const checkHideI3Lv60 = document.getElementById("check-hide-i3-lv60");
   const checkHideI3Lv30 = document.getElementById("check-hide-i3-lv30");
@@ -1810,6 +1854,22 @@ function setupEventListeners() {
     if (checkFutureSight) checkFutureSight.checked = !!futureSightEnabled;
     if (checkShowPatternBg) checkShowPatternBg.checked = !!displayOptions.showPatternBg;
     if (checkShowPatternBorder) checkShowPatternBorder.checked = !!displayOptions.showPatternBorder;
+
+    if (checkShowNonePatternBg) {
+      checkShowNonePatternBg.checked = !!displayOptions.showNonePatternBg;
+    }
+    if (colorNonePatternBg) {
+      colorNonePatternBg.value = displayOptions.colorNonePatternBg || "#4F4F4F";
+      colorNonePatternBg.style.display = displayOptions.showNonePatternBg ? "inline-block" : "none";
+    }
+    if (checkShowNonePatternBorder) {
+      checkShowNonePatternBorder.checked = !!displayOptions.showNonePatternBorder;
+    }
+    if (colorNonePatternBorder) {
+      colorNonePatternBorder.value = displayOptions.colorNonePatternBorder || "#4F4F4F";
+      colorNonePatternBorder.style.display = displayOptions.showNonePatternBorder ? "inline-block" : "none";
+    }
+
     checkHideInsight.checked = !!displayOptions.hideInsight;
     checkHideLevel.checked = !!displayOptions.hideLevel;
     checkHideResonance.checked = !!displayOptions.hideResonance;
@@ -2000,6 +2060,22 @@ function setupEventListeners() {
     });
   }
 
+  if (checkShowNonePatternBg) {
+    checkShowNonePatternBg.addEventListener("change", (e) => {
+      if (colorNonePatternBg) {
+        colorNonePatternBg.style.display = e.target.checked ? "inline-block" : "none";
+      }
+    });
+  }
+
+  if (checkShowNonePatternBorder) {
+    checkShowNonePatternBorder.addEventListener("change", (e) => {
+      if (colorNonePatternBorder) {
+        colorNonePatternBorder.style.display = e.target.checked ? "inline-block" : "none";
+      }
+    });
+  }
+
   btnOptions.addEventListener("click", openOptionsModal);
   optionsBtnClose.addEventListener("click", closeOptionsModal);
   optionsBtnDone.addEventListener("click", () => {
@@ -2009,6 +2085,12 @@ function setupEventListeners() {
     }
     if (checkShowPatternBg) displayOptions.showPatternBg = checkShowPatternBg.checked;
     if (checkShowPatternBorder) displayOptions.showPatternBorder = checkShowPatternBorder.checked;
+
+    if (checkShowNonePatternBg) displayOptions.showNonePatternBg = checkShowNonePatternBg.checked;
+    if (colorNonePatternBg) displayOptions.colorNonePatternBg = colorNonePatternBg.value;
+    if (checkShowNonePatternBorder) displayOptions.showNonePatternBorder = checkShowNonePatternBorder.checked;
+    if (colorNonePatternBorder) displayOptions.colorNonePatternBorder = colorNonePatternBorder.value;
+
     displayOptions.hideInsight = checkHideInsight.checked;
     displayOptions.hideLevel = checkHideLevel.checked;
     displayOptions.hideResonance = checkHideResonance.checked;
@@ -2057,6 +2139,8 @@ function setupEventListeners() {
   // Board Header Box Elements
   const colorBoardHeaderBg = document.getElementById("color-board-header-bg");
   const btnClearBoardHeaderBg = document.getElementById("btn-clear-board-header-bg");
+  const inputBoardHeaderBgOpacity = document.getElementById("input-board-header-bg-opacity");
+  const displayBoardHeaderBgOpacity = document.getElementById("display-board-header-bg-opacity");
   const colorBoardHeaderBorder = document.getElementById("color-board-header-border");
   const btnClearBoardHeaderBorder = document.getElementById("btn-clear-board-header-border");
   const inputBoardHeaderBorderWidth = document.getElementById("input-board-header-border-width");
@@ -2089,7 +2173,14 @@ function setupEventListeners() {
   const displayCharInfoBgOpacity = document.getElementById("display-char-info-bg-opacity");
 
   const colorEuphoriaLabel = document.getElementById("color-euphoria-label");
-  const colorPortraitBar = document.getElementById("color-portrait-bar");
+  const checkCustomPortraitColors = document.getElementById("check-custom-portrait-colors");
+  const portraitRarityColorsGrid = document.getElementById("portrait-rarity-colors-grid");
+  const colorPortraitR6 = document.getElementById("color-portrait-r6");
+  const colorPortraitR5 = document.getElementById("color-portrait-r5");
+  const colorPortraitR4 = document.getElementById("color-portrait-r4");
+  const colorPortraitR3 = document.getElementById("color-portrait-r3");
+  const colorPortraitR2 = document.getElementById("color-portrait-r2");
+
   const colorPatternNone = document.getElementById("color-pattern-none");
   const colorPatternOffensive = document.getElementById("color-pattern-offensive");
   const colorPatternDefensive = document.getElementById("color-pattern-defensive");
@@ -2143,6 +2234,9 @@ function setupEventListeners() {
     // Board Header Box
     currentBoardHeaderBg = app.boardHeaderBg || "transparent";
     colorBoardHeaderBg.value = parseHexOrDefault(currentBoardHeaderBg, "#000000");
+    const bhOp = app.boardHeaderBgOpacity !== undefined ? app.boardHeaderBgOpacity : 1;
+    if (inputBoardHeaderBgOpacity) inputBoardHeaderBgOpacity.value = bhOp;
+    if (displayBoardHeaderBgOpacity) displayBoardHeaderBgOpacity.textContent = `${Math.round(bhOp * 100)}%`;
     currentBoardHeaderBorder = app.boardHeaderBorderColor || "rgba(255, 255, 255, 0.1)";
     colorBoardHeaderBorder.value = parseHexOrDefault(currentBoardHeaderBorder, "#333333");
     const bhBw = app.boardHeaderBorderWidth !== undefined ? app.boardHeaderBorderWidth : 1;
@@ -2199,7 +2293,19 @@ function setupEventListeners() {
     if (displayCharInfoBgOpacity) displayCharInfoBgOpacity.textContent = `${Math.round(ciBgOpacity * 100)}%`;
 
     colorEuphoriaLabel.value = app.euphoriaColor || "#04FFEE";
-    colorPortraitBar.value = app.portraitBarColor || "#FBAE31";
+
+    if (checkCustomPortraitColors) {
+      checkCustomPortraitColors.checked = !!app.customPortraitColorsEnabled;
+    }
+    if (portraitRarityColorsGrid) {
+      portraitRarityColorsGrid.style.display = app.customPortraitColorsEnabled ? "grid" : "none";
+    }
+    if (colorPortraitR6) colorPortraitR6.value = app.portraitColorR6 || "#DD9925";
+    if (colorPortraitR5) colorPortraitR5.value = app.portraitColorR5 || "#C7AF6C";
+    if (colorPortraitR4) colorPortraitR4.value = app.portraitColorR4 || "#6A4972";
+    if (colorPortraitR3) colorPortraitR3.value = app.portraitColorR3 || "#545C7D";
+    if (colorPortraitR2) colorPortraitR2.value = app.portraitColorR2 || "#496441";
+
     colorPatternNone.value = app.patternNone || "#4F4F4F";
     colorPatternOffensive.value = app.patternOffensive || "#FBAE31";
     colorPatternDefensive.value = app.patternDefensive || "#2D8A5A";
@@ -2230,6 +2336,7 @@ function setupEventListeners() {
 
       // Board Header Box
       boardHeaderBg: currentBoardHeaderBg,
+      boardHeaderBgOpacity: inputBoardHeaderBgOpacity ? Number(inputBoardHeaderBgOpacity.value) : 1,
       boardHeaderBorderColor: currentBoardHeaderBorder,
       boardHeaderBorderWidth: Number(inputBoardHeaderBorderWidth.value),
 
@@ -2251,7 +2358,13 @@ function setupEventListeners() {
       charInfoRadius: Number(inputCharInfoRadius.value),
 
       euphoriaColor: colorEuphoriaLabel.value,
-      portraitBarColor: colorPortraitBar.value,
+      customPortraitColorsEnabled: checkCustomPortraitColors ? checkCustomPortraitColors.checked : false,
+      portraitColorR6: colorPortraitR6 ? colorPortraitR6.value : "#DD9925",
+      portraitColorR5: colorPortraitR5 ? colorPortraitR5.value : "#C7AF6C",
+      portraitColorR4: colorPortraitR4 ? colorPortraitR4.value : "#6A4972",
+      portraitColorR3: colorPortraitR3 ? colorPortraitR3.value : "#545C7D",
+      portraitColorR2: colorPortraitR2 ? colorPortraitR2.value : "#496441",
+
       patternNone: colorPatternNone.value,
       patternOffensive: colorPatternOffensive.value,
       patternDefensive: colorPatternDefensive.value,
@@ -2278,6 +2391,13 @@ function setupEventListeners() {
   btnClearBoardHeaderBg.addEventListener("click", () => {
     currentBoardHeaderBg = "transparent";
   });
+  if (inputBoardHeaderBgOpacity) {
+    inputBoardHeaderBgOpacity.addEventListener("input", (e) => {
+      if (displayBoardHeaderBgOpacity) {
+        displayBoardHeaderBgOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
+      }
+    });
+  }
   colorBoardHeaderBorder.addEventListener("input", (e) => {
     currentBoardHeaderBorder = e.target.value;
   });
@@ -2337,6 +2457,15 @@ function setupEventListeners() {
   inputTierBoxRadius.addEventListener("input", (e) => {
     displayTierBoxRadius.textContent = `${e.target.value}px`;
   });
+
+  // Custom Portrait Colors by Rarity events
+  if (checkCustomPortraitColors) {
+    checkCustomPortraitColors.addEventListener("change", (e) => {
+      if (portraitRarityColorsGrid) {
+        portraitRarityColorsGrid.style.display = e.target.checked ? "grid" : "none";
+      }
+    });
+  }
 
   // Custom Resonance Label Color events
   if (checkCustomResColor) {

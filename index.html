@@ -274,6 +274,24 @@
               <span class="check-box"></span>
               <span class="check-text">Show Character's Border (Pattern Color)</span>
             </label>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="check-container" style="margin: 0;">
+                  <input type="checkbox" id="check-show-none-pattern-bg" />
+                  <span class="check-box"></span>
+                  <span class="check-text">Show Character's Background (None Pattern)</span>
+                </label>
+                <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="check-container" style="margin: 0;">
+                  <input type="checkbox" id="check-show-none-pattern-border" />
+                  <span class="check-box"></span>
+                  <span class="check-text">Show Character's Border (None Pattern)</span>
+                </label>
+                <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
+              </div>
+            </div>
             <label class="check-container">
               <input type="checkbox" id="check-show-rarity-line" />
               <span class="check-box"></span>
@@ -479,6 +497,13 @@
               </div>
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <div class="custom-style-row">
+                  <span>Background Opacity (Transparency)</span>
+                  <span id="display-board-header-bg-opacity" style="font-weight: 700;">100%</span>
+                </div>
+                <input type="range" id="input-board-header-bg-opacity" min="0" max="1" step="0.02" value="1" class="custom-slider" />
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <div class="custom-style-row">
                   <span>Border Width</span>
                   <span id="display-board-header-border-width" style="font-weight: 700;">1px</span>
                 </div>
@@ -598,15 +623,44 @@
             <!-- Euphoria & Portrait Dash Color -->
             <div class="custom-style-section">
               <span class="custom-style-section-title">Accents & Badges</span>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
                   <span>Euphoria Label</span>
                   <input type="color" id="color-euphoria-label" value="#04FFEE" class="listing-tier-color-input" />
                 </label>
-                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Portrait Bar (Active)</span>
-                  <input type="color" id="color-portrait-bar" value="#FBAE31" class="listing-tier-color-input" />
-                </label>
+                <!-- Custom Portrait Bar Colors by Rarity -->
+                <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px dashed rgba(17, 15, 12, 0.1);">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.68rem; font-family: var(--mono-font);">Custom Portrait Bar by Rarity</span>
+                    <label class="check-container" style="margin: 0;">
+                      <input type="checkbox" id="check-custom-portrait-colors" checked />
+                      <span class="check-box"></span>
+                      <span class="check-text" style="font-size: 0.65rem;">Enable</span>
+                    </label>
+                  </div>
+                  <div id="portrait-rarity-colors-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 2px;">
+                    <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
+                      <span>✦6</span>
+                      <input type="color" id="color-portrait-r6" value="#DD9925" class="listing-tier-color-input" />
+                    </label>
+                    <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
+                      <span>✦5</span>
+                      <input type="color" id="color-portrait-r5" value="#C7AF6C" class="listing-tier-color-input" />
+                    </label>
+                    <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
+                      <span>✦4</span>
+                      <input type="color" id="color-portrait-r4" value="#6A4972" class="listing-tier-color-input" />
+                    </label>
+                    <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
+                      <span>✦3</span>
+                      <input type="color" id="color-portrait-r3" value="#545C7D" class="listing-tier-color-input" />
+                    </label>
+                    <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
+                      <span>✦2</span>
+                      <input type="color" id="color-portrait-r2" value="#496441" class="listing-tier-color-input" />
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
 
