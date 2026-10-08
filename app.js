@@ -2733,9 +2733,9 @@ function setupEventListeners() {
     { value: "i2", label: "Insight: Insight 2 (I2)" },
     { value: "i1", label: "Insight: Insight 1 (I1)" },
     { value: "i0", label: "Insight: Insight 0 (I0)" },
-    { value: "rarity_6", label: "Rarity: 6✦" },
-    { value: "rarity_5", label: "Rarity: 5✦" },
-    { value: "rarity_2_4", label: "Rarity: 2✦ - 4✦" },
+    { value: "rarity_6", label: "Rarity: ✦6" },
+    { value: "rarity_5", label: "Rarity: ✦5" },
+    { value: "rarity_2_4", label: "Rarity: ✦2 - ✦4" },
     { value: "unbuilt", label: "Unbuilt (I0 Lv.1 R1)" },
   ];
 
