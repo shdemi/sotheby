@@ -55,7 +55,6 @@
   --char-info-radius: 0px;
 
   /* Unowned dimming settings */
-  --unowned-char-brightness: 0.42;
   --unowned-char-opacity: 0.82;
 }
 
@@ -689,19 +688,7 @@ body::before {
 }
 
 .char-card.is-unowned .char-avatar-img {
-  filter: grayscale(1) brightness(var(--unowned-char-brightness, 0.42)) contrast(0.9);
   opacity: var(--unowned-char-opacity, 0.82);
-}
-
-.char-unowned-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background-color: #000000;
-  opacity: 0;
 }
 
 /* Rarity Indicator Line */

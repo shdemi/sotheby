@@ -228,7 +228,6 @@ const DEFAULT_THEME_APPEARANCE = {
   customResColor: "#ffffff",
 
   // Unowned Character Dimming
-  unownedBrightness: 0.42,
   unownedOpacity: 0.82,
 };
 
@@ -392,7 +391,6 @@ function applyCustomAppearance() {
 
   // Update root CSS variables for live styles
   document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
-  document.documentElement.style.setProperty("--unowned-char-brightness", app.unownedBrightness !== undefined ? app.unownedBrightness : 0.42);
   document.documentElement.style.setProperty("--unowned-char-opacity", app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82);
 }
 
@@ -1371,14 +1369,11 @@ function createCharacterCard(name, char, iconUrl) {
     `;
   }
 
-  const unownedOverlayHtml = !char.owned ? `<div class="char-unowned-overlay"></div>` : "";
-
   card.innerHTML = `
     ${topHeaderHtml}
     <div class="char-avatar-box"${avatarBoxStyle}>
       <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
       ${insightLevelOverlay}
-      ${unownedOverlayHtml}
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
@@ -2229,8 +2224,6 @@ function setupEventListeners() {
   const colorCustomResLabel = document.getElementById("color-custom-res-label");
 
   // Unowned Characters Dimming Elements
-  const inputUnownedBrightness = document.getElementById("input-unowned-brightness");
-  const displayUnownedBrightness = document.getElementById("display-unowned-brightness");
   const inputUnownedOpacity = document.getElementById("input-unowned-opacity");
   const displayUnownedOpacity = document.getElementById("display-unowned-opacity");
 
@@ -2371,10 +2364,6 @@ function setupEventListeners() {
     }
 
     // Unowned Character Dimming
-    const unBright = app.unownedBrightness !== undefined ? app.unownedBrightness : 0.42;
-    if (inputUnownedBrightness) inputUnownedBrightness.value = unBright;
-    if (displayUnownedBrightness) displayUnownedBrightness.textContent = `${Math.round(unBright * 100)}%`;
-
     const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82;
     if (inputUnownedOpacity) inputUnownedOpacity.value = unOp;
     if (displayUnownedOpacity) displayUnownedOpacity.textContent = `${Math.round(unOp * 100)}%`;
@@ -2433,7 +2422,6 @@ function setupEventListeners() {
       customResColorEnabled: checkCustomResColor ? checkCustomResColor.checked : false,
       customResColor: colorCustomResLabel ? colorCustomResLabel.value : "#ffffff",
 
-      unownedBrightness: inputUnownedBrightness ? Number(inputUnownedBrightness.value) : 0.42,
       unownedOpacity: inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.82,
     };
   }
@@ -2548,14 +2536,6 @@ function setupEventListeners() {
   }
 
   // Unowned Character Dimming events
-  if (inputUnownedBrightness) {
-    inputUnownedBrightness.addEventListener("input", (e) => {
-      if (displayUnownedBrightness) {
-        displayUnownedBrightness.textContent = `${Math.round(e.target.value * 100)}%`;
-      }
-    });
-  }
-
   if (inputUnownedOpacity) {
     inputUnownedOpacity.addEventListener("input", (e) => {
       if (displayUnownedOpacity) {
@@ -3246,10 +3226,7 @@ function setupEventListeners() {
       }
 
       const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
-      const unBright = app.unownedBrightness !== undefined ? app.unownedBrightness : 0.42;
       const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82;
-      // Calculate black overlay opacity to replicate brightness dimming on canvas (1 - brightness)
-      const overlayDim = Math.max(0, Math.min(0.95, 1 - unBright));
 
       const canvas = await html2canvas(board, {
         backgroundColor: customBoardBgImageUrl ? null : (app.boardBg || "#111111"),
@@ -3263,16 +3240,11 @@ function setupEventListeners() {
           clonedImgs.forEach((img) => img.removeAttribute("loading"));
           clonedDoc.querySelectorAll(".char-tooltip").forEach((el) => el.remove());
 
-          // Replicate unowned dimming on cloned elements for html2canvas
+          // Replicate unowned opacity on cloned elements for html2canvas
           clonedDoc.querySelectorAll(".char-card.is-unowned").forEach((unownedCard) => {
             const img = unownedCard.querySelector(".char-avatar-img");
             if (img) {
               img.style.opacity = String(unOp);
-            }
-            const overlay = unownedCard.querySelector(".char-unowned-overlay");
-            if (overlay) {
-              overlay.style.opacity = String(overlayDim);
-              overlay.style.backgroundColor = "#000000";
             }
           });
         },
