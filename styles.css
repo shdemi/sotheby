@@ -719,6 +719,26 @@ body::before {
   filter: saturate(0.82) contrast(1.05) brightness(0.9);
 }
 
+/* Afflatus Icon in Character Avatar Box */
+.char-afflatus-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 27.08%;
+  aspect-ratio: 74 / 118;
+  z-index: 3;
+  pointer-events: none;
+  line-height: 0;
+  display: flex;
+}
+
+.char-afflatus-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
 .char-info-overlay {
   position: absolute;
   left: 50%;
@@ -1534,6 +1554,9 @@ body::before {
   justify-content: center;
   padding: 6px 0;
   width: 100%;
+  background: transparent;
+  border: none;
+  box-sizing: border-box;
 }
 
 .options-char-preview-box {
@@ -1559,8 +1582,6 @@ body::before {
 }
 
 #options-char-preview-card {
-  transform: scale(1.15);
-  transform-origin: center center;
   margin: 0;
 }
 
@@ -1900,8 +1921,7 @@ body::before {
   transform: translateX(-1px);
 }
 
-.chess-piece-empty,
-.chess-piece-filled {
+.chess-piece-empty {
   position: absolute;
   top: 0;
   left: 0;
@@ -1910,15 +1930,30 @@ body::before {
   object-fit: contain;
   object-position: bottom center;
   display: block;
-}
-
-.chess-piece-empty {
   z-index: 1;
 }
 
-.chess-piece-filled {
+/* Fill crop mask: uses overflow hidden instead of clip-path because
+   html2canvas (used for PNG export) does not support clip-path.
+   Inline `top` (insetTop%) + bottom:0 give the reveal height. */
+.chess-piece-fill-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
   z-index: 2;
-  clip-path: inset(0 0 0 0);
+  pointer-events: none;
+}
+
+.chess-piece-filled {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  display: block;
 }
 
 .chess-piece-tooltip {

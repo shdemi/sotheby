@@ -7,6 +7,7 @@ let characterIdMap = {}; // { "Name": 3003 }
 let euphoriaOptionsByName = {}; // { "Name": [1,2] }
 let euphoriaNamesByTier = {}; // { "Name": { 1: "Pursuit", 2: "Conduit" } }
 let euphoriaAllowedNames = new Set();
+let characterAfflatus = {}; // { "Name": "Beast" | "Plant" | "Star" | "Mineral" | "Spirit" | "Intellect" | "Mineral_Star" }
 let futureSightData = { Character: [], Euphoria: [], Skin: [] };
 let futureSightChars = new Set();
 let futureSightEuphorias = new Map(); // name -> Set of future tiers e.g. "37" -> Set([1])
@@ -275,8 +276,8 @@ let displayOptions = {
   hidePortrait: false,
   hideNames: false,
   hideSkin: false,
+  hideAfflatus: false,
   showPatternBg: false,
-  showPatternBorder: false,
   showNonePatternBg: false,
   colorNonePatternBg: "#4F4F4F",
   showNonePatternBorder: false,
@@ -536,12 +537,13 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
       fetch("data/future_sight.json").catch(() => null),
       fetch("data/exclude_character.json").catch(() => null),
+      fetch("data/characters_by_afflatus.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -581,6 +583,15 @@ async function initApp() {
       buildEuphoriaMap(euphoriaData);
     } catch (e) {
       console.warn("Could not parse euphoria_list.json", e);
+    }
+
+    if (afflatusRes && afflatusRes.ok) {
+      try {
+        const afflatusData = await afflatusRes.json();
+        buildAfflatusMap(afflatusData);
+      } catch (e) {
+        console.warn("Could not parse characters_by_afflatus.json", e);
+      }
     }
 
     loadTitle();
@@ -754,6 +765,28 @@ function resolveCharacterName(name) {
   }
 
   return raw;
+}
+
+function buildAfflatusMap(afflatusData) {
+  characterAfflatus = {};
+
+  if (!afflatusData || typeof afflatusData !== "object") return;
+
+  Object.entries(afflatusData).forEach(([afflatusType, names]) => {
+    if (!Array.isArray(names)) return;
+
+    names.forEach((rawName) => {
+      const canonical = resolveCharacterName(rawName);
+      if (canonical) {
+        characterAfflatus[canonical] = afflatusType;
+      }
+    });
+  });
+}
+
+function getCharacterAfflatus(name) {
+  const canonical = resolveCharacterName(name);
+  return characterAfflatus[canonical] || null;
 }
 
 function buildEuphoriaMap(euphoriaData) {
@@ -1178,7 +1211,12 @@ function renderChessPieces() {
     imgFilled.className = "chess-piece-filled";
     imgFilled.src = piece.filled;
     imgFilled.alt = `${piece.name} Filled`;
-    imgFilled.style.clipPath = `inset(${insetTop}% 0 0 0)`;
+    imgFilled.style.height = `calc(var(--chess-piece-size) * ${piece.h} / 41)`;
+
+    const fillMask = document.createElement("div");
+    fillMask.className = "chess-piece-fill-mask";
+    fillMask.style.top = `${insetTop}%`;
+    fillMask.appendChild(imgFilled);
 
     const tooltip = document.createElement("div");
     tooltip.className = "chess-piece-tooltip";
@@ -1188,7 +1226,7 @@ function renderChessPieces() {
     `;
 
     wrapper.appendChild(imgEmpty);
-    wrapper.appendChild(imgFilled);
+    wrapper.appendChild(fillMask);
     wrapper.appendChild(tooltip);
     container.appendChild(wrapper);
   });
@@ -1513,6 +1551,9 @@ function createCharacterCard(name, char, iconUrl) {
     <span class="char-info-level">${levelVal}</span>
   ` : "";
 
+  const afflatus = getCharacterAfflatus(name);
+  const showAfflatus = !displayOptions.hideAfflatus && !!afflatus;
+
   const insightLevelOverlay = (char.owned && (showInsight || showLevel)) ? `
     <div class="char-info-overlay">
       ${insightIconHtml}
@@ -1547,6 +1588,12 @@ function createCharacterCard(name, char, iconUrl) {
       }
     }
   }
+
+  const afflatusIconHtml = showAfflatus ? `
+    <div class="char-afflatus-icon">
+      <img src="images/afflatus_icon/${afflatus}.png" alt="${afflatus}" title="${afflatus}" />
+    </div>
+  ` : "";
   const avatarImgStyle = avatarImgStyles.length > 0 ? ` style="${avatarImgStyles.join("; ")};"` : "";
 
   let tooltipHtml = "";
@@ -1573,6 +1620,7 @@ function createCharacterCard(name, char, iconUrl) {
     ${topHeaderHtml}
     <div class="char-avatar-box">
       <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img"${avatarImgStyle} loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
+      ${afflatusIconHtml}
       ${insightLevelOverlay}
     </div>
     ${rarityLineHtml}
@@ -2116,7 +2164,7 @@ function setupEventListeners() {
   const colorNonePatternBg = document.getElementById("color-none-pattern-bg");
   const checkShowNonePatternBorder = document.getElementById("check-show-none-pattern-border");
   const colorNonePatternBorder = document.getElementById("color-none-pattern-border");
-  const checkShowRarityLine = document.getElementById("check-show-rarity-line");
+  const checkHideAfflatus = document.getElementById("check-hide-afflatus");
   const checkHideI3Lv60 = document.getElementById("check-hide-i3-lv60");
   const checkHideI3Lv30 = document.getElementById("check-hide-i3-lv30");
   const checkHideR15 = document.getElementById("check-hide-r15");
@@ -2142,7 +2190,7 @@ function setupEventListeners() {
     const hidePortrait = checkHidePortrait ? checkHidePortrait.checked : false;
     const hideNames = checkHideNames ? checkHideNames.checked : false;
     const hideSkin = checkHideSkin ? checkHideSkin.checked : false;
-    const showRarityLine = checkShowRarityLine ? checkShowRarityLine.checked : false;
+    const hideAfflatus = checkHideAfflatus ? checkHideAfflatus.checked : false;
 
     const charName = "Vertin";
     const rarityVal = 6;
@@ -2152,6 +2200,7 @@ function setupEventListeners() {
     const portraitVal = 5;
     const boxKind = "equibalance";
     const euphoriaText = "E1";
+    const previewAfflatus = "Star";
 
     const resonanceColor = "#4F4F4F";
     const euphoriaColor = (displayOptions.appearance && displayOptions.appearance.euphoriaColor) || "#04FFEE";
@@ -2183,6 +2232,13 @@ function setupEventListeners() {
 
     const showIn = !hideInsight;
     const showLv = !hideLevel;
+    const showAff = !hideAfflatus && !!previewAfflatus;
+
+    const afflatusIconHtml = showAff ? `
+      <div class="char-afflatus-icon">
+        <img src="images/afflatus_icon/${previewAfflatus}.png" alt="${previewAfflatus}" title="${previewAfflatus}" />
+      </div>
+    ` : "";
     const insightIconHtml = showIn ? `
       <span class="char-info-insight">
         <img src="images/insight_icon/I${insightVal}.png" alt="I${insightVal}" class="badge-insight-img" />
@@ -2198,9 +2254,7 @@ function setupEventListeners() {
       </div>
     ` : "";
 
-    const rarityLineHtml = showRarityLine ? `
-      <div class="char-rarity-line rarity-${rarityVal}"></div>
-    ` : "";
+    const rarityLineHtml = "";
 
     // 300101 default headicon vs 652902 garment
     const avatarImgSrc = hideSkin ? "images/headicon_small/300101.png" : "images/headicon_small/652902.png";
@@ -2225,6 +2279,7 @@ function setupEventListeners() {
       ${topHeaderHtml}
       <div class="char-avatar-box">
         <img src="${avatarImgSrc}" alt="${charName}" class="char-avatar-img"${avatarImgStyle} />
+        ${afflatusIconHtml}
         ${insightLevelOverlay}
       </div>
       ${rarityLineHtml}
@@ -2260,7 +2315,7 @@ function setupEventListeners() {
     checkHidePortrait.checked = !!displayOptions.hidePortrait;
     checkHideNames.checked = !!displayOptions.hideNames;
     if (checkHideSkin) checkHideSkin.checked = !!displayOptions.hideSkin;
-    checkShowRarityLine.checked = !!displayOptions.showRarityLine;
+    if (checkHideAfflatus) checkHideAfflatus.checked = !!displayOptions.hideAfflatus;
     checkHideI3Lv60.checked = !!displayOptions.hideI3Lv60;
     checkHideI3Lv30.checked = !!displayOptions.hideI3Lv30;
     if (checkHideR15) checkHideR15.checked = !!displayOptions.hideR15;
@@ -2510,7 +2565,7 @@ function setupEventListeners() {
 
   // Character Info Box Checkbox Live Preview events
   [
-    checkShowRarityLine,
+    checkHideAfflatus,
     checkHideInsight,
     checkHideLevel,
     checkHideResonance,
@@ -2550,7 +2605,7 @@ function setupEventListeners() {
     displayOptions.hidePortrait = checkHidePortrait.checked;
     displayOptions.hideNames = checkHideNames.checked;
     if (checkHideSkin) displayOptions.hideSkin = checkHideSkin.checked;
-    displayOptions.showRarityLine = checkShowRarityLine.checked;
+    if (checkHideAfflatus) displayOptions.hideAfflatus = checkHideAfflatus.checked;
     displayOptions.hideI3Lv60 = checkHideI3Lv60.checked;
     displayOptions.hideI3Lv30 = checkHideI3Lv30.checked;
     displayOptions.customHideRules = tempCustomHideRules;
