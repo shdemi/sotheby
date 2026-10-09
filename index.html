@@ -26,7 +26,6 @@
           </div>
           <div class="app-logo-wrap">
             <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
-            <img src="images/shimmer.png" alt="Shimmer Gold" class="app-logo-shimmer" />
           </div>
         </div>
       </div>
@@ -337,47 +336,56 @@
               </div>
             </div>
 
-            <!-- Collapsible: Show Character's Background & Border -->
+            <!-- Collapsible: Character's Background / Border -->
             <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
               <button type="button" id="btn-toggle-char-decor" style="width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: none; padding: 7px 9px; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
-                <span>Show Character's Styling</span>
+                <span>Character's Background / Border</span>
                 <span id="char-decor-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
               </button>
               <div id="char-decor-collapse-content" style="display: none; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
-                <label class="check-container" style="margin: 0;">
-                  <input type="checkbox" id="check-show-pattern-bg" />
-                  <span class="check-box"></span>
-                  <span class="check-text">Show Background (Pattern Color)</span>
-                </label>
-                <label class="check-container" style="margin: 0;">
-                  <input type="checkbox" id="check-show-pattern-border" />
-                  <span class="check-box"></span>
-                  <span class="check-text">Show Border (Pattern Color)</span>
-                </label>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-show-none-pattern-bg" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Show Background (None Pattern)</span>
-                  </label>
-                  <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
+                <!-- Background section -->
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-family: var(--mono-font); font-size: 0.64rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Background</span>
+                  <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+                    <label class="check-container" style="margin: 0;">
+                      <input type="checkbox" id="check-show-pattern-bg" />
+                      <span class="check-box"></span>
+                      <span class="check-text">Pattern</span>
+                    </label>
+                    <label class="check-container" style="margin: 0;">
+                      <input type="checkbox" id="check-show-none-pattern-bg" />
+                      <span class="check-box"></span>
+                      <span class="check-text">No Pattern</span>
+                    </label>
+                    <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
+                  </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-show-none-pattern-border" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Show Border (None Pattern)</span>
-                  </label>
-                  <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
+
+                <!-- Border section -->
+                <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 4px; border-top: 1px dashed rgba(17, 15, 12, 0.08);">
+                  <span style="font-family: var(--mono-font); font-size: 0.64rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Border</span>
+                  <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+                    <label class="check-container" style="margin: 0;">
+                      <input type="checkbox" id="check-show-pattern-border" />
+                      <span class="check-box"></span>
+                      <span class="check-text">Pattern</span>
+                    </label>
+                    <label class="check-container" style="margin: 0;">
+                      <input type="checkbox" id="check-show-none-pattern-border" />
+                      <span class="check-box"></span>
+                      <span class="check-text">No Pattern</span>
+                    </label>
+                    <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Collapsible: Preset Insight / Level Hiding -->
+            <!-- Collapsible: Insight / Level Hiding -->
             <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 9px;">
                 <button type="button" id="btn-toggle-insight-hide" style="display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
-                  <span>Preset Insight / Level Hiding</span>
+                  <span>Insight / Level Hiding</span>
                   <span id="insight-hide-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
                 </button>
                 <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-hide" style="padding: 2px 6px; font-size: 0.6rem;">Add</button>
@@ -400,11 +408,11 @@
               </div>
             </div>
 
-            <!-- Collapsible: Preset Resonance Hiding -->
+            <!-- Collapsible: Resonance Hiding -->
             <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 9px;">
                 <button type="button" id="btn-toggle-res-hide" style="display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
-                  <span>Preset Resonance Hiding</span>
+                  <span>Resonance Hiding</span>
                   <span id="res-hide-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
                 </button>
                 <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-res-hide" style="padding: 2px 6px; font-size: 0.6rem;">Add</button>
@@ -932,111 +940,20 @@
 
   <!-- Listing Custom Tiers Modal -->
   <div id="listing-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card modal-card-large" style="max-width: 680px;">
+    <div class="modal-card modal-card-large" style="max-width: 760px;">
       <div class="modal-header">
         <h2>Tier Listing Settings</h2>
         <button class="modal-close" id="listing-btn-close">&times;</button>
       </div>
       <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-        <!-- Unbuilt Special Tier Option -->
-        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border); margin-bottom: 12px;">
-          <label class="check-container">
-            <input type="checkbox" id="check-enable-unbuilt-tier" />
-            <span class="check-box"></span>
-            <span class="check-text" style="font-weight: 700;">Separate "Unbuilt" Tier (I0 Lv.1 R1)</span>
-          </label>
-          <div id="unbuilt-tier-config" style="display: none; margin-top: 10px; flex-direction: column; gap: 8px;">
-            <!-- Unbuilt Review -->
-            <div class="customize-preview-box" style="margin-bottom: 4px;">
-              <span class="customize-preview-header">Preview</span>
-              <div class="customize-preview-stage" style="padding: 0;">
-                <div id="preview-unbuilt-tier-row" class="listing-tier-preview-row">
-                  <span id="preview-unbuilt-label" class="listing-tier-preview-label" style="color: #888888;">Unbuilt</span>
-                  <div class="listing-tier-preview-items">
-                    <div class="listing-mini-card"></div>
-                    <div class="listing-mini-card"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-              <input type="text" id="input-unbuilt-label" class="search-input" value="Unbuilt" placeholder="Tier label..." style="width: 130px;" />
-              <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Text Color">
-                <span>Text</span>
-                <input type="color" id="input-unbuilt-color" value="#888888" style="width: 28px; height: 28px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
-              </label>
-              <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Background Color">
-                <span>BG</span>
-                <input type="color" id="input-unbuilt-bg" value="#000000" style="width: 28px; height: 28px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
-                <button type="button" class="custom-color-clear-btn" id="btn-clear-unbuilt-bg" title="Clear / Transparent">Clear</button>
-              </label>
-              <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Border Color">
-                <span>Border</span>
-                <input type="color" id="input-unbuilt-border" value="#222222" style="width: 28px; height: 28px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
-                <button type="button" class="custom-color-clear-btn" id="btn-clear-unbuilt-border" title="Clear / Default">Clear</button>
-              </label>
-              <label class="check-container" style="margin: 0;" title="Bold text">
-                <input type="checkbox" id="check-unbuilt-bold" />
-                <span class="check-box"></span>
-                <span class="check-text" style="font-size: 0.65rem; font-weight: 700;">BOLD</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Unowned Tier Custom Options -->
-        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border); margin-top: 8px; margin-bottom: 8px;">
-          <div style="font-weight: 700; font-size: 0.72rem; font-family: var(--mono-font); margin-bottom: 8px;">Unowned Tier Style</div>
-          
-          <!-- Unowned Review -->
-          <div class="customize-preview-box" style="margin-bottom: 8px;">
-            <span class="customize-preview-header">Preview</span>
-            <div class="customize-preview-stage" style="padding: 0;">
-              <div id="preview-unowned-tier-row" class="listing-tier-preview-row">
-                <span id="preview-unowned-label" class="listing-tier-preview-label" style="color: #9a9a9a;">Unowned</span>
-                <div class="listing-tier-preview-items">
-                  <div class="listing-mini-card" style="opacity: 0.7;"></div>
-                  <div class="listing-mini-card" style="opacity: 0.7;"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Text Color">
-              <span>Text</span>
-              <input type="color" id="input-unowned-color" value="#9a9a9a" style="width: 28px; height: 28px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
-            </label>
-            <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Background Color">
-              <span>BG</span>
-              <input type="color" id="input-unowned-bg" value="#000000" style="width: 28px; height: 28px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
-              <button type="button" class="custom-color-clear-btn" id="btn-clear-unowned-bg" title="Clear / Transparent">Clear</button>
-            </label>
-            <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Border Color">
-              <span>Border</span>
-              <input type="color" id="input-unowned-border" value="#222222" style="width: 28px; height: 28px; border: 1px solid var(--panel-border); background: none; cursor: pointer;" />
-              <button type="button" class="custom-color-clear-btn" id="btn-clear-unowned-border" title="Clear / Default">Clear</button>
-            </label>
-            <label class="check-container" style="margin: 0;" title="Bold text">
-              <input type="checkbox" id="check-unowned-bold" />
-              <span class="check-box"></span>
-              <span class="check-text" style="font-size: 0.65rem; font-weight: 700;">BOLD</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Custom Tier List Container -->
+        <!-- Showcase Tiers List Container (Movable tiers including Remaining/Other & Unowned) -->
         <div class="setting-group">
           <div class="setting-label-row">
             <label class="setting-label">Showcase Tiers (Top-to-Bottom Evaluation)</label>
-            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier">+ Add Tier</button>
-          </div>
-
-          <!-- Showcase Tiers Review -->
-          <div class="customize-preview-box" style="margin-top: 6px; margin-bottom: 6px;">
-            <span class="customize-preview-header">Preview</span>
-            <div id="preview-showcase-tiers-stage" class="customize-preview-stage" style="flex-direction: column; gap: 4px; padding: 2px 0;"></div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-preset-tier">+ Preset Tier</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier">+ Add Tier</button>
+            </div>
           </div>
 
           <div id="listing-tiers-list" class="listing-tiers-list">
@@ -1045,7 +962,7 @@
         </div>
 
         <div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--mono-font); line-height: 1.4;">
-          * Unowned tier is fixed at the bottom. Characters are placed in the first matching tier from top to bottom.
+          * Characters are placed in the first matching tier from top to bottom. You can reorder any tier (including Other and Unowned).
         </div>
       </div>
       <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 10px;">

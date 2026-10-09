@@ -87,30 +87,60 @@ const TITLE_STORAGE_KEY = "r1999_board_title_v1";
 const LISTING_STORAGE_KEY = "r1999_tier_listing_v1";
 
 const DEFAULT_TIERS_CONFIG = {
-  separateUnbuilt: false,
-  unbuiltLabel: "Unbuilt",
-  unbuiltColor: "#9a9a9a",
-  unownedColor: "#9a9a9a",
   tiers: [
-    { id: "tier_r15", label: "R15", color: "#d1783d", rule: "r15" },
-    { id: "tier_r11_14", label: "R11 - 14", color: "#6d9b6c", rule: "r11-14" },
-    { id: "tier_r10", label: "R10", color: "#d7d7d7", rule: "r10" },
-    { id: "tier_r1_9", label: "R1 - 9", color: "#4a77c9", rule: "r1-9" },
+    { id: "tier_r15", label: "R15", color: "#d1783d", ruleGroups: [[{ field: "resonance", op: "=", value: 15 }]] },
+    { id: "tier_r11_14", label: "R11 - 14", color: "#6d9b6c", ruleGroups: [[{ field: "resonance", op: ">=", value: 11 }, { field: "resonance", op: "<=", value: 14 }]] },
+    { id: "tier_r10", label: "R10", color: "#d7d7d7", ruleGroups: [[{ field: "resonance", op: "=", value: 10 }]] },
+    { id: "tier_r1_9", label: "R1 - 9", color: "#4a77c9", ruleGroups: [[{ field: "resonance", op: ">=", value: 1 }, { field: "resonance", op: "<=", value: 9 }]] },
+    { id: "tier_other", type: "other", label: "Other", color: "#a0a0a0", bgColor: null, borderColor: null, bold: false },
+    { id: "tier_unowned", type: "unowned", label: "Unowned", color: "#9a9a9a", bgColor: null, borderColor: null, bold: false },
   ],
 };
 
 let listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
 
+function ensureSystemTiersInList(list) {
+  if (!Array.isArray(list)) return;
+  const hasOther = list.some((t) => t.type === "other" || t.id === "tier_other");
+  if (!hasOther) {
+    list.push({
+      id: "tier_other",
+      type: "other",
+      label: listingConfig.otherLabel || "Other",
+      color: listingConfig.otherColor || "#a0a0a0",
+      bgColor: listingConfig.otherBg || null,
+      borderColor: listingConfig.otherBorder || null,
+      bold: !!listingConfig.otherBold,
+    });
+  }
+  const hasUnowned = list.some((t) => t.type === "unowned" || t.id === "tier_unowned");
+  if (!hasUnowned) {
+    list.push({
+      id: "tier_unowned",
+      type: "unowned",
+      label: listingConfig.unownedLabel || "Unowned",
+      color: listingConfig.unownedColor || "#9a9a9a",
+      bgColor: listingConfig.unownedBg || null,
+      borderColor: listingConfig.unownedBorder || null,
+      bold: !!listingConfig.unownedBold,
+    });
+  }
+}
+
 function loadListingConfig() {
   try {
     const saved = localStorage.getItem(LISTING_STORAGE_KEY);
     if (saved) {
-      listingConfig = { ...DEFAULT_TIERS_CONFIG, ...JSON.parse(saved) };
+      listingConfig = JSON.parse(saved);
+      if (!Array.isArray(listingConfig.tiers)) {
+        listingConfig.tiers = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG.tiers));
+      }
     }
   } catch (e) {
     console.warn("Could not load listing config", e);
     listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
   }
+  ensureSystemTiersInList(listingConfig.tiers);
 }
 
 function saveListingConfig() {
@@ -971,42 +1001,120 @@ function isCharacterUnbuilt(char) {
   return Number(char.insight || 0) === 0 && Number(char.level || 1) === 1 && Number(char.resonance || 1) === 1;
 }
 
-function matchesTierRule(rule, char, rarity) {
-  const res = Number(char.resonance || 1);
-  const lvl = Number(char.level || 1);
-  const insight = Number(char.insight || 0);
+// Check single atomic condition
+function evalSingleCondition(cond, char, rarity) {
+  if (!cond || !cond.field) return true;
+  const field = cond.field;
+  const op = cond.op || "=";
+  const targetVal = cond.value;
+
+  const res = Number(char.resonance !== undefined ? char.resonance : 1);
+  const lvl = Number(char.level !== undefined ? char.level : 1);
+  const insight = Number(char.insight !== undefined ? char.insight : 0);
+  const portrait = Number(char.portrait !== undefined ? char.portrait : 0);
   const boxKind = char.boxKind || "none";
   const hasEuphoria = !!(char.e1 || char.e2);
+  const hasPattern = boxKind !== "none";
+  const hasSkin = !!(char.skin && !String(char.skin).endsWith("01"));
 
-  switch (rule) {
-    case "r15": return res >= 15;
-    case "r14": return res === 14;
-    case "r13": return res === 13;
-    case "r12": return res === 12;
-    case "r11": return res === 11;
-    case "r10": return res === 10;
-    case "r11-14": return res >= 11 && res <= 14;
-    case "r11-13": return res >= 11 && res <= 13;
-    case "r1-9": return res >= 1 && res <= 9;
-    case "r10_pattern": return res === 10 && boxKind !== "none";
-    case "r10_no_pattern": return res === 10 && boxKind === "none";
-    case "r10_euphoria": return res === 10 && hasEuphoria;
-    case "has_euphoria": return hasEuphoria;
-    case "lv60": return lvl === 60;
-    case "non_lv60": return lvl < 60;
-    case "i3": return insight === 3;
-    case "i2": return insight === 2;
-    case "i1": return insight === 1;
-    case "i0": return insight === 0;
-    case "rarity_6": return rarity === 6;
-    case "rarity_5": return rarity === 5;
-    case "rarity_4": return rarity === 4;
-    case "rarity_3": return rarity === 3;
-    case "rarity_2": return rarity === 2;
-    case "rarity_2_4": return rarity >= 2 && rarity <= 4;
-    case "unbuilt": return isCharacterUnbuilt(char);
-    default: return true;
+  if (field === "has_euphoria") {
+    const want = String(targetVal) !== "false";
+    return hasEuphoria === want;
   }
+  if (field === "has_pattern") {
+    const want = String(targetVal) !== "false";
+    return hasPattern === want;
+  }
+  if (field === "has_skin") {
+    const want = String(targetVal) !== "false";
+    return hasSkin === want;
+  }
+  if (field === "name") {
+    const wantName = String(targetVal || "").trim().toLowerCase();
+    if (!wantName) return true;
+    const actualName = String(char.name || "").trim().toLowerCase();
+    if (actualName === wantName || actualName.includes(wantName)) return true;
+
+    // Check alias mapping
+    const canonical = resolveCharacterName(char.name);
+    if (canonical && canonical.toLowerCase().includes(wantName)) return true;
+    const aliases = (NAME_ALIASES[char.name] || []).concat(NAME_ALIASES[canonical] || []);
+    return aliases.some((a) => a.toLowerCase().includes(wantName));
+  }
+
+  let charVal = 0;
+  if (field === "portrait") charVal = portrait;
+  else if (field === "resonance") charVal = res;
+  else if (field === "insight") charVal = insight;
+  else if (field === "level") charVal = lvl;
+  else if (field === "rarity") charVal = Number(rarity || 5);
+
+  const numTarget = Number(targetVal !== undefined ? targetVal : 0);
+
+  switch (op) {
+    case "=": return charVal === numTarget;
+    case ">=": return charVal >= numTarget;
+    case "<=": return charVal <= numTarget;
+    case ">": return charVal > numTarget;
+    case "<": return charVal < numTarget;
+    case "!=": return charVal !== numTarget;
+    default: return charVal === numTarget;
+  }
+}
+
+// Convert legacy string rule (e.g. 'r15', 'lv60') into ruleGroups: [[cond, ...], [cond, ...]]
+function convertLegacyRuleToGroups(rule) {
+  if (typeof rule !== "string") return [];
+  switch (rule) {
+    case "r15": return [[{ field: "resonance", op: ">=", value: 15 }]];
+    case "r14": return [[{ field: "resonance", op: "=", value: 14 }]];
+    case "r13": return [[{ field: "resonance", op: "=", value: 13 }]];
+    case "r12": return [[{ field: "resonance", op: "=", value: 12 }]];
+    case "r11": return [[{ field: "resonance", op: "=", value: 11 }]];
+    case "r10": return [[{ field: "resonance", op: "=", value: 10 }]];
+    case "r11-14": return [[{ field: "resonance", op: ">=", value: 11 }, { field: "resonance", op: "<=", value: 14 }]];
+    case "r11-13": return [[{ field: "resonance", op: ">=", value: 11 }, { field: "resonance", op: "<=", value: 13 }]];
+    case "r1-9": return [[{ field: "resonance", op: ">=", value: 1 }, { field: "resonance", op: "<=", value: 9 }]];
+    case "r10_pattern": return [[{ field: "resonance", op: "=", value: 10 }, { field: "has_pattern", op: "=", value: true }]];
+    case "r10_no_pattern": return [[{ field: "resonance", op: "=", value: 10 }, { field: "has_pattern", op: "=", value: false }]];
+    case "r10_euphoria": return [[{ field: "resonance", op: "=", value: 10 }, { field: "has_euphoria", op: "=", value: true }]];
+    case "has_euphoria": return [[{ field: "has_euphoria", op: "=", value: true }]];
+    case "lv60": return [[{ field: "level", op: "=", value: 60 }]];
+    case "non_lv60": return [[{ field: "level", op: "<", value: 60 }]];
+    case "i3": return [[{ field: "insight", op: "=", value: 3 }]];
+    case "i2": return [[{ field: "insight", op: "=", value: 2 }]];
+    case "i1": return [[{ field: "insight", op: "=", value: 1 }]];
+    case "i0": return [[{ field: "insight", op: "=", value: 0 }]];
+    case "rarity_6": return [[{ field: "rarity", op: "=", value: 6 }]];
+    case "rarity_5": return [[{ field: "rarity", op: "=", value: 5 }]];
+    case "rarity_4": return [[{ field: "rarity", op: "=", value: 4 }]];
+    case "rarity_3": return [[{ field: "rarity", op: "=", value: 3 }]];
+    case "rarity_2": return [[{ field: "rarity", op: "=", value: 2 }]];
+    case "rarity_2_4": return [[{ field: "rarity", op: ">=", value: 2 }, { field: "rarity", op: "<=", value: 4 }]];
+    case "unbuilt": return [[{ field: "insight", op: "=", value: 0 }, { field: "level", op: "=", value: 1 }, { field: "resonance", op: "=", value: 1 }]];
+    default: return [];
+  }
+}
+
+// Matches tier rule using nested groups: (Group1 AND) OR (Group2 AND) ...
+function matchesTierRule(tier, char, rarity) {
+  let groups = tier.ruleGroups;
+  if (!Array.isArray(groups) || groups.length === 0) {
+    if (tier.rule && typeof tier.rule === "string") {
+      groups = convertLegacyRuleToGroups(tier.rule);
+    } else {
+      return true;
+    }
+  }
+
+  if (groups.length === 0) return true;
+
+  // OR across groups
+  return groups.some((group) => {
+    if (!Array.isArray(group) || group.length === 0) return true;
+    // AND within a group
+    return group.every((cond) => evalSingleCondition(cond, char, rarity));
+  });
 }
 
 function renderChessPieces() {
@@ -1144,125 +1252,111 @@ function renderShowcase() {
   // Build Tier buckets based on listingConfig
   const tierBuckets = [];
 
-  // Custom tiers
   (listingConfig.tiers || []).forEach((t) => {
     tierBuckets.push({
       id: t.id,
-      label: t.label,
+      type: t.type || "custom",
+      label: t.label || "Tier",
       color: t.color || "#ffffff",
       bgColor: t.bgColor || null,
       borderColor: t.borderColor || null,
       bold: !!t.bold,
-      rule: t.rule,
+      tierConfig: t,
       cards: [],
     });
   });
 
-  // Optional Unbuilt tier (evaluated after custom tiers or explicitly)
-  let unbuiltBucket = null;
-  if (listingConfig.separateUnbuilt) {
-    unbuiltBucket = {
-      id: "tier_unbuilt_special",
-      label: listingConfig.unbuiltLabel || "Unbuilt",
-      color: listingConfig.unbuiltColor || "#9a9a9a",
-      bgColor: listingConfig.unbuiltBg || null,
-      borderColor: listingConfig.unbuiltBorder || null,
-      bold: !!listingConfig.unbuiltBold,
-      cards: [],
-    };
-  }
+  const unmatchedOwned = new Set(ownedNames);
 
-  // Fallback bucket for any owned characters not matched by above tiers
-  const remainingBucket = {
-    id: "tier_other",
-    label: "Other",
-    color: "#a0a0a0",
-    bgColor: null,
-    borderColor: null,
-    bold: false,
-    cards: [],
-  };
-
-  // Populate owned cards into the first matching tier
-  ownedNames.forEach((name) => {
-    if (query && !name.toLowerCase().includes(query)) return;
-    if (activeOwnershipFilter === "unowned") return;
-
-    const rarity = getCharacterRarity(name);
-    const char = userRoster[name] || {
-      owned: true,
-      insight: 3,
-      level: 60,
-      resonance: 10,
-      portrait: 0,
-      e1: false,
-      e2: false,
-      boxKind: "none",
-    };
-    const iconUrl = characterDb[name];
-    const card = createCharacterCard(name, char, iconUrl);
-
-    // If separate unbuilt is on and char is unbuilt, place into unbuiltBucket
-    if (unbuiltBucket && isCharacterUnbuilt(char)) {
-      unbuiltBucket.cards.push(card);
-      return;
-    }
-
-    let matched = false;
-    for (const bucket of tierBuckets) {
-      if (matchesTierRule(bucket.rule, char, rarity)) {
-        bucket.cards.push(card);
-        matched = true;
-        break;
+  // Evaluate each tier in user's configured order
+  tierBuckets.forEach((bucket) => {
+    if (bucket.type === "unowned") {
+      // Unowned characters are placed here
+      if (activeOwnershipFilter !== "owned") {
+        unownedNames.forEach((name) => {
+          if (query && !name.toLowerCase().includes(query)) return;
+          const char = userRoster[name] || {
+            owned: false,
+            insight: 3,
+            level: 60,
+            resonance: 10,
+            portrait: 0,
+            e1: false,
+            e2: false,
+            boxKind: "none",
+          };
+          const iconUrl = characterDb[name];
+          const card = createCharacterCard(name, char, iconUrl);
+          bucket.cards.push(card);
+        });
+      }
+    } else if (bucket.type === "other") {
+      // Remaining / Other catches any owned characters not matched by previous tiers
+      if (activeOwnershipFilter !== "unowned") {
+        const remainingToCatch = [...unmatchedOwned];
+        remainingToCatch.forEach((name) => {
+          if (query && !name.toLowerCase().includes(query)) return;
+          const char = {
+            ...(userRoster[name] || {
+              owned: true,
+              insight: 3,
+              level: 60,
+              resonance: 10,
+              portrait: 0,
+              e1: false,
+              e2: false,
+              boxKind: "none",
+            }),
+            name: name,
+          };
+          const iconUrl = characterDb[name];
+          const card = createCharacterCard(name, char, iconUrl);
+          bucket.cards.push(card);
+          unmatchedOwned.delete(name);
+        });
+      }
+    } else {
+      // Custom tier: matches owned characters that satisfy ruleGroups
+      if (activeOwnershipFilter !== "unowned") {
+        const currentCandidates = [...unmatchedOwned];
+        currentCandidates.forEach((name) => {
+          if (query && !name.toLowerCase().includes(query)) return;
+          const rarity = getCharacterRarity(name);
+          const char = {
+            ...(userRoster[name] || {
+              owned: true,
+              insight: 3,
+              level: 60,
+              resonance: 10,
+              portrait: 0,
+              e1: false,
+              e2: false,
+              boxKind: "none",
+            }),
+            name: name,
+          };
+          if (matchesTierRule(bucket.tierConfig, char, rarity)) {
+            const iconUrl = characterDb[name];
+            const card = createCharacterCard(name, char, iconUrl);
+            bucket.cards.push(card);
+            unmatchedOwned.delete(name);
+          }
+        });
       }
     }
+  });
 
-    if (!matched) {
-      remainingBucket.cards.push(card);
+  // Render all tier sections in the exact order configured
+  tierBuckets.forEach((bucket) => {
+    // For Unowned tier, render if ownership filter allows (even if empty) or if has cards
+    if (bucket.type === "unowned") {
+      if (activeOwnershipFilter !== "owned") {
+        renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
+      }
+    } else if (bucket.cards.length > 0) {
+      renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
     }
   });
-
-  // Render all owned tier sections
-  tierBuckets.forEach((bucket) => {
-    renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
-  });
-
-  if (unbuiltBucket) {
-    renderTierRowSection(unbuiltBucket.label, unbuiltBucket.color, unbuiltBucket.cards, unbuiltBucket.bgColor, unbuiltBucket.borderColor, unbuiltBucket.bold);
-  }
-
-  if (remainingBucket.cards.length > 0) {
-    renderTierRowSection(remainingBucket.label, remainingBucket.color, remainingBucket.cards, remainingBucket.bgColor, remainingBucket.borderColor, remainingBucket.bold);
-  }
-
-  // Render Unowned Tier (Fixed at the bottom)
-  if (activeOwnershipFilter !== "owned") {
-    const unownedCards = [];
-    unownedNames.forEach((name) => {
-      if (query && !name.toLowerCase().includes(query)) return;
-      const char = userRoster[name] || {
-        owned: false,
-        insight: 3,
-        level: 60,
-        resonance: 10,
-        portrait: 0,
-        e1: false,
-        e2: false,
-        boxKind: "none",
-      };
-      const iconUrl = characterDb[name];
-      const card = createCharacterCard(name, char, iconUrl);
-      unownedCards.push(card);
-    });
-    renderTierRowSection(
-      "Unowned",
-      listingConfig.unownedColor || "#9a9a9a",
-      unownedCards,
-      listingConfig.unownedBg || null,
-      listingConfig.unownedBorder || null,
-      !!listingConfig.unownedBold
-    );
-  }
 
   rosterStat.textContent = `${ownedCount}/${totalCount} Owned`;
   rosterStat.removeAttribute("title");
@@ -3209,16 +3303,16 @@ function setupEventListeners() {
   const listingBtnSave = document.getElementById("btn-save-listing");
   const listingBtnReset = document.getElementById("btn-reset-listing");
   const btnAddTier = document.getElementById("btn-add-tier");
+  const btnAddPresetTier = document.getElementById("btn-add-preset-tier");
   const listingTiersList = document.getElementById("listing-tiers-list");
-  const checkEnableUnbuilt = document.getElementById("check-enable-unbuilt-tier");
-  const unbuiltTierConfig = document.getElementById("unbuilt-tier-config");
-  const inputUnbuiltLabel = document.getElementById("input-unbuilt-label");
-  const inputUnbuiltColor = document.getElementById("input-unbuilt-color");
-  const inputUnbuiltBg = document.getElementById("input-unbuilt-bg");
-  const btnClearUnbuiltBg = document.getElementById("btn-clear-unbuilt-bg");
-  const inputUnbuiltBorder = document.getElementById("input-unbuilt-border");
-  const btnClearUnbuiltBorder = document.getElementById("btn-clear-unbuilt-border");
-  const checkUnbuiltBold = document.getElementById("check-unbuilt-bold");
+
+  const inputOtherLabel = document.getElementById("input-other-label");
+  const inputOtherColor = document.getElementById("input-other-color");
+  const inputOtherBg = document.getElementById("input-other-bg");
+  const btnClearOtherBg = document.getElementById("btn-clear-other-bg");
+  const inputOtherBorder = document.getElementById("input-other-border");
+  const btnClearOtherBorder = document.getElementById("btn-clear-other-border");
+  const checkOtherBold = document.getElementById("check-other-bold");
 
   const inputUnownedColor = document.getElementById("input-unowned-color");
   const inputUnownedBg = document.getElementById("input-unowned-bg");
@@ -3227,127 +3321,31 @@ function setupEventListeners() {
   const btnClearUnownedBorder = document.getElementById("btn-clear-unowned-border");
   const checkUnownedBold = document.getElementById("check-unowned-bold");
 
-  let currentUnbuiltBg = null;
-  let currentUnbuiltBorder = null;
+  let currentOtherBg = null;
+  let currentOtherBorder = null;
   let currentUnownedBg = null;
   let currentUnownedBorder = null;
 
-  const previewUnbuiltTierRow = document.getElementById("preview-unbuilt-tier-row");
-  const previewUnbuiltLabel = document.getElementById("preview-unbuilt-label");
-  const previewUnownedTierRow = document.getElementById("preview-unowned-tier-row");
-  const previewUnownedLabel = document.getElementById("preview-unowned-label");
-
-  function updateListingPreviews() {
-    const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
-    const fontValue = getBoardFontFamily(app.boardFont);
-    const tbOpacity = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 0.1;
-
-    // Unbuilt preview
-    if (previewUnbuiltTierRow) {
-      if (currentUnbuiltBg && currentUnbuiltBg !== "transparent") {
-        previewUnbuiltTierRow.style.background = hexToRgba(currentUnbuiltBg, tbOpacity);
-      } else {
-        previewUnbuiltTierRow.style.background = "rgba(0, 0, 0, 0.2)";
-      }
-      previewUnbuiltTierRow.style.borderColor = (currentUnbuiltBorder && currentUnbuiltBorder !== "transparent") ? currentUnbuiltBorder : "rgba(255, 255, 255, 0.08)";
-    }
-    if (previewUnbuiltLabel) {
-      previewUnbuiltLabel.textContent = (inputUnbuiltLabel && inputUnbuiltLabel.value.trim()) || "Unbuilt";
-      previewUnbuiltLabel.style.color = inputUnbuiltColor ? inputUnbuiltColor.value : "#888888";
-      previewUnbuiltLabel.style.fontWeight = checkUnbuiltBold && checkUnbuiltBold.checked ? "900" : "700";
-      previewUnbuiltLabel.style.fontFamily = fontValue;
-    }
-
-    // Unowned preview
-    if (previewUnownedTierRow) {
-      if (currentUnownedBg && currentUnownedBg !== "transparent") {
-        previewUnownedTierRow.style.background = hexToRgba(currentUnownedBg, tbOpacity);
-      } else {
-        previewUnownedTierRow.style.background = "rgba(0, 0, 0, 0.2)";
-      }
-      previewUnownedTierRow.style.borderColor = (currentUnownedBorder && currentUnownedBorder !== "transparent") ? currentUnownedBorder : "rgba(255, 255, 255, 0.08)";
-    }
-    if (previewUnownedLabel) {
-      previewUnownedLabel.textContent = "Unowned";
-      previewUnownedLabel.style.color = inputUnownedColor ? inputUnownedColor.value : "#9a9a9a";
-      previewUnownedLabel.style.fontWeight = checkUnownedBold && checkUnownedBold.checked ? "900" : "700";
-      previewUnownedLabel.style.fontFamily = fontValue;
-    }
-
-    // Showcase Tiers Live Preview
-    const previewTiersStage = document.getElementById("preview-showcase-tiers-stage");
-    if (previewTiersStage) {
-      previewTiersStage.innerHTML = "";
-      tempListingTiers.forEach((tier) => {
-        const itemRow = document.createElement("div");
-        itemRow.className = "listing-tier-preview-row";
-        if (tier.bgColor && tier.bgColor !== "transparent") {
-          itemRow.style.background = hexToRgba(tier.bgColor, tbOpacity);
-        }
-        if (tier.borderColor && tier.borderColor !== "transparent") {
-          itemRow.style.borderColor = tier.borderColor;
-        }
-
-        const lbl = document.createElement("span");
-        lbl.className = "listing-tier-preview-label";
-        lbl.textContent = tier.label || "Tier";
-        lbl.style.color = tier.color || "#ffffff";
-        lbl.style.fontFamily = fontValue;
-        if (tier.bold) lbl.style.fontWeight = "900";
-
-        const itemsBox = document.createElement("div");
-        itemsBox.className = "listing-tier-preview-items";
-        itemsBox.innerHTML = `
-          <div class="listing-mini-card"></div>
-          <div class="listing-mini-card"></div>
-        `;
-
-        itemRow.appendChild(lbl);
-        itemRow.appendChild(itemsBox);
-        previewTiersStage.appendChild(itemRow);
-      });
-    }
-  }
-
-  if (btnClearUnbuiltBg) {
-    btnClearUnbuiltBg.addEventListener("click", () => {
-      currentUnbuiltBg = null;
-      if (inputUnbuiltBg) inputUnbuiltBg.value = "#000000";
-      updateListingPreviews();
+  if (btnClearOtherBg) {
+    btnClearOtherBg.addEventListener("click", () => {
+      currentOtherBg = null;
+      if (inputOtherBg) inputOtherBg.value = "#000000";
     });
   }
-  if (inputUnbuiltBg) {
-    inputUnbuiltBg.addEventListener("input", (e) => {
-      currentUnbuiltBg = e.target.value;
-      updateListingPreviews();
+  if (inputOtherBg) {
+    inputOtherBg.addEventListener("input", (e) => {
+      currentOtherBg = e.target.value;
     });
   }
-  if (btnClearUnbuiltBorder) {
-    btnClearUnbuiltBorder.addEventListener("click", () => {
-      currentUnbuiltBorder = null;
-      if (inputUnbuiltBorder) inputUnbuiltBorder.value = "#222222";
-      updateListingPreviews();
+  if (btnClearOtherBorder) {
+    btnClearOtherBorder.addEventListener("click", () => {
+      currentOtherBorder = null;
+      if (inputOtherBorder) inputOtherBorder.value = "#222222";
     });
   }
-  if (inputUnbuiltBorder) {
-    inputUnbuiltBorder.addEventListener("input", (e) => {
-      currentUnbuiltBorder = e.target.value;
-      updateListingPreviews();
-    });
-  }
-  if (inputUnbuiltLabel) {
-    inputUnbuiltLabel.addEventListener("input", () => {
-      updateListingPreviews();
-    });
-  }
-  if (inputUnbuiltColor) {
-    inputUnbuiltColor.addEventListener("input", () => {
-      updateListingPreviews();
-    });
-  }
-  if (checkUnbuiltBold) {
-    checkUnbuiltBold.addEventListener("change", () => {
-      updateListingPreviews();
+  if (inputOtherBorder) {
+    inputOtherBorder.addEventListener("input", (e) => {
+      currentOtherBorder = e.target.value;
     });
   }
 
@@ -3355,67 +3353,91 @@ function setupEventListeners() {
     btnClearUnownedBg.addEventListener("click", () => {
       currentUnownedBg = null;
       if (inputUnownedBg) inputUnownedBg.value = "#000000";
-      updateListingPreviews();
     });
   }
   if (inputUnownedBg) {
     inputUnownedBg.addEventListener("input", (e) => {
       currentUnownedBg = e.target.value;
-      updateListingPreviews();
     });
   }
   if (btnClearUnownedBorder) {
     btnClearUnownedBorder.addEventListener("click", () => {
       currentUnownedBorder = null;
       if (inputUnownedBorder) inputUnownedBorder.value = "#222222";
-      updateListingPreviews();
     });
   }
   if (inputUnownedBorder) {
     inputUnownedBorder.addEventListener("input", (e) => {
       currentUnownedBorder = e.target.value;
-      updateListingPreviews();
-    });
-  }
-  if (inputUnownedColor) {
-    inputUnownedColor.addEventListener("input", () => {
-      updateListingPreviews();
-    });
-  }
-  if (checkUnownedBold) {
-    checkUnownedBold.addEventListener("change", () => {
-      updateListingPreviews();
     });
   }
 
-  const TIER_RULE_OPTIONS = [
-    { value: "r15", label: "Resonance: R15" },
-    { value: "r11-14", label: "Resonance: R11 - 14" },
-    { value: "r10", label: "Resonance: R10" },
-    { value: "r10_pattern", label: "R10 + Pattern (Has Pattern)" },
-    { value: "r10_no_pattern", label: "R10 + No Pattern" },
-    { value: "r10_euphoria", label: "R10 + Euphoria" },
-    { value: "r1-9", label: "Resonance: R1 - 9" },
-    { value: "has_euphoria", label: "Euphoria: Has Euphoria" },
-    { value: "lv60", label: "Level: Lv.60" },
-    { value: "non_lv60", label: "Level: Non-Lv.60 (< Lv.60)" },
-    { value: "i3", label: "Insight: Insight 3 (I3)" },
-    { value: "i2", label: "Insight: Insight 2 (I2)" },
-    { value: "i1", label: "Insight: Insight 1 (I1)" },
-    { value: "i0", label: "Insight: Insight 0 (I0)" },
-    { value: "rarity_6", label: "Rarity: ✦6" },
-    { value: "rarity_5", label: "Rarity: ✦5" },
-    { value: "rarity_2_4", label: "Rarity: ✦2 - ✦4" },
-    { value: "unbuilt", label: "Unbuilt (I0 Lv.1 R1)" },
+  const FIELD_DEFINITIONS = [
+    { value: "resonance", label: "Resonance", type: "number", min: 1, max: 15, defaultVal: 10 },
+    { value: "insight", label: "Insight", type: "select", options: [
+      { value: 3, label: "I3" },
+      { value: 2, label: "I2" },
+      { value: 1, label: "I1" },
+      { value: 0, label: "I0" },
+    ], defaultVal: 3 },
+    { value: "level", label: "Level", type: "number", min: 1, max: 60, defaultVal: 60 },
+    { value: "portrait", label: "Portrait", type: "select", options: [
+      { value: 5, label: "P5" },
+      { value: 4, label: "P4" },
+      { value: 3, label: "P3" },
+      { value: 2, label: "P2" },
+      { value: 1, label: "P1" },
+      { value: 0, label: "P0" },
+    ], defaultVal: 0 },
+    { value: "rarity", label: "Rarity", type: "select", options: [
+      { value: 6, label: "✦6" },
+      { value: 5, label: "✦5" },
+      { value: 4, label: "✦4" },
+      { value: 3, label: "✦3" },
+      { value: 2, label: "✦2" },
+    ], defaultVal: 6 },
+    { value: "has_euphoria", label: "Has Euphoria", type: "boolean", defaultVal: true },
+    { value: "has_pattern", label: "Has Pattern", type: "boolean", defaultVal: true },
+    { value: "has_skin", label: "Has Skin", type: "boolean", defaultVal: true },
+    { value: "name", label: "Name", type: "text", defaultVal: "" },
+  ];
+
+  const COMPARISON_OPS = [
+    { value: "=", label: "=" },
+    { value: ">=", label: "≥" },
+    { value: "<=", label: "≤" },
+    { value: ">", label: ">" },
+    { value: "<", label: "<" },
+    { value: "!=", label: "≠" },
   ];
 
   let tempListingTiers = [];
 
+  function ensureTierRuleGroups(tier) {
+    if (!Array.isArray(tier.ruleGroups) || tier.ruleGroups.length === 0) {
+      if (tier.rule && typeof tier.rule === "string") {
+        tier.ruleGroups = convertLegacyRuleToGroups(tier.rule);
+      }
+      if (!Array.isArray(tier.ruleGroups) || tier.ruleGroups.length === 0) {
+        tier.ruleGroups = [[{ field: "resonance", op: ">=", value: 10 }]];
+      }
+    }
+  }
+
   function renderListingTiersEditor() {
     listingTiersList.innerHTML = "";
     tempListingTiers.forEach((tier, index) => {
-      const row = document.createElement("div");
-      row.className = "listing-tier-item";
+      const isSystemTier = tier.type === "other" || tier.type === "unowned";
+      if (!isSystemTier) {
+        ensureTierRuleGroups(tier);
+      }
+
+      const itemCard = document.createElement("div");
+      itemCard.className = "listing-tier-item";
+
+      // Row 1: Header (Move, Label, Text color, BG, Border, Bold, Delete)
+      const headerRow = document.createElement("div");
+      headerRow.className = "listing-tier-header-row";
 
       const handleDiv = document.createElement("div");
       handleDiv.className = "listing-tier-handle";
@@ -3430,7 +3452,6 @@ function setupEventListeners() {
         tempListingTiers[index - 1] = tempListingTiers[index];
         tempListingTiers[index] = temp;
         renderListingTiersEditor();
-        updateListingPreviews();
       });
 
       const btnDown = document.createElement("button");
@@ -3443,7 +3464,6 @@ function setupEventListeners() {
         tempListingTiers[index + 1] = tempListingTiers[index];
         tempListingTiers[index] = temp;
         renderListingTiersEditor();
-        updateListingPreviews();
       });
 
       handleDiv.appendChild(btnUp);
@@ -3452,11 +3472,10 @@ function setupEventListeners() {
       const labelInput = document.createElement("input");
       labelInput.type = "text";
       labelInput.className = "listing-tier-label-input";
-      labelInput.value = tier.label;
+      labelInput.value = tier.label || (tier.type === "unowned" ? "Unowned" : (tier.type === "other" ? "Other" : "Tier"));
       labelInput.placeholder = "Label...";
       labelInput.addEventListener("input", (e) => {
         tier.label = e.target.value;
-        updateListingPreviews();
       });
 
       const colorInput = document.createElement("input");
@@ -3466,7 +3485,6 @@ function setupEventListeners() {
       colorInput.title = "Text Color";
       colorInput.addEventListener("input", (e) => {
         tier.color = e.target.value;
-        updateListingPreviews();
       });
 
       const labelBg = document.createElement("label");
@@ -3484,7 +3502,6 @@ function setupEventListeners() {
       bgInput.value = tier.bgColor || "#000000";
       bgInput.addEventListener("input", (e) => {
         tier.bgColor = e.target.value;
-        updateListingPreviews();
       });
 
       const btnClearBg = document.createElement("button");
@@ -3495,7 +3512,6 @@ function setupEventListeners() {
       btnClearBg.addEventListener("click", () => {
         tier.bgColor = null;
         bgInput.value = "#000000";
-        updateListingPreviews();
       });
 
       labelBg.appendChild(bgInput);
@@ -3516,7 +3532,6 @@ function setupEventListeners() {
       borderInput.value = tier.borderColor || "#222222";
       borderInput.addEventListener("input", (e) => {
         tier.borderColor = e.target.value;
-        updateListingPreviews();
       });
 
       const btnClearBorder = document.createElement("button");
@@ -3527,7 +3542,6 @@ function setupEventListeners() {
       btnClearBorder.addEventListener("click", () => {
         tier.borderColor = null;
         borderInput.value = "#222222";
-        updateListingPreviews();
       });
 
       labelBorder.appendChild(borderInput);
@@ -3545,57 +3559,288 @@ function setupEventListeners() {
       const boldCheck = labelBold.querySelector("input");
       boldCheck.addEventListener("change", () => {
         tier.bold = boldCheck.checked;
-        updateListingPreviews();
       });
 
-      const selectRule = document.createElement("select");
-      selectRule.className = "listing-tier-select";
-      TIER_RULE_OPTIONS.forEach((opt) => {
-        const optionEl = document.createElement("option");
-        optionEl.value = opt.value;
-        optionEl.textContent = opt.label;
-        if (opt.value === tier.rule) optionEl.selected = true;
-        selectRule.appendChild(optionEl);
-      });
-      selectRule.addEventListener("change", (e) => {
-        tier.rule = e.target.value;
+      headerRow.appendChild(handleDiv);
+      headerRow.appendChild(labelInput);
+      headerRow.appendChild(colorInput);
+      headerRow.appendChild(labelBg);
+      headerRow.appendChild(labelBorder);
+      headerRow.appendChild(labelBold);
+
+      // System tiers (Other, Unowned) cannot be removed
+      if (!isSystemTier) {
+        const btnDel = document.createElement("button");
+        btnDel.type = "button";
+        btnDel.className = "btn-tier-del";
+        btnDel.innerHTML = "&times;";
+        btnDel.title = "Delete Tier";
+        btnDel.style.marginLeft = "auto";
+        btnDel.addEventListener("click", () => {
+          tempListingTiers.splice(index, 1);
+          renderListingTiersEditor();
+        });
+        headerRow.appendChild(btnDel);
+      } else {
+        const tagSpan = document.createElement("span");
+        tagSpan.style.marginLeft = "auto";
+        tagSpan.style.fontFamily = "var(--mono-font)";
+        tagSpan.style.fontSize = "0.58rem";
+        tagSpan.style.color = "#D7B155";
+        tagSpan.style.fontWeight = "700";
+        tagSpan.style.letterSpacing = "0.06em";
+        tagSpan.style.textTransform = "uppercase";
+        tagSpan.textContent = tier.type === "unowned" ? "Unowned" : "Remaining";
+        headerRow.appendChild(tagSpan);
+      }
+
+      itemCard.appendChild(headerRow);
+
+      // Row 2: Dynamic Rules Container (or info description for System Tiers)
+      const rulesContainer = document.createElement("div");
+      rulesContainer.className = "listing-tier-rules-container";
+
+      if (tier.type === "other") {
+        rulesContainer.innerHTML = `
+          <div style="font-family: var(--mono-font); font-size: 0.62rem; color: var(--text-muted); padding: 4px 6px;">
+            Catches all remaining owned characters that haven't matched any previous tiers.
+          </div>
+        `;
+        itemCard.appendChild(rulesContainer);
+        listingTiersList.appendChild(itemCard);
+        return;
+      }
+
+      if (tier.type === "unowned") {
+        rulesContainer.innerHTML = `
+          <div style="font-family: var(--mono-font); font-size: 0.62rem; color: var(--text-muted); padding: 4px 6px;">
+            Catches all unowned characters.
+          </div>
+        `;
+        itemCard.appendChild(rulesContainer);
+        listingTiersList.appendChild(itemCard);
+        return;
+      }
+
+      tier.ruleGroups.forEach((group, gIdx) => {
+        if (gIdx > 0) {
+          const orDivider = document.createElement("div");
+          orDivider.className = "listing-rule-or-divider";
+          orDivider.innerHTML = `<span class="listing-rule-or-badge">OR</span>`;
+          rulesContainer.appendChild(orDivider);
+        }
+
+        const groupBox = document.createElement("div");
+        groupBox.className = "listing-rule-group-box";
+
+        const groupHeader = document.createElement("div");
+        groupHeader.className = "listing-rule-group-header";
+
+        const groupTag = document.createElement("span");
+        groupTag.className = "listing-rule-group-tag";
+        groupTag.textContent = tier.ruleGroups.length > 1
+          ? `Condition Group #${gIdx + 1} (ALL must match - AND)`
+          : `Criteria (ALL must match - AND)`;
+        groupHeader.appendChild(groupTag);
+
+        const groupActions = document.createElement("div");
+        groupActions.style.display = "flex";
+        groupActions.style.gap = "6px";
+        groupActions.style.alignItems = "center";
+
+        const btnAddCond = document.createElement("button");
+        btnAddCond.type = "button";
+        btnAddCond.className = "btn btn-secondary btn-sm";
+        btnAddCond.textContent = "+ AND";
+        btnAddCond.style.padding = "2px 6px";
+        btnAddCond.style.fontSize = "0.58rem";
+        btnAddCond.title = "Add another condition to this group (AND)";
+        btnAddCond.addEventListener("click", () => {
+          group.push({ field: "resonance", op: ">=", value: 10 });
+          renderListingTiersEditor();
+        });
+        groupActions.appendChild(btnAddCond);
+
+        if (tier.ruleGroups.length > 1) {
+          const btnDelGroup = document.createElement("button");
+          btnDelGroup.type = "button";
+          btnDelGroup.className = "btn-tier-del";
+          btnDelGroup.innerHTML = "&times;";
+          btnDelGroup.title = "Delete this condition group (OR)";
+          btnDelGroup.style.fontSize = "0.9rem";
+          btnDelGroup.addEventListener("click", () => {
+            tier.ruleGroups.splice(gIdx, 1);
+            renderListingTiersEditor();
+          });
+          groupActions.appendChild(btnDelGroup);
+        }
+
+        groupHeader.appendChild(groupActions);
+        groupBox.appendChild(groupHeader);
+
+        // Conditions in group
+        group.forEach((cond, cIdx) => {
+          const condRow = document.createElement("div");
+          condRow.className = "listing-rule-condition-row";
+
+          // Field selector
+          const fieldSel = document.createElement("select");
+          fieldSel.className = "listing-rule-select";
+          FIELD_DEFINITIONS.forEach((fd) => {
+            const opt = document.createElement("option");
+            opt.value = fd.value;
+            opt.textContent = fd.label;
+            if (fd.value === cond.field) opt.selected = true;
+            fieldSel.appendChild(opt);
+          });
+
+          // Operator selector
+          const opSel = document.createElement("select");
+          opSel.className = "listing-rule-select";
+          COMPARISON_OPS.forEach((opDef) => {
+            const opt = document.createElement("option");
+            opt.value = opDef.value;
+            opt.textContent = opDef.label;
+            if (opDef.value === (cond.op || "=")) opt.selected = true;
+            opSel.appendChild(opt);
+          });
+
+          // Value input container
+          const valContainer = document.createElement("div");
+          valContainer.style.display = "inline-flex";
+          valContainer.style.alignItems = "center";
+
+          function updateValueControl() {
+            valContainer.innerHTML = "";
+            const currentFieldDef = FIELD_DEFINITIONS.find((f) => f.value === cond.field) || FIELD_DEFINITIONS[0];
+
+            if (currentFieldDef.type === "boolean") {
+              opSel.style.display = "none";
+              cond.op = "=";
+              const boolSel = document.createElement("select");
+              boolSel.className = "listing-rule-select";
+              const optTrue = document.createElement("option");
+              optTrue.value = "true";
+              optTrue.textContent = "True";
+              const optFalse = document.createElement("option");
+              optFalse.value = "false";
+              optFalse.textContent = "False";
+              boolSel.appendChild(optTrue);
+              boolSel.appendChild(optFalse);
+              boolSel.value = String(cond.value !== false);
+              boolSel.addEventListener("change", (e) => {
+                cond.value = e.target.value === "true";
+              });
+              valContainer.appendChild(boolSel);
+            } else if (currentFieldDef.type === "text") {
+              opSel.style.display = "none";
+              cond.op = "=";
+              const txtInput = document.createElement("input");
+              txtInput.type = "text";
+              txtInput.className = "listing-rule-value-input";
+              txtInput.style.width = "125px";
+              txtInput.placeholder = "Character's Name";
+              txtInput.value = cond.value !== undefined ? cond.value : "";
+              txtInput.addEventListener("input", (e) => {
+                cond.value = e.target.value;
+              });
+              valContainer.appendChild(txtInput);
+            } else if (currentFieldDef.type === "select") {
+              opSel.style.display = "inline-block";
+              const selEl = document.createElement("select");
+              selEl.className = "listing-rule-select";
+              currentFieldDef.options.forEach((o) => {
+                const opt = document.createElement("option");
+                opt.value = o.value;
+                opt.textContent = o.label;
+                if (Number(o.value) === Number(cond.value)) opt.selected = true;
+                selEl.appendChild(opt);
+              });
+              selEl.addEventListener("change", (e) => {
+                cond.value = Number(e.target.value);
+              });
+              valContainer.appendChild(selEl);
+            } else {
+              opSel.style.display = "inline-block";
+              const numInput = document.createElement("input");
+              numInput.type = "number";
+              numInput.className = "listing-rule-value-input";
+              numInput.min = currentFieldDef.min !== undefined ? currentFieldDef.min : 1;
+              numInput.max = currentFieldDef.max !== undefined ? currentFieldDef.max : 100;
+              numInput.value = cond.value !== undefined ? cond.value : currentFieldDef.defaultVal;
+              numInput.addEventListener("input", (e) => {
+                cond.value = Number(e.target.value);
+              });
+              valContainer.appendChild(numInput);
+            }
+          }
+
+          fieldSel.addEventListener("change", (e) => {
+            cond.field = e.target.value;
+            const newFDef = FIELD_DEFINITIONS.find((f) => f.value === cond.field);
+            cond.value = newFDef ? newFDef.defaultVal : 0;
+            updateValueControl();
+          });
+
+          opSel.addEventListener("change", (e) => {
+            cond.op = e.target.value;
+          });
+
+          updateValueControl();
+
+          condRow.appendChild(fieldSel);
+          condRow.appendChild(opSel);
+          condRow.appendChild(valContainer);
+
+          if (group.length > 1) {
+            const btnDelCond = document.createElement("button");
+            btnDelCond.type = "button";
+            btnDelCond.className = "btn-tier-del";
+            btnDelCond.innerHTML = "&times;";
+            btnDelCond.title = "Delete condition";
+            btnDelCond.style.fontSize = "0.85rem";
+            btnDelCond.addEventListener("click", () => {
+              group.splice(cIdx, 1);
+              renderListingTiersEditor();
+            });
+            condRow.appendChild(btnDelCond);
+          }
+
+          groupBox.appendChild(condRow);
+        });
+
+        rulesContainer.appendChild(groupBox);
       });
 
-      const btnDel = document.createElement("button");
-      btnDel.type = "button";
-      btnDel.className = "btn-tier-del";
-      btnDel.innerHTML = "&times;";
-      btnDel.title = "Delete Tier";
-      btnDel.addEventListener("click", () => {
-        tempListingTiers.splice(index, 1);
+      // Button to add OR Group
+      const btnAddOrGroup = document.createElement("button");
+      btnAddOrGroup.type = "button";
+      btnAddOrGroup.className = "btn btn-secondary btn-sm";
+      btnAddOrGroup.textContent = "+ Add OR Condition Group";
+      btnAddOrGroup.style.fontSize = "0.6rem";
+      btnAddOrGroup.style.marginTop = "4px";
+      btnAddOrGroup.style.alignSelf = "flex-start";
+      btnAddOrGroup.addEventListener("click", () => {
+        tier.ruleGroups.push([{ field: "resonance", op: ">=", value: 10 }]);
         renderListingTiersEditor();
-        updateListingPreviews();
       });
+      rulesContainer.appendChild(btnAddOrGroup);
 
-      row.appendChild(handleDiv);
-      row.appendChild(labelInput);
-      row.appendChild(colorInput);
-      row.appendChild(labelBg);
-      row.appendChild(labelBorder);
-      row.appendChild(labelBold);
-      row.appendChild(selectRule);
-      row.appendChild(btnDel);
-
-      listingTiersList.appendChild(row);
+      itemCard.appendChild(rulesContainer);
+      listingTiersList.appendChild(itemCard);
     });
   }
 
   function openListingModal() {
     tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers || []));
-    checkEnableUnbuilt.checked = !!listingConfig.separateUnbuilt;
-    unbuiltTierConfig.style.display = checkEnableUnbuilt.checked ? "flex" : "none";
-    inputUnbuiltLabel.value = listingConfig.unbuiltLabel || "Unbuilt";
-    inputUnbuiltColor.value = listingConfig.unbuiltColor || "#9a9a9a";
-    currentUnbuiltBg = listingConfig.unbuiltBg || null;
-    if (inputUnbuiltBg) inputUnbuiltBg.value = currentUnbuiltBg || "#000000";
-    currentUnbuiltBorder = listingConfig.unbuiltBorder || null;
-    if (inputUnbuiltBorder) inputUnbuiltBorder.value = currentUnbuiltBorder || "#222222";
-    if (checkUnbuiltBold) checkUnbuiltBold.checked = !!listingConfig.unbuiltBold;
+
+    if (inputOtherLabel) inputOtherLabel.value = listingConfig.otherLabel || "Other";
+    if (inputOtherColor) inputOtherColor.value = listingConfig.otherColor || "#a0a0a0";
+    currentOtherBg = listingConfig.otherBg || null;
+    if (inputOtherBg) inputOtherBg.value = currentOtherBg || "#000000";
+    currentOtherBorder = listingConfig.otherBorder || null;
+    if (inputOtherBorder) inputOtherBorder.value = currentOtherBorder || "#222222";
+    if (checkOtherBold) checkOtherBold.checked = !!listingConfig.otherBold;
 
     if (inputUnownedColor) inputUnownedColor.value = listingConfig.unownedColor || "#9a9a9a";
     currentUnownedBg = listingConfig.unownedBg || null;
@@ -3605,7 +3850,6 @@ function setupEventListeners() {
     if (checkUnownedBold) checkUnownedBold.checked = !!listingConfig.unownedBold;
 
     renderListingTiersEditor();
-    updateListingPreviews();
     listingModal.style.display = "flex";
   }
 
@@ -3613,21 +3857,31 @@ function setupEventListeners() {
     listingModal.style.display = "none";
   }
 
-  checkEnableUnbuilt.addEventListener("change", () => {
-    unbuiltTierConfig.style.display = checkEnableUnbuilt.checked ? "flex" : "none";
-    updateListingPreviews();
-  });
-
   btnAddTier.addEventListener("click", () => {
     tempListingTiers.push({
       id: "tier_" + Date.now(),
       label: "New Tier",
       color: "#e0e0e0",
-      rule: "r10",
+      ruleGroups: [[{ field: "resonance", op: ">=", value: 10 }]],
     });
     renderListingTiersEditor();
-    updateListingPreviews();
   });
+
+  if (btnAddPresetTier) {
+    btnAddPresetTier.addEventListener("click", () => {
+      tempListingTiers.push({
+        id: "tier_preset_unbuilt_" + Date.now(),
+        label: "Unbuilt",
+        color: "#9a9a9a",
+        ruleGroups: [[
+          { field: "insight", op: "=", value: 0 },
+          { field: "level", op: "=", value: 1 },
+          { field: "resonance", op: "=", value: 1 },
+        ]],
+      });
+      renderListingTiersEditor();
+    });
+  }
 
   btnListing.addEventListener("click", openListingModal);
   listingBtnClose.addEventListener("click", closeListingModal);
@@ -3636,12 +3890,11 @@ function setupEventListeners() {
   });
 
   listingBtnSave.addEventListener("click", () => {
-    listingConfig.separateUnbuilt = checkEnableUnbuilt.checked;
-    listingConfig.unbuiltLabel = inputUnbuiltLabel.value.trim() || "Unbuilt";
-    listingConfig.unbuiltColor = inputUnbuiltColor.value;
-    listingConfig.unbuiltBg = currentUnbuiltBg;
-    listingConfig.unbuiltBorder = currentUnbuiltBorder;
-    listingConfig.unbuiltBold = checkUnbuiltBold ? checkUnbuiltBold.checked : false;
+    if (inputOtherLabel) listingConfig.otherLabel = inputOtherLabel.value.trim() || "Other";
+    if (inputOtherColor) listingConfig.otherColor = inputOtherColor.value;
+    listingConfig.otherBg = currentOtherBg;
+    listingConfig.otherBorder = currentOtherBorder;
+    listingConfig.otherBold = checkOtherBold ? checkOtherBold.checked : false;
 
     if (inputUnownedColor) listingConfig.unownedColor = inputUnownedColor.value;
     listingConfig.unownedBg = currentUnownedBg;
@@ -3661,15 +3914,14 @@ function setupEventListeners() {
       () => {
         listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
         tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers));
-        checkEnableUnbuilt.checked = false;
-        unbuiltTierConfig.style.display = "none";
-        inputUnbuiltLabel.value = "Unbuilt";
-        inputUnbuiltColor.value = "#9a9a9a";
-        currentUnbuiltBg = null;
-        currentUnbuiltBorder = null;
-        if (inputUnbuiltBg) inputUnbuiltBg.value = "#000000";
-        if (inputUnbuiltBorder) inputUnbuiltBorder.value = "#222222";
-        if (checkUnbuiltBold) checkUnbuiltBold.checked = false;
+
+        if (inputOtherLabel) inputOtherLabel.value = "Other";
+        if (inputOtherColor) inputOtherColor.value = "#a0a0a0";
+        currentOtherBg = null;
+        currentOtherBorder = null;
+        if (inputOtherBg) inputOtherBg.value = "#000000";
+        if (inputOtherBorder) inputOtherBorder.value = "#222222";
+        if (checkOtherBold) checkOtherBold.checked = false;
 
         if (inputUnownedColor) inputUnownedColor.value = "#9a9a9a";
         currentUnownedBg = null;
@@ -3679,7 +3931,6 @@ function setupEventListeners() {
         if (checkUnownedBold) checkUnownedBold.checked = false;
 
         renderListingTiersEditor();
-        updateListingPreviews();
       }
     );
   });
