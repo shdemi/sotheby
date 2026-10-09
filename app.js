@@ -1057,6 +1057,7 @@ function renderChessPieces() {
 
     const wrapper = document.createElement("div");
     wrapper.className = "chess-piece-wrapper";
+    wrapper.dataset.piece = piece.name;
     wrapper.style.width = `calc(var(--chess-piece-size) * ${piece.w} / 41)`;
     wrapper.style.height = `calc(var(--chess-piece-size) * ${piece.h} / 41)`;
 

@@ -1839,6 +1839,18 @@ body::before {
   cursor: pointer;
 }
 
+.chess-piece-wrapper[data-piece="Rook"] {
+  transform: translateX(1px);
+}
+
+.chess-piece-wrapper[data-piece="Knight"] {
+  transform: translateX(2px);
+}
+
+.chess-piece-wrapper[data-piece="Bishop"] {
+  transform: translateX(-1px);
+}
+
 .chess-piece-empty,
 .chess-piece-filled {
   position: absolute;
