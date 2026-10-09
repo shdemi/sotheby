@@ -229,6 +229,12 @@ const DEFAULT_THEME_APPEARANCE = {
 
   // Unowned Character Dimming
   unownedOpacity: 0.82,
+
+  // Chess Pieces (Rarity Counter)
+  chessPiecesEnabled: true,
+  chessPiecesPosition: "top",
+  chessPiecesSize: 20,
+  chessPiecesOpacity: 1,
 };
 
 let displayOptions = {
@@ -392,6 +398,14 @@ function applyCustomAppearance() {
   // Update root CSS variables for live styles
   document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
   document.documentElement.style.setProperty("--unowned-char-opacity", app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82);
+
+  // Character Name Color
+  document.documentElement.style.setProperty("--char-name-color", app.charNameColor || "rgba(244, 239, 233, 0.8)");
+
+  // Chess Pieces Variables
+  document.documentElement.style.setProperty("--chess-piece-size", `${app.chessPiecesSize !== undefined ? app.chessPiecesSize : 20}px`);
+  const chessOpacity = app.chessPiecesOpacity !== undefined ? app.chessPiecesOpacity : (app.chessPiecesContainerOpacity !== undefined ? app.chessPiecesContainerOpacity : 1);
+  document.documentElement.style.setProperty("--chess-piece-opacity", chessOpacity);
 }
 
 function saveDisplayOptions() {
@@ -995,6 +1009,95 @@ function matchesTierRule(rule, char, rarity) {
   }
 }
 
+function renderChessPieces() {
+  const existingContainer = document.getElementById("chess-pieces-container");
+  if (existingContainer) {
+    existingContainer.remove();
+  }
+
+  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+  if (!app.chessPiecesEnabled) return;
+
+  const showcaseBoard = document.getElementById("showcase-board");
+  if (!showcaseBoard) return;
+
+  const totalByRarity = { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+  const ownedByRarity = { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+
+  const allNames = Object.keys(characterDb);
+  allNames.forEach((name) => {
+    if (!futureSightEnabled && futureSightChars.has(name)) return;
+    const rarity = getCharacterRarity(name);
+    if (rarity >= 2 && rarity <= 6) {
+      totalByRarity[rarity]++;
+      const char = userRoster[name];
+      if (char && char.owned) {
+        ownedByRarity[rarity]++;
+      }
+    }
+  });
+
+  const chessPieces = [
+    { rarity: 2, name: "Rook", empty: "images/chess_pieces/crook_empty.png", filled: "images/chess_pieces/crook_filled.png", w: 41, h: 92 },
+    { rarity: 3, name: "Knight", empty: "images/chess_pieces/knight_empty.png", filled: "images/chess_pieces/knight_filled.png", w: 48, h: 95 },
+    { rarity: 4, name: "Bishop", empty: "images/chess_pieces/bishop_empty.png", filled: "images/chess_pieces/bishop_filled.png", w: 41, h: 99 },
+    { rarity: 5, name: "King", empty: "images/chess_pieces/king_empty.png", filled: "images/chess_pieces/king_filled.png", w: 42, h: 109 },
+    { rarity: 6, name: "Queen", empty: "images/chess_pieces/queen_empty.png", filled: "images/chess_pieces/queen_filled.png", w: 43, h: 105 },
+  ];
+
+  const container = document.createElement("div");
+  container.id = "chess-pieces-container";
+  container.className = "chess-pieces-container";
+
+  chessPieces.forEach((piece) => {
+    const total = totalByRarity[piece.rarity];
+    const owned = ownedByRarity[piece.rarity];
+    const pct = total > 0 ? (owned / total) * 100 : 0;
+    const insetTop = Math.max(0, Math.min(100, 100 - pct));
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "chess-piece-wrapper";
+    wrapper.style.width = `calc(var(--chess-piece-size) * ${piece.w} / 41)`;
+    wrapper.style.height = `calc(var(--chess-piece-size) * ${piece.h} / 41)`;
+
+    const imgEmpty = document.createElement("img");
+    imgEmpty.className = "chess-piece-empty";
+    imgEmpty.src = piece.empty;
+    imgEmpty.alt = `${piece.name} Empty`;
+
+    const imgFilled = document.createElement("img");
+    imgFilled.className = "chess-piece-filled";
+    imgFilled.src = piece.filled;
+    imgFilled.alt = `${piece.name} Filled`;
+    imgFilled.style.clipPath = `inset(${insetTop}% 0 0 0)`;
+
+    const tooltip = document.createElement("div");
+    tooltip.className = "chess-piece-tooltip";
+    tooltip.innerHTML = `
+      <div style="font-weight: 700; color: #fff; margin-bottom: 2px;">${piece.name} (✦${piece.rarity})</div>
+      <div>Owned: ${owned}/${total} (${Math.round(pct)}%)</div>
+    `;
+
+    wrapper.appendChild(imgEmpty);
+    wrapper.appendChild(imgFilled);
+    wrapper.appendChild(tooltip);
+    container.appendChild(wrapper);
+  });
+
+  if (app.chessPiecesPosition === "bottom") {
+    container.classList.add("pos-bottom");
+    showcaseBoard.appendChild(container);
+  } else {
+    container.classList.add("pos-top");
+    const boardHeader = showcaseBoard.querySelector(".board-header");
+    if (boardHeader) {
+      boardHeader.appendChild(container);
+    } else {
+      showcaseBoard.insertBefore(container, showcaseBoard.firstChild);
+    }
+  }
+}
+
 // Render Showcase Board
 function renderShowcase() {
   const query = filterSearch.value.trim().toLowerCase();
@@ -1171,6 +1274,8 @@ function renderShowcase() {
       <div>Eupho unlocked: ${euphoCount}</div>
     `;
   }
+
+  renderChessPieces();
 }
 
 function renderTierRowSection(label, color, cards, customBg, customBorder, isBold) {
@@ -1326,28 +1431,28 @@ function createCharacterCard(name, char, iconUrl) {
 
   const avatarUrl = getCardAvatarUrl(name, char, iconUrl);
 
-  const avatarBoxStyles = [];
+  const avatarImgStyles = [];
   if (char.owned) {
     if (boxKind && boxKind !== "none") {
       if (displayOptions.showPatternBg) {
-        avatarBoxStyles.push(`background-color: ${patternColor}`);
+        avatarImgStyles.push(`background-color: ${patternColor}`);
       }
       if (displayOptions.showPatternBorder) {
-        avatarBoxStyles.push(`border: 1px solid ${patternColor}`);
+        avatarImgStyles.push(`border: 1px solid ${patternColor}`);
       }
     } else {
       // None Pattern characters
       if (displayOptions.showNonePatternBg) {
         const noneBgColor = displayOptions.colorNonePatternBg || "#4F4F4F";
-        avatarBoxStyles.push(`background-color: ${noneBgColor}`);
+        avatarImgStyles.push(`background-color: ${noneBgColor}`);
       }
       if (displayOptions.showNonePatternBorder) {
         const noneBorderColor = displayOptions.colorNonePatternBorder || "#4F4F4F";
-        avatarBoxStyles.push(`border: 1px solid ${noneBorderColor}`);
+        avatarImgStyles.push(`border: 1px solid ${noneBorderColor}`);
       }
     }
   }
-  const avatarBoxStyle = avatarBoxStyles.length > 0 ? ` style="${avatarBoxStyles.join("; ")};"` : "";
+  const avatarImgStyle = avatarImgStyles.length > 0 ? ` style="${avatarImgStyles.join("; ")};"` : "";
 
   let tooltipHtml = "";
   if (!char.owned) {
@@ -1371,8 +1476,8 @@ function createCharacterCard(name, char, iconUrl) {
 
   card.innerHTML = `
     ${topHeaderHtml}
-    <div class="char-avatar-box"${avatarBoxStyle}>
-      <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img" loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
+    <div class="char-avatar-box">
+      <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img"${avatarImgStyle} loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
       ${insightLevelOverlay}
     </div>
     ${rarityLineHtml}
@@ -1711,8 +1816,76 @@ function renderRosterManager() {
   });
 }
 
+// Confirm Action Modal Helper
+let onConfirmActionCallback = null;
+
+function showConfirmModal(title, message, onConfirm) {
+  const confirmModal = document.getElementById("confirm-modal");
+  const confirmTitle = document.getElementById("confirm-modal-title");
+  const confirmMessage = document.getElementById("confirm-modal-message");
+  if (!confirmModal) {
+    if (confirm(message)) onConfirm();
+    return;
+  }
+  if (confirmTitle) confirmTitle.textContent = title || "Confirm Action";
+  if (confirmMessage) confirmMessage.textContent = message || "Are you sure you want to proceed?";
+  onConfirmActionCallback = onConfirm;
+  confirmModal.style.display = "flex";
+}
+
+function closeConfirmModal() {
+  const confirmModal = document.getElementById("confirm-modal");
+  if (confirmModal) confirmModal.style.display = "none";
+  onConfirmActionCallback = null;
+}
+
 // Event Listeners
 function setupEventListeners() {
+  const confirmModal = document.getElementById("confirm-modal");
+  const confirmBtnClose = document.getElementById("confirm-modal-btn-close");
+  const confirmBtnCancel = document.getElementById("confirm-modal-btn-cancel");
+  const confirmBtnYes = document.getElementById("confirm-modal-btn-yes");
+
+  if (confirmBtnClose) confirmBtnClose.addEventListener("click", closeConfirmModal);
+  if (confirmBtnCancel) confirmBtnCancel.addEventListener("click", closeConfirmModal);
+  if (confirmModal) {
+    confirmModal.addEventListener("click", (e) => {
+      if (e.target === confirmModal) closeConfirmModal();
+    });
+  }
+  if (confirmBtnYes) {
+    confirmBtnYes.addEventListener("click", () => {
+      if (onConfirmActionCallback) {
+        const cb = onConfirmActionCallback;
+        closeConfirmModal();
+        cb();
+      } else {
+        closeConfirmModal();
+      }
+    });
+  }
+
+  // Web Icon Lightbox Preview
+  const btnWebIcon = document.getElementById("btn-web-icon");
+  const webIconModal = document.getElementById("web-icon-modal");
+
+  if (btnWebIcon && webIconModal) {
+    btnWebIcon.addEventListener("click", () => {
+      webIconModal.style.display = "flex";
+      // Trigger transition next frame
+      requestAnimationFrame(() => {
+        webIconModal.classList.add("active");
+      });
+    });
+
+    webIconModal.addEventListener("click", () => {
+      webIconModal.classList.remove("active");
+      setTimeout(() => {
+        webIconModal.style.display = "none";
+      }, 300);
+    });
+  }
+
   filterSearch.addEventListener("input", renderShowcase);
 
   inputBoardTitle.addEventListener("input", (e) => {
@@ -1851,9 +2024,10 @@ function setupEventListeners() {
   const checkShowRarityLine = document.getElementById("check-show-rarity-line");
   const checkHideI3Lv60 = document.getElementById("check-hide-i3-lv60");
   const checkHideI3Lv30 = document.getElementById("check-hide-i3-lv30");
-  const checkHideI2Lv50 = document.getElementById("check-hide-i2-lv50");
   const checkHideR15 = document.getElementById("check-hide-r15");
   const checkHideR10 = document.getElementById("check-hide-r10");
+
+  const optionsCharPreviewCard = document.getElementById("options-char-preview-card");
 
   const customHideRulesList = document.getElementById("custom-hide-rules-list");
   const btnAddCustomHide = document.getElementById("btn-add-custom-hide");
@@ -1862,6 +2036,107 @@ function setupEventListeners() {
   const customResHideRulesList = document.getElementById("custom-res-hide-rules-list");
   const btnAddCustomResHide = document.getElementById("btn-add-custom-res-hide");
   let tempCustomResHideRules = [];
+
+  function renderOptionsPreviewCard() {
+    if (!optionsCharPreviewCard) return;
+
+    const hideInsight = checkHideInsight ? checkHideInsight.checked : false;
+    const hideLevel = checkHideLevel ? checkHideLevel.checked : false;
+    const hideResonance = checkHideResonance ? checkHideResonance.checked : false;
+    const hideEuphoria = checkHideEuphoria ? checkHideEuphoria.checked : false;
+    const hidePortrait = checkHidePortrait ? checkHidePortrait.checked : false;
+    const hideNames = checkHideNames ? checkHideNames.checked : false;
+    const hideSkin = checkHideSkin ? checkHideSkin.checked : false;
+    const showRarityLine = checkShowRarityLine ? checkShowRarityLine.checked : false;
+
+    const charName = "Vertin";
+    const rarityVal = 6;
+    const insightVal = 3;
+    const levelVal = 60;
+    const resonanceVal = 10;
+    const portraitVal = 5;
+    const boxKind = "equibalance";
+    const euphoriaText = "E1";
+
+    const resonanceColor = "#4F4F4F";
+    const euphoriaColor = (displayOptions.appearance && displayOptions.appearance.euphoriaColor) || "#04FFEE";
+    const patternColor = getResonanceTextColor(boxKind);
+
+    let activeDashColor = "";
+    if (displayOptions.appearance && displayOptions.appearance.customPortraitColorsEnabled) {
+      activeDashColor = displayOptions.appearance.portraitColorR6 || "#DD9925";
+    }
+    const dashStyle = activeDashColor ? ` style="background-color: ${activeDashColor};"` : "";
+    const dashesHtml = !hidePortrait
+      ? Array.from({ length: 5 }, (_, i) => `<span class="portrait-dash ${i < portraitVal ? "active" : ""}"${i < portraitVal ? dashStyle : ""}></span>`).join("")
+      : "";
+
+    const showRes = !hideResonance;
+    const showEupho = !hideEuphoria;
+    const topHeaderHtml = `
+      <div class="char-top-info">
+        ${showRes ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">R${resonanceVal}</span>` : `<span></span>`}
+        ${showEupho ? `<span class="badge-euphoria" style="color: ${euphoriaColor};">${euphoriaText}</span>` : ""}
+      </div>
+    `;
+
+    const portraitBarHtml = !hidePortrait ? `
+      <div class="char-portrait-bar-below">
+        ${dashesHtml}
+      </div>
+    ` : "";
+
+    const showIn = !hideInsight;
+    const showLv = !hideLevel;
+    const insightIconHtml = showIn ? `
+      <span class="char-info-insight">
+        <img src="images/insight_icon/I${insightVal}.png" alt="I${insightVal}" class="badge-insight-img" />
+      </span>
+    ` : "";
+    const levelTextHtml = showLv ? `
+      <span class="char-info-level">${levelVal}</span>
+    ` : "";
+    const insightLevelOverlay = (showIn || showLv) ? `
+      <div class="char-info-overlay">
+        ${insightIconHtml}
+        ${levelTextHtml}
+      </div>
+    ` : "";
+
+    const rarityLineHtml = showRarityLine ? `
+      <div class="char-rarity-line rarity-${rarityVal}"></div>
+    ` : "";
+
+    // 300101 default headicon vs 652902 garment
+    const avatarImgSrc = hideSkin ? "images/headicon_small/300101.png" : "images/headicon_small/652902.png";
+
+    const isPatternBgActive = checkShowPatternBg ? checkShowPatternBg.checked : !!displayOptions.showPatternBg;
+    const isPatternBorderActive = checkShowPatternBorder ? checkShowPatternBorder.checked : !!displayOptions.showPatternBorder;
+
+    const avatarImgStyles = [];
+    if (isPatternBgActive) {
+      avatarImgStyles.push(`background-color: ${patternColor}`);
+    }
+    if (isPatternBorderActive) {
+      avatarImgStyles.push(`border: 1px solid ${patternColor}`);
+    }
+    const avatarImgStyle = avatarImgStyles.length > 0 ? ` style="${avatarImgStyles.join("; ")};"` : "";
+
+    const nameBelowHtml = !hideNames ? `
+      <div style="font-size: 0.62rem; font-family: var(--mono-font); text-align: center; color: var(--text-primary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px;">${charName}</div>
+    ` : "";
+
+    optionsCharPreviewCard.innerHTML = `
+      ${topHeaderHtml}
+      <div class="char-avatar-box">
+        <img src="${avatarImgSrc}" alt="${charName}" class="char-avatar-img"${avatarImgStyle} />
+        ${insightLevelOverlay}
+      </div>
+      ${rarityLineHtml}
+      ${portraitBarHtml}
+      ${nameBelowHtml}
+    `;
+  }
 
   function openOptionsModal() {
     if (checkFutureSight) checkFutureSight.checked = !!futureSightEnabled;
@@ -1893,9 +2168,16 @@ function setupEventListeners() {
     checkShowRarityLine.checked = !!displayOptions.showRarityLine;
     checkHideI3Lv60.checked = !!displayOptions.hideI3Lv60;
     checkHideI3Lv30.checked = !!displayOptions.hideI3Lv30;
-    checkHideI2Lv50.checked = !!displayOptions.hideI2Lv50;
     if (checkHideR15) checkHideR15.checked = !!displayOptions.hideR15;
     if (checkHideR10) checkHideR10.checked = !!displayOptions.hideR10;
+
+    const checkHideChess = document.getElementById("check-hide-chess-pieces");
+    if (checkHideChess) {
+      const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+      checkHideChess.checked = app.chessPiecesEnabled === false;
+    }
+
+    renderOptionsPreviewCard();
 
     tempCustomHideRules = JSON.parse(JSON.stringify(displayOptions.customHideRules || []));
     renderCustomHideRulesUI();
@@ -2103,6 +2385,54 @@ function setupEventListeners() {
     });
   }
 
+  const btnToggleInsightHide = document.getElementById("btn-toggle-insight-hide");
+  const insightHideCollapseContent = document.getElementById("insight-hide-collapse-content");
+  const insightHideArrow = document.getElementById("insight-hide-arrow");
+
+  if (btnToggleInsightHide && insightHideCollapseContent) {
+    btnToggleInsightHide.addEventListener("click", () => {
+      const isVisible = insightHideCollapseContent.style.display !== "none";
+      insightHideCollapseContent.style.display = isVisible ? "none" : "flex";
+      if (insightHideArrow) {
+        insightHideArrow.textContent = isVisible ? "▸" : "▾";
+      }
+    });
+  }
+
+  const btnToggleResHide = document.getElementById("btn-toggle-res-hide");
+  const resHideCollapseContent = document.getElementById("res-hide-collapse-content");
+  const resHideArrow = document.getElementById("res-hide-arrow");
+
+  if (btnToggleResHide && resHideCollapseContent) {
+    btnToggleResHide.addEventListener("click", () => {
+      const isVisible = resHideCollapseContent.style.display !== "none";
+      resHideCollapseContent.style.display = isVisible ? "none" : "flex";
+      if (resHideArrow) {
+        resHideArrow.textContent = isVisible ? "▸" : "▾";
+      }
+    });
+  }
+
+  // Character Info Box Checkbox Live Preview events
+  [
+    checkShowRarityLine,
+    checkHideInsight,
+    checkHideLevel,
+    checkHideResonance,
+    checkHideEuphoria,
+    checkHidePortrait,
+    checkHideNames,
+    checkHideSkin,
+    checkShowPatternBg,
+    checkShowPatternBorder,
+  ].forEach((chk) => {
+    if (chk) {
+      chk.addEventListener("change", () => {
+        renderOptionsPreviewCard();
+      });
+    }
+  });
+
   btnOptions.addEventListener("click", openOptionsModal);
   optionsBtnClose.addEventListener("click", closeOptionsModal);
   optionsBtnDone.addEventListener("click", () => {
@@ -2128,11 +2458,19 @@ function setupEventListeners() {
     displayOptions.showRarityLine = checkShowRarityLine.checked;
     displayOptions.hideI3Lv60 = checkHideI3Lv60.checked;
     displayOptions.hideI3Lv30 = checkHideI3Lv30.checked;
-    displayOptions.hideI2Lv50 = checkHideI2Lv50.checked;
     displayOptions.customHideRules = tempCustomHideRules;
     if (checkHideR15) displayOptions.hideR15 = checkHideR15.checked;
     if (checkHideR10) displayOptions.hideR10 = checkHideR10.checked;
     displayOptions.customResHideRules = tempCustomResHideRules;
+
+    const checkHideChess = document.getElementById("check-hide-chess-pieces");
+    if (checkHideChess) {
+      if (!displayOptions.appearance) {
+        displayOptions.appearance = { ...DEFAULT_THEME_APPEARANCE };
+      }
+      displayOptions.appearance.chessPiecesEnabled = !checkHideChess.checked;
+    }
+
     saveDisplayOptions();
     renderShowcase();
     closeOptionsModal();
@@ -2227,11 +2565,129 @@ function setupEventListeners() {
   const inputUnownedOpacity = document.getElementById("input-unowned-opacity");
   const displayUnownedOpacity = document.getElementById("display-unowned-opacity");
 
+  // Chess Pieces Elements
+  const checkChessPiecesEnabled = document.getElementById("check-chess-pieces-enabled");
+  const selectChessPiecesPosition = document.getElementById("select-chess-pieces-position");
+  const inputChessPieceSize = document.getElementById("input-chess-piece-size");
+  const displayChessPieceSize = document.getElementById("display-chess-piece-size");
+  const inputChessContainerOpacity = document.getElementById("input-chess-container-opacity");
+  const displayChessContainerOpacity = document.getElementById("display-chess-container-opacity");
+
   const btnResetCustomAppearance = document.getElementById("btn-reset-custom-appearance");
 
-  let currentBoardHeaderBg = "transparent";
-  let currentBoardHeaderBorder = "rgba(255, 255, 255, 0.1)";
-  let currentCharInfoBorder = "transparent";
+  const previewBoardHeaderBox = document.getElementById("preview-board-header-box");
+  const previewBoardHeaderTitle = document.getElementById("preview-board-header-title");
+  const previewTierRowBox = document.getElementById("preview-tier-row-box");
+  const previewTierLabelText = document.getElementById("preview-tier-label-text");
+  const previewTierSeparatorBar = document.getElementById("preview-tier-separator-bar");
+  const previewSpacingHeaderGap = document.getElementById("preview-spacing-header-gap");
+  const previewSpacingTierGap = document.getElementById("preview-spacing-tier-gap");
+  const previewCharCardBox = document.getElementById("preview-char-card-box");
+  const previewCharInfoOverlay = document.getElementById("preview-char-info-overlay");
+  const previewUnownedCharImg = document.getElementById("preview-unowned-char-img");
+
+  const previewChessPiecesRow = document.getElementById("preview-chess-pieces-row");
+
+  function updateCustomizePreviews() {
+    const fontValue = getBoardFontFamily(selectBoardFont.value);
+    const uppercaseValue = checkBoardUppercase && checkBoardUppercase.checked ? "uppercase" : "none";
+
+    // 1. Board Header Box Preview
+    if (previewBoardHeaderBox) {
+      const bhOpacity = inputBoardHeaderBgOpacity ? Number(inputBoardHeaderBgOpacity.value) : 1;
+      const rawBhBg = currentBoardHeaderBg || "transparent";
+      previewBoardHeaderBox.style.background = (rawBhBg === "transparent") ? "transparent" : hexToRgba(rawBhBg, bhOpacity);
+      previewBoardHeaderBox.style.borderBottomColor = currentBoardHeaderBorder || "rgba(255, 255, 255, 0.1)";
+      previewBoardHeaderBox.style.borderBottomWidth = `${inputBoardHeaderBorderWidth ? inputBoardHeaderBorderWidth.value : 1}px`;
+    }
+    if (previewBoardHeaderTitle) {
+      previewBoardHeaderTitle.textContent = (inputBoardTitle && inputBoardTitle.value.trim()) || "SUITCASE";
+      previewBoardHeaderTitle.style.color = colorBoardTitle ? colorBoardTitle.value : "#f4efe9";
+      previewBoardHeaderTitle.style.fontFamily = fontValue;
+      previewBoardHeaderTitle.style.textTransform = uppercaseValue;
+      const tSize = inputBoardTitleSize ? Number(inputBoardTitleSize.value) : 0.74;
+      previewBoardHeaderTitle.style.fontSize = `${tSize}rem`;
+    }
+
+    // 2. Tier Row Box Preview
+    if (previewTierRowBox) {
+      const tbOpacity = inputTierBoxOpacity ? Number(inputTierBoxOpacity.value) : 0.1;
+      previewTierRowBox.style.background = hexToRgba("#000000", tbOpacity);
+      previewTierRowBox.style.borderWidth = `${inputTierBoxBorderWidth ? inputTierBoxBorderWidth.value : 1}px`;
+      previewTierRowBox.style.borderRadius = `${inputTierBoxRadius ? inputTierBoxRadius.value : 0}px`;
+    }
+    if (previewTierLabelText) {
+      previewTierLabelText.style.fontFamily = fontValue;
+      previewTierLabelText.style.textTransform = uppercaseValue;
+      const tierSize = inputTierLabelSize ? Number(inputTierLabelSize.value) : 0.70;
+      previewTierLabelText.style.fontSize = `${tierSize}rem`;
+    }
+
+    // 3. Tier Separator Preview
+    if (previewTierSeparatorBar) {
+      const sepWidth = inputTierLabelWidth ? Number(inputTierLabelWidth.value) : 110;
+      // Scale proportionally for mini preview (max ~130px)
+      const miniWidth = Math.round(35 + (sepWidth - 40) * (95 / 200));
+      previewTierSeparatorBar.style.width = `${miniWidth}px`;
+    }
+
+    // 4. Spacing Preview
+    if (previewSpacingHeaderGap) {
+      const hGap = inputSpacingHeaderTier ? Number(inputSpacingHeaderTier.value) : 20;
+      previewSpacingHeaderGap.style.height = `${Math.max(4, Math.round(hGap * 0.5))}px`;
+    }
+    if (previewSpacingTierGap) {
+      const tGap = inputSpacingTierGap ? Number(inputSpacingTierGap.value) : 14;
+      previewSpacingTierGap.style.height = `${Math.max(4, Math.round(tGap * 0.5))}px`;
+    }
+
+    // 5. Chess Pieces Preview
+    if (previewChessPiecesRow) {
+      const pSize = inputChessPieceSize ? Number(inputChessPieceSize.value) : 20;
+      const pOpacity = inputChessContainerOpacity ? Number(inputChessContainerOpacity.value) : 1;
+      previewChessPiecesRow.style.opacity = pOpacity;
+
+      const piecesData = [
+        { w: 41, h: 92 },
+        { w: 48, h: 95 },
+        { w: 41, h: 99 },
+        { w: 42, h: 109 },
+        { w: 43, h: 105 },
+      ];
+      const pieceEls = previewChessPiecesRow.querySelectorAll(".preview-chess-piece");
+      pieceEls.forEach((el, i) => {
+        if (piecesData[i]) {
+          el.style.width = `${Math.round(pSize * piecesData[i].w / 41)}px`;
+          el.style.height = `${Math.round(pSize * piecesData[i].h / 41)}px`;
+        }
+      });
+    }
+
+    // 6. Character Card Size Preview
+    if (previewCharCardBox) {
+      const cardScale = inputCharCardSize ? Number(inputCharCardSize.value) : 1.0;
+      const cardPx = Math.round(54 * cardScale);
+      previewCharCardBox.style.width = `${cardPx}px`;
+      previewCharCardBox.style.height = `${cardPx}px`;
+    }
+
+    // 7. Insight / Level Badge Preview
+    if (previewCharInfoOverlay) {
+      const isEnabled = checkCharInfoBgEnabled && checkCharInfoBgEnabled.checked;
+      const rawBg = colorCharInfoBg ? colorCharInfoBg.value : "#121212";
+      const bgOpacity = inputCharInfoBgOpacity ? Number(inputCharInfoBgOpacity.value) : 0.22;
+      previewCharInfoOverlay.style.background = isEnabled ? hexToRgba(rawBg, bgOpacity) : "transparent";
+      previewCharInfoOverlay.style.borderColor = currentCharInfoBorder || "transparent";
+      previewCharInfoOverlay.style.borderWidth = `${inputCharInfoBorderWidth ? inputCharInfoBorderWidth.value : 0}px`;
+      previewCharInfoOverlay.style.borderRadius = `${inputCharInfoRadius ? inputCharInfoRadius.value : 0}px`;
+    }
+
+    // 8. Unowned Dimming Preview
+    if (previewUnownedCharImg) {
+      const unOp = inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.82;
+      previewUnownedCharImg.style.opacity = unOp;
+    }
+  }
 
   function parseHexOrDefault(val, fallbackHex) {
     if (!val || val === "transparent") return fallbackHex;
@@ -2367,6 +2823,30 @@ function setupEventListeners() {
     const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82;
     if (inputUnownedOpacity) inputUnownedOpacity.value = unOp;
     if (displayUnownedOpacity) displayUnownedOpacity.textContent = `${Math.round(unOp * 100)}%`;
+
+    // Character Names Color
+    const colorCharName = document.getElementById("color-char-name");
+    if (colorCharName) {
+      colorCharName.value = app.charNameColor || "#ffffff";
+    }
+
+    // Chess Pieces
+    const chessControls = document.getElementById("chess-pieces-controls");
+    if (chessControls) {
+      chessControls.style.opacity = (app.chessPiecesEnabled !== false) ? "1" : "0.5";
+    }
+    if (selectChessPiecesPosition) {
+      selectChessPiecesPosition.value = app.chessPiecesPosition || "top";
+    }
+    const pieceSize = app.chessPiecesSize !== undefined ? app.chessPiecesSize : 20;
+    if (inputChessPieceSize) inputChessPieceSize.value = pieceSize;
+    if (displayChessPieceSize) displayChessPieceSize.textContent = `${pieceSize}px`;
+
+    const chessOp = app.chessPiecesOpacity !== undefined ? app.chessPiecesOpacity : (app.chessPiecesContainerOpacity !== undefined ? app.chessPiecesContainerOpacity : 1);
+    if (inputChessContainerOpacity) inputChessContainerOpacity.value = chessOp;
+    if (displayChessContainerOpacity) displayChessContainerOpacity.textContent = `${Math.round(chessOp * 100)}%`;
+
+    updateCustomizePreviews();
   }
 
   function readAppearanceForm() {
@@ -2423,45 +2903,81 @@ function setupEventListeners() {
       customResColor: colorCustomResLabel ? colorCustomResLabel.value : "#ffffff",
 
       unownedOpacity: inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.82,
+
+      // Character Name Color
+      charNameColor: (document.getElementById("color-char-name") && document.getElementById("color-char-name").value) || "#ffffff",
+
+      // Chess Pieces
+      chessPiecesEnabled: (displayOptions.appearance && displayOptions.appearance.chessPiecesEnabled !== undefined) ? displayOptions.appearance.chessPiecesEnabled : true,
+      chessPiecesPosition: selectChessPiecesPosition ? selectChessPiecesPosition.value : "top",
+      chessPiecesSize: inputChessPieceSize ? Number(inputChessPieceSize.value) : 20,
+      chessPiecesOpacity: inputChessContainerOpacity ? Number(inputChessContainerOpacity.value) : 1,
     };
   }
 
   inputBoardTitleSize.addEventListener("input", (e) => {
     displayBoardTitleSize.textContent = `${e.target.value}rem`;
+    updateCustomizePreviews();
   });
+
+  if (inputBoardTitle) {
+    inputBoardTitle.addEventListener("input", () => {
+      updateCustomizePreviews();
+    });
+  }
+
+  if (colorBoardTitle) {
+    colorBoardTitle.addEventListener("input", () => {
+      updateCustomizePreviews();
+    });
+  }
+
+  if (checkBoardUppercase) {
+    checkBoardUppercase.addEventListener("change", () => {
+      updateCustomizePreviews();
+    });
+  }
 
   inputTierLabelSize.addEventListener("input", (e) => {
     displayTierLabelSize.textContent = `${e.target.value}rem`;
+    updateCustomizePreviews();
   });
 
   // Board Header Box events
   colorBoardHeaderBg.addEventListener("input", (e) => {
     currentBoardHeaderBg = e.target.value;
+    updateCustomizePreviews();
   });
   btnClearBoardHeaderBg.addEventListener("click", () => {
     currentBoardHeaderBg = "transparent";
+    updateCustomizePreviews();
   });
   if (inputBoardHeaderBgOpacity) {
     inputBoardHeaderBgOpacity.addEventListener("input", (e) => {
       if (displayBoardHeaderBgOpacity) {
         displayBoardHeaderBgOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
       }
+      updateCustomizePreviews();
     });
   }
   colorBoardHeaderBorder.addEventListener("input", (e) => {
     currentBoardHeaderBorder = e.target.value;
+    updateCustomizePreviews();
   });
   btnClearBoardHeaderBorder.addEventListener("click", () => {
     currentBoardHeaderBorder = "transparent";
+    updateCustomizePreviews();
   });
   inputBoardHeaderBorderWidth.addEventListener("input", (e) => {
     displayBoardHeaderBorderWidth.textContent = `${e.target.value}px`;
+    updateCustomizePreviews();
   });
 
   // Separator / Tier Label Width events
   if (inputTierLabelWidth) {
     inputTierLabelWidth.addEventListener("input", (e) => {
       displayTierLabelWidth.textContent = `${e.target.value}px`;
+      updateCustomizePreviews();
     });
   }
 
@@ -2499,13 +3015,16 @@ function setupEventListeners() {
       if (displayTierBoxOpacity) {
         displayTierBoxOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
       }
+      updateCustomizePreviews();
     });
   }
   inputTierBoxBorderWidth.addEventListener("input", (e) => {
     displayTierBoxBorderWidth.textContent = `${e.target.value}px`;
+    updateCustomizePreviews();
   });
   inputTierBoxRadius.addEventListener("input", (e) => {
     displayTierBoxRadius.textContent = `${e.target.value}px`;
+    updateCustomizePreviews();
   });
 
   // Character Card Scale events
@@ -2514,6 +3033,7 @@ function setupEventListeners() {
       if (displayCharCardSize) {
         displayCharCardSize.textContent = `${Number(e.target.value).toFixed(2)}x`;
       }
+      updateCustomizePreviews();
     });
   }
 
@@ -2541,6 +3061,27 @@ function setupEventListeners() {
       if (displayUnownedOpacity) {
         displayUnownedOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
       }
+      updateCustomizePreviews();
+    });
+  }
+
+  // Chess Pieces events
+  if (checkChessPiecesEnabled) {
+    checkChessPiecesEnabled.addEventListener("change", (e) => {
+      const controls = document.getElementById("chess-pieces-controls");
+      if (controls) controls.style.opacity = e.target.checked ? "1" : "0.5";
+    });
+  }
+  if (inputChessPieceSize) {
+    inputChessPieceSize.addEventListener("input", (e) => {
+      if (displayChessPieceSize) displayChessPieceSize.textContent = `${e.target.value}px`;
+      updateCustomizePreviews();
+    });
+  }
+  if (inputChessContainerOpacity) {
+    inputChessContainerOpacity.addEventListener("input", (e) => {
+      if (displayChessContainerOpacity) displayChessContainerOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
+      updateCustomizePreviews();
     });
   }
 
@@ -2548,11 +3089,13 @@ function setupEventListeners() {
   if (inputSpacingHeaderTier) {
     inputSpacingHeaderTier.addEventListener("input", (e) => {
       displaySpacingHeaderTier.textContent = `${e.target.value}px`;
+      updateCustomizePreviews();
     });
   }
   if (inputSpacingTierGap) {
     inputSpacingTierGap.addEventListener("input", (e) => {
       displaySpacingTierGap.textContent = `${e.target.value}px`;
+      updateCustomizePreviews();
     });
   }
 
@@ -2562,22 +3105,33 @@ function setupEventListeners() {
     if (controls) controls.style.opacity = e.target.checked ? "1" : "0.5";
     const bgOpacityRow = document.getElementById("char-info-bg-opacity-row");
     if (bgOpacityRow) bgOpacityRow.style.opacity = e.target.checked ? "1" : "0.5";
+    updateCustomizePreviews();
   });
+  if (colorCharInfoBg) {
+    colorCharInfoBg.addEventListener("input", () => {
+      updateCustomizePreviews();
+    });
+  }
   colorCharInfoBorder.addEventListener("input", (e) => {
     currentCharInfoBorder = e.target.value;
+    updateCustomizePreviews();
   });
   btnClearCharInfoBorder.addEventListener("click", () => {
     currentCharInfoBorder = "transparent";
+    updateCustomizePreviews();
   });
   inputCharInfoBorderWidth.addEventListener("input", (e) => {
     displayCharInfoBorderWidth.textContent = `${e.target.value}px`;
+    updateCustomizePreviews();
   });
   inputCharInfoRadius.addEventListener("input", (e) => {
     displayCharInfoRadius.textContent = `${e.target.value}px`;
+    updateCustomizePreviews();
   });
   if (inputCharInfoBgOpacity) {
     inputCharInfoBgOpacity.addEventListener("input", (e) => {
       displayCharInfoBgOpacity.textContent = `${Math.round(e.target.value * 100)}%`;
+      updateCustomizePreviews();
     });
   }
 
@@ -2598,21 +3152,26 @@ function setupEventListeners() {
   });
 
   btnResetCustomAppearance.addEventListener("click", () => {
-    if (!confirm("Are you sure you want to reset all styling and appearance settings to defaults?")) return;
-    syncAppearanceFormWithState(DEFAULT_THEME_APPEARANCE);
-    const fontValue = getBoardFontFamily(DEFAULT_THEME_APPEARANCE.boardFont);
-    document.documentElement.style.setProperty("--board-font", fontValue);
-    const showcaseBoard = document.getElementById("showcase-board");
-    if (showcaseBoard) {
-      showcaseBoard.style.setProperty("--board-font", fontValue);
-      showcaseBoard.style.fontFamily = fontValue;
-    }
-    if (boardTitleLabel) {
-      boardTitleLabel.style.fontFamily = fontValue;
-    }
-    document.querySelectorAll(".tier-label").forEach((el) => {
-      el.style.fontFamily = fontValue;
-    });
+    showConfirmModal(
+      "Reset Defaults",
+      "Are you sure you want to reset all styling and appearance settings to defaults?",
+      () => {
+        syncAppearanceFormWithState(DEFAULT_THEME_APPEARANCE);
+        const fontValue = getBoardFontFamily(DEFAULT_THEME_APPEARANCE.boardFont);
+        document.documentElement.style.setProperty("--board-font", fontValue);
+        const showcaseBoard = document.getElementById("showcase-board");
+        if (showcaseBoard) {
+          showcaseBoard.style.setProperty("--board-font", fontValue);
+          showcaseBoard.style.fontFamily = fontValue;
+        }
+        if (boardTitleLabel) {
+          boardTitleLabel.style.fontFamily = fontValue;
+        }
+        document.querySelectorAll(".tier-label").forEach((el) => {
+          el.style.fontFamily = fontValue;
+        });
+      }
+    );
   });
 
   function openCustomizeModal() {
@@ -2672,26 +3231,122 @@ function setupEventListeners() {
   let currentUnownedBg = null;
   let currentUnownedBorder = null;
 
+  const previewUnbuiltTierRow = document.getElementById("preview-unbuilt-tier-row");
+  const previewUnbuiltLabel = document.getElementById("preview-unbuilt-label");
+  const previewUnownedTierRow = document.getElementById("preview-unowned-tier-row");
+  const previewUnownedLabel = document.getElementById("preview-unowned-label");
+
+  function updateListingPreviews() {
+    const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+    const fontValue = getBoardFontFamily(app.boardFont);
+    const tbOpacity = app.tierBoxOpacity !== undefined ? app.tierBoxOpacity : 0.1;
+
+    // Unbuilt preview
+    if (previewUnbuiltTierRow) {
+      if (currentUnbuiltBg && currentUnbuiltBg !== "transparent") {
+        previewUnbuiltTierRow.style.background = hexToRgba(currentUnbuiltBg, tbOpacity);
+      } else {
+        previewUnbuiltTierRow.style.background = "rgba(0, 0, 0, 0.2)";
+      }
+      previewUnbuiltTierRow.style.borderColor = (currentUnbuiltBorder && currentUnbuiltBorder !== "transparent") ? currentUnbuiltBorder : "rgba(255, 255, 255, 0.08)";
+    }
+    if (previewUnbuiltLabel) {
+      previewUnbuiltLabel.textContent = (inputUnbuiltLabel && inputUnbuiltLabel.value.trim()) || "Unbuilt";
+      previewUnbuiltLabel.style.color = inputUnbuiltColor ? inputUnbuiltColor.value : "#888888";
+      previewUnbuiltLabel.style.fontWeight = checkUnbuiltBold && checkUnbuiltBold.checked ? "900" : "700";
+      previewUnbuiltLabel.style.fontFamily = fontValue;
+    }
+
+    // Unowned preview
+    if (previewUnownedTierRow) {
+      if (currentUnownedBg && currentUnownedBg !== "transparent") {
+        previewUnownedTierRow.style.background = hexToRgba(currentUnownedBg, tbOpacity);
+      } else {
+        previewUnownedTierRow.style.background = "rgba(0, 0, 0, 0.2)";
+      }
+      previewUnownedTierRow.style.borderColor = (currentUnownedBorder && currentUnownedBorder !== "transparent") ? currentUnownedBorder : "rgba(255, 255, 255, 0.08)";
+    }
+    if (previewUnownedLabel) {
+      previewUnownedLabel.textContent = "Unowned";
+      previewUnownedLabel.style.color = inputUnownedColor ? inputUnownedColor.value : "#9a9a9a";
+      previewUnownedLabel.style.fontWeight = checkUnownedBold && checkUnownedBold.checked ? "900" : "700";
+      previewUnownedLabel.style.fontFamily = fontValue;
+    }
+
+    // Showcase Tiers Live Preview
+    const previewTiersStage = document.getElementById("preview-showcase-tiers-stage");
+    if (previewTiersStage) {
+      previewTiersStage.innerHTML = "";
+      tempListingTiers.forEach((tier) => {
+        const itemRow = document.createElement("div");
+        itemRow.className = "listing-tier-preview-row";
+        if (tier.bgColor && tier.bgColor !== "transparent") {
+          itemRow.style.background = hexToRgba(tier.bgColor, tbOpacity);
+        }
+        if (tier.borderColor && tier.borderColor !== "transparent") {
+          itemRow.style.borderColor = tier.borderColor;
+        }
+
+        const lbl = document.createElement("span");
+        lbl.className = "listing-tier-preview-label";
+        lbl.textContent = tier.label || "Tier";
+        lbl.style.color = tier.color || "#ffffff";
+        lbl.style.fontFamily = fontValue;
+        if (tier.bold) lbl.style.fontWeight = "900";
+
+        const itemsBox = document.createElement("div");
+        itemsBox.className = "listing-tier-preview-items";
+        itemsBox.innerHTML = `
+          <div class="listing-mini-card"></div>
+          <div class="listing-mini-card"></div>
+        `;
+
+        itemRow.appendChild(lbl);
+        itemRow.appendChild(itemsBox);
+        previewTiersStage.appendChild(itemRow);
+      });
+    }
+  }
+
   if (btnClearUnbuiltBg) {
     btnClearUnbuiltBg.addEventListener("click", () => {
       currentUnbuiltBg = null;
       if (inputUnbuiltBg) inputUnbuiltBg.value = "#000000";
+      updateListingPreviews();
     });
   }
   if (inputUnbuiltBg) {
     inputUnbuiltBg.addEventListener("input", (e) => {
       currentUnbuiltBg = e.target.value;
+      updateListingPreviews();
     });
   }
   if (btnClearUnbuiltBorder) {
     btnClearUnbuiltBorder.addEventListener("click", () => {
       currentUnbuiltBorder = null;
       if (inputUnbuiltBorder) inputUnbuiltBorder.value = "#222222";
+      updateListingPreviews();
     });
   }
   if (inputUnbuiltBorder) {
     inputUnbuiltBorder.addEventListener("input", (e) => {
       currentUnbuiltBorder = e.target.value;
+      updateListingPreviews();
+    });
+  }
+  if (inputUnbuiltLabel) {
+    inputUnbuiltLabel.addEventListener("input", () => {
+      updateListingPreviews();
+    });
+  }
+  if (inputUnbuiltColor) {
+    inputUnbuiltColor.addEventListener("input", () => {
+      updateListingPreviews();
+    });
+  }
+  if (checkUnbuiltBold) {
+    checkUnbuiltBold.addEventListener("change", () => {
+      updateListingPreviews();
     });
   }
 
@@ -2699,22 +3354,36 @@ function setupEventListeners() {
     btnClearUnownedBg.addEventListener("click", () => {
       currentUnownedBg = null;
       if (inputUnownedBg) inputUnownedBg.value = "#000000";
+      updateListingPreviews();
     });
   }
   if (inputUnownedBg) {
     inputUnownedBg.addEventListener("input", (e) => {
       currentUnownedBg = e.target.value;
+      updateListingPreviews();
     });
   }
   if (btnClearUnownedBorder) {
     btnClearUnownedBorder.addEventListener("click", () => {
       currentUnownedBorder = null;
       if (inputUnownedBorder) inputUnownedBorder.value = "#222222";
+      updateListingPreviews();
     });
   }
   if (inputUnownedBorder) {
     inputUnownedBorder.addEventListener("input", (e) => {
       currentUnownedBorder = e.target.value;
+      updateListingPreviews();
+    });
+  }
+  if (inputUnownedColor) {
+    inputUnownedColor.addEventListener("input", () => {
+      updateListingPreviews();
+    });
+  }
+  if (checkUnownedBold) {
+    checkUnownedBold.addEventListener("change", () => {
+      updateListingPreviews();
     });
   }
 
@@ -2760,6 +3429,7 @@ function setupEventListeners() {
         tempListingTiers[index - 1] = tempListingTiers[index];
         tempListingTiers[index] = temp;
         renderListingTiersEditor();
+        updateListingPreviews();
       });
 
       const btnDown = document.createElement("button");
@@ -2772,6 +3442,7 @@ function setupEventListeners() {
         tempListingTiers[index + 1] = tempListingTiers[index];
         tempListingTiers[index] = temp;
         renderListingTiersEditor();
+        updateListingPreviews();
       });
 
       handleDiv.appendChild(btnUp);
@@ -2784,6 +3455,7 @@ function setupEventListeners() {
       labelInput.placeholder = "Label...";
       labelInput.addEventListener("input", (e) => {
         tier.label = e.target.value;
+        updateListingPreviews();
       });
 
       const colorInput = document.createElement("input");
@@ -2793,6 +3465,7 @@ function setupEventListeners() {
       colorInput.title = "Text Color";
       colorInput.addEventListener("input", (e) => {
         tier.color = e.target.value;
+        updateListingPreviews();
       });
 
       const labelBg = document.createElement("label");
@@ -2810,6 +3483,7 @@ function setupEventListeners() {
       bgInput.value = tier.bgColor || "#000000";
       bgInput.addEventListener("input", (e) => {
         tier.bgColor = e.target.value;
+        updateListingPreviews();
       });
 
       const btnClearBg = document.createElement("button");
@@ -2820,6 +3494,7 @@ function setupEventListeners() {
       btnClearBg.addEventListener("click", () => {
         tier.bgColor = null;
         bgInput.value = "#000000";
+        updateListingPreviews();
       });
 
       labelBg.appendChild(bgInput);
@@ -2840,6 +3515,7 @@ function setupEventListeners() {
       borderInput.value = tier.borderColor || "#222222";
       borderInput.addEventListener("input", (e) => {
         tier.borderColor = e.target.value;
+        updateListingPreviews();
       });
 
       const btnClearBorder = document.createElement("button");
@@ -2850,6 +3526,7 @@ function setupEventListeners() {
       btnClearBorder.addEventListener("click", () => {
         tier.borderColor = null;
         borderInput.value = "#222222";
+        updateListingPreviews();
       });
 
       labelBorder.appendChild(borderInput);
@@ -2867,6 +3544,7 @@ function setupEventListeners() {
       const boldCheck = labelBold.querySelector("input");
       boldCheck.addEventListener("change", () => {
         tier.bold = boldCheck.checked;
+        updateListingPreviews();
       });
 
       const selectRule = document.createElement("select");
@@ -2890,6 +3568,7 @@ function setupEventListeners() {
       btnDel.addEventListener("click", () => {
         tempListingTiers.splice(index, 1);
         renderListingTiersEditor();
+        updateListingPreviews();
       });
 
       row.appendChild(handleDiv);
@@ -2925,6 +3604,7 @@ function setupEventListeners() {
     if (checkUnownedBold) checkUnownedBold.checked = !!listingConfig.unownedBold;
 
     renderListingTiersEditor();
+    updateListingPreviews();
     listingModal.style.display = "flex";
   }
 
@@ -2934,6 +3614,7 @@ function setupEventListeners() {
 
   checkEnableUnbuilt.addEventListener("change", () => {
     unbuiltTierConfig.style.display = checkEnableUnbuilt.checked ? "flex" : "none";
+    updateListingPreviews();
   });
 
   btnAddTier.addEventListener("click", () => {
@@ -2944,6 +3625,7 @@ function setupEventListeners() {
       rule: "r10",
     });
     renderListingTiersEditor();
+    updateListingPreviews();
   });
 
   btnListing.addEventListener("click", openListingModal);
@@ -2972,28 +3654,33 @@ function setupEventListeners() {
   });
 
   listingBtnReset.addEventListener("click", () => {
-    if (confirm("Reset showcase tiers to defaults (R15, R11-14, R10, R1-9)?")) {
-      listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
-      tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers));
-      checkEnableUnbuilt.checked = false;
-      unbuiltTierConfig.style.display = "none";
-      inputUnbuiltLabel.value = "Unbuilt";
-      inputUnbuiltColor.value = "#9a9a9a";
-      currentUnbuiltBg = null;
-      currentUnbuiltBorder = null;
-      if (inputUnbuiltBg) inputUnbuiltBg.value = "#000000";
-      if (inputUnbuiltBorder) inputUnbuiltBorder.value = "#222222";
-      if (checkUnbuiltBold) checkUnbuiltBold.checked = false;
+    showConfirmModal(
+      "Reset Tiers",
+      "Reset showcase tiers to defaults (R15, R11-14, R10, R1-9)?",
+      () => {
+        listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
+        tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers));
+        checkEnableUnbuilt.checked = false;
+        unbuiltTierConfig.style.display = "none";
+        inputUnbuiltLabel.value = "Unbuilt";
+        inputUnbuiltColor.value = "#9a9a9a";
+        currentUnbuiltBg = null;
+        currentUnbuiltBorder = null;
+        if (inputUnbuiltBg) inputUnbuiltBg.value = "#000000";
+        if (inputUnbuiltBorder) inputUnbuiltBorder.value = "#222222";
+        if (checkUnbuiltBold) checkUnbuiltBold.checked = false;
 
-      if (inputUnownedColor) inputUnownedColor.value = "#9a9a9a";
-      currentUnownedBg = null;
-      currentUnownedBorder = null;
-      if (inputUnownedBg) inputUnownedBg.value = "#000000";
-      if (inputUnownedBorder) inputUnownedBorder.value = "#222222";
-      if (checkUnownedBold) checkUnownedBold.checked = false;
+        if (inputUnownedColor) inputUnownedColor.value = "#9a9a9a";
+        currentUnownedBg = null;
+        currentUnownedBorder = null;
+        if (inputUnownedBg) inputUnownedBg.value = "#000000";
+        if (inputUnownedBorder) inputUnownedBorder.value = "#222222";
+        if (checkUnownedBold) checkUnownedBold.checked = false;
 
-      renderListingTiersEditor();
-    }
+        renderListingTiersEditor();
+        updateListingPreviews();
+      }
+    );
   });
 
   // Mobile Tools Drawer Toggle Button
@@ -3041,76 +3728,84 @@ function setupEventListeners() {
     return `all ${rarities.join(", ")}`;
   }
 
-  function confirmRosterBulkAction(actionText) {
+  function confirmRosterBulkAction(actionText, onConfirm) {
     const target = getRosterFilterTargetText();
-    return confirm(`Are you sure you want to set ${target} to ${actionText}?`);
+    showConfirmModal(
+      "Confirm Update",
+      `Are you sure you want to set ${target} to ${actionText}?`,
+      onConfirm
+    );
   }
 
   btnSelectAll.addEventListener("click", () => {
-    if (!confirmRosterBulkAction("owned")) return;
-    for (const name in userRoster) {
-      const rarity = getCharacterRarity(name);
-      if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-        const maxInsight = getMaxInsightForRarity(rarity);
-        const maxLvl = getMaxLevelForInsight(maxInsight);
-        const maxRes = getMaxResonanceForInsight(maxInsight);
-        userRoster[name].owned = true;
-        userRoster[name].insight = maxInsight;
-        userRoster[name].level = maxLvl;
-        userRoster[name].resonance = Math.min(10, maxRes);
-        userRoster[name].e1 = false;
-        userRoster[name].e2 = false;
-        userRoster[name].boxKind = "none";
-      }
-    }
-    saveRoster();
-    renderRosterManager();
-    renderShowcase();
-  });
-
-  btnSelectAllUnbuilt.addEventListener("click", () => {
-    if (!confirmRosterBulkAction("owned (unbuilt)")) return;
-    for (const name in userRoster) {
-      const rarity = getCharacterRarity(name);
-      if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-        userRoster[name].owned = true;
-        userRoster[name].insight = 0;
-        userRoster[name].level = 1;
-        userRoster[name].resonance = 1;
-        userRoster[name].boxKind = "none";
-      }
-    }
-    saveRoster();
-    renderRosterManager();
-    renderShowcase();
-  });
-
-  if (btnSetAllP5) {
-    btnSetAllP5.addEventListener("click", () => {
-      if (!confirmRosterBulkAction("P5")) return;
+    confirmRosterBulkAction("owned", () => {
       for (const name in userRoster) {
         const rarity = getCharacterRarity(name);
         if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-          userRoster[name].portrait = 5;
+          const maxInsight = getMaxInsightForRarity(rarity);
+          const maxLvl = getMaxLevelForInsight(maxInsight);
+          const maxRes = getMaxResonanceForInsight(maxInsight);
+          userRoster[name].owned = true;
+          userRoster[name].insight = maxInsight;
+          userRoster[name].level = maxLvl;
+          userRoster[name].resonance = Math.min(10, maxRes);
+          userRoster[name].e1 = false;
+          userRoster[name].e2 = false;
+          userRoster[name].boxKind = "none";
         }
       }
       saveRoster();
       renderRosterManager();
       renderShowcase();
     });
+  });
+
+  btnSelectAllUnbuilt.addEventListener("click", () => {
+    confirmRosterBulkAction("owned (unbuilt)", () => {
+      for (const name in userRoster) {
+        const rarity = getCharacterRarity(name);
+        if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+          userRoster[name].owned = true;
+          userRoster[name].insight = 0;
+          userRoster[name].level = 1;
+          userRoster[name].resonance = 1;
+          userRoster[name].boxKind = "none";
+        }
+      }
+      saveRoster();
+      renderRosterManager();
+      renderShowcase();
+    });
+  });
+
+  if (btnSetAllP5) {
+    btnSetAllP5.addEventListener("click", () => {
+      confirmRosterBulkAction("P5", () => {
+        for (const name in userRoster) {
+          const rarity = getCharacterRarity(name);
+          if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+            userRoster[name].portrait = 5;
+          }
+        }
+        saveRoster();
+        renderRosterManager();
+        renderShowcase();
+      });
+    });
   }
 
   btnUnselectAll.addEventListener("click", () => {
-    if (!confirmRosterBulkAction("unowned")) return;
-    for (const name in userRoster) {
-      const rarity = getCharacterRarity(name);
-      if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-        userRoster[name].owned = false;
+    confirmRosterBulkAction("unowned", () => {
+      for (const name in userRoster) {
+        const rarity = getCharacterRarity(name);
+        if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+          userRoster[name].owned = false;
+        }
       }
-    }
-    saveRoster();
-    renderRosterManager();
-    renderShowcase();
+      saveRoster();
+      renderRosterManager();
+      renderShowcase();
+    });
   });
 
   // Export Modal Elements
@@ -3498,12 +4193,16 @@ function setupEventListeners() {
 
   // Reset Data
   btnResetData.addEventListener("click", () => {
-    if (confirm("Are you sure you want to reset all character settings to their defaults?")) {
-      localStorage.removeItem(STORAGE_KEY);
-      userRoster = {};
-      loadRoster();
-      renderShowcase();
-    }
+    showConfirmModal(
+      "Reset Roster Data",
+      "Are you sure you want to reset all character settings to their defaults?",
+      () => {
+        localStorage.removeItem(STORAGE_KEY);
+        userRoster = {};
+        loadRoster();
+        renderShowcase();
+      }
+    );
   });
 }
 

@@ -21,10 +21,13 @@
       <!-- Row 1: Brand & Logo -->
       <div class="header-brand-row">
         <div class="app-brand">
-          <div class="app-brand-icon-box">
+          <div class="app-brand-icon-box" id="btn-web-icon" title="View Icon" style="cursor: pointer;">
             <img src="images/web_icon.webp" alt="Icon" class="app-brand-icon" />
           </div>
-          <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
+          <div class="app-logo-wrap">
+            <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
+            <img src="images/shimmer.png" alt="Shimmer Gold" class="app-logo-shimmer" />
+          </div>
         </div>
       </div>
 
@@ -150,7 +153,10 @@
         <!-- Skin -->
         <div class="setting-group" id="group-skin">
           <div class="setting-label-row">
-            <label class="setting-label">Garment</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <label class="setting-label">Garment</label>
+              <img src="images/random_icon/garment_icon.png" alt="Garment" style="width: 14px; height: 14px; object-fit: contain; display: block;" />
+            </div>
             <span class="setting-val-display" id="display-skin">Default</span>
           </div>
           <div class="skin-quick-picks" id="skin-quick-picks"></div>
@@ -192,7 +198,9 @@
           <div class="setting-label-row">
             <div style="display: flex; align-items: center; gap: 6px;">
               <label class="setting-label">Pattern</label>
-              <button type="button" class="btn-help-icon" id="btn-pattern-help" title="Pattern explanation">?</button>
+              <button type="button" id="btn-pattern-help" title="Pattern explanation" style="background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">
+                <img src="images/random_icon/explanation_sign_icon.png" alt="Pattern explanation" style="width: 14px; height: 14px; object-fit: contain; display: block;" />
+              </button>
             </div>
           </div>
           <div id="pattern-help-box" class="pattern-help-box" style="display: none;">
@@ -243,14 +251,14 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-primary btn-block" id="modal-btn-save">Done</button>
+        <button class="btn btn-primary btn-block" id="modal-btn-save">Apply</button>
       </div>
     </div>
   </div>
 
   <!-- Options Modal -->
   <div id="options-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card" style="max-width: 380px;">
+    <div class="modal-card" style="max-width: 440px;">
       <div class="modal-header">
         <h2>Display Options</h2>
         <button class="modal-close" id="options-btn-close">&times;</button>
@@ -264,14 +272,78 @@
               <span class="check-box"></span>
               <span class="check-text">Show CN Contents</span>
             </label>
+
+            <!-- Chess Pieces Enable/Disable -->
+            <label class="check-container">
+              <input type="checkbox" id="check-hide-chess-pieces" />
+              <span class="check-box"></span>
+              <span class="check-text">Hide Chess Pieces</span>
+            </label>
             
+            <!-- Character Info Live Preview (Above Box, Center-aligned) -->
+            <div class="options-char-top-illustration">
+              <div id="options-char-preview-card" class="char-card" style="cursor: default; pointer-events: none;"></div>
+            </div>
+
+            <!-- Character Info Box -->
+            <div class="options-char-preview-box">
+              <div class="options-char-preview-header">
+                <span style="font-family: var(--mono-font); font-size: 0.72rem; font-weight: 700; text-transform: uppercase;">Character Info Box</span>
+              </div>
+              <div class="options-char-preview-content">
+                <!-- Checkbox Controls -->
+                <div class="options-char-preview-controls">
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-show-rarity-line" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Show Rarity Line</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-insight" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide Insight</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-level" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide Level</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-resonance" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide Resonance</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-euphoria" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide Euphoria</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-portrait" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide Portrait Bar</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-names" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide Character Names</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-skin" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide Garments</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
             <!-- Collapsible: Show Character's Background & Border -->
-            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 2px 0;">
+            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
               <button type="button" id="btn-toggle-char-decor" style="width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: none; padding: 7px 9px; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
                 <span>Show Character's Styling</span>
-                <span id="char-decor-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▾</span>
+                <span id="char-decor-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
               </button>
-              <div id="char-decor-collapse-content" style="display: flex; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
+              <div id="char-decor-collapse-content" style="display: none; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
                 <label class="check-container" style="margin: 0;">
                   <input type="checkbox" id="check-show-pattern-bg" />
                   <span class="check-box"></span>
@@ -301,98 +373,64 @@
               </div>
             </div>
 
-            <label class="check-container">
-              <input type="checkbox" id="check-show-rarity-line" />
-              <span class="check-box"></span>
-              <span class="check-text">Show Rarity Line</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-insight" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Insight</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-level" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Level</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-resonance" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Resonance</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-euphoria" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Euphoria</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-portrait" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Portrait Bar</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-names" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Character Names</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-skin" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Garments</span>
-            </label>
-          </div>
-        </div>
+            <!-- Collapsible: Preset Insight / Level Hiding -->
+            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 9px;">
+                <button type="button" id="btn-toggle-insight-hide" style="display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
+                  <span>Preset Insight / Level Hiding</span>
+                  <span id="insight-hide-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-hide" style="padding: 2px 6px; font-size: 0.6rem;">Add</button>
+              </div>
+              <div id="insight-hide-collapse-content" style="display: none; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
+                <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px;">
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-i3-lv60" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide I3 Lv.60</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-i3-lv30" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide I3 Lv.30</span>
+                  </label>
+                </div>
+                <!-- Custom User-Added Insight/Level Rules -->
+                <div id="custom-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
+              </div>
+            </div>
 
-        <div class="setting-group" style="margin-top: 6px;">
-          <div class="setting-label-row">
-            <label class="setting-label">Preset Insight / Level Hiding</label>
-            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-hide">Add</button>
+            <!-- Collapsible: Preset Resonance Hiding -->
+            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 9px;">
+                <button type="button" id="btn-toggle-res-hide" style="display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
+                  <span>Preset Resonance Hiding</span>
+                  <span id="res-hide-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-res-hide" style="padding: 2px 6px; font-size: 0.6rem;">Add</button>
+              </div>
+              <div id="res-hide-collapse-content" style="display: none; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
+                <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px;">
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-r15" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide R15</span>
+                  </label>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-hide-r10" />
+                    <span class="check-box"></span>
+                    <span class="check-text">Hide R10</span>
+                  </label>
+                </div>
+                <!-- Custom User-Added Resonance Rules -->
+                <div id="custom-res-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
+              </div>
+            </div>
           </div>
-          <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px; margin-top: 4px;">
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-i3-lv60" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide I3 Lv.60</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-i3-lv30" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide I3 Lv.30</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-i2-lv50" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide I2 Lv.50</span>
-            </label>
-          </div>
-          <!-- Custom User-Added Insight/Level Rules -->
-          <div id="custom-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;"></div>
-        </div>
-
-        <div class="setting-group" style="margin-top: 10px;">
-          <div class="setting-label-row">
-            <label class="setting-label">Preset Resonance Hiding</label>
-            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-res-hide">Add</button>
-          </div>
-          <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px; margin-top: 4px;">
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-r15" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide R15</span>
-            </label>
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-r10" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide R10</span>
-            </label>
-          </div>
-          <!-- Custom User-Added Resonance Rules -->
-          <div id="custom-res-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;"></div>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary btn-block" id="options-btn-done">Done</button>
+        <button class="btn btn-primary btn-block" id="options-btn-done">Apply</button>
       </div>
     </div>
   </div>
@@ -412,67 +450,12 @@
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
-            <!-- Rename Board / Suitcase -->
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title</span>
-              <input type="text" id="input-board-title" class="search-input" placeholder="Rename Suitcase" style="max-width: 190px;" />
+            <!-- ================= GROUP 1: BOARD SETTINGS ================= -->
+            <div class="custom-category-header">
+              <span class="custom-category-title">Board Settings</span>
             </div>
 
-            <!-- Board Font -->
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Font</span>
-              <select id="select-board-font" class="listing-tier-select" style="max-width: 190px;">
-                <option value="default">Default (Noto Sans / Mono)</option>
-                <option value="mono">JetBrains Mono</option>
-                <option value="serif">Noto Serif TC</option>
-                <option value="sans">Segoe UI / System Sans</option>
-                <option value="arial">Arial</option>
-                <option value="georgia">Georgia</option>
-                <option value="courier">Courier New</option>
-              </select>
-            </div>
-
-            <!-- Uppercase Text for Board Title & Tier Label -->
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; font-family: var(--mono-font);">Uppercase Text</span>
-              <label class="check-container" style="margin: 0;">
-                <input type="checkbox" id="check-board-uppercase" checked />
-                <span class="check-box"></span>
-                <span class="check-text" style="font-size: 0.68rem;">Uppercase (Title & Tiers)</span>
-              </label>
-            </div>
-
-            <!-- Board Title Text Size -->
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title Text Size</span>
-                <span id="display-board-title-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.74rem</span>
-              </div>
-              <input type="range" id="input-board-title-size" min="0.5" max="2.0" step="0.05" value="0.74" class="custom-slider" />
-            </div>
-
-            <!-- Tier Label Text Size -->
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Tier Label Text Size</span>
-                <span id="display-tier-label-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.70rem</span>
-              </div>
-              <input type="range" id="input-tier-label-size" min="0.4" max="1.8" step="0.05" value="0.7" class="custom-slider" />
-            </div>
-
-            <!-- Board Background & Title Color -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                <span>Board Background</span>
-                <input type="color" id="color-board-bg" value="#111111" class="listing-tier-color-input" />
-              </label>
-              <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                <span>Board Title Color</span>
-                <input type="color" id="color-board-title" value="#f4efe9" class="listing-tier-color-input" />
-              </label>
-            </div>
-
-            <!-- Custom Board Background Image Upload -->
+            <!-- Custom Board Background Image Upload & Board Background -->
             <div class="custom-style-section">
               <span class="custom-style-section-title">Custom Board Background Image</span>
               <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -483,12 +466,73 @@
                 <button type="button" class="btn btn-danger btn-sm" id="btn-clear-board-bg-image">Clear Background</button>
               </div>
               <span id="board-bg-image-status" style="font-size: 0.62rem; color: var(--text-muted); font-family: var(--mono-font);">No custom image selected</span>
+              <div style="margin-top: 4px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Board Background</span>
+                  <input type="color" id="color-board-bg" value="#111111" class="listing-tier-color-input" />
+                </label>
+              </div>
             </div>
 
-            <!-- Board Header -->
+            <!-- Board Title Header Box -->
             <div class="custom-style-section">
               <span class="custom-style-section-title">Board Title Header Box</span>
-              <div class="custom-style-grid">
+              <!-- Header Box Preview -->
+              <div class="customize-preview-box">
+                <span class="customize-preview-header">Preview</span>
+                <div class="customize-preview-stage" style="padding: 0;">
+                  <div id="preview-board-header-box" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); background: transparent;">
+                    <span id="preview-board-header-title" style="font-family: var(--board-font); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.28em; color: rgba(244, 239, 233, 0.84); text-transform: uppercase;">SUITCASE</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rename Board / Suitcase -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title</span>
+                <input type="text" id="input-board-title" class="search-input" placeholder="Rename Suitcase" style="max-width: 190px;" />
+              </div>
+
+              <!-- Board Title Color moved under Board Title -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.68rem; font-family: var(--mono-font);">Board Title Color</span>
+                <input type="color" id="color-board-title" value="#f4efe9" class="listing-tier-color-input" />
+              </div>
+
+              <!-- Board Font -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Font</span>
+                <select id="select-board-font" class="listing-tier-select" style="max-width: 190px;">
+                  <option value="default">Default (Noto Sans / Mono)</option>
+                  <option value="mono">JetBrains Mono</option>
+                  <option value="serif">Noto Serif TC</option>
+                  <option value="sans">Segoe UI / System Sans</option>
+                  <option value="arial">Arial</option>
+                  <option value="georgia">Georgia</option>
+                  <option value="courier">Courier New</option>
+                </select>
+              </div>
+
+              <!-- Uppercase Text for Board Title & Tier Label -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Uppercase Text</span>
+                <label class="check-container" style="margin: 0;">
+                  <input type="checkbox" id="check-board-uppercase" checked />
+                  <span class="check-box"></span>
+                  <span class="check-text" style="font-size: 0.68rem;">Uppercase (Title & Tiers)</span>
+                </label>
+              </div>
+
+              <!-- Board Title Text Size -->
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title Text Size</span>
+                  <span id="display-board-title-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.74rem</span>
+                </div>
+                <input type="range" id="input-board-title-size" min="0.5" max="2.0" step="0.05" value="0.74" class="custom-slider" />
+              </div>
+
+              <div class="custom-style-grid" style="margin-top: 4px;">
                 <label class="custom-style-row">
                   <span>Background</span>
                   <div class="custom-style-color-cell">
@@ -520,9 +564,32 @@
               </div>
             </div>
 
-            <!-- Tier Row Frame (Khung chứa Tier & Nhân vật) -->
+            <!-- Tier Row Box (Khung chứa Tier & Nhân vật) -->
             <div class="custom-style-section">
               <span class="custom-style-section-title">Tier Row Box</span>
+              <!-- Tier Row Preview -->
+              <div class="customize-preview-box">
+                <span class="customize-preview-header">Preview</span>
+                <div class="customize-preview-stage">
+                  <div id="preview-tier-row-box" style="width: 100%; display: grid; grid-template-columns: 80px 1fr; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid rgba(255,255,255,0.04); background: #111111;">
+                    <span id="preview-tier-label-text" style="font-family: var(--board-font); font-size: 0.70rem; font-weight: 700; color: #ffffff; text-align: center;">Text</span>
+                    <div style="display: flex; gap: 6px;">
+                      <div style="width: 28px; height: 28px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);"></div>
+                      <div style="width: 28px; height: 28px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tier Label Text Size moved here -->
+              <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.72rem; font-family: var(--mono-font);">Tier Label Text Size</span>
+                  <span id="display-tier-label-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.70rem</span>
+                </div>
+                <input type="range" id="input-tier-label-size" min="0.4" max="1.8" step="0.05" value="0.7" class="custom-slider" />
+              </div>
+
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <div class="custom-style-row">
                   <span>Background Opacity (Transparency)</span>
@@ -548,10 +615,23 @@
               </div>
             </div>
 
-            <!-- Separator / Label Width (Độ rộng ngăn cách giữa Tier label và Character) -->
+            <!-- Tier Separator Width -->
             <div class="custom-style-section">
               <span class="custom-style-section-title">Tier Separator Width</span>
-              <div style="display: flex; flex-direction: column; gap: 2px;">
+              <!-- Separator Preview -->
+              <div class="customize-preview-box">
+                <span class="customize-preview-header">Preview</span>
+                <div class="customize-preview-stage" style="padding: 4px; background: transparent;">
+                  <div style="width: 100%; display: flex; align-items: center; border: 1px dashed rgba(215, 177, 85, 0.4); padding: 4px; background: transparent;">
+                    <div id="preview-tier-separator-bar" style="width: 70px; background: rgba(215, 177, 85, 0.25); border: 1px solid #D7B155; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-family: var(--mono-font); color: #000000; font-weight: 700; height: 24px; transition: width 0.1s;">TEXT</div>
+                    <div style="flex: 1; display: flex; align-items: center; gap: 4px; padding-left: 8px;">
+                      <div style="width: 22px; height: 22px; background: rgba(215, 177, 85, 0.1); border: 1px solid #D7B155;"></div>
+                      <div style="width: 22px; height: 22px; background: rgba(215, 177, 85, 0.1); border: 1px solid #D7B155;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
                 <div class="custom-style-row">
                   <span>Tier Label Width (Separator)</span>
                   <span id="display-tier-label-width" style="font-weight: 700;">110px</span>
@@ -563,7 +643,18 @@
             <!-- Spacing (Khoảng cách) -->
             <div class="custom-style-section">
               <span class="custom-style-section-title">Spacing</span>
-              <div style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Spacing Preview -->
+              <div class="customize-preview-box">
+                <span class="customize-preview-header">Preview</span>
+                <div class="customize-preview-stage" style="flex-direction: column; align-items: stretch; gap: 0; padding: 4px;">
+                  <div style="background: rgba(255,255,255,0.08); padding: 4px; font-size: 0.58rem; font-family: var(--mono-font); text-align: center;">Header</div>
+                  <div id="preview-spacing-header-gap" style="height: 10px; background: rgba(215, 85, 85, 0.25); border-left: 2px dashed rgba(215, 85, 85, 0.7); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #ff9999; font-family: var(--mono-font);">Gap</div>
+                  <div style="background: rgba(255,255,255,0.08); padding: 4px; font-size: 0.58rem; font-family: var(--mono-font); text-align: center;">Tier Row 1</div>
+                  <div id="preview-spacing-tier-gap" style="height: 7px; background: rgba(85, 177, 215, 0.25); border-left: 2px dashed rgba(85, 177, 215, 0.7); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #99ddff; font-family: var(--mono-font);">Gap</div>
+                  <div style="background: rgba(255,255,255,0.08); padding: 4px; font-size: 0.58rem; font-family: var(--mono-font); text-align: center;">Tier Row 2</div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
                     <span>Header & Tier Rows Gap</span>
@@ -581,19 +672,88 @@
               </div>
             </div>
 
-            <!-- Character Card Size -->
+            <!-- Chess Pieces Display -->
             <div class="custom-style-section">
+              <span class="custom-style-section-title">Chess Pieces</span>
+
+              <!-- Chess Pieces Preview -->
+              <div class="customize-preview-box" style="margin-top: 4px;">
+                <span class="customize-preview-header">Preview</span>
+                <div class="customize-preview-stage" style="background: transparent; padding: 8px 6px;">
+                  <div id="preview-chess-pieces-row" style="display: inline-flex; align-items: flex-end; justify-content: flex-end; gap: 6px; transition: opacity 0.2s;">
+                    <div class="preview-chess-piece" style="position: relative; width: calc(20px * 41 / 41); height: calc(20px * 92 / 41);"><img src="images/chess_pieces/crook_filled.png" alt="R" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block;" /></div>
+                    <div class="preview-chess-piece" style="position: relative; width: calc(20px * 48 / 41); height: calc(20px * 95 / 41);"><img src="images/chess_pieces/knight_filled.png" alt="N" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block;" /></div>
+                    <div class="preview-chess-piece" style="position: relative; width: calc(20px * 41 / 41); height: calc(20px * 99 / 41);"><img src="images/chess_pieces/bishop_filled.png" alt="B" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block;" /></div>
+                    <div class="preview-chess-piece" style="position: relative; width: calc(20px * 42 / 41); height: calc(20px * 109 / 41);"><img src="images/chess_pieces/king_filled.png" alt="K" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block;" /></div>
+                    <div class="preview-chess-piece" style="position: relative; width: calc(20px * 43 / 41); height: calc(20px * 105 / 41);"><img src="images/chess_pieces/queen_filled.png" alt="Q" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block;" /></div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Controls -->
+              <div id="chess-pieces-controls" style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+                <div class="custom-style-row">
+                  <span>Position</span>
+                  <select id="select-chess-pieces-position" class="listing-tier-select" style="max-width: 170px;">
+                    <option value="top">Top of Board</option>
+                    <option value="bottom">Bottom of Board</option>
+                  </select>
+                </div>
+
+                <!-- Size Slider: 10px to 35px -->
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Piece Size</span>
+                    <span id="display-chess-piece-size" style="font-weight: 700;">20px</span>
+                  </div>
+                  <input type="range" id="input-chess-piece-size" min="10" max="35" step="1" value="20" class="custom-slider" />
+                </div>
+
+                <!-- Chess Opacity -->
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <div class="custom-style-row">
+                    <span>Chess Opacity</span>
+                    <span id="display-chess-container-opacity" style="font-weight: 700;">100%</span>
+                  </div>
+                  <input type="range" id="input-chess-container-opacity" min="0" max="1.0" step="0.01" value="1.0" class="custom-slider" />
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= GROUP 2: CHARACTER & CARDS ================= -->
+            <div class="custom-category-header" style="margin-top: 20px;">
+              <span class="custom-category-title">Character & Cards</span>
+            </div>
+
+            <!-- Character Card Size -->
+            <div>
               <span class="custom-style-section-title">Character Card Size</span>
-              <div style="display: flex; flex-direction: column; gap: 2px;">
+              <!-- Card Size Review -->
+              <div class="customize-preview-box">
+                <span class="customize-preview-header">Review</span>
+                <div class="customize-preview-stage" style="min-height: 85px;">
+                  <div id="preview-char-card-box" style="width: 60px; height: 60px; position: relative; border: 1px solid rgba(255,255,255,0.15); transition: width 0.1s, height 0.1s;">
+                    <img src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
                 <div class="custom-style-row">
                   <span>Size Scale</span>
                   <span id="display-char-card-size" style="font-weight: 700;">1.00x</span>
                 </div>
                 <input type="range" id="input-char-card-size" min="0.6" max="1.6" step="0.05" value="1.0" class="custom-slider" />
               </div>
+
+              <!-- Character Name Color -->
+              <div class="custom-style-row" style="margin-top: 6px;">
+                <span>Character Names Color</span>
+                <input type="color" id="color-char-name" value="#ffffff" class="listing-tier-color-input" />
+              </div>
             </div>
 
-            <!-- Character -->
+            <!-- Insight / Level Badge -->
             <div class="custom-style-section">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span class="custom-style-section-title">Insight / Level Badge</span>
@@ -603,6 +763,18 @@
                   <span class="check-text" style="font-size: 0.65rem;">Enable BG</span>
                 </label>
               </div>
+
+              <!-- Badge Review -->
+              <div class="customize-preview-box">
+                <span class="customize-preview-header">Preview</span>
+                <div class="customize-preview-stage" style="background: transparent; border-radius: 0;">
+                  <div id="preview-char-info-overlay" style="display: inline-flex; align-items: center; justify-content: center; gap: 3px; padding: 2px 6px; background: rgba(18, 18, 18, 0.22); border: 0px solid transparent; border-radius: 0;">
+                    <img src="images/insight_icon/I3.png" alt="I3" style="width: 14px; height: 14px; object-fit: contain;" />
+                    <span style="font-family: var(--board-font); font-size: 0.62rem; font-weight: 700; color: #ffffff;">60</span>
+                  </div>
+                </div>
+              </div>
+
               <div class="custom-style-grid" id="char-info-bg-controls">
                 <label class="custom-style-row">
                   <span>Background Color</span>
@@ -638,6 +810,49 @@
                   <span id="display-char-info-bg-opacity" style="font-weight: 700;">22%</span>
                 </div>
                 <input type="range" id="input-char-info-bg-opacity" min="0" max="1" step="0.02" value="0.22" class="custom-slider" />
+              </div>
+            </div>
+
+            <!-- Custom Resonance Text Color Option -->
+            <div class="custom-style-section">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="custom-style-section-title">Character Info Resonance Label</span>
+                <label class="check-container" style="margin: 0;">
+                  <input type="checkbox" id="check-custom-res-color" />
+                  <span class="check-box"></span>
+                  <span class="check-text" style="font-size: 0.65rem;">Custom Color</span>
+                </label>
+              </div>
+              <div id="custom-res-color-row" style="display: none; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); margin-top: 4px;">
+                <span>Resonance Label Color</span>
+                <input type="color" id="color-custom-res-label" value="#ffffff" class="listing-tier-color-input" />
+              </div>
+            </div>
+
+            <!-- Resonance / Pattern Colors -->
+            <div class="custom-style-section">
+              <span class="custom-style-section-title">Resonance / Pattern Colors</span>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>None Pattern</span>
+                  <input type="color" id="color-pattern-none" value="#4F4F4F" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Offensive</span>
+                  <input type="color" id="color-pattern-offensive" value="#FBAE31" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Defensive</span>
+                  <input type="color" id="color-pattern-defensive" value="#2D8A5A" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span>Stupefaction</span>
+                  <input type="color" id="color-pattern-hp" value="#D4AD2B" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); grid-column: span 2;">
+                  <span>Equibalance</span>
+                  <input type="color" id="color-pattern-equibalance" value="#3B6DC7" class="listing-tier-color-input" />
+                </label>
               </div>
             </div>
 
@@ -685,65 +900,32 @@
               </div>
             </div>
 
-            <!-- Resonance Pattern Colors -->
-            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
-              <span style="font-size: 0.66rem; font-weight: 700; font-family: var(--mono-font); text-transform: uppercase;">Resonance / Pattern Colors</span>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>None Pattern</span>
-                  <input type="color" id="color-pattern-none" value="#4F4F4F" class="listing-tier-color-input" />
-                </label>
-                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Offensive</span>
-                  <input type="color" id="color-pattern-offensive" value="#FBAE31" class="listing-tier-color-input" />
-                </label>
-                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Defensive</span>
-                  <input type="color" id="color-pattern-defensive" value="#2D8A5A" class="listing-tier-color-input" />
-                </label>
-                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Stupefaction</span>
-                  <input type="color" id="color-pattern-hp" value="#D4AD2B" class="listing-tier-color-input" />
-                </label>
-                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); grid-column: span 2;">
-                  <span>Equibalance</span>
-                  <input type="color" id="color-pattern-equibalance" value="#3B6DC7" class="listing-tier-color-input" />
-                </label>
-              </div>
-
-              <!-- Custom Resonance Text Color Option -->
-              <div class="custom-style-section" style="margin-top: 4px; padding-top: 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span class="custom-style-section-title">Character Info Resonance Label</span>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-custom-res-color" />
-                    <span class="check-box"></span>
-                    <span class="check-text" style="font-size: 0.65rem;">Custom Color</span>
-                  </label>
-                </div>
-                <div id="custom-res-color-row" style="display: none; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); margin-top: 4px;">
-                  <span>Resonance Label Color</span>
-                  <input type="color" id="color-custom-res-label" value="#ffffff" class="listing-tier-color-input" />
-                </div>
-              </div>
-
-              <!-- Unowned Character Image Opacity in Export/Board -->
-              <div class="custom-style-section" style="margin-top: 4px; padding-top: 8px;">
-                <span class="custom-style-section-title">Unowned Characters Dimming</span>
-                <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
-                  <div class="custom-style-row">
-                    <span>Opacity</span>
-                    <span id="display-unowned-opacity" style="font-weight: 700;">82%</span>
+            <!-- Unowned Character Image Opacity in Export/Board -->
+            <div class="custom-style-section">
+              <span class="custom-style-section-title">Unowned Characters Dimming</span>
+              <!-- Unowned Dimming Review -->
+              <div class="customize-preview-box">
+                <span class="customize-preview-header">Review</span>
+                <div class="customize-preview-stage" style="min-height: 75px;">
+                  <div style="width: 54px; height: 54px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
+                    <img id="preview-unowned-char-img" src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.82; transition: opacity 0.1s;" />
                   </div>
-                  <input type="range" id="input-unowned-opacity" min="0" max="1.0" step="0.01" value="0.82" class="custom-slider" />
                 </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
+                <div class="custom-style-row">
+                  <span>Opacity</span>
+                  <span id="display-unowned-opacity" style="font-weight: 700;">82%</span>
+                </div>
+                <input type="range" id="input-unowned-opacity" min="0" max="1.0" step="0.01" value="0.82" class="custom-slider" />
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary btn-block" id="customize-btn-done">Done</button>
+        <button class="btn btn-primary btn-block" id="customize-btn-done">Apply</button>
       </div>
     </div>
   </div>
@@ -757,13 +939,27 @@
       </div>
       <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
         <!-- Unbuilt Special Tier Option -->
-        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border);">
+        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border); margin-bottom: 12px;">
           <label class="check-container">
             <input type="checkbox" id="check-enable-unbuilt-tier" />
             <span class="check-box"></span>
             <span class="check-text" style="font-weight: 700;">Separate "Unbuilt" Tier (I0 Lv.1 R1)</span>
           </label>
           <div id="unbuilt-tier-config" style="display: none; margin-top: 10px; flex-direction: column; gap: 8px;">
+            <!-- Unbuilt Review -->
+            <div class="customize-preview-box" style="margin-bottom: 4px;">
+              <span class="customize-preview-header">Preview</span>
+              <div class="customize-preview-stage" style="padding: 0;">
+                <div id="preview-unbuilt-tier-row" class="listing-tier-preview-row">
+                  <span id="preview-unbuilt-label" class="listing-tier-preview-label" style="color: #888888;">Unbuilt</span>
+                  <div class="listing-tier-preview-items">
+                    <div class="listing-mini-card"></div>
+                    <div class="listing-mini-card"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
               <input type="text" id="input-unbuilt-label" class="search-input" value="Unbuilt" placeholder="Tier label..." style="width: 130px;" />
               <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Text Color">
@@ -790,8 +986,23 @@
         </div>
 
         <!-- Unowned Tier Custom Options -->
-        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border); margin-top: 10px;">
+        <div class="setting-group" style="padding: 12px; background: rgba(0,0,0,0.03); border: 1px solid var(--panel-border); margin-top: 8px; margin-bottom: 8px;">
           <div style="font-weight: 700; font-size: 0.72rem; font-family: var(--mono-font); margin-bottom: 8px;">Unowned Tier Style</div>
+          
+          <!-- Unowned Review -->
+          <div class="customize-preview-box" style="margin-bottom: 8px;">
+            <span class="customize-preview-header">Preview</span>
+            <div class="customize-preview-stage" style="padding: 0;">
+              <div id="preview-unowned-tier-row" class="listing-tier-preview-row">
+                <span id="preview-unowned-label" class="listing-tier-preview-label" style="color: #9a9a9a;">Unowned</span>
+                <div class="listing-tier-preview-items">
+                  <div class="listing-mini-card" style="opacity: 0.7;"></div>
+                  <div class="listing-mini-card" style="opacity: 0.7;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <label style="display: flex; align-items: center; gap: 4px; font-size: 0.65rem; font-family: var(--mono-font);" title="Text Color">
               <span>Text</span>
@@ -821,6 +1032,13 @@
             <label class="setting-label">Showcase Tiers (Top-to-Bottom Evaluation)</label>
             <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier">+ Add Tier</button>
           </div>
+
+          <!-- Showcase Tiers Review -->
+          <div class="customize-preview-box" style="margin-top: 6px; margin-bottom: 6px;">
+            <span class="customize-preview-header">Preview</span>
+            <div id="preview-showcase-tiers-stage" class="customize-preview-stage" style="flex-direction: column; gap: 4px; padding: 2px 0;"></div>
+          </div>
+
           <div id="listing-tiers-list" class="listing-tiers-list">
             <!-- Dynamic tier items -->
           </div>
@@ -917,6 +1135,32 @@
       <div class="modal-footer" style="display: flex; justify-content: flex-end;">
         <button type="button" class="btn btn-secondary" id="export-json-btn-cancel">Cancel</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Confirm Action Modal (Cancel vs Yes) -->
+  <div id="confirm-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card" style="max-width: 360px;">
+      <div class="modal-header">
+        <h2 id="confirm-modal-title">Confirm Action</h2>
+        <button class="modal-close" id="confirm-modal-btn-close">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px 20px;">
+        <p id="confirm-modal-message" style="font-family: var(--mono-font); font-size: 0.76rem; color: var(--text-primary); line-height: 1.5; margin: 0;">
+          Are you sure you want to proceed?
+        </p>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" class="btn btn-secondary" id="confirm-modal-btn-cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirm-modal-btn-yes">Yes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Icon Fullscreen Preview Lightbox -->
+  <div id="web-icon-modal" class="web-icon-lightbox" style="display: none;">
+    <div class="web-icon-lightbox-content">
+      <img src="images/web_icon.webp" alt="Web Icon Preview" class="web-icon-lightbox-img" />
     </div>
   </div>
 
