@@ -86,6 +86,7 @@ const filterRarityBtns = document.querySelectorAll("#filter-rarity-group .filter
 
 const TITLE_STORAGE_KEY = "r1999_board_title_v1";
 const LISTING_STORAGE_KEY = "r1999_tier_listing_v1";
+const FILTER_STORAGE_KEY = "r1999_filters_v1";
 
 const DEFAULT_TIERS_CONFIG = {
   tiers: [
@@ -454,6 +455,45 @@ function saveFutureSightState() {
   localStorage.setItem(FUTURE_SIGHT_STORAGE_KEY, String(futureSightEnabled));
 }
 
+// Persist the toolbar filters (ownership + rarity) so they survive reloads
+function saveFilterState() {
+  try {
+    localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({
+      ownership: activeOwnershipFilter,
+      rarities: [...activeRarityFilters],
+    }));
+  } catch (e) {
+    console.warn("Could not save filter state", e);
+  }
+}
+
+function loadFilterState() {
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(FILTER_STORAGE_KEY) || "null");
+  } catch (e) {
+    saved = null;
+  }
+  if (!saved || typeof saved !== "object") return;
+
+  if (saved.ownership === "all" || saved.ownership === "owned" || saved.ownership === "unowned") {
+    activeOwnershipFilter = saved.ownership;
+  }
+  if (Array.isArray(saved.rarities)) {
+    activeRarityFilters = new Set(saved.rarities.map(Number).filter((n) => !isNaN(n)));
+  }
+}
+
+/** Syncs the filter buttons' .active class with the restored state. */
+function applyFilterButtonState() {
+  filterOwnershipBtns.forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.ownership === activeOwnershipFilter);
+  });
+  filterRarityBtns.forEach((btn) => {
+    btn.classList.toggle("active", activeRarityFilters.has(Number(btn.dataset.rarity)));
+  });
+}
+
 function buildFutureSightMap(data) {
   futureSightChars = new Set();
   futureSightEuphorias = new Map();
@@ -600,8 +640,10 @@ async function initApp() {
     loadListingConfig();
     loadFutureSightState();
     loadDisplayOptions();
+    loadFilterState();
     applyCustomAppearance();
     loadRoster();
+    applyFilterButtonState();
     renderShowcase();
     setupEventListeners();
   } catch (err) {
@@ -2069,6 +2111,7 @@ function setupEventListeners() {
       filterOwnershipBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       activeOwnershipFilter = btn.dataset.ownership;
+      saveFilterState();
       renderShowcase();
     });
   });
@@ -2084,6 +2127,7 @@ function setupEventListeners() {
         activeRarityFilters.add(selectedRarity);
         btn.classList.add("active");
       }
+      saveFilterState();
       renderShowcase();
     });
   });
