@@ -197,6 +197,7 @@ const btnSetAllP5 = document.getElementById("btn-set-all-p5");
 const btnUnselectAll = document.getElementById("btn-unselect-all");
 
 let rosterActiveRarityFilters = new Set(); // Set of active rarities in Roster Manager
+let rosterNeedsShowcaseRefresh = false;    // Defers board re-render until the modal closes
 
 // Action Buttons
 const btnExportImage = document.getElementById("btn-export-image");
@@ -275,6 +276,7 @@ let displayOptions = {
   hideEuphoria: false,
   hidePortrait: false,
   hideNames: false,
+  hideOwnedNames: false,
   hideSkin: false,
   hideAfflatus: false,
   showPatternBg: false,
@@ -322,7 +324,7 @@ function getBoardFontFamily(fontKey) {
     case "serif":
       return "var(--serif-font)";
     case "sans":
-      return "var(--primary-font)";
+      return 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     case "arial":
       return 'Arial, "Helvetica Neue", Helvetica, sans-serif';
     case "georgia":
@@ -331,7 +333,7 @@ function getBoardFontFamily(fontKey) {
       return '"Courier New", Courier, monospace';
     case "default":
     default:
-      return "var(--mono-font)";
+      return "var(--board-font)";
   }
 }
 
@@ -1062,6 +1064,16 @@ function evalSingleCondition(cond, char, rarity) {
     const want = String(targetVal) !== "false";
     return hasSkin === want;
   }
+  if (field === "afflatus") {
+    const actual = getCharacterAfflatus(char.name) || "";
+    const want = String(targetVal || "");
+    if (!want) return true;
+    if (op === "!=") return actual !== want;
+    // "Mineral_Star" hybrid characters satisfy both Mineral and Star
+    if (want === "Mineral" && actual === "Mineral_Star") return true;
+    if (want === "Star" && actual === "Mineral_Star") return true;
+    return actual === want;
+  }
   if (field === "name") {
     const wantName = String(targetVal || "").trim().toLowerCase();
     if (!wantName) return true;
@@ -1396,7 +1408,7 @@ function renderShowcase() {
     }
   });
 
-  rosterStat.textContent = `${ownedCount}/${totalCount} Owned`;
+  rosterStat.innerHTML = `Crew ${ownedCount}/${totalCount} <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" />`;
   rosterStat.removeAttribute("title");
 
   const rosterStatTooltip = document.getElementById("roster-stat-tooltip");
@@ -1519,6 +1531,11 @@ function createCharacterCard(name, char, iconUrl) {
     `;
   }
 
+  // Owned character names sit below the portrait bar
+  const ownedNameHtml = (char.owned && !displayOptions.hideOwnedNames)
+    ? `<div class="char-name-below">${escapeHtml(name)}</div>`
+    : "";
+
   let portraitBarHtml = "";
   if (char.owned && !displayOptions.hidePortrait) {
     portraitBarHtml = `
@@ -1539,7 +1556,7 @@ function createCharacterCard(name, char, iconUrl) {
     matchesCustomRule;
 
   const showInsight = !displayOptions.hideInsight && !isHiddenByPreset && Number(insightVal) > 0;
-  const showLevel = !displayOptions.hideLevel && !isHiddenByPreset;
+  const showLevel = !displayOptions.hideInsight && !isHiddenByPreset;
 
   const insightIconHtml = showInsight ? `
     <span class="char-info-insight">
@@ -1625,6 +1642,7 @@ function createCharacterCard(name, char, iconUrl) {
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
+    ${ownedNameHtml}
     ${tooltipHtml}
   `;
 
@@ -1915,11 +1933,17 @@ function saveEditModal() {
 // Roster Manager Modal Functions
 function openRosterModal() {
   renderRosterManager();
+  rosterNeedsShowcaseRefresh = false;
   rosterModal.style.display = "flex";
 }
 
 function closeRosterModal() {
   rosterModal.style.display = "none";
+  // Board refresh is deferred until the modal closes, so bulk edits stay fast
+  if (rosterNeedsShowcaseRefresh) {
+    rosterNeedsShowcaseRefresh = false;
+    renderShowcase();
+  }
 }
 
 function renderRosterManager() {
@@ -1942,7 +1966,7 @@ function renderRosterManager() {
     item.className = `roster-char-item ${char.owned ? "is-owned" : "not-owned"}`;
     item.innerHTML = `
       <div class="roster-avatar-box">
-        <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(name)}" class="roster-avatar-img" />
+        <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(name)}" class="roster-avatar-img" loading="lazy" decoding="async" />
       </div>
       <span class="roster-char-name">${escapeHtml(name)}</span>
     `;
@@ -1951,8 +1975,10 @@ function renderRosterManager() {
       char.owned = !char.owned;
       userRoster[name] = char;
       saveRoster();
-      renderRosterManager();
-      renderShowcase();
+      // Update just this tile instead of rebuilding the whole grid (much cheaper)
+      item.classList.toggle("is-owned", !!char.owned);
+      item.classList.toggle("not-owned", !char.owned);
+      rosterNeedsShowcaseRefresh = true;
     });
 
     rosterGridList.appendChild(item);
@@ -2151,11 +2177,11 @@ function setupEventListeners() {
   const optionsBtnClose = document.getElementById("options-btn-close");
   const optionsBtnDone = document.getElementById("options-btn-done");
   const checkHideInsight = document.getElementById("check-hide-insight");
-  const checkHideLevel = document.getElementById("check-hide-level");
   const checkHideResonance = document.getElementById("check-hide-resonance");
   const checkHideEuphoria = document.getElementById("check-hide-euphoria");
   const checkHidePortrait = document.getElementById("check-hide-portrait");
   const checkHideNames = document.getElementById("check-hide-names");
+  const checkHideOwnedNames = document.getElementById("check-hide-owned-names");
   const checkHideSkin = document.getElementById("check-hide-skin");
   const checkFutureSight = document.getElementById("check-future-sight");
   const checkShowPatternBg = document.getElementById("check-show-pattern-bg");
@@ -2183,12 +2209,12 @@ function setupEventListeners() {
   function renderOptionsPreviewCard() {
     if (!optionsCharPreviewCard) return;
 
-    const hideInsight = checkHideInsight ? checkHideInsight.checked : false;
-    const hideLevel = checkHideLevel ? checkHideLevel.checked : false;
+    const hideInsightLevel = checkHideInsight ? checkHideInsight.checked : false;
     const hideResonance = checkHideResonance ? checkHideResonance.checked : false;
     const hideEuphoria = checkHideEuphoria ? checkHideEuphoria.checked : false;
     const hidePortrait = checkHidePortrait ? checkHidePortrait.checked : false;
     const hideNames = checkHideNames ? checkHideNames.checked : false;
+    const hideOwnedNames = checkHideOwnedNames ? checkHideOwnedNames.checked : false;
     const hideSkin = checkHideSkin ? checkHideSkin.checked : false;
     const hideAfflatus = checkHideAfflatus ? checkHideAfflatus.checked : false;
 
@@ -2230,8 +2256,8 @@ function setupEventListeners() {
       </div>
     ` : "";
 
-    const showIn = !hideInsight;
-    const showLv = !hideLevel;
+    const showIn = !hideInsightLevel;
+    const showLv = !hideInsightLevel;
     const showAff = !hideAfflatus && !!previewAfflatus;
 
     const afflatusIconHtml = showAff ? `
@@ -2271,8 +2297,9 @@ function setupEventListeners() {
     }
     const avatarImgStyle = avatarImgStyles.length > 0 ? ` style="${avatarImgStyles.join("; ")};"` : "";
 
-    const nameBelowHtml = !hideNames ? `
-      <div style="font-size: 0.62rem; font-family: var(--mono-font); text-align: center; color: var(--text-primary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px;">${charName}</div>
+    // Preview simulates an owned character, so it follows "Hide Owned"
+    const nameBelowHtml = !hideOwnedNames ? `
+      <div class="char-unowned-name" style="text-align: center; margin-top: 2px; color: var(--text-primary); max-width: 96px;">${charName}</div>
     ` : "";
 
     optionsCharPreviewCard.innerHTML = `
@@ -2309,11 +2336,11 @@ function setupEventListeners() {
     }
 
     checkHideInsight.checked = !!displayOptions.hideInsight;
-    checkHideLevel.checked = !!displayOptions.hideLevel;
     checkHideResonance.checked = !!displayOptions.hideResonance;
     checkHideEuphoria.checked = !!displayOptions.hideEuphoria;
     checkHidePortrait.checked = !!displayOptions.hidePortrait;
     checkHideNames.checked = !!displayOptions.hideNames;
+    if (checkHideOwnedNames) checkHideOwnedNames.checked = !!displayOptions.hideOwnedNames;
     if (checkHideSkin) checkHideSkin.checked = !!displayOptions.hideSkin;
     if (checkHideAfflatus) checkHideAfflatus.checked = !!displayOptions.hideAfflatus;
     checkHideI3Lv60.checked = !!displayOptions.hideI3Lv60;
@@ -2353,12 +2380,19 @@ function setupEventListeners() {
       row.style.padding = "6px 8px";
       row.style.border = "1px solid var(--panel-border)";
 
+      const checkWrap = document.createElement("label");
+      checkWrap.className = "archetype-grid-item";
+      checkWrap.style.padding = "4px 8px";
       const check = document.createElement("input");
       check.type = "checkbox";
       check.checked = !!rule.enabled;
       check.addEventListener("change", () => {
         rule.enabled = check.checked;
       });
+      checkWrap.appendChild(check);
+      const diamond = document.createElement("span");
+      diamond.className = "archetype-diamond";
+      checkWrap.appendChild(diamond);
 
       const labelInsight = document.createElement("span");
       labelInsight.style.fontSize = "0.7rem";
@@ -2415,7 +2449,7 @@ function setupEventListeners() {
         renderCustomHideRulesUI();
       });
 
-      row.appendChild(check);
+      row.appendChild(checkWrap);
       row.appendChild(labelInsight);
       row.appendChild(selInsight);
       row.appendChild(labelLvl);
@@ -2448,12 +2482,19 @@ function setupEventListeners() {
       row.style.padding = "6px 8px";
       row.style.border = "1px solid var(--panel-border)";
 
+      const checkWrap = document.createElement("label");
+      checkWrap.className = "archetype-grid-item";
+      checkWrap.style.padding = "4px 8px";
       const check = document.createElement("input");
       check.type = "checkbox";
       check.checked = !!rule.enabled;
       check.addEventListener("change", () => {
         rule.enabled = check.checked;
       });
+      checkWrap.appendChild(check);
+      const diamond = document.createElement("span");
+      diamond.className = "archetype-diamond";
+      checkWrap.appendChild(diamond);
 
       const labelRes = document.createElement("span");
       labelRes.style.fontSize = "0.7rem";
@@ -2485,7 +2526,7 @@ function setupEventListeners() {
         renderCustomResHideRulesUI();
       });
 
-      row.appendChild(check);
+      row.appendChild(checkWrap);
       row.appendChild(labelRes);
       row.appendChild(selRes);
       row.appendChild(btnDel);
@@ -2521,57 +2562,21 @@ function setupEventListeners() {
     });
   }
 
-  const btnToggleCharDecor = document.getElementById("btn-toggle-char-decor");
-  const charDecorCollapseContent = document.getElementById("char-decor-collapse-content");
-  const charDecorArrow = document.getElementById("char-decor-arrow");
-
-  if (btnToggleCharDecor && charDecorCollapseContent) {
-    btnToggleCharDecor.addEventListener("click", () => {
-      const isVisible = charDecorCollapseContent.style.display !== "none";
-      charDecorCollapseContent.style.display = isVisible ? "none" : "flex";
-      if (charDecorArrow) {
-        charDecorArrow.textContent = isVisible ? "▸" : "▾";
-      }
-    });
-  }
-
-  const btnToggleInsightHide = document.getElementById("btn-toggle-insight-hide");
-  const insightHideCollapseContent = document.getElementById("insight-hide-collapse-content");
-  const insightHideArrow = document.getElementById("insight-hide-arrow");
-
-  if (btnToggleInsightHide && insightHideCollapseContent) {
-    btnToggleInsightHide.addEventListener("click", () => {
-      const isVisible = insightHideCollapseContent.style.display !== "none";
-      insightHideCollapseContent.style.display = isVisible ? "none" : "flex";
-      if (insightHideArrow) {
-        insightHideArrow.textContent = isVisible ? "▸" : "▾";
-      }
-    });
-  }
-
-  const btnToggleResHide = document.getElementById("btn-toggle-res-hide");
-  const resHideCollapseContent = document.getElementById("res-hide-collapse-content");
-  const resHideArrow = document.getElementById("res-hide-arrow");
-
-  if (btnToggleResHide && resHideCollapseContent) {
-    btnToggleResHide.addEventListener("click", () => {
-      const isVisible = resHideCollapseContent.style.display !== "none";
-      resHideCollapseContent.style.display = isVisible ? "none" : "flex";
-      if (resHideArrow) {
-        resHideArrow.textContent = isVisible ? "▸" : "▾";
-      }
-    });
-  }
+  // Flattened option sections: no collapse toggle, content always visible.
+  ["char-decor-collapse-content", "insight-hide-collapse-content", "res-hide-collapse-content"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "flex";
+  });
 
   // Character Info Box Checkbox Live Preview events
   [
     checkHideAfflatus,
     checkHideInsight,
-    checkHideLevel,
     checkHideResonance,
     checkHideEuphoria,
     checkHidePortrait,
     checkHideNames,
+    checkHideOwnedNames,
     checkHideSkin,
     checkShowPatternBg,
     checkShowPatternBorder,
@@ -2599,11 +2604,11 @@ function setupEventListeners() {
     if (colorNonePatternBorder) displayOptions.colorNonePatternBorder = colorNonePatternBorder.value;
 
     displayOptions.hideInsight = checkHideInsight.checked;
-    displayOptions.hideLevel = checkHideLevel.checked;
     displayOptions.hideResonance = checkHideResonance.checked;
     displayOptions.hideEuphoria = checkHideEuphoria.checked;
     displayOptions.hidePortrait = checkHidePortrait.checked;
     displayOptions.hideNames = checkHideNames.checked;
+    if (checkHideOwnedNames) displayOptions.hideOwnedNames = checkHideOwnedNames.checked;
     if (checkHideSkin) displayOptions.hideSkin = checkHideSkin.checked;
     if (checkHideAfflatus) displayOptions.hideAfflatus = checkHideAfflatus.checked;
     displayOptions.hideI3Lv60 = checkHideI3Lv60.checked;
@@ -3451,6 +3456,14 @@ function setupEventListeners() {
       { value: 3, label: "✦3" },
       { value: 2, label: "✦2" },
     ], defaultVal: 6 },
+    { value: "afflatus", label: "Afflatus", type: "select", options: [
+      { value: "Beast", label: "Beast" },
+      { value: "Plant", label: "Plant" },
+      { value: "Star", label: "Star" },
+      { value: "Mineral", label: "Mineral" },
+      { value: "Spirit", label: "Spirit" },
+      { value: "Intellect", label: "Intellect" },
+    ], defaultVal: "Beast" },
     { value: "has_euphoria", label: "Has Euphoria", type: "boolean", defaultVal: true },
     { value: "has_pattern", label: "Has Pattern", type: "boolean", defaultVal: true },
     { value: "has_skin", label: "Has Skin", type: "boolean", defaultVal: true },
@@ -3801,18 +3814,21 @@ function setupEventListeners() {
               });
               valContainer.appendChild(txtInput);
             } else if (currentFieldDef.type === "select") {
-              opSel.style.display = "inline-block";
               const selEl = document.createElement("select");
               selEl.className = "listing-rule-select";
+              const numeric = currentFieldDef.options.every((o) => !isNaN(Number(o.value)));
+              // Text-based selects (e.g. Afflatus) have no meaningful comparison operator
+              opSel.style.display = numeric ? "inline-block" : "none";
+              if (!numeric) cond.op = "=";
               currentFieldDef.options.forEach((o) => {
                 const opt = document.createElement("option");
                 opt.value = o.value;
                 opt.textContent = o.label;
-                if (Number(o.value) === Number(cond.value)) opt.selected = true;
+                if (String(o.value) === String(cond.value)) opt.selected = true;
                 selEl.appendChild(opt);
               });
               selEl.addEventListener("change", (e) => {
-                cond.value = Number(e.target.value);
+                cond.value = numeric ? Number(e.target.value) : e.target.value;
               });
               valContainer.appendChild(selEl);
             } else {
@@ -4063,7 +4079,7 @@ function setupEventListeners() {
       }
       saveRoster();
       renderRosterManager();
-      renderShowcase();
+      rosterNeedsShowcaseRefresh = true;
     });
   });
 
@@ -4081,7 +4097,7 @@ function setupEventListeners() {
       }
       saveRoster();
       renderRosterManager();
-      renderShowcase();
+      rosterNeedsShowcaseRefresh = true;
     });
   });
 
@@ -4096,7 +4112,7 @@ function setupEventListeners() {
         }
         saveRoster();
         renderRosterManager();
-        renderShowcase();
+        rosterNeedsShowcaseRefresh = true;
       });
     });
   }
@@ -4111,7 +4127,7 @@ function setupEventListeners() {
       }
       saveRoster();
       renderRosterManager();
-      renderShowcase();
+      rosterNeedsShowcaseRefresh = true;
     });
   });
 

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sotheby's Mansion</title>
-  <link rel="icon" type="image/webp" href="images/web_icon.webp" />
+  <link rel="icon" type="image/png" href="images/web_icon.png" />
   <meta name="description" content="Suitcase. With information. R1999." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,8 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
+  <!-- Background image -->
+  <img src="images/background.png" alt="" class="bg-image" style="position: fixed; inset: 0; width: 100%; height: 100%; z-index: -9999; object-fit: cover; pointer-events: none;">
   <!-- Floating Controls & Toolbar -->
   <header class="top-controls no-export" id="top-controls">
     <!-- Primary Bar (Always visible) -->
@@ -22,7 +24,7 @@
       <div class="header-brand-row">
         <div class="app-brand">
           <div class="app-brand-icon-box" id="btn-web-icon" title="View Icon" style="cursor: pointer;">
-            <img src="images/web_icon.webp" alt="Icon" class="app-brand-icon" />
+            <img src="images/web_icon.png" alt="Icon" class="app-brand-icon" />
           </div>
           <div class="app-logo-wrap">
             <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
@@ -46,7 +48,7 @@
       <!-- Controls Row B: Roster Stats & Tools Button -->
       <div class="header-stats-row">
         <div class="stat-badge-wrap">
-          <span class="stat-badge" id="roster-stat" style="cursor: pointer;">0 Owned</span>
+          <span class="stat-badge" id="roster-stat" style="cursor: pointer;">Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" /></span>
           <div class="stat-badge-tooltip" id="roster-stat-tooltip">
             <div>Lv. 60: 0</div>
             <div>R10+: 0</div>
@@ -54,7 +56,7 @@
           </div>
         </div>
         <button type="button" class="btn btn-secondary btn-tools-toggle" id="btn-tools-toggle" title="More Tools & Settings" aria-expanded="false">
-          <span class="toggle-text">Tools</span>
+          <span class="toggle-text">Menu</span>
           <span class="toggle-icon">▾</span>
         </button>
       </div>
@@ -64,13 +66,13 @@
     <div class="header-secondary-tools" id="header-secondary-tools">
       <div class="secondary-tools-group tools-config-group">
         <button type="button" class="btn btn-secondary" id="btn-options" title="Display Options">
-          Options
+          <img src="images/random_icon/options.png" alt="" class="btn-tool-icon" />Options
         </button>
         <button type="button" class="btn btn-secondary" id="btn-customize" title="Customize Colors & Typography">
-          Styling
+          <img src="images/random_icon/vertin_hat.png" alt="" class="btn-tool-icon" />Styling
         </button>
         <button type="button" class="btn btn-secondary" id="btn-listing" title="Customize Tier Listing">
-          Tiers
+          <img src="images/random_icon/tiers.png" alt="" class="btn-tool-icon" />Tiers
         </button>
       </div>
 
@@ -100,7 +102,7 @@
           <input type="file" id="input-import-file" accept=".json" style="display: none;" />
         </label>
         <button class="btn btn-danger" id="btn-reset-data" title="Reset all data">
-          Reset
+          <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" />Reset
         </button>
       </div>
     </div>
@@ -127,8 +129,8 @@
 
   <!-- Edit Character Modal (Pop-up when clicking a character) -->
   <div id="edit-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card">
-      <div class="modal-header">
+    <div class="modal-card archetype-modal-card">
+      <div class="archetype-modal-header">
         <div class="modal-char-preview">
           <img id="modal-char-img" src="" alt="preview" />
           <div>
@@ -136,10 +138,10 @@
             <span id="modal-char-status" class="modal-char-sub">Owned</span>
           </div>
         </div>
-        <button class="modal-close" id="modal-btn-close">&times;</button>
+        <button class="modal-close" id="modal-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body archetype-modal-body">
         <!-- Ownership Toggle -->
         <div class="setting-group">
           <label class="setting-label">Status</label>
@@ -257,182 +259,198 @@
 
   <!-- Options Modal -->
   <div id="options-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card" style="max-width: 440px;">
-      <div class="modal-header">
-        <h2>Display Options</h2>
-        <button class="modal-close" id="options-btn-close">&times;</button>
+    <div class="modal-card archetype-modal-card" style="max-width: 440px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title">Display Options</h2>
+        <button class="modal-close" id="options-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="modal-body">
-        <div class="setting-group">
-          <label class="setting-label">Display Filters</label>
-          <div class="euphoria-checkboxes" style="flex-direction: column; gap: 10px; margin-top: 4px;">
-            <label class="check-container">
-              <input type="checkbox" id="check-future-sight" />
-              <span class="check-box"></span>
-              <span class="check-text">Show CN Contents</span>
-            </label>
+      <div class="modal-body archetype-modal-body">
+        <!-- Section: Display Filters -->
+        <div class="archetype-section-header">
+          <span class="archetype-section-title">DISPLAY FILTERS</span>
+          <div class="archetype-section-divider"></div>
+        </div>
 
-            <!-- Chess Pieces Enable/Disable -->
-            <label class="check-container">
-              <input type="checkbox" id="check-hide-chess-pieces" />
-              <span class="check-box"></span>
-              <span class="check-text">Hide Chess Pieces</span>
-            </label>
-            
-            <!-- Character Info Live Preview (Above Box, Center-aligned) -->
-            <div class="options-char-top-illustration">
-              <div id="options-char-preview-card" class="char-card" style="cursor: default; pointer-events: none;"></div>
+        <!-- Row: Show CN & Hide Chess -->
+        <div class="archetype-grid">
+          <label class="archetype-grid-item">
+            <input type="checkbox" id="check-future-sight" />
+            <span class="archetype-diamond"></span>
+            <span class="archetype-item-text">Show CN</span>
+          </label>
+
+          <label class="archetype-grid-item">
+            <input type="checkbox" id="check-hide-chess-pieces" />
+            <span class="archetype-diamond"></span>
+            <span class="archetype-item-text">Hide Chess</span>
+          </label>
+        </div>
+
+        <!-- Section: Character Info Box -->
+        <div class="archetype-section-header">
+          <span class="archetype-section-title">CHARACTER'S INFO BOX</span>
+        </div>
+
+        <!-- Live Preview card centered -->
+        <div class="options-char-top-illustration">
+          <div id="options-char-preview-card" class="char-card" style="cursor: default; pointer-events: none;"></div>
+        </div>
+
+        <!-- Diamond Grid Options (Remaining character info options) -->
+        <!-- el: Character's Name -->
+        <div class="options-flat-section options-el-gold">
+          <div class="archetype-section-header">
+            <span class="archetype-section-title">CHARACTER'S NAME</span>
+          </div>
+          <div class="options-flat-content">
+            <div class="archetype-grid">
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-owned-names" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Owned</span>
+              </label>
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-names" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Unowned</span>
+              </label>
             </div>
+          </div>
+        </div>
 
-            <!-- Character Info Box -->
-            <div class="options-char-preview-box">
-              <div class="options-char-preview-header">
-                <span style="font-family: var(--mono-font); font-size: 0.72rem; font-weight: 700; text-transform: uppercase;">Character Info Box</span>
-              </div>
-              <div class="options-char-preview-content">
-                <!-- Checkbox Controls -->
-                <div class="options-char-preview-controls">
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-afflatus" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Afflatus</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-insight" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Insight</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-level" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Level</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-resonance" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Resonance</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-euphoria" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Euphoria</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-portrait" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Portrait Bar</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-names" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Unowned Names</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-skin" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide Garments</span>
-                  </label>
-                </div>
-              </div>
+        <!-- el: Character's Details -->
+        <div class="options-flat-section options-el-gold">
+          <div class="archetype-section-header">
+            <span class="archetype-section-title">CHARACTER'S DETAILS</span>
+          </div>
+          <div class="options-flat-content">
+            <div class="archetype-grid">
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-afflatus" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Afflatus</span>
+              </label>
+
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-insight" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Insight/Level</span>
+              </label>
+
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-resonance" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Resonance</span>
+              </label>
+
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-euphoria" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Euphoria</span>
+              </label>
+
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-portrait" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Portrait Bar</span>
+              </label>
+
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-skin" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text">Hide Garments</span>
+              </label>
             </div>
+          </div>
+        </div>
 
-            <!-- Collapsible: Character's Background / Border -->
-            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
-              <button type="button" id="btn-toggle-char-decor" style="width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: none; padding: 7px 9px; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
-                <span>Character's Background / Border</span>
-                <span id="char-decor-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
-              </button>
-              <div id="char-decor-collapse-content" style="display: none; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
-                <!-- Background section -->
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                  <span style="font-family: var(--mono-font); font-size: 0.64rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Background</span>
-                  <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-                    <label class="check-container" style="margin: 0;">
-                      <input type="checkbox" id="check-show-pattern-bg" />
-                      <span class="check-box"></span>
-                      <span class="check-text">Pattern</span>
-                    </label>
-                    <label class="check-container" style="margin: 0;">
-                      <input type="checkbox" id="check-show-none-pattern-bg" />
-                      <span class="check-box"></span>
-                      <span class="check-text">No Pattern</span>
-                    </label>
-                    <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
-                  </div>
-                </div>
-
-                <!-- Border section -->
-                <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 4px; border-top: 1px dashed rgba(17, 15, 12, 0.08);">
-                  <span style="font-family: var(--mono-font); font-size: 0.64rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Border</span>
-                  <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-                    <label class="check-container" style="margin: 0;">
-                      <input type="checkbox" id="check-show-pattern-border" />
-                      <span class="check-box"></span>
-                      <span class="check-text">Pattern</span>
-                    </label>
-                    <label class="check-container" style="margin: 0;">
-                      <input type="checkbox" id="check-show-none-pattern-border" />
-                      <span class="check-box"></span>
-                      <span class="check-text">No Pattern</span>
-                    </label>
-                    <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
-                  </div>
-                </div>
-              </div>
+        <!-- Custom Hiding & Decor Sections -->
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+          <!-- Section: Character's Background / Border -->
+          <div class="options-flat-section">
+            <div class="archetype-section-header">
+              <span class="archetype-section-title">CHARACTER'S BACKGROUND / BORDER</span>
             </div>
-
-            <!-- Collapsible: Insight / Level Hiding -->
-            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 9px;">
-                <button type="button" id="btn-toggle-insight-hide" style="display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
-                  <span>Insight / Level Hiding</span>
-                  <span id="insight-hide-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-hide" style="padding: 2px 6px; font-size: 0.6rem;">Add</button>
-              </div>
-              <div id="insight-hide-collapse-content" style="display: none; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
-                <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px;">
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-i3-lv60" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide I3 Lv.60</span>
+            <div id="char-decor-collapse-content" class="options-flat-content">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-family: var(--primary-font); font-size: 0.68rem; font-weight: 700; color: #E7D9CB; text-transform: uppercase; letter-spacing: 0.08em;">Background</span>
+                <div class="archetype-grid">
+                  <label class="archetype-grid-item">
+                    <input type="checkbox" id="check-show-none-pattern-bg" />
+                    <span class="archetype-diamond"></span>
+                    <span class="archetype-item-text">No Pattern</span>
                   </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-i3-lv30" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide I3 Lv.30</span>
+                  <label class="archetype-grid-item">
+                    <input type="checkbox" id="check-show-pattern-bg" />
+                    <span class="archetype-diamond"></span>
+                    <span class="archetype-item-text">Pattern</span>
                   </label>
                 </div>
-                <!-- Custom User-Added Insight/Level Rules -->
-                <div id="custom-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
+                <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px dashed rgba(255, 255, 255, 0.08);">
+                <span style="font-family: var(--primary-font); font-size: 0.68rem; font-weight: 700; color: #E7D9CB; text-transform: uppercase; letter-spacing: 0.08em;">Border</span>
+                <div class="archetype-grid">
+                  <label class="archetype-grid-item">
+                    <input type="checkbox" id="check-show-none-pattern-border" />
+                    <span class="archetype-diamond"></span>
+                    <span class="archetype-item-text">No Pattern</span>
+                  </label>
+                  <label class="archetype-grid-item">
+                    <input type="checkbox" id="check-show-pattern-border" />
+                    <span class="archetype-diamond"></span>
+                    <span class="archetype-item-text">Pattern</span>
+                  </label>
+                </div>
+                <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
               </div>
             </div>
+          </div>
 
-            <!-- Collapsible: Resonance Hiding -->
-            <div style="border: 1px solid var(--panel-border); background: rgba(0, 0, 0, 0.02); margin: 0;">
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 7px 9px;">
-                <button type="button" id="btn-toggle-res-hide" style="display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; font-family: var(--mono-font); font-size: 0.68rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
-                  <span>Resonance Hiding</span>
-                  <span id="res-hide-arrow" style="font-size: 0.6rem; transition: transform 0.2s;">▸</span>
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-add-custom-res-hide" style="padding: 2px 6px; font-size: 0.6rem;">Add</button>
+          <!-- Section: Insight / Level Hiding -->
+          <div class="options-flat-section">
+            <div class="archetype-section-header">
+              <span class="archetype-section-title">INSIGHT / LEVEL HIDING</span>
+              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-hide">Add</button>
+            </div>
+            <div id="insight-hide-collapse-content" class="options-flat-content">
+              <div class="archetype-grid">
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-i3-lv60" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text">Hide I3 Lv.60</span>
+                </label>
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-i3-lv30" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text">Hide I3 Lv.30</span>
+                </label>
               </div>
-              <div id="res-hide-collapse-content" style="display: none; flex-direction: column; gap: 8px; padding: 8px 10px; border-top: 1px dashed var(--panel-border);">
-                <div class="euphoria-checkboxes" style="flex-direction: column; gap: 8px;">
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-r15" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide R15</span>
-                  </label>
-                  <label class="check-container" style="margin: 0;">
-                    <input type="checkbox" id="check-hide-r10" />
-                    <span class="check-box"></span>
-                    <span class="check-text">Hide R10</span>
-                  </label>
-                </div>
-                <!-- Custom User-Added Resonance Rules -->
-                <div id="custom-res-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
+              <div id="custom-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
+            </div>
+          </div>
+
+          <!-- Section: Resonance Hiding -->
+          <div class="options-flat-section">
+            <div class="archetype-section-header">
+              <span class="archetype-section-title">RESONANCE HIDING</span>
+              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-res-hide">Add</button>
+            </div>
+            <div id="res-hide-collapse-content" class="options-flat-content">
+              <div class="archetype-grid">
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-r15" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text">Hide R15</span>
+                </label>
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-r10" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text">Hide R10</span>
+                </label>
               </div>
+              <div id="custom-res-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
             </div>
           </div>
         </div>
@@ -445,16 +463,16 @@
 
   <!-- Customize Modal (Showcase Colors, Typography, Title Size) -->
   <div id="customize-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card" style="max-width: 440px;">
-      <div class="modal-header">
-        <h2>Styling</h2>
-        <button class="modal-close" id="customize-btn-close">&times;</button>
+    <div class="modal-card archetype-modal-card" style="max-width: 440px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title">Styling</h2>
+        <button class="modal-close" id="customize-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+      <div class="modal-body archetype-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <div class="setting-group">
           <div class="setting-label-row">
-            <label class="setting-label">Colors & Typography</label>
-            <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-custom-appearance">Reset Defaults</button>
+            <label class="setting-label setting-label-sh">Colors & Typography</label>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-custom-appearance">Reset Default<img src="images/random_icon/reset_default.png" alt="" class="btn-reset-default-icon" /></button>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
@@ -487,7 +505,7 @@
               <span class="custom-style-section-title">Board Title Header Box</span>
               <!-- Header Box Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage" style="padding: 0;">
                   <div id="preview-board-header-box" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); background: transparent;">
                     <span id="preview-board-header-title" style="font-family: var(--board-font); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.28em; color: rgba(244, 239, 233, 0.84); text-transform: uppercase;">SUITCASE</span>
@@ -511,7 +529,7 @@
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Font</span>
                 <select id="select-board-font" class="listing-tier-select" style="max-width: 190px;">
-                  <option value="default">Default (Noto Sans / Mono)</option>
+                  <option value="default">Default (Regular / R1999 Serif)</option>
                   <option value="mono">JetBrains Mono</option>
                   <option value="serif">Noto Serif TC</option>
                   <option value="sans">Segoe UI / System Sans</option>
@@ -522,13 +540,15 @@
               </div>
 
               <!-- Uppercase Text for Board Title & Tier Label -->
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Uppercase Text</span>
-                <label class="check-container" style="margin: 0;">
-                  <input type="checkbox" id="check-board-uppercase" checked />
-                  <span class="check-box"></span>
-                  <span class="check-text" style="font-size: 0.68rem;">Uppercase (Title & Tiers)</span>
-                </label>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.72rem; font-family: var(--mono-font);">Uppercase Text</span>
+                  <label class="check-container" style="margin: 0;">
+                    <input type="checkbox" id="check-board-uppercase" checked />
+                    <span class="check-box"></span>
+                    <span class="check-text" style="font-size: 0.68rem;">Uppercase (Title & Tiers)</span>
+                  </label>
+                </div>
               </div>
 
               <!-- Board Title Text Size -->
@@ -577,7 +597,7 @@
               <span class="custom-style-section-title">Tier Row Box</span>
               <!-- Tier Row Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage">
                   <div id="preview-tier-row-box" style="width: 100%; display: grid; grid-template-columns: 80px 1fr; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid rgba(255,255,255,0.04); background: #111111;">
                     <span id="preview-tier-label-text" style="font-family: var(--board-font); font-size: 0.70rem; font-weight: 700; color: #ffffff; text-align: center;">Text</span>
@@ -628,10 +648,10 @@
               <span class="custom-style-section-title">Tier Separator Width</span>
               <!-- Separator Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage" style="padding: 4px; background: transparent;">
                   <div style="width: 100%; display: flex; align-items: center; border: 1px dashed rgba(215, 177, 85, 0.4); padding: 4px; background: transparent;">
-                    <div id="preview-tier-separator-bar" style="width: 70px; background: rgba(215, 177, 85, 0.25); border: 1px solid #D7B155; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-family: var(--mono-font); color: #000000; font-weight: 700; height: 24px; transition: width 0.1s;">TEXT</div>
+                    <div id="preview-tier-separator-bar" style="width: 70px; background: rgba(28, 28, 28, 0.8); border: 1px solid #ED7D31; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-family: var(--mono-font); color: #ED7D31; font-weight: 700; height: 24px; transition: width 0.1s;">TEXT</div>
                     <div style="flex: 1; display: flex; align-items: center; gap: 4px; padding-left: 8px;">
                       <div style="width: 22px; height: 22px; background: rgba(215, 177, 85, 0.1); border: 1px solid #D7B155;"></div>
                       <div style="width: 22px; height: 22px; background: rgba(215, 177, 85, 0.1); border: 1px solid #D7B155;"></div>
@@ -653,7 +673,7 @@
               <span class="custom-style-section-title">Spacing</span>
               <!-- Spacing Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage" style="flex-direction: column; align-items: stretch; gap: 0; padding: 4px;">
                   <div style="background: rgba(255,255,255,0.08); padding: 4px; font-size: 0.58rem; font-family: var(--mono-font); text-align: center;">Header</div>
                   <div id="preview-spacing-header-gap" style="height: 10px; background: rgba(215, 85, 85, 0.25); border-left: 2px dashed rgba(215, 85, 85, 0.7); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #ff9999; font-family: var(--mono-font);">Gap</div>
@@ -686,7 +706,7 @@
 
               <!-- Chess Pieces Preview -->
               <div class="customize-preview-box" style="margin-top: 4px;">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage" style="background: transparent; padding: 8px 6px;">
                   <div id="preview-chess-pieces-row" style="display: inline-flex; align-items: flex-end; justify-content: flex-end; gap: 6px; transition: opacity 0.2s;">
                     <div class="preview-chess-piece" style="position: relative; width: calc(20px * 41 / 41); height: calc(20px * 92 / 41); transform: translateX(1px);"><img src="images/chess_pieces/crook_filled.png" alt="R" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block;" /></div>
@@ -738,7 +758,7 @@
               <span class="custom-style-section-title">Character Card Size</span>
               <!-- Card Size Review -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage" style="min-height: 85px;">
                   <div id="preview-char-card-box" style="width: 60px; height: 60px; position: relative; border: 1px solid rgba(255,255,255,0.15); transition: width 0.1s, height 0.1s;">
                     <img src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
@@ -774,7 +794,7 @@
 
               <!-- Badge Review -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage" style="background: transparent; border-radius: 0;">
                   <div id="preview-char-info-overlay" style="display: inline-flex; align-items: center; justify-content: center; gap: 3px; padding: 2px 6px; background: rgba(18, 18, 18, 0.22); border: 0px solid transparent; border-radius: 0;">
                     <img src="images/insight_icon/I3.png" alt="I3" style="width: 14px; height: 14px; object-fit: contain;" />
@@ -857,7 +877,7 @@
                   <span>Stupefaction</span>
                   <input type="color" id="color-pattern-hp" value="#D4AD2B" class="listing-tier-color-input" />
                 </label>
-                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); grid-column: span 2;">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
                   <span>Equibalance</span>
                   <input type="color" id="color-pattern-equibalance" value="#3B6DC7" class="listing-tier-color-input" />
                 </label>
@@ -913,7 +933,7 @@
               <span class="custom-style-section-title">Unowned Characters Dimming</span>
               <!-- Unowned Dimming Review -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header">Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
                 <div class="customize-preview-stage" style="min-height: 75px;">
                   <div style="width: 54px; height: 54px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
                     <img id="preview-unowned-char-img" src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.82; transition: opacity 0.1s;" />
@@ -940,12 +960,12 @@
 
   <!-- Listing Custom Tiers Modal -->
   <div id="listing-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card modal-card-large" style="max-width: 760px;">
-      <div class="modal-header">
-        <h2>Tier Listing Settings</h2>
-        <button class="modal-close" id="listing-btn-close">&times;</button>
+    <div class="modal-card archetype-modal-card modal-card-large" style="max-width: 760px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title">Tier Listing Settings</h2>
+        <button class="modal-close" id="listing-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+      <div class="modal-body archetype-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <!-- Showcase Tiers List Container (Movable tiers including Remaining/Other & Unowned) -->
         <div class="setting-group">
           <div class="setting-label-row">
@@ -966,7 +986,7 @@
         </div>
       </div>
       <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 10px;">
-        <button class="btn btn-danger btn-sm" id="btn-reset-listing">Reset Default</button>
+        <button class="btn btn-danger btn-sm" id="btn-reset-listing">Reset Default<img src="images/random_icon/reset_default.png" alt="" class="btn-reset-default-icon" </button>
         <button class="btn btn-primary" id="btn-save-listing" style="min-width: 120px;">Save & Apply</button>
       </div>
     </div>
@@ -974,10 +994,10 @@
 
   <!-- Manage / Add All Characters Roster Modal -->
   <div id="roster-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card modal-card-large">
-      <div class="modal-header">
-        <h2>Quick Edit</h2>
-        <button class="modal-close" id="roster-btn-close">&times;</button>
+    <div class="modal-card archetype-modal-card modal-card-large">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title">Quick Edit</h2>
+        <button class="modal-close" id="roster-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="roster-toolbar">
         <div class="roster-toolbar-left">
@@ -1009,7 +1029,7 @@
     <div class="modal-card modal-card-large" style="max-width: 640px;">
       <div class="modal-header">
         <h2>Export PNG</h2>
-        <button class="modal-close" id="export-modal-btn-close">&times;</button>
+        <button class="modal-close" id="export-modal-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="modal-body" style="text-align: center; gap: 12px;">
         <div class="export-help-tip" id="export-help-tip">
@@ -1031,12 +1051,12 @@
 
   <!-- Export JSON Option Modal (Export Theme vs Export Roster vs Export All) -->
   <div id="export-json-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card" style="max-width: 380px;">
-      <div class="modal-header">
-        <h2>Export JSON</h2>
-        <button class="modal-close" id="export-json-btn-close">&times;</button>
+    <div class="modal-card archetype-modal-card" style="max-width: 380px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title">Export JSON</h2>
+        <button class="modal-close" id="export-json-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="modal-body" style="gap: 10px;">
+      <div class="modal-body archetype-modal-body" style="gap: 10px;">
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-theme" style="padding: 10px 14px;">
             Export Theme Only
@@ -1057,12 +1077,12 @@
 
   <!-- Confirm Action Modal (Cancel vs Yes) -->
   <div id="confirm-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card" style="max-width: 360px;">
-      <div class="modal-header">
-        <h2 id="confirm-modal-title">Confirm Action</h2>
-        <button class="modal-close" id="confirm-modal-btn-close">&times;</button>
+    <div class="modal-card archetype-modal-card" style="max-width: 360px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title" id="confirm-modal-title">Confirm Action</h2>
+        <button class="modal-close" id="confirm-modal-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="modal-body" style="padding: 18px 20px;">
+      <div class="modal-body archetype-modal-body" style="padding: 18px 20px;">
         <p id="confirm-modal-message" style="font-family: var(--mono-font); font-size: 0.76rem; color: var(--text-primary); line-height: 1.5; margin: 0;">
           Are you sure you want to proceed?
         </p>
@@ -1077,7 +1097,7 @@
   <!-- Web Icon Fullscreen Preview Lightbox -->
   <div id="web-icon-modal" class="web-icon-lightbox" style="display: none;">
     <div class="web-icon-lightbox-content">
-      <img src="images/web_icon.webp" alt="Web Icon Preview" class="web-icon-lightbox-img" />
+      <img src="images/web_icon.png" alt="Web Icon Preview" class="web-icon-lightbox-img" />
     </div>
   </div>
 
