@@ -27,20 +27,71 @@ function t(key, vars) {
  */
 function displayCharName(name) {
   if (currentLang === "cn") {
-    const cn = nameMap.character[name];
+    const cn = characterDisplayCn[name] || nameMap.character[name];
     if (cn) return cn;
   }
-  return name;
+  return characterDisplayEn[name] || name;
 }
 
 /** Display name for a garment/skin. Falls back to the English name. */
-function displaySkinName(skinNameEng) {
-  if (!skinNameEng) return skinNameEng;
-  if (currentLang === "cn") {
-    const cn = nameMap.skin[skinNameEng];
-    if (cn) return cn;
+function displaySkinName(skin) {
+  if (!skin) return "";
+  if (typeof skin === "string") {
+    if (currentLang === "cn") return nameMap.skin[skin] || skin;
+    return skin;
   }
-  return skinNameEng;
+  if (skin.isDefault) return t("action.default");
+  if (currentLang === "cn") return skin.nameCn || nameMap.skin[skin.name] || skin.name;
+  return skin.name;
+}
+
+/** Localised afflatus label (e.g. Beast -> 兽). */
+function displayAfflatus(afflatus) {
+  if (!afflatus) return afflatus;
+  const base = afflatus === "Mineral_Star" ? "Mineral" : afflatus;
+  const translated = t(`afflatus.${base}`);
+  return translated === `afflatus.${base}` ? afflatus : translated;
+}
+
+/** Localised pattern name (always returns a label, including Placidity). */
+function patternLabel(patternName) {
+  if (!patternName) return "";
+  const key = `pattern.${patternName.toLowerCase()}`;
+  const translated = t(key);
+  return translated === key ? patternName : translated;
+}
+
+/* ---------------- Stat value formatters ----------------
+   EN:  I3 / Lv.60 / R10 / P0
+   CN:  洞三 / 60级 / 共10 / 0塑                           */
+function fmtInsight(n) {
+  const v = Number(n);
+  if (currentLang === "cn") return ["洞0", "洞一", "洞二", "洞三"][v] || `洞${v}`;
+  return `I${v}`;
+}
+function fmtLevel(n) {
+  if (currentLang === "cn") return `${n}级`;
+  return `Lv.${n}`;
+}
+function fmtResonance(n) {
+  if (currentLang === "cn") return `共${n}`;
+  return `R${n}`;
+}
+function fmtPortrait(n) {
+  if (currentLang === "cn") return `${n}塑`;
+  return `P${n}`;
+}
+function fmtEuphoria(n) {
+  if (currentLang === "cn") return `${n}狂`;
+  return `E${n}`;
+}
+
+/** Tooltip text for a pattern icon, honouring main/owned state. */
+function patternTooltipText(patternName, state) {
+  const base = patternLabel(patternName);
+  if (state === "main") return `${base} (${t("pattern.tagPrimary")})`;
+  if (state === "owned") return `${base} (${t("pattern.tagOwned")})`;
+  return base;
 }
 
 function loadLanguage() {
@@ -79,6 +130,10 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
     el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria-label")));
   });
+  // Strings that intentionally contain inline markup (e.g. footer credits)
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+    el.innerHTML = t(el.getAttribute("data-i18n-html"));
+  });
   document.querySelectorAll(".lang-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.lang === currentLang);
   });
@@ -90,6 +145,12 @@ function applyTranslations() {
     else if (currentLang === "vi") logo.src = "images/sotheby_mansion_vi.png";
     else logo.src = "images/sotheby_mansion.webp";
   }
+
+  // Localised document title
+  document.title = t("misc.siteTitle");
+
+  // Keep <html lang> in sync (also on first load, where setLanguage isn't called)
+  document.documentElement.setAttribute("lang", currentLang === "cn" ? "zh-Hans" : currentLang);
 }
 
 /**
@@ -114,9 +175,33 @@ function refreshDynamicTranslations() {
     setButtonLabel(status, customBoardBgImageUrl ? t("styling.bgActive") : t("styling.noImage"),
       customBoardBgImageUrl ? "styling.bgActive" : "styling.noImage");
   }
+
+  // Insight quick-pick tooltips (e.g. "Insight 3")
+  document.querySelectorAll(".btn-pill-i").forEach((btn) => {
+    const n = btn.dataset.i;
+    btn.title = t("setting.insightTitle", { n });
+    btn.dataset.patternName = t("setting.insightTitle", { n });
+  });
+
+  // Portrait quick-picks (P0 -> 0塑) + tooltip
+  document.querySelectorAll(".btn-pill-p").forEach((btn) => {
+    const p = Number(btn.dataset.p);
+    btn.textContent = fmtPortrait(p);
+    btn.dataset.patternName = fmtPortrait(p);
+  });
+
+  // Static roster stat tooltip labels
+  const statTip = document.getElementById("roster-stat-tooltip");
+  if (statTip) {
+    const labels = statTip.querySelectorAll(".stat-tip-label");
+    if (labels[0]) labels[0].textContent = t("stats.level60");
+    if (labels[1]) labels[1].textContent = t("stats.r10plus");
+  }
 }
 
 let characterDb = {}; // { "Name": "images/headicon_small/..." }
+let characterDisplayEn = {}; // { canonicalName: "English display name" } from ArcanistMap
+let characterDisplayCn = {}; // { canonicalName: "Chinese display name" } from ArcanistMap
 let characterRarityMap = {}; // { "Name": 6 }
 let characterIdMap = {}; // { "Name": 3003 }
 let euphoriaOptionsByName = {}; // { "Name": [1,2] }
@@ -807,6 +892,7 @@ async function initApp() {
 
     loadLanguage();
     applyTranslations();
+    refreshDynamicTranslations();
     loadTitle();
     loadListingConfig();
     loadFutureSightState();
@@ -875,6 +961,8 @@ function buildArcanistData(arcanistData) {
   characterDb = {};
   characterIdMap = {};
   characterSkinsMap = {};
+  characterDisplayEn = {};
+  characterDisplayCn = {};
 
   if (!Array.isArray(arcanistData)) return;
 
@@ -889,6 +977,11 @@ function buildArcanistData(arcanistData) {
     characterIdMap[charName] = item.id;
     if (item.nameEng) characterIdMap[item.nameEng] = item.id;
     if (item.name) characterIdMap[item.name] = item.id;
+
+    // Display names come straight from ArcanistMap.json so the data file is the
+    // single source of truth, while the canonical key stays stable for saves.
+    if (item.nameEng) characterDisplayEn[charName] = item.nameEng;
+    if (item.name) characterDisplayCn[charName] = item.name;
 
     const rawSkins = Array.isArray(item.live2d) ? item.live2d : [];
     const skins = [];
@@ -1176,10 +1269,19 @@ function buildEuphoriaMap(euphoriaData) {
 function getEuphoriaDisplayName(name, tier) {
   const canonical = resolveCharacterName(name);
   const specificName = euphoriaNamesByTier[canonical] && euphoriaNamesByTier[canonical][tier];
+  const tag = fmtEuphoria(tier);
   if (specificName) {
-    return `${specificName} (E${tier})`;
+    return `${euphoriaEffectName(specificName)} (${tag})`;
   }
-  return `Euphoria ${tier} (E${tier})`;
+  return `Euphoria ${tier} (${tag})`;
+}
+
+/** Localises a Euphoria effect name (e.g. "General" -> 一般). */
+function euphoriaEffectName(effect) {
+  if (!effect) return effect;
+  const key = `euphoria.${effect}`;
+  const translated = t(key);
+  return translated === key ? effect : translated;
 }
 
 function getEligibleEuphoriaLevels(name) {
@@ -1814,7 +1916,8 @@ function renderTierRowSection(label, color, cards, customBg, customBorder, isBol
 
 function getPatternDisplayName(patternName) {
   if (!patternName || patternName === DEFAULT_PATTERN) return "";
-  return isKnownPattern(patternName) ? patternName : "";
+  if (!isKnownPattern(patternName)) return "";
+  return patternLabel(patternName);
 }
 
 /**
@@ -1841,7 +1944,7 @@ function renderShapePatternGrid() {
     btn.type = "button";
     btn.className = "shape-pattern-btn";
     btn.dataset.pattern = patternName;
-    btn.dataset.patternName = patternName + (isMain ? " (main)" : isOwned ? " (owned)" : "");
+    btn.dataset.patternName = patternTooltipText(patternName, isMain ? "main" : isOwned ? "owned" : "none");
     if (isOwned) btn.classList.add("is-owned");
     if (isMain) btn.classList.add("is-main");
     btn.style.setProperty("--pattern-color", getPatternColor(patternName));
@@ -1901,11 +2004,11 @@ function createCharacterCard(name, char, iconUrl) {
   const levelVal = char.level !== undefined ? char.level : 60;
   const rarityVal = getCharacterRarity(name);
 
-  // Euphoria / Pattern string e.g. "E1 E2" or "E1" or "E2"
+  // Euphoria / Pattern string e.g. "E1 E2", "E1", "E2" (CN: 1狂, 2狂)
   let euphoriaText = "";
-  if (char.e2 && char.e1) euphoriaText = "E1 E2";
-  else if (char.e2) euphoriaText = "E2";
-  else if (char.e1) euphoriaText = "E1";
+  if (char.e2 && char.e1) euphoriaText = `${fmtEuphoria(1)} ${fmtEuphoria(2)}`;
+  else if (char.e2) euphoriaText = fmtEuphoria(2);
+  else if (char.e1) euphoriaText = fmtEuphoria(1);
 
   // The card colour follows the character's chosen (main) pattern
     const boxKind = getMainPattern(name, char);
@@ -1957,8 +2060,8 @@ function createCharacterCard(name, char, iconUrl) {
 
     topHeaderHtml = `
       <div class="char-top-info">
-        ${showResonance ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">R${char.resonance}</span>` : `<span></span>`}
-        ${showMainPattern ? `<img src="${escapeHtml(mainPatternPath)}" alt="${escapeHtml(mainPattern)}" data-pattern-name="${escapeHtml(mainPattern)}" class="char-main-pattern-icon" loading="lazy" decoding="async" />` : ""}
+        ${showResonance ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">${fmtResonance(char.resonance)}</span>` : `<span></span>`}
+        ${showMainPattern ? `<img src="${escapeHtml(mainPatternPath)}" alt="${escapeHtml(mainPattern)}" data-pattern-name="${escapeHtml(patternTooltipText(mainPattern, "main"))}" class="char-main-pattern-icon" loading="lazy" decoding="async" />` : ""}
         ${showEuphoria ? `<span class="badge-euphoria">${euphoriaText}</span>` : ""}
       </div>
     `;
@@ -2043,7 +2146,7 @@ function createCharacterCard(name, char, iconUrl) {
 
   const afflatusIconHtml = showAfflatus ? `
     <div class="char-afflatus-icon">
-      <img src="images/afflatus_icon/${afflatus}.png" alt="${afflatus}" title="${afflatus}" />
+      <img src="images/afflatus_icon/${afflatus}.png" alt="${afflatus}" title="${escapeHtml(displayAfflatus(afflatus))}" />
     </div>
   ` : "";
   const avatarImgStyle = avatarImgStyles.length > 0 ? ` style="${avatarImgStyles.join("; ")};"` : "";
@@ -2062,7 +2165,7 @@ function createCharacterCard(name, char, iconUrl) {
            const path = shape ? `images/shape_pattern/${shape}/${p}.png` : null;
            const isMain = p === patternState.main;
            return path
-             ? `<img src="${escapeHtml(path)}" alt="${escapeHtml(p)}" data-pattern-name="${escapeHtml(isMain ? p + " (main)" : p)}" class="ct-pattern-icon${isMain ? " is-main" : ""}" loading="lazy" decoding="async" />`
+             ? `<img src="${escapeHtml(path)}" alt="${escapeHtml(p)}" data-pattern-name="${escapeHtml(patternTooltipText(p, isMain ? "main" : "owned"))}" class="ct-pattern-icon${isMain ? " is-main" : ""}" loading="lazy" decoding="async" />`
              : "";
          }).join("")}</div>`
       : "";
@@ -2077,10 +2180,10 @@ function createCharacterCard(name, char, iconUrl) {
           <span class="ct-name">${escapeHtml(displayCharName(name))}</span>
         </div>
         <div class="ct-body">
-          <div class="ct-row"><span class="ct-label">${t("card.insight")}</span><span class="ct-value">I${insightVal}</span></div>
-          <div class="ct-row"><span class="ct-label">${t("card.level")}</span><span class="ct-value">${levelVal}</span></div>
-          <div class="ct-row"><span class="ct-label">${t("card.resonance")}</span><span class="ct-value">R${char.resonance}</span></div>
-          <div class="ct-row"><span class="ct-label">${t("card.portrait")}</span><span class="ct-value">P${char.portrait}</span></div>
+          <div class="ct-row"><span class="ct-label">${t("card.insight")}</span><span class="ct-value">${fmtInsight(insightVal)}</span></div>
+          <div class="ct-row"><span class="ct-label">${t("card.level")}</span><span class="ct-value">${fmtLevel(levelVal)}</span></div>
+          <div class="ct-row"><span class="ct-label">${t("card.resonance")}</span><span class="ct-value">${fmtResonance(char.resonance)}</span></div>
+          <div class="ct-row"><span class="ct-label">${t("card.portrait")}</span><span class="ct-value">${fmtPortrait(char.portrait)}</span></div>
           ${euphoriaRowHtml}
           ${patternRowHtml}
         </div>
@@ -2180,7 +2283,7 @@ function renderSkinSelector(name) {
     btn.type = "button";
     btn.className = "btn-pill-skin";
     btn.dataset.skinId = String(skin.id);
-    btn.title = currentLang === "cn" && skin.nameCn ? skin.nameCn : skin.name;
+    btn.title = displaySkinName(skin);
 
     const img = document.createElement("img");
     img.src = skin.iconUrl;
@@ -2209,7 +2312,7 @@ function updateSkinSelectionUI(name) {
   const selectedSkin = charSkins.find((s) => Number(s.id) === Number(tempEditState.skin)) || charSkins[0];
 
   if (displaySkin) {
-    displaySkin.textContent = selectedSkin ? selectedSkin.name : "Default";
+    displaySkin.textContent = selectedSkin ? displaySkinName(selectedSkin) : t("action.default");
   }
 
   document.querySelectorAll(".btn-pill-skin").forEach((btn) => {
@@ -2270,7 +2373,7 @@ function updateModalView() {
     tempEditState.insight = maxAllowedInsight;
   }
 
-  displayInsight.textContent = `I${currentInsight}`;
+  displayInsight.textContent = fmtInsight(currentInsight);
   document.querySelectorAll(".btn-pill-i").forEach((btn) => {
     const btnInsight = Number(btn.dataset.i);
     if (btnInsight > maxAllowedInsight) {
@@ -2278,6 +2381,8 @@ function updateModalView() {
     } else {
       btn.style.display = "";
     }
+    btn.title = t("setting.insightTitle", { n: btnInsight });
+    btn.dataset.patternName = t("setting.insightTitle", { n: btnInsight });
     btn.classList.toggle("active", btnInsight === currentInsight);
   });
 
@@ -2292,7 +2397,7 @@ function updateModalView() {
     tempEditState.level = 1;
   }
   inputLevel.value = tempEditState.level;
-  displayLevel.textContent = `Lv.${tempEditState.level}`;
+  displayLevel.textContent = fmtLevel(tempEditState.level);
 
   // Resonance
   const maxRes = getMaxResonanceForInsight(currentInsight);
@@ -2306,7 +2411,7 @@ function updateModalView() {
   }
   inputResonance.value = tempEditState.resonance;
   inputResonance.disabled = maxRes <= 1;
-  displayResonance.textContent = `R${tempEditState.resonance}`;
+  displayResonance.textContent = fmtResonance(tempEditState.resonance);
   displayResonance.style.color = getResonanceTextColor(tempEditState.boxKind || "none");
 
   // If resonance < 10 the pattern feature is locked; keep owned patterns but show none
@@ -2326,9 +2431,12 @@ function updateModalView() {
   renderShapePatternGrid();
 
   // Portrait
-  displayPortrait.textContent = `P${tempEditState.portrait}`;
+  displayPortrait.textContent = fmtPortrait(tempEditState.portrait);
   document.querySelectorAll(".btn-pill-p").forEach((btn) => {
-    btn.classList.toggle("active", Number(btn.dataset.p) === tempEditState.portrait);
+    const p = Number(btn.dataset.p);
+    btn.textContent = fmtPortrait(p);
+    btn.dataset.patternName = fmtPortrait(p);
+    btn.classList.toggle("active", p === tempEditState.portrait);
   });
 
   // Euphoria
@@ -2543,7 +2651,7 @@ function renderBulkInsightRow() {
     const isActive = bulkSpec.insight === i;
     btn.className = `bulk-opt bulk-opt-icon${isActive ? " is-active" : ""}`;
     btn.innerHTML = `<img src="images/insight_icon/I${i}.png" alt="I${i}" />`;
-    btn.title = `I${i}`;
+    btn.title = fmtInsight(i);
     btn.addEventListener("click", () => {
       bulkSpec.insight = isActive ? null : i;
       renderBulkApplyModal();
@@ -2557,6 +2665,8 @@ function bindBulkSlider(prefix, maxValue, labelPrefix) {
   const slider = document.getElementById(`bulk-${prefix}-slider`);
   if (!slider) return;
 
+  const fmt = prefix === "level" ? fmtLevel : fmtResonance;
+
   const isUntouched = bulkSpec[prefix] === null;
   slider.max = String(maxValue);
   slider.value = String(isUntouched ? 1 : Math.min(bulkSpec[prefix], maxValue));
@@ -2564,7 +2674,7 @@ function bindBulkSlider(prefix, maxValue, labelPrefix) {
   slider.oninput = () => {
     bulkSpec[prefix] = Number(slider.value);
     const valueEl = document.getElementById(`bulk-${prefix}-value`);
-    if (valueEl) valueEl.textContent = `${labelPrefix}${slider.value}`;
+    if (valueEl) valueEl.textContent = fmt(Number(slider.value));
     const row = document.getElementById(`bulk-row-${prefix}`);
     if (row) row.classList.remove("is-untouched");
   };
@@ -2596,11 +2706,11 @@ function renderBulkApplyModal() {
   const resMax = bulkSpec.insight !== null ? getMaxResonanceForInsight(bulkSpec.insight) : 15;
   if (bulkSpec.level !== null) bulkSpec.level = Math.min(bulkSpec.level, levelMax);
   if (bulkSpec.resonance !== null) bulkSpec.resonance = Math.min(bulkSpec.resonance, resMax);
-  bindBulkSlider("level", levelMax, "Lv.");
-  bindBulkSlider("resonance", resMax, "R");
+  bindBulkSlider("level", levelMax, "level");
+  bindBulkSlider("resonance", resMax, "resonance");
 
   // Simple option rows
-  renderBulkRow("bulk-portrait-options", BULK_PORTRAIT_PRESETS.map((p) => ({ value: p, label: `P${p}` })), bulkSpec.portrait, (v) => {
+  renderBulkRow("bulk-portrait-options", BULK_PORTRAIT_PRESETS.map((p) => ({ value: p, label: fmtPortrait(p) })), bulkSpec.portrait, (v) => {
     bulkSpec.portrait = v; renderBulkApplyModal();
   });
   renderBulkRow("bulk-owned-options", BULK_OWNED_PRESETS, bulkSpec.owned, (v) => {
@@ -2613,10 +2723,10 @@ function renderBulkApplyModal() {
     // Empty string means "untouched" — the readout stays hidden
     el.textContent = text || "";
   };
-  setVal("bulk-level-value", bulkSpec.level === null ? "" : `Lv.${bulkSpec.level}`);
-  setVal("bulk-insight-value", bulkSpec.insight === null ? "" : `I${bulkSpec.insight}`);
-  setVal("bulk-resonance-value", bulkSpec.resonance === null ? "" : `R${bulkSpec.resonance}`);
-  setVal("bulk-portrait-value", bulkSpec.portrait === null ? "" : `P${bulkSpec.portrait}`);
+  setVal("bulk-level-value", bulkSpec.level === null ? "" : fmtLevel(bulkSpec.level));
+  setVal("bulk-insight-value", bulkSpec.insight === null ? "" : fmtInsight(bulkSpec.insight));
+  setVal("bulk-resonance-value", bulkSpec.resonance === null ? "" : fmtResonance(bulkSpec.resonance));
+  setVal("bulk-portrait-value", bulkSpec.portrait === null ? "" : fmtPortrait(bulkSpec.portrait));
   setVal("bulk-owned-value", bulkSpec.owned === null ? "" : (bulkSpec.owned ? "Owned" : "Unowned"));
 
   // Rows without a chosen value read as untouched
@@ -2957,7 +3067,7 @@ function setupEventListeners() {
   // Level slider
   inputLevel.addEventListener("input", (e) => {
     tempEditState.level = Number(e.target.value);
-    displayLevel.textContent = `Lv.${tempEditState.level}`;
+    displayLevel.textContent = fmtLevel(tempEditState.level);
     updateModalView();
   });
 
@@ -3102,8 +3212,8 @@ function setupEventListeners() {
 
     const topHeaderHtml = `
       <div class="char-top-info">
-        ${showRes ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">R${resonanceVal}</span>` : `<span></span>`}
-        ${showPreviewPattern ? `<img src="${escapeHtml(previewMainPatternPath)}" alt="${escapeHtml(previewMainPattern)}" data-pattern-name="${escapeHtml(previewMainPattern)}" class="char-main-pattern-icon" />` : ""}
+        ${showRes ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">${fmtResonance(resonanceVal)}</span>` : `<span></span>`}
+        ${showPreviewPattern ? `<img src="${escapeHtml(previewMainPatternPath)}" alt="${escapeHtml(previewMainPattern)}" data-pattern-name="${escapeHtml(patternTooltipText(previewMainPattern, "main"))}" class="char-main-pattern-icon" />` : ""}
         ${showEupho ? `<span class="badge-euphoria" style="color: ${euphoriaColor};">${euphoriaText}</span>` : ""}
       </div>
     `;
@@ -3120,7 +3230,7 @@ function setupEventListeners() {
 
     const afflatusIconHtml = showAff ? `
       <div class="char-afflatus-icon">
-        <img src="images/afflatus_icon/${previewAfflatus}.png" alt="${previewAfflatus}" title="${previewAfflatus}" />
+        <img src="images/afflatus_icon/${previewAfflatus}.png" alt="${previewAfflatus}" title="${escapeHtml(displayAfflatus(previewAfflatus))}" />
       </div>
     ` : "";
     const insightIconHtml = showIn ? `
@@ -3260,7 +3370,7 @@ function setupEventListeners() {
       const labelInsight = document.createElement("span");
       labelInsight.style.fontSize = "0.7rem";
       labelInsight.style.fontFamily = "var(--mono-font)";
-      labelInsight.textContent = "Insight:";
+      labelInsight.textContent = `${t("setting.insight")}:`;
 
       const selInsight = document.createElement("select");
       selInsight.className = "listing-tier-select";
@@ -3269,7 +3379,7 @@ function setupEventListeners() {
       [0, 1, 2, 3].forEach((i) => {
         const opt = document.createElement("option");
         opt.value = i;
-        opt.textContent = `I${i}`;
+        opt.textContent = fmtInsight(i);
         if (Number(rule.insight) === i) opt.selected = true;
         selInsight.appendChild(opt);
       });
@@ -3371,7 +3481,7 @@ function setupEventListeners() {
       for (let r = 15; r >= 1; r--) {
         const opt = document.createElement("option");
         opt.value = r;
-        opt.textContent = `R${r}`;
+        opt.textContent = fmtResonance(r);
         if (Number(rule.resonance) === r) opt.selected = true;
         selRes.appendChild(opt);
       }
@@ -4300,15 +4410,15 @@ function setupEventListeners() {
   }
 
   const FIELD_DEFINITIONS = [
-    { value: "resonance", label: "Resonance", type: "number", min: 1, max: 15, defaultVal: 10 },
-    { value: "insight", label: "Insight", type: "select", options: [
+    { value: "resonance", labelKey: "setting.resonanceShort", type: "number", min: 1, max: 15, defaultVal: 10 },
+    { value: "insight", labelKey: "setting.insight", type: "select", options: [
       { value: 3, label: "I3" },
       { value: 2, label: "I2" },
       { value: 1, label: "I1" },
       { value: 0, label: "I0" },
     ], defaultVal: 3 },
-    { value: "level", label: "Level", type: "number", min: 1, max: 60, defaultVal: 60 },
-    { value: "portrait", label: "Portrait", type: "select", options: [
+    { value: "level", labelKey: "setting.level", type: "number", min: 1, max: 60, defaultVal: 60 },
+    { value: "portrait", labelKey: "setting.portrait", type: "select", options: [
       { value: 5, label: "P5" },
       { value: 4, label: "P4" },
       { value: 3, label: "P3" },
@@ -4324,12 +4434,12 @@ function setupEventListeners() {
       { value: 2, label: "✦2" },
     ], defaultVal: 6 },
     { value: "afflatus", labelKey: "field.afflatus", type: "select", options: [
-      { value: "Beast", label: "Beast" },
-      { value: "Plant", label: "Plant" },
-      { value: "Star", label: "Star" },
-      { value: "Mineral", label: "Mineral" },
-      { value: "Spirit", label: "Spirit" },
-      { value: "Intellect", label: "Intellect" },
+      { value: "Beast", labelKey: "afflatus.Beast" },
+      { value: "Plant", labelKey: "afflatus.Plant" },
+      { value: "Star", labelKey: "afflatus.Star" },
+      { value: "Mineral", labelKey: "afflatus.Mineral" },
+      { value: "Spirit", labelKey: "afflatus.Spirit" },
+      { value: "Intellect", labelKey: "afflatus.Intellect" },
     ], defaultVal: "Beast" },
     { value: "has_euphoria", labelKey: "field.hasEuphoria", type: "boolean", defaultVal: true },
     { value: "has_pattern", labelKey: "field.hasPattern", type: "boolean", defaultVal: true },
@@ -4709,7 +4819,7 @@ function setupEventListeners() {
               currentFieldDef.options.forEach((o) => {
                 const opt = document.createElement("option");
                 opt.value = o.value;
-                opt.textContent = o.label;
+                opt.textContent = o.labelKey ? t(o.labelKey) : o.label;
                 if (String(o.value) === String(cond.value)) opt.selected = true;
                 selEl.appendChild(opt);
               });

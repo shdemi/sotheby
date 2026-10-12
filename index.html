@@ -49,7 +49,7 @@
 
       <!-- Controls Row B: Roster Stats & Tools Button -->
       <div class="header-stats-row">
-        <div class="lang-switcher" id="lang-switcher" role="group" aria-label="Language">
+        <div class="lang-switcher lang-switcher-header" id="lang-switcher-header" role="group" aria-label="Language">
           <button type="button" class="lang-btn" data-lang="cn">CN</button>
           <button type="button" class="lang-btn" data-lang="vi">VI</button>
           <button type="button" class="lang-btn active" data-lang="en">EN</button>
@@ -112,6 +112,15 @@
           <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" /><span data-i18n="toolbar.reset">Reset</span>
         </button>
       </div>
+
+      <!-- Language switcher (lives inside the Menu) -->
+      <div class="secondary-tools-group tools-lang-group">
+        <div class="lang-switcher" id="lang-switcher" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="cn">CN</button>
+          <button type="button" class="lang-btn" data-lang="vi">VI</button>
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -129,9 +138,9 @@
 
   <!-- Footer Info / Credits -->
   <footer class="app-footer no-export">
-    <p>Sotheby's Mansion is not affiliated with BluePoch. All images and data belong to their respective owners.</p>
-    <p>Icon Artist: <strong>ena.</strong></p>
-    <p>Developed by <strong>sh</strong>, assisted by <strong>91</strong>.</p>
+    <p data-i18n="footer.disclaimer">Sotheby's Mansion is not affiliated with BluePoch. All images and data belong to their respective owners.</p>
+    <p data-i18n-html="footer.iconArtist">Icon Artist: <strong>ena.</strong></p>
+    <p data-i18n-html="footer.credits">Developed by <strong>sh</strong>, assisted by <strong>91</strong>.</p>
   </footer>
 
   <!-- Edit Character Modal (Pop-up when clicking a character) -->
@@ -196,7 +205,7 @@
         <!-- Resonance (R1 - R15) -->
         <div class="setting-group" id="group-resonance">
           <div class="setting-label-row">
-            <label class="setting-label">Resonance / Reasoning</label>
+            <label class="setting-label"><span data-i18n="setting.resonance">Resonance / Reasoning</span></label>
             <span class="setting-val-display" id="display-resonance">R10</span>
           </div>
           <input type="range" id="input-resonance" min="1" max="15" value="10" class="custom-slider" style="margin-top: 8px;" />
@@ -212,10 +221,10 @@
             </div>
           </div>
           <div id="pattern-help-box" class="pattern-help-box" style="display: none;">
-            <p>The six patterns available depend on the character's resonance shape.</p>
-            <p><span class="pattern-help-dot" style="background:#F67E26"></span> <strong>Orange:</strong> Aspirational, Delirament, Elucidation, Genuinity, Hyper, Hyperphrenia, Inspire</p>
-            <p><span class="pattern-help-dot" style="background:#62A771"></span> <strong>Green:</strong> Equanimity, Mercy, Overindulgence, Prudentiality, Quiescence</p>
-            <p><span class="pattern-help-dot" style="background:#E6AE34"></span> <strong>Yellow:</strong> Stupefaction &nbsp; <span class="pattern-help-dot" style="background:#4A70B3"></span> <strong>Blue:</strong> Equibalance</p>
+            <p data-i18n="pattern.helpIntro">The six patterns available depend on the character's resonance shape.</p>
+            <p><span class="pattern-help-dot" style="background:#F67E26"></span> <strong data-i18n="pattern.orangeLabel">Orange:</strong> Aspirational, Delirament, Elucidation, Genuinity, Hyper, Hyperphrenia, Inspire</p>
+            <p><span class="pattern-help-dot" style="background:#62A771"></span> <strong data-i18n="pattern.greenLabel">Green:</strong> Equanimity, Mercy, Overindulgence, Prudentiality, Quiescence</p>
+            <p><span class="pattern-help-dot" style="background:#E6AE34"></span> <strong data-i18n="pattern.yellowLabel">Yellow:</strong> <span data-i18n="pattern.stupefaction">Stupefaction</span> &nbsp; <span class="pattern-help-dot" style="background:#4A70B3"></span> <strong data-i18n="pattern.blueLabel">Blue:</strong> <span data-i18n="pattern.equibalance">Equibalance</span></p>
           </div>
           <div class="shape-pattern-grid" id="shape-pattern-grid" aria-label="Pattern selection"></div>
         </div>
@@ -389,7 +398,7 @@
             </div>
             <div id="char-decor-collapse-content" class="options-flat-content">
               <div style="display: flex; flex-direction: column; gap: 6px;">
-                <span style="font-family: var(--primary-font); font-size: 0.68rem; font-weight: 700; color: #E7D9CB; text-transform: uppercase; letter-spacing: 0.08em;">Background</span>
+                <span style="font-family: var(--primary-font); font-size: 0.68rem; font-weight: 700; color: #E7D9CB; text-transform: uppercase; letter-spacing: 0.08em;" data-i18n="detail.background">Background</span>
                 <div class="archetype-grid">
                   <label class="archetype-grid-item">
                     <input type="checkbox" id="check-show-none-pattern-bg" />
@@ -406,7 +415,7 @@
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px dashed rgba(255, 255, 255, 0.08);">
-                <span style="font-family: var(--primary-font); font-size: 0.68rem; font-weight: 700; color: #E7D9CB; text-transform: uppercase; letter-spacing: 0.08em;">Border</span>
+                <span style="font-family: var(--primary-font); font-size: 0.68rem; font-weight: 700; color: #E7D9CB; text-transform: uppercase; letter-spacing: 0.08em;" data-i18n="detail.border">Border</span>
                 <div class="archetype-grid">
                   <label class="archetype-grid-item">
                     <input type="checkbox" id="check-show-none-pattern-border" />
@@ -578,7 +587,7 @@
 
               <div class="custom-style-grid" style="margin-top: 4px;">
                 <label class="custom-style-row">
-                  <span>Background</span>
+                  <span data-i18n="detail.background">Background</span>
                   <div class="custom-style-color-cell">
                     <input type="color" id="color-board-header-bg" value="#000000" class="listing-tier-color-input" />
                     <button type="button" class="custom-color-clear-btn" id="btn-clear-board-header-bg" title="Set Transparent" data-i18n="opt.clear">Clear</button>
@@ -890,11 +899,11 @@
                   <input type="color" id="color-pattern-defensive" value="#2D8A5A" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Stupefaction</span>
+                  <span data-i18n="pattern.stupefaction">Stupefaction</span>
                   <input type="color" id="color-pattern-hp" value="#D4AD2B" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Equibalance</span>
+                  <span data-i18n="pattern.equibalance">Equibalance</span>
                   <input type="color" id="color-pattern-equibalance" value="#3B6DC7" class="listing-tier-color-input" />
                 </label>
               </div>
@@ -915,7 +924,7 @@
                     <label class="check-container" style="margin: 0;">
                       <input type="checkbox" id="check-custom-portrait-colors" checked />
                       <span class="check-box"></span>
-                      <span class="check-text" style="font-size: 0.65rem;">Enable</span>
+                      <span class="check-text" style="font-size: 0.65rem;" data-i18n="styling.enable">Enable</span>
                     </label>
                   </div>
                   <div id="portrait-rarity-colors-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 2px;">

@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
   font-family: 'Regular';
   src: url('images/regular-webfont.woff2') format('woff2');
   font-weight: 400;
@@ -164,6 +164,17 @@ body::before {
 
 .btn-tools-toggle {
   display: none !important;
+  border-color: #EBE3D7;
+}
+
+/* Desktop shows the header switcher; the drawer switcher only appears
+   once the Menu button takes over (<= 1260px). */
+.lang-switcher-header {
+  display: inline-flex;
+}
+
+.tools-lang-group .lang-switcher {
+  display: none;
 }
 
 .header-actions-row {
@@ -249,7 +260,10 @@ body::before {
   top: calc(100% + 6px);
   right: 0;
   min-width: 100%;
-  background: rgba(22, 19, 15, 0.5);
+  background-color: rgba(22, 19, 15, 0.5);
+  background-image: url("images/tooltip_background.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   color: #FFFFFF;
   border: 1px solid #FFFFFF;
   padding: 8px 12px;
@@ -305,6 +319,7 @@ body::before {
 }
 
 .header-secondary-tools {
+  position: relative;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -312,6 +327,15 @@ body::before {
   gap: 12px;
   padding-top: 8px;
   border-top: 1px solid rgba(17, 15, 12, 0.06);
+}
+
+/* Language switcher sits at the far right without disturbing the
+   original left / center / right alignment of the other three groups. */
+.tools-lang-group {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  justify-self: auto;
 }
 
 .tools-config-group {
@@ -725,6 +749,7 @@ body::before {
   max-width: 1420px;
   margin: 28px auto 0;
   padding: 0 24px;
+  overflow-x: clip;
 }
 
 .showcase-board {
@@ -855,9 +880,13 @@ body::before {
   transform: translateX(-50%);
   min-width: 190px;
   max-width: 262px;
-  background: rgba(22, 19, 15, 0.5);
+  background-color: rgba(22, 19, 15, 0.5);
+  background-image: url("images/tooltip_background.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   color: #FFFFFF;
   border: 1px solid #FFFFFF;
+  overflow: hidden;
   padding: 0;
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
   font-size: 12px;
@@ -868,7 +897,6 @@ body::before {
   transition: opacity 0.15s ease, visibility 0.15s ease;
   z-index: 250;
   text-align: left;
-  border-radius: 0;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
 }
 
@@ -879,7 +907,9 @@ body::before {
   justify-content: space-between;
   gap: 10px;
   padding: 8px 12px 7px;
+  background: #212121;
   border-bottom: 1px solid #FFFFFF;
+  border-radius: 0;
 }
 
 .char-tooltip .ct-name {
@@ -937,7 +967,7 @@ body::before {
   width: 100%;
   margin-top: 3px;
   padding-top: 7px;
-  border-top: 1px solid #BEC0C3;
+  border-top: 1px solid #FFFFFF;
   box-sizing: border-box;
 }
 
@@ -962,7 +992,7 @@ body::before {
 /* Top Information above the Character */
 .char-top-info {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   min-height: calc(14px * var(--char-card-scale, 1));
   margin-bottom: 1px;
@@ -2367,7 +2397,7 @@ body::before {
 }
 
 /* Options live preview: fixed scale, independent of the board's card-size slider.
-   Preview is enlarged (1.6×) and pinned so it always renders identically. */
+   Preview is enlarged (1.6x) and pinned so it always renders identically. */
 #options-char-preview-card.char-card {
   --char-card-scale: 1.6;
   --char-card-width: 96px;
@@ -2711,7 +2741,7 @@ body::before {
   background: rgba(0, 0, 0, 0.35);
 }
 
-/* Checked State: giống ô DPS trong ảnh (viền cam đất đậm + nền nâu cam trầm + chữ và diamond cam nổi bật) */
+/* Checked State: mimics the DPS box (deep orange border + muted orange-brown fill + highlighted diamond and text) */
 .archetype-grid-item:has(input:checked) {
   border: 1px solid #C4673B;
   background: rgba(196, 103, 59, 0.16);
@@ -3204,7 +3234,7 @@ body::before {
   gap: 6px;
 }
 
-/* Đổi icon diamond thành ◆ khi input checkbox được tick */
+/* Switch the diamond icon to a filled diamond when the checkbox is ticked */
 .archetype-grid-item:has(input:checked) .archetype-diamond {
   color: #D97746;
 }
@@ -3855,7 +3885,10 @@ body::before {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  background: rgba(22, 19, 15, 0.5);
+  background-color: rgba(22, 19, 15, 0.5);
+  background-image: url("images/tooltip_background.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   color: #FFFFFF;
   border: 1px solid #FFFFFF;
   padding: 6px 10px;
@@ -3916,6 +3949,193 @@ body::before {
   user-select: auto !important;
   -webkit-user-select: auto !important;
   -webkit-touch-callout: default !important;
+}
+
+@keyframes toolsDrawerIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive: collapse the secondary tools into the Menu drawer
+   (used by both tablet and phone widths) */
+@media screen and (max-width: 1260px) {
+  .btn-tools-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 3px;
+    border-color: #EBE3D7;
+    cursor: pointer;
+  }
+
+  /* Swap the language switcher into the drawer once Menu appears */
+  .header-stats-row .lang-switcher-header {
+    display: none;
+  }
+
+  .tools-lang-group .lang-switcher {
+    display: inline-flex;
+  }
+
+  /* Back to normal flow inside the drawer */
+  .tools-lang-group {
+    position: static;
+    right: auto;
+    top: auto;
+  }
+
+  .top-controls.tools-open .btn-tools-toggle {
+    background: #2a2825;
+    color: #f7f7f7;
+    border-color: #2a2825;
+  }
+
+  .header-secondary-tools {
+    display: none;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+    max-width: 100%;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(17, 15, 12, 0.15);
+    animation: toolsDrawerIn 0.18s ease-out;
+    box-sizing: border-box;
+    overflow: hidden;
+    grid-template-columns: none;
+  }
+
+  .top-controls.tools-open .header-secondary-tools {
+    display: flex;
+  }
+
+  .tools-lang-group {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    justify-self: auto;
+    box-sizing: border-box;
+  }
+
+  .tools-config-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    justify-self: auto;
+    margin: 0;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .tools-filters-group {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+    margin: 0;
+    justify-self: auto;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .tools-data-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    justify-self: auto;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+}
+
+@media screen and (max-width: 1260px) and (min-width: 769px) {
+  .header-primary-bar {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .header-stats-row {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .lang-btn {
+    padding: 0 8px;
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-badge {
+    height: 28px;
+    font-size: 0.62rem;
+    padding: 0 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-tools-toggle {
+    height: 28px !important;
+    padding: 0 9px !important;
+    font-size: 0.62rem !important;
+    letter-spacing: 0.05em;
+    border-color: #EBE3D7;
+  }
+
+  #btn-manage-all,
+  #btn-export-image {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 0.62rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+
+  .header-actions-row .search-input {
+    height: 30px;
+    font-size: 0.68rem;
+  }
+
+  .tools-config-group .btn,
+  .tools-data-group .btn {
+    height: 30px;
+    padding: 0 6px;
+    font-size: 0.64rem;
+    white-space: nowrap;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+  }
+
+  #filter-ownership-group,
+  #filter-rarity-group {
+    flex: 1;
+    min-width: 0;
+    height: 30px;
+    display: flex;
+    overflow: hidden;
+  }
+
+  #filter-ownership-group .filter-btn,
+  #filter-rarity-group .filter-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 0 4px;
+    font-size: 0.62rem;
+    text-align: center;
+  }
+
+  .tools-lang-group .lang-switcher {
+    height: 30px;
+  }
+
+  .tools-lang-group .lang-btn {
+    padding: 0 10px;
+    font-size: 0.64rem;
+  }
 }
 
 /* Responsive Mobile-Only UI adjustments (phones and small screens) */
@@ -4005,7 +4225,7 @@ body::before {
     letter-spacing: 0.06em;
     cursor: pointer;
     background: rgba(17, 15, 12, 0.04);
-    border: 1px solid var(--panel-border);
+    border: 1px solid #EBE3D7;
     color: var(--text-primary);
     transition: all 0.15s ease;
   }
@@ -4128,11 +4348,6 @@ body::before {
     display: flex;
   }
 
-  @keyframes toolsDrawerIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
   .tools-config-group {
     width: 100%;
     display: grid;
@@ -4159,7 +4374,7 @@ body::before {
   .tools-data-group {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
     justify-self: auto;
     box-sizing: border-box;
@@ -4179,8 +4394,23 @@ body::before {
     box-sizing: border-box;
   }
 
-  #btn-reset-data {
-    grid-column: span 2;
+  /* Language switcher sits under the data buttons, aligned right */
+  .tools-lang-group {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    justify-self: auto;
+    box-sizing: border-box;
+  }
+
+  .tools-lang-group .lang-switcher {
+    height: 28px;
+  }
+
+  .tools-lang-group .lang-btn {
+    padding: 0 10px;
+    font-size: 0.62rem;
   }
 
   .btn {
@@ -4247,6 +4477,33 @@ body::before {
   /* Character Card scaling for small screens */
   .char-card {
     width: calc(44px * var(--char-card-scale, 1));
+  }
+
+  /* Phone tooltips: keep them readable and inside the viewport instead of
+     spilling past the right edge of narrow screens. */
+  .char-tooltip {
+    min-width: 0;
+    width: max-content;
+    max-width: min(200px, calc(100vw - 24px));
+  }
+
+  .char-tooltip .ct-name {
+    font-size: 14px;
+  }
+
+  .char-tooltip .ct-head,
+  .char-tooltip .ct-body {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  /* Stat & chess tooltips: let them size to content (not the tiny parent box)
+     and only wrap when they would exceed the viewport. */
+  .stat-badge-tooltip,
+  .chess-piece-tooltip {
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    white-space: nowrap;
   }
 
   .char-top-info {
