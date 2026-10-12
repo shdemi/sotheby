@@ -16,11 +16,13 @@
 
 /* Reset & Base Setup - Dark theme inspired by reference design */
 :root {
-  --primary-font: 'Regular', 'Noto Serif TC', Georgia, 'Times New Roman', serif;
+  --primary-font: 'Regular', 'Noto Serif TC', 'Noto Serif', Georgia, 'Times New Roman', serif;
   --mono-font: monospace;
-  --serif-font: 'Regular', 'Noto Serif TC', Georgia, 'Times New Roman', serif;
+  --serif-font: 'Regular', 'Noto Serif TC', 'Noto Serif', Georgia, 'Times New Roman', serif;
   --cjk-fallback: "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif;
-  --main-font-family: var(--primary-font), var(--cjk-fallback), ui-sans-serif, system-ui, sans-serif;
+  /* Vietnamese-capable families come before the generic fallbacks */
+  --vi-fallback: 'Noto Serif', 'Segoe UI', 'Times New Roman', serif;
+  --main-font-family: var(--primary-font), var(--vi-fallback), var(--cjk-fallback), ui-sans-serif, system-ui, sans-serif;
   --board-font: var(--primary-font);
 
   --bg-color: #000000;
@@ -183,6 +185,60 @@ body::before {
   justify-self: end;
 }
 
+/* ================= LANGUAGE SWITCHER ================= */
+.lang-switcher {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #B5B5B3;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 0;
+  overflow: hidden;
+  height: 31px;
+  box-sizing: border-box;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  border-right: 1px solid #B5B5B3;
+  color: #B5B5B3;
+  font-family: var(--primary-font);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.lang-btn:last-child {
+  border-right: none;
+}
+
+.lang-btn:hover {
+  background: rgba(181, 181, 179, 0.12);
+  color: #FFFFFF;
+}
+
+.lang-btn.active {
+  background: #2a2825;
+  color: #FFFFFF;
+}
+
+.lang-btn:focus {
+  outline: none;
+}
+
+.lang-btn:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: -2px;
+}
+
 .stat-badge-wrap {
   position: relative;
   display: inline-flex;
@@ -193,12 +249,12 @@ body::before {
   top: calc(100% + 6px);
   right: 0;
   min-width: 100%;
-  background: #181818;
-  color: #f7f7f7;
-  border: 1px solid var(--panel-border);
-  padding: 6px 10px;
-  font-family: var(--mono-font);
-  font-size: 0.75rem;
+  background: rgba(22, 19, 15, 0.5);
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 8px 12px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.55;
   white-space: nowrap;
@@ -207,10 +263,32 @@ body::before {
   visibility: hidden;
   transition: opacity 0.15s ease, visibility 0.15s ease;
   z-index: 250;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
   border-radius: 0;
-  box-sizing: border-box;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+
+/* Rows mirror the character tooltip typography */
+.stat-badge-tooltip .stat-tip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.stat-badge-tooltip .stat-tip-label {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.stat-badge-tooltip .stat-tip-value {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
 }
 
 .stat-badge-wrap:hover .stat-badge-tooltip {
@@ -769,34 +847,111 @@ body::before {
   z-index: 120;
 }
 
-/* Character Card Custom Tooltip — mirrors the chess-piece tooltip */
+/* Character Card Custom Tooltip — same surface as the pattern tooltip */
 .char-tooltip {
   position: absolute;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #181818;
-  color: #f7f7f7;
-  border: 1px solid var(--panel-border);
-  padding: 6px 10px;
-  font-family: var(--mono-font);
-  font-size: 0.75rem;
-  font-weight: 400;
-  line-height: 1.55;
-  white-space: nowrap;
+  min-width: 190px;
+  max-width: 262px;
+  background: rgba(22, 19, 15, 0.5);
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 0;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.15s ease, visibility 0.15s ease;
   z-index: 250;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
   text-align: left;
   border-radius: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
 }
 
-.char-tooltip strong,
-.char-tooltip b {
+/* Name header — serif, matching the Character Setting title */
+.char-tooltip .ct-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px 7px;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+.char-tooltip .ct-name {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #FFFFFF;
+}
+
+/* Detail rows — typography mirrors Character Setting */
+.char-tooltip .ct-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px 10px;
+}
+
+.char-tooltip .ct-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.char-tooltip .ct-label {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #BFBFBF;
+  white-space: nowrap;
+}
+
+.char-tooltip .ct-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 13px;
   font-weight: 700;
+  color: #E5E7EB;
+  white-space: nowrap;
+}
+
+.char-tooltip .ct-euphoria {
+  color: #04FFEE;
+}
+
+.char-tooltip .ct-patterns {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  width: 100%;
+  margin-top: 3px;
+  padding-top: 7px;
+  border-top: 1px solid #BEC0C3;
+  box-sizing: border-box;
+}
+
+.char-tooltip .ct-pattern-icon {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+  opacity: 0.7;
+}
+
+.char-tooltip .ct-pattern-icon.is-main {
+  opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.45));
 }
 
 .char-card:hover .char-tooltip {
@@ -976,21 +1131,16 @@ body::before {
 }
 
 /* Rarity Indicator Line */
+/* Rarity line — the in-game asset, sitting between avatar and portrait bar */
 .char-rarity-line {
+  display: block;
   width: calc(100% + 4px);
-  margin-left: -2px;
-  margin-right: -2px;
-  height: calc(3px * var(--char-card-scale, 1));
-  margin-top: 0;
-  border-radius: 0;
+  margin: 0 -2px;
+  height: auto;
+  object-fit: fill;
+  image-rendering: auto;
   box-sizing: border-box;
 }
-
-.char-rarity-line.rarity-6 { background-color: #DD9925; }
-.char-rarity-line.rarity-5 { background-color: #C7AF6C; }
-.char-rarity-line.rarity-4 { background-color: #6A4972; }
-.char-rarity-line.rarity-3 { background-color: #545C7D; }
-.char-rarity-line.rarity-2 { background-color: #496441; }
 
 /* Portrait Bar Below the Character Avatar */
 .char-portrait-bar-below {
@@ -1005,7 +1155,16 @@ body::before {
   box-sizing: border-box;
 }
 
-/* Owned character name, rendered under the portrait bar */
+/* Main pattern icon beside the resonance badge */
+.char-main-pattern-icon {
+  width: calc(10px * var(--char-card-scale, 1));
+  height: calc(10px * var(--char-card-scale, 1));
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Character name, rendered under the portrait bar */
 .char-name-below {
   font-size: calc(0.56rem * var(--char-card-scale, 1));
   font-weight: 700;
@@ -1019,6 +1178,16 @@ body::before {
   width: 100%;
   text-align: center;
   margin-top: 3px;
+}
+
+/* Helper note under the Character Info Box live preview */
+.options-preview-note {
+  margin: 2px 0 6px;
+  text-align: center;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: #8A8A8A;
 }
 
 .portrait-dash {
@@ -1342,63 +1511,160 @@ body::before {
   margin-top: 4px;
 }
 
-.resonance-box-choice {
-  border: 1px solid #4a4541;
-  background: #3a3632;
-  color: #f6f2ed;
-  font-family: var(--mono-font);
-  font-size: 0.54rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 7px 2px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+/* ================= SHARED PATTERN TOOLTIP ================= */
+.pattern-tooltip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+  padding: 4px 10px;
+  background: rgba(22, 19, 15, 0.5);
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  border-radius: 0;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(2px);
+  transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 
-.resonance-box-choice.hp,
-.resonance-box-choice.equibalance {
-  font-size: 0.49rem;
-  letter-spacing: 0.03em;
+.pattern-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
-.resonance-box-choice.active {
-  border-color: rgba(17, 17, 17, 0.6);
-  color: #111111;
+/* ================= SHAPE PATTERN PICKER (Character Setting) ================= */
+.shape-pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 4px;
 }
 
-.resonance-box-choice.none.active,
+.shape-pattern-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 3px;
+  background: #111111;
+  border: 1px solid #676767;
+  border-radius: 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.shape-pattern-btn:hover {
+  border-color: #B5B5B3;
+  background: #1a1a1a;
+}
+
+/* Owned patterns show the family colour, same as the main one */
+.shape-pattern-btn.is-owned {
+  border-color: var(--pattern-color, #676767);
+}
+
+/* The main pattern is additionally filled and glows */
+.shape-pattern-btn.is-main {
+  border-color: var(--pattern-color, #D05126);
+  background: color-mix(in srgb, var(--pattern-color, #D05126) 18%, #111111);
+  box-shadow: inset 0 0 0 1px var(--pattern-color, #D05126);
+}
+
+.shape-pattern-btn img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.shape-pattern-btn.is-main img {
+  filter: brightness(1.15) drop-shadow(0 0 3px rgba(255, 255, 255, 0.35));
+}
+
+/* "Main pattern" marker, pinned to the top-right corner */
+.shape-pattern-main-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.shape-pattern-main-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+/* Fallback swatch when no icon exists for the pattern */
+.shape-pattern-fallback {
+  width: 20px;
+  height: 20px;
+  background: var(--pattern-color, #4F4F4F);
+  display: block;
+}
+
+.pattern-help-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+@media (max-width: 640px) {
+  .shape-pattern-grid {
+    gap: 4px;
+  }
+
+  .shape-pattern-btn {
+    height: 34px;
+  }
+}
+
 .btn-pill.active.none {
   background: #4f4f4f;
   border-color: #4f4f4f;
   color: #ffffff;
 }
 
-.resonance-box-choice.offensive.active,
 .btn-pill.active.offensive {
   background: #FBAE31;
   border-color: #FBAE31;
   color: #111111;
 }
 
-.resonance-box-choice.defensive.active,
 .btn-pill.active.defensive {
   background: #2d8a5a;
   border-color: #2d8a5a;
   color: #ffffff;
 }
 
-.resonance-box-choice.hp.active,
 .btn-pill.active.hp {
   background: #d4ad2b;
   border-color: #d4ad2b;
   color: #111111;
 }
 
-.resonance-box-choice.equibalance.active,
 .btn-pill.active.equibalance {
   background: #3b6dc7;
   border-color: #3b6dc7;
@@ -1724,36 +1990,39 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: rgba(8, 8, 8, 0.45);
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: 3px solid #D05126;
   border-radius: 0 10px 0 0;
   padding: 0;
   overflow: hidden;
-  transition: background 0.18s ease, border-color 0.18s ease;
+  transition: border-color 0.18s ease;
 }
 
 .listing-tier-item:hover {
-  background: rgba(18, 18, 18, 0.6);
-  border-color: rgba(255, 255, 255, 0.16);
-  border-left-color: #ED7D31;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
+/* Header row reads as an "el" bar: dark panel + accent rail on the left.
+   --tier-color is set inline from the tier's chosen text colour. */
 .listing-tier-header-row {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 9px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border-left: 3px solid var(--tier-color, #D05126);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
 }
 
+/* Criteria area: flat and compact, no boxed background */
 .listing-tier-rules-container {
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 0;
+  padding: 3px 0 6px;
+  margin-left: 3px;
   background: transparent;
   border: none;
 }
@@ -1762,10 +2031,11 @@ body::before {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 9px 14px 9px 12px;
+  gap: 6px;
+  padding: 7px 14px 7px 12px;
   background: transparent;
   border: none;
+  border-left: 2px solid rgba(246, 195, 74, 0.35);
 }
 
 .listing-rule-group-header {
@@ -1782,6 +2052,18 @@ body::before {
   color: #C9A227;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+/* One criteria row: [field] [op] [value]. Border only — no background. */
+.listing-rule-condition-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 5px 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-sizing: border-box;
 }
 
 .btn-tier-move {
@@ -1839,32 +2121,58 @@ body::before {
   text-transform: uppercase;
 }
 
-/* Small action buttons inside the rules area (+ AND) */
-.listing-rule-group-header .btn-sm {
+/* Compact Clear button inside the tier header */
+.listing-tier-header-row .custom-color-clear-btn {
+  padding: 3px 7px;
+  font-size: 0.55rem;
+}
+
+/* + AND / + Add OR buttons: quiet outline, sitting flush with the row */
+.listing-rule-group-header .btn-sm,
+.listing-rule-group-header .btn-flat-action {
   background: transparent;
   border: 1px solid rgba(181, 181, 179, 0.35);
   color: #B5B5B3;
   border-radius: 0;
   font-size: 0.58rem;
-  padding: 3px 9px;
+  padding: 3px 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.listing-rule-group-header .btn-sm:hover {
+.listing-rule-group-header .btn-sm:hover,
+.listing-rule-group-header .btn-flat-action:hover {
   background: rgba(181, 181, 179, 0.14);
   border-color: #B5B5B3;
   color: #FFFFFF;
 }
 
 /* Tier delete button */
-.listing-tier-header-row .btn-tier-del {
-  color: rgba(208, 81, 38, 0.75);
-}
-
 .listing-tier-header-row .btn-tier-del:hover {
   color: #ED7D31;
+}
+
+/* Clone button — duplicates the tier directly below the current one */
+.listing-tier-header-row .btn-tier-clone {
+  background: transparent;
+  border: 1px solid rgba(181, 181, 179, 0.4);
+  color: #B5B5B3;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.listing-tier-header-row .btn-tier-clone:hover {
+  color: #FFFFFF;
+  border-color: #B5B5B3;
+  background: rgba(181, 181, 179, 0.12);
 }
 
 /* System-tier tag ("UNOWNED" / "REMAINING") */
@@ -1884,12 +2192,11 @@ body::before {
 .listing-rule-select {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
   font-size: 0.68rem;
-  padding: 4px 24px 4px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 4px 22px 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   background:
-    url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23B5B5B3'/%3E%3C/svg%3E")
-      no-repeat right 8px center,
-    rgba(0, 0, 0, 0.3);
+    url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23E5E7EB'/%3E%3C/svg%3E")
+      no-repeat right 7px center;
   color: #E5E7EB;
   cursor: pointer;
   box-sizing: border-box;
@@ -1897,39 +2204,37 @@ body::before {
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0;
-  transition: border-color 0.18s ease, background 0.18s ease;
+  transition: border-color 0.18s ease;
 }
 
 .listing-rule-select:hover {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .listing-rule-select:focus {
   outline: none;
   border-color: #D05126;
-  background-color: rgba(0, 0, 0, 0.45);
 }
 
 .listing-rule-value-input {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
   font-size: 0.68rem;
   padding: 4px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
   color: #E5E7EB;
   width: 55px;
   box-sizing: border-box;
-  transition: border-color 0.18s ease, background 0.18s ease;
+  transition: border-color 0.18s ease;
 }
 
 .listing-rule-value-input:hover {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .listing-rule-value-input:focus {
   outline: none;
   border-color: #D05126;
-  background: rgba(0, 0, 0, 0.45);
 }
 
 .listing-rule-value-input:focus {
@@ -2754,52 +3059,6 @@ body::before {
   color: #FFFFFF;
 }
 
-#edit-modal .resonance-box-choice {
-  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  background: #111111;
-  border: 1px solid #676767;
-  color: #BFBFBF;
-}
-
-#edit-modal .resonance-box-choice:hover {
-  border-color: #B5B5B3;
-  color: #E5E7EB;
-}
-
-/* Pattern colours must survive the ID-scoped base rule above */
-#edit-modal .resonance-box-choice.none.active {
-  background: #4f4f4f;
-  border-color: #4f4f4f;
-  color: #ffffff;
-}
-
-#edit-modal .resonance-box-choice.offensive.active {
-  background: #FBAE31;
-  border-color: #FBAE31;
-  color: #111111;
-}
-
-#edit-modal .resonance-box-choice.defensive.active {
-  background: #2d8a5a;
-  border-color: #2d8a5a;
-  color: #ffffff;
-}
-
-#edit-modal .resonance-box-choice.hp.active {
-  background: #d4ad2b;
-  border-color: #d4ad2b;
-  color: #111111;
-}
-
-#edit-modal .resonance-box-choice.equibalance.active {
-  background: #3b6dc7;
-  border-color: #3b6dc7;
-  color: #ffffff;
-}
-
 /* Skin quick picks */
 #edit-modal .btn-pill-skin {
   background: #111111;
@@ -3125,17 +3384,304 @@ body::before {
   max-width: 280px;
 }
 
-.roster-quick-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  width: 100%;
+/* ================= QUICK EDIT — BULK SELECTION ================= */
+.roster-select-toggle[aria-pressed="true"] {
+  background: rgba(208, 81, 38, 0.22);
+  border-color: #D05126;
+  color: #FFFFFF;
 }
 
-.roster-quick-actions .btn {
-  width: 100%;
-  text-align: center;
+/* Action bar shown while select mode is active */
+.roster-select-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 22px;
+  background: transparent;
+  border-top: 1px solid rgba(208, 81, 38, 0.35);
+  border-bottom: 1px solid rgba(208, 81, 38, 0.35);
+  box-sizing: border-box;
+}
+
+.roster-select-bar[hidden] {
+  display: none;
+}
+
+.roster-select-count {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.roster-select-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.roster-select-actions .btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Bulk Apply carries the accent fill */
+#btn-roster-bulk-apply {
+  background: #D05126;
+  border: 1px solid #D05126;
+  color: #FFFFFF;
+}
+
+#btn-roster-bulk-apply:hover:not([disabled]) {
+  background: #B55829;
+  border-color: #B55829;
+  color: #FFFFFF;
+}
+
+/* Selection state on a tile — thin accent ring, no badge or text emphasis */
+.roster-char-item.is-selected .roster-avatar-box {
+  border-color: #D05126 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.roster-char-item.is-selected {
+  opacity: 1 !important;
+}
+
+.roster-select-mode .roster-char-item {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Dim the unchosen tiles a touch so the selection reads at a glance */
+.roster-select-mode .roster-char-item:not(.is-selected) .roster-avatar-box {
+  opacity: 0.5;
+}
+
+.roster-select-mode .roster-char-item.is-selected .roster-avatar-box {
+  opacity: 1;
+}
+
+.roster-select-mode .roster-char-item .roster-avatar-box {
+  transition: border-color 0.12s ease, opacity 0.12s ease;
+}
+
+/* ================= BULK APPLY MODAL ================= */
+.bulk-apply-hint {
+  margin: 0 0 4px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #E5E7EB;
+}
+
+/* Selected character avatars, so it's clear who is being edited */
+.bulk-apply-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 6px 0 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.bulk-apply-preview img {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border: 1px solid #B5B5B3;
+  background: #111111;
+  display: block;
+}
+
+.bulk-apply-preview .bulk-preview-more {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  border: 1px solid rgba(181, 181, 179, 0.5);
+  color: #B5B5B3;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.bulk-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.bulk-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.bulk-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bulk-row-label {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #BFBFBF;
+}
+
+/* Value readouts only appear once the field has been touched */
+.bulk-row-value:empty {
+  display: none;
+}
+
+.bulk-row-value {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #E5E7EB;
+}
+
+/* Untouched rows read as inactive until the user picks something */
+.bulk-row.is-untouched .bulk-row-label {
+  color: #8A8A8A;
+}
+
+.bulk-row-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bulk-opt {
+  min-width: 34px;
+  padding: 5px 9px;
+  background: #111111;
+  border: 1px solid #676767;
+  color: #BFBFBF;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background 0.13s ease, border-color 0.13s ease, color 0.13s ease;
+}
+
+.bulk-opt:hover {
+  border-color: #B5B5B3;
+  color: #E5E7EB;
+}
+
+.bulk-opt.is-active {
+  background: #D05126;
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+/* "No change" option reads as a neutral reset */
+.bulk-opt.is-none.is-active {
+  background: rgba(181, 181, 179, 0.22);
+  border-color: #B5B5B3;
+  color: #FFFFFF;
+}
+
+/* Insight options render as big, evenly-sized icon tiles (like Character Setting) */
+.bulk-insight-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.bulk-insight-options .bulk-opt {
+  min-width: 0;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bulk-insight-options .bulk-opt img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
+
+.bulk-insight-options .bulk-opt.is-active img {
+  filter: brightness(1.25) drop-shadow(0 0 3px rgba(255, 255, 255, 0.45));
+}
+
+/* Portrait options mirror the same grid rhythm */
+#bulk-portrait-options {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+#bulk-portrait-options .bulk-opt {
+  min-width: 0;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+}
+
+/* Ownership buttons are roomier */
+#bulk-owned-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+#bulk-owned-options .bulk-opt {
+  min-width: 0;
+  height: 38px;
+  padding: 0 14px;
+  font-size: 0.7rem;
+}
+
+/* Level / Resonance slider */
+.bulk-slider-wrap {
+  padding: 2px 0 4px;
+}
+
+.bulk-slider {
+  width: 100%;
+  accent-color: var(--accent-gold);
+  cursor: pointer;
+}
+
+/* Untouched rows read as inactive until the user picks something */
+.bulk-row.is-untouched .bulk-row-label {
+  color: #8A8A8A;
+}
+
+/* Footer: the bar itself is invisible, only the Apply button shows */
+.bulk-apply-footer {
+  display: flex;
+  justify-content: stretch;
+  background: transparent !important;
+  border-top: none !important;
+  padding: 8px 20px 18px;
+}
+
+.bulk-apply-footer .btn-primary {
+  flex: 1;
 }
 
 .roster-grid {
@@ -3309,12 +3855,12 @@ body::before {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  background: #181818;
-  color: #f7f7f7;
-  border: 1px solid var(--panel-border);
+  background: rgba(22, 19, 15, 0.5);
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
   padding: 6px 10px;
-  font-family: var(--mono-font);
-  font-size: 0.75rem;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.55;
   white-space: nowrap;
@@ -3323,7 +3869,8 @@ body::before {
   visibility: hidden;
   transition: opacity 0.15s ease, visibility 0.15s ease;
   z-index: 250;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  border-radius: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 
 .chess-pieces-container.pos-bottom .chess-piece-tooltip {
@@ -3801,24 +4348,6 @@ body::before {
     max-height: none;
   }
 
-  .resonance-box-legend {
-    grid-template-columns: repeat(6, 1fr);
-    gap: 4px;
-  }
-
-  .resonance-box-choice {
-    grid-column: span 2;
-    font-size: 0.5rem;
-    padding: 6px 2px;
-    text-align: center;
-  }
-
-  .resonance-box-choice.hp,
-  .resonance-box-choice.equibalance {
-    grid-column: span 3;
-    font-size: 0.46rem;
-  }
-
   .pattern-help-box {
     font-size: 0.6rem;
     padding: 6px 8px;
@@ -3878,25 +4407,6 @@ body::before {
   #roster-filter-rarity-group .filter-btn {
     padding: 0 6px;
     font-size: 0.58rem;
-  }
-
-  .roster-quick-actions {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-
-  .roster-quick-actions .btn {
-    width: 100%;
-    min-width: 0;
-    padding: 6px 4px;
-    font-size: 0.54rem;
-    letter-spacing: 0;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .roster-grid {

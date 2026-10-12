@@ -1,6 +1,121 @@
 // Keys & State
 const STORAGE_KEY = "r1999_character_roster_v2";
 
+/* ================= i18n ================= */
+const LANG_STORAGE_KEY = "r1999_language_v1";
+const SUPPORTED_LANGS = ["en", "cn", "vi"];
+
+let currentLang = "en";
+let i18nStrings = {};      // { en: {...}, cn: {...}, vi: {...} }
+let nameMap = { character: {}, skin: {} };
+
+/** Looks up a UI string for the active language (falls back to English). */
+function t(key, vars) {
+  const table = i18nStrings[currentLang] || i18nStrings.en || {};
+  let str = table[key];
+  if (str === undefined) str = (i18nStrings.en || {})[key];
+  if (str === undefined) return key;
+  if (vars) {
+    str = str.replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
+  }
+  return str;
+}
+
+/**
+ * Display name for a character. Storage always keeps the English key,
+ * so only the rendered label changes with the language.
+ */
+function displayCharName(name) {
+  if (currentLang === "cn") {
+    const cn = nameMap.character[name];
+    if (cn) return cn;
+  }
+  return name;
+}
+
+/** Display name for a garment/skin. Falls back to the English name. */
+function displaySkinName(skinNameEng) {
+  if (!skinNameEng) return skinNameEng;
+  if (currentLang === "cn") {
+    const cn = nameMap.skin[skinNameEng];
+    if (cn) return cn;
+  }
+  return skinNameEng;
+}
+
+function loadLanguage() {
+  const saved = localStorage.getItem(LANG_STORAGE_KEY);
+  if (SUPPORTED_LANGS.includes(saved)) currentLang = saved;
+}
+
+function setLanguage(lang) {
+  if (!SUPPORTED_LANGS.includes(lang)) return;
+  currentLang = lang;
+  localStorage.setItem(LANG_STORAGE_KEY, lang);
+  document.documentElement.setAttribute("lang", lang === "cn" ? "zh-Hans" : lang);
+  applyTranslations();
+  refreshDynamicTranslations();
+  renderShowcase();
+
+  const rosterModalEl = document.getElementById("roster-modal");
+  if (rosterModalEl && rosterModalEl.style.display === "flex") renderRosterManager();
+}
+
+/**
+ * Rewrites every element carrying a data-i18n / data-i18n-* attribute.
+ * Supported: data-i18n (text), data-i18n-placeholder, data-i18n-title,
+ * data-i18n-aria-label.
+ */
+function applyTranslations() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    el.setAttribute("placeholder", t(el.getAttribute("data-i18n-placeholder")));
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    el.setAttribute("title", t(el.getAttribute("data-i18n-title")));
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
+    el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria-label")));
+  });
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.lang === currentLang);
+  });
+
+  // The wordmark has localised artwork for Chinese and Vietnamese
+  const logo = document.getElementById("app-logo-img");
+  if (logo) {
+    if (currentLang === "cn") logo.src = "images/sotheby_mansion_cn.png";
+    else if (currentLang === "vi") logo.src = "images/sotheby_mansion_vi.png";
+    else logo.src = "images/sotheby_mansion.webp";
+  }
+}
+
+/**
+ * Updates a button's visible label without destroying an inner [data-i18n] span.
+ * If such a span exists we retarget its key so later language switches keep working.
+ */
+function setButtonLabel(btn, text, key) {
+  if (!btn) return;
+  const span = btn.querySelector("[data-i18n]");
+  if (span) {
+    span.textContent = text;
+    if (key) span.setAttribute("data-i18n", key);
+    return;
+  }
+  btn.textContent = text;
+}
+
+/** Re-applies JS-driven strings that are not covered by data-i18n attributes. */
+function refreshDynamicTranslations() {
+  const status = document.getElementById("board-bg-image-status");
+  if (status) {
+    setButtonLabel(status, customBoardBgImageUrl ? t("styling.bgActive") : t("styling.noImage"),
+      customBoardBgImageUrl ? "styling.bgActive" : "styling.noImage");
+  }
+}
+
 let characterDb = {}; // { "Name": "images/headicon_small/..." }
 let characterRarityMap = {}; // { "Name": 6 }
 let characterIdMap = {}; // { "Name": 3003 }
@@ -8,6 +123,8 @@ let euphoriaOptionsByName = {}; // { "Name": [1,2] }
 let euphoriaNamesByTier = {}; // { "Name": { 1: "Pursuit", 2: "Conduit" } }
 let euphoriaAllowedNames = new Set();
 let characterAfflatus = {}; // { "Name": "Beast" | "Plant" | "Star" | "Mineral" | "Spirit" | "Intellect" | "Mineral_Star" }
+let characterResoShape = {}; // { "Name": "Z shape" | "T shape" | "U shape" | "Plus shape" }
+let shapePatterns = {};      // { "Z shape": ["Placidity", ...], ... }
 let futureSightData = { Character: [], Euphoria: [], Skin: [] };
 let futureSightChars = new Set();
 let futureSightEuphorias = new Map(); // name -> Set of future tiers e.g. "37" -> Set([1])
@@ -183,7 +300,7 @@ const checkE2 = document.getElementById("check-e2");
 const labelTextE1 = document.getElementById("label-text-e1");
 const labelTextE2 = document.getElementById("label-text-e2");
 const modalBtnSave = document.getElementById("modal-btn-save");
-const resonanceBoxChoices = document.querySelectorAll(".resonance-box-choice");
+const shapePatternGrid = document.getElementById("shape-pattern-grid");
 
 // Roster Manager Modal Elements
 const rosterModal = document.getElementById("roster-modal");
@@ -192,13 +309,12 @@ const rosterBtnClose = document.getElementById("roster-btn-close");
 const rosterSearch = document.getElementById("roster-search");
 const rosterGridList = document.getElementById("roster-grid-list");
 const rosterFilterRarityBtns = document.querySelectorAll("#roster-filter-rarity-group .filter-btn");
-const btnSelectAll = document.getElementById("btn-select-all");
-const btnSelectAllUnbuilt = document.getElementById("btn-select-all-unbuilt");
-const btnSetAllP5 = document.getElementById("btn-set-all-p5");
-const btnUnselectAll = document.getElementById("btn-unselect-all");
 
 let rosterActiveRarityFilters = new Set(); // Set of active rarities in Roster Manager
 let rosterNeedsShowcaseRefresh = false;    // Defers board re-render until the modal closes
+let rosterSelectMode = false;              // Bulk-selection mode in Quick Edit
+const rosterSelection = new Set();         // Names currently selected for bulk apply
+let rosterVisibleNames = [];               // Names passing the current search/rarity filter
 
 // Action Buttons
 const btnExportImage = document.getElementById("btn-export-image");
@@ -278,6 +394,7 @@ let displayOptions = {
   hidePortrait: false,
   hideNames: false,
   hideOwnedNames: false,
+  hidePatterns: false,
   hideSkin: false,
   hideAfflatus: false,
   showPatternBg: false,
@@ -285,7 +402,8 @@ let displayOptions = {
   colorNonePatternBg: "#4F4F4F",
   showNonePatternBorder: false,
   colorNonePatternBorder: "#4F4F4F",
-  showRarityLine: false,
+  showRarityLine: true,
+  hideRarityLine: false,
   hideI3Lv60: false,
   hideI3Lv30: false,
   hideI2Lv50: false,
@@ -311,6 +429,15 @@ function loadDisplayOptions() {
       }
       if (!Array.isArray(displayOptions.customResHideRules)) {
         displayOptions.customResHideRules = [];
+      }
+
+      // Migration: older saves stored showRarityLine=false before the rarity line
+      // was reworked into an always-on feature. If the user never explicitly hid it,
+      // turn it on so the rarity line appears on existing saves.
+      const neverHidRarity = parsed.hideRarityLine !== true;
+      if (parsed.showRarityLine !== true && neverHidRarity) {
+        displayOptions.showRarityLine = true;
+        saveDisplayOptions();
       }
     }
   } catch (e) {
@@ -579,13 +706,17 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
       fetch("data/future_sight.json").catch(() => null),
       fetch("data/exclude_character.json").catch(() => null),
       fetch("data/characters_by_afflatus.json").catch(() => null),
+      fetch("data/character_reso_shape.json").catch(() => null),
+      fetch("data/shape_patterns.json").catch(() => null),
+      fetch("data/i18n.json").catch(() => null),
+      fetch("data/name_map.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -636,6 +767,46 @@ async function initApp() {
       }
     }
 
+    if (resoShapeRes && resoShapeRes.ok) {
+      try {
+        const resoShapeData = await resoShapeRes.json();
+        buildResoShapeMap(resoShapeData);
+      } catch (e) {
+        console.warn("Could not parse character_reso_shape.json", e);
+      }
+    }
+
+    if (shapePatternRes && shapePatternRes.ok) {
+      try {
+        const shapePatternData = await shapePatternRes.json();
+        buildShapePatternMap(shapePatternData);
+      } catch (e) {
+        console.warn("Could not parse shape_patterns.json", e);
+      }
+    }
+
+    if (i18nRes && i18nRes.ok) {
+      try {
+        i18nStrings = await i18nRes.json();
+      } catch (e) {
+        console.warn("Could not parse i18n.json", e);
+      }
+    }
+
+    if (nameMapRes && nameMapRes.ok) {
+      try {
+        const nm = await nameMapRes.json();
+        nameMap = {
+          character: nm.character || {},
+          skin: nm.skin || {},
+        };
+      } catch (e) {
+        console.warn("Could not parse name_map.json", e);
+      }
+    }
+
+    loadLanguage();
+    applyTranslations();
     loadTitle();
     loadListingConfig();
     loadFutureSightState();
@@ -734,6 +905,8 @@ function buildArcanistData(arcanistData) {
       skins.push({
         id: skin.id,
         name: skinName,
+        // Chinese label from ArcanistMap, used when the UI language is Chinese
+        nameCn: skin.characterSkin || "",
         isDefault: isDefault,
         iconUrl: `images/headicon_small/${skin.id}.png`,
       });
@@ -831,6 +1004,131 @@ function buildAfflatusMap(afflatusData) {
 function getCharacterAfflatus(name) {
   const canonical = resolveCharacterName(name);
   return characterAfflatus[canonical] || null;
+}
+
+/* ---------------- Resonance shape patterns ---------------- */
+
+const DEFAULT_PATTERN = "Placidity";
+
+// Colour families shared by every shape's pattern list
+const PATTERN_COLORS = {
+  orange: "#F67E26",
+  green: "#62A771",
+  yellow: "#E6AE34",
+  blue: "#4A70B3",
+  placidity: "#E5E7EB",
+};
+
+// Which colour family each pattern belongs to (Placidity is the neutral default)
+const PATTERN_COLOR_FAMILY = {
+  // Orange — offensive-leaning
+  Aspirational: "orange",
+  Delirament: "orange",
+  Elucidation: "orange",
+  Genuinity: "orange",
+  Hyper: "orange",
+  Hyperphrenia: "orange",
+  Inspire: "orange",
+  // Green — defensive-leaning
+  Equanimity: "green",
+  Mercy: "green",
+  Overindulgence: "green",
+  Prudentiality: "green",
+  Quiescence: "green",
+  // Yellow / Blue — special
+  Stupefaction: "yellow",
+  Equibalance: "blue",
+  // Default
+  Placidity: "placidity",
+};
+
+function buildResoShapeMap(data) {
+  characterResoShape = {};
+  if (!data || typeof data !== "object") return;
+  Object.entries(data).forEach(([shape, names]) => {
+    if (!Array.isArray(names)) return;
+    names.forEach((rawName) => {
+      const canonical = resolveCharacterName(rawName);
+      if (canonical) characterResoShape[canonical] = shape;
+    });
+  });
+}
+
+function buildShapePatternMap(data) {
+  shapePatterns = {};
+  if (!data || typeof data !== "object") return;
+  Object.entries(data).forEach(([shape, patterns]) => {
+    if (Array.isArray(patterns)) shapePatterns[shape] = patterns.slice();
+  });
+}
+
+function getCharacterResoShape(name) {
+  const canonical = resolveCharacterName(name);
+  return characterResoShape[canonical] || null;
+}
+
+/** Pattern list available to a character, based on its resonance shape.
+ *  Placidity is the implicit default, so it is excluded from the picker. */
+function getPatternsForCharacter(name) {
+  const shape = getCharacterResoShape(name);
+  const all = (shape && shapePatterns[shape]) ? shapePatterns[shape] : [DEFAULT_PATTERN];
+  const selectable = all.filter((p) => p !== DEFAULT_PATTERN);
+  return selectable.length ? selectable : [DEFAULT_PATTERN];
+}
+
+function isKnownPattern(patternName) {
+  return Object.prototype.hasOwnProperty.call(PATTERN_COLOR_FAMILY, patternName);
+}
+
+function getPatternColor(patternName) {
+  const family = PATTERN_COLOR_FAMILY[patternName];
+  return family ? PATTERN_COLORS[family] : PATTERN_COLORS.placidity;
+}
+
+/** Path to the pattern icon for a character (null when unknown). */
+function getPatternIconPath(name, patternName) {
+  const shape = getCharacterResoShape(name);
+  if (!shape || !patternName) return null;
+  return `images/shape_pattern/${shape}/${patternName}.png`;
+}
+
+/** Same as getPatternIconPath, but for a shape name directly. */
+function getPatternIconPathForShape(shape, patternName) {
+  if (!shape || !patternName) return "";
+  return `images/shape_pattern/${shape}/${patternName}.png`;
+}
+
+/* ---------------- Owned patterns & the chosen "main" ---------------- */
+
+/**
+ * Normalises a roster entry's pattern data into { owned: string[], main: string }.
+ * Handles both the current schema and the legacy single-value `boxKind`.
+ */
+function normalizePatternState(name, char) {
+  const allowed = getPatternsForCharacter(name);
+  const allowedSet = new Set(allowed);
+
+  // New schema: { patterns: [...], patternMain: "..." } stored on the roster entry
+  if (Array.isArray(char.patterns) || typeof char.patternMain === "string") {
+    let owned = Array.isArray(char.patterns) ? char.patterns.filter((p) => allowedSet.has(p)) : [];
+    let main = allowedSet.has(char.patternMain) ? char.patternMain : null;
+    if (main && !owned.includes(main)) owned.unshift(main);
+    if (!main && owned.length) main = owned[0];
+    return { owned, main };
+  }
+
+  // Legacy: a single boxKind value (already migrated to a valid pattern or Placidity)
+  if (char.boxKind && allowedSet.has(char.boxKind)) {
+    return { owned: [char.boxKind], main: char.boxKind };
+  }
+
+  return { owned: [], main: null };
+}
+
+/** The colour-driving pattern for a card: the main one, else the neutral default. */
+function getMainPattern(name, char) {
+  const { main } = normalizePatternState(name, char || {});
+  return main || DEFAULT_PATTERN;
 }
 
 function buildEuphoriaMap(euphoriaData) {
@@ -943,7 +1241,9 @@ function sanitizeRosterState() {
         portrait: 0,
         e1: false,
         e2: false,
-        boxKind: "none",
+        patterns: [],
+        patternMain: null,
+        boxKind: DEFAULT_PATTERN,
         skin: null,
       };
       changed = true;
@@ -962,14 +1262,25 @@ function sanitizeRosterState() {
         userRoster[name].resonance = charMaxRes;
         changed = true;
       }
-      if (userRoster[name].boxKind === undefined) {
-        userRoster[name].boxKind = "none";
-        changed = true;
-      }
-      if (userRoster[name].skin === undefined) {
-        userRoster[name].skin = null;
-        changed = true;
-      }
+      // Migrate legacy pattern keys ("offensive"/"defensive"/"hp"/"equibalance"/"none")
+            // into the current shape-based pattern set.
+            const patternState = normalizePatternState(name, userRoster[name]);
+            const currentOwned = Array.isArray(userRoster[name].patterns) ? userRoster[name].patterns : null;
+            const currentMain = typeof userRoster[name].patternMain === "string" ? userRoster[name].patternMain : null;
+            if (
+              !currentOwned ||
+              currentOwned.join("|") !== patternState.owned.join("|") ||
+              currentMain !== patternState.main
+            ) {
+              userRoster[name].patterns = patternState.owned;
+              userRoster[name].patternMain = patternState.main;
+              userRoster[name].boxKind = patternState.main || DEFAULT_PATTERN;
+              changed = true;
+            }
+            if (userRoster[name].skin === undefined) {
+              userRoster[name].skin = null;
+              changed = true;
+            }
 
       const sanitizedEuphoria = sanitizeEuphoriaState(name, userRoster[name]);
       if (userRoster[name].e1 !== sanitizedEuphoria.e1 || userRoster[name].e2 !== sanitizedEuphoria.e2) {
@@ -1089,9 +1400,9 @@ function evalSingleCondition(cond, char, rarity) {
   const lvl = Number(char.level !== undefined ? char.level : 1);
   const insight = Number(char.insight !== undefined ? char.insight : 0);
   const portrait = Number(char.portrait !== undefined ? char.portrait : 0);
-  const boxKind = char.boxKind || "none";
+  const boxKind = char.boxKind || DEFAULT_PATTERN;
   const hasEuphoria = !!(char.e1 || char.e2);
-  const hasPattern = boxKind !== "none";
+  const hasPattern = boxKind !== DEFAULT_PATTERN;
   const hasSkin = !!(char.skin && !String(char.skin).endsWith("01"));
 
   if (field === "has_euphoria") {
@@ -1276,7 +1587,7 @@ function renderChessPieces() {
     tooltip.className = "chess-piece-tooltip";
     tooltip.innerHTML = `
       <div style="font-weight: 700; color: #fff; margin-bottom: 2px;">${piece.name} (✦${piece.rarity})</div>
-      <div>Owned: ${owned}/${total} (${Math.round(pct)}%)</div>
+      <div>${t("action.owned")}: ${owned}/${total} (${Math.round(pct)}%)</div>
     `;
 
     wrapper.appendChild(imgEmpty);
@@ -1375,7 +1686,7 @@ function renderShowcase() {
             portrait: 0,
             e1: false,
             e2: false,
-            boxKind: "none",
+            boxKind: DEFAULT_PATTERN,
           };
           const iconUrl = characterDb[name];
           const card = createCharacterCard(name, char, iconUrl);
@@ -1397,7 +1708,7 @@ function renderShowcase() {
               portrait: 0,
               e1: false,
               e2: false,
-              boxKind: "none",
+              boxKind: DEFAULT_PATTERN,
             }),
             name: name,
           };
@@ -1423,7 +1734,7 @@ function renderShowcase() {
               portrait: 0,
               e1: false,
               e2: false,
-              boxKind: "none",
+              boxKind: DEFAULT_PATTERN,
             }),
             name: name,
           };
@@ -1450,15 +1761,15 @@ function renderShowcase() {
     }
   });
 
-  rosterStat.innerHTML = `Crew ${ownedCount}/${totalCount} <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" />`;
+  rosterStat.innerHTML = `<span data-i18n="toolbar.crew">${t("toolbar.crew")}</span> ${ownedCount}/${totalCount} <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" />`;
   rosterStat.removeAttribute("title");
 
   const rosterStatTooltip = document.getElementById("roster-stat-tooltip");
   if (rosterStatTooltip) {
     rosterStatTooltip.innerHTML = `
-      <div>Lv. 60: ${lv60Count}</div>
-      <div>R10+: ${r10PlusCount}</div>
-      <div>Eupho unlocked: ${euphoCount}</div>
+      <div class="stat-tip-row"><span class="stat-tip-label">${t("stats.level60")}</span><span class="stat-tip-value">${lv60Count}</span></div>
+      <div class="stat-tip-row"><span class="stat-tip-label">${t("stats.r10plus")}</span><span class="stat-tip-value">${r10PlusCount}</span></div>
+      <div class="stat-tip-row"><span class="stat-tip-label">${t("stats.euphoria")}</span><span class="stat-tip-value">${euphoCount}</span></div>
     `;
   }
 
@@ -1501,14 +1812,85 @@ function renderTierRowSection(label, color, cards, customBg, customBorder, isBol
   tierRowsContainer.appendChild(section);
 }
 
-function getPatternDisplayName(boxKind) {
-  switch (boxKind) {
-    case "offensive": return "Offensive";
-    case "defensive": return "Defensive";
-    case "hp": return "Stupefaction";
-    case "equibalance": return "Equibalance";
-    default: return "";
+function getPatternDisplayName(patternName) {
+  if (!patternName || patternName === DEFAULT_PATTERN) return "";
+  return isKnownPattern(patternName) ? patternName : "";
+}
+
+/**
+ * Renders the pattern picker for the character being edited.
+ *
+ * Model: a character may OWN several patterns but only one is "main".
+ *  - First pattern clicked becomes the main one (marked with a badge).
+ *  - Clicking an owned, non-main pattern promotes it to main.
+ *  - Clicking the main pattern demotes it; the next owned pattern takes over.
+ *  - Placidity is the implicit default and is never shown here.
+ */
+function renderShapePatternGrid() {
+  if (!shapePatternGrid) return;
+  const name = currentEditingName;
+  const patterns = getPatternsForCharacter(name);
+  const state = normalizePatternState(name, tempEditState);
+
+  shapePatternGrid.innerHTML = "";
+  patterns.forEach((patternName) => {
+    const isOwned = state.owned.includes(patternName);
+    const isMain = state.main === patternName;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "shape-pattern-btn";
+    btn.dataset.pattern = patternName;
+    btn.dataset.patternName = patternName + (isMain ? " (main)" : isOwned ? " (owned)" : "");
+    if (isOwned) btn.classList.add("is-owned");
+    if (isMain) btn.classList.add("is-main");
+    btn.style.setProperty("--pattern-color", getPatternColor(patternName));
+
+    const iconPath = getPatternIconPath(name, patternName);
+    const iconHtml = iconPath
+      ? `<img src="${escapeHtml(iconPath)}" alt="${escapeHtml(patternName)}" loading="lazy" decoding="async" />`
+      : `<span class="shape-pattern-fallback"></span>`;
+    const badgeHtml = isMain
+      ? `<span class="shape-pattern-main-badge"><img src="images/random_icon/selected_pattern.png" alt="main" /></span>`
+      : "";
+    btn.innerHTML = `${iconHtml}${badgeHtml}`;
+
+    btn.addEventListener("click", () => {
+      togglePatternSelection(name, patternName);
+    });
+
+    shapePatternGrid.appendChild(btn);
+  });
+}
+
+/**
+ * Applies the ownership rule:
+ *  - Clicking an unowned pattern adds it. The FIRST owned pattern becomes main.
+ *  - Clicking a non-main owned pattern keeps the main unchanged (no demote).
+ *  - Clicking the main pattern removes it; the next owned pattern (in click order)
+ *    takes over as main, or Placidity when none remain.
+ */
+function togglePatternSelection(name, patternName) {
+  const state = normalizePatternState(name, tempEditState);
+  const owned = state.owned.slice();
+  const idx = owned.indexOf(patternName);
+
+  if (idx === -1) {
+    // Not owned yet — add it. First-ever pattern becomes the main one.
+    owned.push(patternName);
+    tempEditState.patterns = owned;
+    tempEditState.patternMain = state.main || patternName;
+  } else {
+    // Already owned — remove it (the current main stays main unless it was removed)
+    owned.splice(idx, 1);
+    tempEditState.patterns = owned;
+    tempEditState.patternMain = state.main === patternName
+      ? (owned.length ? owned[0] : null)
+      : state.main;
   }
+
+  tempEditState.boxKind = tempEditState.patternMain || DEFAULT_PATTERN;
+  updateModalView();
 }
 
 // Create Character Card Element
@@ -1518,7 +1900,6 @@ function createCharacterCard(name, char, iconUrl) {
   const insightVal = char.insight !== undefined ? char.insight : 3;
   const levelVal = char.level !== undefined ? char.level : 60;
   const rarityVal = getCharacterRarity(name);
-  const rarityStars = "✦".repeat(rarityVal || 0);
 
   // Euphoria / Pattern string e.g. "E1 E2" or "E1" or "E2"
   let euphoriaText = "";
@@ -1526,9 +1907,10 @@ function createCharacterCard(name, char, iconUrl) {
   else if (char.e2) euphoriaText = "E2";
   else if (char.e1) euphoriaText = "E1";
 
-  const boxKind = char.boxKind || "none";
-  const resonanceColor = getCardResonanceTextColor(boxKind);
-  const patternColor = getResonanceTextColor(boxKind);
+  // The card colour follows the character's chosen (main) pattern
+    const boxKind = getMainPattern(name, char);
+    const resonanceColor = getCardResonanceTextColor(boxKind);
+    const patternColor = getResonanceTextColor(boxKind);
   const patternName = getPatternDisplayName(boxKind);
   const patternSuffix = patternName ? ` · ${patternName}` : "";
 
@@ -1552,7 +1934,7 @@ function createCharacterCard(name, char, iconUrl) {
 
   let topHeaderHtml = "";
   if (!char.owned) {
-    topHeaderHtml = `<div class="char-top-info">${!displayOptions.hideNames ? `<span class="char-unowned-name">${escapeHtml(name)}</span>` : ""}</div>`;
+    topHeaderHtml = `<div class="char-top-info">${!displayOptions.hideNames ? `<span class="char-unowned-name">${escapeHtml(displayCharName(name))}</span>` : ""}</div>`;
   } else {
     const resVal = Number(char.resonance);
     const matchesCustomResRule = (displayOptions.customResHideRules || []).some(
@@ -1565,18 +1947,29 @@ function createCharacterCard(name, char, iconUrl) {
 
     const showResonance = !displayOptions.hideResonance && !isResHiddenByPreset;
     const showEuphoria = !displayOptions.hideEuphoria && !!euphoriaText;
+
+    // Main pattern icon sits next to the resonance badge
+    const patternState = normalizePatternState(name, char);
+    const shape = getCharacterResoShape(name);
+    const mainPattern = patternState.main;
+    const mainPatternPath = (mainPattern && shape) ? `images/shape_pattern/${shape}/${mainPattern}.png` : null;
+    const showMainPattern = !displayOptions.hidePatterns && !!mainPatternPath;
+
     topHeaderHtml = `
       <div class="char-top-info">
         ${showResonance ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">R${char.resonance}</span>` : `<span></span>`}
+        ${showMainPattern ? `<img src="${escapeHtml(mainPatternPath)}" alt="${escapeHtml(mainPattern)}" data-pattern-name="${escapeHtml(mainPattern)}" class="char-main-pattern-icon" loading="lazy" decoding="async" />` : ""}
         ${showEuphoria ? `<span class="badge-euphoria">${euphoriaText}</span>` : ""}
       </div>
     `;
   }
 
-  // Owned character names sit below the portrait bar
-  const ownedNameHtml = (char.owned && !displayOptions.hideOwnedNames)
-    ? `<div class="char-name-below">${escapeHtml(name)}</div>`
-    : "";
+  // Below the portrait bar: the name of OWNED characters.
+  // Unowned cards already show their name above the avatar, so no duplicate here.
+  let nameRowHtml = "";
+  if (char.owned && !displayOptions.hideOwnedNames) {
+    nameRowHtml = `<div class="char-name-below">${escapeHtml(displayCharName(name))}</div>`;
+  }
 
   let portraitBarHtml = "";
   if (char.owned && !displayOptions.hidePortrait) {
@@ -1620,15 +2013,15 @@ function createCharacterCard(name, char, iconUrl) {
     </div>
   ` : "";
 
-  const rarityLineHtml = displayOptions.showRarityLine ? `
-    <div class="char-rarity-line rarity-${rarityVal}"></div>
+  const rarityLineHtml = (char.owned && displayOptions.showRarityLine && !displayOptions.hideRarityLine) ? `
+    <img src="images/colour_references/${rarityVal}.png" alt="" class="char-rarity-line" loading="lazy" decoding="async" />
   ` : "";
 
   const avatarUrl = getCardAvatarUrl(name, char, iconUrl);
 
   const avatarImgStyles = [];
   if (char.owned) {
-    if (boxKind && boxKind !== "none") {
+    if (boxKind && boxKind !== DEFAULT_PATTERN) {
       if (displayOptions.showPatternBg) {
         avatarImgStyles.push(`background-color: ${patternColor}`);
       }
@@ -1656,21 +2049,41 @@ function createCharacterCard(name, char, iconUrl) {
   const avatarImgStyle = avatarImgStyles.length > 0 ? ` style="${avatarImgStyles.join("; ")};"` : "";
 
   let tooltipHtml = "";
-  if (!char.owned) {
+  {
+    const patternState = normalizePatternState(name, char);
+    const shape = getCharacterResoShape(name);
+
+    // Pattern icons row (main first, then the rest)
+    const orderedPatterns = patternState.main
+      ? [patternState.main, ...patternState.owned.filter((p) => p !== patternState.main)]
+      : patternState.owned;
+    const patternRowHtml = orderedPatterns.length
+      ? `<div class="ct-patterns">${orderedPatterns.map((p) => {
+           const path = shape ? `images/shape_pattern/${shape}/${p}.png` : null;
+           const isMain = p === patternState.main;
+           return path
+             ? `<img src="${escapeHtml(path)}" alt="${escapeHtml(p)}" data-pattern-name="${escapeHtml(isMain ? p + " (main)" : p)}" class="ct-pattern-icon${isMain ? " is-main" : ""}" loading="lazy" decoding="async" />`
+             : "";
+         }).join("")}</div>`
+      : "";
+
+    const euphoriaRowHtml = euphoriaText
+      ? `<div class="ct-row"><span class="ct-label">${t("card.euphoria")}</span><span class="ct-value ct-euphoria">${escapeHtml(euphoriaText)}</span></div>`
+      : "";
+
     tooltipHtml = `
-      <div class="char-tooltip no-export">
-        <div>${escapeHtml(name)}</div>
-        <div>Unowned</div>
-      </div>
-    `;
-  } else {
-    tooltipHtml = `
-      <div class="char-tooltip no-export">
-        <div>${escapeHtml(name)}</div>
-        <div>Insight: I${insightVal} Lv.${levelVal}</div>
-        <div>Resonance: R${char.resonance}</div>
-        <div>Portrait: P${char.portrait}</div>
-        ${euphoriaText ? `<div>Euphoria: ${euphoriaText}</div>` : ""}
+      <div class="char-tooltip no-export" style="--pattern-color: ${getPatternColor(patternState.main || DEFAULT_PATTERN)};">
+        <div class="ct-head">
+          <span class="ct-name">${escapeHtml(displayCharName(name))}</span>
+        </div>
+        <div class="ct-body">
+          <div class="ct-row"><span class="ct-label">${t("card.insight")}</span><span class="ct-value">I${insightVal}</span></div>
+          <div class="ct-row"><span class="ct-label">${t("card.level")}</span><span class="ct-value">${levelVal}</span></div>
+          <div class="ct-row"><span class="ct-label">${t("card.resonance")}</span><span class="ct-value">R${char.resonance}</span></div>
+          <div class="ct-row"><span class="ct-label">${t("card.portrait")}</span><span class="ct-value">P${char.portrait}</span></div>
+          ${euphoriaRowHtml}
+          ${patternRowHtml}
+        </div>
       </div>
     `;
   }
@@ -1684,7 +2097,7 @@ function createCharacterCard(name, char, iconUrl) {
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
-    ${ownedNameHtml}
+    ${nameRowHtml}
     ${tooltipHtml}
   `;
 
@@ -1708,7 +2121,7 @@ function openEditModal(name) {
     portrait: 0,
     e1: false,
     e2: false,
-    boxKind: "none",
+    boxKind: DEFAULT_PATTERN,
   };
 
   const rawInsight = char.insight !== undefined ? Number(char.insight) : maxAllowedInsight;
@@ -1730,19 +2143,22 @@ function openEditModal(name) {
     ? char.skin
     : defaultSkinId;
 
+  const initialPatternState = normalizePatternState(name, char);
   tempEditState = {
     ...char,
     insight: insight,
     level: level,
     resonance: resonance,
-    boxKind: char.boxKind || "none",
+    patterns: initialPatternState.owned,
+    patternMain: initialPatternState.main,
+    boxKind: initialPatternState.main || DEFAULT_PATTERN,
     e1: sanitizedEuphoria.e1,
     e2: sanitizedEuphoria.e2,
     skin: currentSkinId,
   };
 
-  modalCharName.textContent = name;
-  modalCharStatus.textContent = tempEditState.owned ? "Owned" : "Unowned";
+  modalCharName.textContent = displayCharName(name);
+  modalCharStatus.textContent = tempEditState.owned ? t("setting.owned") : t("setting.unowned");
 
   renderSkinSelector(name);
   updateModalView();
@@ -1764,7 +2180,7 @@ function renderSkinSelector(name) {
     btn.type = "button";
     btn.className = "btn-pill-skin";
     btn.dataset.skinId = String(skin.id);
-    btn.title = skin.name;
+    btn.title = currentLang === "cn" && skin.nameCn ? skin.nameCn : skin.name;
 
     const img = document.createElement("img");
     img.src = skin.iconUrl;
@@ -1893,10 +2309,8 @@ function updateModalView() {
   displayResonance.textContent = `R${tempEditState.resonance}`;
   displayResonance.style.color = getResonanceTextColor(tempEditState.boxKind || "none");
 
-  // If resonance < 10, pattern is reset to none
-  if (tempEditState.resonance < 10) {
-    tempEditState.boxKind = "none";
-  }
+  // If resonance < 10 the pattern feature is locked; keep owned patterns but show none
+  const patternLocked = tempEditState.resonance < 10;
 
   document.querySelectorAll(".btn-pill").forEach((btn) => {
     const btnRes = Number(btn.dataset.r);
@@ -1907,13 +2321,9 @@ function updateModalView() {
     }
     const isActive = btnRes === tempEditState.resonance;
     btn.classList.toggle("active", isActive);
-    btn.classList.remove("none", "offensive", "defensive", "hp", "equibalance");
-    if (isActive) btn.classList.add(tempEditState.boxKind || "none");
   });
 
-  resonanceBoxChoices.forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.boxKind === (tempEditState.boxKind || "none"));
-  });
+  renderShapePatternGrid();
 
   // Portrait
   displayPortrait.textContent = `P${tempEditState.portrait}`;
@@ -1956,6 +2366,8 @@ function saveEditModal() {
   const finalE1 = meetsLevelRequirement && eligibleEuphoriaLevels.includes(1) && checkE1.checked;
   const finalE2 = meetsLevelRequirement && eligibleEuphoriaLevels.includes(2) && checkE2.checked;
 
+  const patternState = normalizePatternState(currentEditingName, tempEditState);
+
   userRoster[currentEditingName] = {
     owned: tempEditState.owned,
     insight: tempEditState.insight !== undefined ? tempEditState.insight : 3,
@@ -1964,7 +2376,10 @@ function saveEditModal() {
     portrait: tempEditState.portrait,
     e1: finalE1,
     e2: finalE2,
-    boxKind: tempEditState.boxKind || "none",
+    patterns: patternState.owned,
+    patternMain: patternState.main,
+    // boxKind mirrors the main pattern so legacy code keeps working
+    boxKind: patternState.main || DEFAULT_PATTERN,
     skin: tempEditState.skin,
   };
   saveRoster();
@@ -1981,11 +2396,335 @@ function openRosterModal() {
 
 function closeRosterModal() {
   rosterModal.style.display = "none";
+  exitRosterSelectMode();
   // Board refresh is deferred until the modal closes, so bulk edits stay fast
   if (rosterNeedsShowcaseRefresh) {
     rosterNeedsShowcaseRefresh = false;
     renderShowcase();
   }
+}
+
+/* ---------------- Bulk selection ---------------- */
+
+function setRosterSelectMode(on) {
+  const toggle = document.getElementById("btn-roster-select-mode");
+  const bar = document.getElementById("roster-select-bar");
+
+  if (!on) {
+    // Leaving select mode must also strip tile styling, not just clear the Set
+    exitRosterSelectMode();
+    return;
+  }
+
+  rosterSelectMode = true;
+  if (toggle) {
+    toggle.classList.add("active");
+    toggle.setAttribute("aria-pressed", "true");
+  }
+  if (bar) bar.hidden = false;
+  rosterGridList.classList.add("roster-select-mode");
+  updateRosterSelectionUI();
+}
+
+function exitRosterSelectMode() {
+  const wasActive = rosterSelectMode || rosterSelection.size > 0;
+  rosterSelectMode = false;
+  rosterSelection.clear();
+
+  const toggle = document.getElementById("btn-roster-select-mode");
+  const bar = document.getElementById("roster-select-bar");
+  if (toggle) {
+    toggle.classList.remove("active");
+    toggle.setAttribute("aria-pressed", "false");
+  }
+  if (bar) bar.hidden = true;
+  rosterGridList.classList.remove("roster-select-mode");
+
+  // Strip lingering selection styling from the tiles themselves
+  rosterGridList.querySelectorAll(".roster-char-item.is-selected").forEach((el) => {
+    el.classList.remove("is-selected");
+  });
+
+  updateRosterSelectionUI();
+  return wasActive;
+}
+
+function updateRosterSelectionUI() {
+  const countEl = document.getElementById("roster-select-count");
+  const applyBtn = document.getElementById("btn-roster-bulk-apply");
+  if (countEl) {
+    countEl.textContent = t("bulk.selectedCount", { n: rosterSelection.size });
+  }
+  if (applyBtn) applyBtn.disabled = rosterSelection.size === 0;
+}
+
+function toggleRosterTileSelection(name, el) {
+  if (rosterSelection.has(name)) {
+    rosterSelection.delete(name);
+    el.classList.remove("is-selected");
+  } else {
+    rosterSelection.add(name);
+    el.classList.add("is-selected");
+  }
+  updateRosterSelectionUI();
+}
+
+function selectAllVisibleRosterTiles() {
+  rosterGridList.querySelectorAll(".roster-char-item").forEach((el) => {
+    const name = el.dataset.name;
+    if (!name) return;
+    rosterSelection.add(name);
+    el.classList.add("is-selected");
+  });
+  updateRosterSelectionUI();
+}
+
+function clearRosterSelection() {
+  rosterSelection.clear();
+  rosterGridList.querySelectorAll(".roster-char-item.is-selected").forEach((el) => {
+    el.classList.remove("is-selected");
+  });
+  updateRosterSelectionUI();
+}
+
+/* ---------------- Bulk Apply spec ---------------- */
+
+// null === "no change" for that field
+let bulkSpec = {
+  level: null,
+  insight: null,
+  resonance: null,
+  portrait: null,
+  owned: null,
+};
+
+const BULK_INSIGHT_PRESETS = [0, 1, 2, 3];
+const BULK_PORTRAIT_PRESETS = [0, 1, 2, 3, 4, 5];
+const BULK_OWNED_PRESETS = [
+  { value: false, labelKey: "action.unowned" },
+  { value: true, labelKey: "action.owned" },
+];
+
+function renderBulkRow(containerId, options, current, onPick) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = "";
+
+  options.forEach((opt) => {
+    const value = opt.value !== undefined ? opt.value : opt;
+    // labelKey lets an option resolve its label from the active language
+    const label = opt.labelKey ? t(opt.labelKey) : (opt.label !== undefined ? opt.label : String(opt));
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `bulk-opt${current !== null && current === value ? " is-active" : ""}`;
+    if (opt.icon) {
+      btn.innerHTML = `<img src="${opt.icon}" alt="${label}" />`;
+      btn.title = label;
+    } else {
+      btn.textContent = label;
+    }
+    // Clicking the active option again clears it back to "untouched"
+    btn.addEventListener("click", () => {
+      onPick(current !== null && current === value ? null : value);
+    });
+    container.appendChild(btn);
+  });
+}
+
+/** Insight row: icons instead of text, click again to clear. */
+function renderBulkInsightRow() {
+  const container = document.getElementById("bulk-insight-options");
+  if (!container) return;
+  container.innerHTML = "";
+
+  BULK_INSIGHT_PRESETS.forEach((i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    const isActive = bulkSpec.insight === i;
+    btn.className = `bulk-opt bulk-opt-icon${isActive ? " is-active" : ""}`;
+    btn.innerHTML = `<img src="images/insight_icon/I${i}.png" alt="I${i}" />`;
+    btn.title = `I${i}`;
+    btn.addEventListener("click", () => {
+      bulkSpec.insight = isActive ? null : i;
+      renderBulkApplyModal();
+    });
+    container.appendChild(btn);
+  });
+}
+
+/** Wires a slider; dragging it marks the field as touched. */
+function bindBulkSlider(prefix, maxValue, labelPrefix) {
+  const slider = document.getElementById(`bulk-${prefix}-slider`);
+  if (!slider) return;
+
+  const isUntouched = bulkSpec[prefix] === null;
+  slider.max = String(maxValue);
+  slider.value = String(isUntouched ? 1 : Math.min(bulkSpec[prefix], maxValue));
+
+  slider.oninput = () => {
+    bulkSpec[prefix] = Number(slider.value);
+    const valueEl = document.getElementById(`bulk-${prefix}-value`);
+    if (valueEl) valueEl.textContent = `${labelPrefix}${slider.value}`;
+    const row = document.getElementById(`bulk-row-${prefix}`);
+    if (row) row.classList.remove("is-untouched");
+  };
+
+  // Re-render on release so the caps (driven by insight) stay accurate
+  slider.onchange = () => renderBulkApplyModal();
+}
+
+function renderBulkApplyModal() {
+  const count = rosterSelection.size;
+  const hint = document.getElementById("bulk-apply-hint");
+  const confirm = document.getElementById("bulk-apply-confirm");
+
+  if (hint) {
+    hint.textContent = t("bulk.hintSimple", { n: count });
+  }
+  if (confirm) {
+    confirm.textContent = t("action.apply");
+    confirm.disabled = count === 0;
+  }
+
+  renderBulkApplyPreview();
+
+  // Insight (icons)
+  renderBulkInsightRow();
+
+  // Level / Resonance (sliders with a "no change" toggle above)
+  const levelMax = bulkSpec.insight !== null ? getMaxLevelForInsight(bulkSpec.insight) : 60;
+  const resMax = bulkSpec.insight !== null ? getMaxResonanceForInsight(bulkSpec.insight) : 15;
+  if (bulkSpec.level !== null) bulkSpec.level = Math.min(bulkSpec.level, levelMax);
+  if (bulkSpec.resonance !== null) bulkSpec.resonance = Math.min(bulkSpec.resonance, resMax);
+  bindBulkSlider("level", levelMax, "Lv.");
+  bindBulkSlider("resonance", resMax, "R");
+
+  // Simple option rows
+  renderBulkRow("bulk-portrait-options", BULK_PORTRAIT_PRESETS.map((p) => ({ value: p, label: `P${p}` })), bulkSpec.portrait, (v) => {
+    bulkSpec.portrait = v; renderBulkApplyModal();
+  });
+  renderBulkRow("bulk-owned-options", BULK_OWNED_PRESETS, bulkSpec.owned, (v) => {
+    bulkSpec.owned = v; renderBulkApplyModal();
+  });
+
+  const setVal = (id, text) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // Empty string means "untouched" — the readout stays hidden
+    el.textContent = text || "";
+  };
+  setVal("bulk-level-value", bulkSpec.level === null ? "" : `Lv.${bulkSpec.level}`);
+  setVal("bulk-insight-value", bulkSpec.insight === null ? "" : `I${bulkSpec.insight}`);
+  setVal("bulk-resonance-value", bulkSpec.resonance === null ? "" : `R${bulkSpec.resonance}`);
+  setVal("bulk-portrait-value", bulkSpec.portrait === null ? "" : `P${bulkSpec.portrait}`);
+  setVal("bulk-owned-value", bulkSpec.owned === null ? "" : (bulkSpec.owned ? "Owned" : "Unowned"));
+
+  // Rows without a chosen value read as untouched
+  const rowState = {
+    insight: bulkSpec.insight === null,
+    level: bulkSpec.level === null,
+    resonance: bulkSpec.resonance === null,
+    portrait: bulkSpec.portrait === null,
+    owned: bulkSpec.owned === null,
+  };
+  Object.keys(rowState).forEach((key) => {
+    const row = document.getElementById(`bulk-row-${key}`);
+    if (row) row.classList.toggle("is-untouched", rowState[key]);
+  });
+}
+
+/** Shows small avatars of the selected characters inside the modal. */
+function renderBulkApplyPreview() {
+  const wrap = document.getElementById("bulk-apply-preview");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  const names = [...rosterSelection];
+  const MAX_SHOWN = 12;
+  names.slice(0, MAX_SHOWN).forEach((name) => {
+    const url = characterDb[name];
+    if (!url) return;
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = name;
+    img.title = name;
+    img.loading = "lazy";
+    img.decoding = "async";
+    wrap.appendChild(img);
+  });
+
+  if (names.length > MAX_SHOWN) {
+    const more = document.createElement("div");
+    more.className = "bulk-preview-more";
+    more.textContent = `+${names.length - MAX_SHOWN}`;
+    wrap.appendChild(more);
+  }
+}
+
+function openBulkApplyModal() {
+  if (rosterSelection.size === 0) return;
+  bulkSpec = { level: null, insight: null, resonance: null, portrait: null, owned: null };
+  renderBulkApplyModal();
+  const modal = document.getElementById("bulk-apply-modal");
+  if (modal) modal.style.display = "flex";
+}
+
+function closeBulkApplyModal() {
+  const modal = document.getElementById("bulk-apply-modal");
+  if (modal) modal.style.display = "none";
+}
+
+function applyBulkSpec() {
+  const names = [...rosterSelection];
+  if (names.length === 0) return;
+
+  names.forEach((name) => {
+    const rarity = getCharacterRarity(name);
+    const existing = userRoster[name] || {
+      owned: true,
+      insight: getMaxInsightForRarity(rarity),
+      level: getMaxLevelForInsight(getMaxInsightForRarity(rarity)),
+      resonance: 10,
+      portrait: 0,
+      e1: false,
+      e2: false,
+      patterns: [],
+      patternMain: null,
+      boxKind: DEFAULT_PATTERN,
+    };
+    const char = { ...existing };
+
+    if (bulkSpec.owned !== null) char.owned = bulkSpec.owned;
+
+    // Insight must land first: it caps level and resonance
+    if (bulkSpec.insight !== null) {
+      char.insight = Math.min(bulkSpec.insight, getMaxInsightForRarity(rarity));
+    }
+    const effectiveInsight = char.insight !== undefined ? char.insight : getMaxInsightForRarity(rarity);
+
+    if (bulkSpec.level !== null) {
+      char.level = Math.min(bulkSpec.level, getMaxLevelForInsight(effectiveInsight));
+    }
+    if (bulkSpec.resonance !== null) {
+      char.resonance = Math.min(bulkSpec.resonance, getMaxResonanceForInsight(effectiveInsight));
+    }
+
+    // Clamp existing values so nothing exceeds the new insight cap
+    if (bulkSpec.insight !== null) {
+      char.level = Math.min(Number(char.level || 1), getMaxLevelForInsight(effectiveInsight));
+      char.resonance = Math.min(Number(char.resonance || 1), getMaxResonanceForInsight(effectiveInsight));
+    }
+
+    if (bulkSpec.portrait !== null) char.portrait = bulkSpec.portrait;
+
+    userRoster[name] = char;
+  });
+
+  saveRoster();
+  closeBulkApplyModal();
+  exitRosterSelectMode();
+  renderRosterManager();
+  rosterNeedsShowcaseRefresh = true;
 }
 
 function renderRosterManager() {
@@ -2006,14 +2745,24 @@ function renderRosterManager() {
 
     const item = document.createElement("div");
     item.className = `roster-char-item ${char.owned ? "is-owned" : "not-owned"}`;
+    item.dataset.name = name;
     item.innerHTML = `
       <div class="roster-avatar-box">
         <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(name)}" class="roster-avatar-img" loading="lazy" decoding="async" />
       </div>
-      <span class="roster-char-name">${escapeHtml(name)}</span>
+      <span class="roster-char-name">${escapeHtml(displayCharName(name))}</span>
     `;
 
+    if (rosterSelection.has(name)) {
+      item.classList.add("is-selected");
+    }
+
     item.addEventListener("click", () => {
+      // In select mode a tap toggles selection instead of ownership
+      if (rosterSelectMode) {
+        toggleRosterTileSelection(name, item);
+        return;
+      }
       char.owned = !char.owned;
       userRoster[name] = char;
       saveRoster();
@@ -2025,6 +2774,8 @@ function renderRosterManager() {
 
     rosterGridList.appendChild(item);
   });
+
+  updateRosterSelectionUI();
 }
 
 // Confirm Action Modal Helper
@@ -2050,8 +2801,62 @@ function closeConfirmModal() {
   onConfirmActionCallback = null;
 }
 
+/** Custom tooltip for pattern icons (native title bubbles cannot be styled). */
+function setupPatternTooltip() {
+  const tip = document.getElementById("pattern-tooltip");
+  if (!tip) return;
+
+  const show = (target) => {
+    const text = target.getAttribute("data-pattern-name");
+    if (!text) return;
+    tip.textContent = text;
+    tip.classList.add("is-visible");
+    tip.setAttribute("aria-hidden", "false");
+
+    const r = target.getBoundingClientRect();
+    const tw = tip.offsetWidth;
+    const th = tip.offsetHeight;
+    let left = r.left + r.width / 2 - tw / 2;
+    left = Math.max(6, Math.min(left, window.innerWidth - tw - 6));
+    let top = r.top - th - 7;
+    if (top < 6) top = r.bottom + 7; // flip below when there is no room above
+
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+  };
+
+  const hide = () => {
+    tip.classList.remove("is-visible");
+    tip.setAttribute("aria-hidden", "true");
+  };
+
+  document.addEventListener("mouseover", (e) => {
+    const el = e.target.closest("[data-pattern-name]");
+    if (el) show(el);
+  });
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest("[data-pattern-name]")) hide();
+  });
+  document.addEventListener("scroll", hide, true);
+
+  // Touch devices: a tap shows it briefly
+  document.addEventListener("touchstart", (e) => {
+    const el = e.target.closest("[data-pattern-name]");
+    if (el) {
+      show(el);
+      setTimeout(hide, 1600);
+    }
+  }, { passive: true });
+}
+
 // Event Listeners
 function setupEventListeners() {
+  setupPatternTooltip();
+
+  // Language switcher
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+  });
   const confirmModal = document.getElementById("confirm-modal");
   const confirmBtnClose = document.getElementById("confirm-modal-btn-close");
   const confirmBtnCancel = document.getElementById("confirm-modal-btn-cancel");
@@ -2178,12 +2983,7 @@ function setupEventListeners() {
     });
   });
 
-  resonanceBoxChoices.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      tempEditState.boxKind = btn.dataset.boxKind;
-      updateModalView();
-    });
-  });
+  // Pattern picker is rebuilt per character (see renderShapePatternGrid)
 
   // Portrait pills
   document.querySelectorAll(".btn-pill-p").forEach((btn) => {
@@ -2225,7 +3025,9 @@ function setupEventListeners() {
   const checkHideEuphoria = document.getElementById("check-hide-euphoria");
   const checkHidePortrait = document.getElementById("check-hide-portrait");
   const checkHideNames = document.getElementById("check-hide-names");
+  const checkHidePatterns = document.getElementById("check-hide-patterns");
   const checkHideOwnedNames = document.getElementById("check-hide-owned-names");
+  const checkHideRarityLine = document.getElementById("check-hide-rarity-line");
   const checkHideSkin = document.getElementById("check-hide-skin");
   const checkFutureSight = document.getElementById("check-future-sight");
   const checkShowPatternBg = document.getElementById("check-show-pattern-bg");
@@ -2258,7 +3060,9 @@ function setupEventListeners() {
     const hideEuphoria = checkHideEuphoria ? checkHideEuphoria.checked : false;
     const hidePortrait = checkHidePortrait ? checkHidePortrait.checked : false;
     const hideNames = checkHideNames ? checkHideNames.checked : false;
+    const hidePatterns = checkHidePatterns ? checkHidePatterns.checked : false;
     const hideOwnedNames = checkHideOwnedNames ? checkHideOwnedNames.checked : false;
+    const hideRarityLine = checkHideRarityLine ? checkHideRarityLine.checked : false;
     const hideSkin = checkHideSkin ? checkHideSkin.checked : false;
     const hideAfflatus = checkHideAfflatus ? checkHideAfflatus.checked : false;
 
@@ -2268,7 +3072,10 @@ function setupEventListeners() {
     const levelVal = 60;
     const resonanceVal = 10;
     const portraitVal = 5;
-    const boxKind = "equibalance";
+    // Mirror a real patterned character so the preview shows the correct colours.
+    // "Z shape" is used because it contains Elucidation, Mercy and Equibalance.
+    const previewShape = "Z shape";
+    const boxKind = "Equibalance";
     const euphoriaText = "E1";
     const previewAfflatus = "Star";
 
@@ -2287,9 +3094,16 @@ function setupEventListeners() {
 
     const showRes = !hideResonance;
     const showEupho = !hideEuphoria;
+
+    // Preview main pattern (mirrors a real character's badge row)
+    const previewMainPattern = "Elucidation";
+    const previewMainPatternPath = getPatternIconPathForShape(previewShape, previewMainPattern);
+    const showPreviewPattern = !hidePatterns;
+
     const topHeaderHtml = `
       <div class="char-top-info">
         ${showRes ? `<span class="badge-resonance ${boxKind}" style="color: ${resonanceColor};">R${resonanceVal}</span>` : `<span></span>`}
+        ${showPreviewPattern ? `<img src="${escapeHtml(previewMainPatternPath)}" alt="${escapeHtml(previewMainPattern)}" data-pattern-name="${escapeHtml(previewMainPattern)}" class="char-main-pattern-icon" />` : ""}
         ${showEupho ? `<span class="badge-euphoria" style="color: ${euphoriaColor};">${euphoriaText}</span>` : ""}
       </div>
     `;
@@ -2324,7 +3138,10 @@ function setupEventListeners() {
       </div>
     ` : "";
 
-    const rarityLineHtml = "";
+    // Preview rarity line (mirrors the card, controlled by Hide Rarity Line)
+    const previewRarityLineHtml = (displayOptions.showRarityLine && !hideRarityLine)
+      ? `<img src="images/colour_references/${rarityVal}.png" alt="" class="char-rarity-line" />`
+      : "";
 
     // 300101 default headicon vs 652902 garment
     const avatarImgSrc = hideSkin ? "images/headicon_small/300101.png" : "images/headicon_small/652902.png";
@@ -2341,10 +3158,10 @@ function setupEventListeners() {
     }
     const avatarImgStyle = avatarImgStyles.length > 0 ? ` style="${avatarImgStyles.join("; ")};"` : "";
 
-    // Preview simulates an owned character, so it follows "Hide Owned"
-    const nameBelowHtml = !hideOwnedNames ? `
-      <div class="char-unowned-name" style="text-align: center; margin-top: 2px; color: var(--text-primary); max-width: 96px;">${charName}</div>
-    ` : "";
+    // Preview name row (the preview character is owned, so it follows "Hide Owned")
+    const previewNameHtml = !hideOwnedNames
+      ? `<div class="char-name-below">${escapeHtml(charName)}</div>`
+      : "";
 
     optionsCharPreviewCard.innerHTML = `
       ${topHeaderHtml}
@@ -2353,9 +3170,9 @@ function setupEventListeners() {
         ${afflatusIconHtml}
         ${insightLevelOverlay}
       </div>
-      ${rarityLineHtml}
+      ${previewRarityLineHtml}
       ${portraitBarHtml}
-      ${nameBelowHtml}
+      ${previewNameHtml}
     `;
   }
 
@@ -2384,7 +3201,9 @@ function setupEventListeners() {
     checkHideEuphoria.checked = !!displayOptions.hideEuphoria;
     checkHidePortrait.checked = !!displayOptions.hidePortrait;
     checkHideNames.checked = !!displayOptions.hideNames;
+    if (checkHidePatterns) checkHidePatterns.checked = !!displayOptions.hidePatterns;
     if (checkHideOwnedNames) checkHideOwnedNames.checked = !!displayOptions.hideOwnedNames;
+    if (checkHideRarityLine) checkHideRarityLine.checked = !!displayOptions.hideRarityLine;
     if (checkHideSkin) checkHideSkin.checked = !!displayOptions.hideSkin;
     if (checkHideAfflatus) checkHideAfflatus.checked = !!displayOptions.hideAfflatus;
     checkHideI3Lv60.checked = !!displayOptions.hideI3Lv60;
@@ -2620,7 +3439,9 @@ function setupEventListeners() {
     checkHideEuphoria,
     checkHidePortrait,
     checkHideNames,
+    checkHidePatterns,
     checkHideOwnedNames,
+    checkHideRarityLine,
     checkHideSkin,
     checkShowPatternBg,
     checkShowPatternBorder,
@@ -2652,7 +3473,9 @@ function setupEventListeners() {
     displayOptions.hideEuphoria = checkHideEuphoria.checked;
     displayOptions.hidePortrait = checkHidePortrait.checked;
     displayOptions.hideNames = checkHideNames.checked;
+    if (checkHidePatterns) displayOptions.hidePatterns = checkHidePatterns.checked;
     if (checkHideOwnedNames) displayOptions.hideOwnedNames = checkHideOwnedNames.checked;
+    if (checkHideRarityLine) displayOptions.hideRarityLine = checkHideRarityLine.checked;
     if (checkHideSkin) displayOptions.hideSkin = checkHideSkin.checked;
     if (checkHideAfflatus) displayOptions.hideAfflatus = checkHideAfflatus.checked;
     displayOptions.hideI3Lv60 = checkHideI3Lv60.checked;
@@ -2918,7 +3741,7 @@ function setupEventListeners() {
     colorBoardTitle.value = app.boardTitleColor || "#f4efe9";
 
     if (boardBgImageStatus) {
-      boardBgImageStatus.textContent = customBoardBgImageUrl ? "Custom background active (session only)" : "No custom image selected";
+      boardBgImageStatus.textContent = customBoardBgImageUrl ? t("styling.bgActive") : t("styling.noImage");
     }
 
     // Board Header Box
@@ -3189,7 +4012,7 @@ function setupEventListeners() {
       reader.onload = (uploadEvt) => {
         customBoardBgImageUrl = uploadEvt.target.result;
         if (boardBgImageStatus) {
-          boardBgImageStatus.textContent = "Custom background image loaded (session only)";
+          boardBgImageStatus.textContent = t("styling.bgLoaded");
         }
         applyCustomAppearance();
       };
@@ -3202,7 +4025,7 @@ function setupEventListeners() {
       customBoardBgImageUrl = null;
       if (inputBoardBgImage) inputBoardBgImage.value = "";
       if (boardBgImageStatus) {
-        boardBgImageStatus.textContent = "No custom image selected";
+        boardBgImageStatus.textContent = t("styling.noImage");
       }
       applyCustomAppearance();
     });
@@ -3352,8 +4175,8 @@ function setupEventListeners() {
 
   btnResetCustomAppearance.addEventListener("click", () => {
     showConfirmModal(
-      "Reset Defaults",
-      "Are you sure you want to reset all styling and appearance settings to defaults?",
+      t("confirm.resetDefaultsTitle"),
+      t("confirm.resetDefaultsMsg"),
       () => {
         syncAppearanceFormWithState(DEFAULT_THEME_APPEARANCE);
         const fontValue = getBoardFontFamily(DEFAULT_THEME_APPEARANCE.boardFont);
@@ -3493,14 +4316,14 @@ function setupEventListeners() {
       { value: 1, label: "P1" },
       { value: 0, label: "P0" },
     ], defaultVal: 0 },
-    { value: "rarity", label: "Rarity", type: "select", options: [
+    { value: "rarity", labelKey: "field.rarity", type: "select", options: [
       { value: 6, label: "✦6" },
       { value: 5, label: "✦5" },
       { value: 4, label: "✦4" },
       { value: 3, label: "✦3" },
       { value: 2, label: "✦2" },
     ], defaultVal: 6 },
-    { value: "afflatus", label: "Afflatus", type: "select", options: [
+    { value: "afflatus", labelKey: "field.afflatus", type: "select", options: [
       { value: "Beast", label: "Beast" },
       { value: "Plant", label: "Plant" },
       { value: "Star", label: "Star" },
@@ -3508,10 +4331,10 @@ function setupEventListeners() {
       { value: "Spirit", label: "Spirit" },
       { value: "Intellect", label: "Intellect" },
     ], defaultVal: "Beast" },
-    { value: "has_euphoria", label: "Has Euphoria", type: "boolean", defaultVal: true },
-    { value: "has_pattern", label: "Has Pattern", type: "boolean", defaultVal: true },
-    { value: "has_skin", label: "Has Skin", type: "boolean", defaultVal: true },
-    { value: "name", label: "Name", type: "text", defaultVal: "" },
+    { value: "has_euphoria", labelKey: "field.hasEuphoria", type: "boolean", defaultVal: true },
+    { value: "has_pattern", labelKey: "field.hasPattern", type: "boolean", defaultVal: true },
+    { value: "has_skin", labelKey: "field.hasSkin", type: "boolean", defaultVal: true },
+    { value: "name", labelKey: "field.name", type: "text", defaultVal: "" },
   ];
 
   const COMPARISON_OPS = [
@@ -3546,6 +4369,8 @@ function setupEventListeners() {
 
       const itemCard = document.createElement("div");
       itemCard.className = "listing-tier-item";
+      // The header rail follows the tier's text colour
+      itemCard.style.setProperty("--tier-color", tier.color || "#ffffff");
 
       // Row 1: Header (Move, Label, Text color, BG, Border, Bold, Delete)
       const headerRow = document.createElement("div");
@@ -3584,7 +4409,7 @@ function setupEventListeners() {
       const labelInput = document.createElement("input");
       labelInput.type = "text";
       labelInput.className = "listing-tier-label-input";
-      labelInput.value = tier.label || (tier.type === "unowned" ? "Unowned" : (tier.type === "other" ? "Other" : "Tier"));
+      labelInput.value = tier.label || (tier.type === "unowned" ? t("setting.unowned") : (tier.type === "other" ? t("label.other") : t("label.tier")));
       labelInput.placeholder = "Label...";
       labelInput.addEventListener("input", (e) => {
         tier.label = e.target.value;
@@ -3597,6 +4422,8 @@ function setupEventListeners() {
       colorInput.title = "Text Color";
       colorInput.addEventListener("input", (e) => {
         tier.color = e.target.value;
+        // Keep the header rail in sync with the chosen text colour
+        itemCard.style.setProperty("--tier-color", tier.color);
       });
 
       const labelBg = document.createElement("label");
@@ -3606,7 +4433,7 @@ function setupEventListeners() {
       labelBg.style.fontSize = "0.62rem";
       labelBg.style.fontFamily = "var(--mono-font)";
       labelBg.title = "Tier Background Color";
-      labelBg.innerHTML = `<span>BG</span>`;
+      labelBg.innerHTML = `<span>${t("misc.bg")}</span>`;
 
       const bgInput = document.createElement("input");
       bgInput.type = "color";
@@ -3619,7 +4446,7 @@ function setupEventListeners() {
       const btnClearBg = document.createElement("button");
       btnClearBg.type = "button";
       btnClearBg.className = "custom-color-clear-btn";
-      btnClearBg.textContent = "Clear";
+      btnClearBg.textContent = t("opt.clear");
       btnClearBg.title = "Set transparent";
       btnClearBg.addEventListener("click", () => {
         tier.bgColor = null;
@@ -3636,7 +4463,7 @@ function setupEventListeners() {
       labelBorder.style.fontSize = "0.62rem";
       labelBorder.style.fontFamily = "var(--mono-font)";
       labelBorder.title = "Tier Border Color";
-      labelBorder.innerHTML = `<span>Border</span>`;
+      labelBorder.innerHTML = `<span>${t("misc.border")}</span>`;
 
       const borderInput = document.createElement("input");
       borderInput.type = "color";
@@ -3649,7 +4476,7 @@ function setupEventListeners() {
       const btnClearBorder = document.createElement("button");
       btnClearBorder.type = "button";
       btnClearBorder.className = "custom-color-clear-btn";
-      btnClearBorder.textContent = "Clear";
+      btnClearBorder.textContent = t("opt.clear");
       btnClearBorder.title = "Set default / transparent";
       btnClearBorder.addEventListener("click", () => {
         tier.borderColor = null;
@@ -3666,7 +4493,7 @@ function setupEventListeners() {
       labelBold.innerHTML = `
         <input type="checkbox" ${tier.bold ? "checked" : ""} />
         <span class="check-box"></span>
-        <span class="check-text" style="font-size: 0.62rem; font-weight: 700;">BOLD</span>
+        <span class="check-text" style="font-size: 0.62rem; font-weight: 700;">${t("misc.bold")}</span>
       `;
       const boldCheck = labelBold.querySelector("input");
       boldCheck.addEventListener("change", () => {
@@ -3682,12 +4509,27 @@ function setupEventListeners() {
 
       // System tiers (Other, Unowned) cannot be removed
       if (!isSystemTier) {
+        const btnClone = document.createElement("button");
+        btnClone.type = "button";
+        btnClone.className = "btn-tier-clone";
+        btnClone.textContent = t("action.clone");
+        btnClone.title = "Duplicate this tier below";
+        btnClone.style.marginLeft = "auto";
+        btnClone.addEventListener("click", () => {
+          // Deep copy so nested rule groups are independent
+          const clone = JSON.parse(JSON.stringify(tier));
+          clone.id = "tier_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+          clone.label = `${tier.label || t("label.tier")} ${t("label.copySuffix")}`;
+          tempListingTiers.splice(index + 1, 0, clone);
+          renderListingTiersEditor();
+        });
+        headerRow.appendChild(btnClone);
+
         const btnDel = document.createElement("button");
         btnDel.type = "button";
         btnDel.className = "btn-tier-del";
         btnDel.innerHTML = "&times;";
         btnDel.title = "Delete Tier";
-        btnDel.style.marginLeft = "auto";
         btnDel.addEventListener("click", () => {
           tempListingTiers.splice(index, 1);
           renderListingTiersEditor();
@@ -3702,7 +4544,7 @@ function setupEventListeners() {
         tagSpan.style.fontWeight = "700";
         tagSpan.style.letterSpacing = "0.06em";
         tagSpan.style.textTransform = "uppercase";
-        tagSpan.textContent = tier.type === "unowned" ? "Unowned" : "Remaining";
+        tagSpan.textContent = tier.type === "unowned" ? t("setting.unowned") : t("label.remaining");
         headerRow.appendChild(tagSpan);
       }
 
@@ -3715,7 +4557,7 @@ function setupEventListeners() {
       if (tier.type === "other") {
         rulesContainer.innerHTML = `
           <div style="font-family: var(--mono-font); font-size: 0.62rem; color: var(--text-muted); padding: 4px 6px;">
-            Catches all remaining owned characters that haven't matched any previous tiers.
+            ${t("label.catOther")}
           </div>
         `;
         itemCard.appendChild(rulesContainer);
@@ -3726,7 +4568,7 @@ function setupEventListeners() {
       if (tier.type === "unowned") {
         rulesContainer.innerHTML = `
           <div style="font-family: var(--mono-font); font-size: 0.62rem; color: var(--text-muted); padding: 4px 6px;">
-            Catches all unowned characters.
+            ${t("label.catUnowned")}
           </div>
         `;
         itemCard.appendChild(rulesContainer);
@@ -3751,8 +4593,8 @@ function setupEventListeners() {
         const groupTag = document.createElement("span");
         groupTag.className = "listing-rule-group-tag";
         groupTag.textContent = tier.ruleGroups.length > 1
-          ? `Condition Group #${gIdx + 1} (ALL must match - AND)`
-          : `Criteria (ALL must match - AND)`;
+          ? t("label.conditionGroup", { n: gIdx + 1 })
+          : t("label.criteria");
         groupHeader.appendChild(groupTag);
 
         const groupActions = document.createElement("div");
@@ -3763,7 +4605,7 @@ function setupEventListeners() {
         const btnAddCond = document.createElement("button");
         btnAddCond.type = "button";
         btnAddCond.className = "btn btn-secondary btn-sm";
-        btnAddCond.textContent = "+ AND";
+        btnAddCond.textContent = t("action.addAnd");
         btnAddCond.style.padding = "2px 6px";
         btnAddCond.style.fontSize = "0.58rem";
         btnAddCond.title = "Add another condition to this group (AND)";
@@ -3801,7 +4643,7 @@ function setupEventListeners() {
           FIELD_DEFINITIONS.forEach((fd) => {
             const opt = document.createElement("option");
             opt.value = fd.value;
-            opt.textContent = fd.label;
+            opt.textContent = fd.labelKey ? t(fd.labelKey) : fd.label;
             if (fd.value === cond.field) opt.selected = true;
             fieldSel.appendChild(opt);
           });
@@ -3931,7 +4773,7 @@ function setupEventListeners() {
       const btnAddOrGroup = document.createElement("button");
       btnAddOrGroup.type = "button";
       btnAddOrGroup.className = "btn btn-secondary btn-sm";
-      btnAddOrGroup.textContent = "+ Add OR Condition Group";
+      btnAddOrGroup.textContent = t("action.addOrGroupFull");
       btnAddOrGroup.style.fontSize = "0.6rem";
       btnAddOrGroup.style.marginTop = "4px";
       btnAddOrGroup.style.alignSelf = "flex-start";
@@ -3973,9 +4815,10 @@ function setupEventListeners() {
   }
 
   btnAddTier.addEventListener("click", () => {
-    tempListingTiers.push({
+    // New tiers are inserted at the top of the list
+    tempListingTiers.unshift({
       id: "tier_" + Date.now(),
-      label: "New Tier",
+      label: t("label.newTier"),
       color: "#e0e0e0",
       ruleGroups: [[{ field: "resonance", op: ">=", value: 10 }]],
     });
@@ -3984,9 +4827,10 @@ function setupEventListeners() {
 
   if (btnAddPresetTier) {
     btnAddPresetTier.addEventListener("click", () => {
-      tempListingTiers.push({
+      // The Unbuilt preset also lands at the top
+      tempListingTiers.unshift({
         id: "tier_preset_unbuilt_" + Date.now(),
-        label: "Unbuilt",
+        label: t("label.unbuilt"),
         color: "#9a9a9a",
         ruleGroups: [[
           { field: "insight", op: "=", value: 0 },
@@ -4024,8 +4868,8 @@ function setupEventListeners() {
 
   listingBtnReset.addEventListener("click", () => {
     showConfirmModal(
-      "Reset Tiers",
-      "Reset showcase tiers to defaults (R15, R11-14, R10, R1-9)?",
+      t("confirm.resetTiers"),
+      t("confirm.resetTiersMsg"),
       () => {
         listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
         tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers));
@@ -4070,6 +4914,30 @@ function setupEventListeners() {
   });
   rosterSearch.addEventListener("input", renderRosterManager);
 
+  // Roster Manager — bulk selection
+  const btnRosterSelectMode = document.getElementById("btn-roster-select-mode");
+  const btnRosterSelectPage = document.getElementById("btn-roster-select-page");
+  const btnRosterSelectNone = document.getElementById("btn-roster-select-none");
+  const btnRosterBulkApply = document.getElementById("btn-roster-bulk-apply");
+  const bulkApplyModal = document.getElementById("bulk-apply-modal");
+
+  if (btnRosterSelectMode) {
+    btnRosterSelectMode.addEventListener("click", () => setRosterSelectMode(!rosterSelectMode));
+  }
+  if (btnRosterSelectPage) btnRosterSelectPage.addEventListener("click", selectAllVisibleRosterTiles);
+  if (btnRosterSelectNone) btnRosterSelectNone.addEventListener("click", clearRosterSelection);
+  if (btnRosterBulkApply) btnRosterBulkApply.addEventListener("click", openBulkApplyModal);
+
+  if (bulkApplyModal) {
+    const closeBtn = document.getElementById("bulk-apply-btn-close");
+    const confirmBtn = document.getElementById("bulk-apply-confirm");
+    if (closeBtn) closeBtn.addEventListener("click", closeBulkApplyModal);
+    if (confirmBtn) confirmBtn.addEventListener("click", applyBulkSpec);
+    bulkApplyModal.addEventListener("click", (e) => {
+      if (e.target === bulkApplyModal) closeBulkApplyModal();
+    });
+  }
+
   // Roster Manager Rarity Filter Buttons (multi-select toggle)
   rosterFilterRarityBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -4085,95 +4953,20 @@ function setupEventListeners() {
     });
   });
 
-  function getRosterFilterTargetText() {
-    if (rosterActiveRarityFilters.size === 0) {
-      return "all characters";
+  /** Resolves which character names a bulk action should touch. */
+  function getRosterBulkTargets() {
+    if (rosterSelection.size > 0) {
+      return new Set(rosterSelection);
     }
-    const rarities = [...rosterActiveRarityFilters]
-      .sort((a, b) => a - b)
-      .map((r) => `rarity ${r}`);
-    return `all ${rarities.join(", ")}`;
-  }
-
-  function confirmRosterBulkAction(actionText, onConfirm) {
-    const target = getRosterFilterTargetText();
-    showConfirmModal(
-      "Confirm Update",
-      `Are you sure you want to set ${target} to ${actionText}?`,
-      onConfirm
-    );
-  }
-
-  btnSelectAll.addEventListener("click", () => {
-    confirmRosterBulkAction("owned", () => {
-      for (const name in userRoster) {
-        const rarity = getCharacterRarity(name);
-        if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-          const maxInsight = getMaxInsightForRarity(rarity);
-          const maxLvl = getMaxLevelForInsight(maxInsight);
-          const maxRes = getMaxResonanceForInsight(maxInsight);
-          userRoster[name].owned = true;
-          userRoster[name].insight = maxInsight;
-          userRoster[name].level = maxLvl;
-          userRoster[name].resonance = Math.min(10, maxRes);
-          userRoster[name].e1 = false;
-          userRoster[name].e2 = false;
-          userRoster[name].boxKind = "none";
-        }
+    const targets = new Set();
+    for (const name in userRoster) {
+      const rarity = getCharacterRarity(name);
+      if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
+        targets.add(name);
       }
-      saveRoster();
-      renderRosterManager();
-      rosterNeedsShowcaseRefresh = true;
-    });
-  });
-
-  btnSelectAllUnbuilt.addEventListener("click", () => {
-    confirmRosterBulkAction("owned (unbuilt)", () => {
-      for (const name in userRoster) {
-        const rarity = getCharacterRarity(name);
-        if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-          userRoster[name].owned = true;
-          userRoster[name].insight = 0;
-          userRoster[name].level = 1;
-          userRoster[name].resonance = 1;
-          userRoster[name].boxKind = "none";
-        }
-      }
-      saveRoster();
-      renderRosterManager();
-      rosterNeedsShowcaseRefresh = true;
-    });
-  });
-
-  if (btnSetAllP5) {
-    btnSetAllP5.addEventListener("click", () => {
-      confirmRosterBulkAction("P5", () => {
-        for (const name in userRoster) {
-          const rarity = getCharacterRarity(name);
-          if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-            userRoster[name].portrait = 5;
-          }
-        }
-        saveRoster();
-        renderRosterManager();
-        rosterNeedsShowcaseRefresh = true;
-      });
-    });
+    }
+    return targets;
   }
-
-  btnUnselectAll.addEventListener("click", () => {
-    confirmRosterBulkAction("unowned", () => {
-      for (const name in userRoster) {
-        const rarity = getCharacterRarity(name);
-        if (rosterActiveRarityFilters.size === 0 || rosterActiveRarityFilters.has(rarity)) {
-          userRoster[name].owned = false;
-        }
-      }
-      saveRoster();
-      renderRosterManager();
-      rosterNeedsShowcaseRefresh = true;
-    });
-  });
 
   // Export Modal Elements
   const exportModal = document.getElementById("export-modal");
@@ -4258,7 +5051,7 @@ function setupEventListeners() {
     const board = document.getElementById("showcase-board");
     if (!board) return;
 
-    btnExportImage.textContent = "Rendering...";
+    setButtonLabel(btnExportImage, t("action.rendering"));
     btnExportImage.disabled = true;
 
     try {
@@ -4384,7 +5177,7 @@ function setupEventListeners() {
       console.error("Export failed:", err);
       alert("Failed to export image. Please try again.");
     } finally {
-      btnExportImage.textContent = "Export PNG";
+      setButtonLabel(btnExportImage, t("action.exportPng"));
       btnExportImage.disabled = false;
     }
   });
@@ -4561,8 +5354,8 @@ function setupEventListeners() {
   // Reset Data
   btnResetData.addEventListener("click", () => {
     showConfirmModal(
-      "Reset Roster Data",
-      "Are you sure you want to reset all character settings to their defaults?",
+      t("confirm.resetRosterTitle"),
+      t("confirm.resetRosterMsg"),
       () => {
         localStorage.removeItem(STORAGE_KEY);
         userRoster = {};
@@ -4573,43 +5366,18 @@ function setupEventListeners() {
   });
 }
 
-// Outside modal label: white default for None, else pattern colors.
-function getResonanceTextColor(boxKind) {
-  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
-  switch (boxKind) {
-    case "offensive":
-      return app.patternOffensive || "#FBAE31";
-    case "defensive":
-      return app.patternDefensive || "#2d8a5a";
-    case "hp":
-      return app.patternHp || "#d4ad2b";
-    case "equibalance":
-      return app.patternEquibalance || "#3b6dc7";
-    case "none":
-    default:
-      return app.patternNone || "#4f4f4f";
-  }
+// Outside modal label: pattern colour, falling back to the neutral tone.
+function getResonanceTextColor(patternName) {
+  return getPatternColor(patternName || DEFAULT_PATTERN);
 }
 
-// Inside roster card label: gray default for None, else pattern colors (or user custom color).
-function getCardResonanceTextColor(boxKind) {
+// Inside roster card label: same palette, but honours a user override if set.
+function getCardResonanceTextColor(patternName) {
   const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
   if (app.customResColorEnabled && app.customResColor) {
     return app.customResColor;
   }
-  switch (boxKind) {
-    case "offensive":
-      return app.patternOffensive || "#FBAE31";
-    case "defensive":
-      return app.patternDefensive || "#2d8a5a";
-    case "hp":
-      return app.patternHp || "#d4ad2b";
-    case "equibalance":
-      return app.patternEquibalance || "#3b6dc7";
-    case "none":
-    default:
-      return app.patternNone || "#4f4f4f";
-  }
+  return getPatternColor(patternName || DEFAULT_PATTERN);
 }
 
 function escapeHtml(value) {

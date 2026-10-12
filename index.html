@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,12 +8,14 @@
   <meta name="description" content="Suitcase. With information. R1999." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <!-- html2canvas for exporting high quality screenshot -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
+  <!-- Shared pattern tooltip (custom, replaces the native title bubble) -->
+  <div id="pattern-tooltip" class="pattern-tooltip" aria-hidden="true"></div>
   <!-- Background image -->
   <img src="images/background.png" alt="" class="bg-image" style="position: fixed; inset: 0; width: 100%; height: 100%; z-index: -9999; object-fit: cover; pointer-events: none;">
   <!-- Floating Controls & Toolbar -->
@@ -27,7 +29,7 @@
             <img src="images/web_icon.png" alt="Icon" class="app-brand-icon" />
           </div>
           <div class="app-logo-wrap">
-            <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" />
+            <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" id="app-logo-img" />
           </div>
         </div>
       </div>
@@ -35,29 +37,34 @@
       <!-- Controls Row A: Search, Quick Edit, Export PNG -->
       <div class="header-actions-row">
         <div class="header-search-wrap">
-          <input type="text" id="filter-search" class="search-input" placeholder="Search Characters" />
+          <input type="text" id="filter-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
         </div>
-        <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters">
-          Quick Edit
+        <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters" data-i18n-title="toolbar.quickEdit">
+          <span data-i18n="toolbar.quickEdit">Quick Edit</span>
         </button>
-        <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG">
-          Export PNG
+        <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG" data-i18n-title="toolbar.exportPng">
+          <span data-i18n="toolbar.exportPng">Export PNG</span>
         </button>
       </div>
 
       <!-- Controls Row B: Roster Stats & Tools Button -->
       <div class="header-stats-row">
+        <div class="lang-switcher" id="lang-switcher" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="cn">CN</button>
+          <button type="button" class="lang-btn" data-lang="vi">VI</button>
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+        </div>
         <div class="stat-badge-wrap">
           <span class="stat-badge" id="roster-stat" style="cursor: pointer;">Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" /></span>
           <div class="stat-badge-tooltip" id="roster-stat-tooltip">
-            <div>Lv. 60: 0</div>
-            <div>R10+: 0</div>
-            <div>Eupho unlocked: 0</div>
+            <div class="stat-tip-row"><span class="stat-tip-label">Level 60</span><span class="stat-tip-value">0</span></div>
+            <div class="stat-tip-row"><span class="stat-tip-label">R10+</span><span class="stat-tip-value">0</span></div>
+            <div class="stat-tip-row"><span class="stat-tip-label"><span data-i18n="setting.euphoria">Euphoria</span></span><span class="stat-tip-value">0</span></div>
           </div>
         </div>
         <button type="button" class="btn btn-secondary btn-tools-toggle" id="btn-tools-toggle" title="More Tools & Settings" aria-expanded="false">
-          <span class="toggle-text">Menu</span>
-          <span class="toggle-icon">▾</span>
+          <span class="toggle-text"><span data-i18n="toolbar.menu">Menu</span></span>
+          <span class="toggle-icon">&#9662;</span>
         </button>
       </div>
     </div>
@@ -66,22 +73,22 @@
     <div class="header-secondary-tools" id="header-secondary-tools">
       <div class="secondary-tools-group tools-config-group">
         <button type="button" class="btn btn-secondary" id="btn-options" title="Display Options">
-          <img src="images/random_icon/options.png" alt="" class="btn-tool-icon" />Options
+          <img src="images/random_icon/options.png" alt="" class="btn-tool-icon" /><span data-i18n="toolbar.options">Options</span>
         </button>
         <button type="button" class="btn btn-secondary" id="btn-customize" title="Customize Colors & Typography">
-          <img src="images/random_icon/vertin_hat.png" alt="" class="btn-tool-icon" />Styling
+          <img src="images/random_icon/vertin_hat.png" alt="" class="btn-tool-icon" /><span data-i18n="toolbar.styling">Styling</span>
         </button>
         <button type="button" class="btn btn-secondary" id="btn-listing" title="Customize Tier Listing">
-          <img src="images/random_icon/tiers.png" alt="" class="btn-tool-icon" />Tiers
+          <img src="images/random_icon/tiers.png" alt="" class="btn-tool-icon" /><span data-i18n="toolbar.tiers">Tiers</span>
         </button>
       </div>
 
       <!-- Filters (Ownership & Rarity, Old Rename Suitcase position) -->
       <div class="secondary-tools-group tools-filters-group">
         <div class="filter-btn-group" id="filter-ownership-group">
-          <button type="button" class="filter-btn active" data-ownership="all">All</button>
-          <button type="button" class="filter-btn" data-ownership="owned">Owned</button>
-          <button type="button" class="filter-btn" data-ownership="unowned">Unowned</button>
+          <button type="button" class="filter-btn active" data-ownership="all"><span data-i18n="filter.all">All</span></button>
+          <button type="button" class="filter-btn" data-ownership="owned"><span data-i18n="filter.owned">Owned</span></button>
+          <button type="button" class="filter-btn" data-ownership="unowned"><span data-i18n="filter.unowned">Unowned</span></button>
         </div>
 
         <div class="filter-btn-group" id="filter-rarity-group">
@@ -94,15 +101,15 @@
       </div>
 
       <div class="secondary-tools-group tools-data-group">
-        <button class="btn btn-secondary" id="btn-export-data" title="Export roster to JSON">
-          Export JSON
+        <button class="btn btn-secondary" id="btn-export-data" title="Export roster to JSON" data-i18n-title="toolbar.exportJson">
+          <span data-i18n="toolbar.exportJson">Export JSON</span>
         </button>
-        <label class="btn btn-secondary" style="cursor: pointer;" title="Import roster from JSON">
-          Import JSON
+        <label class="btn btn-secondary" style="cursor: pointer;" title="Import roster from JSON" data-i18n-title="toolbar.importJson">
+          <span data-i18n="toolbar.importJson">Import JSON</span>
           <input type="file" id="input-import-file" accept=".json" style="display: none;" />
         </label>
         <button class="btn btn-danger" id="btn-reset-data" title="Reset all data">
-          <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" />Reset
+          <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" /><span data-i18n="toolbar.reset">Reset</span>
         </button>
       </div>
     </div>
@@ -135,7 +142,7 @@
           <img id="modal-char-img" src="" alt="preview" />
           <div>
             <h2 id="modal-char-name" class="modal-char-title">Character Name</h2>
-            <span id="modal-char-status" class="modal-char-sub">Owned</span>
+            <span id="modal-char-status" class="modal-char-sub" data-i18n="action.owned">Owned</span>
           </div>
         </div>
         <button class="modal-close" id="modal-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
@@ -144,10 +151,10 @@
       <div class="modal-body archetype-modal-body">
         <!-- Ownership Toggle -->
         <div class="setting-group">
-          <label class="setting-label">Status</label>
+          <label class="setting-label"><span data-i18n="setting.status">Status</span></label>
           <div class="toggle-group">
-            <button type="button" class="btn-toggle active" id="btn-status-unowned">Unowned</button>
-            <button type="button" class="btn-toggle" id="btn-status-owned">Owned</button>
+            <button type="button" class="btn-toggle active" id="btn-status-unowned" data-i18n="action.unowned">Unowned</button>
+            <button type="button" class="btn-toggle" id="btn-status-owned" data-i18n="action.owned">Owned</button>
           </div>
         </div>
 
@@ -155,10 +162,10 @@
         <div class="setting-group" id="group-skin">
           <div class="setting-label-row">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <label class="setting-label">Garment</label>
+              <label class="setting-label"><span data-i18n="setting.garment">Garment</span></label>
               <img src="images/random_icon/garment_icon.png" alt="Garment" style="width: 14px; height: 14px; object-fit: contain; display: block;" />
             </div>
-            <span class="setting-val-display" id="display-skin">Default</span>
+            <span class="setting-val-display" id="display-skin"><span data-i18n="action.default">Default</span></span>
           </div>
           <div class="skin-quick-picks" id="skin-quick-picks"></div>
         </div>
@@ -166,7 +173,7 @@
         <!-- Insight (I0 - I3) -->
         <div class="setting-group" id="group-insight">
           <div class="setting-label-row">
-            <label class="setting-label">Insight</label>
+            <label class="setting-label"><span data-i18n="setting.insight">Insight</span></label>
             <span class="setting-val-display" id="display-insight">I3</span>
           </div>
           <div class="insight-quick-picks">
@@ -180,7 +187,7 @@
         <!-- Character Level (Lv. 1 - Lv. 30/40/50/60 depending on Insight) -->
         <div class="setting-group" id="group-level">
           <div class="setting-label-row">
-            <label class="setting-label">Level</label>
+            <label class="setting-label"><span data-i18n="setting.level">Level</span></label>
             <span class="setting-val-display" id="display-level">Lv.60</span>
           </div>
           <input type="range" id="input-level" min="1" max="60" value="60" class="custom-slider" style="margin-top: 8px;" />
@@ -198,29 +205,25 @@
         <div class="setting-group" id="group-pattern">
           <div class="setting-label-row">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <label class="setting-label">Pattern</label>
+              <label class="setting-label"><span data-i18n="opt.pattern">Pattern</span></label>
               <button type="button" id="btn-pattern-help" title="Pattern explanation" style="background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">
                 <img src="images/random_icon/explanation_sign_icon.png" alt="Pattern explanation" style="width: 14px; height: 14px; object-fit: contain; display: block;" />
               </button>
             </div>
           </div>
           <div id="pattern-help-box" class="pattern-help-box" style="display: none;">
-            <p>• Offensive: <strong>Aspirational, Delirament, Elucidation, Genuinity, Hyper, Hyperphrenia, Inspire</strong></p>
-            <p>• Defensive: <strong>Equanimity, Mercy, Overindulgence, Prudentiality, Quiescence</strong></p>
+            <p>The six patterns available depend on the character's resonance shape.</p>
+            <p><span class="pattern-help-dot" style="background:#F67E26"></span> <strong>Orange:</strong> Aspirational, Delirament, Elucidation, Genuinity, Hyper, Hyperphrenia, Inspire</p>
+            <p><span class="pattern-help-dot" style="background:#62A771"></span> <strong>Green:</strong> Equanimity, Mercy, Overindulgence, Prudentiality, Quiescence</p>
+            <p><span class="pattern-help-dot" style="background:#E6AE34"></span> <strong>Yellow:</strong> Stupefaction &nbsp; <span class="pattern-help-dot" style="background:#4A70B3"></span> <strong>Blue:</strong> Equibalance</p>
           </div>
-          <div class="resonance-box-legend" aria-label="Pattern type legend">
-            <button type="button" class="resonance-box-choice none active" data-box-kind="none">None</button>
-            <button type="button" class="resonance-box-choice offensive" data-box-kind="offensive">Offensive</button>
-            <button type="button" class="resonance-box-choice defensive" data-box-kind="defensive">Defensive</button>
-            <button type="button" class="resonance-box-choice hp" data-box-kind="hp">Stupefaction</button>
-            <button type="button" class="resonance-box-choice equibalance" data-box-kind="equibalance">Equibalance</button>
-          </div>
+          <div class="shape-pattern-grid" id="shape-pattern-grid" aria-label="Pattern selection"></div>
         </div>
 
         <!-- Portrait (P0 - P5) -->
         <div class="setting-group" id="group-portrait">
           <div class="setting-label-row">
-            <label class="setting-label">Portrait</label>
+            <label class="setting-label"><span data-i18n="setting.portrait">Portrait</span></label>
             <span class="setting-val-display" id="display-portrait">P0</span>
           </div>
           <div class="portrait-quick-picks">
@@ -235,7 +238,7 @@
 
         <!-- Euphoria (E1, E2) -->
         <div class="setting-group" id="group-euphoria">
-          <label class="setting-label">Euphoria</label>
+          <label class="setting-label"><span data-i18n="setting.euphoria">Euphoria</span></label>
           <div class="euphoria-checkboxes">
             <label class="check-container">
               <input type="checkbox" id="check-e1" />
@@ -252,7 +255,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-primary btn-block" id="modal-btn-save">Apply</button>
+        <button class="btn btn-primary btn-block" id="modal-btn-save"><span data-i18n="action.apply">Apply</span></button>
       </div>
     </div>
   </div>
@@ -261,13 +264,13 @@
   <div id="options-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card" style="max-width: 440px;">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title">Display Options</h2>
+        <h2 class="archetype-modal-title" data-i18n="modal.displayOptions">Display Options</h2>
         <button class="modal-close" id="options-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="modal-body archetype-modal-body">
         <!-- Section: Display Filters -->
         <div class="archetype-section-header">
-          <span class="archetype-section-title">DISPLAY FILTERS</span>
+          <span class="archetype-section-title"><span data-i18n="section.displayFilters">DISPLAY FILTERS</span></span>
           <div class="archetype-section-divider"></div>
         </div>
 
@@ -276,43 +279,44 @@
           <label class="archetype-grid-item">
             <input type="checkbox" id="check-future-sight" />
             <span class="archetype-diamond"></span>
-            <span class="archetype-item-text">Show CN</span>
+            <span class="archetype-item-text"><span data-i18n="opt.showCn">Show CN</span></span>
           </label>
 
           <label class="archetype-grid-item">
             <input type="checkbox" id="check-hide-chess-pieces" />
             <span class="archetype-diamond"></span>
-            <span class="archetype-item-text">Hide Chess</span>
+            <span class="archetype-item-text"><span data-i18n="opt.hideChess">Hide Chess</span></span>
           </label>
         </div>
 
         <!-- Section: Character Info Box -->
         <div class="archetype-section-header">
-          <span class="archetype-section-title">CHARACTER'S INFO BOX</span>
+          <span class="archetype-section-title"><span data-i18n="section.charInfoBox">CHARACTER'S INFO BOX</span></span>
         </div>
 
         <!-- Live Preview card centered -->
         <div class="options-char-top-illustration">
           <div id="options-char-preview-card" class="char-card" style="cursor: default; pointer-events: none;"></div>
         </div>
+        <p class="options-preview-note" data-i18n="styling.hint">Styling settings allow you to change various colours here.</p>
 
         <!-- Diamond Grid Options (Remaining character info options) -->
         <!-- el: Character's Name -->
         <div class="options-flat-section options-el-gold">
           <div class="archetype-section-header">
-            <span class="archetype-section-title">CHARACTER'S NAME</span>
+            <span class="archetype-section-title"><span data-i18n="section.charName">CHARACTER'S NAME</span></span>
           </div>
           <div class="options-flat-content">
             <div class="archetype-grid">
               <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-owned-names" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Owned</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideOwned">Hide Owned</span></span>
               </label>
               <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-names" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Unowned</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideUnowned">Hide Unowned</span></span>
               </label>
             </div>
           </div>
@@ -321,44 +325,56 @@
         <!-- el: Character's Details -->
         <div class="options-flat-section options-el-gold">
           <div class="archetype-section-header">
-            <span class="archetype-section-title">CHARACTER'S DETAILS</span>
+            <span class="archetype-section-title"><span data-i18n="section.charDetails">CHARACTER'S DETAILS</span></span>
           </div>
           <div class="options-flat-content">
             <div class="archetype-grid">
               <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-patterns" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text"><span data-i18n="opt.hidePatterns">Hide Patterns</span></span>
+              </label>
+
+              <label class="archetype-grid-item">
+                <input type="checkbox" id="check-hide-rarity-line" />
+                <span class="archetype-diamond"></span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideRarityLine">Hide Rarity Line</span></span>
+              </label>
+
+              <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-afflatus" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Afflatus</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideAfflatus">Hide Afflatus</span></span>
               </label>
 
               <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-insight" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Insight/Level</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideInsightLevel">Hide Insight/Level</span></span>
               </label>
 
               <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-resonance" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Resonance</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideResonance">Hide Resonance</span></span>
               </label>
 
               <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-euphoria" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Euphoria</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideEuphoria">Hide Euphoria</span></span>
               </label>
 
               <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-portrait" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Portrait Bar</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hidePortraitBar">Hide Portrait Bar</span></span>
               </label>
 
               <label class="archetype-grid-item">
                 <input type="checkbox" id="check-hide-skin" />
                 <span class="archetype-diamond"></span>
-                <span class="archetype-item-text">Hide Garments</span>
+                <span class="archetype-item-text"><span data-i18n="opt.hideGarments">Hide Garments</span></span>
               </label>
             </div>
           </div>
@@ -369,7 +385,7 @@
           <!-- Section: Character's Background / Border -->
           <div class="options-flat-section">
             <div class="archetype-section-header">
-              <span class="archetype-section-title">CHARACTER'S BACKGROUND / BORDER</span>
+              <span class="archetype-section-title" data-i18n="section.charDecor">CHARACTER'S BACKGROUND / BORDER</span>
             </div>
             <div id="char-decor-collapse-content" class="options-flat-content">
               <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -378,12 +394,12 @@
                   <label class="archetype-grid-item">
                     <input type="checkbox" id="check-show-none-pattern-bg" />
                     <span class="archetype-diamond"></span>
-                    <span class="archetype-item-text">No Pattern</span>
+                    <span class="archetype-item-text"><span data-i18n="opt.noPattern">No Pattern</span></span>
                   </label>
                   <label class="archetype-grid-item">
                     <input type="checkbox" id="check-show-pattern-bg" />
                     <span class="archetype-diamond"></span>
-                    <span class="archetype-item-text">Pattern</span>
+                    <span class="archetype-item-text"><span data-i18n="opt.pattern">Pattern</span></span>
                   </label>
                 </div>
                 <input type="color" id="color-none-pattern-bg" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Background Color" />
@@ -395,12 +411,12 @@
                   <label class="archetype-grid-item">
                     <input type="checkbox" id="check-show-none-pattern-border" />
                     <span class="archetype-diamond"></span>
-                    <span class="archetype-item-text">No Pattern</span>
+                    <span class="archetype-item-text"><span data-i18n="opt.noPattern">No Pattern</span></span>
                   </label>
                   <label class="archetype-grid-item">
                     <input type="checkbox" id="check-show-pattern-border" />
                     <span class="archetype-diamond"></span>
-                    <span class="archetype-item-text">Pattern</span>
+                    <span class="archetype-item-text"><span data-i18n="opt.pattern">Pattern</span></span>
                   </label>
                 </div>
                 <input type="color" id="color-none-pattern-border" value="#4F4F4F" class="listing-tier-color-input" style="display: none;" title="None Pattern Border Color" />
@@ -411,20 +427,20 @@
           <!-- Section: Insight / Level Hiding -->
           <div class="options-flat-section">
             <div class="archetype-section-header">
-              <span class="archetype-section-title">INSIGHT / LEVEL HIDING</span>
-              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-hide">Add</button>
+              <span class="archetype-section-title"><span data-i18n="section.insightHiding">INSIGHT / LEVEL HIDING</span></span>
+              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-hide"><span data-i18n="action.addRule">Add</span></button>
             </div>
             <div id="insight-hide-collapse-content" class="options-flat-content">
               <div class="archetype-grid">
                 <label class="archetype-grid-item">
                   <input type="checkbox" id="check-hide-i3-lv60" />
                   <span class="archetype-diamond"></span>
-                  <span class="archetype-item-text">Hide I3 Lv.60</span>
+                  <span class="archetype-item-text" data-i18n="opt.hideI3Lv60">Hide I3 Lv.60</span>
                 </label>
                 <label class="archetype-grid-item">
                   <input type="checkbox" id="check-hide-i3-lv30" />
                   <span class="archetype-diamond"></span>
-                  <span class="archetype-item-text">Hide I3 Lv.30</span>
+                  <span class="archetype-item-text" data-i18n="opt.hideI3Lv30">Hide I3 Lv.30</span>
                 </label>
               </div>
               <div id="custom-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
@@ -434,20 +450,20 @@
           <!-- Section: Resonance Hiding -->
           <div class="options-flat-section">
             <div class="archetype-section-header">
-              <span class="archetype-section-title">RESONANCE HIDING</span>
-              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-res-hide">Add</button>
+              <span class="archetype-section-title"><span data-i18n="section.resonanceHiding">RESONANCE HIDING</span></span>
+              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-res-hide"><span data-i18n="action.addRule">Add</span></button>
             </div>
             <div id="res-hide-collapse-content" class="options-flat-content">
               <div class="archetype-grid">
                 <label class="archetype-grid-item">
                   <input type="checkbox" id="check-hide-r15" />
                   <span class="archetype-diamond"></span>
-                  <span class="archetype-item-text">Hide R15</span>
+                  <span class="archetype-item-text" data-i18n="opt.hideR15">Hide R15</span>
                 </label>
                 <label class="archetype-grid-item">
                   <input type="checkbox" id="check-hide-r10" />
                   <span class="archetype-diamond"></span>
-                  <span class="archetype-item-text">Hide R10</span>
+                  <span class="archetype-item-text" data-i18n="opt.hideR10">Hide R10</span>
                 </label>
               </div>
               <div id="custom-res-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
@@ -456,7 +472,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary btn-block" id="options-btn-done">Apply</button>
+        <button class="btn btn-primary btn-block" id="options-btn-done"><span data-i18n="action.apply">Apply</span></button>
       </div>
     </div>
   </div>
@@ -465,36 +481,36 @@
   <div id="customize-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card" style="max-width: 440px;">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title">Styling</h2>
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.styling">Styling</span></h2>
         <button class="modal-close" id="customize-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="modal-body archetype-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <div class="setting-group">
           <div class="setting-label-row">
-            <label class="setting-label setting-label-sh">Colors & Typography</label>
-            <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-custom-appearance">Reset Default<img src="images/random_icon/reset_default.png" alt="" class="btn-reset-default-icon" /></button>
+            <label class="setting-label setting-label-sh"><span data-i18n="styling.title">Colors & Typography</span></label>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-custom-appearance"><span data-i18n="action.resetDefault">Reset Default</span><img src="images/random_icon/reset_default.png" alt="" class="btn-reset-default-icon" /></button>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
             <!-- ================= GROUP 1: BOARD SETTINGS ================= -->
             <div class="custom-category-header">
-              <span class="custom-category-title">Board Settings</span>
+              <span class="custom-category-title"><span data-i18n="styling.boardSettings">Board Settings</span></span>
             </div>
 
             <!-- Custom Board Background Image Upload & Board Background -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Custom Board Background Image</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.customBgImage">Custom Board Background Image</span></span>
               <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                 <label class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0;">
-                  Upload Image
+                  <span data-i18n="action.upload">Upload Image</span>
                   <input type="file" id="input-board-bg-image" accept="image/*" style="display: none;" />
                 </label>
-                <button type="button" class="btn btn-danger btn-sm" id="btn-clear-board-bg-image">Clear Background</button>
+                <button type="button" class="btn btn-danger btn-sm" id="btn-clear-board-bg-image"><span data-i18n="action.clearBackground"><span data-i18n="action.clearBg">Clear Background</span></span></button>
               </div>
-              <span id="board-bg-image-status" style="font-size: 0.62rem; color: var(--text-muted); font-family: var(--mono-font);">No custom image selected</span>
+              <span id="board-bg-image-status" style="font-size: 0.62rem; color: var(--text-muted); font-family: var(--mono-font);"><span data-i18n="styling.noImage">No custom image selected</span></span>
               <div style="margin-top: 4px;">
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Board Background</span>
+                  <span><span data-i18n="styling.boardBg">Board Background</span></span>
                   <input type="color" id="color-board-bg" value="#111111" class="listing-tier-color-input" />
                 </label>
               </div>
@@ -502,10 +518,10 @@
 
             <!-- Board Title Header Box -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Board Title Header Box</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.titleHeaderBox">Board Title Header Box</span></span>
               <!-- Header Box Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="padding: 0;">
                   <div id="preview-board-header-box" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); background: transparent;">
                     <span id="preview-board-header-title" style="font-family: var(--board-font); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.28em; color: rgba(244, 239, 233, 0.84); text-transform: uppercase;">SUITCASE</span>
@@ -515,19 +531,19 @@
 
               <!-- Rename Board / Suitcase -->
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title</span>
+                <span style="font-size: 0.72rem; font-family: var(--mono-font);"><span data-i18n="styling.boardTitle">Board Title</span></span>
                 <input type="text" id="input-board-title" class="search-input" placeholder="Rename Suitcase" style="max-width: 190px;" />
               </div>
 
               <!-- Board Title Color moved under Board Title -->
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.68rem; font-family: var(--mono-font);">Board Title Color</span>
+                <span style="font-size: 0.68rem; font-family: var(--mono-font);"><span data-i18n="styling.boardTitleColor">Board Title Color</span></span>
                 <input type="color" id="color-board-title" value="#f4efe9" class="listing-tier-color-input" />
               </div>
 
               <!-- Board Font -->
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Font</span>
+                <span style="font-size: 0.72rem; font-family: var(--mono-font);"><span data-i18n="styling.boardFont">Board Font</span></span>
                 <select id="select-board-font" class="listing-tier-select" style="max-width: 190px;">
                   <option value="default">Default (Regular / R1999 Serif)</option>
                   <option value="mono">JetBrains Mono</option>
@@ -542,11 +558,11 @@
               <!-- Uppercase Text for Board Title & Tier Label -->
               <div style="display: flex; flex-direction: column; gap: 4px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="font-size: 0.72rem; font-family: var(--mono-font);">Uppercase Text</span>
+                  <span style="font-size: 0.72rem; font-family: var(--mono-font);"><span data-i18n="styling.uppercase">Uppercase Text</span></span>
                   <label class="check-container" style="margin: 0;">
                     <input type="checkbox" id="check-board-uppercase" checked />
                     <span class="check-box"></span>
-                    <span class="check-text" style="font-size: 0.68rem;">Uppercase (Title & Tiers)</span>
+                    <span class="check-text" style="font-size: 0.68rem;"><span data-i18n="styling.uppercaseOpt">Uppercase (Title & Tiers)</span></span>
                   </label>
                 </div>
               </div>
@@ -554,7 +570,7 @@
               <!-- Board Title Text Size -->
               <div style="display: flex; flex-direction: column; gap: 4px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="font-size: 0.72rem; font-family: var(--mono-font);">Board Title Text Size</span>
+                  <span style="font-size: 0.72rem; font-family: var(--mono-font);"><span data-i18n="styling.titleTextSize">Board Title Text Size</span></span>
                   <span id="display-board-title-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.74rem</span>
                 </div>
                 <input type="range" id="input-board-title-size" min="0.5" max="2.0" step="0.05" value="0.74" class="custom-slider" />
@@ -565,39 +581,39 @@
                   <span>Background</span>
                   <div class="custom-style-color-cell">
                     <input type="color" id="color-board-header-bg" value="#000000" class="listing-tier-color-input" />
-                    <button type="button" class="custom-color-clear-btn" id="btn-clear-board-header-bg" title="Set Transparent">Clear</button>
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-board-header-bg" title="Set Transparent" data-i18n="opt.clear">Clear</button>
                   </div>
                 </label>
                 <label class="custom-style-row">
-                  <span>Border Color</span>
+                  <span><span data-i18n="styling.borderColor">Border Color</span></span>
                   <div class="custom-style-color-cell">
                     <input type="color" id="color-board-header-border" value="#333333" class="listing-tier-color-input" />
-                    <button type="button" class="custom-color-clear-btn" id="btn-clear-board-header-border" title="Set Default / Transparent">Clear</button>
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-board-header-border" title="Set Default / Transparent" data-i18n="opt.clear">Clear</button>
                   </div>
                 </label>
               </div>
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <div class="custom-style-row">
-                  <span>Background Opacity (Transparency)</span>
+                  <span><span data-i18n="styling.bgOpacity">Background Opacity (Transparency)</span></span>
                   <span id="display-board-header-bg-opacity" style="font-weight: 700;">100%</span>
                 </div>
                 <input type="range" id="input-board-header-bg-opacity" min="0" max="1" step="0.02" value="1" class="custom-slider" />
               </div>
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <div class="custom-style-row">
-                  <span>Border Width</span>
+                  <span><span data-i18n="styling.borderWidth">Border Width</span></span>
                   <span id="display-board-header-border-width" style="font-weight: 700;">1px</span>
                 </div>
                 <input type="range" id="input-board-header-border-width" min="0" max="6" step="1" value="1" class="custom-slider" />
               </div>
             </div>
 
-            <!-- Tier Row Box (Khung chứa Tier & Nhân vật) -->
+            <!-- Tier Row Box (Tier &amp; Character frame) -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Tier Row Box</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.tierRowBox">Tier Row Box</span></span>
               <!-- Tier Row Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage">
                   <div id="preview-tier-row-box" style="width: 100%; display: grid; grid-template-columns: 80px 1fr; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid rgba(255,255,255,0.04); background: #111111;">
                     <span id="preview-tier-label-text" style="font-family: var(--board-font); font-size: 0.70rem; font-weight: 700; color: #ffffff; text-align: center;">Text</span>
@@ -612,7 +628,7 @@
               <!-- Tier Label Text Size moved here -->
               <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="font-size: 0.72rem; font-family: var(--mono-font);">Tier Label Text Size</span>
+                  <span style="font-size: 0.72rem; font-family: var(--mono-font);"><span data-i18n="styling.tierLabelSize">Tier Label Text Size</span></span>
                   <span id="display-tier-label-size" style="font-size: 0.72rem; font-family: var(--mono-font); font-weight: 700;">0.70rem</span>
                 </div>
                 <input type="range" id="input-tier-label-size" min="0.4" max="1.8" step="0.05" value="0.7" class="custom-slider" />
@@ -620,7 +636,7 @@
 
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <div class="custom-style-row">
-                  <span>Background Opacity (Transparency)</span>
+                  <span><span data-i18n="styling.bgOpacity">Background Opacity (Transparency)</span></span>
                   <span id="display-tier-box-opacity" style="font-weight: 700;">10%</span>
                 </div>
                 <input type="range" id="input-tier-box-opacity" min="0" max="1" step="0.02" value="0.1" class="custom-slider" />
@@ -628,14 +644,14 @@
               <div class="custom-style-grid">
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Border Width</span>
+                    <span><span data-i18n="styling.borderWidth">Border Width</span></span>
                     <span id="display-tier-box-border-width" style="font-weight: 700;">1px</span>
                   </div>
                   <input type="range" id="input-tier-box-border-width" min="0" max="8" step="1" value="1" class="custom-slider" />
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Border Radius</span>
+                    <span><span data-i18n="styling.borderRadius">Border Radius</span></span>
                     <span id="display-tier-box-radius" style="font-weight: 700;">0px</span>
                   </div>
                   <input type="range" id="input-tier-box-radius" min="0" max="24" step="1" value="0" class="custom-slider" />
@@ -645,10 +661,10 @@
 
             <!-- Tier Separator Width -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Tier Separator Width</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.tierSeparator">Tier Separator Width</span></span>
               <!-- Separator Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="padding: 4px; background: transparent;">
                   <div style="width: 100%; display: flex; align-items: center; border: 1px dashed rgba(215, 177, 85, 0.4); padding: 4px; background: transparent;">
                     <div id="preview-tier-separator-bar" style="width: 70px; background: rgba(28, 28, 28, 0.8); border: 1px solid #ED7D31; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-family: var(--mono-font); color: #ED7D31; font-weight: 700; height: 24px; transition: width 0.1s;">TEXT</div>
@@ -661,19 +677,19 @@
               </div>
               <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
                 <div class="custom-style-row">
-                  <span>Tier Label Width (Separator)</span>
+                  <span><span data-i18n="styling.tierLabelWidth">Tier Label Width (Separator)</span></span>
                   <span id="display-tier-label-width" style="font-weight: 700;">110px</span>
                 </div>
                 <input type="range" id="input-tier-label-width" min="40" max="240" step="2" value="110" class="custom-slider" />
               </div>
             </div>
 
-            <!-- Spacing (Khoảng cách) -->
+            <!-- Spacing -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Spacing</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.spacing">Spacing</span></span>
               <!-- Spacing Preview -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="flex-direction: column; align-items: stretch; gap: 0; padding: 4px;">
                   <div style="background: rgba(255,255,255,0.08); padding: 4px; font-size: 0.58rem; font-family: var(--mono-font); text-align: center;">Header</div>
                   <div id="preview-spacing-header-gap" style="height: 10px; background: rgba(215, 85, 85, 0.25); border-left: 2px dashed rgba(215, 85, 85, 0.7); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #ff9999; font-family: var(--mono-font);">Gap</div>
@@ -685,14 +701,14 @@
               <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Header & Tier Rows Gap</span>
+                    <span><span data-i18n="styling.headerTierGap">Header & Tier Rows Gap</span></span>
                     <span id="display-spacing-header-tier" style="font-weight: 700;">20px</span>
                   </div>
                   <input type="range" id="input-spacing-header-tier" min="0" max="60" step="1" value="20" class="custom-slider" />
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Between Tier Rows Gap</span>
+                    <span><span data-i18n="styling.betweenTierGap">Between Tier Rows Gap</span></span>
                     <span id="display-spacing-tier-gap" style="font-weight: 700;">14px</span>
                   </div>
                   <input type="range" id="input-spacing-tier-gap" min="0" max="50" step="1" value="14" class="custom-slider" />
@@ -702,11 +718,11 @@
 
             <!-- Chess Pieces Display -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Chess Pieces</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.chessPieces">Chess Pieces</span></span>
 
               <!-- Chess Pieces Preview -->
               <div class="customize-preview-box" style="margin-top: 4px;">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="background: transparent; padding: 8px 6px;">
                   <div id="preview-chess-pieces-row" style="display: inline-flex; align-items: flex-end; justify-content: flex-end; gap: 6px; transition: opacity 0.2s;">
                     <div class="preview-chess-piece" style="position: relative; width: calc(20px * 41 / 41); height: calc(20px * 92 / 41); transform: translateX(1px);"><img src="images/chess_pieces/crook_filled.png" alt="R" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block;" /></div>
@@ -721,17 +737,17 @@
               <!-- Controls -->
               <div id="chess-pieces-controls" style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
                 <div class="custom-style-row">
-                  <span>Position</span>
+                  <span><span data-i18n="styling.position">Position</span></span>
                   <select id="select-chess-pieces-position" class="listing-tier-select" style="max-width: 170px;">
-                    <option value="top">Top of Board</option>
-                    <option value="bottom">Bottom of Board</option>
+                    <option value="top"><span data-i18n="styling.topOfBoard">Top of Board</span></option>
+                    <option value="bottom"><span data-i18n="styling.bottomOfBoard">Bottom of Board</span></option>
                   </select>
                 </div>
 
                 <!-- Size Slider: 10px to 35px -->
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Piece Size</span>
+                    <span><span data-i18n="styling.pieceSize">Piece Size</span></span>
                     <span id="display-chess-piece-size" style="font-weight: 700;">20px</span>
                   </div>
                   <input type="range" id="input-chess-piece-size" min="10" max="35" step="1" value="20" class="custom-slider" />
@@ -740,7 +756,7 @@
                 <!-- Chess Opacity -->
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Chess Opacity</span>
+                    <span><span data-i18n="styling.chessOpacity">Chess Opacity</span></span>
                     <span id="display-chess-container-opacity" style="font-weight: 700;">100%</span>
                   </div>
                   <input type="range" id="input-chess-container-opacity" min="0" max="1.0" step="0.01" value="1.0" class="custom-slider" />
@@ -750,15 +766,15 @@
 
             <!-- ================= GROUP 2: CHARACTER & CARDS ================= -->
             <div class="custom-category-header" style="margin-top: 20px;">
-              <span class="custom-category-title">Character & Cards</span>
+              <span class="custom-category-title"><span data-i18n="styling.charCards">Character & Cards</span></span>
             </div>
 
             <!-- Character Card Size -->
             <div>
-              <span class="custom-style-section-title">Character Card Size</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.cardSize">Character Card Size</span></span>
               <!-- Card Size Review -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="min-height: 85px;">
                   <div id="preview-char-card-box" style="width: 60px; height: 60px; position: relative; border: 1px solid rgba(255,255,255,0.15); transition: width 0.1s, height 0.1s;">
                     <img src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
@@ -768,7 +784,7 @@
 
               <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
                 <div class="custom-style-row">
-                  <span>Size Scale</span>
+                  <span data-i18n="styling.sizeScale">Size Scale</span>
                   <span id="display-char-card-size" style="font-weight: 700;">1.00x</span>
                 </div>
                 <input type="range" id="input-char-card-size" min="0.6" max="1.6" step="0.05" value="1.0" class="custom-slider" />
@@ -776,7 +792,7 @@
 
               <!-- Character Name Color -->
               <div class="custom-style-row" style="margin-top: 6px;">
-                <span>Character Names Color</span>
+                <span><span data-i18n="styling.charNameColor">Character Names Color</span></span>
                 <input type="color" id="color-char-name" value="#ffffff" class="listing-tier-color-input" />
               </div>
             </div>
@@ -784,17 +800,17 @@
             <!-- Insight / Level Badge -->
             <div class="custom-style-section">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="custom-style-section-title">Insight / Level Badge</span>
+                <span class="custom-style-section-title"><span data-i18n="styling.insightBadge">Insight / Level Badge</span></span>
                 <label class="check-container" style="margin: 0;">
                   <input type="checkbox" id="check-char-info-bg-enabled" checked />
                   <span class="check-box"></span>
-                  <span class="check-text" style="font-size: 0.65rem;">Enable BG</span>
+                  <span class="check-text" style="font-size: 0.65rem;"><span data-i18n="styling.enableBg">Enable BG</span></span>
                 </label>
               </div>
 
               <!-- Badge Review -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="background: transparent; border-radius: 0;">
                   <div id="preview-char-info-overlay" style="display: inline-flex; align-items: center; justify-content: center; gap: 3px; padding: 2px 6px; background: rgba(18, 18, 18, 0.22); border: 0px solid transparent; border-radius: 0;">
                     <img src="images/insight_icon/I3.png" alt="I3" style="width: 14px; height: 14px; object-fit: contain;" />
@@ -805,28 +821,28 @@
 
               <div class="custom-style-grid" id="char-info-bg-controls">
                 <label class="custom-style-row">
-                  <span>Background Color</span>
+                  <span data-i18n="styling.bgColor">Background Color</span>
                   <input type="color" id="color-char-info-bg" value="#121212" class="listing-tier-color-input" />
                 </label>
                 <label class="custom-style-row">
-                  <span>Border Color</span>
+                  <span><span data-i18n="styling.borderColor">Border Color</span></span>
                   <div class="custom-style-color-cell">
                     <input type="color" id="color-char-info-border" value="#ffffff" class="listing-tier-color-input" />
-                    <button type="button" class="custom-color-clear-btn" id="btn-clear-char-info-border" title="Set Transparent">Clear</button>
+                    <button type="button" class="custom-color-clear-btn" id="btn-clear-char-info-border" title="Set Transparent" data-i18n="opt.clear">Clear</button>
                   </div>
                 </label>
               </div>
               <div class="custom-style-grid">
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Border Width</span>
+                    <span><span data-i18n="styling.borderWidth">Border Width</span></span>
                     <span id="display-char-info-border-width" style="font-weight: 700;">0px</span>
                   </div>
                   <input type="range" id="input-char-info-border-width" min="0" max="4" step="0.5" value="0" class="custom-slider" />
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <div class="custom-style-row">
-                    <span>Border Radius</span>
+                    <span><span data-i18n="styling.borderRadius">Border Radius</span></span>
                     <span id="display-char-info-radius" style="font-weight: 700;">0px</span>
                   </div>
                   <input type="range" id="input-char-info-radius" min="0" max="12" step="1" value="0" class="custom-slider" />
@@ -834,7 +850,7 @@
               </div>
               <div style="display: flex; flex-direction: column; gap: 2px;" id="char-info-bg-opacity-row">
                 <div class="custom-style-row">
-                  <span>Background Opacity (Transparency)</span>
+                  <span><span data-i18n="styling.bgOpacity">Background Opacity (Transparency)</span></span>
                   <span id="display-char-info-bg-opacity" style="font-weight: 700;">22%</span>
                 </div>
                 <input type="range" id="input-char-info-bg-opacity" min="0" max="1" step="0.02" value="0.22" class="custom-slider" />
@@ -844,33 +860,33 @@
             <!-- Custom Resonance Text Color Option -->
             <div class="custom-style-section">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="custom-style-section-title">Character Info Resonance Label</span>
+                <span class="custom-style-section-title"><span data-i18n="styling.resoLabel">Character Info Resonance Label</span></span>
                 <label class="check-container" style="margin: 0;">
                   <input type="checkbox" id="check-custom-res-color" />
                   <span class="check-box"></span>
-                  <span class="check-text" style="font-size: 0.65rem;">Custom Color</span>
+                  <span class="check-text" style="font-size: 0.65rem;"><span data-i18n="styling.customColor">Custom Color</span></span>
                 </label>
               </div>
               <div id="custom-res-color-row" style="display: none; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font); margin-top: 4px;">
-                <span>Resonance Label Color</span>
+                <span><span data-i18n="styling.resoLabelColor">Resonance Label Color</span></span>
                 <input type="color" id="color-custom-res-label" value="#ffffff" class="listing-tier-color-input" />
               </div>
             </div>
 
             <!-- Resonance / Pattern Colors -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Resonance / Pattern Colors</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.resoPatternColors">Resonance / Pattern Colors</span></span>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>None Pattern</span>
+                  <span data-i18n="opt.nonePattern">None Pattern</span>
                   <input type="color" id="color-pattern-none" value="#4F4F4F" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Offensive</span>
+                  <span data-i18n="pattern.offensive">Offensive</span>
                   <input type="color" id="color-pattern-offensive" value="#FBAE31" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Defensive</span>
+                  <span data-i18n="pattern.defensive">Defensive</span>
                   <input type="color" id="color-pattern-defensive" value="#2D8A5A" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
@@ -886,16 +902,16 @@
 
             <!-- Euphoria & Portrait Dash Color -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Accents & Badges</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.accents">Accents & Badges</span></span>
               <div style="display: flex; flex-direction: column; gap: 8px;">
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span>Euphoria Label</span>
+                  <span data-i18n="styling.euphoriaLabel">Euphoria Label</span>
                   <input type="color" id="color-euphoria-label" value="#04FFEE" class="listing-tier-color-input" />
                 </label>
                 <!-- Custom Portrait Bar Colors by Rarity -->
                 <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px dashed rgba(17, 15, 12, 0.1);">
                   <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.68rem; font-family: var(--mono-font);">Custom Portrait Bar by Rarity</span>
+                    <span style="font-size: 0.68rem; font-family: var(--mono-font);"><span data-i18n="styling.portraitBar">Custom Portrait Bar by Rarity</span></span>
                     <label class="check-container" style="margin: 0;">
                       <input type="checkbox" id="check-custom-portrait-colors" checked />
                       <span class="check-box"></span>
@@ -904,23 +920,23 @@
                   </div>
                   <div id="portrait-rarity-colors-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 2px;">
                     <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
-                      <span>✦6</span>
+                      <span>&#10022;6</span>
                       <input type="color" id="color-portrait-r6" value="#DD9925" class="listing-tier-color-input" />
                     </label>
                     <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
-                      <span>✦5</span>
+                      <span>&#10022;5</span>
                       <input type="color" id="color-portrait-r5" value="#C7AF6C" class="listing-tier-color-input" />
                     </label>
                     <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
-                      <span>✦4</span>
+                      <span>&#10022;4</span>
                       <input type="color" id="color-portrait-r4" value="#6A4972" class="listing-tier-color-input" />
                     </label>
                     <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
-                      <span>✦3</span>
+                      <span>&#10022;3</span>
                       <input type="color" id="color-portrait-r3" value="#545C7D" class="listing-tier-color-input" />
                     </label>
                     <label style="display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.62rem; font-family: var(--mono-font);">
-                      <span>✦2</span>
+                      <span>&#10022;2</span>
                       <input type="color" id="color-portrait-r2" value="#496441" class="listing-tier-color-input" />
                     </label>
                   </div>
@@ -930,10 +946,10 @@
 
             <!-- Unowned Character Image Opacity in Export/Board -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title">Unowned Characters Dimming</span>
+              <span class="custom-style-section-title"><span data-i18n="styling.unownedDim">Unowned Characters Dimming</span></span>
               <!-- Unowned Dimming Review -->
               <div class="customize-preview-box">
-                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" />Preview</span>
+                <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="min-height: 75px;">
                   <div style="width: 54px; height: 54px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
                     <img id="preview-unowned-char-img" src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.82; transition: opacity 0.1s;" />
@@ -943,7 +959,7 @@
 
               <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
                 <div class="custom-style-row">
-                  <span>Opacity</span>
+                  <span data-i18n="styling.opacity">Opacity</span>
                   <span id="display-unowned-opacity" style="font-weight: 700;">82%</span>
                 </div>
                 <input type="range" id="input-unowned-opacity" min="0" max="1.0" step="0.01" value="0.82" class="custom-slider" />
@@ -953,7 +969,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary btn-block" id="customize-btn-done">Apply</button>
+        <button class="btn btn-primary btn-block" id="customize-btn-done"><span data-i18n="action.apply">Apply</span></button>
       </div>
     </div>
   </div>
@@ -962,17 +978,17 @@
   <div id="listing-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card modal-card-large" style="max-width: 760px;">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title">Tier Listing Settings</h2>
+        <h2 class="archetype-modal-title" data-i18n="modal.tierListing">Tier Listing Settings</h2>
         <button class="modal-close" id="listing-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="modal-body archetype-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <!-- Showcase Tiers List Container (Movable tiers including Remaining/Other & Unowned) -->
         <div class="setting-group">
           <div class="setting-label-row">
-            <label class="setting-label">Showcase Tiers (Top-to-Bottom Evaluation)</label>
+            <label class="setting-label" data-i18n="label.showcaseTiersFull">Showcase Tiers (Top-to-Bottom Evaluation)</label>
             <div style="display: flex; gap: 6px; align-items: center;">
-              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-preset-tier">+ Unbuilt Tier</button>
-              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier">+ Add Tier</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-preset-tier"><span data-i18n="action.addUnbuiltTier">+ Unbuilt Tier</span></button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier"><span data-i18n="action.addTier">+ Add Tier</span></button>
             </div>
           </div>
 
@@ -981,13 +997,13 @@
           </div>
         </div>
 
-        <div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--mono-font); line-height: 1.4;">
+        <div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--mono-font); line-height: 1.4;" data-i18n="label.placedNote">
           * Characters are placed in the first matching tier from top to bottom.
         </div>
       </div>
       <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 10px;">
-        <button class="btn btn-danger btn-sm" id="btn-reset-listing">Reset Default<img src="images/random_icon/reset_default.png" alt="" class="btn-reset-default-icon" </button>
-        <button class="btn btn-primary" id="btn-save-listing" style="min-width: 120px;">Save & Apply</button>
+        <button class="btn btn-danger btn-sm" id="btn-reset-listing"><span data-i18n="action.resetDefault">Reset Default</span><img src="images/random_icon/reset_default.png" alt="" class="btn-reset-default-icon" /></button>
+        <button class="btn btn-primary" id="btn-save-listing" style="min-width: 120px;"><span data-i18n="action.saveApply">Save & Apply</span></button>
       </div>
     </div>
   </div>
@@ -996,12 +1012,12 @@
   <div id="roster-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card modal-card-large">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title">Quick Edit</h2>
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.quickEdit"><span data-i18n="toolbar.quickEdit">Quick Edit</span></span></h2>
         <button class="modal-close" id="roster-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="roster-toolbar">
         <div class="roster-toolbar-left">
-          <input type="text" id="roster-search" class="search-input" placeholder="Search Characters" />
+          <input type="text" id="roster-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
           <!-- Rarity Filter for Roster Manager -->
           <div class="filter-btn-group" id="roster-filter-rarity-group">
             <button type="button" class="filter-btn" data-rarity="6">✦6</button>
@@ -1010,16 +1026,88 @@
             <button type="button" class="filter-btn" data-rarity="3">✦3</button>
             <button type="button" class="filter-btn" data-rarity="2">✦2</button>
           </div>
-        </div>
-        <div class="roster-quick-actions">
-          <button class="btn btn-secondary btn-sm" id="btn-select-all">Set All Owned</button>
-          <button class="btn btn-secondary btn-sm" id="btn-select-all-unbuilt">Set All Owned (Unbuilt)</button>
-          <button class="btn btn-secondary btn-sm" id="btn-set-all-p5">Set All P5</button>
-          <button class="btn btn-secondary btn-sm" id="btn-unselect-all">Set All Unowned</button>
+          <button type="button" class="btn btn-secondary btn-sm roster-select-toggle" id="btn-roster-select-mode" aria-pressed="false"><span data-i18n="action.select">Select</span></button>
         </div>
       </div>
+
+      <!-- Bulk selection toolbar (revealed while Select mode is on) -->
+      <div class="roster-select-bar" id="roster-select-bar" hidden>
+        <span class="roster-select-count" id="roster-select-count">0 selected</span>
+        <div class="roster-select-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-roster-select-page"><span data-i18n="action.selectAllShown">Select All Shown</span></button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-roster-select-none" data-i18n="opt.clear">Clear</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-roster-bulk-apply" disabled><span data-i18n="action.bulkApply">Bulk Apply</span></button>
+        </div>
+      </div>
+
       <div class="roster-grid" id="roster-grid-list">
         <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Apply Modal -->
+  <div id="bulk-apply-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card" style="max-width: 460px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="bulk.applySpec">Bulk Apply Spec</span></h2>
+        <button class="modal-close" id="bulk-apply-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="modal-body archetype-modal-body">
+        <p class="bulk-apply-hint" id="bulk-apply-hint">Apply the same spec to the selected characters.</p>
+        <div class="bulk-apply-preview" id="bulk-apply-preview"></div>
+
+        <!-- Insight -->
+        <div class="bulk-row" id="bulk-row-insight">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label"><span data-i18n="setting.insight">Insight</span></span>
+            <span class="bulk-row-value" id="bulk-insight-value"></span>
+          </div>
+          <div class="bulk-row-options bulk-insight-options" id="bulk-insight-options"></div>
+        </div>
+
+        <!-- Level -->
+        <div class="bulk-row" id="bulk-row-level">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label"><span data-i18n="setting.level">Level</span></span>
+            <span class="bulk-row-value" id="bulk-level-value"></span>
+          </div>
+          <div class="bulk-slider-wrap" id="bulk-level-slider-wrap">
+            <input type="range" class="custom-slider bulk-slider" id="bulk-level-slider" min="1" max="60" value="1" />
+          </div>
+        </div>
+
+        <!-- Resonance -->
+        <div class="bulk-row" id="bulk-row-resonance">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label" data-i18n="setting.resonanceShort">Resonance</span>
+            <span class="bulk-row-value" id="bulk-resonance-value"></span>
+          </div>
+          <div class="bulk-slider-wrap" id="bulk-resonance-slider-wrap">
+            <input type="range" class="custom-slider bulk-slider" id="bulk-resonance-slider" min="1" max="15" value="1" />
+          </div>
+        </div>
+
+        <!-- Portrait -->
+        <div class="bulk-row" id="bulk-row-portrait">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label"><span data-i18n="setting.portrait">Portrait</span></span>
+            <span class="bulk-row-value" id="bulk-portrait-value"></span>
+          </div>
+          <div class="bulk-row-options" id="bulk-portrait-options"></div>
+        </div>
+
+        <!-- Ownership -->
+        <div class="bulk-row" id="bulk-row-owned">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label" data-i18n="setting.ownership">Ownership</span>
+            <span class="bulk-row-value" id="bulk-owned-value"></span>
+          </div>
+          <div class="bulk-row-options" id="bulk-owned-options"></div>
+        </div>
+      </div>
+      <div class="modal-footer bulk-apply-footer">
+        <button type="button" class="btn btn-primary" id="bulk-apply-confirm"><span data-i18n="action.apply">Apply</span></button>
       </div>
     </div>
   </div>
@@ -1028,12 +1116,12 @@
   <div id="export-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card modal-card-large" style="max-width: 640px;">
       <div class="modal-header">
-        <h2>Export PNG</h2>
+        <h2><span data-i18n="toolbar.exportPng"><span data-i18n="toolbar.exportPng">Export PNG</span></span></h2>
         <button class="modal-close" id="export-modal-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="modal-body" style="text-align: center; gap: 12px;">
         <div class="export-help-tip" id="export-help-tip">
-          Tap and hold (long press) the image below and select <strong>Save to Photos</strong>, or use the buttons below.
+          Tap and hold (long press) the image below and select <strong><span data-i18n="action.savePhotos">Save to Photos</span></strong>, or use the buttons below.
         </div>
         <div class="export-preview-container" id="export-preview-container">
           <img id="export-preview-img" src="" alt="Exported Showcase Board" />
@@ -1042,8 +1130,8 @@
       <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
         <button type="button" class="btn btn-secondary" id="export-modal-btn-close-action">Close</button>
         <div style="display: flex; gap: 8px;">
-          <button type="button" class="btn btn-secondary" id="export-modal-btn-share" style="display: none;">Share</button>
-          <button type="button" class="btn btn-primary" id="export-modal-btn-download">Download PNG</button>
+          <button type="button" class="btn btn-secondary" id="export-modal-btn-share" style="display: none;"><span data-i18n="action.share">Share</span></button>
+          <button type="button" class="btn btn-primary" id="export-modal-btn-download"><span data-i18n="action.downloadPng">Download PNG</span></button>
         </div>
       </div>
     </div>
@@ -1053,24 +1141,24 @@
   <div id="export-json-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card" style="max-width: 380px;">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title">Export JSON</h2>
+        <h2 class="archetype-modal-title" data-i18n="toolbar.exportJson">Export JSON</h2>
         <button class="modal-close" id="export-json-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="modal-body archetype-modal-body" style="gap: 10px;">
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-theme" style="padding: 10px 14px;">
+          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-theme" style="padding: 10px 14px;" data-i18n="export.themeOnly">
             Export Theme Only
           </button>
-          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-roster" style="padding: 10px 14px;">
+          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-roster" style="padding: 10px 14px;" data-i18n="export.rosterOnly">
             Export Roster Only
           </button>
-          <button type="button" class="btn btn-primary btn-block" id="btn-export-json-all" style="padding: 10px 14px;">
+          <button type="button" class="btn btn-primary btn-block" id="btn-export-json-all" style="padding: 10px 14px;" data-i18n="export.all">
             Export All
           </button>
         </div>
       </div>
       <div class="modal-footer" style="display: flex; justify-content: flex-end;">
-        <button type="button" class="btn btn-secondary" id="export-json-btn-cancel">Cancel</button>
+        <button type="button" class="btn btn-secondary" id="export-json-btn-cancel"><span data-i18n="action.cancel">Cancel</span></button>
       </div>
     </div>
   </div>
@@ -1088,8 +1176,8 @@
         </p>
       </div>
       <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px;">
-        <button type="button" class="btn btn-secondary" id="confirm-modal-btn-cancel">Cancel</button>
-        <button type="button" class="btn btn-danger" id="confirm-modal-btn-yes">Yes</button>
+        <button type="button" class="btn btn-secondary" id="confirm-modal-btn-cancel"><span data-i18n="action.cancel">Cancel</span></button>
+        <button type="button" class="btn btn-danger" id="confirm-modal-btn-yes"><span data-i18n="action.yes">Yes</span></button>
       </div>
     </div>
   </div>
