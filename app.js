@@ -142,7 +142,7 @@ function applyTranslations() {
   const logo = document.getElementById("app-logo-img");
   if (logo) {
     if (currentLang === "cn") logo.src = "images/sotheby_mansion_cn.png";
-    else if (currentLang === "vi") logo.src = "images/sotheby_mansion_vi.png";
+    else if (currentLang === "vi") logo.src = "images/dinhthusotheby.png";
     else logo.src = "images/sotheby_mansion.webp";
   }
 

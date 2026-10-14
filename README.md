@@ -337,7 +337,7 @@ A tier looks like:
   - `data-i18n-aria-label` → `aria-label`
 - In JS, use `t("key")`, which supports `{var}` interpolation.
 - Character / skin names come from `data/name_map.json` and only change when `currentLang === "cn"`. **Storage always keeps the English key.**
-- The wordmark has localized artwork: `sotheby_mansion_cn.png`, `sotheby_mansion_vi.png`, `sotheby_mansion.webp`.
+- The wordmark has localized artwork: `sotheby_mansion_cn.png`, `dinhthusotheby.png`, `sotheby_mansion.webp`.
 
 ---
 
