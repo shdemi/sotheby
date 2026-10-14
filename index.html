@@ -45,7 +45,7 @@
           <span data-i18n="toolbar.manage">Manage</span>
         </button>
         <button class="btn btn-secondary" id="btn-chubes" title="Manage psychubes" data-i18n-title="toolbar.chubes">
-          <span data-i18n="toolbar.chubes">Chubes</span>
+          <span data-i18n="toolbar.chubes">Psychubes</span>
         </button>
         <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG" data-i18n-title="toolbar.exportPng">
           <span data-i18n="toolbar.exportPng">Export PNG</span>
@@ -150,7 +150,12 @@
         <div class="modal-char-preview">
           <img id="modal-char-img" src="" alt="preview" />
           <div>
-            <h2 id="modal-char-name" class="modal-char-title">Character Name</h2>
+            <div class="modal-char-name-row">
+              <h2 id="modal-char-name" class="modal-char-title">Character Name</h2>
+              <button type="button" class="btn-favourite" id="modal-btn-favourite" aria-pressed="false">
+                <img src="images/random_icon/favourite_icon.png" alt="Favourite" class="btn-favourite-img" id="modal-btn-favourite-img" />
+              </button>
+            </div>
             <span id="modal-char-status" class="modal-char-sub" data-i18n="action.owned">Owned</span>
           </div>
         </div>
@@ -289,18 +294,18 @@
           <label class="archetype-grid-item">
             <input type="checkbox" id="check-hide-character-tier" />
             <span class="archetype-diamond"></span>
-            <span class="archetype-item-text"><span data-i18n="opt.hideCharacterTier">Hide Character Tier</span></span>
+            <span class="archetype-item-text"><span data-i18n="opt.hideCharacterTier">Hide Characters</span></span>
           </label>
 
           <label class="archetype-grid-item">
             <input type="checkbox" id="check-hide-psychube-tier" />
             <span class="archetype-diamond"></span>
-            <span class="archetype-item-text"><span data-i18n="opt.hidePsychubeTier">Hide Psychube Tier</span></span>
+            <span class="archetype-item-text"><span data-i18n="opt.hidePsychubeTier">Hide Psychubes</span></span>
           </label>
         </div>
 
         <!-- Section: Character Info Box -->
-        <div class="archetype-section-header">
+        <div class="archetype-section-header options-el-gold">
           <span class="archetype-section-title"><span data-i18n="section.charInfoBox">CHARACTER'S INFO BOX</span></span>
         </div>
 
@@ -393,7 +398,7 @@
         <!-- Custom Hiding & Decor Sections -->
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
           <!-- Section: Character's Background / Border -->
-          <div class="options-flat-section">
+          <div class="options-flat-section options-el-gold">
             <div class="archetype-section-header">
               <span class="archetype-section-title" data-i18n="section.charDecor">CHARACTER'S BACKGROUND / BORDER</span>
             </div>
@@ -435,7 +440,7 @@
           </div>
 
           <!-- Section: Insight / Level Hiding -->
-          <div class="options-flat-section">
+          <div class="options-flat-section options-el-gold">
             <div class="archetype-section-header">
               <span class="archetype-section-title"><span data-i18n="section.insightHiding">INSIGHT / LEVEL HIDING</span></span>
               <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-hide"><span data-i18n="action.addRule">Add</span></button>
@@ -458,7 +463,7 @@
           </div>
 
           <!-- Section: Resonance Hiding -->
-          <div class="options-flat-section">
+          <div class="options-flat-section options-el-gold">
             <div class="archetype-section-header">
               <span class="archetype-section-title"><span data-i18n="section.resonanceHiding">RESONANCE HIDING</span></span>
               <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-res-hide"><span data-i18n="action.addRule">Add</span></button>
@@ -477,6 +482,83 @@
                 </label>
               </div>
               <div id="custom-res-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
+            </div>
+          </div>
+
+          <!-- Section: Psychube Details Hiding -->
+          <div class="options-flat-section options-el-psychube">
+            <div class="archetype-section-header">
+              <span class="archetype-section-title"><span data-i18n="section.psychubeDetailsHiding">PSYCHUBE DETAILS HIDING</span></span>
+            </div>
+            <div class="options-flat-content">
+              <div class="archetype-grid">
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-amplification" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideAmplification">Hide Amplification</span>
+                </label>
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-chube-level" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideChubeLevel">Hide Level</span>
+                </label>
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-gluttony" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideGluttony">Hide Gluttony</span>
+                </label>
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-greed" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideGreed">Hide Greed</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Amplification Hiding -->
+          <div class="options-flat-section options-el-psychube">
+            <div class="archetype-section-header">
+              <span class="archetype-section-title"><span data-i18n="section.ampHiding">AMPLIFICATION HIDING</span></span>
+              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-amp-hide"><span data-i18n="action.addRule">Add</span></button>
+            </div>
+            <div class="options-flat-content">
+              <div class="archetype-grid">
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-a1" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideA1">Hide A1</span>
+                </label>
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-a5" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideA5">Hide A5</span>
+                </label>
+              </div>
+              <div id="custom-amp-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
+            </div>
+          </div>
+
+          <!-- Section: Psychube's Level Hiding -->
+          <div class="options-flat-section options-el-psychube">
+            <div class="archetype-section-header">
+              <span class="archetype-section-title"><span data-i18n="section.chubeLevelHiding">PSYCHUBE'S LEVEL HIDING</span></span>
+              <button type="button" class="btn btn-secondary btn-sm btn-flat-action" id="btn-add-custom-level-hide"><span data-i18n="action.addRule">Add</span></button>
+            </div>
+            <div class="options-flat-content">
+              <div class="archetype-grid">
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-lv1" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideLv1">Hide Lv.1</span>
+                </label>
+                <label class="archetype-grid-item">
+                  <input type="checkbox" id="check-hide-lv60" />
+                  <span class="archetype-diamond"></span>
+                  <span class="archetype-item-text" data-i18n="opt.hideLv60">Hide Lv.60</span>
+                </label>
+              </div>
+              <div id="custom-level-hide-rules-list" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;"></div>
             </div>
           </div>
         </div>
@@ -988,7 +1070,11 @@
               <span class="custom-style-section-title"><span data-i18n="styling.psychubeColoring">Psychubes Coloring</span></span>
               <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
-                  <span data-i18n="styling.ampNormal">Amplification (A0 - A4)</span>
+                  <span data-i18n="styling.chubeLevel">Psychube Level</span>
+                  <input type="color" id="color-chube-level" value="#ffffff" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span data-i18n="styling.ampNormal">Amplification (A1 - A4)</span>
                   <input type="color" id="color-chube-amp" value="#ffffff" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
@@ -1105,7 +1191,7 @@
         <div class="modal-char-preview">
           <img id="chube-modal-img" src="" alt="preview" />
           <div>
-            <h2 id="chube-modal-name" class="modal-char-title">Chube Name</h2>
+            <h2 id="chube-modal-name" class="modal-char-title">Psychube Name</h2>
             <span id="chube-modal-status" class="modal-char-sub" data-i18n="action.unowned">Unowned</span>
           </div>
         </div>
@@ -1131,14 +1217,13 @@
           <input type="range" id="chube-input-level" min="1" max="60" value="1" class="custom-slider" style="margin-top: 8px;" />
         </div>
 
-        <!-- Amplification (A0 - A5) -->
+        <!-- Amplification (A1 - A5) -->
         <div class="setting-group" id="chube-group-amp">
           <div class="setting-label-row">
             <label class="setting-label"><span data-i18n="chube.amplification">Amplification</span></label>
-            <span class="setting-val-display" id="chube-display-amp">A0</span>
+            <span class="setting-val-display" id="chube-display-amp">A1</span>
           </div>
-          <div class="portrait-quick-picks">
-            <button type="button" class="btn-pill-p btn-pill-a" data-a="0">A0</button>
+          <div class="portrait-quick-picks chube-amp-quick-picks">
             <button type="button" class="btn-pill-p btn-pill-a" data-a="1">A1</button>
             <button type="button" class="btn-pill-p btn-pill-a" data-a="2">A2</button>
             <button type="button" class="btn-pill-p btn-pill-a" data-a="3">A3</button>
@@ -1153,7 +1238,7 @@
             <label class="setting-label"><span data-i18n="chube.count">Quantity</span></label>
             <span class="setting-val-display" id="chube-display-count">0</span>
           </div>
-          <input type="range" id="chube-input-count" min="0" max="99" value="0" class="custom-slider" style="margin-top: 8px;" />
+          <input type="number" id="chube-input-count" min="0" step="1" value="0" class="custom-number-input" style="margin-top: 8px;" />
         </div>
       </div>
 
@@ -1167,12 +1252,12 @@
   <div id="chubes-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card modal-card-large">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title"><span data-i18n="toolbar.chubes">Chubes</span></h2>
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.chubes">Psychubes</span></h2>
         <button class="modal-close" id="chubes-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="roster-toolbar">
         <div class="roster-toolbar-left">
-          <input type="text" id="chubes-search" class="search-input" data-i18n-placeholder="toolbar.searchChubes" placeholder="Search Chubes" />
+          <input type="text" id="chubes-search" class="search-input" data-i18n-placeholder="toolbar.searchChubes" placeholder="Search Psychubes" />
           <div class="roster-toolbar-right">
             <div class="filter-btn-group" id="chubes-filter-rarity-group">
               <button type="button" class="filter-btn" data-rarity="6">✦6</button>

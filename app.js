@@ -24,13 +24,20 @@ function t(key, vars) {
 /**
  * Display name for a character. Storage always keeps the English key,
  * so only the rendered label changes with the language.
+ *
+ * Precedence: CN display name (when the language has its own translation) →
+ * global name transfer (data/global_name_transfer.json) → ArcanistMap English
+ * name → the canonical key itself.
  */
 function displayCharName(name) {
   if (currentLang === "cn") {
     const cn = characterDisplayCn[name] || nameMap.character[name];
     if (cn) return cn;
   }
-  return characterDisplayEn[name] || name;
+  // The transfer file is keyed by the raw ArcanistMap name, so look that up first
+  const raw = characterDisplayEn[name] || name;
+  const transferred = globalNameTransfer[raw] || globalNameTransfer[name];
+  return transferred || raw;
 }
 
 /** Display name for a garment/skin. Falls back to the English name. */
@@ -62,8 +69,8 @@ function patternLabel(patternName) {
 }
 
 /* ---------------- Stat value formatters ----------------
-   EN:  I3 / Lv.60 / R10 / P0
-   CN:  洞3 / 60级 / 共10 / 0塑                           */
+   EN:  I3 / Lv.60 / R10 / P0 / A5
+   CN:  洞3 / 60级 / 共10 / 0塑 / 增5                      */
 function fmtInsight(n) {
   const v = Number(n);
   if (currentLang === "cn") return `洞${v}`;
@@ -84,6 +91,11 @@ function fmtPortrait(n) {
 function fmtEuphoria(n) {
   if (currentLang === "cn") return `狂${n}`;
   return `E${n}`;
+}
+function fmtAmp(n) {
+  const v = Number(n);
+  if (currentLang === "cn") return `增${v}`;
+  return `A${v}`;
 }
 
 /** Tooltip text for a pattern icon, honouring main/owned state. */
@@ -183,12 +195,17 @@ function refreshDynamicTranslations() {
     btn.dataset.patternName = fmtInsight(n);
   });
 
-  // Portrait quick-picks (P0 -> 0塑) + tooltip. Skip the Psychube A0-A5 picks,
+  // Portrait quick-picks (P0 -> 0塑) + tooltip. Skip the Psychube A1-A5 picks,
   // which share the .btn-pill-p class but carry their own labels.
   document.querySelectorAll(".btn-pill-p:not(.btn-pill-a)").forEach((btn) => {
     const p = Number(btn.dataset.p);
     btn.textContent = fmtPortrait(p);
     btn.dataset.patternName = fmtPortrait(p);
+  });
+
+  // Psychube amplification quick-picks (A1-A5 -> 增1-增5)
+  document.querySelectorAll(".btn-pill-a").forEach((btn) => {
+    btn.textContent = fmtAmp(Number(btn.dataset.a));
   });
 
   // Static roster stat tooltip labels
@@ -208,6 +225,10 @@ let characterDisplayCn = {}; // { canonicalName: "Chinese display name" } from A
 const PSYCHUBE_STORAGE_KEY = "r1999_psychube_v1";
 const PSYCHUBE_MAX_LEVEL = 60;
 const PSYCHUBE_MAX_AMP = 5;
+const PSYCHUBE_MIN_AMP = 1;
+// Special chubes (Gluttony / Greed) track a raw quantity, so it is not capped
+// at the game's usual 99 — only a sanity bound is applied.
+const PSYCHUBE_MAX_COUNT = 9999;
 // id 1 of each rarity is a special "count-only" chube
 const PSYCHUBE_SPECIAL_IDS = ["1"];
 let psychubeDb = {};        // { "6:1": { rarity, id, name, nameCn, tags, releasePatch, iconUrl } }
@@ -226,7 +247,9 @@ let futureSightChars = new Set();
 let futureSightEuphorias = new Map(); // name -> Set of future tiers e.g. "37" -> Set([1])
 let futureSightSkins = new Set(); // Set of skin IDs (Numbers) exclusive to future sight
 let futureSightPsychubes = new Set(); // Set of psychube keys ("6:73") exclusive to future sight
+let globalNameTransfer = {}; // { rawName: canonicalName } for global display names
 let excludedCharacters = new Set(); // Set of character names to exclude
+let collabCharacters = new Set();   // Collab names excluded from board chess pieces only
 let userRoster = {};  // { "Name": { owned: true/false, insight: 3, level: 60, resonance: 10, portrait: 0, e1: false, e2: false } }
 let currentEditingName = null;
 let futureSightEnabled = false;
@@ -253,6 +276,30 @@ const NAME_ALIASES = {
   "AliEn T": ["AliEn T", "aliEn T"],
   "3F3F": ["3F3F", "???", "Machine D III"],
 };
+
+/**
+ * True when `name` (a canonical English key) matches a search query.
+ * Character names are stored in English, so the query is matched against the
+ * canonical key, its aliases, and the localised display names — which is what
+ * makes Chinese searches work.
+ */
+function characterMatchesQuery(name, query) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+
+  if (name.toLowerCase().includes(q)) return true;
+
+  const aliases = NAME_ALIASES[name];
+  if (Array.isArray(aliases) && aliases.some((a) => String(a).toLowerCase().includes(q))) return true;
+
+  const cn = characterDisplayCn[name] || nameMap.character[name];
+  if (cn && String(cn).toLowerCase().includes(q)) return true;
+
+  const en = characterDisplayEn[name];
+  if (en && String(en).toLowerCase().includes(q)) return true;
+
+  return false;
+}
 
 function getCharacterRarity(name) {
   if (characterRarityMap[name] !== undefined) return characterRarityMap[name];
@@ -308,10 +355,10 @@ const DEFAULT_TIERS_CONFIG = {
     { id: "tier_r11_14", label: "R11 - 14", color: "#6d9b6c", ruleGroups: [[{ field: "resonance", op: ">=", value: 11 }, { field: "resonance", op: "<=", value: 14 }]] },
     { id: "tier_r10", label: "R10", color: "#d7d7d7", ruleGroups: [[{ field: "resonance", op: "=", value: 10 }]] },
     { id: "tier_r1_9", label: "R1 - 9", color: "#4a77c9", ruleGroups: [[{ field: "resonance", op: ">=", value: 1 }, { field: "resonance", op: "<=", value: 9 }]] },
-    { id: "tier_other", type: "other", label: "Other", color: "#a0a0a0", bgColor: null, borderColor: null, bold: false },
+    { id: "tier_other", type: "other", label: "Remaining Characters", color: "#a0a0a0", bgColor: null, borderColor: null, bold: false },
+    { id: "tier_unowned", type: "unowned", label: "Unowned Characters", color: "#9a9a9a", bgColor: null, borderColor: null, bold: false },
     { id: "tier_chube_owned", type: "psychube", isDefaultPsychubeOwned: true, label: "Psychubes", color: "#d7d7d7", bgColor: null, borderColor: null, bold: false, ruleGroups: [[{ field: "rarity", op: "<=", value: 6 }]] },
     { id: "tier_chube_other", type: "psychube_other", label: "Other", color: "#a0a0a0", bgColor: null, borderColor: null, bold: false },
-    { id: "tier_unowned", type: "unowned", label: "Unowned", color: "#9a9a9a", bgColor: null, borderColor: null, bold: false },
     { id: "tier_chube_unowned", type: "psychube_unowned", label: "Unowned", color: "#9a9a9a", bgColor: null, borderColor: null, bold: false },
   ],
 };
@@ -325,7 +372,7 @@ function ensureSystemTiersInList(list) {
     list.push({
       id: "tier_other",
       type: "other",
-      label: listingConfig.otherLabel || "Other",
+      label: listingConfig.otherLabel || "Remaining Characters",
       color: listingConfig.otherColor || "#a0a0a0",
       bgColor: listingConfig.otherBg || null,
       borderColor: listingConfig.otherBorder || null,
@@ -337,7 +384,6 @@ function ensureSystemTiersInList(list) {
   // and cannot be removed. The Owned Psychube row is a normal tier.
   const hasUnownedChube = list.some((t) => t.type === "psychube_unowned" || t.id === "tier_chube_unowned");
   if (!hasUnownedChube) {
-    const unownedIdx = list.findIndex((t) => t.type === "unowned" || t.id === "tier_unowned");
     const row = {
       id: "tier_chube_unowned",
       type: "psychube_unowned",
@@ -347,8 +393,9 @@ function ensureSystemTiersInList(list) {
       borderColor: null,
       bold: false,
     };
-    // Default placement: right below the character Unowned row
-    if (unownedIdx >= 0) list.splice(unownedIdx + 1, 0, row);
+    // Default placement: right after the last Psychube tier
+    const lastPsychubeIdx = list.map((t) => typeof t.type === "string" && t.type.startsWith("psychube")).lastIndexOf(true);
+    if (lastPsychubeIdx >= 0) list.splice(lastPsychubeIdx + 1, 0, row);
     else list.push(row);
   }
 
@@ -357,7 +404,7 @@ function ensureSystemTiersInList(list) {
     list.push({
       id: "tier_unowned",
       type: "unowned",
-      label: "Unowned",
+      label: "Unowned Characters",
       color: listingConfig.unownedColor || "#9a9a9a",
       bgColor: listingConfig.unownedBg || null,
       borderColor: listingConfig.unownedBorder || null,
@@ -377,9 +424,9 @@ function ensureSystemTiersInList(list) {
       borderColor: null,
       bold: false,
     };
-    // Default placement: above the character Unowned row
-    const unownedIdx = list.findIndex((x) => x.type === "unowned" || x.id === "tier_unowned");
-    if (unownedIdx >= 0) list.splice(unownedIdx, 0, row);
+    // Default placement: above the first Psychube tier
+    const firstPsychubeIdx = list.findIndex((x) => typeof x.type === "string" && x.type.startsWith("psychube"));
+    if (firstPsychubeIdx >= 0) list.splice(firstPsychubeIdx, 0, row);
     else list.push(row);
   }
 
@@ -406,6 +453,37 @@ function ensureSystemTiersInList(list) {
     }
     listingConfig.psychubeTiersSeeded = true;
   }
+
+  // One-time migration: the character Unowned row used to sit after every
+  // Psychube tier. Lift it above the first Psychube tier. Runs once so a
+  // deliberate manual reorder is never undone.
+  if (!listingConfig.unownedAbovePsychubeMigrated) {
+    const isPsychubeTier = (t) => typeof t.type === "string" && t.type.startsWith("psychube");
+    const unownedIdx = list.findIndex((t) => t.type === "unowned" || t.id === "tier_unowned");
+    const firstPsychubeIdx = list.findIndex(isPsychubeTier);
+    if (unownedIdx >= 0 && firstPsychubeIdx >= 0 && unownedIdx > firstPsychubeIdx) {
+      const [unownedRow] = list.splice(unownedIdx, 1);
+      list.splice(firstPsychubeIdx, 0, unownedRow);
+    }
+    listingConfig.unownedAbovePsychubeMigrated = true;
+  }
+
+  // One-time migration: rename the "Remaining" / "Unowned" system tier labels
+  // to their clearer names. Only untitled/legacy labels are touched, so a
+  // custom label the user typed is preserved.
+  if (!listingConfig.systemTierLabelsMigrated) {
+    const renames = { other: "Remaining Characters", unowned: "Unowned Characters" };
+    list.forEach((t) => {
+      const target = renames[t.type];
+      if (!target) return;
+      const current = (t.label || "").trim();
+      if (current === "" || current === "Other" || current === "Remaining" || current === "Unowned") {
+        t.label = target;
+      }
+    });
+    listingConfig.otherLabel = "Remaining Characters";
+    listingConfig.systemTierLabelsMigrated = true;
+  }
 }
 
 function loadListingConfig() {
@@ -422,6 +500,9 @@ function loadListingConfig() {
     listingConfig = JSON.parse(JSON.stringify(DEFAULT_TIERS_CONFIG));
   }
   ensureSystemTiersInList(listingConfig.tiers);
+  // The system-tier bootstrap and the ordering migration both mutate config
+  // flags, so persist them before anything can overwrite them.
+  saveListingConfig();
 }
 
 function saveListingConfig() {
@@ -437,6 +518,8 @@ const modalBtnClose = document.getElementById("modal-btn-close");
 const modalCharImg = document.getElementById("modal-char-img");
 const modalCharName = document.getElementById("modal-char-name");
 const modalCharStatus = document.getElementById("modal-char-status");
+const modalBtnFavourite = document.getElementById("modal-btn-favourite");
+const modalBtnFavouriteImg = document.getElementById("modal-btn-favourite-img");
 const btnStatusOwned = document.getElementById("btn-status-owned");
 const btnStatusUnowned = document.getElementById("btn-status-unowned");
 const groupSkin = document.getElementById("group-skin");
@@ -522,6 +605,7 @@ const DEFAULT_THEME_APPEARANCE = {
   charInfoRadius: 0,
 
   euphoriaColor: "#04FFEE",
+  chubeLevelColor: "#ffffff",
   chubeAmpColor: "#ffffff",
   chubeAmpMaxColor: "#DF7526",
   chubeCountColor: "#04FFEE",
@@ -578,6 +662,17 @@ let displayOptions = {
   hideR15: false,
   hideR10: false,
   customResHideRules: [], // array of { id, resonance: 10, enabled: true }
+  // Psychube detail hiding (mirrors the character Insight/Level + Resonance rows)
+  hideAmplification: false,
+  hidePsychubeLevel: false,
+  hideGluttony: false,
+  hideGreed: false,
+  hideA1: false,
+  hideA5: false,
+  hideLv1: false,
+  hideLv60: false,
+  customAmpHideRules: [],   // array of { id, amplification: 5, enabled: true }
+  customLevelHideRules: [], // array of { id, level: 60, enabled: true }
   appearance: { ...DEFAULT_THEME_APPEARANCE },
 };
 
@@ -596,6 +691,12 @@ function loadDisplayOptions() {
       }
       if (!Array.isArray(displayOptions.customResHideRules)) {
         displayOptions.customResHideRules = [];
+      }
+      if (!Array.isArray(displayOptions.customAmpHideRules)) {
+        displayOptions.customAmpHideRules = [];
+      }
+      if (!Array.isArray(displayOptions.customLevelHideRules)) {
+        displayOptions.customLevelHideRules = [];
       }
 
       // Migration: older saves stored showRarityLine=false before the rarity line
@@ -745,6 +846,7 @@ function applyCustomAppearance() {
 
   // Update root CSS variables for live styles
   document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
+  document.documentElement.style.setProperty("--chube-lv-color", app.chubeLevelColor || "#ffffff");
   document.documentElement.style.setProperty("--chube-amp-color", app.chubeAmpColor || "#ffffff");
   document.documentElement.style.setProperty("--chube-amp-max-color", app.chubeAmpMaxColor || "#DF7526");
   document.documentElement.style.setProperty("--chube-count-color", app.chubeCountColor || "#04FFEE");
@@ -885,6 +987,64 @@ function buildExcludeMap(data) {
   });
 }
 
+/**
+ * Characters whose displayed name is set in italics. "Lady by the Lake" is an
+ * in-game artwork title rather than an Arcanist name, so it is styled apart.
+ */
+const ITALIC_NAME_CHARS = new Set(["Lady by the Lake"]);
+
+/** True when the character's rendered name should be italicised. */
+function isItalicNameCharacter(name) {
+  return ITALIC_NAME_CHARS.has(name);
+}
+
+/** Global name transfers: maps a raw/alternate name to the canonical roster key. */function buildGlobalNameTransfer(data) {
+  globalNameTransfer = {};
+  if (!data || typeof data !== "object" || Array.isArray(data)) return;
+  Object.entries(data).forEach(([from, to]) => {
+    if (typeof from === "string" && typeof to === "string" && from.trim() && to.trim()) {
+      globalNameTransfer[from.trim()] = to.trim();
+    }
+  });
+}
+
+/** Collab characters: counted in Statistics but excluded from board chess pieces. */
+function buildCollabMap(data) {
+  collabCharacters = new Set();
+  if (!data) return;
+
+  let list = [];
+  if (Array.isArray(data)) {
+    list = data;
+  } else if (typeof data === "object") {
+    if (Array.isArray(data.Character)) list = data.Character;
+    else if (Array.isArray(data.characters)) list = data.characters;
+    else list = Object.keys(data);
+  }
+
+  list.forEach((item) => {
+    if (item && typeof item === "string") {
+      const trimmed = item.trim();
+      if (trimmed) collabCharacters.add(trimmed);
+    }
+  });
+}
+
+/** Resolves aliases so a collab entry matches the canonical roster key. */
+function isCollabCharacter(name) {
+  if (!name) return false;
+  if (collabCharacters.has(name)) return true;
+  for (const [standardName, aliases] of Object.entries(NAME_ALIASES)) {
+    if (standardName === name || aliases.includes(name)) {
+      if (collabCharacters.has(standardName)) return true;
+      for (const al of aliases) {
+        if (collabCharacters.has(al)) return true;
+      }
+    }
+  }
+  return false;
+}
+
 function isCharacterExcluded(name, item) {
   if (!name) return false;
   if (excludedCharacters.has(name)) return true;
@@ -907,7 +1067,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -919,6 +1079,8 @@ async function initApp() {
       fetch("data/i18n.json").catch(() => null),
       fetch("data/name_map.json").catch(() => null),
       fetch("data/psychube_id.json").catch(() => null),
+      fetch("data/collab_character.json").catch(() => null),
+      fetch("data/global_name_transfer.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -927,6 +1089,24 @@ async function initApp() {
         buildExcludeMap(excludeData);
       } catch (e) {
         console.warn("Could not parse exclude_character.json", e);
+      }
+    }
+
+    if (collabRes && collabRes.ok) {
+      try {
+        const collabData = await collabRes.json();
+        buildCollabMap(collabData);
+      } catch (e) {
+        console.warn("Could not parse collab_character.json", e);
+      }
+    }
+
+    if (nameTransferRes && nameTransferRes.ok) {
+      try {
+        const transferData = await nameTransferRes.json();
+        buildGlobalNameTransfer(transferData);
+      } catch (e) {
+        console.warn("Could not parse global_name_transfer.json", e);
       }
     }
 
@@ -1065,6 +1245,20 @@ function psychubeName(key) {
   return c.name;
 }
 
+/**
+ * True when a psychube matches a search query. Both the English and Chinese
+ * names are tested so a CN query works regardless of the active language.
+ */
+function psychubeMatchesQuery(key, query) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+  const c = psychubeDb[key];
+  if (!c) return false;
+  if (String(c.name || "").toLowerCase().includes(q)) return true;
+  if (String(c.nameCn || "").toLowerCase().includes(q)) return true;
+  return psychubeName(key).toLowerCase().includes(q);
+}
+
 function psychubeIconUrl(key) {
   const c = psychubeDb[key];
   return c ? c.iconUrl : "";
@@ -1099,7 +1293,7 @@ function buildPsychubeData(data) {
 /** Psychube state, defaulting to unowned. */
 function getPsychubeState(key) {
   if (!userPsychubes[key]) {
-    userPsychubes[key] = { owned: false, level: 1, amplification: 0, count: 0 };
+    userPsychubes[key] = { owned: false, level: 1, amplification: PSYCHUBE_MIN_AMP, count: 0 };
   }
   return userPsychubes[key];
 }
@@ -1118,20 +1312,20 @@ function sanitizePsychubeState() {
     const c = psychubeDb[key];
     let s = userPsychubes[key];
     if (!s) {
-      s = userPsychubes[key] = { owned: false, level: 1, amplification: 0, count: 0 };
+      s = userPsychubes[key] = { owned: false, level: 1, amplification: PSYCHUBE_MIN_AMP, count: 0 };
       changed = true;
     }
     if (isSpecialPsychube(key)) {
       // Special chubes only track a count
-      const n = Math.max(0, Math.min(99, Number(s.count) || 0));
+      const n = Math.max(0, Math.min(PSYCHUBE_MAX_COUNT, Math.floor(Number(s.count) || 0)));
       if (s.count !== n) { s.count = n; changed = true; }
       if (s.owned !== n > 0) { s.owned = n > 0; changed = true; }
       if (s.level !== 1) { s.level = 1; changed = true; }
-      if (s.amplification !== 0) { s.amplification = 0; changed = true; }
+      if (s.amplification !== PSYCHUBE_MIN_AMP) { s.amplification = PSYCHUBE_MIN_AMP; changed = true; }
       return;
     }
     const lvl = Math.max(1, Math.min(PSYCHUBE_MAX_LEVEL, Number(s.level) || 1));
-    const amp = Math.max(0, Math.min(PSYCHUBE_MAX_AMP, Number(s.amplification) || 0));
+    const amp = Math.max(PSYCHUBE_MIN_AMP, Math.min(PSYCHUBE_MAX_AMP, Number(s.amplification) || PSYCHUBE_MIN_AMP));
     if (s.level !== lvl) { s.level = lvl; changed = true; }
     if (s.amplification !== amp) { s.amplification = amp; changed = true; }
     if (typeof s.owned !== "boolean") { s.owned = !!s.owned; changed = true; }
@@ -1635,6 +1829,7 @@ function sanitizeRosterState() {
         patternMain: null,
         boxKind: DEFAULT_PATTERN,
         skin: null,
+        favourite: false,
       };
       changed = true;
     } else {
@@ -1669,6 +1864,10 @@ function sanitizeRosterState() {
             }
             if (userRoster[name].skin === undefined) {
               userRoster[name].skin = null;
+              changed = true;
+            }
+            if (typeof userRoster[name].favourite !== "boolean") {
+              userRoster[name].favourite = !!userRoster[name].favourite;
               changed = true;
             }
 
@@ -1718,6 +1917,14 @@ function compareCharacters(nameA, nameB) {
     resonance: 10,
     portrait: 0,
   };
+
+  // 0. Favourites are pinned to the front of their tier. Among several
+  //    favourites the normal ordering below still applies.
+  const favA = charA.favourite ? 1 : 0;
+  const favB = charB.favourite ? 1 : 0;
+  if (favA !== favB) {
+    return favB - favA;
+  }
 
   // 1. Rarity (6-star > 5-star > 4-star ...)
   const rarityA = getCharacterRarity(nameA);
@@ -1979,6 +2186,9 @@ function renderChessPieces() {
   const allNames = Object.keys(characterDb);
   allNames.forEach((name) => {
     if (!futureSightEnabled && futureSightChars.has(name)) return;
+    // Collab characters are not counted on the board's chess pieces.
+    // The Statistics modal intentionally still includes them.
+    if (isCollabCharacter(name)) return;
     const rarity = getCharacterRarity(name);
     if (rarity >= 2 && rarity <= 6) {
       totalByRarity[rarity]++;
@@ -2111,14 +2321,22 @@ function renderShowcase() {
   // ---- Psychube bucketing (mirrors the character flow) ----
   // "Owned" means a normal chube is owned, or a special chube (id 1) has count > 0.
   const chubeQuery = query;
-  const chubeMatchesQuery = (key) => !chubeQuery || psychubeName(key).toLowerCase().includes(chubeQuery);
+  const chubeMatchesQuery = (key) => psychubeMatchesQuery(key, chubeQuery);
   const isChubeOwned = (key) => {
     const st = userPsychubes[key] || {};
     return isSpecialPsychube(key) ? (Number(st.count) || 0) > 0 : !!st.owned;
   };
   const chubePassesRarity = (key) => activeRarityFilters.size === 0 || activeRarityFilters.has(psychubeDb[key].rarity);
+  // Gluttony (✦6) / Greed (✦5) can be hidden from the board entirely
+  const chubeHiddenBySpecialToggle = (key) => {
+    if (!isSpecialPsychube(key)) return false;
+    const rarity = psychubeDb[key].rarity;
+    if (displayOptions.hideGluttony && rarity === 6) return true;
+    if (displayOptions.hideGreed && rarity === 5) return true;
+    return false;
+  };
   const chubeBase = psychubeOrder.filter((key) =>
-    chubeMatchesQuery(key) && chubePassesRarity(key) &&
+    chubeMatchesQuery(key) && chubePassesRarity(key) && !chubeHiddenBySpecialToggle(key) &&
     (futureSightEnabled || !futureSightPsychubes.has(key))
   );
   const unmatchedChubes = new Set(chubeBase.filter((key) => isChubeOwned(key)));
@@ -2134,7 +2352,7 @@ function renderShowcase() {
       // Unowned characters are placed here
       if (activeOwnershipFilter !== "owned") {
         unownedNames.forEach((name) => {
-          if (query && !name.toLowerCase().includes(query)) return;
+          if (!characterMatchesQuery(name, query)) return;
           const char = userRoster[name] || {
             owned: false,
             insight: 3,
@@ -2155,7 +2373,7 @@ function renderShowcase() {
       if (activeOwnershipFilter !== "unowned") {
         const remainingToCatch = [...unmatchedOwned];
         remainingToCatch.forEach((name) => {
-          if (query && !name.toLowerCase().includes(query)) return;
+          if (!characterMatchesQuery(name, query)) return;
           const char = {
             ...(userRoster[name] || {
               owned: true,
@@ -2217,7 +2435,7 @@ function renderShowcase() {
       if (activeOwnershipFilter !== "unowned") {
         const currentCandidates = [...unmatchedOwned];
         currentCandidates.forEach((name) => {
-          if (query && !name.toLowerCase().includes(query)) return;
+          if (!characterMatchesQuery(name, query)) return;
           const rarity = getCharacterRarity(name);
           const char = {
             ...(userRoster[name] || {
@@ -2257,6 +2475,8 @@ function renderShowcase() {
 
   // Render all tier sections in the exact order configured
   tierBuckets.forEach((bucket) => {
+    // Hidden tiers never render on the board
+    if (bucket.tierConfig && bucket.tierConfig.hidden) return;
     const isPsychubeTier = bucket.type === "psychube" || bucket.type === "psychube_other" || bucket.type === "psychube_unowned";
     // The new Display toggles hide every tier of the matching kind
     if (displayOptions.hideCharacterTier && !isPsychubeTier) return;
@@ -2266,10 +2486,9 @@ function renderShowcase() {
     if (activeOwnershipFilter === "unowned" && (bucket.type === "psychube" || bucket.type === "psychube_other")) return;
     // Owned filter hides the character Unowned row too
     if (activeOwnershipFilter === "owned" && bucket.type === "unowned") return;
-    // The character Unowned row always renders (even when empty)
-    if (bucket.type === "unowned") {
-      renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
-    } else if (bucket.cards.length > 0) {
+    // Rows only render when they actually hold cards, so an empty Unowned
+    // row disappears while searching instead of showing a bare label.
+    if (bucket.cards.length > 0) {
       renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
     }
   });
@@ -2295,12 +2514,32 @@ function createPsychubeCard(key) {
 
   // Badge row above the icon: Amplification on the left (A5 highlights),
   // Level centred — mirroring the character card's layout.
-  const ampClass = (Number(state.amplification) || 0) >= 5 ? "chube-amp-badge is-max" : "chube-amp-badge";
+  // Both badges honour the Psychube Details Hiding rules.
+  const ampVal = Number(state.amplification) || PSYCHUBE_MIN_AMP;
+  const levelVal = Number(state.level) || 1;
+
+  const ampHiddenByPreset =
+    (displayOptions.hideA1 && ampVal === PSYCHUBE_MIN_AMP) ||
+    (displayOptions.hideA5 && ampVal === PSYCHUBE_MAX_AMP);
+  const ampHiddenByRule = (displayOptions.customAmpHideRules || []).some(
+    (rule) => rule.enabled && Number(rule.amplification) === ampVal
+  );
+  const showAmp = !displayOptions.hideAmplification && !ampHiddenByPreset && !ampHiddenByRule;
+
+  const levelHiddenByPreset =
+    (displayOptions.hideLv1 && levelVal === 1) ||
+    (displayOptions.hideLv60 && levelVal === PSYCHUBE_MAX_LEVEL);
+  const levelHiddenByRule = (displayOptions.customLevelHideRules || []).some(
+    (rule) => rule.enabled && Number(rule.level) === levelVal
+  );
+  const showChubeLevel = !displayOptions.hidePsychubeLevel && !levelHiddenByPreset && !levelHiddenByRule;
+
+  const ampClass = ampVal >= PSYCHUBE_MAX_AMP ? "chube-amp-badge is-max" : "chube-amp-badge";
   const ampBadgeHtml = special
     ? ((Number(state.count) || 0) > 0 ? `<span class="chube-amp-badge chube-count-badge">x${Number(state.count) || 0}</span>` : "")
-    : (state.owned ? `<span class="${ampClass}">A${Number(state.amplification) || 0}</span>` : "");
-  const levelBadgeHtml = (state.owned && !special)
-    ? `<span class="chube-level-badge">Lv.${Number(state.level) || 1}</span>` : "";
+    : (state.owned && showAmp ? `<span class="${ampClass}">${fmtAmp(ampVal)}</span>` : "");
+  const levelBadgeHtml = (state.owned && !special && showChubeLevel)
+    ? `<span class="chube-level-badge">Lv.${levelVal}</span>` : "";
   const badgeRowHtml = ampBadgeHtml + levelBadgeHtml;
 
   // Psychube cards never show the character rarity line
@@ -2322,7 +2561,7 @@ function createPsychubeCard(key) {
           ? `<div class="ct-row"><span class="ct-label">${t("chube.owned")}</span><span class="ct-value">x${Number(state.count) || 0}</span></div>`
           : `
             <div class="ct-row"><span class="ct-label">${t("chube.level")}</span><span class="ct-value">${Number(state.level) || 1}</span></div>
-            <div class="ct-row"><span class="ct-label">${t("chube.amplification")}</span><span class="ct-value">A${Number(state.amplification) || 0}</span></div>
+            <div class="ct-row"><span class="ct-label">${t("chube.amplification")}</span><span class="ct-value">${fmtAmp(Number(state.amplification) || PSYCHUBE_MIN_AMP)}</span></div>
           `}
       </div>
     </div>
@@ -2513,7 +2752,7 @@ function createCharacterCard(name, char, iconUrl) {
 
   let topHeaderHtml = "";
   if (!char.owned) {
-    topHeaderHtml = `<div class="char-top-info">${!displayOptions.hideNames ? `<span class="char-unowned-name">${escapeHtml(displayCharName(name))}</span>` : ""}</div>`;
+    topHeaderHtml = `<div class="char-top-info">${!displayOptions.hideNames ? `<span class="char-unowned-name${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</span>` : ""}</div>`;
   } else {
     const resVal = Number(char.resonance);
     const matchesCustomResRule = (displayOptions.customResHideRules || []).some(
@@ -2547,7 +2786,7 @@ function createCharacterCard(name, char, iconUrl) {
   // Unowned cards already show their name above the avatar, so no duplicate here.
   let nameRowHtml = "";
   if (char.owned && !displayOptions.hideOwnedNames) {
-    nameRowHtml = `<div class="char-name-below">${escapeHtml(displayCharName(name))}</div>`;
+    nameRowHtml = `<div class="char-name-below${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</div>`;
   }
 
   let portraitBarHtml = "";
@@ -2597,6 +2836,11 @@ function createCharacterCard(name, char, iconUrl) {
   ` : "";
 
   const avatarUrl = getCardAvatarUrl(name, char, iconUrl);
+
+  // Decorative pin on the top-right of the portrait for favourited characters
+  const favouriteBadgeHtml = char.favourite
+    ? `<img src="images/random_icon/unfavourite_icon.png" alt="" class="char-favourite-badge" loading="lazy" decoding="async" />`
+    : "";
 
   const avatarImgStyles = [];
   if (char.owned) {
@@ -2653,7 +2897,7 @@ function createCharacterCard(name, char, iconUrl) {
     tooltipHtml = `
       <div class="char-tooltip no-export" style="--pattern-color: ${getPatternColor(patternState.main || DEFAULT_PATTERN)};">
         <div class="ct-head">
-          <span class="ct-name">${escapeHtml(displayCharName(name))}</span>
+          <span class="ct-name${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</span>
         </div>
         <div class="ct-body">
           <div class="ct-row"><span class="ct-label">${t("card.insight")}</span><span class="ct-value">${fmtInsight(insightVal)}</span></div>
@@ -2673,6 +2917,7 @@ function createCharacterCard(name, char, iconUrl) {
       <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(name)}" class="char-avatar-img"${avatarImgStyle} loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(characterDb[name])}'" />
       ${afflatusIconHtml}
       ${insightLevelOverlay}
+      ${favouriteBadgeHtml}
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
@@ -2734,14 +2979,32 @@ function openEditModal(name) {
     e1: sanitizedEuphoria.e1,
     e2: sanitizedEuphoria.e2,
     skin: currentSkinId,
+    favourite: !!char.favourite,
   };
 
   modalCharName.textContent = displayCharName(name);
+  modalCharName.classList.toggle("is-italic-name", isItalicNameCharacter(name));
   modalCharStatus.textContent = tempEditState.owned ? t("setting.owned") : t("setting.unowned");
+  syncFavouriteButton();
 
   renderSkinSelector(name);
   updateModalView();
   editModal.style.display = "flex";
+}
+
+/** Reflects the modal's favourite state on the pin button. */
+function syncFavouriteButton() {
+  if (!modalBtnFavourite) return;
+  const fav = !!tempEditState.favourite;
+  modalBtnFavourite.classList.toggle("is-favourite", fav);
+  modalBtnFavourite.setAttribute("aria-pressed", String(fav));
+  modalBtnFavourite.title = fav ? t("action.unfavourite") : t("action.favourite");
+  if (modalBtnFavouriteImg) {
+    modalBtnFavouriteImg.src = fav
+      ? "images/random_icon/unfavourite_icon.png"
+      : "images/random_icon/favourite_icon.png";
+    modalBtnFavouriteImg.alt = fav ? t("action.unfavourite") : t("action.favourite");
+  }
 }
 
 function renderSkinSelector(name) {
@@ -2963,6 +3226,7 @@ function saveEditModal() {
     // boxKind mirrors the main pattern so legacy code keeps working
     boxKind: patternState.main || DEFAULT_PATTERN,
     skin: tempEditState.skin,
+    favourite: !!tempEditState.favourite,
   };
   saveRoster();
   renderShowcase();
@@ -2981,7 +3245,7 @@ function openPsychubeModal(key) {
   tempChubeState = {
     owned: !!state.owned,
     level: Number(state.level) || 1,
-    amplification: Number(state.amplification) || 0,
+    amplification: Number(state.amplification) || PSYCHUBE_MIN_AMP,
     count: Number(state.count) || 0,
   };
 
@@ -3028,11 +3292,11 @@ function updatePsychubeModalView() {
 
   document.getElementById("chube-display-level").textContent = String(tempChubeState.level);
   const ampDisplay = document.getElementById("chube-display-amp");
-  ampDisplay.textContent = `A${tempChubeState.amplification}`;
+  ampDisplay.textContent = fmtAmp(tempChubeState.amplification);
   ampDisplay.classList.toggle("is-max", Number(tempChubeState.amplification) >= PSYCHUBE_MAX_AMP);
   document.getElementById("chube-display-count").textContent = String(tempChubeState.count);
 
-  // Amplification quick picks (A0 - A5), with A5 highlighted
+  // Amplification quick picks (A1 - A5), with A5 highlighted
   document.querySelectorAll("#chube-modal .btn-pill-a").forEach((btn) => {
     const a = Number(btn.dataset.a);
     btn.classList.toggle("active", a === Number(tempChubeState.amplification));
@@ -3054,13 +3318,13 @@ function savePsychubeModal() {
   const prev = getPsychubeState(key);
 
   if (special) {
-    const count = Math.max(0, Math.min(99, Number(document.getElementById("chube-input-count").value) || 0));
-    userPsychubes[key] = { owned: count > 0, level: 1, amplification: 0, count };
+    const count = Math.max(0, Math.min(PSYCHUBE_MAX_COUNT, Math.floor(Number(document.getElementById("chube-input-count").value) || 0)));
+    userPsychubes[key] = { owned: count > 0, level: 1, amplification: PSYCHUBE_MIN_AMP, count };
   } else {
     userPsychubes[key] = {
       owned: !!tempChubeState.owned,
       level: Math.max(1, Math.min(PSYCHUBE_MAX_LEVEL, Number(document.getElementById("chube-input-level").value) || 1)),
-      amplification: Math.max(0, Math.min(PSYCHUBE_MAX_AMP, Number(tempChubeState.amplification) || 0)),
+      amplification: Math.max(PSYCHUBE_MIN_AMP, Math.min(PSYCHUBE_MAX_AMP, Number(tempChubeState.amplification) || PSYCHUBE_MIN_AMP)),
       count: Number(prev.count) || 0,
     };
   }
@@ -3426,7 +3690,7 @@ function renderRosterManager() {
 
   sortedNames.forEach((name) => {
     if (!futureSightEnabled && futureSightChars.has(name)) return;
-    if (query && !name.toLowerCase().includes(query)) return;
+    if (!characterMatchesQuery(name, query)) return;
     const rarity = getCharacterRarity(name);
     if (rosterActiveRarityFilters.size > 0 && !rosterActiveRarityFilters.has(rarity)) return;
 
@@ -3440,7 +3704,7 @@ function renderRosterManager() {
       <div class="roster-avatar-box">
         <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(name)}" class="roster-avatar-img" loading="lazy" decoding="async" />
       </div>
-      <span class="roster-char-name">${escapeHtml(displayCharName(name))}</span>
+      <span class="roster-char-name${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</span>
     `;
 
     if (rosterSelection.has(name)) {
@@ -3503,10 +3767,7 @@ function renderChubesManager() {
   const query = (document.getElementById("chubes-search").value || "").trim().toLowerCase();
   grid.innerHTML = "";
 
-  const keys = chubesVisibleKeys().filter((key) => {
-    if (!query) return true;
-    return psychubeName(key).toLowerCase().includes(query);
-  });
+  const keys = chubesVisibleKeys().filter((key) => psychubeMatchesQuery(key, query));
 
   keys.forEach((key) => {
     const chube = psychubeDb[key];
@@ -3521,7 +3782,7 @@ function renderChubesManager() {
         <img src="images/random_icon/selected_psychube.png" alt="" class="chube-selected-mark" />
       </div>
       <span class="roster-char-name">${escapeHtml(psychubeName(key))}</span>
-      <span class="chube-manage-meta">Lv${Number(state.level) || 1} · A${Number(state.amplification) || 0}</span>
+      <span class="chube-manage-meta">Lv.${Number(state.level) || 1} · ${fmtAmp(Number(state.amplification) || PSYCHUBE_MIN_AMP)}</span>
     `;
     if (chubesSelection.has(key)) item.classList.add("is-selected");
 
@@ -3584,9 +3845,9 @@ function renderChubeBulkModal() {
   const ownedVal = document.getElementById("chube-bulk-owned-value");
 
   if (chubeBulkSpec.level !== null) { lvl.value = String(chubeBulkSpec.level); lvlVal.textContent = String(chubeBulkSpec.level); }
-  else { lvlVal.textContent = ""; }
+  else { lvl.value = lvl.min || "1"; lvlVal.textContent = ""; }
   if (ampVal) {
-    ampVal.textContent = chubeBulkSpec.amplification === null ? "" : `A${chubeBulkSpec.amplification}`;
+    ampVal.textContent = chubeBulkSpec.amplification === null ? "" : fmtAmp(chubeBulkSpec.amplification);
     ampVal.classList.toggle("is-max", chubeBulkSpec.amplification >= PSYCHUBE_MAX_AMP);
   }
   if (ownedVal) ownedVal.textContent = chubeBulkSpec.owned === null ? "" : (chubeBulkSpec.owned ? t("action.owned") : t("action.unowned"));
@@ -3595,15 +3856,15 @@ function renderChubeBulkModal() {
   document.getElementById("chube-bulk-row-amp").classList.toggle("is-untouched", chubeBulkSpec.amplification === null);
   document.getElementById("chube-bulk-row-owned").classList.toggle("is-untouched", chubeBulkSpec.owned === null);
 
-  // Amplification quick picks (A0 - A5)
+  // Amplification quick picks (A1 - A5)
   const ampOpts = document.getElementById("chube-bulk-amp-options");
   if (ampOpts) {
     ampOpts.innerHTML = "";
-    [0, 1, 2, 3, 4, 5].forEach((a) => {
+    [1, 2, 3, 4, 5].forEach((a) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = `bulk-opt${chubeBulkSpec.amplification === a ? " is-active" : ""}${a === 5 ? " is-max" : ""}`;
-      b.textContent = `A${a}`;
+      b.textContent = fmtAmp(a);
       b.addEventListener("click", () => {
         chubeBulkSpec.amplification = chubeBulkSpec.amplification === a ? null : a;
         renderChubeBulkModal();
@@ -3636,6 +3897,8 @@ function openChubeBulkModal() {
 }
 
 function closeChubeBulkModal() {
+  // Leaving without applying discards the pending spec so the next open starts clean
+  chubeBulkSpec = { level: null, amplification: null, owned: null };
   document.getElementById("chube-bulk-modal").style.display = "none";
 }
 
@@ -3665,6 +3928,9 @@ function buildStatsModel() {
   const r10ByRarity = {};      // rarity -> { hit, total }
   const patternByRarity = {};  // rarity -> { hit, total }
   let overInvested = 0;
+  // Characters at the level cap (60) — a character capped lower (e.g. I2 Lv.50)
+  // never qualifies, so this is a plain level === max check.
+  let maxLevelChars = 0;
 
   names.forEach((name) => {
     const rarity = getCharacterRarity(name);
@@ -3681,6 +3947,7 @@ function buildStatsModel() {
       if (char.owned && getMainPattern(name, char) !== DEFAULT_PATTERN) patternByRarity[rarity].hit++;
     }
     if (char.owned && Number(char.resonance) >= 11) overInvested++;
+    if (char.owned && Number(char.level) >= PSYCHUBE_MAX_LEVEL) maxLevelChars++;
 
     // Euphoria is counted per TIER (a character with E1+E2 contributes 2),
     // matching how the game lists them. Future-Sight tiers only count when on.
@@ -3731,6 +3998,7 @@ function buildStatsModel() {
   return {
     characters: { hit: ownedChars, total: totalChars },
     overInvested,
+    maxLevelChars,
     euphoriaByRarity, r10ByRarity, patternByRarity,
     chubeOwned: { hit: chubeOwned, total: chubeTotal },
     chubeOwnedByRarity, chubeTotalByRarity,
@@ -3912,6 +4180,11 @@ function renderStatsModal() {
       <div class="stat-el">${t("stats.characters")}</div>
       ${statsBarHtml(t("stats.ownedAmount"), m.characters.hit, m.characters.total)}
       ${statsChessHtml()}
+      <div class="stat-note">${t("stats.includesCollab")}</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      ${statsValueRowHtml(t("stats.maxLevel"), m.maxLevelChars)}
     </div>
     <div class="stat-sep"></div>
     <div class="stat-section">
@@ -3923,11 +4196,11 @@ function renderStatsModal() {
     </div>
     <div class="stat-sep"></div>
     <div class="stat-section">
-      ${statsRarityBlockHtml(t("stats.patternUnlocked"), m.patternByRarity, rarityColors)}
+      ${statsValueRowHtml(t("stats.overInvestment"), m.overInvested)}
     </div>
     <div class="stat-sep"></div>
     <div class="stat-section">
-      ${statsValueRowHtml(t("stats.overInvestment"), m.overInvested)}
+      ${statsRarityBlockHtml(t("stats.patternUnlocked"), m.patternByRarity, rarityColors)}
     </div>
     <div class="stat-sep"></div>
     <div class="stat-section">
@@ -4259,6 +4532,14 @@ function setupEventListeners() {
     tempEditState.e2 = checkE2.checked;
   });
 
+  // Favourite (pin) toggle — pinned characters lead their tier
+  if (modalBtnFavourite) {
+    modalBtnFavourite.addEventListener("click", () => {
+      tempEditState.favourite = !tempEditState.favourite;
+      syncFavouriteButton();
+    });
+  }
+
   modalBtnClose.addEventListener("click", closeEditModal);
   modalBtnSave.addEventListener("click", saveEditModal);
   editModal.addEventListener("click", (e) => {
@@ -4301,6 +4582,23 @@ function setupEventListeners() {
   const customResHideRulesList = document.getElementById("custom-res-hide-rules-list");
   const btnAddCustomResHide = document.getElementById("btn-add-custom-res-hide");
   let tempCustomResHideRules = [];
+
+  const checkHideAmplification = document.getElementById("check-hide-amplification");
+  const checkHideChubeLevel = document.getElementById("check-hide-chube-level");
+  const checkHideGluttony = document.getElementById("check-hide-gluttony");
+  const checkHideGreed = document.getElementById("check-hide-greed");
+  const checkHideA1 = document.getElementById("check-hide-a1");
+  const checkHideA5 = document.getElementById("check-hide-a5");
+  const checkHideLv1 = document.getElementById("check-hide-lv1");
+  const checkHideLv60 = document.getElementById("check-hide-lv60");
+
+  const customAmpHideRulesList = document.getElementById("custom-amp-hide-rules-list");
+  const btnAddCustomAmpHide = document.getElementById("btn-add-custom-amp-hide");
+  let tempCustomAmpHideRules = [];
+
+  const customLevelHideRulesList = document.getElementById("custom-level-hide-rules-list");
+  const btnAddCustomLevelHide = document.getElementById("btn-add-custom-level-hide");
+  let tempCustomLevelHideRules = [];
 
   function renderOptionsPreviewCard() {
     if (!optionsCharPreviewCard) return;
@@ -4410,7 +4708,7 @@ function setupEventListeners() {
 
     // Preview name row (the preview character is owned, so it follows "Hide Owned")
     const previewNameHtml = !hideOwnedNames
-      ? `<div class="char-name-below">${escapeHtml(charName)}</div>`
+      ? `<div class="char-name-below${isItalicNameCharacter(charName) ? " is-italic-name" : ""}">${escapeHtml(charName)}</div>`
       : "";
 
     optionsCharPreviewCard.innerHTML = `
@@ -4478,6 +4776,21 @@ function setupEventListeners() {
 
     tempCustomResHideRules = JSON.parse(JSON.stringify(displayOptions.customResHideRules || []));
     renderCustomResHideRulesUI();
+
+    if (checkHideAmplification) checkHideAmplification.checked = !!displayOptions.hideAmplification;
+    if (checkHideChubeLevel) checkHideChubeLevel.checked = !!displayOptions.hidePsychubeLevel;
+    if (checkHideGluttony) checkHideGluttony.checked = !!displayOptions.hideGluttony;
+    if (checkHideGreed) checkHideGreed.checked = !!displayOptions.hideGreed;
+    if (checkHideA1) checkHideA1.checked = !!displayOptions.hideA1;
+    if (checkHideA5) checkHideA5.checked = !!displayOptions.hideA5;
+    if (checkHideLv1) checkHideLv1.checked = !!displayOptions.hideLv1;
+    if (checkHideLv60) checkHideLv60.checked = !!displayOptions.hideLv60;
+
+    tempCustomAmpHideRules = JSON.parse(JSON.stringify(displayOptions.customAmpHideRules || []));
+    renderCustomAmpHideRulesUI();
+
+    tempCustomLevelHideRules = JSON.parse(JSON.stringify(displayOptions.customLevelHideRules || []));
+    renderCustomLevelHideRulesUI();
 
     optionsModal.style.display = "flex";
   }
@@ -4663,6 +4976,122 @@ function setupEventListeners() {
     });
   }
 
+  /**
+   * Shared builder for the Psychube detail hide-rule rows (Amplification and
+   * Level), which mirror the Resonance rule rows exactly.
+   */
+  function buildCustomRuleRow(rule, idx, opts) {
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.alignItems = "center";
+    row.style.gap = "8px";
+    row.style.background = "rgba(0,0,0,0.03)";
+    row.style.padding = "6px 8px";
+    row.style.border = "1px solid var(--panel-border)";
+
+    const checkWrap = document.createElement("label");
+    checkWrap.className = "archetype-grid-item";
+    checkWrap.style.padding = "4px 8px";
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.checked = !!rule.enabled;
+    check.addEventListener("change", () => { rule.enabled = check.checked; });
+    checkWrap.appendChild(check);
+    const diamond = document.createElement("span");
+    diamond.className = "archetype-diamond";
+    checkWrap.appendChild(diamond);
+
+    const labelEl = document.createElement("span");
+    labelEl.style.fontSize = "0.7rem";
+    labelEl.style.fontFamily = "var(--mono-font)";
+    labelEl.textContent = `${opts.labelKey ? t(opts.labelKey) : opts.label}:`;
+
+    const sel = document.createElement("select");
+    sel.className = "listing-tier-select";
+    sel.style.minWidth = "70px";
+    sel.style.padding = "4px";
+    opts.values.forEach((v) => {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = opts.format(v);
+      if (Number(rule[opts.field]) === v) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener("change", () => { rule[opts.field] = Number(sel.value); });
+
+    const btnDel = document.createElement("button");
+    btnDel.type = "button";
+    btnDel.className = "btn-tier-del";
+    btnDel.innerHTML = "&times;";
+    btnDel.title = "Delete Rule";
+    btnDel.addEventListener("click", () => {
+      opts.list.splice(idx, 1);
+      opts.rerender();
+    });
+
+    row.appendChild(checkWrap);
+    row.appendChild(labelEl);
+    row.appendChild(sel);
+    row.appendChild(btnDel);
+    return row;
+  }
+
+  function renderCustomAmpHideRulesUI() {
+    if (!customAmpHideRulesList) return;
+    customAmpHideRulesList.innerHTML = "";
+    const values = [];
+    for (let a = PSYCHUBE_MAX_AMP; a >= PSYCHUBE_MIN_AMP; a--) values.push(a);
+    tempCustomAmpHideRules.forEach((rule, idx) => {
+      customAmpHideRulesList.appendChild(buildCustomRuleRow(rule, idx, {
+        field: "amplification",
+        labelKey: "chube.amplification",
+        values,
+        format: fmtAmp,
+        list: tempCustomAmpHideRules,
+        rerender: renderCustomAmpHideRulesUI,
+      }));
+    });
+  }
+
+  function renderCustomLevelHideRulesUI() {
+    if (!customLevelHideRulesList) return;
+    customLevelHideRulesList.innerHTML = "";
+    const values = [];
+    for (let l = PSYCHUBE_MAX_LEVEL; l >= 1; l--) values.push(l);
+    tempCustomLevelHideRules.forEach((rule, idx) => {
+      customLevelHideRulesList.appendChild(buildCustomRuleRow(rule, idx, {
+        field: "level",
+        labelKey: "chube.level",
+        values,
+        format: (v) => String(v),
+        list: tempCustomLevelHideRules,
+        rerender: renderCustomLevelHideRulesUI,
+      }));
+    });
+  }
+
+  if (btnAddCustomAmpHide) {
+    btnAddCustomAmpHide.addEventListener("click", () => {
+      tempCustomAmpHideRules.push({
+        id: "amp_hide_" + Date.now(),
+        amplification: PSYCHUBE_MAX_AMP,
+        enabled: true,
+      });
+      renderCustomAmpHideRulesUI();
+    });
+  }
+
+  if (btnAddCustomLevelHide) {
+    btnAddCustomLevelHide.addEventListener("click", () => {
+      tempCustomLevelHideRules.push({
+        id: "level_hide_" + Date.now(),
+        level: PSYCHUBE_MAX_LEVEL,
+        enabled: true,
+      });
+      renderCustomLevelHideRulesUI();
+    });
+  }
+
   if (checkShowNonePatternBg) {
     checkShowNonePatternBg.addEventListener("change", (e) => {
       if (colorNonePatternBg) {
@@ -4738,6 +5167,16 @@ function setupEventListeners() {
     if (checkHideR15) displayOptions.hideR15 = checkHideR15.checked;
     if (checkHideR10) displayOptions.hideR10 = checkHideR10.checked;
     displayOptions.customResHideRules = tempCustomResHideRules;
+    if (checkHideAmplification) displayOptions.hideAmplification = checkHideAmplification.checked;
+    if (checkHideChubeLevel) displayOptions.hidePsychubeLevel = checkHideChubeLevel.checked;
+    if (checkHideGluttony) displayOptions.hideGluttony = checkHideGluttony.checked;
+    if (checkHideGreed) displayOptions.hideGreed = checkHideGreed.checked;
+    if (checkHideA1) displayOptions.hideA1 = checkHideA1.checked;
+    if (checkHideA5) displayOptions.hideA5 = checkHideA5.checked;
+    if (checkHideLv1) displayOptions.hideLv1 = checkHideLv1.checked;
+    if (checkHideLv60) displayOptions.hideLv60 = checkHideLv60.checked;
+    displayOptions.customAmpHideRules = tempCustomAmpHideRules;
+    displayOptions.customLevelHideRules = tempCustomLevelHideRules;
 
     const checkHideChess = document.getElementById("check-hide-chess-pieces");
     if (checkHideChess) {
@@ -4822,6 +5261,7 @@ function setupEventListeners() {
   const displayCharInfoBgOpacity = document.getElementById("display-char-info-bg-opacity");
 
   const colorEuphoriaLabel = document.getElementById("color-euphoria-label");
+  const colorChubeLevel = document.getElementById("color-chube-level");
   const colorChubeAmp = document.getElementById("color-chube-amp");
   const colorChubeAmpMax = document.getElementById("color-chube-amp-max");
   const colorChubeCount = document.getElementById("color-chube-count");
@@ -5072,6 +5512,7 @@ function setupEventListeners() {
     if (displayCharInfoBgOpacity) displayCharInfoBgOpacity.textContent = `${Math.round(ciBgOpacity * 100)}%`;
 
     colorEuphoriaLabel.value = app.euphoriaColor || "#04FFEE";
+    if (colorChubeLevel) colorChubeLevel.value = app.chubeLevelColor || "#ffffff";
     if (colorChubeAmp) colorChubeAmp.value = app.chubeAmpColor || "#ffffff";
     if (colorChubeAmpMax) colorChubeAmpMax.value = app.chubeAmpMaxColor || "#DF7526";
     if (colorChubeCount) colorChubeCount.value = app.chubeCountColor || "#04FFEE";
@@ -5172,6 +5613,7 @@ function setupEventListeners() {
       charInfoRadius: Number(inputCharInfoRadius.value),
 
       euphoriaColor: colorEuphoriaLabel.value,
+      chubeLevelColor: colorChubeLevel ? colorChubeLevel.value : "#ffffff",
       chubeAmpColor: colorChubeAmp ? colorChubeAmp.value : "#ffffff",
       chubeAmpMaxColor: colorChubeAmpMax ? colorChubeAmpMax.value : "#DF7526",
       chubeCountColor: colorChubeCount ? colorChubeCount.value : "#04FFEE",
@@ -5614,13 +6056,12 @@ function setupEventListeners() {
       { value: "Survival", label: "Survival" },
     ], defaultVal: "ATK" },
     { value: "amplification", labelKey: "field.amplification", type: "select", options: [
-      { value: 5, label: "A5" },
-      { value: 4, label: "A4" },
-      { value: 3, label: "A3" },
-      { value: 2, label: "A2" },
-      { value: 1, label: "A1" },
-      { value: 0, label: "A0" },
-    ], defaultVal: 0 },
+      { value: 5, labelKey: "amp.5" },
+      { value: 4, labelKey: "amp.4" },
+      { value: 3, labelKey: "amp.3" },
+      { value: 2, labelKey: "amp.2" },
+      { value: 1, labelKey: "amp.1" },
+    ], defaultVal: 1 },
     { value: "rarity", labelKey: "field.rarity", type: "select", options: [
       { value: 6, label: "✦6" },
       { value: 5, label: "✦5" },
@@ -5703,7 +6144,7 @@ function setupEventListeners() {
       const labelInput = document.createElement("input");
       labelInput.type = "text";
       labelInput.className = "listing-tier-label-input";
-      labelInput.value = tier.label || (tier.type === "unowned" ? t("setting.unowned") : (tier.type === "other" ? t("label.other") : t("label.tier")));
+      labelInput.value = tier.label || (tier.type === "unowned" ? t("label.unownedCharacters") : (tier.type === "other" ? t("label.remainingCharacters") : t("label.tier")));
       labelInput.placeholder = "Label...";
       labelInput.addEventListener("input", (e) => {
         tier.label = e.target.value;
@@ -5801,6 +6242,23 @@ function setupEventListeners() {
       headerRow.appendChild(labelBorder);
       headerRow.appendChild(labelBold);
 
+      // Hide toggle: turns the icon red and drops the tier from the board
+      const btnHide = document.createElement("button");
+      btnHide.type = "button";
+      btnHide.className = "btn-tier-hide" + (tier.hidden ? " is-hidden" : "");
+      btnHide.title = t("action.hideTier");
+      btnHide.setAttribute("aria-pressed", String(!!tier.hidden));
+      const hideIcon = document.createElement("img");
+      hideIcon.src = "images/random_icon/hide_tier.png";
+      hideIcon.alt = t("action.hideTier");
+      btnHide.appendChild(hideIcon);
+      btnHide.addEventListener("click", () => {
+        tier.hidden = !tier.hidden;
+        btnHide.classList.toggle("is-hidden", !!tier.hidden);
+        btnHide.setAttribute("aria-pressed", String(!!tier.hidden));
+      });
+      headerRow.appendChild(btnHide);
+
       // System tiers (Other, Unowned, Unowned Psychube) cannot be removed
       if (!isSystemTier) {
         const btnClone = document.createElement("button");
@@ -5838,10 +6296,10 @@ function setupEventListeners() {
         tagSpan.style.fontWeight = "700";
         tagSpan.style.letterSpacing = "0.06em";
         tagSpan.style.textTransform = "uppercase";
-        tagSpan.textContent = tier.type === "unowned" ? t("setting.unowned")
+        tagSpan.textContent = tier.type === "unowned" ? t("label.unownedCharacters")
           : tier.type === "psychube_unowned" ? t("label.unownedPsychubes")
           : tier.type === "psychube_other" ? t("label.otherPsychubes")
-          : t("label.remaining");
+          : t("label.remainingCharacters");
         headerRow.appendChild(tagSpan);
       }
 
@@ -6013,7 +6471,7 @@ function setupEventListeners() {
               txtInput.type = "text";
               txtInput.className = "listing-rule-value-input";
               txtInput.style.width = "125px";
-              txtInput.placeholder = "Character's Name";
+              txtInput.placeholder = isChubeTier ? t("label.psychubeName") : t("label.characterName");
               txtInput.value = cond.value !== undefined ? cond.value : "";
               txtInput.addEventListener("input", (e) => {
                 cond.value = e.target.value;
@@ -6297,7 +6755,10 @@ function setupEventListeners() {
       });
     });
     document.getElementById("chube-input-count").addEventListener("input", (e) => {
-      tempChubeState.count = Number(e.target.value);
+      // Accept a raw typed number (Gluttony / Greed can exceed the game's 99);
+      // the value is clamped only when the modal is saved.
+      const parsed = Math.floor(Number(e.target.value));
+      tempChubeState.count = Number.isFinite(parsed) && parsed > 0 ? Math.min(parsed, PSYCHUBE_MAX_COUNT) : 0;
       document.getElementById("chube-display-count").textContent = String(tempChubeState.count);
       const statusEl = document.getElementById("chube-modal-status");
       if (statusEl) statusEl.textContent = t("chube.countLabel", { n: tempChubeState.count });

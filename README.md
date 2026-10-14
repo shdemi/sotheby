@@ -40,7 +40,7 @@ Read this section first. It gives you everything needed to navigate the codebase
 - **Must be served over HTTP.** `app.js` calls `fetch()` on `data/*.json`, which fails under `file://`. Use `python -m http.server` or `npx serve`.
 - **All user state lives in `localStorage`.** Keys are prefixed `r1999_` (see [§5.1](#51-localstorage-keys)). Preserve backward compatibility when changing schemas.
 - **All app state lives in module-level variables** in `app.js` (e.g. `userRoster`, `displayOptions`, `listingConfig`). There is no store / observer pattern — after mutating state you must call the relevant render + save function manually.
-- **Single entry point:** `initApp()` at the bottom of `app.js`. It fetches 10 JSON files in parallel, builds lookup maps, loads state from `localStorage`, then calls `renderShowcase()` and `setupEventListeners()`.
+- **Single entry point:** `initApp()` at the bottom of `app.js`. It fetches 14 JSON files in parallel, builds lookup maps, loads state from `localStorage`, then calls `renderShowcase()` and `setupEventListeners()`.
 - **Character names are the primary key** throughout the app (rosters, maps, tier rules). Storage always keeps the **English** name; only the *rendered label* changes with language (`displayCharName`).
 - **Never read or scan `Reverse-1999-CN-Asset/` or `references/`** — huge asset/reference folders, git-ignored, and reading them will blow up your context window.
 
@@ -144,8 +144,11 @@ characterBox/
 │   ├── reso_shape.json             # Duplicate of shape_patterns.json (NOT used by the app)
 │   ├── euphoria_list.json          # Euphoria-capable characters + effect names per tier
 │   ├── exclude_character.json      # Characters excluded from the app entirely
+│   ├── collab_character.json       # Collab characters (excluded from board chess pieces only)
+│   ├── global_name_transfer.json   # raw ArcanistMap name → canonical display name
 │   ├── future_sight.json           # CN/Future content (Character, Euphoria, Skin)
 │   ├── i18n.json                   # UI strings for en / cn / vi
+│   ├── psychube_id.json            # Psychube (Chube) metadata: id, names, tags, rarity
 │   └── name_map.json               # EN → CN name maps for characters and skins
 └── images/                         # Icons, avatars, UI art
     ├── headicon_small/             # Character & skin avatars
@@ -208,8 +211,11 @@ Then open `http://localhost:8000`.
 6. **`euphoria_list.json`** — `{ "1": ["Name: Effect Name", ...], "2": [...] }`.
 7. **`future_sight.json`** — `{ Character: [...], Euphoria: ["Name: tier", ...], Skin: [<skinId>, ...] }`.
 8. **`exclude_character.json`** — array of fully excluded character names (currently `["Schneider"]`).
-9. **`i18n.json`** — `{ en: {...}, cn: {...}, vi: {...} }`, ~256 keys per language.
-10. **`name_map.json`** — `{ character: { EN: CN }, skin: { EN: CN } }`.
+9. **`collab_character.json`** — array of collab character names. These are **counted normally in the Statistics modal** but **excluded from the board's chess pieces** (`renderChessPieces()` only).
+10. **`global_name_transfer.json`** — `{ rawArcanistMapName: displayName }`. Consulted by `displayCharName()` after the CN translation and before the ArcanistMap English name.
+11. **`psychube_id.json`** — psychube metadata (`rarity`, `id`, `name`, `nameCn`, `tags`, `iconUrl`).
+12. **`i18n.json`** — `{ en: {...}, cn: {...}, vi: {...} }`, ~365 keys per language.
+13. **`name_map.json`** — `{ character: { EN: CN }, skin: { EN: CN } }`.
 
 ### 5.3. Key state variables in `app.js`
 
@@ -271,7 +277,7 @@ Startup and render flow:
 
 ```mermaid
 flowchart TD
-    A[initApp] --> B[fetch Promise.all: 10 JSON files]
+    A[initApp] --> B[fetch Promise.all: 14 JSON files]
     B --> C[buildExcludeMap / buildArcanistData / buildRarityMap]
     C --> D[buildFutureSightMap / buildEuphoriaMap]
     D --> E[buildAfflatusMap / buildResoShapeMap / buildShapePatternMap]

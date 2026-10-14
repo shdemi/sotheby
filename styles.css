@@ -1027,8 +1027,7 @@ body::before {
 .badge-resonance {
   font-size: calc(0.64rem * var(--char-card-scale, 1));
   font-weight: 700;
-  color: #ffffff;
-  line-height: 1;
+  color: #ffffff;  line-height: 1;
   letter-spacing: -0.02em;
   font-family: var(--board-font, var(--mono-font));
   opacity: 0.95;
@@ -1096,6 +1095,22 @@ body::before {
   pointer-events: none;
   box-sizing: border-box;
   filter: saturate(0.82) contrast(1.05) brightness(0.9);
+}
+
+/* Decorative pin marking a favourited character (top-right of the portrait).
+   Purely visual — the toggle lives in the character setting modal. */
+.char-favourite-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  z-index: 4;
+  pointer-events: none;
+  object-fit: contain;
+  border: none;
+  background: none;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.85));
 }
 
 /* Afflatus Icon in Character Avatar Box */
@@ -1217,6 +1232,18 @@ body::before {
   margin-top: 3px;
 }
 
+/* Some characters carry a stylised title instead of an Arcanist name.
+   Placed after the base rules so it also wins over text-transform. */
+.char-name-below.is-italic-name,
+.char-unowned-name.is-italic-name,
+.ct-name.is-italic-name,
+.roster-char-name.is-italic-name,
+.modal-char-title.is-italic-name {
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
 /* Helper note under the Character Info Box live preview */
 .options-preview-note {
   margin: 2px 0 6px;
@@ -1323,7 +1350,7 @@ body::before {
   gap: 14px;
 }
 
-.modal-char-preview img {
+.modal-char-preview img:not(.btn-favourite-img) {
   width: 52px;
   height: 52px;
   border-radius: 0;
@@ -1347,6 +1374,60 @@ body::before {
   text-transform: uppercase;
   font-family: var(--primary-font);
   font-weight: 700;
+}
+
+/* Favourite (pin) toggle sitting beside the character name.
+   The preview block styles every descendant <img> at 52px, so the pin size
+   needs to win on specificity. */
+.modal-char-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-favourite {
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  /* Nudged up so the pin optically aligns with the name's cap height */
+  position: relative;
+  top: -4px;
+  cursor: pointer;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: transform 0.15s ease;
+}
+
+.btn-favourite .btn-favourite-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+  border: 0 none;
+  outline: none;
+  background: none;
+  box-shadow: none;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+
+.btn-favourite:hover .btn-favourite-img {
+  opacity: 1;
+}
+
+.btn-favourite:hover {
+  transform: scale(1.12);
+}
+
+.btn-favourite.is-favourite .btn-favourite-img {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(246, 195, 74, 0.85));
 }
 
 .modal-close {
@@ -1595,7 +1676,7 @@ body::before {
 }
 
 .chube-card .chube-level-badge {
-  color: var(--chube-amp-color, #ffffff);
+  color: var(--chube-lv-color, #ffffff);
   opacity: 0.95;
 }
 
@@ -2008,6 +2089,28 @@ body::before {
 .custom-slider:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Numeric entry (e.g. Gluttony / Greed quantity) */
+.custom-number-input {
+  width: 100%;
+  font-family: var(--board-font, var(--mono-font));
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #E5E7EB;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease;
+}
+
+.custom-number-input:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.custom-number-input:focus {
+  outline: none;
+  border-color: #D05126;
 }
 
 /* Euphoria Checkboxes */
@@ -2575,9 +2678,18 @@ body::before {
   gap: 6px;
 }
 
-/* Gold-railed variant used by the Character's Name / Details sections */
-.options-el-gold > .archetype-section-header {
+/* Gold-railed variant used by the Character's Info Box / Name / Details
+   sections and the character hiding sections. Accepts the class either on the
+   wrapper or directly on the header. */
+.options-el-gold > .archetype-section-header,
+.archetype-section-header.options-el-gold {
   border-left-color: #FFD965;
+}
+
+/* Purple-railed variant for the Psychube detail hiding sections */
+.options-el-psychube > .archetype-section-header,
+.archetype-section-header.options-el-psychube {
+  border-left-color: #6A4972;
 }
 
 .options-flat-content {
@@ -2985,10 +3097,14 @@ body::before {
   border-color: #D05126;
 }
 
-/* A5 keeps an accent readout, but the selected pill follows the standard
-   accent fill like every other button in the app. */
+/* Amplification quick picks: five evenly-spaced buttons. A5 reads in the same
+   colour as the rest; only the card badge follows the Styling colour. */
+#chube-modal .chube-amp-quick-picks {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 #chube-modal .btn-pill-a.is-max {
-  color: var(--chube-amp-max-color, #DF7526);
+  color: #BFBFBF;
 }
 
 #chube-modal .btn-pill-a.is-max.active {
@@ -3039,6 +3155,17 @@ body::before {
   border-left: 3px solid #D05126;
   padding: 7px 12px;
   margin-bottom: 2px;
+}
+
+/* Small clarifying note under a stat block */
+.stat-note {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.62rem;
+  font-style: italic;
+  color: #9a9a9a;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+  text-align: center;
 }
 
 /* Statistics header: Export PNG sits beside the title */
@@ -3361,7 +3488,9 @@ body::before {
 }
 
 /* ================= CHARACTER SETTING (edit-modal) — Styling-modal look ================= */
-#edit-modal .modal-char-preview img {
+/* Only the character portrait carries the accent frame; the favourite pin
+   beside the name must stay borderless. */
+#edit-modal .modal-char-preview img:not(.btn-favourite-img) {
   border: 1px solid #D05126;
 }
 
@@ -3760,6 +3889,52 @@ body::before {
   color: #F6C34A;
 }
 
+/* Per-tier hide toggle (sits next to Bold). The icon turns red while the
+   tier is hidden from the board. */
+.btn-tier-hide {
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0 4px;
+  margin: 0;
+  cursor: pointer;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-tier-hide img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  border: 0 none;
+  background: none;
+  box-shadow: none;
+  opacity: 0.75;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-tier-hide:hover img {
+  opacity: 1;
+}
+
+/* Active state: the icon turns white and lifts slightly. No box background or
+   border — the glow comes from the icon itself. */
+.btn-tier-hide.is-hidden {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.btn-tier-hide.is-hidden img {
+  filter: brightness(0) invert(1) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+  opacity: 1;
+}
+
 .roster-toolbar {
   padding: 12px 20px;
   display: flex;
@@ -4153,11 +4328,11 @@ body::before {
   cursor: pointer;
 }
 
-/* Chube bulk: Amplification renders as an even 6-column grid (like Insight),
+/* Chube bulk: Amplification renders as an even 5-column grid (like Insight),
    Ownership as two equal columns. */
 #chube-bulk-amp-options {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 6px;
 }
 
@@ -4177,7 +4352,7 @@ body::before {
 }
 
 #chube-bulk-amp-options .bulk-opt.is-max {
-  color: var(--chube-amp-max-color, #DF7526);
+  color: #BFBFBF;
 }
 
 #chube-bulk-amp-options .bulk-opt.is-max.is-active {
@@ -4647,6 +4822,36 @@ body::before {
   }
 }
 
+/* Narrow tablet / small-laptop: the centred action row no longer fits beside
+   the stat badge in a single line, so it overflows its grid column and lands on
+   top of the badge and the Export PNG button. Give the actions their own
+   full-width row so nothing collides. */
+@media screen and (max-width: 900px) and (min-width: 769px) {
+  .header-primary-bar {
+    grid-template-columns: auto 1fr;
+    row-gap: 8px;
+  }
+
+  .header-actions-row {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+    width: 100%;
+    max-width: 100%;
+    justify-self: stretch;
+    justify-content: flex-start;
+    margin: 0;
+  }
+
+  .header-actions-row .header-search-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .header-actions-row .search-input {
+    width: 100%;
+  }
+}
+
 /* Responsive Mobile-Only UI adjustments (phones and small screens) */
 @media screen and (max-width: 768px) {
   body {
@@ -4761,7 +4966,9 @@ body::before {
 
   .header-actions-row .header-search-wrap {
     flex: 1 1 auto;
-    min-width: 0;
+    /* Keep the search field usable: the three action buttons would otherwise
+       squeeze it down to ~73px on a 375px phone. */
+    min-width: 96px;
     display: flex;
   }
 
@@ -4776,20 +4983,20 @@ body::before {
   #btn-manage-all,
   #btn-chubes {
     height: 30px;
-    padding: 0 9px;
-    font-size: 0.6rem;
+    padding: 0 7px;
+    font-size: 0.58rem;
     white-space: nowrap;
     flex-shrink: 0;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
   }
 
   #btn-export-image {
     height: 30px;
-    padding: 0 10px;
-    font-size: 0.6rem;
+    padding: 0 8px;
+    font-size: 0.58rem;
     white-space: nowrap;
     flex-shrink: 0;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
   }
 
   .stat-badge-tooltip {
@@ -5104,7 +5311,7 @@ body::before {
     font-size: 1rem;
   }
 
-  .modal-char-preview img {
+  .modal-char-preview img:not(.btn-favourite-img) {
     width: 40px;
     height: 40px;
   }
