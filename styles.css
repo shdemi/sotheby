@@ -250,6 +250,10 @@ body::before {
   outline-offset: -2px;
 }
 
+.stat-badge-wrap:hover .stat-badge {
+  border-color: #D05126;
+}
+
 .stat-badge-wrap {
   position: relative;
   display: inline-flex;
@@ -559,13 +563,15 @@ body::before {
   box-shadow: 0 0 0 4px rgba(208, 81, 38, 0.18);
 }
 
-.header-actions-row #btn-manage-all {
+.header-actions-row #btn-manage-all,
+.header-actions-row #btn-chubes {
   border: 1px solid #D05126;
   color: #ECE5D9;
   border-radius: 4px;
 }
 
-.header-actions-row #btn-manage-all:hover {
+.header-actions-row #btn-manage-all:hover,
+.header-actions-row #btn-chubes:hover {
   background: rgba(208, 81, 38, 0.15);
   border-color: #D05126;
   color: #FFFFFF;
@@ -833,6 +839,7 @@ body::before {
   text-transform: var(--tier-label-case, uppercase);
   padding-top: 2px;
   opacity: 0.92;
+  cursor: default;
 }
 
 .tier-r15 { color: var(--tier-r15); }
@@ -900,14 +907,14 @@ body::before {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
 }
 
-/* Name header — serif, matching the Character Setting title */
+/* Name header */
 .char-tooltip .ct-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
   padding: 8px 12px 7px;
-  background: #212121;
+  background: transparent;
   border-bottom: 1px solid #FFFFFF;
   border-radius: 0;
 }
@@ -1541,6 +1548,87 @@ body::before {
   margin-top: 4px;
 }
 
+/* ================= PSYCHUBE (CHUBE) CARDS ================= */
+/* Chube art is 180x214 (taller than wide), so the icon box follows that
+   aspect ratio instead of being forced into a square. */
+.chube-card .char-avatar-box {
+  position: relative;
+  width: var(--char-card-width, 60px);
+  height: auto;
+  aspect-ratio: 180 / 214;
+}
+
+.chube-card .chube-avatar-img {
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  filter: none;
+}
+
+.chube-card .chube-amp-badge {
+  position: absolute;
+  left: 0;
+  top: calc(1px * var(--char-card-scale, 1));
+  z-index: 3;
+}
+
+.chube-card .chube-level-badge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(5px * var(--char-card-scale, 1));
+  z-index: 3;
+  text-align: center;
+}
+
+.chube-card .chube-level-badge,
+.chube-card .chube-amp-badge {
+  font-family: var(--board-font, var(--mono-font));
+  font-size: calc(0.64rem * var(--char-card-scale, 1));
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chube-card .chube-level-badge {
+  color: var(--chube-amp-color, #ffffff);
+  opacity: 0.95;
+}
+
+.chube-card .chube-amp-badge {
+  color: var(--chube-amp-color, #ffffff);
+  opacity: 0.95;
+}
+
+/* Amplification 5 is highlighted */
+.chube-card .chube-amp-badge.is-max {
+  color: var(--chube-amp-max-color, #DF7526);
+}
+
+.chube-card .chube-count-badge {
+  color: var(--chube-count-color, #04FFEE);
+}
+
+/* Level overlay inside the icon is not used for chubes */
+.chube-card .char-info-overlay {
+  z-index: 2;
+}
+
+.chube-manage-meta {
+  font-family: var(--mono-font);
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.chube-tooltip .ct-name {
+  font-size: 15px;
+}
+
 /* ================= SHARED PATTERN TOOLTIP ================= */
 .pattern-tooltip {
   position: fixed;
@@ -1562,7 +1650,7 @@ body::before {
   opacity: 0;
   visibility: hidden;
   transform: translateY(2px);
-  transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 
@@ -1570,6 +1658,12 @@ body::before {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+/* Tier row count tooltip: same surface as the pattern tooltip, but it follows
+   the cursor instead of being anchored to an element. */
+.tier-count-tooltip {
+  z-index: 3001;
 }
 
 /* ================= SHAPE PATTERN PICKER (Character Setting) ================= */
@@ -2868,6 +2962,276 @@ body::before {
 
 /* NOTE: preview-stage font sizes are set by JS inline styles — do not force them here. */
 
+/* Amplification quick picks in the Psychube setting modal (mirrors the
+   portrait pills). A5 is highlighted in the accent colour. */
+#chube-modal .btn-pill-p {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  background: #111111;
+  border: 1px solid #676767;
+  color: #BFBFBF;
+}
+
+#chube-modal .btn-pill-p:hover {
+  background: #1a1a1a;
+  border-color: #B5B5B3;
+}
+
+#chube-modal .btn-pill-p.active {
+  background: #D05126;
+  color: #FFFFFF;
+  border-color: #D05126;
+}
+
+/* A5 keeps an accent readout, but the selected pill follows the standard
+   accent fill like every other button in the app. */
+#chube-modal .btn-pill-a.is-max {
+  color: var(--chube-amp-max-color, #DF7526);
+}
+
+#chube-modal .btn-pill-a.is-max.active {
+  background: #D05126;
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+/* The Amplification readout is A5-coloured at max */
+#chube-display-amp.is-max {
+  color: var(--chube-amp-max-color, #DF7526);
+}
+
+/* A5 on the chube manager tiles + bulk options */
+.bulk-opt.is-max {
+  color: #DF7526;
+}
+
+/* ================= STATISTICS MODAL ================= */
+#stats-modal .modal-card {
+  max-height: 82vh;
+}
+
+#stats-modal .modal-body {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 16px 20px;
+}
+
+.stat-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
+}
+
+/* "el" title: dark panel with an accent rail on the left */
+.stat-el {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #E7D9CB;
+  background: #181818;
+  border-left: 3px solid #D05126;
+  padding: 7px 12px;
+  margin-bottom: 2px;
+}
+
+/* Statistics header: Export PNG sits beside the title */
+.stats-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.stat-block-title {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #D7B155;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.stat-row-label {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #E5E7EB;
+}
+
+.stat-row-sub .stat-row-label {
+  color: #BFBFBF;
+  font-size: 0.76rem;
+}
+
+.stat-row-value {
+  font-family: var(--mono-font);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.stat-row-sub .stat-row-value {
+  font-size: 0.76rem;
+}
+
+.stat-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.stat-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent-gold, #D7B155);
+  transition: width 0.25s ease;
+}
+
+.stat-sep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Gluttony / Greed icon row (above Total Chube Count) */
+.stats-special-chubes {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 42px;
+  padding: 6px 0 4px;
+}
+
+.stats-special-chube {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stats-special-chube-img {
+  width: 69px;
+  height: auto;
+  aspect-ratio: 180 / 214;
+  object-fit: contain;
+  display: block;
+}
+
+.stats-special-chube-count {
+  font-family: var(--mono-font);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--chube-count-color, #04FFEE);
+  text-align: center;
+}
+
+/* Chess piece progress row (fixed scale, centred) */
+.stats-chess-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  padding: 6px 0 2px;
+}
+
+.stats-chess-piece {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.stats-chess-empty {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  display: block;
+}
+
+.stats-chess-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.stats-chess-mask img {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+/* ================= MODAL SCROLLBARS ================= */
+/* Slim, themed vertical scrollbars inside modals so long lists feel smooth. */
+.modal-body,
+.roster-grid,
+#stats-modal .modal-body,
+#chubes-modal .roster-grid,
+#roster-modal .roster-grid {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(181, 181, 179, 0.45) transparent;
+  overscroll-behavior: contain;
+}
+
+.modal-body::-webkit-scrollbar,
+.roster-grid::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track,
+.roster-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb,
+.roster-grid::-webkit-scrollbar-thumb {
+  background: rgba(181, 181, 179, 0.45);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover,
+.roster-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(208, 81, 38, 0.75);
+}
+
 /* ================= TIERS / QUICK EDIT / CONFIRM — Styling-modal look ================= */
   :is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal) .modal-card {
     background-image: url("images/background.png") !important;
@@ -3043,13 +3407,15 @@ body::before {
   padding-bottom: 0;
 }
 
-/* Ownership toggle */
-#edit-modal .toggle-group {
+/* Ownership toggle (shared by the Character and Psychube setting modals) */
+#edit-modal .toggle-group,
+#chube-modal .toggle-group {
   background: #111111;
   border: 1px solid #676767;
 }
 
-#edit-modal .btn-toggle {
+#edit-modal .btn-toggle,
+#chube-modal .btn-toggle {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
   font-size: 12px;
   font-weight: bold;
@@ -3058,7 +3424,8 @@ body::before {
   color: #BFBFBF;
 }
 
-#edit-modal .btn-toggle.active {
+#edit-modal .btn-toggle.active,
+#chube-modal .btn-toggle.active {
   background: #D05126;
   color: #FFFFFF;
 }
@@ -3414,6 +3781,14 @@ body::before {
   max-width: 280px;
 }
 
+/* Rarity filter + Select sit together on the right */
+.roster-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
 /* ================= QUICK EDIT — BULK SELECTION ================= */
 .roster-select-toggle[aria-pressed="true"] {
   background: rgba(208, 81, 38, 0.22);
@@ -3461,19 +3836,22 @@ body::before {
 }
 
 /* Bulk Apply carries the accent fill */
-#btn-roster-bulk-apply {
+#btn-roster-bulk-apply,
+#btn-chubes-bulk-apply {
   background: #D05126;
   border: 1px solid #D05126;
   color: #FFFFFF;
 }
 
-#btn-roster-bulk-apply:hover:not([disabled]) {
+#btn-roster-bulk-apply:hover:not([disabled]),
+#btn-chubes-bulk-apply:hover:not([disabled]) {
   background: #B55829;
   border-color: #B55829;
   color: #FFFFFF;
 }
 
-/* Selection state on a tile — thin accent ring, no badge or text emphasis */
+/* Selection state on a tile — thin accent ring, no badge or text emphasis
+  (shared by Manage Characters and Chubes) */
 .roster-char-item.is-selected .roster-avatar-box {
   border-color: #D05126 !important;
   box-shadow: none !important;
@@ -3500,6 +3878,85 @@ body::before {
 
 .roster-select-mode .roster-char-item .roster-avatar-box {
   transition: border-color 0.12s ease, opacity 0.12s ease;
+}
+
+/* Chubes manager reuses the same select-mode visuals */
+.select-mode .roster-char-item {
+  position: relative;
+  cursor: pointer;
+}
+
+.select-mode .roster-char-item:not(.is-selected) .roster-avatar-box {
+  opacity: 0.5;
+}
+
+.select-mode .roster-char-item.is-selected .roster-avatar-box {
+  opacity: 1;
+}
+
+.select-mode .roster-char-item .roster-avatar-box {
+  transition: border-color 0.12s ease, opacity 0.12s ease;
+}
+
+/* Chubes manager: full 180x214 art, no tile border (a corner badge marks selection) */
+#chubes-modal .roster-char-item {
+  width: 84px;
+}
+
+#chubes-modal .roster-avatar-box {
+  width: 84px;
+  height: auto;
+  aspect-ratio: 180 / 214;
+  background: transparent;
+}
+
+#chubes-modal .roster-avatar-img {
+  object-fit: contain;
+}
+
+#chubes-modal .roster-char-item.is-owned .roster-avatar-box {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+#chubes-modal .roster-char-item.is-selected .roster-avatar-box {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+#chubes-modal .roster-char-item.is-selected .chube-selected-mark {
+  display: block;
+}
+
+.chube-selected-mark {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 1px;
+  width: 9px;
+  height: 9px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Chube setting modal: full art with no border */
+#chube-modal .modal-char-preview img {
+  width: 84px;
+  height: auto;
+  aspect-ratio: 180 / 214;
+  border: none;
+  background: transparent;
+  object-fit: contain;
+}
+
+/* Bulk apply preview: full art, no border (wins over .bulk-apply-preview img) */
+.bulk-apply-preview img.chube-bulk-preview-avatar {
+  width: 48px;
+  height: auto;
+  aspect-ratio: 180 / 214;
+  border: none;
+  background: transparent;
+  object-fit: contain;
 }
 
 /* ================= BULK APPLY MODAL ================= */
@@ -3694,6 +4151,57 @@ body::before {
   width: 100%;
   accent-color: var(--accent-gold);
   cursor: pointer;
+}
+
+/* Chube bulk: Amplification renders as an even 6-column grid (like Insight),
+   Ownership as two equal columns. */
+#chube-bulk-amp-options {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+#chube-bulk-amp-options .bulk-opt {
+  min-width: 0;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#chube-bulk-amp-options .bulk-opt.is-active {
+  background: #D05126;
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+#chube-bulk-amp-options .bulk-opt.is-max {
+  color: var(--chube-amp-max-color, #DF7526);
+}
+
+#chube-bulk-amp-options .bulk-opt.is-max.is-active {
+  background: #D05126;
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+#chube-bulk-owned-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+#chube-bulk-owned-options .bulk-opt {
+  min-width: 0;
+  height: 38px;
+  padding: 0 14px;
+  font-size: 0.7rem;
+}
+
+/* The Amplification readout (right side) turns A5-coloured at max */
+#chube-bulk-row-amp .bulk-row-value.is-max {
+  color: var(--chube-amp-max-color, #DF7526);
 }
 
 /* Untouched rows read as inactive until the user picks something */
@@ -4082,6 +4590,7 @@ body::before {
   }
 
   #btn-manage-all,
+  #btn-chubes,
   #btn-export-image {
     height: 30px;
     padding: 0 10px;
@@ -4264,7 +4773,8 @@ body::before {
     box-sizing: border-box;
   }
 
-  #btn-manage-all {
+  #btn-manage-all,
+  #btn-chubes {
     height: 30px;
     padding: 0 9px;
     font-size: 0.6rem;
@@ -4532,6 +5042,13 @@ body::before {
   .char-avatar-box {
     width: calc(44px * var(--char-card-scale, 1));
     height: calc(44px * var(--char-card-scale, 1));
+  }
+
+  /* Chube art keeps its own (taller) aspect ratio on phones */
+  .chube-card .char-avatar-box {
+    width: calc(44px * var(--char-card-scale, 1));
+    height: auto;
+    aspect-ratio: 180 / 214;
   }
 
   .char-info-overlay {

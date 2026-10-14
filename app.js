@@ -63,10 +63,10 @@ function patternLabel(patternName) {
 
 /* ---------------- Stat value formatters ----------------
    EN:  I3 / Lv.60 / R10 / P0
-   CN:  洞三 / 60级 / 共10 / 0塑                           */
+   CN:  洞3 / 60级 / 共10 / 0塑                           */
 function fmtInsight(n) {
   const v = Number(n);
-  if (currentLang === "cn") return ["洞0", "洞一", "洞二", "洞三"][v] || `洞${v}`;
+  if (currentLang === "cn") return `洞${v}`;
   return `I${v}`;
 }
 function fmtLevel(n) {
@@ -82,7 +82,7 @@ function fmtPortrait(n) {
   return `P${n}`;
 }
 function fmtEuphoria(n) {
-  if (currentLang === "cn") return `${n}狂`;
+  if (currentLang === "cn") return `狂${n}`;
   return `E${n}`;
 }
 
@@ -178,13 +178,14 @@ function refreshDynamicTranslations() {
 
   // Insight quick-pick tooltips (e.g. "Insight 3")
   document.querySelectorAll(".btn-pill-i").forEach((btn) => {
-    const n = btn.dataset.i;
-    btn.title = t("setting.insightTitle", { n });
-    btn.dataset.patternName = t("setting.insightTitle", { n });
+    const n = Number(btn.dataset.i);
+    btn.removeAttribute("title");
+    btn.dataset.patternName = fmtInsight(n);
   });
 
-  // Portrait quick-picks (P0 -> 0塑) + tooltip
-  document.querySelectorAll(".btn-pill-p").forEach((btn) => {
+  // Portrait quick-picks (P0 -> 0塑) + tooltip. Skip the Psychube A0-A5 picks,
+  // which share the .btn-pill-p class but carry their own labels.
+  document.querySelectorAll(".btn-pill-p:not(.btn-pill-a)").forEach((btn) => {
     const p = Number(btn.dataset.p);
     btn.textContent = fmtPortrait(p);
     btn.dataset.patternName = fmtPortrait(p);
@@ -202,6 +203,16 @@ function refreshDynamicTranslations() {
 let characterDb = {}; // { "Name": "images/headicon_small/..." }
 let characterDisplayEn = {}; // { canonicalName: "English display name" } from ArcanistMap
 let characterDisplayCn = {}; // { canonicalName: "Chinese display name" } from ArcanistMap
+
+/* ---------------- Psychube (Trấn) ---------------- */
+const PSYCHUBE_STORAGE_KEY = "r1999_psychube_v1";
+const PSYCHUBE_MAX_LEVEL = 60;
+const PSYCHUBE_MAX_AMP = 5;
+// id 1 of each rarity is a special "count-only" chube
+const PSYCHUBE_SPECIAL_IDS = ["1"];
+let psychubeDb = {};        // { "6:1": { rarity, id, name, nameCn, tags, releasePatch, iconUrl } }
+let psychubeOrder = [];     // ordered keys for stable listing
+let userPsychubes = {};     // { "6:1": { owned, level, amplification, count } }
 let characterRarityMap = {}; // { "Name": 6 }
 let characterIdMap = {}; // { "Name": 3003 }
 let euphoriaOptionsByName = {}; // { "Name": [1,2] }
@@ -214,6 +225,7 @@ let futureSightData = { Character: [], Euphoria: [], Skin: [] };
 let futureSightChars = new Set();
 let futureSightEuphorias = new Map(); // name -> Set of future tiers e.g. "37" -> Set([1])
 let futureSightSkins = new Set(); // Set of skin IDs (Numbers) exclusive to future sight
+let futureSightPsychubes = new Set(); // Set of psychube keys ("6:73") exclusive to future sight
 let excludedCharacters = new Set(); // Set of character names to exclude
 let userRoster = {};  // { "Name": { owned: true/false, insight: 3, level: 60, resonance: 10, portrait: 0, e1: false, e2: false } }
 let currentEditingName = null;
@@ -297,7 +309,10 @@ const DEFAULT_TIERS_CONFIG = {
     { id: "tier_r10", label: "R10", color: "#d7d7d7", ruleGroups: [[{ field: "resonance", op: "=", value: 10 }]] },
     { id: "tier_r1_9", label: "R1 - 9", color: "#4a77c9", ruleGroups: [[{ field: "resonance", op: ">=", value: 1 }, { field: "resonance", op: "<=", value: 9 }]] },
     { id: "tier_other", type: "other", label: "Other", color: "#a0a0a0", bgColor: null, borderColor: null, bold: false },
+    { id: "tier_chube_owned", type: "psychube", isDefaultPsychubeOwned: true, label: "Psychubes", color: "#d7d7d7", bgColor: null, borderColor: null, bold: false, ruleGroups: [[{ field: "rarity", op: "<=", value: 6 }]] },
+    { id: "tier_chube_other", type: "psychube_other", label: "Other", color: "#a0a0a0", bgColor: null, borderColor: null, bold: false },
     { id: "tier_unowned", type: "unowned", label: "Unowned", color: "#9a9a9a", bgColor: null, borderColor: null, bold: false },
+    { id: "tier_chube_unowned", type: "psychube_unowned", label: "Unowned", color: "#9a9a9a", bgColor: null, borderColor: null, bold: false },
   ],
 };
 
@@ -317,17 +332,79 @@ function ensureSystemTiersInList(list) {
       bold: !!listingConfig.otherBold,
     });
   }
+
+  // The Unowned Psychube row is a fixed system tier (holds every unowned chube)
+  // and cannot be removed. The Owned Psychube row is a normal tier.
+  const hasUnownedChube = list.some((t) => t.type === "psychube_unowned" || t.id === "tier_chube_unowned");
+  if (!hasUnownedChube) {
+    const unownedIdx = list.findIndex((t) => t.type === "unowned" || t.id === "tier_unowned");
+    const row = {
+      id: "tier_chube_unowned",
+      type: "psychube_unowned",
+      label: "Unowned",
+      color: "#9a9a9a",
+      bgColor: null,
+      borderColor: null,
+      bold: false,
+    };
+    // Default placement: right below the character Unowned row
+    if (unownedIdx >= 0) list.splice(unownedIdx + 1, 0, row);
+    else list.push(row);
+  }
+
   const hasUnowned = list.some((t) => t.type === "unowned" || t.id === "tier_unowned");
   if (!hasUnowned) {
     list.push({
       id: "tier_unowned",
       type: "unowned",
-      label: listingConfig.unownedLabel || "Unowned",
+      label: "Unowned",
       color: listingConfig.unownedColor || "#9a9a9a",
       bgColor: listingConfig.unownedBg || null,
       borderColor: listingConfig.unownedBorder || null,
       bold: !!listingConfig.unownedBold,
     });
+  }
+
+  // Other Psychubes: fixed catch-all row for owned chubes with no matching tier.
+  const hasChubeOther = list.some((t) => t.type === "psychube_other" || t.id === "tier_chube_other");
+  if (!hasChubeOther) {
+    const row = {
+      id: "tier_chube_other",
+      type: "psychube_other",
+      label: "Other",
+      color: "#a0a0a0",
+      bgColor: null,
+      borderColor: null,
+      bold: false,
+    };
+    // Default placement: above the character Unowned row
+    const unownedIdx = list.findIndex((x) => x.type === "unowned" || x.id === "tier_unowned");
+    if (unownedIdx >= 0) list.splice(unownedIdx, 0, row);
+    else list.push(row);
+  }
+
+  // The Owned Psychube row is seeded once so it shows up by default, but it is
+  // an ordinary tier: deletable, reorderable and fully rule-driven.
+  if (!listingConfig.psychubeTiersSeeded) {
+    const hasOwnedChube = list.some((x) => x.isDefaultPsychubeOwned);
+    if (!hasOwnedChube) {
+      const row = {
+        id: "tier_chube_owned",
+        type: "psychube",
+        isDefaultPsychubeOwned: true,
+        label: "Psychubes",
+        color: "#d7d7d7",
+        bgColor: null,
+        borderColor: null,
+        bold: false,
+        ruleGroups: [[{ field: "rarity", op: "<=", value: 6 }]],
+      };
+      // Default placement: below Other, above the Other Psychubes row
+      const otherChubeIdx = list.findIndex((x) => x.type === "psychube_other");
+      if (otherChubeIdx >= 0) list.splice(otherChubeIdx, 0, row);
+      else list.push(row);
+    }
+    listingConfig.psychubeTiersSeeded = true;
   }
 }
 
@@ -445,6 +522,9 @@ const DEFAULT_THEME_APPEARANCE = {
   charInfoRadius: 0,
 
   euphoriaColor: "#04FFEE",
+  chubeAmpColor: "#ffffff",
+  chubeAmpMaxColor: "#DF7526",
+  chubeCountColor: "#04FFEE",
   customPortraitColorsEnabled: true,
   portraitColorR6: "#DD9925",
   portraitColorR5: "#C7AF6C",
@@ -452,10 +532,10 @@ const DEFAULT_THEME_APPEARANCE = {
   portraitColorR3: "#545C7D",
   portraitColorR2: "#496441",
   patternNone: "#4F4F4F",
-  patternOffensive: "#FBAE31",
-  patternDefensive: "#2D8A5A",
-  patternHp: "#D4AD2B",
-  patternEquibalance: "#3B6DC7",
+  patternOffensive: "#F67E26",
+  patternDefensive: "#62A771",
+  patternHp: "#E6AE34",
+  patternEquibalance: "#4A70B3",
 
   // Custom Resonance Label Color on Character Info
   customResColorEnabled: false,
@@ -482,6 +562,8 @@ let displayOptions = {
   hidePatterns: false,
   hideSkin: false,
   hideAfflatus: false,
+  hideCharacterTier: false,
+  hidePsychubeTier: false,
   showPatternBg: false,
   showNonePatternBg: false,
   colorNonePatternBg: "#4F4F4F",
@@ -524,6 +606,26 @@ function loadDisplayOptions() {
         displayOptions.showRarityLine = true;
         saveDisplayOptions();
       }
+
+      // Migration: the Pattern colour pickers used to be inert and shipped with
+      // placeholder defaults that never matched the real palette. Now that they
+      // actually drive rendering, snap any untouched legacy values to the palette
+      // so nobody's board changes colour on its own.
+      const app = displayOptions.appearance;
+      const legacyPatternDefaults = {
+        patternOffensive: "#FBAE31",
+        patternDefensive: "#2D8A5A",
+        patternHp: "#D4AD2B",
+        patternEquibalance: "#3B6DC7",
+      };
+      let migratedPattern = false;
+      Object.entries(legacyPatternDefaults).forEach(([key, legacy]) => {
+        if (app[key] === legacy) {
+          app[key] = DEFAULT_THEME_APPEARANCE[key];
+          migratedPattern = true;
+        }
+      });
+      if (migratedPattern) saveDisplayOptions();
     }
   } catch (e) {
     console.warn("Could not parse display options", e);
@@ -643,6 +745,9 @@ function applyCustomAppearance() {
 
   // Update root CSS variables for live styles
   document.documentElement.style.setProperty("--accent-e", app.euphoriaColor || "#04FFEE");
+  document.documentElement.style.setProperty("--chube-amp-color", app.chubeAmpColor || "#ffffff");
+  document.documentElement.style.setProperty("--chube-amp-max-color", app.chubeAmpMaxColor || "#DF7526");
+  document.documentElement.style.setProperty("--chube-count-color", app.chubeCountColor || "#04FFEE");
   document.documentElement.style.setProperty("--unowned-char-opacity", app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82);
 
   // Character Name Color
@@ -710,6 +815,7 @@ function buildFutureSightMap(data) {
   futureSightChars = new Set();
   futureSightEuphorias = new Map();
   futureSightSkins = new Set();
+  futureSightPsychubes = new Set();
 
   if (!data || typeof data !== "object") return;
 
@@ -743,6 +849,16 @@ function buildFutureSightMap(data) {
       if (!isNaN(skinId)) {
         futureSightSkins.add(skinId);
       }
+    });
+  }
+
+  // Psychube is { "6": [ids...], "5": [ids...] }
+  if (data.Psychube && typeof data.Psychube === "object") {
+    Object.entries(data.Psychube).forEach(([rarity, ids]) => {
+      if (!Array.isArray(ids)) return;
+      ids.forEach((id) => {
+        futureSightPsychubes.add(psychubeKey(rarity, String(id).trim()));
+      });
     });
   }
 }
@@ -791,7 +907,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -802,6 +918,7 @@ async function initApp() {
       fetch("data/shape_patterns.json").catch(() => null),
       fetch("data/i18n.json").catch(() => null),
       fetch("data/name_map.json").catch(() => null),
+      fetch("data/psychube_id.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -890,6 +1007,15 @@ async function initApp() {
       }
     }
 
+    if (psychubeRes && psychubeRes.ok) {
+      try {
+        const psychubeData = await psychubeRes.json();
+        buildPsychubeData(psychubeData);
+      } catch (e) {
+        console.warn("Could not parse psychube_id.json", e);
+      }
+    }
+
     loadLanguage();
     applyTranslations();
     refreshDynamicTranslations();
@@ -900,6 +1026,7 @@ async function initApp() {
     loadFilterState();
     applyCustomAppearance();
     loadRoster();
+    loadPsychubes();
     applyFilterButtonState();
     renderShowcase();
     setupEventListeners();
@@ -917,6 +1044,159 @@ function loadTitle() {
     boardTitleLabel.textContent = "Suitcase";
     inputBoardTitle.value = "";
   }
+}
+
+/* ---------------- Psychube helpers ---------------- */
+
+/** Stable key for a psychube: "rarity:id" (e.g. "6:73"). */
+function psychubeKey(rarity, id) {
+  return `${rarity}:${id}`;
+}
+
+function isSpecialPsychube(key) {
+  const id = String(key).split(":")[1];
+  return PSYCHUBE_SPECIAL_IDS.includes(id);
+}
+
+function psychubeName(key) {
+  const c = psychubeDb[key];
+  if (!c) return key;
+  if (currentLang === "cn" && c.nameCn) return c.nameCn;
+  return c.name;
+}
+
+function psychubeIconUrl(key) {
+  const c = psychubeDb[key];
+  return c ? c.iconUrl : "";
+}
+
+function buildPsychubeData(data) {
+  psychubeDb = {};
+  psychubeOrder = [];
+  if (!data || typeof data !== "object") return;
+
+  // Rarity 6 first, then 5 — each list already comes newest-id-first
+  ["6", "5"].forEach((rarity) => {
+    const list = data[rarity];
+    if (!Array.isArray(list)) return;
+    list.forEach((item) => {
+      if (!item || item.id === undefined) return;
+      const key = psychubeKey(rarity, item.id);
+      psychubeDb[key] = {
+        rarity: Number(rarity),
+        id: String(item.id),
+        name: item.name || `Chube ${item.id}`,
+        nameCn: item.nameCN || "",
+        tags: Array.isArray(item.tags) ? item.tags.slice() : [],
+        releasePatch: item.release_patch || "",
+        iconUrl: `images/psychube_icon/${rarity}/${item.id}.png`,
+      };
+      psychubeOrder.push(key);
+    });
+  });
+}
+
+/** Psychube state, defaulting to unowned. */
+function getPsychubeState(key) {
+  if (!userPsychubes[key]) {
+    userPsychubes[key] = { owned: false, level: 1, amplification: 0, count: 0 };
+  }
+  return userPsychubes[key];
+}
+
+function sanitizePsychubeState() {
+  let changed = false;
+  // Drop entries that no longer exist in the data
+  Object.keys(userPsychubes).forEach((key) => {
+    if (!psychubeDb[key]) {
+      delete userPsychubes[key];
+      changed = true;
+    }
+  });
+  // Ensure every chube exists with sane values
+  psychubeOrder.forEach((key) => {
+    const c = psychubeDb[key];
+    let s = userPsychubes[key];
+    if (!s) {
+      s = userPsychubes[key] = { owned: false, level: 1, amplification: 0, count: 0 };
+      changed = true;
+    }
+    if (isSpecialPsychube(key)) {
+      // Special chubes only track a count
+      const n = Math.max(0, Math.min(99, Number(s.count) || 0));
+      if (s.count !== n) { s.count = n; changed = true; }
+      if (s.owned !== n > 0) { s.owned = n > 0; changed = true; }
+      if (s.level !== 1) { s.level = 1; changed = true; }
+      if (s.amplification !== 0) { s.amplification = 0; changed = true; }
+      return;
+    }
+    const lvl = Math.max(1, Math.min(PSYCHUBE_MAX_LEVEL, Number(s.level) || 1));
+    const amp = Math.max(0, Math.min(PSYCHUBE_MAX_AMP, Number(s.amplification) || 0));
+    if (s.level !== lvl) { s.level = lvl; changed = true; }
+    if (s.amplification !== amp) { s.amplification = amp; changed = true; }
+    if (typeof s.owned !== "boolean") { s.owned = !!s.owned; changed = true; }
+    void c;
+  });
+  return changed;
+}
+
+function loadPsychubes() {
+  try {
+    const saved = localStorage.getItem(PSYCHUBE_STORAGE_KEY);
+    userPsychubes = saved ? JSON.parse(saved) : {};
+    if (!userPsychubes || typeof userPsychubes !== "object") userPsychubes = {};
+  } catch (e) {
+    console.warn("Could not parse psychube state", e);
+    userPsychubes = {};
+  }
+  if (sanitizePsychubeState()) savePsychubes();
+}
+
+function savePsychubes() {
+  localStorage.setItem(PSYCHUBE_STORAGE_KEY, JSON.stringify(userPsychubes));
+}
+
+/** Rank a special chube: Gluttony (✦6) then Greed (✦5). */
+function specialPsychubeRank(key) {
+  const c = psychubeDb[key];
+  if (!c || !isSpecialPsychube(key)) return 999;
+  return c.rarity === 6 ? 0 : 1;
+}
+
+/** Sort with special chubes first (Gluttony, then Greed), then Rarity > Level > ID. */
+function comparePsychubesSpecialFirst(a, b) {
+  const sa = isSpecialPsychube(a), sb = isSpecialPsychube(b);
+  if (sa !== sb) return sa ? -1 : 1;
+  if (sa && sb) return specialPsychubeRank(a) - specialPsychubeRank(b);
+  return comparePsychubes(a, b);
+}
+
+/** Sort with special chubes first (Gluttony, then Greed), then Rarity > ID.
+ *  Used for unowned rows, which have no build data to sort by. */
+function comparePsychubesSpecialFirstUnowned(a, b) {
+  const sa = isSpecialPsychube(a), sb = isSpecialPsychube(b);
+  if (sa !== sb) return sa ? -1 : 1;
+  if (sa && sb) return specialPsychubeRank(a) - specialPsychubeRank(b);
+  return comparePsychubesUnowned(a, b);
+}
+
+/** Psychube sort order: Rarity (6 first) > Level desc > ID desc. */
+function comparePsychubes(keyA, keyB) {
+  const a = psychubeDb[keyA], b = psychubeDb[keyB];
+  if (!a || !b) return 0;
+  if (a.rarity !== b.rarity) return b.rarity - a.rarity;
+  const sa = userPsychubes[keyA] || {}, sb = userPsychubes[keyB] || {};
+  const la = Number(sa.level) || 1, lb = Number(sb.level) || 1;
+  if (la !== lb) return lb - la;
+  return Number(b.id) - Number(a.id);
+}
+
+/** Unowned chubes have no build data, so they sort by Rarity (6 first) > ID desc. */
+function comparePsychubesUnowned(keyA, keyB) {
+  const a = psychubeDb[keyA], b = psychubeDb[keyB];
+  if (!a || !b) return 0;
+  if (a.rarity !== b.rarity) return b.rarity - a.rarity;
+  return Number(b.id) - Number(a.id);
 }
 
 function buildRarityMap(rarityData) {
@@ -1174,8 +1454,16 @@ function isKnownPattern(patternName) {
 }
 
 function getPatternColor(patternName) {
-  const family = PATTERN_COLOR_FAMILY[patternName];
-  return family ? PATTERN_COLORS[family] : PATTERN_COLORS.placidity;
+  const family = PATTERN_COLOR_FAMILY[patternName] || "placidity";
+  const app = displayOptions.appearance || {};
+  // User-configured colours from the Styling modal override the defaults
+  switch (family) {
+    case "orange": return app.patternOffensive || PATTERN_COLORS.orange;
+    case "green": return app.patternDefensive || PATTERN_COLORS.green;
+    case "yellow": return app.patternHp || PATTERN_COLORS.yellow;
+    case "blue": return app.patternEquibalance || PATTERN_COLORS.blue;
+    default: return app.patternNone || PATTERN_COLORS.placidity;
+  }
 }
 
 /** Path to the pattern icon for a character (null when unknown). */
@@ -1617,6 +1905,62 @@ function matchesTierRule(tier, char, rarity) {
   });
 }
 
+/** Evaluates a single psychube condition. */
+function evalPsychubeCondition(cond, chube, state) {
+  if (!cond || !cond.field) return true;
+  const op = cond.op || "=";
+  const target = cond.value;
+
+  if (cond.field === "owned") {
+    const want = String(target) !== "false";
+    return !!state.owned === want;
+  }
+  if (cond.field === "tag") {
+    const want = String(target || "").trim();
+    if (!want) return true;
+    const has = (chube.tags || []).includes(want);
+    return op === "!=" ? !has : has;
+  }
+
+  if (cond.field === "name") {
+    const want = String(target || "").trim().toLowerCase();
+    if (!want) return true;
+    const actual = psychubeName(chube.__key || "").toLowerCase();
+    // fall back to both language names when the key is not attached
+    const en = String(chube.name || "").toLowerCase();
+    const cn = String(chube.nameCn || "").toLowerCase();
+    const hit = actual.includes(want) || en.includes(want) || cn.includes(want);
+    return op === "!=" ? !hit : hit;
+  }
+
+  let actual = 0;
+  if (cond.field === "amplification") actual = Number(state.amplification) || 0;
+  else if (cond.field === "level") actual = Number(state.level) || 1;
+  else if (cond.field === "rarity") actual = Number(chube.rarity) || 5;
+  else return true;
+
+  const numTarget = Number(target !== undefined ? target : 0);
+  switch (op) {
+    case "=": return actual === numTarget;
+    case "!=": return actual !== numTarget;
+    case ">=": return actual >= numTarget;
+    case "<=": return actual <= numTarget;
+    case ">": return actual > numTarget;
+    case "<": return actual < numTarget;
+    default: return actual === numTarget;
+  }
+}
+
+/** Psychube tier rule: OR across groups, AND within a group. */
+function matchesPsychubeRule(tier, chube, state) {
+  const groups = tier.ruleGroups;
+  if (!Array.isArray(groups) || groups.length === 0) return true;
+  return groups.some((group) => {
+    if (!Array.isArray(group) || group.length === 0) return true;
+    return group.every((cond) => evalPsychubeCondition(cond, chube, state));
+  });
+}
+
 function renderChessPieces() {
   const existingContainer = document.getElementById("chess-pieces-container");
   if (existingContainer) {
@@ -1720,9 +2064,6 @@ function renderShowcase() {
 
   let ownedCount = 0;
   let totalCount = 0;
-  let lv60Count = 0;
-  let r10PlusCount = 0;
-  let euphoCount = 0;
 
   const allNames = Object.keys(characterDb);
   const ownedNames = [];
@@ -1739,10 +2080,6 @@ function renderShowcase() {
     if (char.owned) {
       ownedCount++;
       ownedNames.push(name);
-      if (Number(char.level) === 60) lv60Count++;
-      if (Number(char.resonance) >= 10) r10PlusCount++;
-      if (char.e1) euphoCount++;
-      if (char.e2) euphoCount++;
     } else {
       unownedNames.push(name);
     }
@@ -1770,6 +2107,24 @@ function renderShowcase() {
       cards: [],
     });
   });
+
+  // ---- Psychube bucketing (mirrors the character flow) ----
+  // "Owned" means a normal chube is owned, or a special chube (id 1) has count > 0.
+  const chubeQuery = query;
+  const chubeMatchesQuery = (key) => !chubeQuery || psychubeName(key).toLowerCase().includes(chubeQuery);
+  const isChubeOwned = (key) => {
+    const st = userPsychubes[key] || {};
+    return isSpecialPsychube(key) ? (Number(st.count) || 0) > 0 : !!st.owned;
+  };
+  const chubePassesRarity = (key) => activeRarityFilters.size === 0 || activeRarityFilters.has(psychubeDb[key].rarity);
+  const chubeBase = psychubeOrder.filter((key) =>
+    chubeMatchesQuery(key) && chubePassesRarity(key) &&
+    (futureSightEnabled || !futureSightPsychubes.has(key))
+  );
+  const unmatchedChubes = new Set(chubeBase.filter((key) => isChubeOwned(key)));
+  const unmatchedUnownedChubes = new Set(
+    chubeBase.filter((key) => !isChubeOwned(key))
+  );
 
   const unmatchedOwned = new Set(ownedNames);
 
@@ -1820,8 +2175,45 @@ function renderShowcase() {
           unmatchedOwned.delete(name);
         });
       }
-    } else {
-      // Custom tier: matches owned characters that satisfy ruleGroups
+    } else if (bucket.type === "psychube_unowned") {
+      // Fixed row: every chube you do not own yet (no build data, so Rarity > ID)
+      [...unmatchedUnownedChubes]
+        .sort(comparePsychubesSpecialFirstUnowned)
+        .forEach((key) => {
+          bucket.isChube = true;
+          bucket.cards.push(createPsychubeCard(key));
+          unmatchedUnownedChubes.delete(key);
+        });
+    } else if (bucket.type === "psychube_other") {
+      // Fixed catch-all: owned chubes matching no tier above
+      [...unmatchedChubes]
+        .sort(comparePsychubesSpecialFirst)
+        .forEach((key) => {
+          bucket.isChube = true;
+          bucket.cards.push(createPsychubeCard(key));
+          unmatchedChubes.delete(key);
+        });
+    } else if (bucket.type === "psychube") {
+      // Psychube tier
+      let candidates = [...unmatchedChubes];
+      candidates = bucket.tierConfig.isDefaultPsychubeOwned
+        ? candidates.sort(comparePsychubesSpecialFirst)
+        : candidates.sort((a, b) => {
+            const sa = isSpecialPsychube(a), sb = isSpecialPsychube(b);
+            if (sa !== sb) return sa ? -1 : 1;
+            if (sa && sb) return specialPsychubeRank(a) - specialPsychubeRank(b);
+            return comparePsychubes(a, b);
+          });
+      candidates.forEach((key) => {
+        const chube = psychubeDb[key];
+        const st = userPsychubes[key] || {};
+        if (matchesPsychubeRule(bucket.tierConfig, chube, st)) {
+          bucket.isChube = true;
+          bucket.cards.push(createPsychubeCard(key));
+          unmatchedChubes.delete(key);
+        }
+      });
+    } else {      // Custom tier: matches owned characters that satisfy ruleGroups
       if (activeOwnershipFilter !== "unowned") {
         const currentCandidates = [...unmatchedOwned];
         currentCandidates.forEach((name) => {
@@ -1851,31 +2243,103 @@ function renderShowcase() {
     }
   });
 
+  // Safety net: any owned chube that matched no tier is appended to the first
+  // Psychube tier so it can never silently disappear from the board.
+  if (unmatchedChubes.size > 0) {
+    const firstChubeTier = tierBuckets.find((b) => b.type === "psychube");
+    if (firstChubeTier) {
+      [...unmatchedChubes].sort(comparePsychubesSpecialFirst).forEach((key) => {
+        firstChubeTier.cards.push(createPsychubeCard(key));
+        unmatchedChubes.delete(key);
+      });
+    }
+  }
+
   // Render all tier sections in the exact order configured
   tierBuckets.forEach((bucket) => {
-    // For Unowned tier, render if ownership filter allows (even if empty) or if has cards
+    const isPsychubeTier = bucket.type === "psychube" || bucket.type === "psychube_other" || bucket.type === "psychube_unowned";
+    // The new Display toggles hide every tier of the matching kind
+    if (displayOptions.hideCharacterTier && !isPsychubeTier) return;
+    if (displayOptions.hidePsychubeTier && isPsychubeTier) return;
+    // The All / Owned / Unowned filter also applies to psychubes
+    if (activeOwnershipFilter === "owned" && bucket.type === "psychube_unowned") return;
+    if (activeOwnershipFilter === "unowned" && (bucket.type === "psychube" || bucket.type === "psychube_other")) return;
+    // Owned filter hides the character Unowned row too
+    if (activeOwnershipFilter === "owned" && bucket.type === "unowned") return;
+    // The character Unowned row always renders (even when empty)
     if (bucket.type === "unowned") {
-      if (activeOwnershipFilter !== "owned") {
-        renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
-      }
+      renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
     } else if (bucket.cards.length > 0) {
       renderTierRowSection(bucket.label, bucket.color, bucket.cards, bucket.bgColor, bucket.borderColor, bucket.bold);
     }
   });
 
   rosterStat.innerHTML = `<span data-i18n="toolbar.crew">${t("toolbar.crew")}</span> ${ownedCount}/${totalCount} <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" />`;
-  rosterStat.removeAttribute("title");
-
-  const rosterStatTooltip = document.getElementById("roster-stat-tooltip");
-  if (rosterStatTooltip) {
-    rosterStatTooltip.innerHTML = `
-      <div class="stat-tip-row"><span class="stat-tip-label">${t("stats.level60")}</span><span class="stat-tip-value">${lv60Count}</span></div>
-      <div class="stat-tip-row"><span class="stat-tip-label">${t("stats.r10plus")}</span><span class="stat-tip-value">${r10PlusCount}</span></div>
-      <div class="stat-tip-row"><span class="stat-tip-label">${t("stats.euphoria")}</span><span class="stat-tip-value">${euphoCount}</span></div>
-    `;
-  }
 
   renderChessPieces();
+}
+
+// Create Psychube Card Element (mirrors the character card)
+function createPsychubeCard(key) {
+  const chube = psychubeDb[key];
+  const card = document.createElement("div");
+  if (!chube) return card;
+
+  const state = getPsychubeState(key);
+  const special = isSpecialPsychube(key);
+
+  card.className = `char-card chube-card ${!state.owned ? "is-unowned" : ""}`;
+  card.dataset.chubeKey = key;
+
+  const rarityVal = chube.rarity;
+
+  // Badge row above the icon: Amplification on the left (A5 highlights),
+  // Level centred — mirroring the character card's layout.
+  const ampClass = (Number(state.amplification) || 0) >= 5 ? "chube-amp-badge is-max" : "chube-amp-badge";
+  const ampBadgeHtml = special
+    ? ((Number(state.count) || 0) > 0 ? `<span class="chube-amp-badge chube-count-badge">x${Number(state.count) || 0}</span>` : "")
+    : (state.owned ? `<span class="${ampClass}">A${Number(state.amplification) || 0}</span>` : "");
+  const levelBadgeHtml = (state.owned && !special)
+    ? `<span class="chube-level-badge">Lv.${Number(state.level) || 1}</span>` : "";
+  const badgeRowHtml = ampBadgeHtml + levelBadgeHtml;
+
+  // Psychube cards never show the character rarity line
+  const rarityLineHtml = "";
+
+  // Owned names follow "Hide Owned"; unowned names follow "Hide Unowned"
+  const showChubeName = state.owned ? !displayOptions.hideOwnedNames : !displayOptions.hideNames;
+  const nameRowHtml = showChubeName
+    ? `<div class="char-name-below">${escapeHtml(psychubeName(key))}</div>`
+    : "";
+
+  const tooltipHtml = `
+    <div class="char-tooltip chube-tooltip no-export">
+      <div class="ct-head">
+        <span class="ct-name">${escapeHtml(psychubeName(key))}</span>
+      </div>
+      <div class="ct-body">
+        ${special
+          ? `<div class="ct-row"><span class="ct-label">${t("chube.owned")}</span><span class="ct-value">x${Number(state.count) || 0}</span></div>`
+          : `
+            <div class="ct-row"><span class="ct-label">${t("chube.level")}</span><span class="ct-value">${Number(state.level) || 1}</span></div>
+            <div class="ct-row"><span class="ct-label">${t("chube.amplification")}</span><span class="ct-value">A${Number(state.amplification) || 0}</span></div>
+          `}
+      </div>
+    </div>
+  `;
+
+  card.innerHTML = `
+    <div class="char-avatar-box">
+      <img src="${escapeHtml(chube.iconUrl)}" alt="${escapeHtml(chube.name)}" class="char-avatar-img chube-avatar-img" loading="lazy" decoding="async" />
+      ${badgeRowHtml}
+    </div>
+    ${rarityLineHtml}
+    ${nameRowHtml}
+    ${tooltipHtml}
+  `;
+
+  card.addEventListener("click", () => openPsychubeModal(key));
+  return card;
 }
 
 function renderTierRowSection(label, color, cards, customBg, customBorder, isBold) {
@@ -1903,6 +2367,12 @@ function renderTierRowSection(label, color, cards, customBg, customBorder, isBol
   if (isBold) {
     labelEl.style.fontWeight = "900";
   }
+  // Count tooltip follows the cursor over the tier label.
+  // Psychube rows report psychubes instead of characters.
+  const isChubeRow = cards.some((c) => c.classList.contains("chube-card"));
+  labelEl.dataset.tierCount = String(cards.length);
+  labelEl.dataset.tierUnit = isChubeRow ? "psychube" : "character";
+  labelEl.dataset.tierLabel = label;
 
   const contentEl = document.createElement("div");
   contentEl.className = "tier-content";
@@ -2004,11 +2474,17 @@ function createCharacterCard(name, char, iconUrl) {
   const levelVal = char.level !== undefined ? char.level : 60;
   const rarityVal = getCharacterRarity(name);
 
-  // Euphoria / Pattern string e.g. "E1 E2", "E1", "E2" (CN: 1狂, 2狂)
+  // Euphoria badge:
+  //   one  -> "E1" / "E2"      (CN: "1狂" / "2狂")
+  //   both -> "E1,2"           (CN: "狂1,2")
   let euphoriaText = "";
-  if (char.e2 && char.e1) euphoriaText = `${fmtEuphoria(1)} ${fmtEuphoria(2)}`;
-  else if (char.e2) euphoriaText = fmtEuphoria(2);
-  else if (char.e1) euphoriaText = fmtEuphoria(1);
+  if (char.e1 && char.e2) {
+    euphoriaText = currentLang === "cn" ? `狂${1},${2}` : `E${1},${2}`;
+  } else if (char.e2) {
+    euphoriaText = fmtEuphoria(2);
+  } else if (char.e1) {
+    euphoriaText = fmtEuphoria(1);
+  }
 
   // The card colour follows the character's chosen (main) pattern
     const boxKind = getMainPattern(name, char);
@@ -2381,8 +2857,8 @@ function updateModalView() {
     } else {
       btn.style.display = "";
     }
-    btn.title = t("setting.insightTitle", { n: btnInsight });
-    btn.dataset.patternName = t("setting.insightTitle", { n: btnInsight });
+    btn.removeAttribute("title");
+    btn.dataset.patternName = fmtInsight(btnInsight);
     btn.classList.toggle("active", btnInsight === currentInsight);
   });
 
@@ -2432,7 +2908,7 @@ function updateModalView() {
 
   // Portrait
   displayPortrait.textContent = fmtPortrait(tempEditState.portrait);
-  document.querySelectorAll(".btn-pill-p").forEach((btn) => {
+  document.querySelectorAll("#edit-modal .btn-pill-p").forEach((btn) => {
     const p = Number(btn.dataset.p);
     btn.textContent = fmtPortrait(p);
     btn.dataset.patternName = fmtPortrait(p);
@@ -2463,8 +2939,6 @@ function updateModalView() {
 function closeEditModal() {
   editModal.style.display = "none";
   currentEditingName = null;
-  const patternHelpBox = document.getElementById("pattern-help-box");
-  if (patternHelpBox) patternHelpBox.style.display = "none";
 }
 
 function saveEditModal() {
@@ -2493,6 +2967,112 @@ function saveEditModal() {
   saveRoster();
   renderShowcase();
   closeEditModal();
+}
+
+/* ---------------- Psychube Setting Modal ---------------- */
+let currentEditingChube = null;
+let tempChubeState = {};
+
+function openPsychubeModal(key) {
+  const chube = psychubeDb[key];
+  if (!chube) return;
+  currentEditingChube = key;
+  const state = getPsychubeState(key);
+  tempChubeState = {
+    owned: !!state.owned,
+    level: Number(state.level) || 1,
+    amplification: Number(state.amplification) || 0,
+    count: Number(state.count) || 0,
+  };
+
+  const special = isSpecialPsychube(key);
+  const img = document.getElementById("chube-modal-img");
+  const nameEl = document.getElementById("chube-modal-name");
+  const statusEl = document.getElementById("chube-modal-status");
+  if (img) img.src = chube.iconUrl;
+  if (nameEl) nameEl.textContent = psychubeName(key);
+
+  // Special chubes only expose a quantity
+  document.getElementById("chube-group-status").style.display = special ? "none" : "flex";
+  document.getElementById("chube-group-level").style.display = special ? "none" : "flex";
+  document.getElementById("chube-group-amp").style.display = special ? "none" : "flex";
+  document.getElementById("chube-group-count").style.display = special ? "flex" : "none";
+
+  updatePsychubeModalView();
+  if (statusEl) {
+    statusEl.textContent = special
+      ? t("chube.countLabel", { n: tempChubeState.count })
+      : (tempChubeState.owned ? t("setting.owned") : t("setting.unowned"));
+  }
+  document.getElementById("chube-modal").style.display = "flex";
+}
+
+function updatePsychubeModalView() {
+  const key = currentEditingChube;
+  if (!key) return;
+  const special = isSpecialPsychube(key);
+
+  document.getElementById("chube-btn-owned").classList.toggle("active", tempChubeState.owned);
+  document.getElementById("chube-btn-unowned").classList.toggle("active", !tempChubeState.owned);
+
+  // Level / Amplification are only editable once the chube is owned
+  document.getElementById("chube-group-level").style.display =
+    (!special && tempChubeState.owned) ? "flex" : "none";
+  document.getElementById("chube-group-amp").style.display =
+    (!special && tempChubeState.owned) ? "flex" : "none";
+
+  const lvlInput = document.getElementById("chube-input-level");
+  const cntInput = document.getElementById("chube-input-count");
+  lvlInput.value = tempChubeState.level;
+  cntInput.value = tempChubeState.count;
+
+  document.getElementById("chube-display-level").textContent = String(tempChubeState.level);
+  const ampDisplay = document.getElementById("chube-display-amp");
+  ampDisplay.textContent = `A${tempChubeState.amplification}`;
+  ampDisplay.classList.toggle("is-max", Number(tempChubeState.amplification) >= PSYCHUBE_MAX_AMP);
+  document.getElementById("chube-display-count").textContent = String(tempChubeState.count);
+
+  // Amplification quick picks (A0 - A5), with A5 highlighted
+  document.querySelectorAll("#chube-modal .btn-pill-a").forEach((btn) => {
+    const a = Number(btn.dataset.a);
+    btn.classList.toggle("active", a === Number(tempChubeState.amplification));
+    btn.classList.toggle("is-max", a === 5);
+  });
+
+  const statusEl = document.getElementById("chube-modal-status");
+  if (statusEl) {
+    statusEl.textContent = special
+      ? t("chube.countLabel", { n: tempChubeState.count })
+      : (tempChubeState.owned ? t("setting.owned") : t("setting.unowned"));
+  }
+}
+
+function savePsychubeModal() {
+  const key = currentEditingChube;
+  if (!key) return;
+  const special = isSpecialPsychube(key);
+  const prev = getPsychubeState(key);
+
+  if (special) {
+    const count = Math.max(0, Math.min(99, Number(document.getElementById("chube-input-count").value) || 0));
+    userPsychubes[key] = { owned: count > 0, level: 1, amplification: 0, count };
+  } else {
+    userPsychubes[key] = {
+      owned: !!tempChubeState.owned,
+      level: Math.max(1, Math.min(PSYCHUBE_MAX_LEVEL, Number(document.getElementById("chube-input-level").value) || 1)),
+      amplification: Math.max(0, Math.min(PSYCHUBE_MAX_AMP, Number(tempChubeState.amplification) || 0)),
+      count: Number(prev.count) || 0,
+    };
+  }
+  savePsychubes();
+  renderShowcase();
+  closePsychubeModal();
+}
+
+function closePsychubeModal() {
+  const modal = document.getElementById("chube-modal");
+  if (modal) modal.style.display = "none";
+  currentEditingChube = null;
 }
 
 // Roster Manager Modal Functions
@@ -2888,9 +3468,499 @@ function renderRosterManager() {
   updateRosterSelectionUI();
 }
 
+/* ---------------- Chubes Manager ---------------- */
+let chubesActiveRarityFilters = new Set();
+let chubesSelectMode = false;
+const chubesSelection = new Set();
+let chubeBulkSpec = { level: null, amplification: null, owned: null };
+
+function chubesVisibleKeys() {
+  return psychubeOrder.filter((key) => {
+    if (isSpecialPsychube(key)) return false; // special chubes are excluded from the manager
+    if (!futureSightEnabled && futureSightPsychubes.has(key)) return false;
+    if (chubesActiveRarityFilters.size > 0 && !chubesActiveRarityFilters.has(psychubeDb[key].rarity)) return false;
+    return true;
+  });
+}
+
+function openChubesModal() {
+  chubesSelectMode = false;
+  chubesSelection.clear();
+  renderChubesManager();
+  document.getElementById("chubes-modal").style.display = "flex";
+}
+
+function closeChubesModal() {
+  document.getElementById("chubes-modal").style.display = "none";
+  chubesSelectMode = false;
+  chubesSelection.clear();
+  renderShowcase();
+}
+
+function renderChubesManager() {
+  const grid = document.getElementById("chubes-grid-list");
+  if (!grid) return;
+  const query = (document.getElementById("chubes-search").value || "").trim().toLowerCase();
+  grid.innerHTML = "";
+
+  const keys = chubesVisibleKeys().filter((key) => {
+    if (!query) return true;
+    return psychubeName(key).toLowerCase().includes(query);
+  });
+
+  keys.forEach((key) => {
+    const chube = psychubeDb[key];
+    const state = getPsychubeState(key);
+
+    const item = document.createElement("div");
+    item.className = `roster-char-item ${state.owned ? "is-owned" : "not-owned"}`;
+    item.dataset.chubeKey = key;
+    item.innerHTML = `
+      <div class="roster-avatar-box">
+        <img src="${escapeHtml(chube.iconUrl)}" alt="${escapeHtml(chube.name)}" class="roster-avatar-img" loading="lazy" decoding="async" />
+        <img src="images/random_icon/selected_psychube.png" alt="" class="chube-selected-mark" />
+      </div>
+      <span class="roster-char-name">${escapeHtml(psychubeName(key))}</span>
+      <span class="chube-manage-meta">Lv${Number(state.level) || 1} · A${Number(state.amplification) || 0}</span>
+    `;
+    if (chubesSelection.has(key)) item.classList.add("is-selected");
+
+    item.addEventListener("click", () => {
+      if (chubesSelectMode) {
+        if (chubesSelection.has(key)) chubesSelection.delete(key);
+        else chubesSelection.add(key);
+        item.classList.toggle("is-selected", chubesSelection.has(key));
+        updateChubesSelectionUI();
+        return;
+      }
+      const s = getPsychubeState(key);
+      s.owned = !s.owned;
+      savePsychubes();
+      item.classList.toggle("is-owned", !!s.owned);
+      item.classList.toggle("not-owned", !s.owned);
+      renderShowcase();
+    });
+
+    grid.appendChild(item);
+  });
+
+  updateChubesSelectionUI();
+}
+
+function updateChubesSelectionUI() {
+  const bar = document.getElementById("chubes-select-bar");
+  const countEl = document.getElementById("chubes-select-count");
+  const applyBtn = document.getElementById("btn-chubes-bulk-apply");
+  if (bar) bar.hidden = !chubesSelectMode;
+  if (countEl) countEl.textContent = `${chubesSelection.size} selected`;
+  if (applyBtn) applyBtn.disabled = chubesSelection.size === 0;
+  const toggle = document.getElementById("btn-chubes-select-mode");
+  if (toggle) toggle.setAttribute("aria-pressed", String(chubesSelectMode));
+  document.getElementById("chubes-modal")?.classList.toggle("select-mode", chubesSelectMode);
+}
+
+function setChubesSelectMode(on) {
+  chubesSelectMode = on;
+  if (!on) chubesSelection.clear();
+  renderChubesManager();
+}
+
+function renderChubeBulkModal() {
+  const count = chubesSelection.size;
+  const hint = document.getElementById("chube-bulk-hint");
+  if (hint) hint.textContent = t("bulk.chubeHint", { n: count });
+
+  const preview = document.getElementById("chube-bulk-preview");
+  if (preview) {
+    preview.innerHTML = [...chubesSelection].slice(0, 12).map((key) => {
+      const c = psychubeDb[key];
+      return `<img src="${escapeHtml(c.iconUrl)}" alt="${escapeHtml(c.name)}" class="chube-bulk-preview-avatar" />`;
+    }).join("");
+  }
+
+  const lvl = document.getElementById("chube-bulk-level-slider");
+  const lvlVal = document.getElementById("chube-bulk-level-value");
+  const ampVal = document.getElementById("chube-bulk-amp-value");
+  const ownedVal = document.getElementById("chube-bulk-owned-value");
+
+  if (chubeBulkSpec.level !== null) { lvl.value = String(chubeBulkSpec.level); lvlVal.textContent = String(chubeBulkSpec.level); }
+  else { lvlVal.textContent = ""; }
+  if (ampVal) {
+    ampVal.textContent = chubeBulkSpec.amplification === null ? "" : `A${chubeBulkSpec.amplification}`;
+    ampVal.classList.toggle("is-max", chubeBulkSpec.amplification >= PSYCHUBE_MAX_AMP);
+  }
+  if (ownedVal) ownedVal.textContent = chubeBulkSpec.owned === null ? "" : (chubeBulkSpec.owned ? t("action.owned") : t("action.unowned"));
+
+  document.getElementById("chube-bulk-row-level").classList.toggle("is-untouched", chubeBulkSpec.level === null);
+  document.getElementById("chube-bulk-row-amp").classList.toggle("is-untouched", chubeBulkSpec.amplification === null);
+  document.getElementById("chube-bulk-row-owned").classList.toggle("is-untouched", chubeBulkSpec.owned === null);
+
+  // Amplification quick picks (A0 - A5)
+  const ampOpts = document.getElementById("chube-bulk-amp-options");
+  if (ampOpts) {
+    ampOpts.innerHTML = "";
+    [0, 1, 2, 3, 4, 5].forEach((a) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = `bulk-opt${chubeBulkSpec.amplification === a ? " is-active" : ""}${a === 5 ? " is-max" : ""}`;
+      b.textContent = `A${a}`;
+      b.addEventListener("click", () => {
+        chubeBulkSpec.amplification = chubeBulkSpec.amplification === a ? null : a;
+        renderChubeBulkModal();
+      });
+      ampOpts.appendChild(b);
+    });
+  }
+
+  const ownedOpts = document.getElementById("chube-bulk-owned-options");
+  if (ownedOpts) {
+    ownedOpts.innerHTML = "";
+    [{ value: false, key: "action.unowned" }, { value: true, key: "action.owned" }].forEach((o) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = `bulk-opt${chubeBulkSpec.owned === o.value ? " is-active" : ""}`;
+      b.textContent = t(o.key);
+      b.addEventListener("click", () => {
+        chubeBulkSpec.owned = chubeBulkSpec.owned === o.value ? null : o.value;
+        renderChubeBulkModal();
+      });
+      ownedOpts.appendChild(b);
+    });
+  }
+}
+
+function openChubeBulkModal() {
+  chubeBulkSpec = { level: null, amplification: null, owned: null };
+  renderChubeBulkModal();
+  document.getElementById("chube-bulk-modal").style.display = "flex";
+}
+
+function closeChubeBulkModal() {
+  document.getElementById("chube-bulk-modal").style.display = "none";
+}
+
+function applyChubeBulkSpec() {
+  [...chubesSelection].forEach((key) => {
+    if (isSpecialPsychube(key)) return;
+    const s = getPsychubeState(key);
+    if (chubeBulkSpec.level !== null) s.level = chubeBulkSpec.level;
+    if (chubeBulkSpec.amplification !== null) s.amplification = chubeBulkSpec.amplification;
+    if (chubeBulkSpec.owned !== null) s.owned = chubeBulkSpec.owned;
+  });
+  savePsychubes();
+  closeChubeBulkModal();
+  chubesSelection.clear();
+  setChubesSelectMode(false);
+  renderShowcase();
+}
+
+/* ---------------- Statistics Modal ---------------- */
+
+/** Builds the statistic rows for the Statistics modal. */
+function buildStatsModel() {
+  const names = Object.keys(characterDb).filter((n) => futureSightEnabled || !futureSightChars.has(n));
+
+  let ownedChars = 0, totalChars = 0;
+  const euphoriaByRarity = {}; // rarity -> { hit, total } (owned euphoria tiers)
+  const r10ByRarity = {};      // rarity -> { hit, total }
+  const patternByRarity = {};  // rarity -> { hit, total }
+  let overInvested = 0;
+
+  names.forEach((name) => {
+    const rarity = getCharacterRarity(name);
+    const char = userRoster[name] || {};
+    totalChars++;
+    if (char.owned) ownedChars++;
+    if (rarity >= 2 && rarity <= 6) {
+      r10ByRarity[rarity] = r10ByRarity[rarity] || { hit: 0, total: 0 };
+      r10ByRarity[rarity].total++;
+      if (char.owned && Number(char.resonance) >= 10) r10ByRarity[rarity].hit++;
+
+      patternByRarity[rarity] = patternByRarity[rarity] || { hit: 0, total: 0 };
+      patternByRarity[rarity].total++;
+      if (char.owned && getMainPattern(name, char) !== DEFAULT_PATTERN) patternByRarity[rarity].hit++;
+    }
+    if (char.owned && Number(char.resonance) >= 11) overInvested++;
+
+    // Euphoria is counted per TIER (a character with E1+E2 contributes 2),
+    // matching how the game lists them. Future-Sight tiers only count when on.
+    const levels = getEligibleEuphoriaLevels(name);
+    if (levels.length > 0 && rarity >= 2 && rarity <= 6) {
+      euphoriaByRarity[rarity] = euphoriaByRarity[rarity] || { hit: 0, total: 0 };
+      levels.forEach((tier) => {
+        euphoriaByRarity[rarity].total++;
+        if (!char.owned) return;
+        if (tier === 1 && char.e1) euphoriaByRarity[rarity].hit++;
+        if (tier === 2 && char.e2) euphoriaByRarity[rarity].hit++;
+      });
+    }
+  });
+
+  // Psychubes (special count-only chubes are excluded from all ratios)
+  const chubeTotalByRarity = { 6: 0, 5: 0 };
+  const chubeOwnedByRarity = { 6: 0, 5: 0 };
+  const chubeLv60 = { 6: { hit: 0, total: 0 }, 5: { hit: 0, total: 0 } };
+  const chubeAmpMax = { 6: { hit: 0, total: 0 }, 5: { hit: 0, total: 0 } };
+  let chubeCount6 = 0, chubeCount5 = 0;
+
+  psychubeOrder.forEach((key) => {
+    // Future Sight chubes only count when the toggle is on
+    if (!futureSightEnabled && futureSightPsychubes.has(key)) return;
+    if (isSpecialPsychube(key)) {
+      // Special chubes contribute their count, not an owned/total ratio
+      const c = psychubeDb[key];
+      const n = Number((userPsychubes[key] || {}).count) || 0;
+      if (c.rarity === 6) chubeCount6 += n; else chubeCount5 += n;
+      return;
+    }
+    const c = psychubeDb[key];
+    const st = userPsychubes[key] || {};
+    chubeTotalByRarity[c.rarity]++;
+    chubeLv60[c.rarity].total++;
+    chubeAmpMax[c.rarity].total++;
+    if (st.owned) {
+      chubeOwnedByRarity[c.rarity]++;
+      if (Number(st.level) >= PSYCHUBE_MAX_LEVEL) chubeLv60[c.rarity].hit++;
+      if (Number(st.amplification) >= PSYCHUBE_MAX_AMP) chubeAmpMax[c.rarity].hit++;
+    }
+  });
+
+  const chubeOwned = chubeOwnedByRarity[6] + chubeOwnedByRarity[5];
+  const chubeTotal = chubeTotalByRarity[6] + chubeTotalByRarity[5];
+
+  return {
+    characters: { hit: ownedChars, total: totalChars },
+    overInvested,
+    euphoriaByRarity, r10ByRarity, patternByRarity,
+    chubeOwned: { hit: chubeOwned, total: chubeTotal },
+    chubeOwnedByRarity, chubeTotalByRarity,
+    chubeCount: { 6: chubeCount6, 5: chubeCount5 },
+    chubeLv60, chubeAmpMax,
+  };
+}
+
+function statsBarHtml(label, hit, total, sub) {
+  const pct = total > 0 ? Math.round((hit / total) * 100) : 0;
+  return `
+    <div class="stat-row${sub ? " stat-row-sub" : ""}">
+      <div class="stat-row-head">
+        <span class="stat-row-label">${label}</span>
+        <span class="stat-row-value">${hit}/${total} · ${pct}%</span>
+      </div>
+      <div class="stat-bar"><span class="stat-bar-fill" style="width: ${pct}%;"></span></div>
+    </div>
+  `;
+}
+
+function statsValueRowHtml(label, value) {
+  return `
+    <div class="stat-row">
+      <div class="stat-row-head">
+        <span class="stat-row-label">${label}</span>
+        <span class="stat-row-value">${value}</span>
+      </div>
+    </div>
+  `;
+}
+
+/** Rarity block (✦6…✦2 or a custom list) with a shared colour per rarity. */
+function statsRarityBlockHtml(title, byRarity, colorMap, opts) {
+  const o = opts || {};
+  const rarities = o.rarities || [6, 5, 4, 3, 2];
+  const rows = rarities.map((r) => {
+    const e = byRarity[r];
+    if (!e || e.total === 0) return "";
+    const color = (colorMap && colorMap[r]) || "var(--accent-gold)";
+    if (o.bar === false) return statsValueRowHtml(`✦${r}`, `${e.hit}`);
+    const pct = Math.round((e.hit / e.total) * 100);
+    return `
+      <div class="stat-row stat-row-sub">
+        <div class="stat-row-head">
+          <span class="stat-row-label">✦${r}</span>
+          <span class="stat-row-value">${e.hit}/${e.total} · ${pct}%</span>
+        </div>
+        <div class="stat-bar"><span class="stat-bar-fill" style="width: ${pct}%; background: ${color};"></span></div>
+      </div>
+    `;
+  }).join("");
+  return `<div class="stat-block"><div class="stat-block-title">${title}</div>${rows}</div>`;
+}
+
+/** Gluttony / Greed icons with their quantity, centred above Total Chube Count. */
+function statsSpecialChubesHtml() {
+  const rows = psychubeOrder
+    .filter((key) => isSpecialPsychube(key))
+    .sort((a, b) => psychubeDb[b].rarity - psychubeDb[a].rarity)
+    .map((key) => {
+      const c = psychubeDb[key];
+      const n = Number((userPsychubes[key] || {}).count) || 0;
+      return `
+        <div class="stats-special-chube">
+          <img src="${escapeHtml(c.iconUrl)}" alt="${escapeHtml(c.name)}" class="stats-special-chube-img" />
+          <span class="stats-special-chube-count">x${n}</span>
+        </div>
+      `;
+    }).join("");
+  if (!rows) return "";
+  return `<div class="stats-special-chubes">${rows}</div>`;
+}
+
+/** Renders the five chess pieces as a centred, fixed-scale progress row. */
+function statsChessHtml() {
+  const pieces = [
+    { rarity: 2, empty: "images/chess_pieces/crook_empty.png", filled: "images/chess_pieces/crook_filled.png", w: 41, h: 92 },
+    { rarity: 3, empty: "images/chess_pieces/knight_empty.png", filled: "images/chess_pieces/knight_filled.png", w: 48, h: 95 },
+    { rarity: 4, empty: "images/chess_pieces/bishop_empty.png", filled: "images/chess_pieces/bishop_filled.png", w: 41, h: 99 },
+    { rarity: 5, empty: "images/chess_pieces/king_empty.png", filled: "images/chess_pieces/king_filled.png", w: 42, h: 109 },
+    { rarity: 6, empty: "images/chess_pieces/queen_empty.png", filled: "images/chess_pieces/queen_filled.png", w: 43, h: 105 },
+  ];
+  const total = { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+  const owned = { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+  Object.keys(characterDb).forEach((name) => {
+    if (!futureSightEnabled && futureSightChars.has(name)) return;
+    const r = getCharacterRarity(name);
+    if (r < 2 || r > 6) return;
+    total[r]++;
+    if ((userRoster[name] || {}).owned) owned[r]++;
+  });
+
+  const size = 22;
+  const cells = pieces.map((p) => {
+    const pct = total[p.rarity] > 0 ? (owned[p.rarity] / total[p.rarity]) * 100 : 0;
+    const insetTop = Math.max(0, Math.min(100, 100 - pct));
+    const w = Math.round(size * p.w / 41);
+    const h = Math.round(size * p.h / 41);
+    return `
+      <div class="stats-chess-piece" style="width: ${w}px; height: ${h}px;"
+           data-chess-rarity="${p.rarity}"
+           data-chess-owned="${owned[p.rarity]}"
+           data-chess-total="${total[p.rarity]}">
+        <img src="${p.empty}" alt="" class="stats-chess-empty" />
+        <div class="stats-chess-mask" style="top: ${insetTop}%;">
+          <img src="${p.filled}" alt="" style="height: ${h}px;" />
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `<div class="stats-chess-row">${cells}</div>`;
+}
+
+/** Tooltip for the Statistics chess pieces — reuses the pattern-tooltip surface. */
+function setupStatsChessTooltip() {
+  const tip = document.getElementById("pattern-tooltip");
+  const row = document.querySelector("#stats-modal-body .stats-chess-row");
+  if (!tip) return;
+
+  let hovered = null;
+
+  const show = (el, x, y) => {
+    const owned = el.dataset.chessOwned;
+    const total = el.dataset.chessTotal;
+    const rarity = el.dataset.chessRarity;
+    const pct = total > 0 ? Math.round((owned / total) * 100) : 0;
+    tip.innerHTML = `<strong>✦${rarity}</strong> · ${owned}/${total} (${pct}%)`;
+    tip.classList.add("is-visible");
+    tip.setAttribute("aria-hidden", "false");
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = x + 14;
+    if (left + tw > window.innerWidth - 6) left = x - tw - 14;
+    let top = y - th - 12;
+    if (top < 6) top = y + 18;
+    tip.style.left = `${Math.max(6, left)}px`;
+    tip.style.top = `${Math.max(6, top)}px`;
+  };
+
+  const hide = () => {
+    hovered = null;
+    tip.classList.remove("is-visible");
+    tip.setAttribute("aria-hidden", "true");
+  };
+
+  // Delegated so it keeps working after the modal body is re-rendered
+  document.addEventListener("mouseover", (e) => {
+    const el = e.target.closest && e.target.closest("#stats-modal-body .stats-chess-piece");
+    if (el && el !== hovered) {
+      hovered = el;
+      show(el, e.clientX, e.clientY);
+    }
+  });
+  document.addEventListener("mousemove", (e) => {
+    if (hovered) show(hovered, e.clientX, e.clientY);
+  });
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest && e.target.closest("#stats-modal-body .stats-chess-piece")) hide();
+  });
+  document.addEventListener("scroll", hide, true);
+}
+
+function renderStatsModal() {
+  const body = document.getElementById("stats-modal-body");
+  if (!body) return;
+  const m = buildStatsModel();
+  const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
+  const rarityColors = {
+    6: app.portraitColorR6 || "#DD9925",
+    5: app.portraitColorR5 || "#C7AF6C",
+    4: app.portraitColorR4 || "#6A4972",
+    3: app.portraitColorR3 || "#545C7D",
+    2: app.portraitColorR2 || "#496441",
+  };
+
+  body.innerHTML = `
+    <div class="stat-section">
+      <div class="stat-el">${t("stats.characters")}</div>
+      ${statsBarHtml(t("stats.ownedAmount"), m.characters.hit, m.characters.total)}
+      ${statsChessHtml()}
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      ${statsRarityBlockHtml(t("stats.euphorias"), m.euphoriaByRarity, rarityColors, { rarities: [6, 5] })}
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      ${statsRarityBlockHtml(t("stats.totalR10"), m.r10ByRarity, rarityColors)}
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      ${statsRarityBlockHtml(t("stats.patternUnlocked"), m.patternByRarity, rarityColors)}
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      ${statsValueRowHtml(t("stats.overInvestment"), m.overInvested)}
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      <div class="stat-el">${t("stats.psychubes")}</div>
+      ${statsBarHtml(t("stats.ownedPsychube"), m.chubeOwned.hit, m.chubeOwned.total)}
+      ${statsSpecialChubesHtml()}
+      ${statsRarityBlockHtml(t("stats.chubeCount"), {
+        6: { hit: m.chubeOwnedByRarity[6], total: m.chubeTotalByRarity[6] },
+        5: { hit: m.chubeOwnedByRarity[5], total: m.chubeTotalByRarity[5] },
+      }, rarityColors, { rarities: [6, 5] })}
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      ${statsRarityBlockHtml(t("stats.chubeLv60"), m.chubeLv60, rarityColors, { rarities: [6, 5] })}
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-section">
+      ${statsRarityBlockHtml(t("stats.chubeAmp"), m.chubeAmpMax, rarityColors, { rarities: [6, 5] })}
+    </div>
+  `;
+}
+
+function openStatsModal() {
+  renderStatsModal();
+  document.getElementById("stats-modal").style.display = "flex";
+}
+
+function closeStatsModal() {
+  document.getElementById("stats-modal").style.display = "none";
+}
+
 // Confirm Action Modal Helper
 let onConfirmActionCallback = null;
-
 function showConfirmModal(title, message, onConfirm) {
   const confirmModal = document.getElementById("confirm-modal");
   const confirmTitle = document.getElementById("confirm-modal-title");
@@ -2959,9 +4029,79 @@ function setupPatternTooltip() {
   }, { passive: true });
 }
 
+/** Tooltip that reports how many characters sit in a tier row. It follows the
+ *  cursor, reusing the pattern tooltip's look. */
+function setupTierCountTooltip() {
+  const tip = document.getElementById("tier-count-tooltip");
+  if (!tip) return;
+
+  let currentLabel = null;
+
+  const position = (x, y) => {
+    const tw = tip.offsetWidth;
+    const th = tip.offsetHeight;
+    let left = x + 14;
+    if (left + tw > window.innerWidth - 6) left = x - tw - 14;
+    left = Math.max(6, left);
+    let top = y + 18;
+    if (top + th > window.innerHeight - 6) top = y - th - 14;
+    top = Math.max(6, top);
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+  };
+
+  const show = (labelEl, x, y) => {
+    const count = labelEl.dataset.tierCount;
+    if (count === undefined) return;
+    const unit = labelEl.dataset.tierUnit === "psychube" ? "label.tierCountPsychube" : "label.tierCount";
+    tip.textContent = t(unit, { n: count });
+    tip.classList.add("is-visible");
+    tip.setAttribute("aria-hidden", "false");
+    position(x, y);
+  };
+
+  const hide = () => {
+    currentLabel = null;
+    tip.classList.remove("is-visible");
+    tip.setAttribute("aria-hidden", "true");
+  };
+
+  const isTierLabel = (node) => node && node.closest && node.closest(".tier-label[data-tier-count]");
+
+  document.addEventListener("mouseover", (e) => {
+    const el = isTierLabel(e.target);
+    if (el && el !== currentLabel) {
+      currentLabel = el;
+      show(el, e.clientX, e.clientY);
+    }
+  });
+  document.addEventListener("mousemove", (e) => {
+    if (currentLabel) position(e.clientX, e.clientY);
+  });
+  document.addEventListener("mouseout", (e) => {
+    // Ignore transitions between descendants of the same label
+    if (!isTierLabel(e.target)) return;
+    if (isTierLabel(e.relatedTarget) === currentLabel) return;
+    hide();
+  });
+  document.addEventListener("scroll", hide, true);
+
+  // Touch devices: a tap shows it briefly
+  document.addEventListener("touchstart", (e) => {
+    const el = e.target.closest(".tier-label[data-tier-count]");
+    if (el) {
+      currentLabel = el;
+      const touch = e.touches[0];
+      show(el, touch ? touch.clientX : 0, touch ? touch.clientY : 0);
+      setTimeout(hide, 1600);
+    }
+  }, { passive: true });
+}
+
 // Event Listeners
 function setupEventListeners() {
   setupPatternTooltip();
+  setupTierCountTooltip();
 
   // Language switcher
   document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -2991,9 +4131,17 @@ function setupEventListeners() {
     });
   }
 
+  // Statistics modal (opened from the roster stat badge)
+  const statsModal = document.getElementById("stats-modal");
+  if (statsModal && rosterStat) {
+    rosterStat.addEventListener("click", openStatsModal);
+    document.getElementById("stats-btn-close").addEventListener("click", closeStatsModal);
+    statsModal.addEventListener("click", (e) => { if (e.target === statsModal) closeStatsModal(); });
+    setupStatsChessTooltip();
+  }
+
   // Web Icon Lightbox Preview
-  const btnWebIcon = document.getElementById("btn-web-icon");
-  const webIconModal = document.getElementById("web-icon-modal");
+  const btnWebIcon = document.getElementById("btn-web-icon");  const webIconModal = document.getElementById("web-icon-modal");
 
   if (btnWebIcon && webIconModal) {
     btnWebIcon.addEventListener("click", () => {
@@ -3095,20 +4243,12 @@ function setupEventListeners() {
 
   // Pattern picker is rebuilt per character (see renderShapePatternGrid)
 
-  // Portrait pills
-  document.querySelectorAll(".btn-pill-p").forEach((btn) => {
+  // Portrait pills (character edit modal only — the Psychube modal has its own A picks)
+  document.querySelectorAll("#edit-modal .btn-pill-p").forEach((btn) => {
     btn.addEventListener("click", () => {
       tempEditState.portrait = Number(btn.dataset.p);
       updateModalView();
     });
-  });
-
-  // Pattern help toggle
-  const btnPatternHelp = document.getElementById("btn-pattern-help");
-  const patternHelpBox = document.getElementById("pattern-help-box");
-  btnPatternHelp.addEventListener("click", () => {
-    const isShown = patternHelpBox.style.display !== "none";
-    patternHelpBox.style.display = isShown ? "none" : "block";
   });
 
   // Euphoria checkbox change handlers to persist selection in state
@@ -3326,6 +4466,10 @@ function setupEventListeners() {
       const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
       checkHideChess.checked = app.chessPiecesEnabled === false;
     }
+    const checkHideCharacterTier = document.getElementById("check-hide-character-tier");
+    if (checkHideCharacterTier) checkHideCharacterTier.checked = !!displayOptions.hideCharacterTier;
+    const checkHidePsychubeTier = document.getElementById("check-hide-psychube-tier");
+    if (checkHidePsychubeTier) checkHidePsychubeTier.checked = !!displayOptions.hidePsychubeTier;
 
     renderOptionsPreviewCard();
 
@@ -3472,7 +4616,7 @@ function setupEventListeners() {
       const labelRes = document.createElement("span");
       labelRes.style.fontSize = "0.7rem";
       labelRes.style.fontFamily = "var(--mono-font)";
-      labelRes.textContent = "Resonance:";
+      labelRes.textContent = `${t("setting.resonanceShort")}:`;
 
       const selRes = document.createElement("select");
       selRes.className = "listing-tier-select";
@@ -3602,6 +4746,10 @@ function setupEventListeners() {
       }
       displayOptions.appearance.chessPiecesEnabled = !checkHideChess.checked;
     }
+    const checkHideCharacterTier = document.getElementById("check-hide-character-tier");
+    if (checkHideCharacterTier) displayOptions.hideCharacterTier = checkHideCharacterTier.checked;
+    const checkHidePsychubeTier = document.getElementById("check-hide-psychube-tier");
+    if (checkHidePsychubeTier) displayOptions.hidePsychubeTier = checkHidePsychubeTier.checked;
 
     saveDisplayOptions();
     renderShowcase();
@@ -3674,6 +4822,9 @@ function setupEventListeners() {
   const displayCharInfoBgOpacity = document.getElementById("display-char-info-bg-opacity");
 
   const colorEuphoriaLabel = document.getElementById("color-euphoria-label");
+  const colorChubeAmp = document.getElementById("color-chube-amp");
+  const colorChubeAmpMax = document.getElementById("color-chube-amp-max");
+  const colorChubeCount = document.getElementById("color-chube-count");
   const checkCustomPortraitColors = document.getElementById("check-custom-portrait-colors");
   const portraitRarityColorsGrid = document.getElementById("portrait-rarity-colors-grid");
   const colorPortraitR6 = document.getElementById("color-portrait-r6");
@@ -3921,6 +5072,9 @@ function setupEventListeners() {
     if (displayCharInfoBgOpacity) displayCharInfoBgOpacity.textContent = `${Math.round(ciBgOpacity * 100)}%`;
 
     colorEuphoriaLabel.value = app.euphoriaColor || "#04FFEE";
+    if (colorChubeAmp) colorChubeAmp.value = app.chubeAmpColor || "#ffffff";
+    if (colorChubeAmpMax) colorChubeAmpMax.value = app.chubeAmpMaxColor || "#DF7526";
+    if (colorChubeCount) colorChubeCount.value = app.chubeCountColor || "#04FFEE";
 
     if (checkCustomPortraitColors) {
       checkCustomPortraitColors.checked = !!app.customPortraitColorsEnabled;
@@ -4018,6 +5172,9 @@ function setupEventListeners() {
       charInfoRadius: Number(inputCharInfoRadius.value),
 
       euphoriaColor: colorEuphoriaLabel.value,
+      chubeAmpColor: colorChubeAmp ? colorChubeAmp.value : "#ffffff",
+      chubeAmpMaxColor: colorChubeAmpMax ? colorChubeAmpMax.value : "#DF7526",
+      chubeCountColor: colorChubeCount ? colorChubeCount.value : "#04FFEE",
       customPortraitColorsEnabled: checkCustomPortraitColors ? checkCustomPortraitColors.checked : false,
       portraitColorR6: colorPortraitR6 ? colorPortraitR6.value : "#DD9925",
       portraitColorR5: colorPortraitR5 ? colorPortraitR5.value : "#C7AF6C",
@@ -4447,6 +5604,30 @@ function setupEventListeners() {
     { value: "name", labelKey: "field.name", type: "text", defaultVal: "" },
   ];
 
+  // Fields available to Psychube tiers (Tag / Amplification / Rarity / Name)
+  const CHUBE_FIELD_DEFINITIONS = [
+    { value: "tag", labelKey: "field.tag", type: "select", options: [
+      { value: "ATK", label: "ATK" },
+      { value: "Critical", label: "Critical" },
+      { value: "Heal", label: "Heal" },
+      { value: "Support", label: "Support" },
+      { value: "Survival", label: "Survival" },
+    ], defaultVal: "ATK" },
+    { value: "amplification", labelKey: "field.amplification", type: "select", options: [
+      { value: 5, label: "A5" },
+      { value: 4, label: "A4" },
+      { value: 3, label: "A3" },
+      { value: 2, label: "A2" },
+      { value: 1, label: "A1" },
+      { value: 0, label: "A0" },
+    ], defaultVal: 0 },
+    { value: "rarity", labelKey: "field.rarity", type: "select", options: [
+      { value: 6, label: "✦6" },
+      { value: 5, label: "✦5" },
+    ], defaultVal: 6 },
+    { value: "name", labelKey: "field.name", type: "text", defaultVal: "" },
+  ];
+
   const COMPARISON_OPS = [
     { value: "=", label: "=" },
     { value: ">=", label: "≥" },
@@ -4472,7 +5653,10 @@ function setupEventListeners() {
   function renderListingTiersEditor() {
     listingTiersList.innerHTML = "";
     tempListingTiers.forEach((tier, index) => {
-      const isSystemTier = tier.type === "other" || tier.type === "unowned";
+      const isSystemTier = tier.type === "other" || tier.type === "unowned"
+        || tier.type === "psychube_unowned" || tier.type === "psychube_other";
+      const isChubeTier = tier.type === "psychube";
+      const fieldDefs = isChubeTier ? CHUBE_FIELD_DEFINITIONS : FIELD_DEFINITIONS;
       if (!isSystemTier) {
         ensureTierRuleGroups(tier);
       }
@@ -4617,7 +5801,7 @@ function setupEventListeners() {
       headerRow.appendChild(labelBorder);
       headerRow.appendChild(labelBold);
 
-      // System tiers (Other, Unowned) cannot be removed
+      // System tiers (Other, Unowned, Unowned Psychube) cannot be removed
       if (!isSystemTier) {
         const btnClone = document.createElement("button");
         btnClone.type = "button";
@@ -4654,7 +5838,10 @@ function setupEventListeners() {
         tagSpan.style.fontWeight = "700";
         tagSpan.style.letterSpacing = "0.06em";
         tagSpan.style.textTransform = "uppercase";
-        tagSpan.textContent = tier.type === "unowned" ? t("setting.unowned") : t("label.remaining");
+        tagSpan.textContent = tier.type === "unowned" ? t("setting.unowned")
+          : tier.type === "psychube_unowned" ? t("label.unownedPsychubes")
+          : tier.type === "psychube_other" ? t("label.otherPsychubes")
+          : t("label.remaining");
         headerRow.appendChild(tagSpan);
       }
 
@@ -4686,6 +5873,29 @@ function setupEventListeners() {
         return;
       }
 
+      // Unowned Psychube: fixed container, no conditions
+      if (tier.type === "psychube_unowned") {
+        rulesContainer.innerHTML = `
+          <div style="font-family: var(--mono-font); font-size: 0.62rem; color: var(--text-muted); padding: 4px 6px;">
+            ${t("label.catUnownedPsychube")}
+          </div>
+        `;
+        itemCard.appendChild(rulesContainer);
+        listingTiersList.appendChild(itemCard);
+        return;
+      }
+
+      // Other Psychubes: fixed catch-all, no conditions
+      if (tier.type === "psychube_other") {
+        rulesContainer.innerHTML = `
+          <div style="font-family: var(--mono-font); font-size: 0.62rem; color: var(--text-muted); padding: 4px 6px;">
+            ${t("label.catOtherPsychubes")}
+          </div>
+        `;
+        itemCard.appendChild(rulesContainer);
+        listingTiersList.appendChild(itemCard);
+        return;
+      }
       tier.ruleGroups.forEach((group, gIdx) => {
         if (gIdx > 0) {
           const orDivider = document.createElement("div");
@@ -4750,7 +5960,7 @@ function setupEventListeners() {
           // Field selector
           const fieldSel = document.createElement("select");
           fieldSel.className = "listing-rule-select";
-          FIELD_DEFINITIONS.forEach((fd) => {
+          fieldDefs.forEach((fd) => {
             const opt = document.createElement("option");
             opt.value = fd.value;
             opt.textContent = fd.labelKey ? t(fd.labelKey) : fd.label;
@@ -4776,7 +5986,7 @@ function setupEventListeners() {
 
           function updateValueControl() {
             valContainer.innerHTML = "";
-            const currentFieldDef = FIELD_DEFINITIONS.find((f) => f.value === cond.field) || FIELD_DEFINITIONS[0];
+            const currentFieldDef = fieldDefs.find((f) => f.value === cond.field) || fieldDefs[0];
 
             if (currentFieldDef.type === "boolean") {
               opSel.style.display = "none";
@@ -4844,7 +6054,7 @@ function setupEventListeners() {
 
           fieldSel.addEventListener("change", (e) => {
             cond.field = e.target.value;
-            const newFDef = FIELD_DEFINITIONS.find((f) => f.value === cond.field);
+            const newFDef = fieldDefs.find((f) => f.value === cond.field);
             cond.value = newFDef ? newFDef.defaultVal : 0;
             updateValueControl();
           });
@@ -4952,6 +6162,21 @@ function setupEventListeners() {
     });
   }
 
+  // Psychube tiers land at the bottom and default to owned = true
+  const btnAddChubeTier = document.getElementById("btn-add-chube-tier");
+  if (btnAddChubeTier) {
+    btnAddChubeTier.addEventListener("click", () => {
+      tempListingTiers.push({
+        id: "chube_tier_" + Date.now(),
+        type: "psychube",
+        label: t("label.psychubeTier"),
+        color: "#7fb3d5",
+        ruleGroups: [[{ field: "owned", op: "=", value: true }]],
+      });
+      renderListingTiersEditor();
+    });
+  }
+
   btnListing.addEventListener("click", openListingModal);
   listingBtnClose.addEventListener("click", closeListingModal);
   listingModal.addEventListener("click", (e) => {
@@ -5045,6 +6270,76 @@ function setupEventListeners() {
     if (confirmBtn) confirmBtn.addEventListener("click", applyBulkSpec);
     bulkApplyModal.addEventListener("click", (e) => {
       if (e.target === bulkApplyModal) closeBulkApplyModal();
+    });
+  }
+
+  // Psychube Setting modal
+  const chubeModal = document.getElementById("chube-modal");
+  if (chubeModal) {
+    document.getElementById("chube-modal-btn-close").addEventListener("click", closePsychubeModal);
+    document.getElementById("chube-modal-btn-save").addEventListener("click", savePsychubeModal);
+    chubeModal.addEventListener("click", (e) => { if (e.target === chubeModal) closePsychubeModal(); });
+
+    document.getElementById("chube-btn-owned").addEventListener("click", () => {
+      tempChubeState.owned = true; updatePsychubeModalView();
+    });
+    document.getElementById("chube-btn-unowned").addEventListener("click", () => {
+      tempChubeState.owned = false; updatePsychubeModalView();
+    });
+    document.getElementById("chube-input-level").addEventListener("input", (e) => {
+      tempChubeState.level = Number(e.target.value);
+      document.getElementById("chube-display-level").textContent = String(tempChubeState.level);
+    });
+    document.querySelectorAll("#chube-modal .btn-pill-a").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tempChubeState.amplification = Number(btn.dataset.a);
+        updatePsychubeModalView();
+      });
+    });
+    document.getElementById("chube-input-count").addEventListener("input", (e) => {
+      tempChubeState.count = Number(e.target.value);
+      document.getElementById("chube-display-count").textContent = String(tempChubeState.count);
+      const statusEl = document.getElementById("chube-modal-status");
+      if (statusEl) statusEl.textContent = t("chube.countLabel", { n: tempChubeState.count });
+    });
+  }
+
+  // Chubes manager
+  const btnChubes = document.getElementById("btn-chubes");
+  const chubesModal = document.getElementById("chubes-modal");
+  if (btnChubes && chubesModal) {
+    btnChubes.addEventListener("click", openChubesModal);
+    document.getElementById("chubes-btn-close").addEventListener("click", closeChubesModal);
+    chubesModal.addEventListener("click", (e) => { if (e.target === chubesModal) closeChubesModal(); });
+    document.getElementById("chubes-search").addEventListener("input", renderChubesManager);
+    document.querySelectorAll("#chubes-filter-rarity-group .filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const r = Number(btn.dataset.rarity);
+        if (chubesActiveRarityFilters.has(r)) chubesActiveRarityFilters.delete(r);
+        else chubesActiveRarityFilters.add(r);
+        btn.classList.toggle("active", chubesActiveRarityFilters.has(r));
+        renderChubesManager();
+      });
+    });
+    document.getElementById("btn-chubes-select-mode").addEventListener("click", () => setChubesSelectMode(!chubesSelectMode));
+    document.getElementById("btn-chubes-select-page").addEventListener("click", () => {
+      chubesVisibleKeys().forEach((key) => chubesSelection.add(key));
+      renderChubesManager();
+    });
+    document.getElementById("btn-chubes-select-none").addEventListener("click", () => {
+      chubesSelection.clear();
+      renderChubesManager();
+    });
+    document.getElementById("btn-chubes-bulk-apply").addEventListener("click", openChubeBulkModal);
+  }
+
+  const chubeBulkModal = document.getElementById("chube-bulk-modal");
+  if (chubeBulkModal) {
+    document.getElementById("chube-bulk-btn-close").addEventListener("click", closeChubeBulkModal);
+    document.getElementById("chube-bulk-confirm").addEventListener("click", applyChubeBulkSpec);
+    chubeBulkModal.addEventListener("click", (e) => { if (e.target === chubeBulkModal) closeChubeBulkModal(); });
+    document.getElementById("chube-bulk-level-slider").addEventListener("input", (e) => {
+      chubeBulkSpec.level = Number(e.target.value); renderChubeBulkModal();
     });
   }
 

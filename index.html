@@ -16,6 +16,8 @@
 <body>
   <!-- Shared pattern tooltip (custom, replaces the native title bubble) -->
   <div id="pattern-tooltip" class="pattern-tooltip" aria-hidden="true"></div>
+  <!-- Tier row count tooltip (follows the cursor) -->
+  <div id="tier-count-tooltip" class="pattern-tooltip tier-count-tooltip" aria-hidden="true"></div>
   <!-- Background image -->
   <img src="images/background.png" alt="" class="bg-image" style="position: fixed; inset: 0; width: 100%; height: 100%; z-index: -9999; object-fit: cover; pointer-events: none;">
   <!-- Floating Controls & Toolbar -->
@@ -39,8 +41,11 @@
         <div class="header-search-wrap">
           <input type="text" id="filter-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
         </div>
-        <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters" data-i18n-title="toolbar.quickEdit">
-          <span data-i18n="toolbar.quickEdit">Quick Edit</span>
+        <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters" data-i18n-title="toolbar.manage">
+          <span data-i18n="toolbar.manage">Manage</span>
+        </button>
+        <button class="btn btn-secondary" id="btn-chubes" title="Manage psychubes" data-i18n-title="toolbar.chubes">
+          <span data-i18n="toolbar.chubes">Chubes</span>
         </button>
         <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG" data-i18n-title="toolbar.exportPng">
           <span data-i18n="toolbar.exportPng">Export PNG</span>
@@ -56,11 +61,6 @@
         </div>
         <div class="stat-badge-wrap">
           <span class="stat-badge" id="roster-stat" style="cursor: pointer;">Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" /></span>
-          <div class="stat-badge-tooltip" id="roster-stat-tooltip">
-            <div class="stat-tip-row"><span class="stat-tip-label">Level 60</span><span class="stat-tip-value">0</span></div>
-            <div class="stat-tip-row"><span class="stat-tip-label">R10+</span><span class="stat-tip-value">0</span></div>
-            <div class="stat-tip-row"><span class="stat-tip-label"><span data-i18n="setting.euphoria">Euphoria</span></span><span class="stat-tip-value">0</span></div>
-          </div>
         </div>
         <button type="button" class="btn btn-secondary btn-tools-toggle" id="btn-tools-toggle" title="More Tools & Settings" aria-expanded="false">
           <span class="toggle-text"><span data-i18n="toolbar.menu">Menu</span></span>
@@ -186,10 +186,10 @@
             <span class="setting-val-display" id="display-insight">I3</span>
           </div>
           <div class="insight-quick-picks">
-            <button type="button" class="btn-pill-i" data-i="0" title="Insight 0"><img src="images/insight_icon/I0.png" alt="I0" class="insight-btn-img" /></button>
-            <button type="button" class="btn-pill-i" data-i="1" title="Insight 1"><img src="images/insight_icon/I1.png" alt="I1" class="insight-btn-img" /></button>
-            <button type="button" class="btn-pill-i" data-i="2" title="Insight 2"><img src="images/insight_icon/I2.png" alt="I2" class="insight-btn-img" /></button>
-            <button type="button" class="btn-pill-i" data-i="3" title="Insight 3"><img src="images/insight_icon/I3.png" alt="I3" class="insight-btn-img" /></button>
+            <button type="button" class="btn-pill-i" data-i="0"><img src="images/insight_icon/I0.png" alt="I0" class="insight-btn-img" /></button>
+            <button type="button" class="btn-pill-i" data-i="1"><img src="images/insight_icon/I1.png" alt="I1" class="insight-btn-img" /></button>
+            <button type="button" class="btn-pill-i" data-i="2"><img src="images/insight_icon/I2.png" alt="I2" class="insight-btn-img" /></button>
+            <button type="button" class="btn-pill-i" data-i="3"><img src="images/insight_icon/I3.png" alt="I3" class="insight-btn-img" /></button>
           </div>
         </div>
 
@@ -213,18 +213,7 @@
 
         <div class="setting-group" id="group-pattern">
           <div class="setting-label-row">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <label class="setting-label"><span data-i18n="opt.pattern">Pattern</span></label>
-              <button type="button" id="btn-pattern-help" title="Pattern explanation" style="background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">
-                <img src="images/random_icon/explanation_sign_icon.png" alt="Pattern explanation" style="width: 14px; height: 14px; object-fit: contain; display: block;" />
-              </button>
-            </div>
-          </div>
-          <div id="pattern-help-box" class="pattern-help-box" style="display: none;">
-            <p data-i18n="pattern.helpIntro">The six patterns available depend on the character's resonance shape.</p>
-            <p><span class="pattern-help-dot" style="background:#F67E26"></span> <strong data-i18n="pattern.orangeLabel">Orange:</strong> Aspirational, Delirament, Elucidation, Genuinity, Hyper, Hyperphrenia, Inspire</p>
-            <p><span class="pattern-help-dot" style="background:#62A771"></span> <strong data-i18n="pattern.greenLabel">Green:</strong> Equanimity, Mercy, Overindulgence, Prudentiality, Quiescence</p>
-            <p><span class="pattern-help-dot" style="background:#E6AE34"></span> <strong data-i18n="pattern.yellowLabel">Yellow:</strong> <span data-i18n="pattern.stupefaction">Stupefaction</span> &nbsp; <span class="pattern-help-dot" style="background:#4A70B3"></span> <strong data-i18n="pattern.blueLabel">Blue:</strong> <span data-i18n="pattern.equibalance">Equibalance</span></p>
+            <label class="setting-label"><span data-i18n="opt.pattern">Pattern</span></label>
           </div>
           <div class="shape-pattern-grid" id="shape-pattern-grid" aria-label="Pattern selection"></div>
         </div>
@@ -296,6 +285,18 @@
             <span class="archetype-diamond"></span>
             <span class="archetype-item-text"><span data-i18n="opt.hideChess">Hide Chess</span></span>
           </label>
+
+          <label class="archetype-grid-item">
+            <input type="checkbox" id="check-hide-character-tier" />
+            <span class="archetype-diamond"></span>
+            <span class="archetype-item-text"><span data-i18n="opt.hideCharacterTier">Hide Character Tier</span></span>
+          </label>
+
+          <label class="archetype-grid-item">
+            <input type="checkbox" id="check-hide-psychube-tier" />
+            <span class="archetype-diamond"></span>
+            <span class="archetype-item-text"><span data-i18n="opt.hidePsychubeTier">Hide Psychube Tier</span></span>
+          </label>
         </div>
 
         <!-- Section: Character Info Box -->
@@ -313,7 +314,7 @@
         <!-- el: Character's Name -->
         <div class="options-flat-section options-el-gold">
           <div class="archetype-section-header">
-            <span class="archetype-section-title"><span data-i18n="section.charName">CHARACTER'S NAME</span></span>
+            <span class="archetype-section-title"><span data-i18n="section.charName">CHARACTER AND PSYCHUBE NAMES</span></span>
           </div>
           <div class="options-flat-content">
             <div class="archetype-grid">
@@ -801,7 +802,7 @@
 
               <!-- Character Name Color -->
               <div class="custom-style-row" style="margin-top: 6px;">
-                <span><span data-i18n="styling.charNameColor">Character Names Color</span></span>
+                <span><span data-i18n="styling.charNameColor">Character &amp; Psychube Names Color</span></span>
                 <input type="color" id="color-char-name" value="#ffffff" class="listing-tier-color-input" />
               </div>
             </div>
@@ -892,20 +893,27 @@
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
                   <span data-i18n="pattern.offensive">Offensive</span>
-                  <input type="color" id="color-pattern-offensive" value="#FBAE31" class="listing-tier-color-input" />
+                  <input type="color" id="color-pattern-offensive" value="#F67E26" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
                   <span data-i18n="pattern.defensive">Defensive</span>
-                  <input type="color" id="color-pattern-defensive" value="#2D8A5A" class="listing-tier-color-input" />
+                  <input type="color" id="color-pattern-defensive" value="#62A771" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
                   <span data-i18n="pattern.stupefaction">Stupefaction</span>
-                  <input type="color" id="color-pattern-hp" value="#D4AD2B" class="listing-tier-color-input" />
+                  <input type="color" id="color-pattern-hp" value="#E6AE34" class="listing-tier-color-input" />
                 </label>
                 <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
                   <span data-i18n="pattern.equibalance">Equibalance</span>
-                  <input type="color" id="color-pattern-equibalance" value="#3B6DC7" class="listing-tier-color-input" />
+                  <input type="color" id="color-pattern-equibalance" value="#4A70B3" class="listing-tier-color-input" />
                 </label>
+              </div>
+
+              <!-- Pattern explanation (moved here from Character Setting) -->
+              <div class="pattern-help-box" style="display: block; margin-top: 10px;">
+                <p><span class="pattern-help-dot" style="background:#F67E26"></span> <strong data-i18n="pattern.orangeLabel">Orange:</strong> <span data-i18n="pattern.listOrange"></span></p>
+                <p><span class="pattern-help-dot" style="background:#62A771"></span> <strong data-i18n="pattern.greenLabel">Green:</strong> <span data-i18n="pattern.listGreen"></span></p>
+                <p><span class="pattern-help-dot" style="background:#E6AE34"></span> <strong data-i18n="pattern.yellowLabel">Yellow:</strong> <span data-i18n="pattern.stupefaction">Stupefaction</span> &nbsp; <span class="pattern-help-dot" style="background:#4A70B3"></span> <strong data-i18n="pattern.blueLabel">Blue:</strong> <span data-i18n="pattern.equibalance">Equibalance</span></p>
               </div>
             </div>
 
@@ -955,7 +963,7 @@
 
             <!-- Unowned Character Image Opacity in Export/Board -->
             <div class="custom-style-section">
-              <span class="custom-style-section-title"><span data-i18n="styling.unownedDim">Unowned Characters Dimming</span></span>
+              <span class="custom-style-section-title"><span data-i18n="styling.unownedDim">Unowned Characters / Psychubes Dimming</span></span>
               <!-- Unowned Dimming Review -->
               <div class="customize-preview-box">
                 <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
@@ -972,6 +980,25 @@
                   <span id="display-unowned-opacity" style="font-weight: 700;">82%</span>
                 </div>
                 <input type="range" id="input-unowned-opacity" min="0" max="1.0" step="0.01" value="0.82" class="custom-slider" />
+              </div>
+            </div>
+
+            <!-- Psychubes Coloring -->
+            <div class="custom-style-section">
+              <span class="custom-style-section-title"><span data-i18n="styling.psychubeColoring">Psychubes Coloring</span></span>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span data-i18n="styling.ampNormal">Amplification (A0 - A4)</span>
+                  <input type="color" id="color-chube-amp" value="#ffffff" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span data-i18n="styling.ampMax">Amplification A5</span>
+                  <input type="color" id="color-chube-amp-max" value="#DF7526" class="listing-tier-color-input" />
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; font-family: var(--mono-font);">
+                  <span data-i18n="styling.chubeQuantity">Gluttony / Greed Quantity</span>
+                  <input type="color" id="color-chube-count" value="#04FFEE" class="listing-tier-color-input" />
+                </label>
               </div>
             </div>
           </div>
@@ -996,8 +1023,9 @@
           <div class="setting-label-row">
             <label class="setting-label" data-i18n="label.showcaseTiersFull">Showcase Tiers (Top-to-Bottom Evaluation)</label>
             <div style="display: flex; gap: 6px; align-items: center;">
-              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-preset-tier"><span data-i18n="action.addUnbuiltTier">+ Unbuilt Tier</span></button>
-              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier"><span data-i18n="action.addTier">+ Add Tier</span></button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-preset-tier"><span data-i18n="action.addUnbuiltShort">+ Unbuilt</span></button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier"><span data-i18n="action.addCharacterShort">+ Character</span></button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-chube-tier"><span data-i18n="action.addPsychubeShort">+ Psychube</span></button>
             </div>
           </div>
 
@@ -1021,21 +1049,23 @@
   <div id="roster-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card modal-card-large">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title"><span data-i18n="toolbar.quickEdit"><span data-i18n="toolbar.quickEdit">Quick Edit</span></span></h2>
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.manageCharacters">Manage Characters</span></h2>
         <button class="modal-close" id="roster-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
       <div class="roster-toolbar">
         <div class="roster-toolbar-left">
           <input type="text" id="roster-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
-          <!-- Rarity Filter for Roster Manager -->
-          <div class="filter-btn-group" id="roster-filter-rarity-group">
-            <button type="button" class="filter-btn" data-rarity="6">✦6</button>
-            <button type="button" class="filter-btn" data-rarity="5">✦5</button>
-            <button type="button" class="filter-btn" data-rarity="4">✦4</button>
-            <button type="button" class="filter-btn" data-rarity="3">✦3</button>
-            <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+          <div class="roster-toolbar-right">
+            <!-- Rarity Filter for Roster Manager -->
+            <div class="filter-btn-group" id="roster-filter-rarity-group">
+              <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+              <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+              <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+              <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+              <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm roster-select-toggle" id="btn-roster-select-mode" aria-pressed="false"><span data-i18n="action.select">Select</span></button>
           </div>
-          <button type="button" class="btn btn-secondary btn-sm roster-select-toggle" id="btn-roster-select-mode" aria-pressed="false"><span data-i18n="action.select">Select</span></button>
         </div>
       </div>
 
@@ -1051,6 +1081,162 @@
 
       <div class="roster-grid" id="roster-grid-list">
         <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistic Modal -->
+  <div id="stats-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card" style="max-width: 520px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="modal.statistics">Statistics</span></h2>
+        <button class="modal-close" id="stats-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="modal-body archetype-modal-body" id="stats-modal-body">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Psychube Setting Modal -->
+  <div id="chube-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card">
+      <div class="archetype-modal-header">
+        <div class="modal-char-preview">
+          <img id="chube-modal-img" src="" alt="preview" />
+          <div>
+            <h2 id="chube-modal-name" class="modal-char-title">Chube Name</h2>
+            <span id="chube-modal-status" class="modal-char-sub" data-i18n="action.unowned">Unowned</span>
+          </div>
+        </div>
+        <button class="modal-close" id="chube-modal-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+
+      <div class="modal-body archetype-modal-body">
+        <!-- Ownership Toggle -->
+        <div class="setting-group" id="chube-group-status">
+          <label class="setting-label"><span data-i18n="setting.status">Status</span></label>
+          <div class="toggle-group">
+            <button type="button" class="btn-toggle active" id="chube-btn-unowned" data-i18n="action.unowned">Unowned</button>
+            <button type="button" class="btn-toggle" id="chube-btn-owned" data-i18n="action.owned">Owned</button>
+          </div>
+        </div>
+
+        <!-- Level (1 - 60) -->
+        <div class="setting-group" id="chube-group-level">
+          <div class="setting-label-row">
+            <label class="setting-label"><span data-i18n="chube.level">Level</span></label>
+            <span class="setting-val-display" id="chube-display-level">1</span>
+          </div>
+          <input type="range" id="chube-input-level" min="1" max="60" value="1" class="custom-slider" style="margin-top: 8px;" />
+        </div>
+
+        <!-- Amplification (A0 - A5) -->
+        <div class="setting-group" id="chube-group-amp">
+          <div class="setting-label-row">
+            <label class="setting-label"><span data-i18n="chube.amplification">Amplification</span></label>
+            <span class="setting-val-display" id="chube-display-amp">A0</span>
+          </div>
+          <div class="portrait-quick-picks">
+            <button type="button" class="btn-pill-p btn-pill-a" data-a="0">A0</button>
+            <button type="button" class="btn-pill-p btn-pill-a" data-a="1">A1</button>
+            <button type="button" class="btn-pill-p btn-pill-a" data-a="2">A2</button>
+            <button type="button" class="btn-pill-p btn-pill-a" data-a="3">A3</button>
+            <button type="button" class="btn-pill-p btn-pill-a" data-a="4">A4</button>
+            <button type="button" class="btn-pill-p btn-pill-a" data-a="5">A5</button>
+          </div>
+        </div>
+
+        <!-- Count (special chubes only) -->
+        <div class="setting-group" id="chube-group-count" style="display: none;">
+          <div class="setting-label-row">
+            <label class="setting-label"><span data-i18n="chube.count">Quantity</span></label>
+            <span class="setting-val-display" id="chube-display-count">0</span>
+          </div>
+          <input type="range" id="chube-input-count" min="0" max="99" value="0" class="custom-slider" style="margin-top: 8px;" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-block" id="chube-modal-btn-save"><span data-i18n="action.apply">Apply</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chubes Manager Modal -->
+  <div id="chubes-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card modal-card-large">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.chubes">Chubes</span></h2>
+        <button class="modal-close" id="chubes-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="roster-toolbar">
+        <div class="roster-toolbar-left">
+          <input type="text" id="chubes-search" class="search-input" data-i18n-placeholder="toolbar.searchChubes" placeholder="Search Chubes" />
+          <div class="roster-toolbar-right">
+            <div class="filter-btn-group" id="chubes-filter-rarity-group">
+              <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+              <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm roster-select-toggle" id="btn-chubes-select-mode" aria-pressed="false"><span data-i18n="action.select">Select</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="roster-select-bar" id="chubes-select-bar" hidden>
+        <span class="roster-select-count" id="chubes-select-count">0 selected</span>
+        <div class="roster-select-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-chubes-select-page"><span data-i18n="action.selectAllShown">Select All Shown</span></button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-chubes-select-none" data-i18n="opt.clear">Clear</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-chubes-bulk-apply" disabled><span data-i18n="action.bulkApply">Bulk Apply</span></button>
+        </div>
+      </div>
+
+      <div class="roster-grid" id="chubes-grid-list">
+        <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Chube Bulk Apply Modal -->
+  <div id="chube-bulk-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card" style="max-width: 460px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="bulk.applySpec">Bulk Apply Spec</span></h2>
+        <button class="modal-close" id="chube-bulk-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="modal-body archetype-modal-body">
+        <p class="bulk-apply-hint" id="chube-bulk-hint">Apply the same spec to the selected chubes.</p>
+        <div class="bulk-apply-preview" id="chube-bulk-preview"></div>
+
+        <div class="bulk-row" id="chube-bulk-row-level">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label"><span data-i18n="chube.level">Level</span></span>
+            <span class="bulk-row-value" id="chube-bulk-level-value"></span>
+          </div>
+          <div class="bulk-slider-wrap">
+            <input type="range" class="custom-slider bulk-slider" id="chube-bulk-level-slider" min="1" max="60" value="1" />
+          </div>
+        </div>
+
+        <div class="bulk-row" id="chube-bulk-row-amp">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label"><span data-i18n="chube.amplification">Amplification</span></span>
+            <span class="bulk-row-value" id="chube-bulk-amp-value"></span>
+          </div>
+          <div class="bulk-row-options" id="chube-bulk-amp-options"></div>
+        </div>
+
+        <div class="bulk-row" id="chube-bulk-row-owned">
+          <div class="bulk-row-head">
+            <span class="bulk-row-label" data-i18n="setting.ownership">Ownership</span>
+            <span class="bulk-row-value" id="chube-bulk-owned-value"></span>
+          </div>
+          <div class="bulk-row-options" id="chube-bulk-owned-options"></div>
+        </div>
+      </div>
+      <div class="modal-footer bulk-apply-footer">
+        <button type="button" class="btn btn-primary" id="chube-bulk-confirm"><span data-i18n="action.apply">Apply</span></button>
       </div>
     </div>
   </div>
