@@ -1113,6 +1113,21 @@ body::before {
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.85));
 }
 
+/* Dark corner wedge sitting behind the pin. Bright portrait art would otherwise
+   wash the pale pin out. Inset by the portrait's 1px frame so the frame keeps
+   painting on top of it, and stacked below the pin itself. */
+.char-favourite-corner {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 0;
+  height: 0;
+  border-top: calc(var(--char-avatar-size, 60px) * 16 / 60) solid rgba(0, 0, 0, 0.55);
+  border-left: calc(var(--char-avatar-size, 60px) * 16 / 60) solid transparent;
+  z-index: 3;
+  pointer-events: none;
+}
+
 /* Afflatus Icon in Character Avatar Box */
 .char-afflatus-icon {
   position: absolute;
@@ -4492,8 +4507,6 @@ body::before {
   padding: 0;
   background: transparent;
   border: none;
-  opacity: var(--chess-piece-opacity, 1);
-  transition: opacity 0.2s ease;
   line-height: 1;
 }
 
@@ -4564,6 +4577,15 @@ body::before {
   display: block;
 }
 
+/* The fade lives on the piece art rather than on .chess-pieces-container: an
+   opacity below 1 on the container creates a stacking context, which would trap
+   the hover tooltip underneath the character cards further down the board. */
+.chess-piece-empty,
+.chess-piece-filled {
+  opacity: var(--chess-piece-opacity, 1);
+  transition: opacity 0.2s ease;
+}
+
 .chess-piece-tooltip {
   position: absolute;
   top: calc(100% + 6px);
@@ -4592,6 +4614,13 @@ body::before {
 .chess-pieces-container.pos-bottom .chess-piece-tooltip {
   top: auto;
   bottom: calc(100% + 6px);
+}
+
+/* The tooltip is trapped inside the wrapper's stacking context (the Rook/Knight/
+   Bishop transforms create one), so raising the wrapper on hover is what lifts
+   the tooltip above the character cards that follow it in the DOM. */
+.chess-piece-wrapper:hover {
+  z-index: 1000;
 }
 
 .chess-piece-wrapper:hover .chess-piece-tooltip {

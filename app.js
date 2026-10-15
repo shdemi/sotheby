@@ -2014,6 +2014,10 @@ function evalSingleCondition(cond, char, rarity) {
     const want = String(targetVal) !== "false";
     return hasSkin === want;
   }
+  if (field === "favourite") {
+    const want = String(targetVal) !== "false";
+    return !!char.favourite === want;
+  }
   if (field === "afflatus") {
     const actual = getCharacterAfflatus(char.name) || "";
     const want = String(targetVal || "");
@@ -2837,9 +2841,11 @@ function createCharacterCard(name, char, iconUrl) {
 
   const avatarUrl = getCardAvatarUrl(name, char, iconUrl);
 
-  // Decorative pin on the top-right of the portrait for favourited characters
+  // Decorative pin on the top-right of the portrait for favourited characters.
+  // The wedge behind it darkens the corner so the pale pin stays legible on
+  // bright portrait art.
   const favouriteBadgeHtml = char.favourite
-    ? `<img src="images/random_icon/unfavourite_icon.png" alt="" class="char-favourite-badge" loading="lazy" decoding="async" />`
+    ? `<span class="char-favourite-corner"></span><img src="images/random_icon/unfavourite_icon.png" alt="" class="char-favourite-badge" loading="lazy" decoding="async" />`
     : "";
 
   const avatarImgStyles = [];
@@ -6043,10 +6049,11 @@ function setupEventListeners() {
     { value: "has_euphoria", labelKey: "field.hasEuphoria", type: "boolean", defaultVal: true },
     { value: "has_pattern", labelKey: "field.hasPattern", type: "boolean", defaultVal: true },
     { value: "has_skin", labelKey: "field.hasSkin", type: "boolean", defaultVal: true },
+    { value: "favourite", labelKey: "field.favourite", type: "boolean", defaultVal: true },
     { value: "name", labelKey: "field.name", type: "text", defaultVal: "" },
   ];
 
-  // Fields available to Psychube tiers (Tag / Amplification / Rarity / Name)
+  // Fields available to Psychube tiers (Tag / Amplification / Level / Rarity / Name)
   const CHUBE_FIELD_DEFINITIONS = [
     { value: "tag", labelKey: "field.tag", type: "select", options: [
       { value: "ATK", label: "ATK" },
@@ -6062,6 +6069,7 @@ function setupEventListeners() {
       { value: 2, labelKey: "amp.2" },
       { value: 1, labelKey: "amp.1" },
     ], defaultVal: 1 },
+    { value: "level", labelKey: "field.level", type: "number", min: 1, max: PSYCHUBE_MAX_LEVEL, defaultVal: PSYCHUBE_MAX_LEVEL },
     { value: "rarity", labelKey: "field.rarity", type: "select", options: [
       { value: 6, label: "✦6" },
       { value: 5, label: "✦5" },
@@ -6077,6 +6085,14 @@ function setupEventListeners() {
     { value: "<", label: "<" },
     { value: "!=", label: "≠" },
   ];
+
+  // Default condition for a newly added rule row. Psychube tiers use their own
+  // field set, so a character field such as `resonance` would be invalid there.
+  function defaultTierCondition(isChubeTier) {
+    return isChubeTier
+      ? { field: "level", op: "=", value: PSYCHUBE_MAX_LEVEL }
+      : { field: "resonance", op: ">=", value: 10 };
+  }
 
   let tempListingTiers = [];
 
@@ -6388,7 +6404,7 @@ function setupEventListeners() {
         btnAddCond.style.fontSize = "0.58rem";
         btnAddCond.title = "Add another condition to this group (AND)";
         btnAddCond.addEventListener("click", () => {
-          group.push({ field: "resonance", op: ">=", value: 10 });
+          group.push(defaultTierCondition(isChubeTier));
           renderListingTiersEditor();
         });
         groupActions.appendChild(btnAddCond);
@@ -6556,7 +6572,7 @@ function setupEventListeners() {
       btnAddOrGroup.style.marginTop = "4px";
       btnAddOrGroup.style.alignSelf = "flex-start";
       btnAddOrGroup.addEventListener("click", () => {
-        tier.ruleGroups.push([{ field: "resonance", op: ">=", value: 10 }]);
+        tier.ruleGroups.push([defaultTierCondition(isChubeTier)]);
         renderListingTiersEditor();
       });
       rulesContainer.appendChild(btnAddOrGroup);
