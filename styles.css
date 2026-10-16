@@ -1,4 +1,4 @@
-﻿@font-face {
+@font-face {
   font-family: 'Regular';
   src: url('images/regular-webfont.woff2') format('woff2');
   font-weight: 400;
@@ -24,6 +24,9 @@
   --vi-fallback: 'Noto Serif', 'Segoe UI', 'Times New Roman', serif;
   --main-font-family: var(--primary-font), var(--vi-fallback), var(--cjk-fallback), ui-sans-serif, system-ui, sans-serif;
   --board-font: var(--primary-font);
+
+  /* Team card surface: shared by Team Building cards and Team Presets rows */
+  --team-card-bg: linear-gradient(to top right, #ddb39f 0%, #d5d3cf 20%, #d5d3cf 80%, #ddb39f 100%);
 
   --bg-color: #000000;
   --bg-ink: #e5e7eb;
@@ -73,7 +76,7 @@
   --char-info-radius: 0px;
 
   /* Unowned dimming settings */
-  --unowned-char-opacity: 0.82;
+  --unowned-char-opacity: 0.35;
 
   /* Chess Pieces settings */
   --chess-piece-size: 20px;
@@ -1194,7 +1197,7 @@ body::before {
 }
 
 .char-card.is-unowned .char-avatar-img {
-  opacity: var(--unowned-char-opacity, 0.82);
+  opacity: var(--unowned-char-opacity, 0.35);
 }
 
 /* Rarity Indicator Line */
@@ -5514,5 +5517,1112 @@ body::before {
 
   .app-footer p {
     font-size: 0.58rem;
+  }
+}
+
+
+/* ================= TEAM BUILDING ================= */
+
+/* Toolbar entry: sits next to the language switcher, so it borrows the
+   switcher's metrics and only adds an icon button. */
+.btn-team {
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #B5B5B3;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-team:hover {
+  background: rgba(181, 181, 179, 0.12);
+  border-color: #EBE3D7;
+}
+
+.btn-team:focus {
+  outline: none;
+}
+
+.btn-team:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: -2px;
+}
+
+.btn-team-icon {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  display: block;
+}
+
+/* The square button must track .stat-badge's responsive heights, otherwise it
+   stays 31px while the crew badge shrinks to 28/26 and the row looks misaligned.
+   These live AFTER the base rule on purpose — same specificity, so source order
+   decides, and the earlier .stat-badge media queries would otherwise win. */
+@media screen and (max-width: 1260px) and (min-width: 769px) {
+  .btn-team {
+    width: 28px;
+    height: 28px;
+  }
+
+  .btn-team-icon {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .btn-team {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn-team-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Nested team pickers and the presets list open above the Team Building modal */
+.team-nested-backdrop {
+  z-index: 1100;
+}
+
+#team-modal {
+  z-index: 1000;
+}
+
+.team-modal-card {
+  /* --team-modal-max-width is written by applyTeamColumns() so the 3-column
+     layout can use the extra room a wide screen has to offer. */
+  max-width: var(--team-modal-max-width, 1040px);
+  width: 100%;
+  /* Fixed height keeps the two panes stable however many teams exist */
+  height: min(88vh, 820px);
+}
+
+/* Teams-per-row selector (3 / 2 / 1) — sits beside the Presets button */
+.team-columns-group .filter-btn {
+  padding: 0 10px;
+  font-size: 0.68rem;
+}
+
+.team-columns-group .filter-btn[hidden] {
+  display: none;
+}
+
+.team-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.team-unowned-toggle.active {
+  background: rgba(208, 81, 38, 0.22);
+  border-color: #ED7D31;
+  color: #FFFFFF;
+}
+
+.team-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  /* Split between the scrolling team list (top) and the pinned strip (bottom).
+     --team-strip-ratio is written by the drag handle. */
+  --team-strip-ratio: 0.32;
+}
+
+/* ---- Team list: two cards per row, so many teams stay surveyable ---- */
+.team-list-wrap {
+  flex: 1 1 auto;
+  min-height: 96px;
+  overflow-y: auto;
+}
+
+.team-list {
+  display: grid;
+  /* --team-columns is written by applyTeamColumns() (1 – 3, viewport-clamped) */
+  grid-template-columns: repeat(var(--team-columns, 2), minmax(0, 1fr));
+  /* Content-sized rows: without this the grid squeezes every row into the
+     available height instead of letting the parent scroll. */
+  grid-auto-rows: max-content;
+  gap: 12px;
+  padding: 16px 18px;
+  align-content: start;
+}
+
+.team-card {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--team-card-bg);
+  padding: 10px 12px 12px;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+/* No "currently edited" highlight: every team is edited in place. */
+
+.team-card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* Renameable team title â€” reads as a label until hovered/focused.
+   Dark ink, because the card now carries a light gradient. */
+.team-name-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #323C34;
+  font-family: var(--mono-font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 6px;
+  border-radius: 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  text-overflow: ellipsis;
+}
+
+.team-name-input:hover {
+  border-color: rgba(50, 60, 52, 0.35);
+}
+
+.team-name-input:focus {
+  outline: none;
+  border-color: #ED7D31;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.btn-team-del {
+  background: transparent;
+  border: 1px solid rgba(50, 60, 52, 0.35);
+  color: #323C34;
+  font-size: 1rem;
+  line-height: 1;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-team-del:hover {
+  border-color: #D05126;
+  color: #FFFFFF;
+  background: #D05126;
+}
+
+.team-slots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* One slot = portrait block + psychube block. The two are SEPARATE siblings:
+   hovering the character frames the character only, never the pair. */
+.team-slot {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  aspect-ratio: 3 / 2;
+  min-width: 0;
+}
+
+.team-slot-char {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  text-align: left;
+  transition: border-color 0.15s ease;
+}
+
+.team-slot-char:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 2px;
+}
+
+/* The frame lives on the button, so the hover ring stops at the portrait */
+.team-slot.is-filled .team-slot-char {
+  border-color: #454545;
+}
+
+.team-slot.is-filled .team-slot-char:hover {
+  border-color: #ED7D31;
+}
+
+/* Portrait half of the slot */
+.team-slot-portrait {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  background: #0f0e0c;
+}
+
+.team-slot-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.team-slot-portrait.is-unowned .team-slot-img {
+  opacity: var(--unowned-char-opacity, 0.35);
+  filter: saturate(0.82) contrast(1.05) brightness(0.9);
+}
+
+/* Afflatus emblem in the portrait's top-left corner */
+.team-slot-afflatus {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 34%;
+  aspect-ratio: 74 / 118;
+  display: flex;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.team-slot-afflatus img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+/* Insight + level band across the portrait's bottom */
+.team-slot-meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 3px 4px 2px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.28) 70%, rgba(0, 0, 0, 0));
+  pointer-events: none;
+  z-index: 2;
+}
+
+.team-slot-insight {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.team-slot-level {
+  font-family: var(--mono-font);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+  white-space: nowrap;
+}
+
+/* Psychube block: a sibling of the portrait, not part of it. No resting frame;
+   the red ring on hover is what tells the two blocks apart. The art keeps its
+   native 180 x 214 ratio and sits at the bottom of the slot — never stretched. */
+.team-slot-chube {
+  flex: 0 0 33.3%;
+  min-width: 0;
+  align-self: flex-end;
+  aspect-ratio: 180 / 214;
+  border: 1px solid transparent;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.team-slot-chube:hover {
+  border-color: #ED7D31;
+}
+
+.team-slot-chube img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Unowned psychube dims like an unowned character portrait (shared slider).
+   Two classes deep so it outranks `.team-slot-chube img`. */
+.team-slot-chube.is-unowned img {
+  opacity: var(--unowned-char-opacity, 0.35);
+}
+
+.team-slot-chube-plus {
+  font-size: 1.05rem;
+  /* Dark ink: the plus sits on the card's light gradient, not on portrait art */
+  color: #4E5650;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+
+/* Only the psychube block lights its own "+" — the two blocks stay independent */
+.team-slot-chube:hover .team-slot-chube-plus {
+  color: #ED7D31;
+}
+
+/* Duplicate marker, styled to stand out against portrait art.
+   Sits inside .team-slot-char, which is now exactly the portrait box. */
+.team-slot-used {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 17px;
+  height: 17px;
+  padding: 2px;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid #D05126;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Empty slot placeholder */
+.team-slot-plus {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #B5B5B3;
+  border: 1px dashed rgba(181, 181, 179, 0.4);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.team-slot-char:hover .team-slot-plus {
+  color: #ED7D31;
+  border-color: #ED7D31;
+}
+
+/* "Create your own team" affordance */
+.team-add-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 96px;
+  border: 1px dashed rgba(181, 181, 179, 0.4);
+  background: rgba(0, 0, 0, 0.25);
+  color: #B5B5B3;
+  cursor: pointer;
+  font-family: var(--mono-font);
+  transition: border-color 0.15s ease, color 0.15s ease;
+  width: 100%;
+}
+
+.team-add-card:hover {
+  border-color: #ED7D31;
+  color: #ED7D31;
+}
+
+.team-add-plus {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.team-add-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ---- Drag handle between the list and the unused strip ---- */
+.team-strip-resizer {
+  flex: 0 0 auto;
+  height: 10px;
+  cursor: row-resize;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  touch-action: none;
+}
+
+.team-strip-resizer::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 2px;
+  background: #6a6a68;
+  transition: background 0.15s ease;
+}
+
+.team-strip-resizer:hover::after,
+.team-strip-resizer.is-dragging::after {
+  background: #ED7D31;
+}
+
+.team-strip-resizer:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: -2px;
+}
+
+/* While dragging, stop the cursor flickering over child elements */
+body.team-resizing,
+body.team-resizing * {
+  cursor: row-resize !important;
+  user-select: none !important;
+}
+
+/* ---- Bottom strip: characters not committed to any team ---- */
+.team-unused-wrap {
+  border-top: none;
+  background: rgba(0, 0, 0, 0.28);
+  flex: 0 0 auto;
+  /* Height comes from the shared split ratio, so the handle can resize it */
+  height: calc(var(--team-strip-ratio, 0.32) * 100%);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.team-unused-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.team-unused-title {
+  font-family: var(--mono-font);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #F4EFE9;
+}
+
+.team-unused-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.team-unused-controls .search-input {
+  width: 180px;
+}
+
+/* Grid, not flex-wrap: auto-fill + 1fr stretches every column, so the row ends
+   flush with the right edge instead of leaving a ragged strip of dead pixels.
+   grid-auto-rows is REQUIRED: with the default `auto` the Grid squeezes the rows
+   into the grid's height (crushing every tile to a sliver) instead of scrolling. */
+.team-unused-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 8px;
+  padding: 0 18px 14px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.team-unused-tile {
+  position: relative;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #0f0e0c;
+  cursor: pointer;
+  border-radius: 0;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.team-unused-tile:hover {
+  border-color: #ED7D31;
+}
+
+/* Armed tile: this character will drop into the next slot you click */
+.team-unused-tile.is-pending {
+  border-color: #ED7D31;
+  box-shadow: 0 0 0 1px #ED7D31, 0 0 10px rgba(237, 125, 49, 0.55);
+}
+
+.team-unused-tile:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 2px;
+}
+
+.team-unused-tile img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.team-unused-tile.is-unowned img {
+  opacity: var(--unowned-char-opacity, 0.35);
+  filter: saturate(0.82) contrast(1.05) brightness(0.9);
+}
+
+.team-unused-name {
+  display: block;
+  font-family: var(--mono-font);
+  font-size: 0.5rem;
+  color: #B5B5B3;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 3px;
+}
+
+.team-unused-empty {
+  width: 100%;
+  padding: 12px 0;
+  font-family: var(--mono-font);
+  font-size: 0.7rem;
+  color: var(--text-muted, #8a8a88);
+  text-align: center;
+}
+
+/* ---- Picker tiles (Select Character / Select Psychube) ---- */
+.team-picker-grid .roster-avatar-box,
+#team-select-char-grid .roster-avatar-box,
+#team-select-chube-grid .roster-avatar-box {
+  border-color: #454545;
+}
+
+#team-select-char-grid .roster-char-item.is-selected .roster-avatar-box {
+  border-color: #ED7D31;
+}
+
+/* Psychube pickers drop the frame entirely */
+#team-select-chube-grid .roster-avatar-box.is-chube {
+  border-color: transparent;
+}
+
+#team-select-chube-grid .roster-char-item.is-owned .roster-avatar-box.is-chube {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* "Used in another team" marker: dark plate + red glyph so it reads at a glance */
+.team-used-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  object-fit: contain;
+  z-index: 3;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid #D05126;
+  box-sizing: border-box;
+}
+
+/* Same marker on the main board cards */
+.char-used-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  object-fit: contain;
+  z-index: 5;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid #D05126;
+  box-sizing: border-box;
+}
+
+/* ================= TEAM PRESETS ================= */
+
+/* Two archetypes per row on a desktop modal (auto-fill drops to one when narrow) */
+.team-presets-body {
+  padding: 16px 20px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 14px 16px;
+  align-content: start;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Shared by Team Presets and Team Recommendation: wide enough for two archetypes */
+.team-presets-card {
+  max-width: min(96vw, 1180px);
+}
+
+.preset-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.preset-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.45);
+  border-left: 3px solid #D05126;
+  padding: 7px 12px;
+}
+
+.preset-name {
+  font-family: var(--mono-font);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #F4EFE9;
+}
+
+.preset-toggle {
+  background: transparent;
+  border: none;
+  color: #B5B5B3;
+  cursor: pointer;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 2px 4px;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.preset-toggle:hover {
+  color: #ED7D31;
+}
+
+/* Chevron points right while the extra variants are hidden */
+.preset-toggle.is-collapsed {
+  transform: rotate(-90deg);
+}
+
+/* Variants of one archetype stack vertically inside their block */
+.preset-rows {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+/* Sized to its own content — the Add button hugs the right edge of the team box.
+   Carries the same surface as a Team Building card. */
+.preset-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--team-card-bg);
+  border: 1px solid rgba(50, 60, 52, 0.35);
+  padding: 8px 10px;
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+.preset-members {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* A slot: the primary member on top, its interchangeable alternatives beneath */
+.preset-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.preset-subs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.preset-subs-label {
+  font-family: var(--mono-font);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4E5650;
+}
+
+/* Substitute chip: portrait only, because its psychube is the player's choice */
+.preset-sub {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #454545;
+  background: #0f0e0c;
+  overflow: hidden;
+  display: block;
+  flex-shrink: 0;
+}
+
+.preset-sub img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.preset-sub.is-unowned img {
+  opacity: var(--unowned-char-opacity, 0.35);
+  filter: saturate(0.82) contrast(1.05) brightness(0.9);
+}
+
+/* Scaled-down Used marker so a 22px chip still reads at a glance.
+   Selector is deliberately two classes deep to outrank `.preset-sub img`. */
+.preset-sub .preset-sub-used {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 11px;
+  height: 11px;
+  padding: 1px;
+  object-fit: contain;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid #D05126;
+  opacity: 1;
+  filter: none;
+}
+
+/* Mirrors a team slot: portrait + insight/level band + afflatus, psychube right */
+.preset-member {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 96px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.preset-member-portrait {
+  position: relative;
+  flex: 0 0 66.7%;
+  min-width: 0;
+  overflow: hidden;
+  background: #0f0e0c;
+  border: 1px solid #454545;
+}
+
+.preset-member-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.preset-member-portrait.is-unowned .preset-member-img {
+  opacity: var(--unowned-char-opacity, 0.35);
+  filter: saturate(0.82) contrast(1.05) brightness(0.9);
+}
+
+/* Same treatment as the team slot: native 180 x 214 ratio, bottom-aligned */
+.preset-member-chube {
+  flex: 0 0 33.3%;
+  min-width: 0;
+  align-self: flex-end;
+  aspect-ratio: 180 / 214;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.preset-member-chube img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Unowned psychube dims like an unowned character portrait (shared slider).
+   Two classes deep so it outranks `.preset-member-chube img`. */
+.preset-member-chube.is-unowned img {
+  opacity: var(--unowned-char-opacity, 0.35);
+}
+
+/* Top-right badge stack, anchored to the PORTRAIT (not the whole member, which
+   also spans the psychube area) so it matches the board card and team slot.
+   The euphoria chip and the Used marker share the corner instead of overlapping. */
+.preset-member-badges {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Euphoria chip (`euphoria` field, e.g. "E1") — dark chip, hidden while Future
+   Sight is off when that tier is CN-only for the character. */
+.preset-member-euphoria {
+  font-family: var(--mono-font);
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: #E7DBCB;
+  background: #313B33;
+  padding: 0 3px;
+  line-height: 1.4;
+}
+
+/* Same "used elsewhere" marker as the board card and the team slot */
+.preset-member-used {
+  width: 14px;
+  height: 14px;
+  padding: 1px;
+  object-fit: contain;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid #D05126;
+  display: block;
+}
+
+/* Compact scale for the insight/level band inside a preset member */
+.preset-member .team-slot-afflatus {
+  height: 34%;
+}
+
+.preset-member .team-slot-meta {
+  gap: 3px;
+  padding: 2px 3px 1px;
+}
+
+.preset-member .team-slot-insight {
+  width: 13px;
+  height: 13px;
+}
+
+.preset-member .team-slot-level {
+  font-size: 0.68rem;
+}
+
+/* Add button: solid brand red, white label.
+   margin-left: auto parks it against the right edge of the team box — the row is
+   full-width (its parent stretches), so without this the button sits right after
+   the members and leaves the remaining space dead. */
+.preset-add-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+  min-width: 62px;
+  padding: 6px 10px;
+  background: #D05126;
+  border: 1px solid #D05126;
+  color: #FFFFFF;
+  font-family: var(--mono-font);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.preset-add-btn:hover {
+  background: #ED7D31;
+  border-color: #ED7D31;
+  color: #FFFFFF;
+}
+
+.preset-add-btn:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 2px;
+}
+
+/* Recommend: appears only when the team already fields a preset's essential member */
+.btn-team-recommend {
+  background: transparent;
+  border: 1px solid rgba(50, 60, 52, 0.35);
+  color: #323C34;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-team-recommend:hover {
+  border-color: #ED7D31;
+  background: rgba(237, 125, 49, 0.22);
+}
+
+.btn-team-recommend:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 2px;
+}
+
+.btn-team-recommend-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Name of the team the recommendation is being computed for */
+.team-recommend-for {
+  font-family: var(--mono-font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ED7D31;
+}
+
+/* Essential preset member: red frame so the must-have picks read at a glance */
+.preset-member.is-essential .preset-member-portrait {
+  border-color: #D05126;
+}
+
+/* ================= TEAM BUILDING: MOBILE ================= */
+
+/* Phones keep all four slots on ONE row (4x1) instead of wrapping to 2x2.
+   That only fits by tightening the gutters and scaling every overlay down with
+   the slot — an 18px insight icon would otherwise swallow a 45px portrait. */
+@media (max-width: 620px) {
+  .team-list {
+    padding: 8px;
+  }
+
+  .team-card {
+    padding: 8px 8px 10px;
+  }
+
+  .team-slots {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .team-name-input {
+    font-size: 0.78rem;
+    padding: 2px 4px;
+  }
+
+  .team-card-head {
+    margin-bottom: 6px;
+  }
+
+  .team-slot-meta {
+    gap: 2px;
+    padding: 1px 2px;
+  }
+
+  .team-slot-insight {
+    width: 10px;
+    height: 10px;
+  }
+
+  .team-slot-level {
+    font-size: 0.5rem;
+  }
+
+  .team-slot-afflatus {
+    height: 30%;
+  }
+
+  .team-slot-chube-plus {
+    font-size: 0.7rem;
+  }
+
+  .team-slot-plus {
+    font-size: 1rem;
+  }
+
+  .team-slot-used {
+    top: 1px;
+    right: 1px;
+    width: 11px;
+    height: 11px;
+    padding: 1px;
+  }
+}
+
+@media (max-width: 768px) {
+  .team-modal-card {
+    max-width: 100%;
+    height: min(92vh, 900px);
+  }
+
+  .team-header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* The team list column count comes from applyTeamColumns(), not a media query */
+  .team-list {
+    padding: 12px;
+  }
+
+  .team-unused-head,
+  .team-unused-grid {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .team-unused-controls .search-input {
+    width: 130px;
+  }
+
+  .preset-row {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .preset-members {
+    gap: 8px;
   }
 }

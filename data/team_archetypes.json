@@ -1,0 +1,439 @@
+{
+  "Conduit": [
+    [
+      { "character": "Coppélia", "psychube": "The Silent Anthem", "is_essential": true },
+      { "character": "The Twins", "psychube": "The Art of Atoms" },
+      { "character": "Hedone", "psychube": "Faded Epitaphs" },
+      { "character": "Everecho", "psychube": "A Dream Beyond Light", "is_essential": true }
+    ],
+    [
+      { "character": "Coppélia", "psychube": "The Silent Anthem", "is_essential": true },
+      { "character": "Hedone", "psychube": "Faded Epitaphs" },
+      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" },
+      { "character": "Everecho", "psychube": "A Dream Beyond Light", "is_essential": true }
+    ],
+    [
+      { "character": "Coppélia", "psychube": "The Silent Anthem", "is_essential": true },
+      { "character": "The Twins", "psychube": "The Art of Atoms" },
+      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" },
+      { "character": "Everecho", "psychube": "A Dream Beyond Light", "is_essential": true }
+    ]
+  ],
+  "Lingering Glow": [
+    [
+      { "character": "Beryl", "psychube": "The Thousandfold Fate", "is_essential": true },
+      {
+        "character": "Drake",
+        "psychube": "To Choose Against Fate",
+        "substitutes": [
+          { "character": "Isolde", "psychube": "Shadows in the Subconscious", "euphoria": "E1" }
+        ]
+      },
+      {
+        "character": "Lorentz Butterfly",
+        "psychube": "The Fluttering Moment",
+        "substitutes": [
+          { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" },
+          { "character": "Flutterpage", "psychube": "Aurora After Winter" },
+          { "character": "Mercuria", "psychube": "One With the Flow" }
+        ]
+      },
+      {
+        "character": "Marsha",
+        "psychube": "Singleness of Heart",
+        "substitutes": [
+          { "character": "J", "psychube": "Cracks in The Shell" },
+          { "character": "Enigma", "psychube": "The Riddle's Limit" },
+          { "character": "Fatutu", "psychube": "Cracks in the Shell" }
+        ]
+      }
+    ]
+  ],
+  "Recoleta Ultimate": [
+    [
+      { "character": "Recoleta", "psychube": "The Final Roll", "euphoria": "E1", "is_essential": true },
+      {
+        "character": "Moldir",
+        "psychube": "Family Mentor",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Ms. Stranger", "psychube": "Long Night Talk" }
+        ]
+      },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "Melania", "psychube": "Luxurious Leisure" },
+          { "character": "Getian", "psychube": "The Third Commitment" },
+          { "character": "Lopera", "psychube": "The Third Commitment" }
+        ]
+      },
+      {
+        "character": "Narcissus",
+        "psychube": "Tides Held Within",
+        "substitutes": [
+          { "character": "Enigma", "psychube": "The Riddle's Limit" },
+          { "character": "Marsha", "psychube": "Singleness of Heart" }
+        ]
+      }
+    ]
+  ],
+  "Igor Ultimate": [
+    [
+      { "character": "Igor", "psychube": "Across The Acheron", "is_essential": true },
+      {
+        "character": "Moldir",
+        "psychube": "Family Mentor",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" },
+          { "character": "Melania", "psychube": "Luxurious Leisure" },
+          { "character": "Flutterpage", "psychube": "Aurora After Winter" }
+        ]
+      },
+      { "character": "Lopera", "psychube": "Until I Am Me", "euphoria": "E1", "is_essential": true },
+      {
+        "character": "Narcissus",
+        "psychube": "Tides Held Within",
+        "substitutes": [
+          { "character": "Marsha", "psychube": "Singleness of Heart" }
+        ]
+      }
+    ]
+  ],
+  "Negative Status": [
+    [
+      { "character": "Noire", "psychube": "Rehearsal of Dreams", "euphoria": "E1", "is_essential": true },
+      {
+        "character": "Moldir",
+        "psychube": "Family Mentor",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" }
+        ]
+      },
+      {
+        "character": "6",
+        "psychube": "In Their Figures",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Hissabeth", "psychube": "Never-Ending Q&A" },
+          { "character": "Melania", "psychube": "Luxurious Leisure" },
+          { "character": "Silverwing Eagle", "psychube": "Outside the City" }
+        ]
+      },
+      {
+        "character": "Narcissus",
+        "psychube": "Tides Held Within",
+        "substitutes": [
+          { "character": "Marsha", "psychube": "Singleness of Heart" },
+          { "character": "Enigma", "psychube": "The Riddle's Limit" }
+        ]
+      }
+    ]
+  ],
+  "Liang Yue": [
+    [
+      { "character": "Liang Yue", "psychube": "Ready on Call", "euphoria": "E1", "is_essential": true },
+      { "character": "Flutterpage", "psychube": "Aurora After Winter", "is_essential": true },
+      {
+        "character": "Enigma",
+        "psychube": "The Riddle's Limit",
+        "substitutes": [
+          { "character": "Marsha", "psychube": "Singleness of Heart" },
+          { "character": "Vila", "psychube": "Cracks in The Shell" },
+          { "character": "Fatutu", "psychube": "Cracks in the Shell" }
+        ]
+      },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "Cheng Heguang", "psychube": "In Their Figures" },
+          { "character": "Lopera", "psychube": "The Third Commitment" },
+          { "character": "Mercuria", "psychube": "One With the Flow" }
+        ]
+      }
+    ]
+  ],
+  "Pursuit": [
+    [
+      { "character": "Huntsworn Lilya", "psychube": "Atop The Tempest", "is_essential": true },
+      { "character": "37", "psychube": "Flows in All Things Alike", "euphoria": "E1", "is_essential": true },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "Lopera", "psychube": "The Third Commitment" },
+          { "character": "Isolde", "psychube": "Shadows in the Subconscious" },
+          { "character": "Charon", "psychube": "Buds Yet to Bloom" }
+        ]
+      },
+      {
+        "character": "J",
+        "psychube": "Cracks in The Shell",
+        "substitutes": [
+          { "character": "Enigma", "psychube": "The Riddle's Limit" },
+          { "character": "Marsha", "psychube": "Singleness of Heart" }
+        ]
+      }
+    ]
+  ],
+  "Dynamo": [
+    [
+      {
+        "character": "Enigma",
+        "psychube": "The Riddle's Limit",
+        "substitutes": [
+          { "character": "Ezra", "psychube": "The Third Commitment" }
+        ]
+      },
+      { "character": "Charon", "psychube": "Buds Yet to Bloom", "is_essential": true },
+      {
+        "character": "Brume",
+        "psychube": "On the Hand of Time",
+        "substitutes": [
+          { "character": "Lucy", "psychube": "Steps Forward" }
+        ]
+      },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "Ulrich", "psychube": "On the Hand of Time" }
+        ]
+      }
+    ]
+  ],
+  "Dynamo Wheelchair": [
+    [
+      { "character": "Enigma", "psychube": "The Riddle's Limit" },
+      { "character": "Charon", "psychube": "Buds Yet to Bloom" },
+      {
+        "character": "Ms.Stranger",
+        "psychube": "Long Night Talk",
+        "substitutes": [
+          { "character": "Centurion", "psychube": "Luck Be A Lady" },
+          { "character": "A Knight", "psychube": "Hopscotch" },
+          { "character": "Hissabeth", "psychube": "Never-Ending Q&A" }
+        ]
+      },
+      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" }
+    ]
+  ],
+  "Plant Impromptu": [
+    [
+      { "character": "Paper Heron", "psychube": "Wayfarer of the Tao", "is_essential": true },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "An-An Lee", "psychube": "In Their Figures" },
+          { "character": "Mercuria", "psychube": "One With the Flow" }
+        ]
+      },
+      { "character": "Tooth Fairy", "psychube": "Addio Coda", "euphoria": "E1", "is_essential": true },
+      { "character": "Kiperina", "psychube": "Aurora After Winter", "is_essential": true }
+    ]
+  ],
+  "Windsong Comp": [
+    [
+      { "character": "Windsong", "psychube": "Outside the City", "euphoria": "E1", "is_essential": true },
+      { "character": "Flutterpage", "psychube": "Aurora After Winter", "is_essential": true },
+      {
+        "character": "6",
+        "psychube": "In Their Figures",
+		"euphoria": "E1",
+        "substitutes": [
+          { "character": "Lorentz Butterfly", "psychube": "The Fluttering Moment" },
+          { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" },
+          { "character": "Mercuria", "psychube": "One With the Flow" }
+        ]
+      },
+      {
+        "character": "J",
+        "psychube": "Cracks in The Shell",
+        "substitutes": [
+          { "character": "Vila", "psychube": "Cracks in The Shell" },
+          { "character": "Kiperina", "psychube": "Aurora After Winter" },
+          { "character": "Marsha", "psychube": "Singleness of Heart" }
+        ]
+      }
+    ]
+  ],
+  "Bloodtithe": [
+    [
+      { "character": "Semmelweis", "psychube": "The Third Commitment", "euphoria": "E1", "is_essential": true },
+      { "character": "Nautika", "psychube": "Embrace the Past", "euphoria": "E1", "is_essential": true },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "Sentinel", "psychube": "Cracks in The Shell" },
+          { "character": "Flutterpage", "psychube": "Aurora After Winter" },
+          { "character": "Melania", "psychube": "Luxurious Leisure" }
+        ]
+      },
+      {
+        "character": "Rubuska",
+        "psychube": "The Wandering Improviser",
+        "substitutes": [
+          { "character": "Fatutu", "psychube": "Cracks in the Shell" },
+          { "character": "Medicine Pocket", "psychube": "Cracks in The Shell" }
+        ]
+      }
+    ]
+  ],
+  "Poison": [
+    [
+      {
+        "character": "Willow",
+        "psychube": "Offbeat Strides",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Recoleta", "psychube": "The Final Roll" },
+          { "character": "Ezio", "psychube": "As the Bell Tolls" }
+        ]
+      },
+      { "character": "Tuesday", "psychube": "And the Maid says", "euphoria": "E1", "is_essential": true },
+      { "character": "Ramona", "psychube": "Falling for a Sweet Phenomenon", "is_essential": true },
+      {
+        "character": "Marsha",
+        "psychube": "Singleness of Heart",
+        "substitutes": [
+          { "character": "Vila", "psychube": "Cracks in The Shell" }
+        ]
+      }
+    ]
+  ],
+  "Corvus Dynamo": [
+    [
+      { "character": "Enigma", "psychube": "The Riddle's Limit" },
+      { "character": "Flutterpage", "psychube": "Aurora After Winter", "is_essential": true },
+      { "character": "Corvus", "psychube": "On the Hand of Time", "is_essential": true },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "Charon", "psychube": "Buds Yet to Bloom" },
+		  { "character": "Brume", "psychube": "On the Hand of Time" },
+          { "character": "Ulrich", "psychube": "On the Hand of Time" }
+        ]
+      }
+    ]
+  ],
+  "Riposte": [
+    [
+      { "character": "J", "psychube": "Cracks in The Shell", "is_essential": true },
+      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" },
+      {
+        "character": "Cornerstone",
+        "psychube": "Outside the City",
+        "is_essential": true,
+        "substitutes": [
+          { "character": "Anjo Nala", "psychube": "Transcendent Love" },
+          { "character": "Isolde", "psychube": "Shadows in the Subconscious" }
+        ]
+      },
+      {
+        "character": "Flutterpage",
+        "psychube": "Aurora After Winter",
+        "substitutes": [
+          { "character": "Recoleta", "psychube": "The Final Roll" }
+        ]
+      }
+    ]
+  ],
+  "Star Impromptu": [
+    [
+      { "character": "Aleph", "psychube": "Mental Cage", "is_essential": true },
+      { "character": "Kiperina", "psychube": "Aurora After Winter", "is_essential": true },
+      { "character": "Barcarola", "psychube": "Addio Coda", "is_essential": true },
+      {
+        "character": "Rhiannon",
+        "psychube": "The Soft Rain of Yesterday",
+        "substitutes": [
+          { "character": "Tooth Fairy", "psychube": "Addio Coda" },
+          { "character": "Mercuria", "psychube": "One With the Flow" },
+          { "character": "Brume", "psychube": "On the Hand of Time" }
+        ]
+      }
+    ]
+  ],
+  "Rank Up": [
+    [
+      {
+        "character": "Argus",
+        "psychube": "Stray Off the Path",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Marcus", "psychube": "Another Story" }
+        ]
+      },
+      {
+        "character": "Druvis III",
+        "psychube": "Your Friendly Exorcist",
+        "euphoria": "E2",
+        "substitutes": [
+          { "character": "Mercuria", "psychube": "One With the Flow" }
+        ]
+      },
+      {
+        "character": "Mercuria",
+        "psychube": "One With the Flow",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Argus", "psychube": "Stray Off the Path" }
+        ]
+      },
+      { "character": "Vila", "psychube": "Cracks in The Shell", "euphoria": "E1", "is_essential": true }
+    ]
+  ],
+  "Ezio Auditore": [
+    [
+      { "character": "Ezio Auditore", "psychube": "As the Bell Tolls", "is_essential": true },
+      { "character": "Kassandra", "psychube": "An Epic's End", "is_essential": true },
+      {
+        "character": "Getian",
+        "psychube": "The Third Commitment",
+        "euphoria": "E1",
+        "substitutes": [
+          { "character": "Melania", "psychube": "Luxurious Leisure" },
+          { "character": "Moldir", "euphoria": "E1", "psychube": "Family Mentor" },
+          { "character": "Hissabeth", "psychube": "Never-Ending Q&A" }
+        ]
+      },
+      {
+        "character": "Marsha",
+        "psychube": "Singleness of Heart",
+        "substitutes": [
+          { "character": "Enigma", "psychube": "The Riddle's Limit" },
+          { "character": "Rubuska", "psychube": "The Wandering Improviser" },
+          { "character": "Kiperina", "psychube": "Aurora After Winter" }
+        ]
+      }
+    ],
+    [
+      { "character": "Ezio Auditore", "psychube": "As the Bell Tolls", "is_essential": true },
+      { "character": "Tuesday", "psychube": "And the Maid says", "euphoria": "E1", "is_essential": true },
+      {
+        "character": "Flutterpage",
+        "psychube": "Aurora After Winter",
+        "substitutes": [
+          { "character": "Jessica", "psychube": "Her Mournful Face" },
+          { "character": "Willow", "psychube": "Offbeat Strides" }
+        ]
+      },
+      {
+        "character": "Marsha",
+        "psychube": "Singleness of Heart",
+        "substitutes": [
+          { "character": "Vila", "psychube": "Cracks in The Shell" },
+          { "character": "Kiperina", "psychube": "Aurora After Winter" },
+          { "character": "Fatutu", "psychube": "Cracks in the Shell" }
+        ]
+      }
+    ]
+  ]
+}

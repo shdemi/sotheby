@@ -59,6 +59,9 @@
           <button type="button" class="lang-btn" data-lang="vi">VI</button>
           <button type="button" class="lang-btn active" data-lang="en">EN</button>
         </div>
+        <button type="button" class="btn-team" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
+          <img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
+        </button>
         <div class="stat-badge-wrap">
           <span class="stat-badge" id="roster-stat" style="cursor: pointer;">Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" /></span>
         </div>
@@ -1051,7 +1054,7 @@
                 <span class="customize-preview-header"><img src="images/random_icon/preview.png" alt="" class="preview-header-icon" /><span data-i18n="label.preview">Preview</span></span>
                 <div class="customize-preview-stage" style="min-height: 75px;">
                   <div style="width: 54px; height: 54px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
-                    <img id="preview-unowned-char-img" src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.82; transition: opacity 0.1s;" />
+                    <img id="preview-unowned-char-img" src="images/headicon_small/300101.png" alt="preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.35; transition: opacity 0.1s;" />
                   </div>
                 </div>
               </div>
@@ -1059,9 +1062,9 @@
               <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
                 <div class="custom-style-row">
                   <span data-i18n="styling.opacity">Opacity</span>
-                  <span id="display-unowned-opacity" style="font-weight: 700;">82%</span>
+                  <span id="display-unowned-opacity" style="font-weight: 700;">35%</span>
                 </div>
-                <input type="range" id="input-unowned-opacity" min="0" max="1.0" step="0.01" value="0.82" class="custom-slider" />
+                <input type="range" id="input-unowned-opacity" min="0" max="1.0" step="0.01" value="0.35" class="custom-slider" />
               </div>
             </div>
 
@@ -1167,6 +1170,139 @@
 
       <div class="roster-grid" id="roster-grid-list">
         <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Building Modal -->
+  <div id="team-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card team-modal-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="team.title">Team Building</span></h2>
+        <div class="team-header-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-team-presets"><span data-i18n="team.presets">Presets</span></button>
+          <div class="filter-btn-group team-columns-group" id="team-columns-group" role="group" aria-label="Teams per row" data-i18n-aria-label="team.columnsPerRow">
+            <button type="button" class="filter-btn team-cols-btn" data-cols="3" title="3 teams per row" data-i18n-title="team.cols3">3</button>
+            <button type="button" class="filter-btn team-cols-btn" data-cols="2" title="2 teams per row" data-i18n-title="team.cols2">2</button>
+            <button type="button" class="filter-btn team-cols-btn" data-cols="1" title="1 team per row" data-i18n-title="team.cols1">1</button>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-team-hide-warning" aria-pressed="false"><span data-i18n="team.hideWarning">Hide Warning</span></button>
+          <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-team-allow-unowned" aria-pressed="false"><span data-i18n="team.showUnowned">Show Unowned</span></button>
+          <button class="modal-close" id="team-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        </div>
+      </div>
+
+      <div class="team-body">
+        <div class="team-list-wrap">
+          <div class="team-list" id="team-list">
+            <!-- Team cards are populated dynamically -->
+          </div>
+        </div>
+
+        <div class="team-strip-resizer" id="team-strip-resizer" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-title="team.dragResize" title="Drag to resize"></div>
+
+        <div class="team-unused-wrap">
+          <div class="team-unused-head">
+            <span class="team-unused-title" data-i18n="team.unusedCharacters">Characters that have not been used</span>
+            <div class="team-unused-controls">
+              <input type="text" id="team-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
+              <div class="filter-btn-group" id="team-filter-rarity-group">
+                <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+                <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+                <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+                <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+                <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+              </div>
+            </div>
+          </div>
+          <div class="team-unused-grid" id="team-unused-grid">
+            <!-- Unused characters are populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team: Select Character Modal -->
+  <div id="team-select-char-modal" class="modal-backdrop team-nested-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card modal-card-large">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="team.selectCharacter">Select Character</span></h2>
+        <button class="modal-close" id="team-select-char-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="roster-toolbar">
+        <div class="roster-toolbar-left">
+          <input type="text" id="team-select-char-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
+          <div class="roster-toolbar-right">
+            <div class="filter-btn-group" id="team-select-char-filter-group">              <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+              <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+              <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+              <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+              <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="roster-grid" id="team-select-char-grid">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Team: Select Psychube Modal -->
+  <div id="team-select-chube-modal" class="modal-backdrop team-nested-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card modal-card-large">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="team.selectPsychube">Select Psychube</span></h2>
+        <button class="modal-close" id="team-select-chube-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="roster-toolbar">
+        <div class="roster-toolbar-left">
+          <input type="text" id="team-select-chube-search" class="search-input" data-i18n-placeholder="toolbar.searchChubes" placeholder="Search Psychubes" />
+          <div class="roster-toolbar-right">
+            <div class="filter-btn-group" id="team-select-chube-filter-group">
+              <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+              <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="roster-grid" id="team-select-chube-grid">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Presets Modal -->
+  <div id="team-presets-modal" class="modal-backdrop team-nested-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card team-presets-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="team.presetsTitle">Team Presets</span></h2>
+        <div class="team-header-actions">
+          <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-preset-formable-only" aria-pressed="false"><span data-i18n="team.formableOnly">Formable Only</span></button>
+          <input type="text" id="team-preset-search" class="search-input" data-i18n-placeholder="team.searchPresets" placeholder="Search Characters" />
+          <button class="modal-close" id="team-presets-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        </div>
+      </div>
+      <div class="modal-body archetype-modal-body team-presets-body" id="team-presets-body">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Recommendation Modal -->
+  <div id="team-recommend-modal" class="modal-backdrop team-nested-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card team-presets-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="team.recommendTitle">Team Recommendation</span> <span class="team-recommend-for" id="team-recommend-title-name"></span></h2>
+        <div class="team-header-actions">
+          <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-recommend-formable-only" aria-pressed="false"><span data-i18n="team.formableOnly">Formable Only</span></button>
+          <input type="text" id="team-recommend-search" class="search-input" data-i18n-placeholder="team.searchPresets" placeholder="Search Characters" />
+          <button class="modal-close" id="team-recommend-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        </div>
+      </div>
+      <div class="modal-body archetype-modal-body team-presets-body" id="team-recommend-body">
+        <!-- Populated dynamically -->
       </div>
     </div>
   </div>

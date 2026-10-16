@@ -122,6 +122,19 @@ function setLanguage(lang) {
 
   const rosterModalEl = document.getElementById("roster-modal");
   if (rosterModalEl && rosterModalEl.style.display === "flex") renderRosterManager();
+  refreshOpenTeamModals();
+}
+
+/** Re-renders whichever Team Building modal is currently open (i18n / CN toggle). */
+function refreshOpenTeamModals() {
+  const isOpen = (id) => {
+    const el = document.getElementById(id);
+    return !!el && el.style.display === "flex";
+  };
+  if (isOpen("team-modal")) renderTeamModal();
+  if (isOpen("team-select-char-modal")) renderTeamSelectCharacter();
+  if (isOpen("team-select-chube-modal")) renderTeamSelectPsychube();
+  if (isOpen("team-presets-modal")) renderTeamPresets();
 }
 
 /**
@@ -348,6 +361,34 @@ const filterRarityBtns = document.querySelectorAll("#filter-rarity-group .filter
 const TITLE_STORAGE_KEY = "r1999_board_title_v1";
 const LISTING_STORAGE_KEY = "r1999_tier_listing_v1";
 const FILTER_STORAGE_KEY = "r1999_filters_v1";
+const TEAMS_STORAGE_KEY = "r1999_teams_v1";
+
+/* ---------------- Team Building ---------------- */
+const TEAM_NAME_MAX_LEN = 40;
+const TEAM_SLOT_COUNT = 4;
+/* Teams per row: the option only appears when the viewport can host it, and the
+   modal widens for the 3-column layout. Keys are the column counts. */
+const TEAM_COLUMN_MIN_VIEWPORT = { 1: 0, 2: 1000, 3: 1480 };
+const TEAM_MODAL_MAX_WIDTH = { 1: 1040, 2: 1040, 3: 1500 };
+const TEAM_MAX_COLUMNS = 3;
+let teamArchetypes = {};   // { presetName: [ [ {character, psychube, euphoria?}, ... ], ... ] }
+let teamsConfig = { teams: [] };
+let teamsAllowUnowned = false;  // "Show Unowned" toggle inside the Team Building modal
+let teamsFormableOnly = false;  // Team Presets: only presets the roster can field
+let teamsHideWarning = false;   // "Hide Warning": suppresses every Used marker
+let teamModalDirty = false;     // Defers the board re-render until the modal closes
+let pendingTeamCharacter = null; // Carried from the unused strip into a team slot
+const teamSlotPicker = { teamId: null, slotIndex: 0 };
+const teamCollapsedGroups = new Set(); // Preset names whose extra variants are collapsed
+let teamModalSearch = null;     // #team-search (assigned in setupEventListeners)
+let teamPresetSearch = null;    // #team-preset-search
+let teamRecommendTeamId = null; // Team whose Recommend modal is open (null = closed)
+let teamRecommendSearch = null; // #team-recommend-search
+let teamStripRatio = 0.32;      // Share of the modal height given to the unused strip
+let teamColumns = 2;            // Preferred teams per row (clamped by the viewport)
+let teamModalRarityFilters = new Set([6]);
+let teamSelectCharRarityFilters = new Set([6]);
+let teamSelectChubeRarityFilters = new Set([6, 5]);
 
 const DEFAULT_TIERS_CONFIG = {
   tiers: [
@@ -626,7 +667,7 @@ const DEFAULT_THEME_APPEARANCE = {
   customResColor: "#ffffff",
 
   // Unowned Character Dimming
-  unownedOpacity: 0.82,
+  unownedOpacity: 0.35,
 
   // Chess Pieces (Rarity Counter)
   chessPiecesEnabled: true,
@@ -850,7 +891,7 @@ function applyCustomAppearance() {
   document.documentElement.style.setProperty("--chube-amp-color", app.chubeAmpColor || "#ffffff");
   document.documentElement.style.setProperty("--chube-amp-max-color", app.chubeAmpMaxColor || "#DF7526");
   document.documentElement.style.setProperty("--chube-count-color", app.chubeCountColor || "#04FFEE");
-  document.documentElement.style.setProperty("--unowned-char-opacity", app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82);
+  document.documentElement.style.setProperty("--unowned-char-opacity", app.unownedOpacity !== undefined ? app.unownedOpacity : 0.35);
 
   // Character Name Color
   document.documentElement.style.setProperty("--char-name-color", app.charNameColor || "rgba(244, 239, 233, 0.8)");
@@ -1067,7 +1108,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -1081,6 +1122,7 @@ async function initApp() {
       fetch("data/psychube_id.json").catch(() => null),
       fetch("data/collab_character.json").catch(() => null),
       fetch("data/global_name_transfer.json").catch(() => null),
+      fetch("data/team_archetypes.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1196,6 +1238,15 @@ async function initApp() {
       }
     }
 
+    if (teamArchRes && teamArchRes.ok) {
+      try {
+        const teamArchData = await teamArchRes.json();
+        buildTeamArchetypes(teamArchData);
+      } catch (e) {
+        console.warn("Could not parse team_archetypes.json", e);
+      }
+    }
+
     loadLanguage();
     applyTranslations();
     refreshDynamicTranslations();
@@ -1207,6 +1258,7 @@ async function initApp() {
     applyCustomAppearance();
     loadRoster();
     loadPsychubes();
+    loadTeams();
     applyFilterButtonState();
     renderShowcase();
     setupEventListeners();
@@ -2848,6 +2900,11 @@ function createCharacterCard(name, char, iconUrl) {
     ? `<span class="char-favourite-corner"></span><img src="images/random_icon/unfavourite_icon.png" alt="" class="char-favourite-badge" loading="lazy" decoding="async" />`
     : "";
 
+  // Duplicated across teams -> flag it the same way the pickers do
+  const usedBadgeHtml = !teamsHideWarning && duplicatedTeamCharacters().has(name)
+    ? `<img src="images/random_icon/Used_icon.png" alt="${escapeHtml(t("team.usedElsewhere"))}" title="${escapeHtml(t("team.usedElsewhere"))}" class="char-used-badge" loading="lazy" decoding="async" />`
+    : "";
+
   const avatarImgStyles = [];
   if (char.owned) {
     if (boxKind && boxKind !== DEFAULT_PATTERN) {
@@ -2924,6 +2981,7 @@ function createCharacterCard(name, char, iconUrl) {
       ${afflatusIconHtml}
       ${insightLevelOverlay}
       ${favouriteBadgeHtml}
+      ${usedBadgeHtml}
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
@@ -3923,6 +3981,1363 @@ function applyChubeBulkSpec() {
   renderShowcase();
 }
 
+/* ---------------- Team Building ---------------- */
+
+/** Preset variants are authored with a display name; the app keys chubes by "rarity:id". */
+function psychubeKeyByName(name) {
+  const want = String(name || "").trim().toLowerCase();
+  if (!want) return null;
+  for (const key of psychubeOrder) {
+    const c = psychubeDb[key];
+    if (!c) continue;
+    if (String(c.name || "").toLowerCase() === want) return key;
+    if (String(c.nameCn || "").toLowerCase() === want) return key;
+  }
+  return null;
+}
+
+function buildTeamArchetypes(data) {
+  teamArchetypes = (data && typeof data === "object" && !Array.isArray(data)) ? data : {};
+}
+
+/**
+ * The `euphoria` field on a preset member is a display chip (e.g. "E1") AND a
+ * Future-Sight gate: when that euphoria tier is CN-only, the chip is hidden while
+ * Future Sight is off — so a comp that needs Matilda's E2 does not advertise it.
+ */
+function presetMemberEuphoria(entry) {
+  const raw = entry.euphoria;
+  if (raw === undefined || raw === null || raw === "") return null;
+  const label = String(raw).trim();
+  if (!label) return null;
+
+  if (!futureSightEnabled) {
+    // Accepts "E1" / "e1" / "1" — the leading "E" is optional in the data
+    const tier = Number(label.replace(/^e/i, ""));
+    if (!isNaN(tier)) {
+      const canonical = resolveCharacterName(entry.character);
+      const futureTiers = canonical ? futureSightEuphorias.get(canonical) : null;
+      if (futureTiers && futureTiers.has(tier)) return null;
+    }
+  }
+  return label;
+}
+
+/**
+ * Substitutes are optional alternatives for a slot. Unusable entries are dropped
+ * silently (unlike a primary member, a bad substitute must not kill the variant),
+ * and CN-only alternatives disappear while Future Sight is off.
+ * A bare string is accepted as shorthand for `{ "character": "..." }`.
+ */
+function normalizeSubstitutes(raw) {
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  for (const entry of raw) {
+    const source = typeof entry === "string" ? { character: entry } : entry;
+    if (!source || typeof source !== "object") continue;
+    const character = resolveCharacterName(source.character);
+    if (!character || !characterDb[character]) continue;
+    if (!futureSightEnabled && futureSightChars.has(character)) continue;
+    out.push({
+      character,
+      psychube: psychubeKeyByName(source.psychube),
+      euphoria: presetMemberEuphoria({ character, euphoria: source.euphoria }),
+    });
+  }
+  return out;
+}
+
+/** A preset variant is only usable when every member resolves to a real character. */
+function presetVariantMembers(variant) {
+  if (!Array.isArray(variant) || variant.length === 0) return [];
+  const members = [];
+  for (const entry of variant) {
+    if (!entry || typeof entry !== "object") return [];
+    const character = resolveCharacterName(entry.character);
+    if (!character || !characterDb[character]) return [];
+    members.push({
+      character,
+      psychube: psychubeKeyByName(entry.psychube),
+      isEssential: !!entry.is_essential,
+      euphoria: presetMemberEuphoria(entry),
+      substitutes: normalizeSubstitutes(entry.substitutes),
+    });
+  }
+  return members;
+}
+
+/** True when a preset team contains CN-only content (gated behind Future Sight). */
+function presetVariantHasFutureSight(members) {
+  return members.some((m) => futureSightChars.has(m.character) ||
+    (m.psychube && futureSightPsychubes.has(m.psychube)));
+}
+
+function createTeamId() {
+  return "team_" + Date.now().toString(36) + "_" + Math.floor(Math.random() * 1e4).toString(36);
+}
+
+function createEmptyTeamSlots() {
+  return Array.from({ length: TEAM_SLOT_COUNT }, () => ({ character: null, psychube: null }));
+}
+
+function createTeam(name) {
+  return { id: createTeamId(), name: name || t("team.defaultName"), slots: createEmptyTeamSlots() };
+}
+
+function findTeam(teamId) {
+  return teamsConfig.teams.find((tm) => tm.id === teamId) || null;
+}
+
+/** Keeps a slot array exactly TEAM_SLOT_COUNT long with the expected shape. */
+function normalizeTeamSlots(slots) {
+  const out = createEmptyTeamSlots();
+  if (!Array.isArray(slots)) return out;
+  slots.slice(0, TEAM_SLOT_COUNT).forEach((slot, i) => {
+    if (!slot || typeof slot !== "object") return;
+    const character = slot.character && characterDb[slot.character] ? slot.character : null;
+    const psychube = slot.psychube && psychubeDb[slot.psychube] ? slot.psychube : null;
+    out[i] = { character, psychube: character ? psychube : null };
+  });
+  return out;
+}
+
+/** Drops unknown members, duplicate characters and duplicate psychubes within a team. */
+function sanitizeTeamsState() {
+  const seenTeamIds = new Set();
+  const teams = [];
+
+  (Array.isArray(teamsConfig.teams) ? teamsConfig.teams : []).forEach((raw) => {
+    if (!raw || typeof raw !== "object") return;
+    let id = typeof raw.id === "string" && raw.id ? raw.id : createTeamId();
+    while (seenTeamIds.has(id)) id = createTeamId();
+    seenTeamIds.add(id);
+
+    const name = String(raw.name || "").slice(0, TEAM_NAME_MAX_LEN) || t("team.defaultName");
+    const slots = normalizeTeamSlots(raw.slots);
+
+    // One character and one psychube may appear at most once per team
+    const usedChars = new Set();
+    const usedChubes = new Set();
+    slots.forEach((slot) => {
+      if (slot.character) {
+        if (usedChars.has(slot.character)) slot.character = null;
+        else usedChars.add(slot.character);
+      }
+      if (slot.psychube) {
+        if (usedChubes.has(slot.psychube) || !slot.character) slot.psychube = null;
+        else usedChubes.add(slot.psychube);
+      }
+    });
+
+    teams.push({ id, name, slots });
+  });
+
+  teamsConfig = { teams };
+  return teams;
+}
+
+function loadTeams() {
+  try {
+    const saved = localStorage.getItem(TEAMS_STORAGE_KEY);
+    const parsed = saved ? JSON.parse(saved) : null;
+    if (parsed && typeof parsed === "object") {
+      teamsConfig = { teams: Array.isArray(parsed.teams) ? parsed.teams : [] };
+      teamsAllowUnowned = !!parsed.allowUnowned;
+      teamsFormableOnly = !!parsed.formableOnly;
+      teamsHideWarning = !!parsed.hideWarning;
+      if (typeof parsed.stripRatio === "number") {
+        teamStripRatio = Math.min(0.75, Math.max(0.12, parsed.stripRatio));
+      }
+      if (typeof parsed.columns === "number") {
+        teamColumns = Math.min(TEAM_MAX_COLUMNS, Math.max(1, Math.round(parsed.columns)));
+      }
+    }
+  } catch (e) {
+    teamsConfig = { teams: [] };
+  }
+  sanitizeTeamsState();
+  return false;
+}
+
+function saveTeams() {
+  localStorage.setItem(TEAMS_STORAGE_KEY, JSON.stringify({
+    teams: teamsConfig.teams,
+    allowUnowned: teamsAllowUnowned,
+    formableOnly: teamsFormableOnly,
+    hideWarning: teamsHideWarning,
+    stripRatio: teamStripRatio,
+    columns: teamColumns,
+  }));
+}
+
+/** How many teams the viewport can host side by side. */
+function maxTeamColumnsForViewport() {
+  const w = window.innerWidth;
+  let max = 1;
+  for (let n = 1; n <= TEAM_MAX_COLUMNS; n++) {
+    if (w >= TEAM_COLUMN_MIN_VIEWPORT[n]) max = n;
+  }
+  return max;
+}
+
+/** The user's preference, clamped to what the viewport actually supports. */
+function effectiveTeamColumns() {
+  return Math.min(teamColumns, maxTeamColumnsForViewport());
+}
+
+/**
+ * Writes the teams-per-row layout onto the modal. The column selector only
+ * offers counts the viewport can host, so narrow screens never get a cramped grid.
+ */
+function applyTeamColumns() {
+  const cols = effectiveTeamColumns();
+  const list = document.getElementById("team-list");
+  if (list) list.style.setProperty("--team-columns", String(cols));
+
+  const card = document.querySelector("#team-modal .team-modal-card");
+  if (card) card.style.setProperty("--team-modal-max-width", `${TEAM_MODAL_MAX_WIDTH[cols]}px`);
+
+  const group = document.getElementById("team-columns-group");
+  if (!group) return;
+  const max = maxTeamColumnsForViewport();
+  group.querySelectorAll(".team-cols-btn").forEach((btn) => {
+    const n = Number(btn.dataset.cols);
+    btn.hidden = n > max;
+    btn.classList.toggle("active", n === cols);
+    btn.setAttribute("aria-pressed", String(n === cols));
+  });
+}
+
+/** How many DISTINCT teams field this character. */
+function teamCountForCharacter(name) {
+  if (!name) return 0;
+  let n = 0;
+  teamsConfig.teams.forEach((tm) => {
+    if (tm.slots.some((slot) => slot.character === name)) n++;
+  });
+  return n;
+}
+
+/** Characters duplicated across two or more teams — these get the Used marker. */
+function duplicatedTeamCharacters() {
+  const seen = new Set();
+  const dupes = new Set();
+  teamsConfig.teams.forEach((team) => {
+    const inTeam = new Set();
+    team.slots.forEach((slot) => {
+      if (!slot.character || inTeam.has(slot.character)) return;
+      inTeam.add(slot.character);
+      if (seen.has(slot.character)) dupes.add(slot.character);
+      else seen.add(slot.character);
+    });
+  });
+  return dupes;
+}
+
+/** True when a team holds any CN-only character or psychube. */
+function teamHasFutureSightContent(team) {  if (!team) return false;
+  return team.slots.some((slot) =>
+    (slot.character && futureSightChars.has(slot.character)) ||
+    (slot.psychube && futureSightPsychubes.has(slot.psychube))
+  );
+}
+
+/** Teams that should appear in the modal right now (CN content is gated). */
+function visibleTeams() {
+  return teamsConfig.teams.filter((team) => futureSightEnabled || !teamHasFutureSightContent(team));
+}
+
+/* ---------------- Team Recommendation ---------------- */
+
+/** Every preset variant that has an is_essential member, resolved and FS-filtered. */
+function recommendableVariants() {
+  const out = [];
+  presetNames().forEach((presetName) => {
+    (teamArchetypes[presetName] || []).forEach((variant, index) => {
+      const members = resolvePresetVariant(variant);
+      if (!members) return;
+      // CN psychubes stay gated even after the character fallback ran
+      if (!futureSightEnabled && presetVariantHasFutureSight(members)) return;
+      if (!members.some((m) => m.isEssential)) return;
+      out.push({ presetName, index, members });
+    });
+  });
+  return out;
+}
+
+/** Characters this team actually fields. */
+function teamCharacters(team) {
+  return new Set((team ? team.slots : []).map((slot) => slot.character).filter(Boolean));
+}
+
+/** True when the roster owns this character. */
+function isCharacterOwned(name) {
+  return !!(userRoster[name] && userRoster[name].owned);
+}
+
+/** A slot is satisfiable when the primary member or one of its substitutes is owned. */
+function memberIsFormable(member) {
+  return isCharacterOwned(member.character) ||
+    (member.substitutes || []).some((sub) => isCharacterOwned(sub.character));
+}
+
+/**
+ * Which character actually fills a slot.
+ *
+ * Preference order, so a freshly added team spreads across the roster instead of
+ * piling onto characters that are already committed elsewhere:
+ *   1. the primary member, when owned and not fielded by ANY team
+ *   2. the first substitute that is owned and not fielded by any team
+ *   3. fallback to the plain owned preference (primary, else first owned
+ *      substitute, else the primary even when unowned) — the "original team"
+ *      behaviour used when every option is already taken.
+ *
+ * An `is_essential` member is never swapped for a substitute: the archetype
+ * requires that exact character.
+ */
+function preferredVariantChoice(member) {
+  const primary = { character: member.character, psychube: member.psychube };
+  const unused = (name) => teamCountForCharacter(name) === 0;
+
+  if (!member.isEssential) {
+    if (isCharacterOwned(member.character) && unused(member.character)) return primary;
+
+    const fresh = (member.substitutes || []).find(
+      (sub) => isCharacterOwned(sub.character) && unused(sub.character)
+    );
+    if (fresh) return { character: fresh.character, psychube: fresh.psychube };
+  }
+
+  if (isCharacterOwned(member.character)) return primary;
+
+  const alt = (member.substitutes || []).find((sub) => isCharacterOwned(sub.character));
+  if (alt) return { character: alt.character, psychube: alt.psychube };
+  return primary;
+}
+
+/**
+ * Preset variants whose essential members are all covered by the team's
+ * characters. This is what makes the Recommend button appear on a team.
+ */
+function recommendableVariantsForTeam(team) {
+  const chars = teamCharacters(team);
+  if (chars.size === 0) return [];
+  return recommendableVariants().filter((v) =>
+    v.members.some((m) => m.isEssential && chars.has(m.character))
+  );
+}
+
+/**
+ * Resolves one authored variant into the members to show for the CURRENT Future
+ * Sight state, or `null` when the variant cannot be fielded.
+ *
+ * When CN content is off, a member whose primary is CN-only is replaced by its
+ * first global substitute — that substitute is *promoted* into the primary slot
+ * so the archetype stays usable on the Global build. A CN member with no global
+ * replacement makes the whole variant unavailable.
+ */
+function resolvePresetVariant(variant) {
+  const members = presetVariantMembers(variant);
+  if (members.length === 0) return null;
+  if (futureSightEnabled) return members;
+
+  const resolved = [];
+  for (const m of members) {
+    if (!futureSightChars.has(m.character)) {
+      resolved.push(m);
+      continue;
+    }
+
+    const subs = m.substitutes || [];
+    const idx = subs.findIndex((s) => !futureSightChars.has(s.character));
+    if (idx < 0) return null;
+
+    const promoted = subs[idx];
+    resolved.push({
+      character: promoted.character,
+      psychube: promoted.psychube,
+      isEssential: m.isEssential,
+      euphoria: promoted.euphoria,
+      substitutes: subs.filter((_, i) => i !== idx),
+    });
+  }
+  return resolved;
+}
+
+/**
+ * Characters that should carry the Used marker right now.
+ *
+ * Team Presets flags anything fielded by >= 1 team, so the board reads as a
+ * whole. Team Recommendation ignores the team being recommended *for* — its own
+ * members are not a conflict — but flags anything another team already holds.
+ * "Hide Warning" empties the set everywhere.
+ */
+function usedMarkerSet(exceptTeamId) {
+  if (teamsHideWarning) return new Set();
+  return usedTeamCharacters(exceptTeamId);
+}
+
+/** Variants shown in the Recommend modal, honouring the search box + Formable Only. */
+function recommendedVariantsForTeam(team) {
+  let variants = recommendableVariantsForTeam(team);
+
+  if (teamsFormableOnly) {
+    variants = variants.filter((v) => v.members.every(memberIsFormable));
+  }
+
+  const query = (teamRecommendSearch ? teamRecommendSearch.value : "").trim();
+  if (query) {
+    variants = variants.filter((v) =>
+      v.presetName.toLowerCase().includes(query.toLowerCase()) ||
+      v.members.some((m) => characterMatchesQuery(m.character, query))
+    );
+  }
+  return variants;
+}
+
+/** Fills a team's empty slots with a recommended variant, preserving the essentials. */
+function applyRecommendedVariant(team, variant) {
+  if (!team || !variant) return;
+  const members = variant.members.slice();
+  const essentials = members.filter((m) => m.isEssential);
+  const rest = members.filter((m) => !m.isEssential);
+  const ordered = essentials.concat(rest).slice(0, TEAM_SLOT_COUNT);
+
+  const slots = createEmptyTeamSlots();
+  ordered.forEach((member, i) => {
+    slots[i] = preferredVariantChoice(member);
+  });
+
+  // An existing slot keeps its occupant unless the variant wants that slot for an essential
+  team.slots.forEach((slot, i) => {
+    const wanted = ordered[i];
+    if (slot.character && (!wanted || !wanted.isEssential)) {
+      if (!slots.some((s) => s.character === slot.character)) {
+        slots[i] = { character: slot.character, psychube: slot.psychube };
+      }
+    }
+  });
+
+  team.slots = slots;
+  // Re-runs the one-character / one-psychube-per-team rules the merge could have broken
+  sanitizeTeamsState();
+  saveTeams();
+  teamModalDirty = true;
+  renderTeamModal();
+}
+
+function openTeamRecommend(teamId) {
+  teamRecommendTeamId = teamId;
+  if (teamRecommendSearch) teamRecommendSearch.value = "";
+  renderTeamRecommend();
+  document.getElementById("team-recommend-modal").style.display = "flex";
+}
+
+function closeTeamRecommend() {
+  document.getElementById("team-recommend-modal").style.display = "none";
+  teamRecommendTeamId = null;
+}
+
+/** Characters already committed to some team, optionally ignoring one team. */
+function usedTeamCharacters(exceptTeamId) {
+  const used = new Set();
+  teamsConfig.teams.forEach((tm) => {
+    if (tm.id === exceptTeamId) return;
+    tm.slots.forEach((slot) => { if (slot.character) used.add(slot.character); });
+  });
+  return used;
+}
+
+/** Psychubes already committed to some team, optionally ignoring one team. */
+function usedTeamPsychubes(exceptTeamId) {
+  const used = new Set();
+  teamsConfig.teams.forEach((tm) => {
+    if (tm.id === exceptTeamId) return;
+    tm.slots.forEach((slot) => { if (slot.psychube) used.add(slot.psychube); });
+  });
+  return used;
+}
+
+function nextEmptyTeamSlot(team) {
+  if (!team) return -1;
+  return team.slots.findIndex((slot) => !slot.character);
+}
+
+function addTeam() {
+  const team = createTeam();
+  teamsConfig.teams.push(team);
+  saveTeams();
+  teamModalDirty = true;
+  renderTeamModal();
+  // Focus the freshly created name so it can be renamed straight away
+  const input = document.querySelector(`#team-list .team-name-input[data-team-id="${team.id}"]`);
+  if (input) {
+    input.focus();
+    input.select();
+  }
+}
+
+function deleteTeam(teamId) {
+  const idx = teamsConfig.teams.findIndex((tm) => tm.id === teamId);
+  if (idx < 0) return;
+  teamsConfig.teams.splice(idx, 1);
+  saveTeams();
+  teamModalDirty = true;
+  renderTeamModal();
+}
+
+function renameTeam(teamId, name) {
+  const team = findTeam(teamId);
+  if (!team) return;
+  team.name = String(name || "").slice(0, TEAM_NAME_MAX_LEN);
+  saveTeams();
+}
+
+/** Writes a character into a slot, clearing the psychube if the character is removed. */
+function setTeamSlotCharacter(teamId, slotIndex, character) {
+  const team = findTeam(teamId);
+  if (!team || slotIndex < 0 || slotIndex >= TEAM_SLOT_COUNT) return;
+
+  // A character may only appear once per team
+  if (character && team.slots.some((slot, i) => i !== slotIndex && slot.character === character)) return;
+
+  team.slots[slotIndex].character = character;
+  if (!character) team.slots[slotIndex].psychube = null;
+  saveTeams();
+  teamModalDirty = true;
+}
+
+/** Writes a psychube into a slot, enforcing one psychube per team. */
+function setTeamSlotPsychube(teamId, slotIndex, key) {
+  const team = findTeam(teamId);
+  if (!team || slotIndex < 0 || slotIndex >= TEAM_SLOT_COUNT) return;
+  if (!team.slots[slotIndex].character) return;
+
+  if (key && team.slots.some((slot, i) => i !== slotIndex && slot.psychube === key)) return;
+
+  team.slots[slotIndex].psychube = key;
+  saveTeams();
+  teamModalDirty = true;
+}
+
+/**
+ * Portrait art for a slot: the character image with the afflatus emblem in the
+ * top-left corner and a dark band carrying the insight icon + level. Unowned
+ * characters show neither insight nor level. The psychube tile is a separate
+ * sibling block (see renderTeamCard) so the two never share a hover frame.
+ */
+function teamSlotPortraitHtml(character) {
+  const char = userRoster[character] || {};
+  const iconUrl = getCardAvatarUrl(character, char, characterDb[character]);
+  const insight = Number(char.insight) || 0;
+  const level = Number(char.level) || 0;
+  const afflatus = getCharacterAfflatus(character);
+
+  const afflatusHtml = afflatus
+    ? `<span class="team-slot-afflatus"><img src="images/afflatus_icon/${escapeHtml(afflatus)}.png" alt="${escapeHtml(displayAfflatus(afflatus))}" loading="lazy" decoding="async" /></span>`
+    : "";
+
+  const dupeHtml = !teamsHideWarning && duplicatedTeamCharacters().has(character)
+    ? `<img src="images/random_icon/Used_icon.png" alt="" class="team-slot-used" loading="lazy" decoding="async" />`
+    : "";
+
+  const metaHtml = char.owned
+    ? `<span class="team-slot-meta">
+        ${insight > 0 ? `<img src="images/insight_icon/I${insight}.png" alt="${escapeHtml(fmtInsight(insight))}" class="team-slot-insight" loading="lazy" decoding="async" />` : ""}
+        <span class="team-slot-level">${escapeHtml(fmtLevel(level))}</span>
+      </span>`
+    : "";
+
+  return `
+    <span class="team-slot-portrait${char.owned ? "" : " is-unowned"}">
+      <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(displayCharName(character))}" class="team-slot-img" loading="lazy" decoding="async" />
+      ${afflatusHtml}
+      ${metaHtml}
+    </span>
+    ${dupeHtml}
+  `;
+}
+
+function renderTeamCard(team) {
+  const card = document.createElement("div");
+  card.className = "team-card";
+  card.dataset.teamId = team.id;
+
+  const head = document.createElement("div");
+  head.className = "team-card-head";
+
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.className = "team-name-input";
+  nameInput.dataset.teamId = team.id;
+  nameInput.value = team.name;
+  nameInput.maxLength = TEAM_NAME_MAX_LEN;
+  nameInput.title = t("team.rename");
+  nameInput.addEventListener("input", (e) => renameTeam(team.id, e.target.value));
+
+  const btnDel = document.createElement("button");
+  btnDel.type = "button";
+  btnDel.className = "btn-team-del";
+  btnDel.innerHTML = "&times;";
+  btnDel.title = t("team.delete");
+  btnDel.addEventListener("click", () => deleteTeam(team.id));
+
+  head.appendChild(nameInput);
+
+  // Recommend: only offered when the team fields an essential member of a preset
+  if (recommendableVariantsForTeam(team).length > 0) {
+    const btnRec = document.createElement("button");
+    btnRec.type = "button";
+    btnRec.className = "btn-team-recommend";
+    btnRec.title = t("team.recommend");
+    btnRec.innerHTML = `<img src="images/random_icon/Recommend_icon.png" alt="" class="btn-team-recommend-icon" />`;
+    btnRec.addEventListener("click", () => openTeamRecommend(team.id));
+    head.appendChild(btnRec);
+  }
+
+  head.appendChild(btnDel);
+  card.appendChild(head);
+
+  const slotRow = document.createElement("div");
+  slotRow.className = "team-slots";
+
+  team.slots.forEach((slot, i) => {
+    const slotEl = document.createElement("div");
+    slotEl.className = "team-slot" + (slot.character ? " is-filled" : "");
+
+    const charBtn = document.createElement("button");
+    charBtn.type = "button";
+    charBtn.className = "team-slot-char";
+    charBtn.title = slot.character ? displayCharName(slot.character) : t("team.addCharacter");
+    charBtn.innerHTML = slot.character
+      ? teamSlotPortraitHtml(slot.character)
+      : `<span class="team-slot-plus">+</span>`;
+    charBtn.addEventListener("click", () => onTeamSlotClick(team.id, i, slot));
+    slotEl.appendChild(charBtn);
+
+    // Separate sibling block: hovering the portrait must not frame the psychube too
+    if (slot.character) {
+      // An unowned psychube dims exactly like an unowned character portrait
+      const chubeUnowned = slot.psychube && !getPsychubeState(slot.psychube).owned;
+      const chubeBtn = document.createElement("button");
+      chubeBtn.type = "button";
+      chubeBtn.className = "team-slot-chube" +
+        (slot.psychube ? " is-filled" : "") +
+        (chubeUnowned ? " is-unowned" : "");
+      chubeBtn.title = slot.psychube ? psychubeName(slot.psychube) : t("team.addPsychube");
+      chubeBtn.innerHTML = slot.psychube
+        ? `<img src="${escapeHtml(psychubeIconUrl(slot.psychube))}" alt="${escapeHtml(psychubeName(slot.psychube))}" loading="lazy" decoding="async" />`
+        : `<span class="team-slot-chube-plus">+</span>`;
+      chubeBtn.addEventListener("click", () => openTeamSelectPsychube(team.id, i));
+      slotEl.appendChild(chubeBtn);
+    }
+
+    slotRow.appendChild(slotEl);
+  });
+
+  card.appendChild(slotRow);
+  return card;
+}
+
+/**
+ * A pending character (picked in the unused strip) drops straight into the
+ * clicked slot. Otherwise an empty slot opens the picker and an occupied slot
+ * is cleared.
+ */
+function onTeamSlotClick(teamId, slotIndex, slot) {
+  if (pendingTeamCharacter) {
+    setTeamSlotCharacter(teamId, slotIndex, pendingTeamCharacter);
+    pendingTeamCharacter = null;
+    renderTeamModal();
+    return;
+  }
+  if (slot.character) {
+    setTeamSlotCharacter(teamId, slotIndex, null);
+    renderTeamModal();
+    return;
+  }
+  openTeamSelectCharacter(teamId, slotIndex);
+}
+
+function renderTeamAddCard() {
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "team-card team-add-card";
+  card.innerHTML = `
+    <span class="team-add-plus">+</span>
+    <span class="team-add-label">${escapeHtml(t("team.createOwn"))}</span>
+  `;
+  card.addEventListener("click", addTeam);
+  return card;
+}
+
+/** Characters eligible for the bottom strip: not in any team, honouring filters. */
+function teamUnusedCharacters() {
+  const used = usedTeamCharacters(null);
+  const query = (teamModalSearch ? teamModalSearch.value : "").trim().toLowerCase();
+  return Object.keys(characterDb)
+    .filter((name) => !isCharacterExcluded(name))
+    .filter((name) => futureSightEnabled || !futureSightChars.has(name))
+    .filter((name) => !used.has(name))
+    .filter((name) => teamModalRarityFilters.size === 0 || teamModalRarityFilters.has(getCharacterRarity(name)))
+    .filter((name) => {
+      const char = userRoster[name];
+      return teamsAllowUnowned || (char && char.owned);
+    })
+    .filter((name) => characterMatchesQuery(name, query))
+    .sort(compareUnownedCharacters);
+}
+
+function renderTeamModal() {
+  const list = document.getElementById("team-list");
+  if (!list) return;
+
+  applyTeamColumns();
+
+  list.innerHTML = "";
+  visibleTeams().forEach((team) => list.appendChild(renderTeamCard(team)));
+  list.appendChild(renderTeamAddCard());
+
+  const btnUnowned = document.getElementById("btn-team-allow-unowned");
+  if (btnUnowned) {
+    btnUnowned.classList.toggle("active", teamsAllowUnowned);
+    btnUnowned.setAttribute("aria-pressed", String(teamsAllowUnowned));
+  }
+
+  const btnHideWarning = document.getElementById("btn-team-hide-warning");
+  if (btnHideWarning) {
+    btnHideWarning.classList.toggle("active", teamsHideWarning);
+    btnHideWarning.setAttribute("aria-pressed", String(teamsHideWarning));
+  }
+
+  const grid = document.getElementById("team-unused-grid");
+  if (grid) {
+    grid.innerHTML = "";
+    const names = teamUnusedCharacters();
+    if (names.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "team-unused-empty";
+      empty.textContent = t("team.noUnused");
+      grid.appendChild(empty);
+    }
+    names.forEach((name) => {
+      const char = userRoster[name] || {};
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "team-unused-tile" + (char.owned ? "" : " is-unowned");
+      if (pendingTeamCharacter === name) tile.classList.add("is-pending");
+      tile.title = displayCharName(name);
+      tile.innerHTML = `
+        <img src="${escapeHtml(characterDb[name])}" alt="${escapeHtml(displayCharName(name))}" loading="lazy" decoding="async" />
+        <span class="team-unused-name${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</span>
+      `;
+      // Picking a character arms the next slot click; picking it again disarms.
+      tile.addEventListener("click", () => {
+        pendingTeamCharacter = pendingTeamCharacter === name ? null : name;
+        renderTeamModal();
+      });
+      grid.appendChild(tile);
+    });
+  }
+}
+
+function openTeamModal() {
+  pendingTeamCharacter = null;
+  renderTeamModal();
+  document.getElementById("team-modal").style.display = "flex";
+}
+
+function closeTeamModal() {
+  document.getElementById("team-modal").style.display = "none";
+  pendingTeamCharacter = null;
+  // The board itself does not show teams, but the roster may have changed
+  if (teamModalDirty) {
+    teamModalDirty = false;
+    renderShowcase();
+  }
+}
+
+/* ---------------- Team: Select Character ---------------- */
+
+function openTeamSelectCharacter(teamId, slotIndex) {
+  teamSlotPicker.teamId = teamId;
+  teamSlotPicker.slotIndex = slotIndex;
+  const search = document.getElementById("team-select-char-search");
+  if (search) search.value = "";
+  renderTeamSelectCharacter();
+  document.getElementById("team-select-char-modal").style.display = "flex";
+}
+
+function closeTeamSelectCharacter() {
+  document.getElementById("team-select-char-modal").style.display = "none";
+  teamSlotPicker.teamId = null;
+}
+
+function renderTeamSelectCharacter() {
+  const grid = document.getElementById("team-select-char-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  const team = findTeam(teamSlotPicker.teamId);
+  const query = (document.getElementById("team-select-char-search").value || "").trim().toLowerCase();
+
+  // Characters already in THIS team are hidden, except the one occupying the
+  // slot being edited, so re-picking the same character stays possible.
+  const inThisTeam = new Set(
+    (team ? team.slots : [])
+      .filter((_, i) => i !== teamSlotPicker.slotIndex)
+      .map((slot) => slot.character)
+      .filter(Boolean)
+  );
+
+  const names = Object.keys(characterDb)
+    .filter((name) => !isCharacterExcluded(name))
+    .filter((name) => futureSightEnabled || !futureSightChars.has(name))
+    .filter((name) => !inThisTeam.has(name))
+    .filter((name) => teamSelectCharRarityFilters.size === 0 || teamSelectCharRarityFilters.has(getCharacterRarity(name)))
+    .filter((name) => {
+      const char = userRoster[name];
+      return teamsAllowUnowned || (char && char.owned);
+    })
+    .filter((name) => characterMatchesQuery(name, query))
+    .sort(compareUnownedCharacters);
+
+  const dupes = teamsHideWarning ? new Set() : duplicatedTeamCharacters();
+
+  names.forEach((name) => {
+    const char = userRoster[name] || {};
+    const item = document.createElement("div");
+    item.className = "roster-char-item" + (char.owned ? " is-owned" : " not-owned");
+    item.innerHTML = `
+      <div class="roster-avatar-box">
+        <img src="${escapeHtml(getCardAvatarUrl(name, char, characterDb[name]))}" alt="${escapeHtml(name)}" class="roster-avatar-img" loading="lazy" decoding="async" />
+        ${dupes.has(name) ? `<img src="images/random_icon/Used_icon.png" alt="${escapeHtml(t("team.usedElsewhere"))}" title="${escapeHtml(t("team.usedElsewhere"))}" class="team-used-badge" />` : ""}
+      </div>
+      <span class="roster-char-name${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</span>
+    `;
+    item.addEventListener("click", () => {
+      setTeamSlotCharacter(teamSlotPicker.teamId, teamSlotPicker.slotIndex, name);
+      closeTeamSelectCharacter();
+      renderTeamModal();
+    });
+    grid.appendChild(item);
+  });
+
+  if (names.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "team-unused-empty";
+    empty.textContent = t("team.noCharacters");
+    grid.appendChild(empty);
+  }
+}
+
+/* ---------------- Team: Select Psychube ---------------- */
+
+function openTeamSelectPsychube(teamId, slotIndex) {
+  teamSlotPicker.teamId = teamId;
+  teamSlotPicker.slotIndex = slotIndex;
+  const search = document.getElementById("team-select-chube-search");
+  if (search) search.value = "";
+  renderTeamSelectPsychube();
+  document.getElementById("team-select-chube-modal").style.display = "flex";
+}
+
+function closeTeamSelectPsychube() {
+  document.getElementById("team-select-chube-modal").style.display = "none";
+  teamSlotPicker.teamId = null;
+}
+
+function renderTeamSelectPsychube() {
+  const grid = document.getElementById("team-select-chube-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  const team = findTeam(teamSlotPicker.teamId);
+  const query = (document.getElementById("team-select-chube-search").value || "").trim().toLowerCase();
+
+  // Same rule as characters: at most one copy of a psychube per team.
+  const inThisTeam = new Set(
+    (team ? team.slots : [])
+      .filter((_, i) => i !== teamSlotPicker.slotIndex)
+      .map((slot) => slot.psychube)
+      .filter(Boolean)
+  );
+
+  const keys = psychubeOrder
+    .filter((key) => !isSpecialPsychube(key))
+    .filter((key) => futureSightEnabled || !futureSightPsychubes.has(key))
+    .filter((key) => !inThisTeam.has(key))
+    // Owned-only unless the Show Unowned toggle is on
+    .filter((key) => teamsAllowUnowned || !!getPsychubeState(key).owned)
+    .filter((key) => teamSelectChubeRarityFilters.size === 0 || teamSelectChubeRarityFilters.has(psychubeDb[key].rarity))
+    .filter((key) => psychubeMatchesQuery(key, query));
+
+  keys.forEach((key) => {
+    const chube = psychubeDb[key];
+    const state = getPsychubeState(key);
+    const item = document.createElement("div");
+    item.className = "roster-char-item" + (state.owned ? " is-owned" : " not-owned");
+    item.innerHTML = `
+      <div class="roster-avatar-box is-chube">
+        <img src="${escapeHtml(chube.iconUrl)}" alt="${escapeHtml(chube.name)}" class="roster-avatar-img" loading="lazy" decoding="async" />
+      </div>
+      <span class="roster-char-name">${escapeHtml(psychubeName(key))}</span>
+      <span class="chube-manage-meta">Lv.${Number(state.level) || 1} · ${fmtAmp(Number(state.amplification) || PSYCHUBE_MIN_AMP)}</span>
+    `;
+    item.addEventListener("click", () => {
+      setTeamSlotPsychube(teamSlotPicker.teamId, teamSlotPicker.slotIndex, key);
+      closeTeamSelectPsychube();
+      renderTeamModal();
+    });
+    grid.appendChild(item);
+  });
+
+  if (keys.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "team-unused-empty";
+    empty.textContent = t("team.noPsychubes");
+    grid.appendChild(empty);
+  }
+}
+
+/* ---------------- Team Presets ---------------- */
+
+function presetNames() {
+  return Object.keys(teamArchetypes).filter((name) => Array.isArray(teamArchetypes[name]));
+}
+
+function renderTeamPresets() {
+  const body = document.getElementById("team-presets-body");
+  if (!body) return;
+
+  const btnFormable = document.getElementById("btn-preset-formable-only");
+  if (btnFormable) {
+    btnFormable.classList.toggle("active", teamsFormableOnly);
+    btnFormable.setAttribute("aria-pressed", String(teamsFormableOnly));
+  }
+
+  const query = (teamPresetSearch ? teamPresetSearch.value : "").trim();
+  const presetQuery = query.toLowerCase();
+
+  // Group the resolved variants by archetype name, preserving authoring order
+  const groups = [];
+  presetNames().forEach((presetName) => {
+    let variants = (teamArchetypes[presetName] || [])
+      .map((variant) => resolvePresetVariant(variant))
+      .filter((members) => members !== null)
+      .filter((members) => futureSightEnabled || !presetVariantHasFutureSight(members));
+
+    // "Formable Only": every slot must be satisfiable (primary or a substitute)
+    if (teamsFormableOnly) {
+      variants = variants.filter((members) => members.every(memberIsFormable));
+    }
+
+    // Search matches the preset name or any member's name
+    if (query) {
+      const hitName = presetName.toLowerCase().includes(presetQuery);
+      const hitMember = variants.some((members) => members.some((m) => characterMatchesQuery(m.character, query)));
+      if (!hitName && !hitMember) return;
+    }
+
+    if (variants.length === 0) return;
+    groups.push({ presetName, variants });
+  });
+
+  renderArchetypeBlocks(body, groups, {
+    emptyText: t("team.noPresets"),
+    usedSet: usedMarkerSet(null),
+    onToggle: (presetName) => {
+      if (teamCollapsedGroups.has(presetName)) teamCollapsedGroups.delete(presetName);
+      else teamCollapsedGroups.add(presetName);
+      renderTeamPresets();
+    },
+    actionLabel: t("team.add"),
+    onAction: (presetName, members) => {
+      const team = createTeam(presetName);
+      members.forEach((member, i) => {
+        if (i >= TEAM_SLOT_COUNT) return;
+        team.slots[i] = preferredVariantChoice(member);
+      });
+      teamsConfig.teams.push(team);
+      saveTeams();
+      teamModalDirty = true;
+      renderTeamModal();
+      closeTeamPresets();
+      document.getElementById("team-modal").style.display = "flex";
+    },
+  });
+}
+
+/**
+ * Shared archetype renderer for Team Presets and the Team Recommendation modal.
+ * Each archetype is one block; its variants stack inside it, so the modal's
+ * grid decides how many archetypes share a row.
+ */
+function renderArchetypeBlocks(body, groups, opts) {
+  body.innerHTML = "";
+
+  // Computed once per render — every member cell and substitute chip needs it.
+  // Callers choose the scope: Presets flags any team, Recommendation ignores its own.
+  const usedSet = opts.usedSet || new Set();
+
+  if (groups.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "team-unused-empty";
+    empty.textContent = opts.emptyText;
+    body.appendChild(empty);
+    return;
+  }
+
+  groups.forEach(({ presetName, variants }) => {
+    const block = document.createElement("div");
+    block.className = "preset-block";
+    const head = document.createElement("div");
+    head.className = "preset-head";
+    head.innerHTML = `<span class="preset-name">${escapeHtml(presetName)}</span>`;
+
+    // Multiple variants of the same archetype start collapsed behind a chevron
+    const collapsed = variants.length > 1 && !teamCollapsedGroups.has(presetName);
+    if (variants.length > 1) {
+      const btnToggle = document.createElement("button");
+      btnToggle.type = "button";
+      btnToggle.className = "preset-toggle" + (collapsed ? " is-collapsed" : "");
+      btnToggle.textContent = "\u25BC";
+      btnToggle.title = t("team.toggleVariants");
+      btnToggle.setAttribute("aria-expanded", String(!collapsed));
+      btnToggle.addEventListener("click", () => opts.onToggle(presetName));
+      head.appendChild(btnToggle);
+    }
+    block.appendChild(head);
+
+    const rows = document.createElement("div");
+    rows.className = "preset-rows";
+
+    const shown = collapsed ? variants.slice(0, 1) : variants;
+    shown.forEach((members) => {
+      const row = document.createElement("div");
+      row.className = "preset-row";
+
+      const membersWrap = document.createElement("div");
+      membersWrap.className = "preset-members";
+      members.forEach((member) => membersWrap.appendChild(presetSlotCell(member, usedSet)));
+
+      const btnAction = document.createElement("button");
+      btnAction.type = "button";
+      btnAction.className = "btn preset-add-btn";
+      btnAction.textContent = opts.actionLabel;
+      btnAction.addEventListener("click", () => opts.onAction(presetName, members));
+
+      row.appendChild(membersWrap);
+      row.appendChild(btnAction);
+      rows.appendChild(row);
+    });
+
+    block.appendChild(rows);
+    body.appendChild(block);
+  });
+}
+
+/** Team Recommendation: presets whose essential members this team already fields. */
+function renderTeamRecommend() {
+  const body = document.getElementById("team-recommend-body");
+  if (!body) return;
+
+  const team = findTeam(teamRecommendTeamId);
+  const title = document.getElementById("team-recommend-title-name");
+  if (title) title.textContent = team ? team.name : "";
+
+  const btnFormable = document.getElementById("btn-recommend-formable-only");
+  if (btnFormable) {
+    btnFormable.classList.toggle("active", teamsFormableOnly);
+    btnFormable.setAttribute("aria-pressed", String(teamsFormableOnly));
+  }
+
+  const variants = recommendedVariantsForTeam(team);
+
+  // Regroup the flat list by archetype so several variants share one block
+  const groups = [];
+  variants.forEach((v) => {
+    let g = groups.find((x) => x.presetName === v.presetName);
+    if (!g) { g = { presetName: v.presetName, variants: [] }; groups.push(g); }
+    g.variants.push(v.members);
+  });
+
+  renderArchetypeBlocks(body, groups, {
+    emptyText: t("team.noRecommendations"),
+    // The team being recommended for is not a conflict — only OTHER teams count
+    usedSet: usedMarkerSet(teamRecommendTeamId),
+    onToggle: (presetName) => {
+      if (teamCollapsedGroups.has(presetName)) teamCollapsedGroups.delete(presetName);
+      else teamCollapsedGroups.add(presetName);
+      renderTeamRecommend();
+    },
+    actionLabel: t("team.use"),
+    onAction: (presetName, members) => {
+      applyRecommendedVariant(team, { presetName, members });
+      closeTeamRecommend();
+    },
+  });
+}
+
+/** One preset member: portrait + insight/level band + afflatus + psychube on the right. */
+function presetMemberCell(member, dupes) {
+  const char = userRoster[member.character] || {};
+  const insight = Number(char.insight) || 0;
+  const level = Number(char.level) || 0;
+  const afflatus = getCharacterAfflatus(member.character);
+  const isUsed = (dupes || duplicatedTeamCharacters()).has(member.character);
+
+  const cell = document.createElement("div");
+  cell.className = "preset-member" + (member.isEssential ? " is-essential" : "");
+  cell.title = `${displayCharName(member.character)}${member.psychube ? " · " + psychubeName(member.psychube) : ""}${member.isEssential ? " · Essential" : ""}${isUsed ? " · " + t("team.usedElsewhere") : ""}`;
+  cell.innerHTML = `
+    <span class="preset-member-portrait${char.owned ? "" : " is-unowned"}">
+      <img src="${escapeHtml(characterDb[member.character])}" alt="${escapeHtml(displayCharName(member.character))}" class="preset-member-img" loading="lazy" decoding="async" />
+      ${afflatus ? `<span class="team-slot-afflatus"><img src="images/afflatus_icon/${escapeHtml(afflatus)}.png" alt="" loading="lazy" decoding="async" /></span>` : ""}
+      ${char.owned ? `<span class="team-slot-meta">
+        ${insight > 0 ? `<img src="images/insight_icon/I${insight}.png" alt="${escapeHtml(fmtInsight(insight))}" class="team-slot-insight" loading="lazy" decoding="async" />` : ""}
+        <span class="team-slot-level">${escapeHtml(fmtLevel(level))}</span>
+      </span>` : ""}
+      ${member.euphoria || isUsed ? `<span class="preset-member-badges">
+        ${member.euphoria ? `<span class="preset-member-euphoria">${escapeHtml(member.euphoria)}</span>` : ""}
+        ${isUsed ? `<img src="images/random_icon/Used_icon.png" alt="${escapeHtml(t("team.usedElsewhere"))}" class="preset-member-used" loading="lazy" decoding="async" />` : ""}
+      </span>` : ""}
+    </span>
+    <span class="preset-member-chube${member.psychube ? "" : " is-empty"}${member.psychube && !getPsychubeState(member.psychube).owned ? " is-unowned" : ""}">
+      ${member.psychube
+        ? `<img src="${escapeHtml(psychubeIconUrl(member.psychube))}" alt="${escapeHtml(psychubeName(member.psychube))}" loading="lazy" decoding="async" />`
+        : ""}
+    </span>
+  `;
+  return cell;
+}
+
+/**
+ * A slot: the primary member with its interchangeable alternatives underneath.
+ * Substitutes render as portrait-only chips — their psychube is the player's call.
+ */
+function presetSlotCell(member, dupes) {
+  const usedSet = dupes || duplicatedTeamCharacters();
+  const slot = document.createElement("div");
+  slot.className = "preset-slot";
+  slot.appendChild(presetMemberCell(member, usedSet));
+
+  const subs = member.substitutes || [];
+  if (subs.length > 0) {
+    const row = document.createElement("div");
+    row.className = "preset-subs";
+
+    const label = document.createElement("span");
+    label.className = "preset-subs-label";
+    label.textContent = t("team.or");
+    row.appendChild(label);
+
+    subs.forEach((sub) => {
+      const isUsed = usedSet.has(sub.character);
+      const chip = document.createElement("span");
+      chip.className = "preset-sub" + (isCharacterOwned(sub.character) ? "" : " is-unowned");
+      chip.title = `${displayCharName(sub.character)}${sub.psychube ? " · " + psychubeName(sub.psychube) : ""}${sub.euphoria ? " · " + sub.euphoria : ""}${isUsed ? " · " + t("team.usedElsewhere") : ""}`;
+      chip.innerHTML = `
+        <img src="${escapeHtml(characterDb[sub.character])}" alt="${escapeHtml(displayCharName(sub.character))}" loading="lazy" decoding="async" />
+        ${isUsed ? `<img src="images/random_icon/Used_icon.png" alt="${escapeHtml(t("team.usedElsewhere"))}" class="preset-sub-used" loading="lazy" decoding="async" />` : ""}
+      `;
+      row.appendChild(chip);
+    });
+
+    slot.appendChild(row);
+  }
+  return slot;
+}
+
+function openTeamPresets() {
+  renderTeamPresets();
+  document.getElementById("team-presets-modal").style.display = "flex";
+}
+
+function closeTeamPresets() {
+  document.getElementById("team-presets-modal").style.display = "none";
+}
+
+/* ---------------- Team Building ---------------- */
+
+/** Wires the Team Building modals. Called once from setupEventListeners(). */
+function setupTeamBuildingListeners() {
+  const teamModal = document.getElementById("team-modal");
+  const btnTeam = document.getElementById("btn-team");
+  if (!teamModal || !btnTeam) return;
+
+  teamModalSearch = document.getElementById("team-search");
+  teamPresetSearch = document.getElementById("team-preset-search");
+  teamRecommendSearch = document.getElementById("team-recommend-search");
+
+  btnTeam.addEventListener("click", openTeamModal);
+  document.getElementById("team-btn-close").addEventListener("click", closeTeamModal);
+  teamModal.addEventListener("click", (e) => { if (e.target === teamModal) closeTeamModal(); });
+
+  // Hide Warning: suppresses every Used marker in the team surfaces
+  const btnHideWarning = document.getElementById("btn-team-hide-warning");
+  if (btnHideWarning) {
+    btnHideWarning.addEventListener("click", () => {
+      teamsHideWarning = !teamsHideWarning;
+      saveTeams();
+      teamModalDirty = true; // the board's Used badge must follow on close
+      renderTeamModal();
+    });
+  }
+
+  // Show Unowned: unlocks unowned characters/psychubes in the strip and both pickers
+  const btnAllowUnowned = document.getElementById("btn-team-allow-unowned");
+  if (btnAllowUnowned) {
+    btnAllowUnowned.addEventListener("click", () => {
+      teamsAllowUnowned = !teamsAllowUnowned;
+      saveTeams();
+      renderTeamModal();
+    });
+  }
+
+  if (teamModalSearch) {
+    teamModalSearch.addEventListener("input", renderTeamModal);
+  }
+
+  // Team Presets: search + Formable Only
+  const btnFormableOnly = document.getElementById("btn-preset-formable-only");
+  if (btnFormableOnly) {
+    btnFormableOnly.addEventListener("click", () => {
+      teamsFormableOnly = !teamsFormableOnly;
+      saveTeams();
+      renderTeamPresets();
+    });
+  }
+  if (teamPresetSearch) {
+    teamPresetSearch.addEventListener("input", renderTeamPresets);
+  }
+
+  // Teams per row: each option is only offered when the viewport can host it
+  const columnsGroup = document.getElementById("team-columns-group");
+  if (columnsGroup) {
+    columnsGroup.querySelectorAll(".team-cols-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        teamColumns = Number(btn.dataset.cols);
+        saveTeams();
+        applyTeamColumns();
+      });
+    });
+  }
+  window.addEventListener("resize", () => {
+    if (teamModal.style.display !== "none") applyTeamColumns();
+  });
+
+  setupTeamStripResizer();
+
+  // Drag handle between the team list and the unused strip
+  function setupTeamStripResizer() {
+    const body = document.querySelector("#team-modal .team-body");
+    const handle = document.getElementById("team-strip-resizer");
+    if (!body || !handle) return;
+
+    const applyRatio = () => {
+      body.style.setProperty("--team-strip-ratio", String(teamStripRatio));
+    };
+    applyRatio();
+
+    let dragging = false;
+    const onMove = (clientY) => {
+      const rect = body.getBoundingClientRect();
+      if (rect.height <= 0) return;
+      // Ratio measured from the BOTTOM, because the strip is pinned there
+      const ratio = (rect.bottom - clientY) / rect.height;
+      teamStripRatio = Math.min(0.75, Math.max(0.12, ratio));
+      applyRatio();
+    };
+
+    const stop = () => {
+      if (!dragging) return;
+      dragging = false;
+      handle.classList.remove("is-dragging");
+      document.body.classList.remove("team-resizing");
+      saveTeams();
+    };
+
+    handle.addEventListener("pointerdown", (e) => {
+      dragging = true;
+      handle.classList.add("is-dragging");
+      document.body.classList.add("team-resizing");
+      handle.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    handle.addEventListener("pointermove", (e) => {
+      if (dragging) onMove(e.clientY);
+    });
+    handle.addEventListener("pointerup", stop);
+    handle.addEventListener("pointercancel", stop);
+
+    // Keyboard support: arrow keys nudge the split
+    handle.addEventListener("keydown", (e) => {
+      const step = 0.04;
+      if (e.key === "ArrowUp") teamStripRatio = Math.min(0.75, teamStripRatio + step);
+      else if (e.key === "ArrowDown") teamStripRatio = Math.max(0.12, teamStripRatio - step);
+      else return;
+      applyRatio();
+      saveTeams();
+      e.preventDefault();
+    });
+  }
+
+  // Search / rarity filters
+  function wireRarityGroup(groupId, filterSet, rerender) {
+    document.querySelectorAll(`#${groupId} .filter-btn`).forEach((btn) => {
+      btn.classList.toggle("active", filterSet.has(Number(btn.dataset.rarity)));
+      btn.addEventListener("click", () => {
+        const r = Number(btn.dataset.rarity);
+        if (filterSet.has(r)) filterSet.delete(r);
+        else filterSet.add(r);
+        btn.classList.toggle("active", filterSet.has(r));
+        rerender();
+      });
+    });
+  }
+
+  wireRarityGroup("team-filter-rarity-group", teamModalRarityFilters, renderTeamModal);
+  wireRarityGroup("team-select-char-filter-group", teamSelectCharRarityFilters, renderTeamSelectCharacter);
+  wireRarityGroup("team-select-chube-filter-group", teamSelectChubeRarityFilters, renderTeamSelectPsychube);
+
+  // Presets
+  const presetsModal = document.getElementById("team-presets-modal");
+  document.getElementById("btn-team-presets").addEventListener("click", openTeamPresets);
+  document.getElementById("team-presets-btn-close").addEventListener("click", closeTeamPresets);
+  presetsModal.addEventListener("click", (e) => { if (e.target === presetsModal) closeTeamPresets(); });
+
+  // Team Recommendation
+  const recommendModal = document.getElementById("team-recommend-modal");
+  document.getElementById("team-recommend-btn-close").addEventListener("click", closeTeamRecommend);
+  recommendModal.addEventListener("click", (e) => { if (e.target === recommendModal) closeTeamRecommend(); });
+  const btnRecFormable = document.getElementById("btn-recommend-formable-only");
+  if (btnRecFormable) {
+    btnRecFormable.addEventListener("click", () => {
+      teamsFormableOnly = !teamsFormableOnly;
+      saveTeams();
+      renderTeamRecommend();
+    });
+  }
+  if (teamRecommendSearch) {
+    teamRecommendSearch.addEventListener("input", renderTeamRecommend);
+  }
+
+  // Select Character
+  const selCharModal = document.getElementById("team-select-char-modal");
+  document.getElementById("team-select-char-btn-close").addEventListener("click", closeTeamSelectCharacter);
+  selCharModal.addEventListener("click", (e) => { if (e.target === selCharModal) closeTeamSelectCharacter(); });
+  const selCharSearch = document.getElementById("team-select-char-search");
+  if (selCharSearch) selCharSearch.addEventListener("input", renderTeamSelectCharacter);
+
+  // Select Psychube
+  const selChubeModal = document.getElementById("team-select-chube-modal");
+  document.getElementById("team-select-chube-btn-close").addEventListener("click", closeTeamSelectPsychube);
+  selChubeModal.addEventListener("click", (e) => { if (e.target === selChubeModal) closeTeamSelectPsychube(); });
+  const selChubeSearch = document.getElementById("team-select-chube-search");
+  if (selChubeSearch) selChubeSearch.addEventListener("input", renderTeamSelectPsychube);
+}
+
 /* ---------------- Statistics Modal ---------------- */
 
 /** Builds the statistic rows for the Statistics modal. */
@@ -4418,6 +5833,8 @@ function setupEventListeners() {
     statsModal.addEventListener("click", (e) => { if (e.target === statsModal) closeStatsModal(); });
     setupStatsChessTooltip();
   }
+
+  setupTeamBuildingListeners();
 
   // Web Icon Lightbox Preview
   const btnWebIcon = document.getElementById("btn-web-icon");  const webIconModal = document.getElementById("web-icon-modal");
@@ -5198,6 +6615,7 @@ function setupEventListeners() {
 
     saveDisplayOptions();
     renderShowcase();
+    refreshOpenTeamModals();
     closeOptionsModal();
   });
 
@@ -5413,7 +6831,7 @@ function setupEventListeners() {
 
     // 8. Unowned Dimming Preview
     if (previewUnownedCharImg) {
-      const unOp = inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.82;
+      const unOp = inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.35;
       previewUnownedCharImg.style.opacity = unOp;
     }
   }
@@ -5553,7 +6971,7 @@ function setupEventListeners() {
     }
 
     // Unowned Character Dimming
-    const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82;
+    const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.35;
     if (inputUnownedOpacity) inputUnownedOpacity.value = unOp;
     if (displayUnownedOpacity) displayUnownedOpacity.textContent = `${Math.round(unOp * 100)}%`;
 
@@ -5639,7 +7057,7 @@ function setupEventListeners() {
       customResColorEnabled: checkCustomResColor ? checkCustomResColor.checked : false,
       customResColor: colorCustomResLabel ? colorCustomResLabel.value : "#ffffff",
 
-      unownedOpacity: inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.82,
+      unownedOpacity: inputUnownedOpacity ? Number(inputUnownedOpacity.value) : 0.35,
 
       // Character Name Color
       charNameColor: (document.getElementById("color-char-name") && document.getElementById("color-char-name").value) || "#ffffff",
@@ -6963,7 +8381,7 @@ function setupEventListeners() {
       }
 
       const app = displayOptions.appearance || DEFAULT_THEME_APPEARANCE;
-      const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.82;
+      const unOp = app.unownedOpacity !== undefined ? app.unownedOpacity : 0.35;
 
       const canvas = await html2canvas(board, {
         backgroundColor: customBoardBgImageUrl ? null : (app.boardBg || "#111111"),
@@ -7126,7 +8544,7 @@ function setupEventListeners() {
     });
   }
 
-  // 3. Export All (Full backup bao gồm cả roster và styling)
+  // 3. Export All (Full backup bao gồm cả roster, teams, psychubes và styling)
   if (btnExportJsonAll) {
     btnExportJsonAll.addEventListener("click", () => {
       const exportPayload = {
@@ -7135,6 +8553,17 @@ function setupEventListeners() {
         listingConfig: listingConfig,
         displayOptions: displayOptions,
         boardTitle: localStorage.getItem(TITLE_STORAGE_KEY) || "Suitcase",
+        // Teams ride along in the full backup only, shaped exactly like
+        // r1999_teams_v1 so a round-trip is lossless.
+        teams: {
+          teams: teamsConfig.teams,
+          allowUnowned: teamsAllowUnowned,
+          formableOnly: teamsFormableOnly,
+          hideWarning: teamsHideWarning,
+          columns: teamColumns,
+          stripRatio: teamStripRatio,
+        },
+        psychubes: userPsychubes,
       };
       const jsonBlob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
       const blobUrl = URL.createObjectURL(jsonBlob);
@@ -7211,6 +8640,32 @@ function setupEventListeners() {
               if (boardTitleLabel) boardTitleLabel.textContent = imported.boardTitle;
               if (inputBoardTitle) inputBoardTitle.value = imported.boardTitle;
             }
+
+            // Teams + psychubes (full backup only). Teams REPLACE the current set,
+            // then go through the usual sanitizers so a hand-edited file can't
+            // inject duplicate characters or unknown ids.
+            if (imported.teams && typeof imported.teams === "object" && !Array.isArray(imported.teams)) {
+              const t = imported.teams;
+              teamsConfig = { teams: Array.isArray(t.teams) ? t.teams : [] };
+              teamsAllowUnowned = !!t.allowUnowned;
+              teamsFormableOnly = !!t.formableOnly;
+              teamsHideWarning = !!t.hideWarning;
+              if (typeof t.columns === "number") {
+                teamColumns = Math.min(TEAM_MAX_COLUMNS, Math.max(1, Math.round(t.columns)));
+              }
+              if (typeof t.stripRatio === "number") {
+                teamStripRatio = Math.min(0.75, Math.max(0.12, t.stripRatio));
+              }
+              sanitizeTeamsState();
+              saveTeams();
+              renderTeamModal();
+            }
+
+            if (imported.psychubes && typeof imported.psychubes === "object" && !Array.isArray(imported.psychubes)) {
+              userPsychubes = imported.psychubes;
+              sanitizePsychubeState();
+              savePsychubes();
+            }
           } else {
             // Trường hợp 4: Direct roster map v1 cũ
             userRoster = imported;
@@ -7240,7 +8695,10 @@ function setupEventListeners() {
       t("confirm.resetRosterMsg"),
       () => {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(TEAMS_STORAGE_KEY);
         userRoster = {};
+        teamsConfig = { teams: [] };
+        pendingTeamCharacter = null;
         loadRoster();
         renderShowcase();
       }
