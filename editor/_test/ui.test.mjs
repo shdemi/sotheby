@@ -298,6 +298,78 @@ try {
     );
     check("the editor's frame is selected by default", importState.selectedFrame !== null, String(importState.selectedFrame));
     check("the add button is present", importState.addButton);
+
+    console.log("\n=== the composite works on the deployed site ===");
+    {
+      // "needed to edit/" is not deployed, so build a synthetic art image in the
+      // page and run the real composite on it.
+      const composed = await page.evaluate(async () => {
+        const mod = await import("./icons.js");
+        const frames = await mod.findFrames();
+        if (frames.length === 0) return { error: "no frame loaded" };
+
+        const art = document.createElement("canvas");
+        art.width = 248;
+        art.height = 248;
+        const actx = art.getContext("2d");
+        actx.fillStyle = "#3a6ea5";
+        actx.fillRect(40, 0, 168, 248);
+
+        const img = await new Promise((res) => {
+          const i = new Image();
+          i.onload = () => res(i);
+          i.src = art.toDataURL("image/png");
+        });
+
+        const out = mod.compositeIcon({ art: img, frame: frames[0].img });
+        const ctx = out.getContext("2d", { willReadFrequently: true });
+        const px = (x, y) => [...ctx.getImageData(x, y, 1, 1).data];
+        const blob = await mod.canvasToBlob(out);
+
+        // --char-inset clears the ART in the outer columns; the frame behind it
+        // still shows. So the check is "no art colour at the edges", not
+        // "transparent at the edges".
+        const frameOnly = document.createElement("canvas");
+        frameOnly.width = 180;
+        frameOnly.height = 214;
+        frameOnly.getContext("2d").drawImage(frames[0].img, 0, 214 - frames[0].img.naturalHeight);
+        const fctx = frameOnly.getContext("2d", { willReadFrequently: true });
+        const fpx = (x, y) => [...fctx.getImageData(x, y, 1, 1).data];
+
+        return {
+          size: [out.width, out.height],
+          footer: px(90, 210),
+          art: px(90, 100),
+          artColor: [58, 110, 165],
+          leftEdge: px(0, 100),
+          rightEdge: px(179, 100),
+          leftEdgeFrameOnly: fpx(0, 100),
+          rightEdgeFrameOnly: fpx(179, 100),
+          blobType: blob.type,
+          blobBytes: blob.size,
+        };
+      });
+
+      const samePixel = (a, b) => a && b && a.every((v, i) => v === b[i]);
+      check("the composite produces a 180x214 canvas", composed.size && composed.size[0] === 180 && composed.size[1] === 214, JSON.stringify(composed));
+      check("the frame's footer band is drawn", composed.footer && composed.footer[3] === 255, JSON.stringify(composed.footer));
+      check(
+        "the art is visible in the middle",
+        composed.art && composed.art.slice(0, 3).join(",") === composed.artColor.join(","),
+        JSON.stringify(composed.art)
+      );
+      check(
+        "the left column shows the frame, not the art",
+        samePixel(composed.leftEdge, composed.leftEdgeFrameOnly),
+        `composite ${JSON.stringify(composed.leftEdge)} vs frame-only ${JSON.stringify(composed.leftEdgeFrameOnly)}`
+      );
+      check(
+        "the right column shows the frame, not the art",
+        samePixel(composed.rightEdge, composed.rightEdgeFrameOnly),
+        `composite ${JSON.stringify(composed.rightEdge)} vs frame-only ${JSON.stringify(composed.rightEdgeFrameOnly)}`
+      );
+      check("it encodes as a PNG", composed.blobType === "image/png" && composed.blobBytes > 1000, JSON.stringify([composed.blobType, composed.blobBytes]));
+    }
   }
 
   console.log("\n=== downloading the changes produces a ZIP ===");

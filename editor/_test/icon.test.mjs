@@ -77,12 +77,9 @@ console.log("\n=== footer band detection matches compose.py ===");
 
 console.log("\n=== frame candidates ===");
 check("the editor ships its own frame", icons.FRAME_URL === "frame.png", icons.FRAME_URL);
-check(
-  "the local tooling frame is a fallback, not the primary",
-  icons.FRAME_CANDIDATES[0].url === "frame.png",
-  icons.FRAME_CANDIDATES.map((c) => c.url).join(", ")
-);
-check("every candidate has a label", icons.FRAME_CANDIDATES.every((c) => typeof c.label === "string" && c.label));
+check("frame.png is the only candidate", icons.FRAME_CANDIDATES.length === 1, String(icons.FRAME_CANDIDATES.length));
+check("its url matches FRAME_URL", icons.FRAME_CANDIDATES[0].url === icons.FRAME_URL);
+check("it has a label", typeof icons.FRAME_CANDIDATES[0].label === "string" && icons.FRAME_CANDIDATES[0].label.length > 0);
 check("defaultFrame picks the first one", icons.defaultFrame([{ label: "a" }, { label: "b" }]).label === "a");
 check("defaultFrame tolerates an empty list", icons.defaultFrame([]) === null);
 

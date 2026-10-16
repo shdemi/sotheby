@@ -205,12 +205,14 @@ export function canvasToBlob(canvas) {
  */
 export const FRAME_URL = "frame.png";
 
-/** Candidate frames, in preference order. */
-export const FRAME_CANDIDATES = [
-  { label: "frame.png (editor)", url: "frame.png" },
-  // Present only in a local checkout; testCodeChube/ is not deployed.
-  { label: "testCodeChube/background.png", url: "../testCodeChube/background.png" },
-];
+/**
+ * Candidate frames, in preference order.
+ *
+ * Only one is needed: every shipped icon — 5★ and 6★ alike — uses the same
+ * frame. The list exists so a replacement can be dropped in without touching
+ * code.
+ */
+export const FRAME_CANDIDATES = [{ label: "frame.png", url: FRAME_URL }];
 
 /**
  * Loads whichever frames are actually reachable.
