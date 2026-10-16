@@ -71,6 +71,7 @@ Common task → where to look:
 | Add UI text / translation | `data/i18n.json` + `data-i18n` attributes in `index.html` |
 | Add a character | [§9](#9-adding--updating-a-character) |
 | Add a Psychube | [§9.1](#91-adding--updating-a-psychube) |
+| Change the data editor | `editor/`, [editor/README.md](editor/README.md) |
 
 ---
 
@@ -226,10 +227,23 @@ Architectural constraints to keep in mind:
 characterBox/
 ├── .gitignore                      # Ignores Reverse-1999-CN-Asset/ and references/
 ├── CNAME                           # sothebymansion.com
+├── robots.txt                      # Keeps /editor/ out of search results
+├── serve.py                        # Dev server: no-cache for text assets
+├── package.json                    # Dev-only deps (playwright, for the UI tests)
 ├── index.html                      # Markup, all controls and modals
 ├── styles.css                      # All CSS
 ├── app.js                          # All application logic
 ├── README.md                       # This file
+├── editor/                         # Static data editor (edit data/*.json with icons)
+│   ├── index.html                  #   Five tabs: Characters, Psychubes, Team Presets, Patterns, Review
+│   ├── editor.css                  #   Reuses the app's palette, fonts and icons
+│   ├── json-patch.js               #   Range-aware JSON patcher — keeps diffs minimal
+│   ├── model.js                    #   Data model, name resolution, validation
+│   ├── icons.js                    #   Psychube icon compositing (port of testCodeChube/compose.py)
+│   ├── frame.png                   #   The rarity frame the icons are composited onto
+│   ├── files.js                    #   Reads the data, packages changes as a ZIP download
+│   ├── app.js                      #   UI
+│   └── README.md                   #   How to run it
 ├── data/                           # Game data (JSON)
 │   ├── ArcanistMap.json            # Array of character metadata (id, names, live2d/skins)
 │   ├── characters_by_rarity.json   # Grouped by rarity (6★ → 2★)
@@ -269,7 +283,10 @@ characterBox/
 The app fetches JSON, so it needs an HTTP server:
 
 ```powershell
-# Python
+# Python (recommended — serve.py disables caching for html/js/css/json)
+python serve.py 8000
+
+# or the stock server
 python -m http.server 8000
 
 # or Node.js
@@ -279,6 +296,16 @@ npx serve .
 Then open `http://localhost:8000`.
 
 **Deployment:** fully static — push to GitHub Pages. Custom domain is configured in `CNAME` (`sothebymansion.com`).
+
+**Editing the game data:** open `http://localhost:8000/editor/index.html`, or the
+deployed copy at `sothebymansion.com/editor/`. It presents one row per character
+(newest first), lets you pick afflatus / rarity / resonance shape / psychubes by
+clicking the game's own icons, imports a new psychube icon in one step instead of
+running `testCodeChube/compose.py` by hand, validates before handing anything over,
+and returns your changes as a ZIP to extract over the repository root — so
+`git diff` stays limited to the lines you changed. It writes nothing to the host.
+See [editor/README.md](editor/README.md). Editing the JSON by hand still works
+exactly as described in [§9](#9-adding--updating-a-character).
 
 ---
 

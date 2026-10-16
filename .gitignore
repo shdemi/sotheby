@@ -1,3 +1,23 @@
 # Ignore the entire Reverse-1999-CN-Asset folder
 Reverse-1999-CN-Asset/
 references/
+
+# Dev-only: playwright for the editor UI tests
+node_modules/
+
+# ---------------------------------------------------------------------------
+# testCodeChube/ working data
+#
+# The folder itself is kept (compose.py and the images it needs to run), but the
+# per-update churn is not:
+#
+#   needed to edit/   1.9 MB of raw game art, re-downloaded on every update
+#   results/          1.7 MB, and 42 of its 43 files are byte-identical to
+#                     images/psychube_icon/5/ which is already committed
+#   _placeholder5/    frame variants that neither compose.py nor the editor uses
+#   _placeholder6/
+# ---------------------------------------------------------------------------
+testCodeChube/needed to edit/
+testCodeChube/results/
+testCodeChube/_placeholder5/
+testCodeChube/_placeholder6/

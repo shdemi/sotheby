@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Internal data editor. Not part of the public site.">
+<title>Sotheby's Mansion — Data Editor</title>
+<link rel="icon" href="../images/web_icon.png">
+<link rel="stylesheet" href="editor.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <img src="../images/web_icon.png" alt="" class="brand-icon">
+    <span class="brand">Data Editor</span>
+  </div>
+
+  <nav class="tabs" id="tabs" role="tablist">
+    <button class="tab active" data-tab="characters" role="tab">Characters</button>
+    <button class="tab" data-tab="psychubes" role="tab">Psychubes</button>
+    <button class="tab" data-tab="teams" role="tab">Team Presets</button>
+    <button class="tab" data-tab="patterns" role="tab">Patterns &amp; Skins</button>
+    <button class="tab" data-tab="review" role="tab">Review<span class="badge" id="review-badge" hidden>0</span></button>
+  </nav>
+
+  <div class="topbar-right">
+    <span class="source" id="source-label" title="Where the data is coming from">…</span>
+    <button class="btn btn-primary" id="btn-save" disabled>Download changes</button>
+  </div>
+</header>
+
+<div class="banner" id="banner" hidden></div>
+
+<main class="panes">
+
+  <!-- ============ Characters ============ -->
+  <section class="pane active" data-pane="characters">
+    <aside class="list" id="char-list">
+      <div class="list-tools">
+        <input type="search" id="char-search" placeholder="Search name, CN name, alias…" autocomplete="off">
+        <div class="list-filters" id="char-filters"></div>
+        <div class="list-count" id="char-count"></div>
+      </div>
+      <div class="list-body" id="char-list-body"></div>
+    </aside>
+
+    <div class="detail" id="char-detail">
+      <div class="empty">Select a character.</div>
+    </div>
+  </section>
+
+  <!-- ============ Psychubes ============ -->
+  <section class="pane" data-pane="psychubes">
+    <aside class="list" id="chube-list">
+      <div class="list-tools">
+        <input type="search" id="chube-search" placeholder="Search name or id…" autocomplete="off">
+        <div class="list-filters">
+          <button class="chip on" id="chube-rarity-6">6★</button>
+          <button class="chip on" id="chube-rarity-5">5★</button>
+          <button class="chip" id="chube-new">+ New psychube</button>
+        </div>
+        <div class="list-count" id="chube-count"></div>
+      </div>
+      <div class="list-body" id="chube-list-body"></div>
+    </aside>
+    <div class="detail" id="chube-detail">
+      <div class="empty">Select a psychube.</div>
+    </div>
+  </section>
+
+  <!-- ============ Team presets ============ -->
+  <section class="pane" data-pane="teams">
+    <aside class="list" id="team-list">
+      <div class="list-tools">
+        <input type="search" id="team-search" placeholder="Search preset…" autocomplete="off">
+        <div class="list-filters">
+          <button class="chip" id="team-new">+ New preset</button>
+        </div>
+        <div class="list-count" id="team-count"></div>
+      </div>
+      <div class="list-body" id="team-list-body"></div>
+    </aside>
+    <div class="detail" id="team-detail">
+      <div class="empty">Select a team preset.</div>
+    </div>
+  </section>
+
+  <!-- ============ Patterns & skins ============ -->
+  <section class="pane" data-pane="patterns">
+    <div class="wide">
+      <div class="card">
+        <h2>Future Sight skins</h2>
+        <p class="hint">Skin ids in <code>future_sight.json → Skin</code>. Each must exist in <code>ArcanistMap.json</code>.</p>
+        <div id="skin-editor"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Name transfer</h2>
+          <button class="btn btn-sm" id="transfer-add">+ Name transfer</button>
+        </div>
+        <p class="hint"><code>global_name_transfer.json</code> — a raw ArcanistMap name that should display as its canonical name.</p>
+        <div id="transfer-editor"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Review ============ -->
+  <section class="pane" data-pane="review">
+    <div class="wide">
+      <div class="card" id="validation-card">
+        <h2>Validation</h2>
+        <div id="validation-report"></div>
+      </div>
+      <div class="card">
+        <h2>Pending changes</h2>
+        <p class="hint">Only the lines you actually changed appear here. Untouched files are not rewritten at all.</p>
+        <div id="diff-report"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- character picker -->
+<div class="modal-backdrop" id="picker" hidden>
+  <div class="modal">
+    <div class="modal-head">
+      <input type="search" id="picker-search" placeholder="Search…" autocomplete="off">
+      <button class="btn btn-ghost" id="picker-cancel">Cancel</button>
+    </div>
+    <div class="modal-body picker-grid" id="picker-body"></div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

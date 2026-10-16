@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /editor/
+
+# The editor is an internal tool. It exposes nothing secret — the data it reads
+# is already public in the repository — but there is no reason for it to appear
+# in search results.
