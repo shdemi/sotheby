@@ -211,7 +211,7 @@
       { "character": "Enigma", "psychube": "The Riddle's Limit" },
       { "character": "Charon", "psychube": "Buds Yet to Bloom" },
       {
-        "character": "Ms.Stranger",
+        "character": "Ms. Stranger",
         "psychube": "Long Night Talk",
         "substitutes": [
           { "character": "Centurion", "psychube": "Luck Be A Lady" },
@@ -229,7 +229,7 @@
         "character": "Rhiannon",
         "psychube": "The Soft Rain of Yesterday",
         "substitutes": [
-          { "character": "An-An Lee", "psychube": "In Their Figures" },
+          { "character": "An-an Lee", "psychube": "In Their Figures" },
           { "character": "Mercuria", "psychube": "One With the Flow" }
         ]
       },
@@ -293,7 +293,7 @@
         "euphoria": "E1",
         "substitutes": [
           { "character": "Recoleta", "psychube": "The Final Roll" },
-          { "character": "Ezio", "psychube": "As the Bell Tolls" }
+          { "character": "Ezio Auditore", "psychube": "As the Bell Tolls" }
         ]
       },
       { "character": "Tuesday", "psychube": "And the Maid says", "euphoria": "E1", "is_essential": true },
