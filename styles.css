@@ -4726,6 +4726,8 @@ body::before {
     width: 100%;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
     margin: 0;
     justify-self: auto;
     box-sizing: border-box;
@@ -5902,16 +5904,15 @@ body::before {
 
 /* Duplicate marker, styled to stand out against portrait art.
    Sits inside .team-slot-char, which is now exactly the portrait box. */
+/* Used_icon.png already has its own frame, so these carry no border, background
+   or padding of their own — anything extra would show as a second ring. */
 .team-slot-used {
   position: absolute;
   top: 2px;
   right: 2px;
   width: 17px;
   height: 17px;
-  padding: 2px;
   object-fit: contain;
-  background: rgba(0, 0, 0, 0.62);
-  border: 1px solid #D05126;
   z-index: 4;
   pointer-events: none;
 }
@@ -6154,30 +6155,14 @@ body.team-resizing * {
   right: 2px;
   width: 20px;
   height: 20px;
-  padding: 2px;
   object-fit: contain;
   z-index: 3;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.62);
-  border: 1px solid #D05126;
-  box-sizing: border-box;
 }
 
 /* Same marker on the main board cards */
-.char-used-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 18px;
-  height: 18px;
-  padding: 2px;
-  object-fit: contain;
-  z-index: 5;
-  pointer-events: none;
-  background: rgba(0, 0, 0, 0.62);
-  border: 1px solid #D05126;
-  box-sizing: border-box;
-}
+/* (`.char-used-badge` removed: the board no longer flags characters that appear
+   in several teams. The team-side badges below still do.) */
 
 /* ================= TEAM PRESETS ================= */
 
@@ -6325,11 +6310,7 @@ body.team-resizing * {
   right: 0;
   width: 11px;
   height: 11px;
-  padding: 1px;
   object-fit: contain;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.62);
-  border: 1px solid #D05126;
   opacity: 1;
   filter: none;
 }
@@ -6424,11 +6405,7 @@ body.team-resizing * {
 .preset-member-used {
   width: 14px;
   height: 14px;
-  padding: 1px;
   object-fit: contain;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.62);
-  border: 1px solid #D05126;
   display: block;
 }
 
@@ -6523,9 +6500,14 @@ body.team-resizing * {
   color: #ED7D31;
 }
 
-/* Essential preset member: red frame so the must-have picks read at a glance */
+/* Essential preset member: a bright frame plus a glow, so the must-have picks
+   read at a glance. The ring is drawn with box-shadow rather than a thicker
+   border so the 96x64 layout does not shift. */
 .preset-member.is-essential .preset-member-portrait {
-  border-color: #D05126;
+  border-color: #FF8A5B;
+  box-shadow:
+    0 0 0 1px rgba(255, 138, 91, 0.6),
+    0 0 10px 2px rgba(208, 81, 38, 0.65);
 }
 
 /* ================= TEAM BUILDING: MOBILE ================= */
@@ -6587,7 +6569,6 @@ body.team-resizing * {
     right: 1px;
     width: 11px;
     height: 11px;
-    padding: 1px;
   }
 }
 

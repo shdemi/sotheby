@@ -2900,11 +2900,6 @@ function createCharacterCard(name, char, iconUrl) {
     ? `<span class="char-favourite-corner"></span><img src="images/random_icon/unfavourite_icon.png" alt="" class="char-favourite-badge" loading="lazy" decoding="async" />`
     : "";
 
-  // Duplicated across teams -> flag it the same way the pickers do
-  const usedBadgeHtml = !teamsHideWarning && duplicatedTeamCharacters().has(name)
-    ? `<img src="images/random_icon/Used_icon.png" alt="${escapeHtml(t("team.usedElsewhere"))}" title="${escapeHtml(t("team.usedElsewhere"))}" class="char-used-badge" loading="lazy" decoding="async" />`
-    : "";
-
   const avatarImgStyles = [];
   if (char.owned) {
     if (boxKind && boxKind !== DEFAULT_PATTERN) {
@@ -2981,7 +2976,6 @@ function createCharacterCard(name, char, iconUrl) {
       ${afflatusIconHtml}
       ${insightLevelOverlay}
       ${favouriteBadgeHtml}
-      ${usedBadgeHtml}
     </div>
     ${rarityLineHtml}
     ${portraitBarHtml}
@@ -8131,6 +8125,40 @@ function setupEventListeners() {
       const icon = btnToolsToggle.querySelector(".toggle-icon");
       if (icon) icon.textContent = isOpen ? "▴" : "▾";
     });
+  }
+
+  /**
+   * Team Building moves into the Menu drawer on narrow screens, to the right of
+   * the language switcher: once the Menu button appears the stats row no longer
+   * has room for it. The node is moved rather than duplicated so the click
+   * handler and the modal wiring stay attached to one element.
+   */
+  const teamBtn = document.getElementById("btn-team");
+  const teamBtnHome = document.querySelector(".header-stats-row");
+  const teamBtnAnchor = document.querySelector(".header-stats-row .stat-badge-wrap");
+  const drawerLangGroup = document.querySelector(".tools-lang-group");
+  const narrowTools = window.matchMedia("(max-width: 1260px)");
+
+  const syncTeamButtonPlacement = () => {
+    if (!teamBtn || !teamBtnHome || !drawerLangGroup) return;
+    if (narrowTools.matches) {
+      // Last child of the group => right of the language switcher.
+      if (teamBtn.parentElement !== drawerLangGroup) drawerLangGroup.appendChild(teamBtn);
+    } else if (teamBtn.parentElement !== teamBtnHome) {
+      if (teamBtnAnchor && teamBtnAnchor.parentElement === teamBtnHome) {
+        teamBtnHome.insertBefore(teamBtn, teamBtnAnchor);
+      } else {
+        teamBtnHome.appendChild(teamBtn);
+      }
+    }
+  };
+
+  syncTeamButtonPlacement();
+  if (typeof narrowTools.addEventListener === "function") {
+    narrowTools.addEventListener("change", syncTeamButtonPlacement);
+  } else if (typeof narrowTools.addListener === "function") {
+    // Safari < 14
+    narrowTools.addListener(syncTeamButtonPlacement);
   }
 
   // Roster Manager
