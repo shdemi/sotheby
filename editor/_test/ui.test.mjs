@@ -283,10 +283,95 @@ try {
     check("the psychube grid replaces the character grid", switched.chubeVisible && !switched.charVisible, JSON.stringify([switched.charVisible, switched.chubeVisible]));
     check("the psychube grid is populated", switched.chubeItems > 0 && switched.chubeImages > 0, `${switched.chubeItems} rows / ${switched.chubeImages} images`);
 
+    /* Measure the psychube tile while its tab is showing — a hidden panel has no
+       layout, so width and height would both read 0. */
+    const chubeStyle = await page.evaluate(() => {
+      const tile = document.querySelector("#chubes-grid-list .roster-char-item .roster-avatar-box");
+      if (!tile) return null;
+      const r = tile.getBoundingClientRect();
+      return {
+        box: [Math.round(r.width), Math.round(r.height)],
+        objectFit: getComputedStyle(tile.querySelector("img")).objectFit,
+      };
+    });
+
     await page.locator('.manage-tab[data-manage-tab="characters"]').click();
     await page.waitForTimeout(600);
     const back = await page.evaluate(() => !document.getElementById("roster-grid-list").hidden);
     check("switching back restores the character grid", back);
+
+    /* The two tabs look deliberately different, and an earlier unscoped rule
+       made the character tiles inherit the psychube layout. */
+    const styling = await page.evaluate(() => {
+      const active = getComputedStyle(document.querySelector(".manage-tab.active"));
+      const idleEl = [...document.querySelectorAll(".manage-tab")].find((b) => !b.classList.contains("active"));
+      const idle = idleEl ? getComputedStyle(idleEl) : null;
+      const box = (el) => {
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return [Math.round(r.width), Math.round(r.height)];
+      };
+      const charTile = document.querySelector("#roster-grid-list .roster-char-item .roster-avatar-box");
+      // Owned items get the visible grey border; the tests do not seed a roster,
+      // so read whichever border rule applies to a real tile.
+      const charBorderEl = document.querySelector("#roster-grid-list .roster-char-item.is-owned .roster-avatar-box") || charTile;
+      const readBg = (el) => (el ? getComputedStyle(el).backgroundColor : null);
+      return {
+        activeColor: active.color,
+        idleColor: idle ? idle.color : null,
+        activeBorder: active.borderTopColor,
+        activeWeight: active.fontWeight,
+        charAvatar: box(charTile),
+        charBorder: charBorderEl
+          ? `${getComputedStyle(charBorderEl).borderTopWidth} ${getComputedStyle(charBorderEl).borderTopColor}`
+          : null,
+        charObjectFit: charTile ? getComputedStyle(charTile.querySelector("img")).objectFit : null,
+        charBackground: readBg(charTile),
+      };
+    });
+
+    const isOrange = (c) => /rgb\(237,\s*125,\s*49\)/.test(c);
+    const isWhite = (c) => /rgb\(247,\s*247,\s*247\)/.test(c);
+
+    check("the active tab is orange (#ED7D31)", isOrange(styling.activeColor), styling.activeColor);
+    check("the active tab border is orange too", isOrange(styling.activeBorder), styling.activeBorder);
+    check("the inactive tab is white", isWhite(styling.idleColor), String(styling.idleColor));
+
+    check(
+      "the character tile is the compact 60x60 square",
+      styling.charAvatar && styling.charAvatar[0] === 60 && styling.charAvatar[1] === 60,
+      JSON.stringify(styling.charAvatar)
+    );
+    check("it crops the portrait to fill the tile", styling.charObjectFit === "cover", String(styling.charObjectFit));
+
+    /* The border belongs to owned tiles; an unowned tile is dimmed with a
+       transparent border, which is the existing behaviour. */
+    const borderRules = await page.evaluate(() => {
+      const owned = document.querySelector("#roster-grid-list .roster-char-item.is-owned .roster-avatar-box");
+      const unowned = document.querySelector("#roster-grid-list .roster-char-item:not(.is-owned) .roster-avatar-box");
+      const read = (el) =>
+        el ? { border: `${getComputedStyle(el).borderTopWidth} ${getComputedStyle(el).borderTopColor}`, opacity: getComputedStyle(el).opacity } : null;
+      return { owned: read(owned), unowned: read(unowned) };
+    });
+    if (borderRules.owned) {
+      check(
+        "an owned character tile keeps its grey border",
+        /2px rgb\(181, 181, 179\)/.test(borderRules.owned.border),
+        borderRules.owned.border
+      );
+    } else {
+      check("no owned tile is present to check the border (skipped)", true);
+    }
+    if (borderRules.unowned) {
+      check("an unowned character tile is dimmed", Number(borderRules.unowned.opacity) < 1, borderRules.unowned.opacity);
+    }
+
+    check(
+      "the psychube tile keeps its own tall layout",
+      chubeStyle && chubeStyle.box[1] > chubeStyle.box[0],
+      JSON.stringify(chubeStyle)
+    );
+    check("it shows the whole art", chubeStyle && chubeStyle.objectFit === "contain", JSON.stringify(chubeStyle?.objectFit));
 
     await page.locator("#roster-btn-close").click();
     await page.waitForTimeout(400);
