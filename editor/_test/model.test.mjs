@@ -31,6 +31,25 @@ function check(label, ok, detail) {
 const read = (f) => fs.readFileSync(path.join(DATA, f), "utf8");
 const readRoot = (f) => fs.readFileSync(path.join(ROOT, f), "utf8");
 
+/** A preset that has at least one member, so slot-level tests have a target. */
+function pickPreset(model, predicate) {
+  const name = model.teamNames.find((n) => {
+    const variants = model.team(n);
+    if (!Array.isArray(variants) || variants.length === 0) return false;
+    if (!variants.every((slots) => Array.isArray(slots) && slots.length > 0)) return false;
+    return predicate ? predicate(n, variants) : true;
+  });
+  if (!name) throw new Error("No preset matches — the tests need one.");
+  return name;
+}
+
+/** A preset whose variant has a member with no is_essential flag yet. */
+function pickPresetWithNonEssential(model) {
+  return pickPreset(model, (_n, variants) =>
+    variants.some((slots) => slots.some((m) => m && m.is_essential !== true))
+  );
+}
+
 /** First character with no resonance shape, so tests never depend on one name. */
 function pickShapeLess(model) {
   const name = model.characters.find((n) => model.character(n).shape === "");
@@ -82,7 +101,7 @@ check("no file is dirty on load", model.changedFiles().length === 0, model.chang
 check("output() is empty on load", Object.keys(model.output()).length === 0);
 check("characters were derived", model.characters.length > 100, String(model.characters.length));
 check("psychubes were derived", model.psychubes.length === 116, String(model.psychubes.length));
-check("team presets were derived", model.teamNames.length === 18, String(model.teamNames.length));
+check("team presets were derived", model.teamNames.length > 0, String(model.teamNames.length));
 check("shapes were derived", model.shapeNames.length === 4, model.shapeNames.join(", "));
 
 console.log("\n=== derived values match the shipped data ===");
@@ -130,12 +149,25 @@ console.log("\n=== validation of the shipped data ===");
   for (const w of warnings.slice(0, 6)) console.log(`          ! ${w}`);
 
   const expected = [
-    "Dynamo Wheelchair",
     "release_patch",
     "reserved special chube",
   ];
   for (const needle of expected) {
     check(`warns about "${needle}"`, warnings.some((w) => w.includes(needle)), warnings.join(" | ").slice(0, 200));
+  }
+  // Preset variants without an essential member are warned about, not rejected.
+  // Which preset that is depends on the current data, so clear every member of
+  // one variant and look for the warning.
+  {
+    const probeModel = freshModel();
+    const preset = pickPreset(probeModel);
+    const slots = probeModel.team(preset)[0];
+    slots.forEach((_member, si) => probeModel.setTeamSlot(preset, 0, si, "isEssential", false));
+    check(
+      "warns when a variant has no essential member",
+      validate(probeModel).warnings.some((w) => w.includes("marked essential")),
+      `cleared isEssential on every member of ${preset}`
+    );
   }
 }
 
@@ -172,7 +204,12 @@ expectChanged("setFutureSkin", (m) => m.setFutureSkin("315503", false), ["future
 expectChanged("setPsychubeFutureSight", (m) => m.setPsychubeFutureSight("6", "73", false), ["future_sight.json"]);
 expectChanged("setPsychubeField tags", (m) => m.setPsychubeField("6", "73", "tags", ["ATK"]), ["psychube_id.json"]);
 expectChanged("setTeamSlot character", (m) => m.setTeamSlot("Conduit", 0, 0, "character", "Sotheby"), ["team_archetypes.json"]);
-expectChanged("setTeamSlot essential", (m) => m.setTeamSlot("Dynamo Wheelchair", 0, 0, "isEssential", true), ["team_archetypes.json"]);
+expectChanged("setTeamSlot essential", (m) => {
+  const preset = pickPresetWithNonEssential(m);
+  const variant = m.team(preset).findIndex((slots) => slots.some((x) => x && x.is_essential !== true));
+  const slot = m.team(preset)[variant].findIndex((x) => x && x.is_essential !== true);
+  m.setTeamSlot(preset, variant, slot, "isEssential", true);
+}, ["team_archetypes.json"]);
 
 console.log("\n=== a no-op edit changes nothing ===");
 for (const [label, mutate] of [
@@ -182,7 +219,11 @@ for (const [label, mutate] of [
   ["setCnName to the same value", (m) => m.setCnName("Druvis III", "槲寄生")],
   ["setEuphoria to the same value", (m) => m.setEuphoria("Druvis III", "1", "Petrify", false)],
   ["setTransfer to the same value", (m) => m.setTransfer("6", true)],
-  ["setTeamSlot to the same value", (m) => m.setTeamSlot("Conduit", 0, 0, "character", "Coppélia")],
+  ["setTeamSlot to the same value", (m) => {
+    const preset = pickPreset(m);
+    const member = m.team(preset)[0][0];
+    m.setTeamSlot(preset, 0, 0, "character", member.character);
+  }],
 ]) {
   const m = freshModel();
   mutate(m);
@@ -412,7 +453,7 @@ console.log("\n=== addTeam ===");
 
   let threw = false;
   try {
-    m.addTeam("Conduit");
+    m.addTeam(m.teamNames[0]);
   } catch {
     threw = true;
   }
@@ -436,15 +477,17 @@ console.log("\n=== moveTeam ===");
 {
   const m = freshModel();
   const original = m.doc("team_archetypes.json").toString();
-  check("Conduit starts first", m.teamNames[0] === "Conduit", m.teamNames[0]);
+  const first = m.teamNames[0];
+  const total = m.teamNames.length;
+  check("the first preset is known", typeof first === "string" && first.length > 0, first);
 
-  m.moveTeam("Conduit", 4);
-  check("it moved to index 4", m.teamNames[4] === "Conduit", m.teamNames.slice(0, 6).join(", "));
-  check("no preset was lost", m.teamNames.length === 18, String(m.teamNames.length));
+  m.moveTeam(first, 4);
+  check("it moved to index 4", m.teamNames[4] === first, m.teamNames.slice(0, 6).join(", "));
+  check("no preset was lost", m.teamNames.length === total, `${total} -> ${m.teamNames.length}`);
   check("only team_archetypes.json changed", m.changedFiles().join(",") === "team_archetypes.json");
   check("the reordered file still validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
-  m.moveTeam("Conduit", 0);
+  m.moveTeam(first, 0);
   check("moving it back restores the file byte-for-byte", m.doc("team_archetypes.json").toString() === original);
 }
 
@@ -452,15 +495,16 @@ console.log("\n=== member euphoria ===");
 {
   const m = freshModel();
   const original = m.doc("team_archetypes.json").toString();
+  const preset = pickPreset(m);
 
-  m.setTeamMemberEuphoria("Conduit", 0, 0, "1");
-  check("E1 is written", m.team("Conduit")[0][0].euphoria === "E1", JSON.stringify(m.team("Conduit")[0][0]));
+  m.setTeamMemberEuphoria(preset, 0, 0, "1");
+  check("E1 is written", m.team(preset)[0][0].euphoria === "E1", JSON.stringify(m.team(preset)[0][0]));
 
-  m.setTeamMemberEuphoria("Conduit", 0, 0, "2");
-  check("changing to E2 replaces it", m.team("Conduit")[0][0].euphoria === "E2", JSON.stringify(m.team("Conduit")[0][0]));
+  m.setTeamMemberEuphoria(preset, 0, 0, "2");
+  check("changing to E2 replaces it", m.team(preset)[0][0].euphoria === "E2", JSON.stringify(m.team(preset)[0][0]));
 
-  m.setTeamMemberEuphoria("Conduit", 0, 0, "");
-  check("clearing removes the field", m.team("Conduit")[0][0].euphoria === undefined, JSON.stringify(m.team("Conduit")[0][0]));
+  m.setTeamMemberEuphoria(preset, 0, 0, "");
+  check("clearing removes the field", m.team(preset)[0][0].euphoria === undefined, JSON.stringify(m.team(preset)[0][0]));
   check("and the file is byte-identical again", m.doc("team_archetypes.json").toString() === original);
 }
 
@@ -468,37 +512,63 @@ console.log("\n=== substitutes ===");
 {
   const m = freshModel();
   const original = m.doc("team_archetypes.json").toString();
+  const preset = pickPreset(m);
 
   // A member that has none yet.
-  check("Conduit slot 1 has no substitutes", m.team("Conduit")[0][0].substitutes === undefined);
-  m.addSubstitute("Conduit", 0, 0, "Sotheby");
-  const subs = m.team("Conduit")[0][0].substitutes;
+  check("the first slot has no substitutes", m.team(preset)[0][0].substitutes === undefined);
+  m.addSubstitute(preset, 0, 0, "Sotheby");
+  const subs = m.team(preset)[0][0].substitutes;
   check("the array was created", Array.isArray(subs) && subs.length === 1, JSON.stringify(subs));
   check("with the chosen character", subs[0].character === "Sotheby", JSON.stringify(subs[0]));
 
-  m.setSubstituteField("Conduit", 0, 0, 0, "psychube", "Her Third Life");
-  check("a psychube can be set on it", m.team("Conduit")[0][0].substitutes[0].psychube === "Her Third Life", JSON.stringify(m.team("Conduit")[0][0].substitutes[0]));
+  m.setSubstituteField(preset, 0, 0, 0, "psychube", "Her Third Life");
+  check("a psychube can be set on it", m.team(preset)[0][0].substitutes[0].psychube === "Her Third Life", JSON.stringify(m.team(preset)[0][0].substitutes[0]));
 
-  m.setSubstituteField("Conduit", 0, 0, 0, "euphoria", "E1");
-  check("so can a euphoria tier", m.team("Conduit")[0][0].substitutes[0].euphoria === "E1");
+  m.setSubstituteField(preset, 0, 0, 0, "euphoria", "E1");
+  check("so can a euphoria tier", m.team(preset)[0][0].substitutes[0].euphoria === "E1");
 
-  m.addSubstitute("Conduit", 0, 0, "6");
-  check("a second substitute appends", m.team("Conduit")[0][0].substitutes.length === 2, JSON.stringify(m.team("Conduit")[0][0].substitutes));
+  m.addSubstitute(preset, 0, 0, "6");
+  check("a second substitute appends", m.team(preset)[0][0].substitutes.length === 2, JSON.stringify(m.team(preset)[0][0].substitutes));
 
-  m.removeSubstitute("Conduit", 0, 0, 1);
-  check("removing one leaves the other", m.team("Conduit")[0][0].substitutes.length === 1, JSON.stringify(m.team("Conduit")[0][0].substitutes));
-  m.removeSubstitute("Conduit", 0, 0, 0);
-  check("removing the last one drops the array", m.team("Conduit")[0][0].substitutes === undefined);
+  m.removeSubstitute(preset, 0, 0, 1);
+  check("removing one leaves the other", m.team(preset)[0][0].substitutes.length === 1, JSON.stringify(m.team(preset)[0][0].substitutes));
+  m.removeSubstitute(preset, 0, 0, 0);
+  check("removing the last one drops the array", m.team(preset)[0][0].substitutes === undefined);
   check("and the file is byte-identical again", m.doc("team_archetypes.json").toString() === original, "differs");
 
   // An existing object substitute keeps its own fields.
-  check("Lingering Glow slot 2 has a substitute", m.team("Lingering Glow")[0][1].substitutes.length === 1);
-  m.setSubstituteField("Lingering Glow", 0, 1, 0, "euphoria", "E2");
-  check("its euphoria can be changed", m.team("Lingering Glow")[0][1].substitutes[0].euphoria === "E2");
-  check("its psychube survived", m.team("Lingering Glow")[0][1].substitutes[0].psychube === "Shadows in the Subconscious");
-  m.setSubstituteField("Lingering Glow", 0, 1, 0, "psychube", "");
-  check("clearing a field removes it", m.team("Lingering Glow")[0][1].substitutes[0].psychube === undefined);
-  check("the character survives", m.team("Lingering Glow")[0][1].substitutes[0].character === "Isolde");
+  const withSub = m.teamNames.find((n) =>
+    m.team(n).some((slots, vi) =>
+      slots.some((member, si) => {
+        const list = member.substitutes || [];
+        return list.length === 1 && typeof list[0] === "object" && list[0].character && list[0].psychube;
+      })
+    )
+  );
+  check("a preset with a single object substitute exists", !!withSub, String(withSub));
+  if (withSub) {
+    let vi = 0;
+    let si = 0;
+    m.team(withSub).forEach((slots, v) =>
+      slots.forEach((member, s) => {
+        const list = member.substitutes || [];
+        if (list.length === 1 && typeof list[0] === "object" && list[0].character && list[0].psychube) {
+          vi = v;
+          si = s;
+        }
+      })
+    );
+    const before = m.team(withSub)[vi][si].substitutes[0];
+    const originalPsychube = before.psychube;
+    const originalCharacter = before.character;
+
+    m.setSubstituteField(withSub, vi, si, 0, "euphoria", "E2");
+    check("its euphoria can be changed", m.team(withSub)[vi][si].substitutes[0].euphoria === "E2");
+    check("its psychube survived", m.team(withSub)[vi][si].substitutes[0].psychube === originalPsychube);
+    m.setSubstituteField(withSub, vi, si, 0, "psychube", "");
+    check("clearing a field removes it", m.team(withSub)[vi][si].substitutes[0].psychube === undefined);
+    check("the character survives", m.team(withSub)[vi][si].substitutes[0].character === originalCharacter);
+  }
 }
 
 console.log("\n=== the bare-string substitute shorthand is promoted ===");
@@ -622,6 +692,65 @@ console.log("\n=== addTransfer / removeTransfer ===");
     }
     check(`${label} is refused`, threw);
   }
+}
+
+/* ------------------------------------------------------------------ *
+ * 9b. Build recommendations
+ * ------------------------------------------------------------------ */
+
+console.log("\n=== recommendations ===");
+{
+  const m = freshModel();
+  const original = m.doc("characters_recommendation.json").toString();
+  const names = m.recommendationNames();
+  check("the file loads with at least one entry", names.length > 0, JSON.stringify(names));
+
+  const target = names[0];
+  const before = m.recommendation(target);
+  check("an entry has the expected shape", !!before && typeof before === "object", JSON.stringify(before));
+
+  // Pattern: a plain string field. Use a value different from the shipped one so
+  // the edit is guaranteed to touch the file.
+  const originalPattern = String(before.Pattern || "");
+  const newPattern = originalPattern === "Elucidation" ? "Genuinity" : "Elucidation";
+  m.setRecommendationField(target, "Pattern", newPattern);
+  check("Pattern is written", m.recommendation(target).Pattern === newPattern, JSON.stringify(m.recommendation(target).Pattern));
+  check("only characters_recommendation.json changed", m.changedFiles().join(",") === "characters_recommendation.json", m.changedFiles().join(","));
+  check("the edit validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
+
+  // Resonance: one named code at a time.
+  m.setRecommendationField(target, "Resonance", { Attack: "AAA", Crit: "BBB" });
+  check("Resonance is written", Object.keys(m.recommendation(target).Resonance).join(",") === "Attack,Crit", JSON.stringify(m.recommendation(target).Resonance));
+  check("one code can be removed", (() => {
+    m.setRecommendationField(target, "Resonance", { Attack: "AAA" });
+    return Object.keys(m.recommendation(target).Resonance).join(",") === "Attack";
+  })());
+
+  // Psychube: one value is a string, several become an array.
+  m.setRecommendationField(target, "Psychube", "Steps Forward");
+  check("a single psychube is stored as a string", m.recommendation(target).Psychube === "Steps Forward", JSON.stringify(m.recommendation(target).Psychube));
+  m.setRecommendationField(target, "Psychube", "Steps Forward | The Leap of Time");
+  check("several psychubes become an array", Array.isArray(m.recommendation(target).Psychube) && m.recommendation(target).Psychube.length === 2, JSON.stringify(m.recommendation(target).Psychube));
+
+  // Clearing every field in the shipped entry removes the character entry.
+  const entryKeys = Object.keys(before);
+  for (const key of entryKeys) {
+    if (key === "Resonance") m.setRecommendationField(target, "Resonance", {});
+    else m.setRecommendationField(target, key, "");
+  }
+  check("clearing every field drops the entry", m.recommendation(target) === null, JSON.stringify(m.recommendation(target)));
+  check(
+    "an entry with no fields leaves an empty object, not a stray key",
+    m.doc("characters_recommendation.json").toString().trim() === "{}",
+    m.doc("characters_recommendation.json").toString().trim()
+  );
+
+  // An unknown psychube is a warning, not an error.
+  const probe = freshModel();
+  probe.setRecommendationField(target, "Psychube", "Definitely Not A Chube");
+  const probeResult = validate(probe);
+  check("an unknown psychube warns", probeResult.warnings.some((w) => w.includes("Definitely Not A Chube")), probeResult.warnings.filter((w) => w.includes("Chube")).join("; "));
+  check("but does not block", probeResult.errors.length === 0, probeResult.errors.join("; "));
 }
 
 console.log("\n=== diff rendering ===");

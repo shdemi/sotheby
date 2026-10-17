@@ -358,7 +358,7 @@
         "toolbar.exportPng": "导出图片",
         "toolbar.importJson": "导入 JSON",
         "toolbar.manage": "管理",
-        "toolbar.manageCharacters": "管理角色",
+        "toolbar.manageCharacters": "角色",
         "toolbar.menu": "菜单",
         "toolbar.options": "选项",
         "toolbar.quickEdit": "快速编辑",
@@ -401,7 +401,17 @@
         "team.use": "使用",
         "team.or": "或",
         "team.addPsychube": "添加心相",
-        "team.pendingHint": "为该角色选择一个位置"
+        "team.pendingHint": "为该角色选择一个位置",
+        "toolbar.json": "JSON",
+        "json.import": "导入",
+        "json.export": "导出",
+        "json.importFromFile": "选择一个 .json 文件…",
+        "json.importHint": "自动识别主题、角色名单、完整备份和旧版名单文件。",
+        "recommend.resonanceCodes": "共鸣方案",
+        "recommend.pattern": "推荐图案",
+        "recommend.portrait": "推荐塑造",
+        "recommend.psychube": "推荐心相",
+        "recommend.psychubes": "推荐心相"
     },
     "en": {
         "action.addAnd": "+ AND",
@@ -762,7 +772,7 @@
         "toolbar.exportPng": "Export PNG",
         "toolbar.importJson": "Import JSON",
         "toolbar.manage": "Manage",
-        "toolbar.manageCharacters": "Manage Characters",
+        "toolbar.manageCharacters": "Characters",
         "toolbar.menu": "Menu",
         "toolbar.options": "Options",
         "toolbar.quickEdit": "Quick Edit",
@@ -805,7 +815,17 @@
         "team.use": "Use",
         "team.or": "or",
         "team.addPsychube": "Add a psychube",
-        "team.pendingHint": "Pick a slot for this character"
+        "team.pendingHint": "Pick a slot for this character",
+        "toolbar.json": "JSON",
+        "json.import": "Import",
+        "json.export": "Export",
+        "json.importFromFile": "Choose a .json file…",
+        "json.importHint": "Theme, roster, full backup and legacy roster files are detected automatically.",
+        "recommend.resonanceCodes": "Resonance codes",
+        "recommend.pattern": "Recommended Pattern",
+        "recommend.portrait": "Recommended Portrait",
+        "recommend.psychube": "Recommended Psychube",
+        "recommend.psychubes": "Recommended Psychubes"
     },
     "vi": {
         "action.addAnd": "+ VÀ",
@@ -1166,7 +1186,7 @@
         "toolbar.exportPng": "Xuất PNG",
         "toolbar.importJson": "Nhập JSON",
         "toolbar.manage": "Quản lý",
-        "toolbar.manageCharacters": "Quản lý nhân vật",
+        "toolbar.manageCharacters": "Nhân vật",
         "toolbar.menu": "Menu",
         "toolbar.options": "Tuỳ chọn",
         "toolbar.quickEdit": "Sửa nhanh",
@@ -1209,6 +1229,16 @@
         "team.use": "Dùng",
         "team.or": "hoặc",
         "team.addPsychube": "Thêm Trấn",
-        "team.pendingHint": "Chọn một ô cho nhân vật này"
+        "team.pendingHint": "Chọn một ô cho nhân vật này",
+        "toolbar.json": "JSON",
+        "json.import": "Nhập",
+        "json.export": "Xuất",
+        "json.importFromFile": "Chọn một tệp .json…",
+        "json.importHint": "Tự nhận diện tệp giao diện, danh sách, bản sao lưu đầy đủ và danh sách kiểu cũ.",
+        "recommend.resonanceCodes": "Mã cộng hưởng",
+        "recommend.pattern": "Pattern gợi ý",
+        "recommend.portrait": "Portrait gợi ý",
+        "recommend.psychube": "Trấn gợi ý",
+        "recommend.psychubes": "Trấn gợi ý"
     }
 }

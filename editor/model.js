@@ -29,6 +29,7 @@ export const FILES = [
   "name_map.json",
   "psychube_id.json",
   "team_archetypes.json",
+  "characters_recommendation.json",
 ];
 
 /** Read-only inputs: maintained elsewhere, never written by the editor. */
@@ -699,6 +700,94 @@ export class Model {
     return changed;
   }
 
+  /* ---- build recommendations ---- */
+
+  /** The raw recommendation entry for a character, or null. */
+  recommendation(name) {
+    const doc = this.doc("characters_recommendation.json");
+    if (!doc) return null;
+    const node = doc.nodeAt([name]);
+    return node ? doc.value[name] : null;
+  }
+
+  /** Every character that has a recommendation entry. */
+  recommendationNames() {
+    const value = this.value("characters_recommendation.json") || {};
+    return Object.keys(value);
+  }
+
+  /**
+   * Sets one recommendation field for a character.
+   *
+   * `resonance` takes an object of {label: code}; every other field takes a
+   * string (psychube accepts "A | B" for several alternatives). A blank value
+   * removes the field, and removing the last field drops the character entry.
+   */
+  setRecommendationField(name, field, value) {
+    const doc = this.doc("characters_recommendation.json");
+    if (!doc) return false;
+    const canonical = this.resolve(name);
+    if (!canonical) return false;
+
+    const entryExists = doc.nodeAt([canonical]) !== null;
+    let changed = false;
+    let payload;
+
+    if (field === "Resonance") {
+      payload = {};
+      for (const [label, code] of Object.entries(value || {})) {
+        const cleanLabel = String(label).trim();
+        const cleanCode = String(code == null ? "" : code).trim();
+        if (cleanLabel && cleanCode) payload[cleanLabel] = cleanCode;
+      }
+      if (Object.keys(payload).length === 0) payload = null;
+    } else if (field === "Psychube") {
+      const list = (Array.isArray(value) ? value : String(value || "").split("|"))
+        .map((v) => String(v).trim())
+        .filter(Boolean);
+      // One psychube is stored as a string, several as an array: that keeps the
+      // file readable and matches what the app accepts.
+      payload = list.length === 0 ? null : list.length === 1 ? list[0] : list;
+    } else {
+      const text = String(value == null ? "" : value).trim();
+      payload = text === "" ? null : text;
+    }
+
+    if (payload === null) {
+      if (entryExists && doc.nodeAt([canonical, field])) {
+        changed = doc.deleteProperty([canonical], field);
+      }
+    } else if (!entryExists) {
+      doc.setProperty([], canonical, { [field]: payload });
+      changed = true;
+    } else if (doc.nodeAt([canonical, field])) {
+      changed = doc.set([canonical, field], payload);
+    } else {
+      changed = doc.setProperty([canonical], field, payload);
+    }
+
+    // A character entry with no fields left is noise; drop it.
+    if (changed) {
+      const current = doc.nodeAt([canonical]);
+      if (current && current.type === "object" && current.entries.length === 0) {
+        doc.deleteProperty([], canonical);
+      }
+    }
+
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Drops every recommendation for a character. */
+  removeRecommendation(name) {
+    const doc = this.doc("characters_recommendation.json");
+    if (!doc) return false;
+    const canonical = this.resolve(name);
+    const changed = doc.deleteProperty([], canonical);
+    if (changed) this.reload();
+    return changed;
+  }
+
   /* ---- team presets ---- */
 
   team(archetype) {
@@ -1111,6 +1200,62 @@ export function validate(model) {
   });
   const dupSkin = (fs.Skin || []).filter((s, i) => (fs.Skin || []).indexOf(s) !== i);
   if (dupSkin.length) err(`future_sight.json → Skin: duplicate ids ${[...new Set(dupSkin)].join(", ")}`);
+
+  /* build recommendations */
+  {
+    const recommendations = model.value("characters_recommendation.json") || {};
+    for (const [name, entry] of Object.entries(recommendations)) {
+      const label = `characters_recommendation.json → ${name}`;
+      if (!known.has(name)) {
+        err(`${label}: "${name}" is not a known character`);
+        continue;
+      }
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        err(`${label}: expected an object`);
+        continue;
+      }
+      for (const key of Object.keys(entry)) {
+        if (!["Resonance", "Pattern", "Portrait", "Psychube"].includes(key)) {
+          warn(`${label}: unknown field "${key}" (expected Resonance, Pattern, Portrait, Psychube)`);
+        }
+      }
+
+      if (entry.Resonance !== undefined) {
+        if (!entry.Resonance || typeof entry.Resonance !== "object" || Array.isArray(entry.Resonance)) {
+          err(`${label}: Resonance must be an object of {label: code}`);
+        } else {
+          for (const [resLabel, code] of Object.entries(entry.Resonance)) {
+            if (String(resLabel).trim() === "") err(`${label}: a Resonance entry has no label`);
+            if (String(code == null ? "" : code).trim() === "") {
+              err(`${label}: Resonance "${resLabel}" has an empty code`);
+            }
+          }
+          if (Object.keys(entry.Resonance).length === 0) warn(`${label}: Resonance is empty`);
+        }
+      }
+
+      if (entry.Pattern !== undefined && String(entry.Pattern).trim() === "") {
+        warn(`${label}: Pattern is empty`);
+      }
+      if (entry.Portrait !== undefined && String(entry.Portrait).trim() === "") {
+        warn(`${label}: Portrait is empty`);
+      }
+
+      if (entry.Psychube !== undefined) {
+        const list = Array.isArray(entry.Psychube) ? entry.Psychube : [entry.Psychube];
+        if (list.length === 0) warn(`${label}: Psychube is empty`);
+        const knownPsychubes = new Set(Object.keys(psychubeId).flatMap((r) => (psychubeId[r] || []).map((p) => String(p.name || "").toLowerCase())));
+        for (const item of list) {
+          const text = String(item == null ? "" : item).trim();
+          if (text === "") {
+            warn(`${label}: an empty Psychube entry`);
+          } else if (!knownPsychubes.has(text.toLowerCase())) {
+            warn(`${label}: Psychube "${text}" does not match any name in psychube_id.json`);
+          }
+        }
+      }
+    }
+  }
 
   /* global name transfer */
   for (const [raw, canonical] of Object.entries(model.value("global_name_transfer.json") || {})) {

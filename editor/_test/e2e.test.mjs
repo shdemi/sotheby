@@ -136,10 +136,14 @@ try {
   model.setPsychubeFutureSight("6", "68", true);
   session.push("chube 6:68 future sight");
 
-  // (e) team preset: swap a member and mark it essential
-  model.setTeamSlot("Dynamo Wheelchair", 0, 0, "character", "Sotheby");
-  model.setTeamSlot("Dynamo Wheelchair", 0, 0, "isEssential", true);
-  session.push("edited Dynamo Wheelchair");
+  // (e) team preset: swap a member and mark it essential.
+  // The preset is picked from the data so this does not break when presets change.
+  const editedPreset = model.teamNames.find((n) => model.team(n)[0] && model.team(n)[0].length > 0);
+  const originalSlot = JSON.parse(JSON.stringify(model.team(editedPreset)[0][0]));
+  const replacement = model.characters.find((n) => n !== originalSlot.character);
+  model.setTeamSlot(editedPreset, 0, 0, "character", replacement);
+  model.setTeamSlot(editedPreset, 0, 0, "isEssential", true);
+  session.push(`edited ${editedPreset}`);
 
   // (f) a CN name correction
   model.setCnName("Druvis III", "槲寄生!");
@@ -229,8 +233,8 @@ try {
     const fs68 = reloaded.psychubes.find((p) => p.key === "6:68");
     check("psychube future sight persisted", fs68.futureSight === true, String(fs68.futureSight));
 
-    const wc = reloaded.team("Dynamo Wheelchair")[0];
-    check("team slot character persisted", wc[0].character === "Sotheby", wc[0].character);
+    const wc = reloaded.team(editedPreset)[0];
+    check("team slot character persisted", wc[0].character === replacement, wc[0].character);
     check("team slot essential persisted", wc[0].is_essential === true, JSON.stringify(wc[0]));
 
     check("CN name correction persisted", reloaded.value("name_map.json").character["Druvis III"] === "槲寄生!");
@@ -247,8 +251,8 @@ try {
   {
     const m = makeModel(loadTextsFrom(scratch));
     m.setCnName("Druvis III", "槲寄生");
-    m.setTeamSlot("Dynamo Wheelchair", 0, 0, "isEssential", false);
-    m.setTeamSlot("Dynamo Wheelchair", 0, 0, "character", "Enigma");
+    m.setTeamSlot(editedPreset, 0, 0, "character", originalSlot.character);
+    m.setTeamSlot(editedPreset, 0, 0, "isEssential", originalSlot.is_essential === true);
     m.setPsychubeFutureSight("6", "68", false);
     m.setPsychubeField("6", "73", "tags", ["ATK", "Critical"]);
     if (shapeLess) m.setShape(shapeLess, "");

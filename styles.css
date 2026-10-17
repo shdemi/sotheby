@@ -3348,7 +3348,7 @@ body::before {
 .modal-body,
 .roster-grid,
 #stats-modal .modal-body,
-#chubes-modal .roster-grid,
+#roster-modal .roster-grid,
 #roster-modal .roster-grid {
   scrollbar-width: thin;
   scrollbar-color: rgba(181, 181, 179, 0.45) transparent;
@@ -4092,32 +4092,32 @@ body::before {
 }
 
 /* Chubes manager: full 180x214 art, no tile border (a corner badge marks selection) */
-#chubes-modal .roster-char-item {
+#roster-modal .roster-char-item {
   width: 84px;
 }
 
-#chubes-modal .roster-avatar-box {
+#roster-modal .roster-avatar-box {
   width: 84px;
   height: auto;
   aspect-ratio: 180 / 214;
   background: transparent;
 }
 
-#chubes-modal .roster-avatar-img {
+#roster-modal .roster-avatar-img {
   object-fit: contain;
 }
 
-#chubes-modal .roster-char-item.is-owned .roster-avatar-box {
+#roster-modal .roster-char-item.is-owned .roster-avatar-box {
   border-color: transparent;
   box-shadow: none;
 }
 
-#chubes-modal .roster-char-item.is-selected .roster-avatar-box {
+#roster-modal .roster-char-item.is-selected .roster-avatar-box {
   border-color: transparent !important;
   box-shadow: none !important;
 }
 
-#chubes-modal .roster-char-item.is-selected .chube-selected-mark {
+#roster-modal .roster-char-item.is-selected .chube-selected-mark {
   display: block;
 }
 
@@ -6606,4 +6606,183 @@ body.team-resizing * {
   .preset-members {
     gap: 8px;
   }
+}
+
+/* ================= MANAGE MODAL: CHARACTERS / PSYCHUBES ================= */
+
+.manage-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(17, 15, 12, 0.18);
+  flex: none;
+}
+
+.manage-tab {
+  font: inherit;
+  font-family: var(--main-font-family);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6d665d;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 14px 9px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.manage-tab:hover { color: #2a2825; }
+
+.manage-tab.active {
+  color: #111;
+  font-weight: 700;
+  border-bottom-color: #ED7D31;
+}
+
+/* The hidden attribute must win over the flex/grid display of these panels. */
+.manage-panel[hidden] { display: none !important; }
+
+/* ================= JSON MODAL ================= */
+
+.json-section { display: flex; flex-direction: column; gap: 8px; }
+
+.json-section-label {
+  font-family: var(--main-font-family);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6d665d;
+}
+
+.json-import-btn { cursor: pointer; margin: 0; }
+
+.json-export-list { display: flex; flex-direction: column; gap: 8px; }
+
+.json-divider {
+  height: 1px;
+  background: rgba(17, 15, 12, 0.16);
+  margin: 2px 0;
+}
+
+.json-hint {
+  margin: 0;
+  font-family: var(--mono-font);
+  font-size: 0.62rem;
+  line-height: 1.45;
+  color: #8a8378;
+}
+
+/* Icon-only destructive button (Reset) */
+.btn-icon-only {
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-icon-only .btn-reset-icon { width: 15px; height: 15px; }
+
+/* ================= RECOMMENDATION HINTS ================= */
+
+.setting-label-with-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.recommend-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  flex: none;
+}
+
+.recommend-hint:hover { opacity: 1; transform: scale(1.1); }
+
+.recommend-hint img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: block;
+}
+
+.recommend-hint[hidden] { display: none !important; }
+
+/* Popover sits under its label row, inside the setting group */
+.recommend-popover {
+  margin-top: 8px;
+  padding: 9px 11px;
+  border: 1px solid #ED7D31;
+  border-left-width: 3px;
+  background: #fdf6ec;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  animation: recommendIn 0.14s ease-out;
+}
+
+.recommend-popover[hidden] { display: none !important; }
+
+@keyframes recommendIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.recommend-line {
+  margin: 0;
+  font-family: var(--mono-font);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: #35302a;
+  word-break: break-word;
+}
+
+.recommend-line strong { color: #B4531E; font-weight: 700; }
+
+/* Named copy buttons for resonance codes */
+.recommend-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.recommend-copy {
+  font: inherit;
+  font-family: var(--mono-font);
+  font-size: 0.64rem;
+  letter-spacing: 0.03em;
+  padding: 4px 10px;
+  border: 1px solid #C98B5E;
+  border-radius: 2px;
+  background: #fff;
+  color: #7a3d12;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.recommend-copy:hover { background: #ED7D31; border-color: #ED7D31; color: #fff; }
+.recommend-copy.is-copied { background: #2f7d32; border-color: #2f7d32; color: #fff; }
+
+.recommend-popover .recommend-label {
+  font-family: var(--main-font-family);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a6a4a;
 }

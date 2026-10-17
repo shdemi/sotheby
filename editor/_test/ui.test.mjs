@@ -79,6 +79,10 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const port = server.address().port;
 const BASE = `http://127.0.0.1:${port}/editor/index.html`;
+/** The app itself, used by the toolbar and modal checks. */
+const APP = `http://127.0.0.1:${port}/index.html`;
+/** The editor page again — the deploy-safety checks at the end need it. */
+const EDITOR = BASE;
 
 const browser = await chromium.launch();
 const page = await browser.newPage();
@@ -228,10 +232,200 @@ try {
   check("the page logged no errors", pageErrors.length === 0, pageErrors.slice(0, 3).join(" | "));
 
   /* ------------------------------------------------------------------ *
-   * 6. Deployed-page expectations
+   * 8. Manage modal: Characters / Psychubes tabs
    * ------------------------------------------------------------------ */
 
-  console.log("\n=== the deployed page offers no way to write to the host ===");
+  console.log("\n=== the Manage modal merges both managers ===");
+  {
+    await page.goto(APP, { waitUntil: "networkidle" });
+    await page.waitForTimeout(2500);
+
+    const toolbar = await page.evaluate(() => {
+      const reset = document.getElementById("btn-reset-data");
+      return {
+        manageButtons: [...document.querySelectorAll("#btn-manage-all, #btn-chubes")].map((b) => b.id),
+        jsonButtons: [...document.querySelectorAll("#btn-json, #btn-export-data")].map((b) => b.id),
+        resetText: (reset?.textContent ?? "").trim(),
+        resetHasIcon: !!document.querySelector("#btn-reset-data .btn-reset-icon"),
+      };
+    });
+    check("only one Manage button exists", toolbar.manageButtons.join(",") === "btn-manage-all", toolbar.manageButtons.join(","));
+    check("only one JSON button exists", toolbar.jsonButtons.join(",") === "btn-json", toolbar.jsonButtons.join(","));
+    check("Reset is icon-only", toolbar.resetText === "" && toolbar.resetHasIcon, JSON.stringify(toolbar.resetText));
+
+    await page.locator("#btn-manage-all").click();
+    await page.waitForTimeout(900);
+
+    const opened = await page.evaluate(() => ({
+      open: getComputedStyle(document.getElementById("roster-modal")).display,
+      tabs: [...document.querySelectorAll(".manage-tab")].map((b) => b.textContent.trim()),
+      active: document.querySelector(".manage-tab.active")?.dataset.manageTab,
+      charVisible: !document.getElementById("roster-grid-list").hidden,
+      chubeVisible: !document.getElementById("chubes-grid-list").hidden,
+      charItems: document.querySelectorAll("#roster-grid-list .roster-char-item").length,
+    }));
+    check("the modal opens", opened.open === "flex", opened.open);
+    check("it has two tabs", opened.tabs.length === 2, JSON.stringify(opened.tabs));
+    check("Characters is the default tab", opened.active === "characters", String(opened.active));
+    check("the character grid is shown", opened.charVisible && !opened.chubeVisible, JSON.stringify([opened.charVisible, opened.chubeVisible]));
+    check("the character grid has entries", opened.charItems > 0, String(opened.charItems));
+
+    await page.locator('.manage-tab[data-manage-tab="chubes"]').click();
+    await page.waitForTimeout(700);
+    const switched = await page.evaluate(() => ({
+      active: document.querySelector(".manage-tab.active")?.dataset.manageTab,
+      charVisible: !document.getElementById("roster-grid-list").hidden,
+      chubeVisible: !document.getElementById("chubes-grid-list").hidden,
+      chubeItems: document.querySelectorAll("#chubes-grid-list > *").length,
+      chubeImages: document.querySelectorAll("#chubes-grid-list img").length,
+    }));
+    check("switching tab updates the active state", switched.active === "chubes", String(switched.active));
+    check("the psychube grid replaces the character grid", switched.chubeVisible && !switched.charVisible, JSON.stringify([switched.charVisible, switched.chubeVisible]));
+    check("the psychube grid is populated", switched.chubeItems > 0 && switched.chubeImages > 0, `${switched.chubeItems} rows / ${switched.chubeImages} images`);
+
+    await page.locator('.manage-tab[data-manage-tab="characters"]').click();
+    await page.waitForTimeout(600);
+    const back = await page.evaluate(() => !document.getElementById("roster-grid-list").hidden);
+    check("switching back restores the character grid", back);
+
+    await page.locator("#roster-btn-close").click();
+    await page.waitForTimeout(400);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 9. JSON modal: import above, exports below
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== the JSON modal separates import from export ===");
+  {
+    await page.locator("#btn-json").click();
+    await page.waitForTimeout(600);
+
+    const modal = await page.evaluate(() => {
+      const m = document.getElementById("export-json-modal");
+      const labels = [...m.querySelectorAll(".json-section-label")].map((e) => e.textContent.trim());
+      const importBtn = document.getElementById("label-import-file").getBoundingClientRect();
+      const firstExport = document.getElementById("btn-export-json-theme").getBoundingClientRect();
+      return {
+        open: getComputedStyle(m).display,
+        labels,
+        importAboveExport: importBtn.bottom <= firstExport.top,
+        divider: !!m.querySelector(".json-divider"),
+        exports: ["btn-export-json-theme", "btn-export-json-roster", "btn-export-json-all"].map((id) => !!document.getElementById(id)),
+      };
+    });
+    check("the modal opens", modal.open === "flex", modal.open);
+    check("it is split into Import and Export", modal.labels.join(",") === "Import,Export", JSON.stringify(modal.labels));
+    check("Import sits above the exports", modal.importAboveExport);
+    check("a divider separates them", modal.divider);
+    check("all three export options are present", modal.exports.every(Boolean), JSON.stringify(modal.exports));
+
+    await page.locator("#export-json-btn-close").click();
+    await page.waitForTimeout(400);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 10. Build recommendations in the character modal
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== recommendation hints in the character modal ===");
+  {
+    // Give the first character that has a recommendation an owned roster entry.
+    const recName = await page.evaluate(async () => {
+      const res = await fetch("data/characters_recommendation.json", { cache: "no-store" });
+      const data = await res.json();
+      return Object.keys(data)[0] || null;
+    });
+    check("characters_recommendation.json has an entry", !!recName, String(recName));
+
+    if (recName) {
+      await page.evaluate((name) => {
+        localStorage.setItem(
+          "r1999_character_roster_v2",
+          JSON.stringify({
+            [name]: { owned: true, insight: 3, level: 60, resonance: 10, portrait: 0, e1: false, e2: false, skin: "", patterns: [], patternMain: "", boxKind: "", favourite: false },
+          })
+        );
+      }, recName);
+      await page.reload({ waitUntil: "networkidle" });
+      await page.waitForTimeout(2200);
+
+      await page.evaluate((name) => {
+        const card = [...document.querySelectorAll(".char-card")].find((c) => c.querySelector(".ct-name")?.textContent === name);
+        if (card) card.querySelector(".char-avatar-box")?.click() ?? card.click();
+      }, recName);
+      await page.waitForTimeout(900);
+
+      const hints = await page.evaluate(() => ({
+        open: document.getElementById("edit-modal").style.display !== "none",
+        name: document.getElementById("modal-char-name")?.textContent,
+        visible: [...document.querySelectorAll(".recommend-hint")].filter((b) => !b.hidden).map((b) => b.id),
+      }));
+      check("the character modal opened", hints.open, String(hints.open));
+      check("the recommendation hints are shown", hints.visible.length > 0, JSON.stringify(hints.visible));
+
+      // Resonance: one copy button per named code.
+      const resHint = await page.evaluate(() => !!document.getElementById("btn-rec-resonance") && !document.getElementById("btn-rec-resonance").hidden);
+      if (resHint) {
+        await page.evaluate(() => document.getElementById("btn-rec-resonance").click());
+        await page.waitForTimeout(400);
+        const popover = await page.evaluate(() => {
+          const p = document.getElementById("rec-popover-resonance");
+          return {
+            hidden: p.hidden,
+            copyButtons: [...p.querySelectorAll(".recommend-copy")].map((b) => b.textContent.trim()),
+            expanded: document.getElementById("btn-rec-resonance").getAttribute("aria-expanded"),
+          };
+        });
+        check("clicking the hint opens the popover", !popover.hidden);
+        check("it offers one copy button per code", popover.copyButtons.length > 0, JSON.stringify(popover.copyButtons));
+        check("aria-expanded is set", popover.expanded === "true", String(popover.expanded));
+
+        await page.evaluate(() => document.querySelector("#rec-popover-resonance .recommend-copy").click());
+        await page.waitForTimeout(400);
+        const copied = await page.evaluate(() => {
+          const b = document.querySelector("#rec-popover-resonance .recommend-copy");
+          return { text: b.textContent, marked: b.classList.contains("is-copied") };
+        });
+        check("clicking a copy button confirms the copy", copied.text === "Copied!" && copied.marked, JSON.stringify(copied));
+
+        // Opening another popover closes this one.
+        await page.evaluate(() => {
+          const other = document.getElementById("btn-rec-portrait") || document.getElementById("btn-rec-pattern");
+          if (other && !other.hidden) other.click();
+        });
+        await page.waitForTimeout(400);
+        const closed = await page.evaluate(() => document.getElementById("rec-popover-resonance").hidden);
+        check("opening another hint closes the first", closed);
+      }
+
+      // The text popovers.
+      const textPopovers = await page.evaluate(() => {
+        const out = {};
+        for (const f of ["pattern", "portrait", "psychube"]) {
+          const btn = document.getElementById("btn-rec-" + f);
+          const pop = document.getElementById("rec-popover-" + f);
+          if (!btn || btn.hidden) continue;
+          out[f] = pop.textContent.trim();
+        }
+        return out;
+      });
+      if (textPopovers.pattern) check("the pattern popover names the pattern", /Recommended Pattern/i.test(textPopovers.pattern), textPopovers.pattern);
+      if (textPopovers.portrait) check("the portrait popover names the portrait", /Recommended Portrait/i.test(textPopovers.portrait), textPopovers.portrait);
+      if (textPopovers.psychube) check("the psychube popover lists a psychube", /Recommended Psychube/i.test(textPopovers.psychube), textPopovers.psychube);
+
+      await page.evaluate(() => document.getElementById("modal-btn-close").click());
+      await page.waitForTimeout(400);
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 11. Deployed-page expectations
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== the deployed editor offers no way to write to the host ===");
+  await page.goto(EDITOR, { waitUntil: "networkidle" });
+  await page.waitForTimeout(2200);
   check(
     "there is no Open folder control",
     (await page.evaluate(() => document.getElementById("btn-open"))) === null,
@@ -375,8 +569,8 @@ try {
   console.log("\n=== downloading the changes produces a ZIP ===");
   {
     // Start from a clean slate so there is exactly one changed file.
-    await page.goto(BASE, { waitUntil: "networkidle" });
-    await page.waitForTimeout(2000);
+    await page.goto(EDITOR, { waitUntil: "networkidle" });
+    await page.waitForTimeout(2200);
     await page.locator('.tab[data-tab="teams"]').click();
     await page.waitForTimeout(400);
     await page.locator("#team-list-body .row").first().click();

@@ -372,6 +372,9 @@ const TEAM_COLUMN_MIN_VIEWPORT = { 1: 0, 2: 1000, 3: 1480 };
 const TEAM_MODAL_MAX_WIDTH = { 1: 1040, 2: 1040, 3: 1500 };
 const TEAM_MAX_COLUMNS = 3;
 let teamArchetypes = {};   // { presetName: [ [ {character, psychube, euphoria?}, ... ], ... ] }
+// { characterName: { Resonance?: {label: code}, Pattern?: string, Portrait?: string, Psychube?: string|string[] } }
+// from data/characters_recommendation.json — build guidance shown in the edit modal.
+let characterRecommendations = {};
 let teamsConfig = { teams: [] };
 let teamsAllowUnowned = false;  // "Show Unowned" toggle inside the Team Building modal
 let teamsFormableOnly = false;  // Team Presets: only presets the roster can field
@@ -588,13 +591,16 @@ const labelTextE2 = document.getElementById("label-text-e2");
 const modalBtnSave = document.getElementById("modal-btn-save");
 const shapePatternGrid = document.getElementById("shape-pattern-grid");
 
-// Roster Manager Modal Elements
+// Manage Modal Elements (shared by the Characters and Psychubes tabs)
 const rosterModal = document.getElementById("roster-modal");
 const btnManageAll = document.getElementById("btn-manage-all");
 const rosterBtnClose = document.getElementById("roster-btn-close");
 const rosterSearch = document.getElementById("roster-search");
 const rosterGridList = document.getElementById("roster-grid-list");
 const rosterFilterRarityBtns = document.querySelectorAll("#roster-filter-rarity-group .filter-btn");
+
+/** Which tab of the Manage modal is showing: "characters" (default) or "chubes". */
+let manageActiveTab = "characters";
 
 let rosterActiveRarityFilters = new Set(); // Set of active rarities in Roster Manager
 let rosterNeedsShowcaseRefresh = false;    // Defers board re-render until the modal closes
@@ -604,7 +610,7 @@ let rosterVisibleNames = [];               // Names passing the current search/r
 
 // Action Buttons
 const btnExportImage = document.getElementById("btn-export-image");
-const btnExportData = document.getElementById("btn-export-data");
+const btnJson = document.getElementById("btn-json");
 const inputImportFile = document.getElementById("input-import-file");
 const btnResetData = document.getElementById("btn-reset-data");
 
@@ -1108,7 +1114,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, recommendRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -1123,6 +1129,7 @@ async function initApp() {
       fetch("data/collab_character.json").catch(() => null),
       fetch("data/global_name_transfer.json").catch(() => null),
       fetch("data/team_archetypes.json").catch(() => null),
+      fetch("data/characters_recommendation.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1244,6 +1251,15 @@ async function initApp() {
         buildTeamArchetypes(teamArchData);
       } catch (e) {
         console.warn("Could not parse team_archetypes.json", e);
+      }
+    }
+
+    if (recommendRes && recommendRes.ok) {
+      try {
+        const recommendData = await recommendRes.json();
+        buildRecommendationMap(recommendData);
+      } catch (e) {
+        console.warn("Could not parse characters_recommendation.json", e);
       }
     }
 
@@ -3255,6 +3271,214 @@ function updateModalView() {
   checkE2.checked = !!tempEditState.e2 && eligibleEuphoriaLevels.includes(2);
   checkE1.closest("label").style.display = eligibleEuphoriaLevels.includes(1) ? "flex" : "none";
   checkE2.closest("label").style.display = eligibleEuphoriaLevels.includes(2) ? "flex" : "none";
+
+  renderRecommendations(currentEditingName || "", tempEditState.owned);
+}
+
+/* ---------------- Build recommendations ---------------- */
+
+/** The four hint buttons and their popovers, keyed by field. */
+const RECOMMEND_FIELDS = ["resonance", "pattern", "portrait", "psychube"];
+
+function recommendHintEl(field) {
+  return document.getElementById(`btn-rec-${field}`);
+}
+
+function recommendPopoverEl(field) {
+  return document.getElementById(`rec-popover-${field}`);
+}
+
+/** Closes every popover. */
+function closeRecommendationPopovers(except) {
+  for (const field of RECOMMEND_FIELDS) {
+    if (field === except) continue;
+    const btn = recommendHintEl(field);
+    const pop = recommendPopoverEl(field);
+    if (pop) pop.hidden = true;
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  }
+}
+
+/** Shows or hides the hint button for one field, returning whether it is shown. */
+function setRecommendationHint(field, visible) {
+  const btn = recommendHintEl(field);
+  const pop = recommendPopoverEl(field);
+  if (btn) btn.hidden = !visible;
+  if (!visible && pop) pop.hidden = true;
+  return visible;
+}
+
+/**
+ * Copies text to the clipboard.
+ *
+ * `navigator.clipboard` needs a secure context and a user gesture; the textarea
+ * fallback covers older browsers and any non-secure origin.
+ */
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // fall through to the fallback
+  }
+  try {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    area.remove();
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+/** A copy button that flashes a confirmation, then reverts. */
+function makeCopyButton(label, value) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "recommend-copy";
+  btn.textContent = label;
+  btn.title = `${label}: ${value}`;
+  btn.addEventListener("click", async () => {
+    const ok = await copyToClipboard(value);
+    const original = btn.textContent;
+    btn.textContent = ok ? "Copied!" : "Copy failed";
+    btn.classList.toggle("is-copied", ok);
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove("is-copied");
+    }, 1100);
+  });
+  return btn;
+}
+
+/**
+ * Builds the body of a recommendation popover.
+ *
+ * Resonance is a map of named codes, so it gets one copy button per code.
+ * Pattern and portrait are single values shown as text. Psychube accepts several
+ * alternatives, listed in order.
+ */
+function buildRecommendationBody(field, record) {
+  const body = document.createElement("div");
+  body.style.display = "flex";
+  body.style.flexDirection = "column";
+  body.style.gap = "7px";
+
+  if (field === "resonance") {
+    const entries = Object.entries(record.resonance);
+    if (entries.length === 0) return null;
+    const label = document.createElement("div");
+    label.className = "recommend-label";
+    label.textContent = t("recommend.resonanceCodes");
+    body.appendChild(label);
+    const options = document.createElement("div");
+    options.className = "recommend-options";
+    for (const [name, code] of entries) options.appendChild(makeCopyButton(name, code));
+    body.appendChild(options);
+    return body;
+  }
+
+  if (field === "pattern") {
+    if (!record.pattern) return null;
+    const line = document.createElement("p");
+    line.className = "recommend-line";
+    const strong = document.createElement("strong");
+    strong.textContent = `${t("recommend.pattern")}: `;
+    line.appendChild(strong);
+    line.appendChild(document.createTextNode(record.pattern));
+    body.appendChild(line);
+    return body;
+  }
+
+  if (field === "portrait") {
+    if (!record.portrait) return null;
+    const line = document.createElement("p");
+    line.className = "recommend-line";
+    const strong = document.createElement("strong");
+    strong.textContent = `${t("recommend.portrait")}: `;
+    line.appendChild(strong);
+    line.appendChild(document.createTextNode(record.portrait));
+    body.appendChild(line);
+    return body;
+  }
+
+  if (field === "psychube") {
+    const list = record.psychubes || [];
+    if (list.length === 0) return null;
+    const label = document.createElement("div");
+    label.className = "recommend-label";
+    label.textContent = list.length > 1 ? t("recommend.psychubes") : t("recommend.psychube");
+    body.appendChild(label);
+    for (const name of list) {
+      const line = document.createElement("p");
+      line.className = "recommend-line";
+      line.textContent = name;
+      body.appendChild(line);
+    }
+    return body;
+  }
+
+  return null;
+}
+
+/**
+ * Wires the four recommendation hints for the character being edited.
+ *
+ * A field with no recommendation in the data hides its hint entirely, so the
+ * modal only advertises what actually exists.
+ */
+function renderRecommendations(name, owned) {
+  const record = name ? getRecommendation(name) : null;
+
+  for (const field of RECOMMEND_FIELDS) {
+    const btn = recommendHintEl(field);
+    const pop = recommendPopoverEl(field);
+    if (!btn || !pop) continue;
+
+    const body = record ? buildRecommendationBody(field, record) : null;
+    // The psychube hint is not part of the owned/unowned toggle — it is advice
+    // about the character, so it shows even for an unowned entry.
+    const visible = !!body && (owned || field === "psychube");
+
+    if (!setRecommendationHint(field, visible)) {
+      pop.innerHTML = "";
+      continue;
+    }
+
+    pop.innerHTML = "";
+    if (body) pop.appendChild(body);
+    pop.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const willShow = pop.hidden;
+      closeRecommendationPopovers(willShow ? field : null);
+      pop.hidden = !willShow;
+      btn.setAttribute("aria-expanded", willShow ? "true" : "false");
+    };
+  }
+}
+
+/** Closes the popovers on an outside click or Escape. */
+function setupRecommendationDismissal() {
+  document.addEventListener("click", (e) => {
+    if (!editModal || editModal.style.display === "none") return;
+    if (e.target.closest(".recommend-hint") || e.target.closest(".recommend-popover")) return;
+    closeRecommendationPopovers(null);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && editModal && editModal.style.display !== "none") {
+      closeRecommendationPopovers(null);
+    }
+  });
 }
 
 function closeEditModal() {
@@ -3397,11 +3621,45 @@ function closePsychubeModal() {
   currentEditingChube = null;
 }
 
+/**
+ * Shows one tab of the Manage modal and hides the other.
+ *
+ * The two managers keep their own state (search box, rarity filters, selection),
+ * so switching tabs only toggles visibility and re-renders the newly shown grid.
+ */
+function setManageTab(tab) {
+  const next = tab === "chubes" ? "chubes" : "characters";
+  manageActiveTab = next;
+
+  document.querySelectorAll(".manage-tab").forEach((btn) => {
+    const on = btn.dataset.manageTab === next;
+    btn.classList.toggle("active", on);
+    btn.setAttribute("aria-selected", on ? "true" : "false");
+  });
+
+  document.querySelectorAll(".manage-panel").forEach((panel) => {
+    const on = panel.dataset.managePanel === next;
+    // Respect panels that hide themselves (e.g. the bulk bar when idle).
+    if (on) {
+      panel.hidden = panel.dataset.keepHidden === "true";
+    } else {
+      panel.hidden = true;
+    }
+  });
+
+  if (next === "chubes") {
+    renderChubesManager();
+  } else {
+    renderRosterManager();
+  }
+}
+
 // Roster Manager Modal Functions
 function openRosterModal() {
   renderRosterManager();
   rosterNeedsShowcaseRefresh = false;
   rosterModal.style.display = "flex";
+  setManageTab("characters");
 }
 
 function closeRosterModal() {
@@ -3808,15 +4066,14 @@ function chubesVisibleKeys() {
 function openChubesModal() {
   chubesSelectMode = false;
   chubesSelection.clear();
+  rosterNeedsShowcaseRefresh = false;
   renderChubesManager();
-  document.getElementById("chubes-modal").style.display = "flex";
+  rosterModal.style.display = "flex";
+  setManageTab("chubes");
 }
 
 function closeChubesModal() {
-  document.getElementById("chubes-modal").style.display = "none";
-  chubesSelectMode = false;
-  chubesSelection.clear();
-  renderShowcase();
+  closeRosterModal();
 }
 
 function renderChubesManager() {
@@ -3992,6 +4249,59 @@ function psychubeKeyByName(name) {
 
 function buildTeamArchetypes(data) {
   teamArchetypes = (data && typeof data === "object" && !Array.isArray(data)) ? data : {};
+}
+
+/**
+ * Normalises characters_recommendation.json.
+ *
+ * Shape per character: `{ Resonance?: {label: code}, Pattern?: string,
+ * Portrait?: string, Psychube?: string | string[] }`. Anchors are resolved so a
+ * recommendation keyed by an alias still matches its canonical character.
+ */
+function buildRecommendationMap(data) {
+  characterRecommendations = {};
+  if (!data || typeof data !== "object" || Array.isArray(data)) return;
+
+  for (const [rawName, entry] of Object.entries(data)) {
+    if (!entry || typeof entry !== "object") continue;
+    const name = resolveCharacterName(rawName);
+    if (!name) continue;
+
+    const resonance = {};
+    if (entry.Resonance && typeof entry.Resonance === "object" && !Array.isArray(entry.Resonance)) {
+      for (const [label, code] of Object.entries(entry.Resonance)) {
+        const value = String(code == null ? "" : code).trim();
+        if (value) resonance[String(label).trim()] = value;
+      }
+    }
+
+    const psychubes = (Array.isArray(entry.Psychube) ? entry.Psychube : [entry.Psychube])
+      .map((p) => (p == null ? "" : String(p).trim()))
+      .filter(Boolean);
+
+    const record = {
+      resonance,
+      pattern: entry.Pattern == null ? "" : String(entry.Pattern).trim(),
+      portrait: entry.Portrait == null ? "" : String(entry.Portrait).trim(),
+      psychubes,
+    };
+
+    if (
+      Object.keys(record.resonance).length === 0 &&
+      !record.pattern &&
+      !record.portrait &&
+      record.psychubes.length === 0
+    ) {
+      continue;
+    }
+    characterRecommendations[name] = record;
+  }
+}
+
+/** The recommendation record for a character, or null. */
+function getRecommendation(name) {
+  const canonical = resolveCharacterName(name);
+  return characterRecommendations[canonical] || null;
 }
 
 /**
@@ -5790,6 +6100,7 @@ function setupTierCountTooltip() {
 function setupEventListeners() {
   setupPatternTooltip();
   setupTierCountTooltip();
+  setupRecommendationDismissal();
 
   // Language switcher
   document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -8227,13 +8538,9 @@ function setupEventListeners() {
     });
   }
 
-  // Chubes manager
-  const btnChubes = document.getElementById("btn-chubes");
-  const chubesModal = document.getElementById("chubes-modal");
-  if (btnChubes && chubesModal) {
-    btnChubes.addEventListener("click", openChubesModal);
-    document.getElementById("chubes-btn-close").addEventListener("click", closeChubesModal);
-    chubesModal.addEventListener("click", (e) => { if (e.target === chubesModal) closeChubesModal(); });
+  // Chubes manager — lives in the second tab of the Manage modal
+  const chubesModal = document.getElementById("chubes-grid-list");
+  if (chubesModal) {
     document.getElementById("chubes-search").addEventListener("input", renderChubesManager);
     document.querySelectorAll("#chubes-filter-rarity-group .filter-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -8255,6 +8562,11 @@ function setupEventListeners() {
     });
     document.getElementById("btn-chubes-bulk-apply").addEventListener("click", openChubeBulkModal);
   }
+
+  // Manage modal tabs: Characters (default) / Psychubes
+  document.querySelectorAll(".manage-tab").forEach((btn) => {
+    btn.addEventListener("click", () => setManageTab(btn.dataset.manageTab));
+  });
 
   const chubeBulkModal = document.getElementById("chube-bulk-modal");
   if (chubeBulkModal) {
@@ -8522,11 +8834,21 @@ function setupEventListeners() {
     if (exportJsonModal) exportJsonModal.style.display = "none";
   }
 
-  if (btnExportData) {
-    btnExportData.addEventListener("click", () => {
+  if (btnJson) {
+    btnJson.addEventListener("click", () => {
       if (exportJsonModal) {
         exportJsonModal.style.display = "flex";
       }
+    });
+  }
+
+  // The import control lives inside this modal now, so picking a file closes it.
+  const labelImportFile = document.getElementById("label-import-file");
+  if (labelImportFile && inputImportFile) {
+    labelImportFile.addEventListener("click", () => {
+      // Let the label's own click open the file picker; close afterwards so the
+      // import confirmation is not hidden behind the dialog.
+      setTimeout(closeExportJsonModal, 0);
     });
   }
 

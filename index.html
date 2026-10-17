@@ -41,11 +41,8 @@
         <div class="header-search-wrap">
           <input type="text" id="filter-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
         </div>
-        <button class="btn btn-secondary" id="btn-manage-all" title="Manage all characters" data-i18n-title="toolbar.manage">
+        <button class="btn btn-secondary" id="btn-manage-all" title="Manage characters and psychubes" data-i18n-title="toolbar.manage">
           <span data-i18n="toolbar.manage">Manage</span>
-        </button>
-        <button class="btn btn-secondary" id="btn-chubes" title="Manage psychubes" data-i18n-title="toolbar.chubes">
-          <span data-i18n="toolbar.chubes">Psychubes</span>
         </button>
         <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG" data-i18n-title="toolbar.exportPng">
           <span data-i18n="toolbar.exportPng">Export PNG</span>
@@ -104,15 +101,11 @@
       </div>
 
       <div class="secondary-tools-group tools-data-group">
-        <button class="btn btn-secondary" id="btn-export-data" title="Export roster to JSON" data-i18n-title="toolbar.exportJson">
-          <span data-i18n="toolbar.exportJson">Export JSON</span>
+        <button class="btn btn-secondary" id="btn-json" title="Import or export JSON" data-i18n-title="toolbar.json">
+          <span data-i18n="toolbar.json">JSON</span>
         </button>
-        <label class="btn btn-secondary" style="cursor: pointer;" title="Import roster from JSON" data-i18n-title="toolbar.importJson">
-          <span data-i18n="toolbar.importJson">Import JSON</span>
-          <input type="file" id="input-import-file" accept=".json" style="display: none;" />
-        </label>
-        <button class="btn btn-danger" id="btn-reset-data" title="Reset all data">
-          <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" /><span data-i18n="toolbar.reset">Reset</span>
+        <button class="btn btn-danger btn-icon-only" id="btn-reset-data" title="Reset all data" data-i18n-title="toolbar.reset" aria-label="Reset all data">
+          <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" />
         </button>
       </div>
 
@@ -213,25 +206,43 @@
         <!-- Resonance (R1 - R15) -->
         <div class="setting-group" id="group-resonance">
           <div class="setting-label-row">
-            <label class="setting-label"><span data-i18n="setting.resonance">Resonance / Reasoning</span></label>
+            <div class="setting-label-with-hint">
+              <label class="setting-label"><span data-i18n="setting.resonance">Resonance / Reasoning</span></label>
+              <button type="button" class="recommend-hint" id="btn-rec-resonance" hidden aria-expanded="false" title="Recommended">
+                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
+              </button>
+            </div>
             <span class="setting-val-display" id="display-resonance">R10</span>
           </div>
+          <div class="recommend-popover" id="rec-popover-resonance" hidden></div>
           <input type="range" id="input-resonance" min="1" max="15" value="10" class="custom-slider" style="margin-top: 8px;" />
         </div>
 
         <div class="setting-group" id="group-pattern">
           <div class="setting-label-row">
-            <label class="setting-label"><span data-i18n="opt.pattern">Pattern</span></label>
+            <div class="setting-label-with-hint">
+              <label class="setting-label"><span data-i18n="opt.pattern">Pattern</span></label>
+              <button type="button" class="recommend-hint" id="btn-rec-pattern" hidden aria-expanded="false" title="Recommended">
+                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
+              </button>
+            </div>
           </div>
+          <div class="recommend-popover" id="rec-popover-pattern" hidden></div>
           <div class="shape-pattern-grid" id="shape-pattern-grid" aria-label="Pattern selection"></div>
         </div>
 
         <!-- Portrait (P0 - P5) -->
         <div class="setting-group" id="group-portrait">
           <div class="setting-label-row">
-            <label class="setting-label"><span data-i18n="setting.portrait">Portrait</span></label>
+            <div class="setting-label-with-hint">
+              <label class="setting-label"><span data-i18n="setting.portrait">Portrait</span></label>
+              <button type="button" class="recommend-hint" id="btn-rec-portrait" hidden aria-expanded="false" title="Recommended">
+                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
+              </button>
+            </div>
             <span class="setting-val-display" id="display-portrait">P0</span>
           </div>
+          <div class="recommend-popover" id="rec-popover-portrait" hidden></div>
           <div class="portrait-quick-picks">
             <button type="button" class="btn-pill-p" data-p="0">P0</button>
             <button type="button" class="btn-pill-p" data-p="1">P1</button>
@@ -240,6 +251,19 @@
             <button type="button" class="btn-pill-p" data-p="4">P4</button>
             <button type="button" class="btn-pill-p" data-p="5">P5</button>
           </div>
+        </div>
+
+        <!-- Psychube recommendation (character-level; the app has no per-character psychube field) -->
+        <div class="setting-group" id="group-rec-psychube">
+          <div class="setting-label-row">
+            <div class="setting-label-with-hint">
+              <label class="setting-label"><span data-i18n="setting.psychubeRecommend">Psychube</span></label>
+              <button type="button" class="recommend-hint" id="btn-rec-psychube" hidden aria-expanded="false" title="Recommended">
+                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
+              </button>
+            </div>
+          </div>
+          <div class="recommend-popover" id="rec-popover-psychube" hidden></div>
         </div>
 
         <!-- Euphoria (E1, E2) -->
@@ -1138,10 +1162,22 @@
   <div id="roster-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card modal-card-large">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title"><span data-i18n="toolbar.manageCharacters">Manage Characters</span></h2>
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.manage">Manage</span></h2>
         <button class="modal-close" id="roster-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="roster-toolbar">
+
+      <!-- Characters / Psychubes switch -->
+      <div class="manage-tabs" role="tablist" aria-label="Manage">
+        <button type="button" class="manage-tab active" id="manage-tab-characters" role="tab" aria-selected="true" data-manage-tab="characters">
+          <span data-i18n="toolbar.manageCharacters">Characters</span>
+        </button>
+        <button type="button" class="manage-tab" id="manage-tab-chubes" role="tab" aria-selected="false" data-manage-tab="chubes">
+          <span data-i18n="toolbar.chubes">Psychubes</span>
+        </button>
+      </div>
+
+      <!-- Characters: search, rarity filter, bulk selection -->
+      <div class="roster-toolbar manage-panel" data-manage-panel="characters">
         <div class="roster-toolbar-left">
           <input type="text" id="roster-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
           <div class="roster-toolbar-right">
@@ -1159,7 +1195,7 @@
       </div>
 
       <!-- Bulk selection toolbar (revealed while Select mode is on) -->
-      <div class="roster-select-bar" id="roster-select-bar" hidden>
+      <div class="roster-select-bar manage-panel" id="roster-select-bar" data-manage-panel="characters" hidden>
         <span class="roster-select-count" id="roster-select-count">0 selected</span>
         <div class="roster-select-actions">
           <button type="button" class="btn btn-secondary btn-sm" id="btn-roster-select-page"><span data-i18n="action.selectAllShown">Select All Shown</span></button>
@@ -1168,7 +1204,34 @@
         </div>
       </div>
 
-      <div class="roster-grid" id="roster-grid-list">
+      <div class="roster-grid manage-panel" id="roster-grid-list" data-manage-panel="characters">
+        <!-- Will be populated dynamically -->
+      </div>
+
+      <!-- Psychubes: search, rarity filter, bulk selection -->
+      <div class="roster-toolbar manage-panel" data-manage-panel="chubes" hidden>
+        <div class="roster-toolbar-left">
+          <input type="text" id="chubes-search" class="search-input" data-i18n-placeholder="toolbar.searchChubes" placeholder="Search Psychubes" />
+          <div class="roster-toolbar-right">
+            <div class="filter-btn-group" id="chubes-filter-rarity-group">
+              <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+              <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm roster-select-toggle" id="btn-chubes-select-mode" aria-pressed="false"><span data-i18n="action.select">Select</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="roster-select-bar manage-panel" id="chubes-select-bar" data-manage-panel="chubes" hidden>
+        <span class="roster-select-count" id="chubes-select-count">0 selected</span>
+        <div class="roster-select-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-chubes-select-page"><span data-i18n="action.selectAllShown">Select All Shown</span></button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-chubes-select-none" data-i18n="opt.clear">Clear</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-chubes-bulk-apply" disabled><span data-i18n="action.bulkApply">Bulk Apply</span></button>
+        </div>
+      </div>
+
+      <div class="roster-grid manage-panel" id="chubes-grid-list" data-manage-panel="chubes" hidden>
         <!-- Will be populated dynamically -->
       </div>
     </div>
@@ -1384,40 +1447,6 @@
     </div>
   </div>
 
-  <!-- Chubes Manager Modal -->
-  <div id="chubes-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card archetype-modal-card modal-card-large">
-      <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title"><span data-i18n="toolbar.chubes">Psychubes</span></h2>
-        <button class="modal-close" id="chubes-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
-      </div>
-      <div class="roster-toolbar">
-        <div class="roster-toolbar-left">
-          <input type="text" id="chubes-search" class="search-input" data-i18n-placeholder="toolbar.searchChubes" placeholder="Search Psychubes" />
-          <div class="roster-toolbar-right">
-            <div class="filter-btn-group" id="chubes-filter-rarity-group">
-              <button type="button" class="filter-btn" data-rarity="6">✦6</button>
-              <button type="button" class="filter-btn" data-rarity="5">✦5</button>
-            </div>
-            <button type="button" class="btn btn-secondary btn-sm roster-select-toggle" id="btn-chubes-select-mode" aria-pressed="false"><span data-i18n="action.select">Select</span></button>
-          </div>
-        </div>
-      </div>
-
-      <div class="roster-select-bar" id="chubes-select-bar" hidden>
-        <span class="roster-select-count" id="chubes-select-count">0 selected</span>
-        <div class="roster-select-actions">
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-chubes-select-page"><span data-i18n="action.selectAllShown">Select All Shown</span></button>
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-chubes-select-none" data-i18n="opt.clear">Clear</button>
-          <button type="button" class="btn btn-primary btn-sm" id="btn-chubes-bulk-apply" disabled><span data-i18n="action.bulkApply">Bulk Apply</span></button>
-        </div>
-      </div>
-
-      <div class="roster-grid" id="chubes-grid-list">
-        <!-- Will be populated dynamically -->
-      </div>
-    </div>
-  </div>
 
   <!-- Chube Bulk Apply Modal -->
   <div id="chube-bulk-modal" class="modal-backdrop" style="display: none;">
@@ -1554,23 +1583,38 @@
   </div>
 
   <!-- Export JSON Option Modal (Export Theme vs Export Roster vs Export All) -->
+  <!-- JSON Modal: import on top, exports below -->
   <div id="export-json-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card archetype-modal-card" style="max-width: 380px;">
+    <div class="modal-card archetype-modal-card" style="max-width: 400px;">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title" data-i18n="toolbar.exportJson">Export JSON</h2>
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.json">JSON</span></h2>
         <button class="modal-close" id="export-json-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="modal-body archetype-modal-body" style="gap: 10px;">
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-theme" style="padding: 10px 14px;" data-i18n="export.themeOnly">
-            Export Theme Only
-          </button>
-          <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-roster" style="padding: 10px 14px;" data-i18n="export.rosterOnly">
-            Export Roster Only
-          </button>
-          <button type="button" class="btn btn-primary btn-block" id="btn-export-json-all" style="padding: 10px 14px;" data-i18n="export.all">
-            Export All
-          </button>
+      <div class="modal-body archetype-modal-body" style="gap: 14px;">
+        <div class="json-section">
+          <div class="json-section-label" data-i18n="json.import">Import</div>
+          <label class="btn btn-secondary btn-block json-import-btn" id="label-import-file" title="Import from a JSON file">
+            <span data-i18n="json.importFromFile">Choose a .json file…</span>
+            <input type="file" id="input-import-file" accept=".json" style="display: none;" />
+          </label>
+          <p class="json-hint" data-i18n="json.importHint">Theme, roster, full backup and legacy roster files are all detected automatically.</p>
+        </div>
+
+        <div class="json-divider" role="separator"></div>
+
+        <div class="json-section">
+          <div class="json-section-label" data-i18n="json.export">Export</div>
+          <div class="json-export-list">
+            <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-theme" data-i18n="export.themeOnly">
+              Export Theme Only
+            </button>
+            <button type="button" class="btn btn-secondary btn-block" id="btn-export-json-roster" data-i18n="export.rosterOnly">
+              Export Roster Only
+            </button>
+            <button type="button" class="btn btn-primary btn-block" id="btn-export-json-all" data-i18n="export.all">
+              Export All
+            </button>
+          </div>
         </div>
       </div>
       <div class="modal-footer" style="display: flex; justify-content: flex-end;">

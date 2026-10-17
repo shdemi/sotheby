@@ -553,6 +553,9 @@ function renderCharacterDetail() {
 
   host.appendChild(flagsCard);
 
+  /* --- build recommendations --- */
+  host.appendChild(renderRecommendationCard(name, model));
+
   /* --- aliases (read-only) --- */
   const aliases = model.aliases[name] || [];
   const rawAliases = Object.entries(model.aliases)
@@ -578,9 +581,176 @@ function renderCharacterDetail() {
   host.appendChild(renderFileTouchCard(name));
 }
 
+/**
+ * Build recommendations for one character → characters_recommendation.json.
+ *
+ * The app shows these behind the "?" hint in the character edit modal:
+ * Resonance as named codes you copy, Pattern and Portrait as text, Psychube as
+ * one or more alternatives.
+ */
+function renderRecommendationCard(name, model) {
+  const current = model.recommendation(name) || {};
+  const card = el("div", { class: "card" }, [
+    el("h2", { text: "Build recommendation" }),
+    el("p", {
+      class: "hint",
+      text: "Shown in the app's character modal behind the hint icon. Blank fields are omitted from the file.",
+    }),
+  ]);
+
+  /* Resonance: a list of named codes, each copied independently in the app. */
+  const resonanceField = el("div", { class: "field" });
+  resonanceField.appendChild(el("label", { class: "field-label", text: "Resonance codes" }));
+
+  const rowsHost = el("div", { style: "display:flex;flex-direction:column;gap:6px" });
+  const resonance = current.Resonance && typeof current.Resonance === "object" ? { ...current.Resonance } : {};
+
+  const commitResonance = () => {
+    model.setRecommendationField(name, "Resonance", resonance);
+    afterEdit({ list: false });
+  };
+
+  const drawRows = () => {
+    rowsHost.replaceChildren();
+    const labels = Object.keys(resonance);
+
+    if (labels.length === 0) {
+      rowsHost.appendChild(el("div", { class: "field-note", text: "No codes yet." }));
+    }
+
+    for (const label of labels) {
+      const labelInput = el("input", { type: "text", value: label, placeholder: "label e.g. Attack", style: "width:110px" });
+      const codeInput = el("input", { type: "text", value: resonance[label], placeholder: "codes", style: "flex:1;min-width:160px" });
+
+      labelInput.addEventListener("change", () => {
+        const next = labelInput.value.trim();
+        if (!next || next === label) {
+          labelInput.value = label;
+          return;
+        }
+        // Rebuild in order so renaming does not jump the row to the end.
+        const rebuilt = {};
+        for (const key of labels) rebuilt[key === label ? next : key] = resonance[key];
+        Object.keys(resonance).forEach((k) => delete resonance[k]);
+        Object.assign(resonance, rebuilt);
+        commitResonance();
+      });
+
+      codeInput.addEventListener("change", () => {
+        resonance[label] = codeInput.value.trim();
+        commitResonance();
+      });
+
+      rowsHost.appendChild(
+        el("div", { style: "display:flex;gap:8px;align-items:center" }, [
+          labelInput,
+          codeInput,
+          el("button", {
+            class: "btn btn-sm btn-ghost",
+            text: "×",
+            title: "Remove this code",
+            onclick: () => {
+              delete resonance[label];
+              commitResonance();
+            },
+          }),
+        ])
+      );
+    }
+  };
+  drawRows();
+
+  resonanceField.appendChild(rowsHost);
+  resonanceField.appendChild(
+    el("div", { style: "margin-top:8px" }, [
+      el("button", {
+        class: "btn btn-sm",
+        text: "+ Add code",
+        onclick: () => {
+          const base = "Option";
+          let label = base;
+          let i = 2;
+          while (label in resonance) label = `${base} ${i++}`;
+          resonance[label] = "";
+          drawRows();
+        },
+      }),
+    ])
+  );
+  card.appendChild(resonanceField);
+
+  /* Pattern and Portrait: free text, because the app only displays them. */
+  const textField = (label, field, placeholder) => {
+    const input = el("input", { type: "text", value: current[field] || "", placeholder, style: "width:100%" });
+    input.addEventListener("change", () => {
+      model.setRecommendationField(name, field, input.value);
+      afterEdit({ list: false });
+    });
+    return el("div", { class: "field" }, [el("label", { class: "field-label", text: label }), input]);
+  };
+
+  card.appendChild(textField("Recommended pattern", "Pattern", "e.g. Elucidation"));
+  card.appendChild(textField("Recommended portrait", "Portrait", "e.g. P0, P1, P2 or more"));
+
+  /* Psychube: one or several, separated by " | ". */
+  const psychubes = Array.isArray(current.Psychube)
+    ? current.Psychube
+    : current.Psychube
+      ? [current.Psychube]
+      : [];
+  const chubeInput = el("input", {
+    type: "text",
+    value: psychubes.join(" | "),
+    placeholder: "e.g. Steps Forward | The Leap of Time",
+    style: "width:100%",
+  });
+  chubeInput.addEventListener("change", () => {
+    model.setRecommendationField(name, "Psychube", chubeInput.value);
+    afterEdit({ list: false });
+  });
+
+  const chubeHelp = el("div", { class: "field-note" });
+  const refreshChubeHelp = () => {
+    const list = chubeInput.value.split("|").map((s) => s.trim()).filter(Boolean);
+    const known = new Set(model.psychubes.map((p) => p.name.toLowerCase()));
+    const unknown = list.filter((t) => !known.has(t.toLowerCase()));
+    chubeHelp.textContent =
+      list.length === 0
+        ? "Separate alternatives with | if a character has more than one."
+        : unknown.length
+          ? `Not in psychube_id.json: ${unknown.join(", ")}`
+          : `${list.length} alternative${list.length === 1 ? "" : "s"}, all found in psychube_id.json.`;
+    chubeHelp.style.color = unknown.length ? "var(--warn)" : "";
+  };
+  chubeInput.addEventListener("input", refreshChubeHelp);
+  refreshChubeHelp();
+
+  card.appendChild(
+    el("div", { class: "field" }, [
+      el("label", { class: "field-label", text: "Recommended psychube(s)" }),
+      chubeInput,
+      chubeHelp,
+    ])
+  );
+
+  card.appendChild(
+    el("div", { style: "margin-top:12px" }, [
+      el("button", {
+        class: "btn btn-sm btn-danger",
+        text: "Remove all recommendations",
+        onclick: () => {
+          model.removeRecommendation(name);
+          afterEdit({ list: false });
+        },
+      }),
+    ])
+  );
+
+  return card;
+}
+
 /** Which files this character currently appears in. */
-function renderFileTouchCard(name) {
-  const model = state.model;
+function renderFileTouchCard(name) {  const model = state.model;
   const touches = [];
   const push = (file, where) => touches.push(`${file}${where ? ` → ${where}` : ""}`);
 
@@ -603,6 +773,7 @@ function renderFileTouchCard(name) {
     if (String(e).split(":")[0].trim() === name) push("future_sight.json", `Euphoria ${e.split(":")[1]?.trim()}`);
   }
   if (model.value("name_map.json")?.character?.[name] !== undefined) push("name_map.json", "character");
+  if (model.recommendation(name)) push("characters_recommendation.json");
   for (const [raw, canonical] of Object.entries(model.value("global_name_transfer.json") || {})) {
     if (canonical === name) push("global_name_transfer.json", raw);
   }

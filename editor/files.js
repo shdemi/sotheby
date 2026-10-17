@@ -29,6 +29,7 @@ export const WRITABLE = [
   "name_map.json",
   "psychube_id.json",
   "team_archetypes.json",
+  "characters_recommendation.json",
 ];
 
 /** Files the editor reads but never writes. */
