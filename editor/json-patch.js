@@ -563,6 +563,51 @@ export class JsonDoc {
     return true;
   }
 
+  /**
+   * Moves item `from` to `to` inside the array at `path`.
+   *
+   * Same approach as reorderProperty: each item's own source is reused verbatim
+   * and only the glue between items is re-emitted, so moving an item and moving
+   * it back leaves the file byte-identical.
+   */
+  reorderAt(path, from, to) {
+    const node = this.nodeAt(path);
+    if (!node || node.type !== "array") throw new Error(`Not an array: ${JSON.stringify(path)}`);
+
+    const count = node.items.length;
+    if (from < 0 || from >= count) return false;
+    const target = Math.max(0, Math.min(count - 1, to));
+    if (from === target) return false;
+
+    const items = node.items.map((item) => this.text.slice(item.start, item.end));
+    const opening = this.text.slice(node.start + 1, node.items[0].start);
+    const closing = this.text.slice(node.items[count - 1].end, node.end - 1);
+    const separators = [];
+    for (let i = 1; i < count; i++) {
+      separators.push(this.text.slice(node.items[i - 1].end, node.items[i].start));
+    }
+
+    // Use the separator already used at the destination, so the result matches
+    // the surrounding style even if the array mixes separators.
+    const separator = separators.length > 0 ? separators[Math.min(target, separators.length - 1)] : "," + this.eol;
+
+    const order = node.items.map((_, i) => i);
+    order.splice(from, 1);
+    order.splice(target, 0, from);
+
+    this.text =
+      this.text.slice(0, node.start + 1) +
+      opening +
+      order.map((i) => items[i]).join(separator) +
+      closing +
+      this.text.slice(node.end - 1);
+
+    this.dirty = true;
+    this.log.push(`reorderAt ${JSON.stringify(path)} ${from} -> ${target}`);
+    this.reparse();
+    return true;
+  }
+
   /** Deletes the property `key` from the object at `path`. */
   deleteProperty(path, key) {
     const node = this.nodeAt(path);

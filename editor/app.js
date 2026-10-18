@@ -8,7 +8,7 @@
  * The editor only rewrites the ranges it changes (see json-patch.js), so an
  * untouched file is never modified and a one-field edit is a one-line diff.
  */
-import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, validate, readNameTables, diffHunks } from "./model.js";
+import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, GUIDE_ICON_TAGS, GUIDE_TAG_GROUPS, TUNINGS, validate, readNameTables, diffHunks } from "./model.js";
 import * as files from "./files.js";
 import * as icons from "./icons.js";
 
@@ -21,10 +21,12 @@ const state = {
   appJs: "",
   tab: "characters",
   selected: { characters: null, psychubes: null, teams: null },
-  filters: { rarity: null, afflatus: null, flags: new Set() },
+  filters: { rarity: null, afflatus: null, flags: new Set(), archetypes: new Set() },
+  buildFilters: { rarity: null, afflatus: null, onlyWithBuild: false },
   chubeRarities: new Set(PSYCHUBE_RARITIES),
   picker: null,
   drag: null,
+  guide: { build: null, rotation: null, hand: null, special: false },
   import: { art: null, frame: null, frames: [], rarity: "6", id: "", name: "", nameCN: "", tags: [], releasePatch: "", futureSight: false, open: false },
 };
 
@@ -123,6 +125,8 @@ function renderAll() {
   renderTeamList();
   renderTeamDetail();
   renderPatterns();
+  renderBuildList();
+  renderRotationList();
   renderReview();
   updateSaveState();
 }
@@ -156,11 +160,15 @@ function afterEdit({ list = true, detail = true } = {}) {
     if (state.tab === "characters") renderCharacterList();
     if (state.tab === "psychubes") renderPsychubeList();
     if (state.tab === "teams") renderTeamList();
+    if (state.tab === "builds") renderBuildList();
+    if (state.tab === "rotations") renderRotationList();
   }
   if (detail) {
     if (state.tab === "characters") renderCharacterDetail();
     if (state.tab === "psychubes") renderPsychubeDetail();
     if (state.tab === "teams") renderTeamDetail();
+    if (state.tab === "builds") renderBuildDetail();
+    if (state.tab === "rotations") renderRotationDetail();
   }
   if (state.tab === "patterns") renderPatterns();
   renderReview();
@@ -553,8 +561,6 @@ function renderCharacterDetail() {
 
   host.appendChild(flagsCard);
 
-  /* --- build recommendations --- */
-  host.appendChild(renderRecommendationCard(name, model));
 
   /* --- aliases (read-only) --- */
   const aliases = model.aliases[name] || [];
@@ -581,174 +587,6 @@ function renderCharacterDetail() {
   host.appendChild(renderFileTouchCard(name));
 }
 
-/**
- * Build recommendations for one character → characters_recommendation.json.
- *
- * The app shows these behind the "?" hint in the character edit modal:
- * Resonance as named codes you copy, Pattern and Portrait as text, Psychube as
- * one or more alternatives.
- */
-function renderRecommendationCard(name, model) {
-  const current = model.recommendation(name) || {};
-  const card = el("div", { class: "card" }, [
-    el("h2", { text: "Build recommendation" }),
-    el("p", {
-      class: "hint",
-      text: "Shown in the app's character modal behind the hint icon. Blank fields are omitted from the file.",
-    }),
-  ]);
-
-  /* Resonance: a list of named codes, each copied independently in the app. */
-  const resonanceField = el("div", { class: "field" });
-  resonanceField.appendChild(el("label", { class: "field-label", text: "Resonance codes" }));
-
-  const rowsHost = el("div", { style: "display:flex;flex-direction:column;gap:6px" });
-  const resonance = current.Resonance && typeof current.Resonance === "object" ? { ...current.Resonance } : {};
-
-  const commitResonance = () => {
-    model.setRecommendationField(name, "Resonance", resonance);
-    afterEdit({ list: false });
-  };
-
-  const drawRows = () => {
-    rowsHost.replaceChildren();
-    const labels = Object.keys(resonance);
-
-    if (labels.length === 0) {
-      rowsHost.appendChild(el("div", { class: "field-note", text: "No codes yet." }));
-    }
-
-    for (const label of labels) {
-      const labelInput = el("input", { type: "text", value: label, placeholder: "label e.g. Attack", style: "width:110px" });
-      const codeInput = el("input", { type: "text", value: resonance[label], placeholder: "codes", style: "flex:1;min-width:160px" });
-
-      labelInput.addEventListener("change", () => {
-        const next = labelInput.value.trim();
-        if (!next || next === label) {
-          labelInput.value = label;
-          return;
-        }
-        // Rebuild in order so renaming does not jump the row to the end.
-        const rebuilt = {};
-        for (const key of labels) rebuilt[key === label ? next : key] = resonance[key];
-        Object.keys(resonance).forEach((k) => delete resonance[k]);
-        Object.assign(resonance, rebuilt);
-        commitResonance();
-      });
-
-      codeInput.addEventListener("change", () => {
-        resonance[label] = codeInput.value.trim();
-        commitResonance();
-      });
-
-      rowsHost.appendChild(
-        el("div", { style: "display:flex;gap:8px;align-items:center" }, [
-          labelInput,
-          codeInput,
-          el("button", {
-            class: "btn btn-sm btn-ghost",
-            text: "×",
-            title: "Remove this code",
-            onclick: () => {
-              delete resonance[label];
-              commitResonance();
-            },
-          }),
-        ])
-      );
-    }
-  };
-  drawRows();
-
-  resonanceField.appendChild(rowsHost);
-  resonanceField.appendChild(
-    el("div", { style: "margin-top:8px" }, [
-      el("button", {
-        class: "btn btn-sm",
-        text: "+ Add code",
-        onclick: () => {
-          const base = "Option";
-          let label = base;
-          let i = 2;
-          while (label in resonance) label = `${base} ${i++}`;
-          resonance[label] = "";
-          drawRows();
-        },
-      }),
-    ])
-  );
-  card.appendChild(resonanceField);
-
-  /* Pattern and Portrait: free text, because the app only displays them. */
-  const textField = (label, field, placeholder) => {
-    const input = el("input", { type: "text", value: current[field] || "", placeholder, style: "width:100%" });
-    input.addEventListener("change", () => {
-      model.setRecommendationField(name, field, input.value);
-      afterEdit({ list: false });
-    });
-    return el("div", { class: "field" }, [el("label", { class: "field-label", text: label }), input]);
-  };
-
-  card.appendChild(textField("Recommended pattern", "Pattern", "e.g. Elucidation"));
-  card.appendChild(textField("Recommended portrait", "Portrait", "e.g. P0, P1, P2 or more"));
-
-  /* Psychube: one or several, separated by " | ". */
-  const psychubes = Array.isArray(current.Psychube)
-    ? current.Psychube
-    : current.Psychube
-      ? [current.Psychube]
-      : [];
-  const chubeInput = el("input", {
-    type: "text",
-    value: psychubes.join(" | "),
-    placeholder: "e.g. Steps Forward | The Leap of Time",
-    style: "width:100%",
-  });
-  chubeInput.addEventListener("change", () => {
-    model.setRecommendationField(name, "Psychube", chubeInput.value);
-    afterEdit({ list: false });
-  });
-
-  const chubeHelp = el("div", { class: "field-note" });
-  const refreshChubeHelp = () => {
-    const list = chubeInput.value.split("|").map((s) => s.trim()).filter(Boolean);
-    const known = new Set(model.psychubes.map((p) => p.name.toLowerCase()));
-    const unknown = list.filter((t) => !known.has(t.toLowerCase()));
-    chubeHelp.textContent =
-      list.length === 0
-        ? "Separate alternatives with | if a character has more than one."
-        : unknown.length
-          ? `Not in psychube_id.json: ${unknown.join(", ")}`
-          : `${list.length} alternative${list.length === 1 ? "" : "s"}, all found in psychube_id.json.`;
-    chubeHelp.style.color = unknown.length ? "var(--warn)" : "";
-  };
-  chubeInput.addEventListener("input", refreshChubeHelp);
-  refreshChubeHelp();
-
-  card.appendChild(
-    el("div", { class: "field" }, [
-      el("label", { class: "field-label", text: "Recommended psychube(s)" }),
-      chubeInput,
-      chubeHelp,
-    ])
-  );
-
-  card.appendChild(
-    el("div", { style: "margin-top:12px" }, [
-      el("button", {
-        class: "btn btn-sm btn-danger",
-        text: "Remove all recommendations",
-        onclick: () => {
-          model.removeRecommendation(name);
-          afterEdit({ list: false });
-        },
-      }),
-    ])
-  );
-
-  return card;
-}
-
 /** Which files this character currently appears in. */
 function renderFileTouchCard(name) {  const model = state.model;
   const touches = [];
@@ -773,7 +611,6 @@ function renderFileTouchCard(name) {  const model = state.model;
     if (String(e).split(":")[0].trim() === name) push("future_sight.json", `Euphoria ${e.split(":")[1]?.trim()}`);
   }
   if (model.value("name_map.json")?.character?.[name] !== undefined) push("name_map.json", "character");
-  if (model.recommendation(name)) push("characters_recommendation.json");
   for (const [raw, canonical] of Object.entries(model.value("global_name_transfer.json") || {})) {
     if (canonical === name) push("global_name_transfer.json", raw);
   }
@@ -1299,7 +1136,7 @@ function renderTeamList() {
     // conditional attach would leave nothing able to receive the drop.
     const handle = row.firstChild;
     handle.addEventListener("dragstart", (e) => {
-      state.drag = { name, index };
+      state.drag = { kind: "team", name, index };
       row.classList.add("dragging");
       e.dataTransfer.effectAllowed = "move";
       // Firefox needs data set for the drag to start at all.
@@ -1313,7 +1150,7 @@ function renderTeamList() {
     });
 
     row.addEventListener("dragover", (e) => {
-      if (!state.drag || state.drag.name === name) return;
+      if (!state.drag || state.drag.kind !== "team" || state.drag.name === name) return;
       e.preventDefault();
       e.dataTransfer.dropEffect = "move";
       const rect = row.getBoundingClientRect();
@@ -1325,7 +1162,7 @@ function renderTeamList() {
     row.addEventListener("drop", (e) => {
       const drag = state.drag;
       row.classList.remove("drop-above", "drop-below");
-      if (!drag || drag.name === name) return;
+      if (!drag || drag.kind !== "team" || drag.name === name) return;
       e.preventDefault();
       e.stopPropagation();
 
@@ -1486,6 +1323,15 @@ function renderTeamDetail() {
       const slotKey = `${archetype}-${vi}-${si}`;
 
       row.appendChild(
+        el("span", {
+          class: "drag-handle slot-handle",
+          text: "⠿",
+          title: "Drag to reorder",
+          draggable: "true",
+        })
+      );
+
+      row.appendChild(
         el("div", {}, [
           el("div", { class: "field-label", text: "Character" }),
           characterCell(member.character, (name) => {
@@ -1537,6 +1383,54 @@ function renderTeamDetail() {
       );
 
       slotHost.appendChild(row);
+
+      // Drag the ⠿ handle to move this member up or down within the variant.
+      // As in the preset list, only the handle starts a drag so the inputs in
+      // the row stay usable, and the drop listeners are attached on every
+      // render because dragstart does not re-render.
+      const handle = row.querySelector(".slot-handle");
+      handle.addEventListener("dragstart", (e) => {
+        state.drag = { kind: "slot", archetype, variant: vi, index: si };
+        row.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", member.character || "");
+        e.stopPropagation();
+      });
+      handle.addEventListener("dragend", () => {
+        row.classList.remove("dragging");
+        state.drag = null;
+        for (const r of host.querySelectorAll(".slot")) r.classList.remove("drop-above", "drop-below");
+      });
+
+      row.addEventListener("dragover", (e) => {
+        const drag = state.drag;
+        if (!drag || drag.kind !== "slot" || drag.variant !== vi || drag.index === si) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        const rect = row.getBoundingClientRect();
+        const above = e.clientY < rect.top + rect.height / 2;
+        row.classList.toggle("drop-above", above);
+        row.classList.toggle("drop-below", !above);
+      });
+      row.addEventListener("dragleave", () => row.classList.remove("drop-above", "drop-below"));
+      row.addEventListener("drop", (e) => {
+        const drag = state.drag;
+        row.classList.remove("drop-above", "drop-below");
+        if (!drag || drag.kind !== "slot" || drag.variant !== vi || drag.index === si) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const rect = row.getBoundingClientRect();
+        const above = e.clientY < rect.top + rect.height / 2;
+        // Removing the dragged member first shifts everything after it down by one.
+        let target = above ? si : si + 1;
+        if (drag.index < target) target -= 1;
+        target = Math.max(0, Math.min(slots.length - 1, target));
+
+        state.drag = null;
+        model.moveTeamSlot(archetype, vi, drag.index, target);
+        afterEdit({ list: false });
+      });
 
       /* substitutes */
       const subs = member.substitutes || [];
@@ -1862,6 +1756,854 @@ function addTransferFlow() {
  * Review
  * ------------------------------------------------------------------ */
 
+/* ------------------------------------------------------------------ *
+ * Builds — per-character build data (guide_builds.json)
+ * ------------------------------------------------------------------ */
+
+/** Icon tags: the two damage types and the six afflatus. */
+const BUILD_ICON_TAGS = GUIDE_ICON_TAGS;
+
+function buildIconTag(label) {
+  return BUILD_ICON_TAGS.find((tag) => tag.label.toLowerCase() === String(label || "").toLowerCase()) || null;
+}
+
+/** Characters that already have an entry in guide_builds.json. */
+function buildNames() {
+  return new Set(Object.keys(state.model.guideBuilds()));
+}
+
+function filteredBuilds() {
+  const model = state.model;
+  const query = ($("build-search").value || "").trim().toLowerCase();
+  const withBuild = buildNames();
+  return model.characters.filter((name) => {
+    const c = model.character(name);
+    if (state.buildFilters.rarity && c.rarity !== state.buildFilters.rarity) return false;
+    if (state.buildFilters.afflatus && c.afflatus !== state.buildFilters.afflatus) return false;
+    if (state.buildFilters.onlyWithBuild && !withBuild.has(name)) return false;
+    if (!query) return true;
+    const haystack = [name, c.cnName, c.arcanistEng].filter(Boolean).join(" ").toLowerCase();
+    return haystack.includes(query);
+  });
+}
+
+function renderBuildFilters() {
+  const host = $("build-filters");
+  host.replaceChildren();
+
+  const rarityRow = el("div", { class: "pick" });
+  for (const rarity of [...RARITIES].reverse()) {
+    rarityRow.appendChild(
+      el("button", {
+        class: `chip${state.buildFilters.rarity === rarity ? " on" : ""}`,
+        text: `${rarity}★`,
+        onclick: () => {
+          state.buildFilters.rarity = state.buildFilters.rarity === rarity ? null : rarity;
+          renderBuildList();
+        },
+      })
+    );
+  }
+  host.appendChild(rarityRow);
+
+  const afflatusRow = el("div", { class: "pick" });
+  for (const afflatus of AFFLATUSES) {
+    afflatusRow.appendChild(
+      el("button", {
+        class: `chip chip-icon${state.buildFilters.afflatus === afflatus ? " on" : ""}`,
+        title: afflatus.replace("_", " "),
+        onclick: () => {
+          state.buildFilters.afflatus = state.buildFilters.afflatus === afflatus ? null : afflatus;
+          renderBuildList();
+        },
+      }, [el("img", { src: ICON.afflatus(afflatus), alt: "" })])
+    );
+  }
+  host.appendChild(afflatusRow);
+
+  host.appendChild(
+    el("div", { class: "pick" }, [
+      el("button", {
+        class: `chip${state.buildFilters.onlyWithBuild ? " on" : ""}`,
+        text: "Has build",
+        onclick: () => {
+          state.buildFilters.onlyWithBuild = !state.buildFilters.onlyWithBuild;
+          renderBuildList();
+        },
+      }),
+    ])
+  );
+}
+
+function renderBuildList() {
+  if (!state.model) return;
+  renderBuildFilters();
+
+  const body = $("build-list-body");
+  body.replaceChildren();
+  const names = filteredBuilds();
+  const withBuild = buildNames();
+
+  $("build-count").textContent = `${names.length} character(s) · ${withBuild.size} with a build`;
+
+  // Open on a character that already has a build when there is one.
+  if (!state.guide.build || !names.includes(state.guide.build)) {
+    state.guide.build = names.find((name) => withBuild.has(name)) || names[0] || null;
+  }
+
+  for (const name of names) {
+    const c = state.model.character(name);
+    const flags = withBuild.has(name) ? [el("span", { class: "flag ok", text: "build" })] : [];
+
+    body.appendChild(
+      el("div", {
+        class: `row${state.guide.build === name ? " on" : ""}`,
+        onclick: () => {
+          state.guide.build = name;
+          renderBuildList();
+          renderBuildDetail();
+        },
+      }, [
+        c.avatar ? el("img", { src: c.avatar, alt: "" }) : el("span", { class: "row-avatar-empty" }),
+        el("div", { class: "row-main" }, [
+          el("div", { class: "row-name", text: name }),
+          el("div", { class: "row-sub", text: [c.cnName, c.afflatus, c.shape].filter(Boolean).join(" · ") || "—" }),
+        ]),
+        el("div", { class: "row-flags" }, flags),
+      ])
+    );
+  }
+
+  if (names.length === 0) body.appendChild(el("div", { class: "empty", text: "No character matches these filters." }));
+
+  renderBuildDetail();
+}
+
+function renderBuildDetail() {
+  const host = $("build-detail");
+  host.replaceChildren();
+  const model = state.model;
+  const name = state.guide.build;
+
+  if (!name) {
+    host.appendChild(el("div", { class: "empty", text: "Select a character." }));
+    return;
+  }
+
+  const c = model.character(name);
+  const build = model.guideBuild(name) || {};
+  const tags = (Array.isArray(build.tags) ? build.tags : [])
+    .map((tag) => (typeof tag === "string" ? tag : tag && tag.label))
+    .filter(Boolean);
+  const psychubes = Array.isArray(build.psychubes) ? build.psychubes : [];
+
+  host.appendChild(
+    el("div", { class: "detail-head" }, [
+      c.avatar ? el("img", { src: c.avatar, class: "avatar", alt: "" }) : null,
+      el("div", { style: "flex:1" }, [
+        el("div", { class: "detail-title", text: name }),
+        el("div", { class: "detail-sub", text: [c.cnName, c.afflatus, c.shape].filter(Boolean).join(" · ") || "guide_builds.json" }),
+      ]),
+    ])
+  );
+
+  /* --- tags, grouped --- */
+  const tagCard = el("div", { class: "card" }, [
+    el("h2", { text: "Tags" }),
+    el("p", { class: "hint", text: "Click a tag to add or remove it. Reality/Mental and the six afflatus show an icon in the app." }),
+  ]);
+
+  const commitTags = (next) => {
+    model.setGuideBuildField(name, "tags", next);
+    afterEdit({ list: false });
+  };
+
+  for (const group of GUIDE_TAG_GROUPS) {
+    const row = el("div", { class: "pick" });
+    for (const tag of group.tags) {
+      const active = tags.includes(tag);
+      const iconTag = buildIconTag(tag);
+      row.appendChild(
+        el("button", {
+          class: `chip${active ? " on" : ""}${iconTag ? " chip-icon" : ""}`,
+          title: tag,
+          onclick: () => commitTags(active ? tags.filter((t) => t !== tag) : [...tags, tag]),
+        }, [
+          iconTag ? el("img", { src: `../${iconTag.icon}`, alt: "" }) : null,
+          el("span", { text: tag }),
+        ])
+      );
+    }
+    tagCard.appendChild(el("div", { class: "field" }, [el("label", { class: "field-label", text: group.label }), row]));
+  }
+
+  const unknown = tags.filter((tag) => !GUIDE_TAG_GROUPS.some((group) => group.tags.includes(tag)));
+  if (unknown.length) {
+    const row = el("div", { class: "pick" });
+    for (const tag of unknown) {
+      row.appendChild(
+        el("button", {
+          class: "chip on",
+          title: "Remove this tag",
+          onclick: () => commitTags(tags.filter((t) => t !== tag)),
+        }, [el("span", { text: tag }), el("span", { class: "chip-x", text: "×" })])
+      );
+    }
+    tagCard.appendChild(el("div", { class: "field" }, [el("label", { class: "field-label", text: "Other" }), row]));
+  }
+  host.appendChild(tagCard);
+
+  /* --- psychubes: two slots --- */
+  const chubeCard = el("div", { class: "card" }, [
+    el("h2", { text: "Recommended psychubes" }),
+    el("p", { class: "hint", text: "Two at most, ordered by priority. Click a slot to change it." }),
+  ]);
+  const chubeSlots = el("div", { class: "pick" });
+  for (let at = 0; at < 2; at++) {
+    chubeSlots.appendChild(
+      psychubeCell(psychubes[at] || "", (value) => {
+        const next = psychubes.slice(0, 2);
+        if (value) next[at] = value;
+        else next.splice(at, 1);
+        model.setGuideBuildField(name, "psychubes", next.filter(Boolean));
+        afterEdit({ list: false });
+      }, `build-chube-${at}`)
+    );
+  }
+  chubeCard.appendChild(chubeSlots);
+  host.appendChild(chubeCard);
+
+  /* --- resonance codes --- */
+  const resonanceCard = el("div", { class: "card" }, [
+    el("h2", { text: "Resonance codes" }),
+    el("p", { class: "hint", text: "The label is what the app shows as the copy button." }),
+  ]);
+  const resonance = build.resonance && typeof build.resonance === "object" ? { ...build.resonance } : {};
+  const resHost = el("div", { style: "display:flex;flex-direction:column;gap:6px" });
+  const commitResonance = (next) => {
+    model.setGuideBuildField(name, "resonance", next);
+    afterEdit({ list: false });
+  };
+  const drawResonance = () => {
+    resHost.replaceChildren();
+    const current = model.guideBuild(name)?.resonance || {};
+    const labels = Object.keys(current);
+    if (labels.length === 0) resHost.appendChild(el("div", { class: "field-note", text: "No codes yet." }));
+
+    for (const label of labels) {
+      const labelInput = el("input", { type: "text", value: label, placeholder: "Attack", style: "width:120px" });
+      const codeInput = el("input", { type: "text", value: current[label], placeholder: "codes", style: "flex:1;min-width:180px" });
+
+      labelInput.addEventListener("change", () => {
+        const nextLabel = labelInput.value.trim();
+        if (!nextLabel || nextLabel === label) {
+          labelInput.value = label;
+          return;
+        }
+        const rebuilt = {};
+        for (const key of labels) rebuilt[key === label ? nextLabel : key] = current[key];
+        commitResonance(rebuilt);
+      });
+      codeInput.addEventListener("change", () => {
+        commitResonance({ ...current, [label]: codeInput.value.trim() });
+      });
+
+      resHost.appendChild(
+        el("div", { class: "pick" }, [
+          labelInput,
+          codeInput,
+          el("button", {
+            class: "btn btn-sm btn-ghost",
+            text: "×",
+            onclick: () => {
+              const next = { ...current };
+              delete next[label];
+              commitResonance(next);
+            },
+          }),
+        ])
+      );
+    }
+
+    resHost.appendChild(
+      el("div", { style: "margin-top:8px" }, [
+        el("button", {
+          class: "btn btn-sm",
+          text: "+ Add code",
+          onclick: () => {
+            const currentNow = model.guideBuild(name)?.resonance || {};
+            let label = "Option";
+            let i = 2;
+            while (label in currentNow) label = `Option ${i++}`;
+            commitResonance({ ...currentNow, [label]: "" });
+          },
+        }),
+      ])
+    );
+  };
+  drawResonance();
+  resonanceCard.appendChild(resHost);
+  host.appendChild(resonanceCard);
+
+  /* --- pattern: only the ones the character's shape offers --- */
+  const patternCard = el("div", { class: "card" }, [
+    el("h2", { text: "Resonance pattern" }),
+    el("p", { class: "hint", text: "Limited to the patterns of this character's shape. Click the current one again to clear it." }),
+  ]);
+  const patterns = model.buildPatterns(name);
+  if (patterns.length === 0) {
+    patternCard.appendChild(el("p", { class: "hint", text: "This character has no resonance shape, so there are no patterns to pick." }));
+  } else {
+    const grid = el("div", { class: "pattern-grid" });
+    for (const entry of patterns) {
+      const active = build.pattern === entry.pattern;
+      grid.appendChild(
+        el("button", {
+          class: `pattern-cell${active ? " on" : ""}`,
+          title: entry.pattern,
+          onclick: () => {
+            model.setGuideBuildField(name, "pattern", active ? "" : entry.pattern);
+            afterEdit({ list: false });
+          },
+        }, [
+          el("img", { src: ICON.pattern(entry.shape, entry.pattern), alt: "" }),
+          el("span", { text: entry.pattern }),
+        ])
+      );
+    }
+    patternCard.appendChild(grid);
+  }
+  host.appendChild(patternCard);
+
+  /* --- portrait value chart: editable for every character --- */
+  const progression = model.progression(name);
+  const chartCard = el("div", { class: "card" }, [
+    el("h2", { text: "Portrait value bar chart" }),
+    el("p", { class: "hint", text: "From characters_progressions.json — the percentage drawn above each bar." }),
+  ]);
+  if (progression.length === 0) {
+    chartCard.appendChild(
+      el("div", { class: "field-row" }, [
+        el("span", { class: "field-note", text: "This character has no progression data yet." }),
+        el("button", {
+          class: "btn btn-sm",
+          text: "+ Add chart",
+          onclick: () => {
+            model.ensureProgression(name);
+            afterEdit({ list: false });
+          },
+        }),
+      ])
+    );
+  } else {
+    const grid = el("div", { class: "pattern-grid" });
+    progression.forEach((entry) => {
+      const input = el("input", { type: "number", step: "0.1", value: entry.val, style: "width:100%" });
+      input.addEventListener("change", () => {
+        model.setProgressionValue(name, entry.badge, input.value);
+        afterEdit({ list: false });
+      });
+      grid.appendChild(
+        el("div", { class: "pattern-cell static" }, [
+          el("div", { class: "field-label", text: entry.badge || "" }),
+          input,
+        ])
+      );
+    });
+    chartCard.appendChild(grid);
+  }
+  host.appendChild(chartCard);
+
+  /* --- notes --- */
+  const notes = el("textarea", { rows: 3, style: "width:100%", placeholder: "Optional notes" });
+  notes.value = build.notes || "";
+  notes.addEventListener("change", () => {
+    model.setGuideBuildField(name, "notes", notes.value);
+    afterEdit({ list: false });
+  });
+  host.appendChild(el("div", { class: "card" }, [el("h2", { text: "Notes" }), notes]));
+}
+
+/* ------------------------------------------------------------------ *
+ * Rotations — card plans (guide_rotations.json)
+ * ------------------------------------------------------------------ */
+
+/** Skill cards for a character, read from guide_skills.json. */
+function rotationSkills(name) {
+  const table = state.model.value("guide_skills.json") || {};
+  const list = table[state.model.resolve(name)];
+  return Array.isArray(list) ? list : [];
+}
+
+const SLOT_LABELS = { normal: "AP", or: "OR", lb: "1/4 AP", text: "TEXT" };
+
+/** The icon for one card: the pinned icon wins, else the skill's first variant. */
+function cardIcon(card) {
+  if (card.special) return `../${card.special}`;
+  if (card.icon) return `../${card.icon}`;
+  const hit = rotationSkills(card.character).find((s) => Number(s.skill) === Number(card.skill));
+  return hit ? `../${hit.icon}` : "";
+}
+
+/** The special card icons, read from guide_cards.json. */
+function specialCardIcons() {
+  const value = state.model.value("guide_cards.json") || {};
+  return Array.isArray(value.special) ? value.special : [];
+}
+
+function rotationMembers(rotation) {
+  return (rotation.members || [])
+    .map((entry) => (typeof entry === "string" ? { character: entry, psychube: "" } : entry))
+    .filter((entry) => entry && entry.character);
+}
+
+function rotationRounds(rotation) {
+  if (Array.isArray(rotation.rounds)) return rotation.rounds;
+  if (!Array.isArray(rotation.turns)) return [];
+  return rotation.turns.map((turn) => ({
+    note: "",
+    slots: (turn.cards || []).map((card) => ({ cards: card ? [card] : [] })),
+  }));
+}
+
+function filteredRotations() {
+  const query = ($("rotation-search").value || "").trim().toLowerCase();
+  return state.model.guideRotations().filter((rotation) => {
+    const tags = Array.isArray(rotation.archetypes) ? rotation.archetypes : [];
+    if (state.filters.archetypes.size > 0 && !tags.some((tag) => state.filters.archetypes.has(tag))) return false;
+    if (!query) return true;
+    const haystack = [
+      rotation.name || "",
+      rotation.id || "",
+      rotation.notes || "",
+      rotation.tuning || "",
+      ...tags,
+      ...rotationMembers(rotation).map((m) => m.character),
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(query);
+  });
+}
+
+function renderRotationFilters() {
+  const host = $("rotation-filters");
+  host.replaceChildren();
+  for (const tag of ROTATION_ARCHETYPES) {
+    host.appendChild(
+      el("button", {
+        class: `chip${state.filters.archetypes.has(tag) ? " on" : ""}`,
+        text: tag,
+        onclick: () => {
+          if (state.filters.archetypes.has(tag)) state.filters.archetypes.delete(tag);
+          else state.filters.archetypes.add(tag);
+          renderRotationList();
+        },
+      })
+    );
+  }
+}
+
+function renderRotationList() {
+  if (!state.model) return;
+  renderRotationFilters();
+
+  const body = $("rotation-list-body");
+  body.replaceChildren();
+  const rotations = filteredRotations();
+  $("rotation-count").textContent = `${rotations.length} rotation(s)`;
+
+  for (const rotation of rotations) {
+    const tags = Array.isArray(rotation.archetypes) ? rotation.archetypes : [];
+    body.appendChild(
+      el("div", {
+        class: `row${state.guide.rotation === rotation.id ? " on" : ""}`,
+        onclick: () => {
+          state.guide.rotation = rotation.id;
+          state.guide.hand = null;
+          state.guide.special = false;
+          renderRotationList();
+          renderRotationDetail();
+        },
+      }, [
+        el("div", { class: "row-main" }, [
+          el("div", { class: "row-name", text: rotation.name || rotation.id || "" }),
+          el("div", { class: "row-sub", text: `${rotationRounds(rotation).length} round(s)${tags.length ? ` · ${tags.join(", ")}` : ""}` }),
+        ]),
+        el("div", { class: "row-flags" }, rotationMembers(rotation).slice(0, 4).map((member) =>
+          el("img", { src: state.model.character(member.character).avatar, class: "row-face", alt: "", title: member.character })
+        )),
+      ])
+    );
+  }
+
+  if (rotations.length === 0) body.appendChild(el("div", { class: "empty", text: "No rotation matches these filters." }));
+
+  body.appendChild(
+    el("div", { class: "list-filters" }, [
+      el("button", {
+        class: "chip",
+        text: "+ New rotation",
+        onclick: () => {
+          const name = window.prompt("Name for the new rotation:");
+          if (name === null) return;
+          const id = state.model.addGuideRotation(name);
+          if (id) state.guide.rotation = id;
+          afterEdit();
+        },
+      }),
+    ])
+  );
+
+  if (!state.guide.rotation || !rotations.some((r) => r.id === state.guide.rotation)) {
+    state.guide.rotation = rotations[0] ? rotations[0].id : null;
+  }
+  renderRotationDetail();
+}
+
+function renderRotationDetail() {
+  const host = $("rotation-detail");
+  host.replaceChildren();
+  const model = state.model;
+  const rotation = model.guideRotation(state.guide.rotation);
+
+  if (!rotation) {
+    host.appendChild(el("div", { class: "empty", text: "Select a rotation, or create one with “+ New rotation”." }));
+    return;
+  }
+
+  const id = rotation.id;
+  const members = rotationMembers(rotation);
+  const rounds = rotationRounds(rotation);
+  const archetypes = Array.isArray(rotation.archetypes) ? rotation.archetypes : [];
+  if (!state.guide.hand && members[0]) state.guide.hand = model.resolve(members[0].character);
+
+  host.appendChild(
+    el("div", { class: "detail-head" }, [
+      el("div", { style: "flex:1" }, [
+        el("div", { class: "detail-title", text: rotation.name || id }),
+        el("div", { class: "detail-sub", text: `${rounds.length} round(s) → guide_rotations.json` }),
+      ]),
+      el("button", {
+        class: "btn btn-sm btn-danger",
+        text: "Remove rotation",
+        onclick: () => {
+          model.removeGuideRotation(id);
+          state.guide.rotation = null;
+          afterEdit();
+        },
+      }),
+    ])
+  );
+
+  /* --- identity, tuning, archetypes, notes --- */
+  const nameInput = el("input", { type: "text", value: rotation.name || "", style: "width:100%" });
+  nameInput.addEventListener("change", () => {
+    model.setGuideRotationField(id, "name", nameInput.value);
+    afterEdit();
+  });
+
+  const notesInput = el("textarea", { rows: 2, style: "width:100%" });
+  notesInput.value = rotation.notes || "";
+  notesInput.addEventListener("change", () => {
+    model.setGuideRotationField(id, "notes", notesInput.value);
+    afterEdit({ list: false });
+  });
+
+  const tuningRow = el("div", { class: "pick" });
+  for (const tuning of TUNINGS) {
+    const active = rotation.tuning === tuning;
+    tuningRow.appendChild(
+      el("button", {
+        class: `chip chip-icon${active ? " on" : ""}`,
+        title: tuning,
+        onclick: () => {
+          model.setGuideRotationField(id, "tuning", active ? "" : tuning);
+          afterEdit();
+        },
+      }, [
+        el("img", { src: `../images/tuning_abilities/${encodeURIComponent(tuning)}.png`, alt: "" }),
+        el("span", { text: tuning }),
+      ])
+    );
+  }
+
+  const archetypeRow = el("div", { class: "pick" });
+  for (const tag of ROTATION_ARCHETYPES) {
+    const active = archetypes.includes(tag);
+    archetypeRow.appendChild(
+      el("button", {
+        class: `chip${active ? " on" : ""}`,
+        text: tag,
+        onclick: () => {
+          const next = active ? archetypes.filter((t) => t !== tag) : [...archetypes, tag];
+          model.setGuideRotationField(id, "archetypes", next);
+          afterEdit();
+        },
+      })
+    );
+  }
+
+  host.appendChild(
+    el("div", { class: "card" }, [
+      el("h2", { text: "Rotation" }),
+      el("div", { class: "field" }, [el("label", { class: "field-label", text: "Name" }), nameInput]),
+      el("div", { class: "field" }, [el("label", { class: "field-label", text: "Tuning" }), tuningRow]),
+      el("div", { class: "field" }, [el("label", { class: "field-label", text: "Archetype tags" }), archetypeRow]),
+      el("div", { class: "field" }, [el("label", { class: "field-label", text: "Notes" }), notesInput]),
+    ])
+  );
+
+  /* --- team: character + psychube per slot --- */
+  const memberHost = el("div", { class: "pick" });
+  for (let slot = 0; slot < 4; slot++) {
+    const member = members[slot] || { character: "", psychube: "" };
+    memberHost.appendChild(
+      el("div", { class: "pick" }, [
+        characterCell(member.character, (value) => {
+          model.setGuideRotationMember(id, slot, "character", value);
+          if (!state.guide.hand && value) state.guide.hand = model.resolve(value);
+          afterEdit();
+        }, `rotation-member-${slot}`),
+        psychubeCell(member.psychube, (value) => {
+          model.setGuideRotationMember(id, slot, "psychube", value);
+          afterEdit({ list: false });
+        }, `rotation-member-chube-${slot}`),
+      ])
+    );
+  }
+  host.appendChild(
+    el("div", { class: "card" }, [
+      el("h2", { text: "Team" }),
+      el("p", { class: "hint", text: "Up to four characters, each with the psychube they run." }),
+      memberHost,
+    ])
+  );
+
+  /* --- skill hand --- */
+  const handName = state.guide.hand && model.character(state.guide.hand) ? state.guide.hand : model.resolve((members[0] || {}).character || "");
+  const handCard = el("div", { class: "card" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: "Cards" }),
+      el("div", { class: "pick" }, [
+        el("button", {
+          class: `chip${state.guide.special ? "" : " on"}`,
+          text: "Character cards",
+          onclick: () => {
+            state.guide.special = false;
+            renderRotationDetail();
+          },
+        }),
+        el("button", {
+          class: `chip${state.guide.special ? " on" : ""}`,
+          text: "Special cards",
+          onclick: () => {
+            state.guide.special = true;
+            renderRotationDetail();
+          },
+        }),
+      ]),
+    ]),
+  ]);
+
+  if (state.guide.special) {
+    const specials = specialCardIcons();
+    handCard.appendChild(el("p", { class: "hint", text: "Special cards carry no character name. Drag one onto a slot." }));
+    const grid = el("div", { class: "special-card-grid" });
+    for (const icon of specials) {
+      const card = el("button", {
+        class: "guide-hand-card is-special",
+        title: "Special card",
+        draggable: "true",
+        onclick: () => {
+          state.drag = { special: icon };
+          banner("Special card armed — click a slot to place it.", "info");
+        },
+      }, [el("img", { src: `../${icon}`, alt: "" })]);
+      card.addEventListener("dragstart", (e) => {
+        state.drag = { special: icon };
+        if (e.dataTransfer) {
+          e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
+          e.dataTransfer.effectAllowed = "copy";
+        }
+      });
+      grid.appendChild(card);
+    }
+    handCard.appendChild(grid);
+  } else {
+    const handTabs = el("div", { class: "pick" });
+    for (const member of members) {
+      const memberName = model.resolve(member.character);
+      const c = model.character(memberName);
+      handTabs.appendChild(
+        el("button", {
+          class: `sub-pick${memberName === handName ? " on" : ""}`,
+          title: `Show ${memberName}'s cards`,
+          onclick: () => {
+            state.guide.hand = memberName;
+            renderRotationDetail();
+          },
+        }, [c.avatar ? el("img", { src: c.avatar, class: "face", alt: "" }) : null, el("span", { class: "name", text: memberName })])
+      );
+    }
+    handCard.appendChild(handTabs);
+
+    const skills = rotationSkills(handName);
+    if (skills.length === 0) {
+      handCard.appendChild(el("p", { class: "hint", text: `No skill icons for ${handName || "this character"} in images/skills.` }));
+    } else {
+      const hand = el("div", { class: "guide-hand" });
+      for (const entry of skills) {
+        const card = el("button", {
+          class: "guide-hand-card",
+          title: "Drag onto a slot, or click then click a slot",
+          draggable: "true",
+          onclick: () => {
+            state.drag = { character: handName, skill: entry.skill, icon: entry.icon };
+            banner(`${handName} card armed — click a slot to place it.`, "info");
+          },
+        }, [el("img", { src: `../${entry.icon}`, alt: "" })]);
+        card.addEventListener("dragstart", (e) => {
+          state.drag = { character: handName, skill: entry.skill, icon: entry.icon };
+          if (e.dataTransfer) {
+            e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
+            e.dataTransfer.effectAllowed = "copy";
+          }
+        });
+        hand.appendChild(card);
+      }
+      handCard.appendChild(hand);
+    }
+  }
+  host.appendChild(handCard);
+
+  /* --- rounds --- */
+  const roundsCard = el("div", { class: "card" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: "Rounds" }),
+      el("button", { class: "btn btn-sm", text: "+ Round", onclick: () => { model.addGuideRound(id); afterEdit(); } }),
+    ]),
+    el("p", { class: "hint", text: "Add the slot types you need: Normal AP holds one card, OR AP holds either of two, 1/4 AP (LB) draws the card at a quarter size, Text is a free note." }),
+  ]);
+
+  rounds.forEach((round, roundIndex) => {
+    const roundEl = el("div", { class: "guide-round-editor" });
+
+    const roundNote = el("input", { type: "text", value: round.note || "", placeholder: "Round note (optional)", class: "guide-round-note-input" });
+    roundNote.addEventListener("change", () => {
+      model.setGuideRoundNote(id, roundIndex, roundNote.value);
+      afterEdit({ list: false });
+    });
+
+    roundEl.appendChild(
+      el("div", { class: "guide-turn-head" }, [
+        el("span", { class: "guide-turn-no", text: `Round ${String(roundIndex + 1).padStart(2, "0")}` }),
+        el("div", { class: "pick" }, [
+          roundNote,
+          el("button", { class: "btn btn-sm", text: "+ Normal AP", title: "One card", onclick: () => { model.addGuideSlot(id, roundIndex, "normal"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm", text: "+ OR AP", title: "Either of two cards", onclick: () => { model.addGuideSlot(id, roundIndex, "or"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm", text: "+ 1/4 AP (LB)", title: "A quarter-size card", onclick: () => { model.addGuideSlot(id, roundIndex, "lb"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm", text: "+ Text", title: "Free text instead of a card", onclick: () => { model.addGuideSlot(id, roundIndex, "text"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm btn-danger", text: "Remove round", onclick: () => { model.removeGuideRound(id, roundIndex); afterEdit(); } }),
+        ]),
+      ])
+    );
+
+    const slotRow = el("div", { class: "guide-slot-row" });
+    const slots = Array.isArray(round.slots) ? round.slots : [];
+    slots.forEach((slot, slotIndex) => {
+      const type = slot.type || "normal";
+      const cards = Array.isArray(slot.cards) ? slot.cards : [];
+      const slotEl = el("div", { class: `guide-slot-editor is-${type}` });
+
+      if (type === "text") {
+        const textInput = el("textarea", { rows: 3, class: "guide-slot-text", placeholder: "Text" });
+        textInput.value = slot.text || "";
+        textInput.addEventListener("change", () => {
+          model.setGuideSlotText(id, roundIndex, slotIndex, textInput.value);
+          afterEdit({ list: false });
+        });
+        slotEl.appendChild(textInput);
+      } else {
+        const cardRow = el("div", { class: "guide-slot-cards" });
+        cards.forEach((card, cardIndex) => {
+          if (cardIndex > 0) cardRow.appendChild(el("span", { class: "guide-or", text: "or" }));
+          cardRow.appendChild(
+            el("span", { class: "guide-slot-card", title: card.special ? "Special card" : `${card.character} · ${card.skill}` }, [
+              el("img", { src: cardIcon(card), alt: "" }),
+              el("button", {
+                class: "guide-slot-remove",
+                text: "×",
+                title: "Remove this card",
+                onclick: (e) => {
+                  e.stopPropagation();
+                  model.removeGuideSlotCard(id, roundIndex, slotIndex, cardIndex);
+                  afterEdit();
+                },
+              }),
+            ])
+          );
+        });
+        if (cards.length === 0) cardRow.appendChild(el("span", { class: "guide-slot-empty", text: "+" }));
+        slotEl.appendChild(cardRow);
+      }
+
+      slotEl.appendChild(el("span", { class: "guide-slot-type", text: SLOT_LABELS[type] || SLOT_LABELS.normal }));
+      slotEl.appendChild(
+        el("button", {
+          class: "guide-slot-remove-slot",
+          text: "×",
+          title: "Remove this slot",
+          onclick: () => {
+            model.removeGuideSlot(id, roundIndex, slotIndex);
+            afterEdit();
+          },
+        })
+      );
+
+      if (type !== "text") {
+        slotEl.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          slotEl.classList.add("is-target");
+        });
+        slotEl.addEventListener("dragleave", () => slotEl.classList.remove("is-target"));
+        slotEl.addEventListener("drop", (e) => {
+          e.preventDefault();
+          slotEl.classList.remove("is-target");
+          let payload = state.drag;
+          try {
+            const raw = e.dataTransfer?.getData("text/plain");
+            if (raw) payload = JSON.parse(raw);
+          } catch {
+            // keep the armed card
+          }
+          if (!payload) return;
+          model.addGuideSlotCard(id, roundIndex, slotIndex, payload);
+          afterEdit();
+        });
+        slotEl.addEventListener("click", () => {
+          if (!state.drag) return;
+          model.addGuideSlotCard(id, roundIndex, slotIndex, state.drag);
+          afterEdit();
+        });
+      }
+
+      slotRow.appendChild(slotEl);
+    });
+
+    if (slots.length === 0) slotRow.appendChild(el("span", { class: "field-note", text: "No slots yet." }));
+    roundEl.appendChild(slotRow);
+    roundsCard.appendChild(roundEl);
+  });
+
+  if (rounds.length === 0) roundsCard.appendChild(el("p", { class: "hint", text: "No rounds yet." }));
+  host.appendChild(roundsCard);
+}
+
+/* ------------------------------------------------------------------ *
+ * Review
+ * ------------------------------------------------------------------ */
+
 function renderReview() {
   if (!state.model) return;
   const model = state.model;
@@ -2023,6 +2765,8 @@ function wire() {
   $("char-search").addEventListener("input", renderCharacterList);
   $("chube-search").addEventListener("input", renderPsychubeList);
   $("team-search").addEventListener("input", renderTeamList);
+  $("build-search").addEventListener("input", renderBuildList);
+  $("rotation-search").addEventListener("input", renderRotationList);
 
   // psychube rarity filters and the new-psychube action
   for (const rarity of PSYCHUBE_RARITIES) {

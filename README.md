@@ -114,7 +114,7 @@ Common task → where to look:
 - State persisted under `r1999_psychube_v1`.
 
 ### 1.6. Team Building
-- `#team-modal`, opened from the toolbar button beside the language switcher (`images/random_icon/Team_icon.png`).
+- `#team-modal`, opened from the **Teams** button (`#btn-team`, `images/random_icon/Team_icon.png` + label) that closes the secondary tools row on the right, beside *JSON* / *Reset*.
 - Each team is a **4-slot** card: a renameable title, four slots, and a delete button. Teams are stored under `r1999_teams_v1`.
 - **Teams per row** — a `3 / 2 / 1` selector beside the Presets button writes `--team-columns` on `#team-list`. Each option is only *offered* when the viewport can host it (`TEAM_COLUMN_MIN_VIEWPORT`, evaluated by `maxTeamColumnsForViewport()`), and the modal widens for the 3-column layout (`TEAM_MODAL_MAX_WIDTH`). The preference is persisted as `columns` and re-clamped on resize by `applyTeamColumns()`.
 - **Recommend** — when a team already fields the `is_essential` member of some preset, a 📖 button appears **to the left of the delete button** and opens the **Team Recommendation** modal (§1.8.1).
@@ -658,7 +658,7 @@ Character names must match **exactly** across the JSON files (or be covered by a
 - `#team-unused-grid` is a **grid with `auto-fill`**, not `flex-wrap` — every column is the same width, so no ragged dead strip is left at the right edge. That is why `.team-unused-tile` no longer sets its own `width`.
 - ⚠️ **Both team grids need `grid-auto-rows: max-content`.** With the default `auto`, a grid whose content overflows its box does not scroll: the Grid squeezes every row down to fit (a 70-tile strip collapsed to 5 rows of 27px, crushing each tile into a sliver), which reads as "icons overlapping". `grid-auto-rows: max-content` keeps rows content-sized so the `overflow-y: auto` parent actually scrolls. This applies to `#team-unused-grid` **and** `#team-list`.
 - Team cards must stay free of `transform`/`filter` on hover: those create stacking contexts that would trap the `.team-slot-used` badge.
-- ⚠️ **The toolbar's Team Building button must track `.stat-badge`'s responsive heights.** `.btn-team` is a fixed square, so without matching overrides it stays 31px while the crew badge shrinks to 28px (769–1260px) or 26px (≤768px) — the row visibly desyncs. Those overrides must live **after** the base `.btn-team` rule: same specificity means source order wins, and the earlier `.stat-badge` media queries are defined *before* `.btn-team`, so putting them there silently does nothing.
+- **Teams** is a labelled `.btn` inside the drawer's data group, not a fixed-size square, so it simply follows the group's height. Its icon shrinks to 15px / 14px in the tablet and phone media queries.
 - ⚠️ **Unowned-psychube dimming needs two classes.** `.team-slot-chube img` / `.preset-member-chube img` are (0,1,1), so the dimming rule must be written as `.team-slot-chube.is-unowned img` (0,2,1) — a bare `.is-unowned img` would lose.
 - `filter: none` on `.chube-card .chube-avatar-img` is currently **dead**: `.char-avatar-box img.char-avatar-img` (0,2,1) outranks it (0,2,0), so board chube art still gets the character saturation filter. Pre-existing and cosmetic; leave it alone unless chube art is being reworked.
 

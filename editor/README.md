@@ -79,7 +79,7 @@ without the local tooling folder.
 |---|---|
 | **Characters** | rarity, afflatus, resonance shape, euphoria (both tiers + CN-only flag), exclude / collab / future-sight flags, CN name, name transfer. Sorted newest first, by ArcanistMap id descending |
 | **Psychubes** | name, CN name, release patch, tags, CN-only flag, plus **import a new icon**. Rarity 6 first |
-| **Team Presets** | add / delete presets, drag to reorder, per-member euphoria, substitutes with their own psychube and euphoria |
+| **Team Presets** | add / delete presets, drag presets and the members inside a variant, per-member euphoria, substitutes with their own psychube and euphoria |
 | **Patterns & Skins** | Future Sight skins and name transfer |
 | **Review** | validation report and the exact pending diff |
 
@@ -109,6 +109,9 @@ they are a fixed table that does not change between game updates.
   the Recommend button has something to protect from the start.
 - **Drag the ⠿ handle** on a preset row to reorder. `↑ Up` / `↓ Down` in the
   detail header do the same thing one step at a time.
+- **Drag the ⠿ handle** on a member row to move it up or down inside its
+  variant. The order is saved as the slot order in `team_archetypes.json`, and
+  the drop line shows where the member will land.
 - **Euphoria** on a member or a substitute is a `–` / `E1` / `E2` switch.
 - **+ Substitute** adds an interchangeable alternative for a slot, with its own
   psychube and euphoria tier.

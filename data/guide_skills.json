@@ -1,0 +1,2508 @@
+{
+  "6": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30790111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30790121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30790131.png"
+    }
+  ],
+  "37": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30660111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30660121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30660131.png"
+    }
+  ],
+  "A Knight": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30070111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30070121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30070131.png"
+    }
+  ],
+  "Aleph": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31130111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31130121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31130131.png"
+    }
+  ],
+  "Alexios": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31220111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31220121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31220131.png"
+    }
+  ],
+  "AliEn T": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30340111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30340121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30340131.png"
+    }
+  ],
+  "An-an Lee": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30390111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30390121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30390131.png"
+    }
+  ],
+  "Anjo Nala": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31000111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31000121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31000131.png"
+    }
+  ],
+  "APPLe": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30280111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30280121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30280131.png"
+    }
+  ],
+  "Argus": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30970111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30970121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30970131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/30970141.png"
+    }
+  ],
+  "Avgust": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30780111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30780121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30780131.png"
+    }
+  ],
+  "Baby Blue": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30160111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30160121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30160131.png"
+    }
+  ],
+  "Balloon Party": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30240111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30240121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30240131.png"
+    }
+  ],
+  "Barbara": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30990111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30990121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30990131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/30990141.png"
+    }
+  ],
+  "Barcarola": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31080111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31080121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31080131.png"
+    }
+  ],
+  "Beryl": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31340111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31340121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31340131.png"
+    },
+    {
+      "skill": 6,
+      "variant": 1,
+      "icon": "images/skills/31340161.png"
+    },
+    {
+      "skill": 6,
+      "variant": 4,
+      "icon": "images/skills/31340164.png"
+    },
+    {
+      "skill": 6,
+      "variant": 7,
+      "icon": "images/skills/31340167.png"
+    }
+  ],
+  "Bette": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30450111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30450121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30450131.png"
+    }
+  ],
+  "Bkornblume": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30200111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30200121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30200131.png"
+    }
+  ],
+  "Blonney": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30600111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30600121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30600131.png"
+    }
+  ],
+  "Brimley": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31060111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31060121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31060131.png"
+    }
+  ],
+  "Brume": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31350111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31350121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31350131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/31350141.png"
+    },
+    {
+      "skill": 5,
+      "variant": 1,
+      "icon": "images/skills/31350151.png"
+    }
+  ],
+  "Buddy Fairchild": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31150111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31150121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31150131.png"
+    }
+  ],
+  "Bunny Bunny": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30140111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30140121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30140131.png"
+    }
+  ],
+  "Centurion": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30320111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30320121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30320131.png"
+    }
+  ],
+  "Charlie": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30170111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30170121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30170131.png"
+    }
+  ],
+  "Charon": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31280111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31280121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31280131.png"
+    }
+  ],
+  "Cheng Heguang": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31370111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31370121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31370131.png"
+    }
+  ],
+  "Click": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30490111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30490121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30490131.png"
+    }
+  ],
+  "Coppélia": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31440111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31440121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31440131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/31440141.png"
+    }
+  ],
+  "Cornerstone": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31400111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31400121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31400131.png"
+    }
+  ],
+  "Corvus": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31320111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31320121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31320131.png"
+    }
+  ],
+  "Cristallo": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30310111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30310121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30310131.png"
+    }
+  ],
+  "Darley Clatter": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30500111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30500121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30500131.png"
+    }
+  ],
+  "Desert Flannel": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30750111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30750121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30750131.png"
+    }
+  ],
+  "Diggers": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30640111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30640121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30640131.png"
+    }
+  ],
+  "Dikke": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30220111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30220121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30220131.png"
+    }
+  ],
+  "Door": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30590111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30590121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30590131.png"
+    }
+  ],
+  "Drake": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31580111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31580121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31580131.png"
+    }
+  ],
+  "Druvis III": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30030111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30030121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30030131.png"
+    }
+  ],
+  "Eagle": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30060111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30060121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30060131.png"
+    }
+  ],
+  "Enigma": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31430111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31430121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31430131.png"
+    }
+  ],
+  "Erick": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30580111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30580121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30580131.png"
+    }
+  ],
+  "Eternity": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30510111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30510121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30510131.png"
+    }
+  ],
+  "Everecho": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31450111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31450121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31450131.png"
+    },
+    {
+      "skill": 9,
+      "variant": 1,
+      "icon": "images/skills/31450191.png"
+    }
+  ],
+  "Ezio Auditore": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31230111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31230121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31230131.png"
+    }
+  ],
+  "Ezra": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30740111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30740121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30740131.png"
+    }
+  ],
+  "Fatutu": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31090111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31090121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31090131.png"
+    }
+  ],
+  "Flutterpage": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31050111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31050121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31050131.png"
+    }
+  ],
+  "Getian": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30840111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30840121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30840131.png"
+    }
+  ],
+  "Glyndŵr": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31630111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31630121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31630131.png"
+    }
+  ],
+  "Hedone": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31560111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31560121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31560131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/31560141.png"
+    },
+    {
+      "skill": 4,
+      "variant": 2,
+      "icon": "images/skills/31560142.png"
+    },
+    {
+      "skill": 4,
+      "variant": 3,
+      "icon": "images/skills/31560143.png"
+    },
+    {
+      "skill": 4,
+      "variant": 4,
+      "icon": "images/skills/31560144.png"
+    }
+  ],
+  "Hissabeth": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31160111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31160121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31160131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/31160141.png"
+    }
+  ],
+  "Horropedia": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30610111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30610121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30610131.png"
+    }
+  ],
+  "Huntsworn Lilya": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31550111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31550121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31550131.png"
+    }
+  ],
+  "Igor": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30920111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30920121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30920131.png"
+    }
+  ],
+  "Isolde": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30810111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30810121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30810131.png"
+    }
+  ],
+  "J": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30940111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30940121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30940131.png"
+    }
+  ],
+  "Jessica": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30560111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30560121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30560131.png"
+    }
+  ],
+  "Jiu Niangzi": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30830111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30830121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30830131.png"
+    }
+  ],
+  "John Titor": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30360111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30360121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30360131.png"
+    }
+  ],
+  "Kaalaa Baunaa": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30700111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30700121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30700131.png"
+    }
+  ],
+  "Kakania": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30800111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30800121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30800131.png"
+    }
+  ],
+  "Kanjira": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30710111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30710121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30710131.png"
+    }
+  ],
+  "Kassandra": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31240111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31240121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31240131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/31240141.png"
+    },
+    {
+      "skill": 5,
+      "variant": 1,
+      "icon": "images/skills/31240151.png"
+    },
+    {
+      "skill": 5,
+      "variant": 2,
+      "icon": "images/skills/31240152.png"
+    }
+  ],
+  "Kiperina": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31170111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31170121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31170131.png"
+    }
+  ],
+  "La Source": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30300111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30300121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30300131.png"
+    }
+  ],
+  "Lady by the Lake": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31360111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31360121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31360131.png"
+    }
+  ],
+  "Leilani": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30350111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30350121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30350131.png"
+    }
+  ],
+  "Liang Yue": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31100111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31100121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31100131.png"
+    }
+  ],
+  "Lilya": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30040111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30040121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30040131.png"
+    }
+  ],
+  "Loggerhead": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31120111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31120121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31120131.png"
+    }
+  ],
+  "Lopera": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31020111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31020121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31020131.png"
+    }
+  ],
+  "Lorelei": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30910111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30910121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30910131.png"
+    }
+  ],
+  "Lorentz Butterfly": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31390111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31390121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31390131.png"
+    }
+  ],
+  "Lucy": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30860111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30860121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30860131.png"
+    }
+  ],
+  "Marcus": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30650111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30650121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30650131.png"
+    }
+  ],
+  "Marsha": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31270111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31270121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31270131.png"
+    }
+  ],
+  "Matilda": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30410111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30410121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30410131.png"
+    }
+  ],
+  "Medicine Pocket": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30470111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30470121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30470131.png"
+    }
+  ],
+  "Melania": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30620111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30620121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30620131.png"
+    }
+  ],
+  "Mercuria": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30950111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30950121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30950131.png"
+    }
+  ],
+  "Mesmer Jr.": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30570111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30570121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30570131.png"
+    }
+  ],
+  "Moldir": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31210111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31210121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31210131.png"
+    }
+  ],
+  "Mondlicht": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30260111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30260121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30260131.png"
+    }
+  ],
+  "Mr. Duncan": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31030111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31030121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31030131.png"
+    }
+  ],
+  "Ms. Moissan": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30440111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30440121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30440131.png"
+    }
+  ],
+  "Ms. NewBabel": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30520111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30520121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30520131.png"
+    }
+  ],
+  "Ms. Radio": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30270111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30270121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30270131.png"
+    }
+  ],
+  "Ms. Stranger": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31470111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31470121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31470131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/31470141.png"
+    }
+  ],
+  "Name Day": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31180111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31180121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31180131.png"
+    }
+  ],
+  "Narcissus": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31570111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31570121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31570131.png"
+    }
+  ],
+  "Nautika": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31200111.png"
+    },
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31200211.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31200121.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31200221.png"
+    },
+    {
+      "skill": 2,
+      "variant": 2,
+      "icon": "images/skills/31200222.png"
+    },
+    {
+      "skill": 2,
+      "variant": 3,
+      "icon": "images/skills/31200223.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31200231.png"
+    }
+  ],
+  "Necrologist": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30370111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30370121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30370131.png"
+    }
+  ],
+  "Nick Bottom": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30050111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30050121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30050131.png"
+    }
+  ],
+  "Noire": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31110111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31110121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31110131.png"
+    }
+  ],
+  "NORA": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31510111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31510121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31510131.png"
+    }
+  ],
+  "Oliver Fog": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30180111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30180121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30180131.png"
+    }
+  ],
+  "ONiON": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30540111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30540121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30540131.png"
+    }
+  ],
+  "Paper Heron": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31410111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31410121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31410131.png"
+    }
+  ],
+  "Pavia": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30150111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30150121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30150131.png"
+    }
+  ],
+  "Pickles": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30630111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30630121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30630131.png"
+    }
+  ],
+  "Pioneer": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30960111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30960121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30960131.png"
+    }
+  ],
+  "Poltergeist": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30460111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30460121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30460131.png"
+    }
+  ],
+  "Rabies": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30420111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30420121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30420131.png"
+    }
+  ],
+  "Ramona": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31420111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31420121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31420131.png"
+    }
+  ],
+  "Recoleta": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31140111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31140121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31140131.png"
+    },
+    {
+      "skill": 5,
+      "variant": 1,
+      "icon": "images/skills/31140151.png"
+    }
+  ],
+  "Reed": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31380111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31380121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31380131.png"
+    }
+  ],
+  "Regulus": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30250111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30250121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30250131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/30250141.png"
+    }
+  ],
+  "Rhiannon": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31460111.png"
+    },
+    {
+      "skill": 1,
+      "variant": 2,
+      "icon": "images/skills/31460112.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31460121.png"
+    },
+    {
+      "skill": 2,
+      "variant": 2,
+      "icon": "images/skills/31460122.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31460131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/31460141.png"
+    }
+  ],
+  "Rubuska": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31250111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31250121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31250131.png"
+    }
+  ],
+  "Satsuki": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30380111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30380121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30380131.png"
+    }
+  ],
+  "Schneider": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30290111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30290121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30290131.png"
+    }
+  ],
+  "Semmelweis": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30880111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30880121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30880131.png"
+    }
+  ],
+  "Sentinel": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31260111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31260121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31260131.png"
+    }
+  ],
+  "Shamane": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30720111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30720121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30720131.png"
+    }
+  ],
+  "Silverwing Eagle": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31540111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31540121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31540131.png"
+    }
+  ],
+  "Sonetto": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30230111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30230121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30230131.png"
+    }
+  ],
+  "Sotheby": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30090111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30090121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30090131.png"
+    }
+  ],
+  "Spathodea": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30730111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30730121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30730131.png"
+    }
+  ],
+  "Sputnik": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30550111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30550121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30550131.png"
+    }
+  ],
+  "Sweetheart": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30110111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30110121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30110131.png"
+    }
+  ],
+  "Tennant": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30430111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30430121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30430131.png"
+    }
+  ],
+  "The Fool": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30120111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30120121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30120131.png"
+    }
+  ],
+  "The Twins": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31490111.png"
+    },
+    {
+      "skill": 1,
+      "variant": 2,
+      "icon": "images/skills/31490112.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31490121.png"
+    },
+    {
+      "skill": 2,
+      "variant": 2,
+      "icon": "images/skills/31490122.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31490131.png"
+    },
+    {
+      "skill": 9,
+      "variant": 1,
+      "icon": "images/skills/31490191.png"
+    },
+    {
+      "skill": 9,
+      "variant": 2,
+      "icon": "images/skills/31490192.png"
+    }
+  ],
+  "Tooth Fairy": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30530111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30530121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30530131.png"
+    }
+  ],
+  "TTT": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30330111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30330121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30330131.png"
+    }
+  ],
+  "Tuesday": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30980111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30980121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30980131.png"
+    }
+  ],
+  "Twins Sleep": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30400111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30400121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30400131.png"
+    }
+  ],
+  "Ulrich": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31070111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31070121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31070131.png"
+    }
+  ],
+  "Ulu": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30760111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30760121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30760131.png"
+    }
+  ],
+  "Vila": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30870111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30870121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30870131.png"
+    },
+    {
+      "skill": 4,
+      "variant": 1,
+      "icon": "images/skills/30870141.png"
+    }
+  ],
+  "Voyager": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30480111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30480121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30480131.png"
+    }
+  ],
+  "White Rum": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31010111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31010121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31010131.png"
+    }
+  ],
+  "Willow": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/31040111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/31040121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/31040131.png"
+    }
+  ],
+  "Windsong": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30770111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30770121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30770131.png"
+    }
+  ],
+  "X": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30100111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30100121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30100131.png"
+    }
+  ],
+  "Yenisei": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30820111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30820121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30820131.png"
+    }
+  ],
+  "Зима": [
+    {
+      "skill": 1,
+      "variant": 1,
+      "icon": "images/skills/30130111.png"
+    },
+    {
+      "skill": 2,
+      "variant": 1,
+      "icon": "images/skills/30130121.png"
+    },
+    {
+      "skill": 3,
+      "variant": 1,
+      "icon": "images/skills/30130131.png"
+    }
+  ]
+}

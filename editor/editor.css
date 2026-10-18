@@ -116,7 +116,8 @@ body {
   .pane.active { flex-direction: column; }
   .list { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: 42vh; }
   .detail, .wide { padding: 14px 16px; }
-  .slot { grid-template-columns: 1fr 1fr; row-gap: 10px; }
+  .slot { grid-template-columns: auto 1fr 1fr; row-gap: 10px; }
+  .slot-handle { grid-row: 1 / span 2; }
   .import-grid { flex-direction: column; }
   .source { max-width: 120px; }
 }
@@ -396,8 +397,9 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 /* team slots */
 .slots { display: flex; flex-direction: column; gap: 10px; }
 .slot {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) auto auto;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.1fr) auto auto;
   gap: 14px;
   align-items: end;
   padding: 10px 12px;
@@ -406,6 +408,19 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   background: rgba(0,0,0,.3);
 }
 .slot .field-label { margin-bottom: 4px; }
+.slot.dragging { opacity: .45; }
+.slot.drop-above::before,
+.slot.drop-below::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+}
+.slot.drop-above::before { top: -1px; }
+.slot.drop-below::after { bottom: -1px; }
+.slot-handle { align-self: center; }
 
 /* avatar + name row, used by the skin and transfer tables */
 .slot-char { display: flex; align-items: center; gap: 8px; min-width: 0; }
@@ -433,6 +448,7 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 }
 .sub-pick:hover { border-color: var(--gold-soft); }
 .sub-pick.empty { color: var(--text-muted); font-style: italic; }
+.sub-pick.on { border-color: var(--gold); background: rgba(246,195,74,.14); }
 .sub-pick .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .sub-pick img.face {
@@ -541,3 +557,216 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 ::-webkit-scrollbar-track { background: rgba(255,255,255,.03); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); border-radius: 6px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.26); }
+
+/* ---------------- builds & rotations ---------------- */
+
+.row .face { width: 32px; height: 32px; object-fit: cover; border-radius: 4px; background: rgba(255,255,255,.05); flex: none; }
+.row-flags .row-face { width: 22px; height: 22px; object-fit: cover; border-radius: 3px; }
+.row-avatar-empty { width: 32px; height: 32px; flex: none; border-radius: 4px; background: rgba(255,255,255,.05); }
+
+/* An icon-only chip: the art carries the meaning, the tooltip carries the name. */
+.chip.chip-icon { padding: 4px 6px; display: inline-flex; align-items: center; gap: 5px; }
+.chip.chip-icon img { width: 16px; height: 16px; object-fit: contain; display: block; opacity: .8; }
+.chip.chip-icon.on img { opacity: 1; }
+.chip .chip-x { margin-left: 2px; opacity: .7; font-family: var(--mono); }
+
+.flag.ok { background: rgba(126, 200, 126, .2); color: var(--ok); }
+
+/* Pattern picker: one cell per pattern the character's shape offers. */
+.pattern-cell.static { cursor: default; }
+.pattern-cell.static:hover { border-color: var(--border); }
+.pattern-cell.static img { display: none; }
+
+/* Skill-card hand: the cards you drag onto an AP slot. */
+.guide-hand { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.guide-hand-card {
+  position: relative;
+  width: 62px;
+  height: 84px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: rgba(0,0,0,.45);
+  cursor: grab;
+  overflow: hidden;
+}
+.guide-hand-card:hover { border-color: var(--gold); }
+.guide-hand-card:active { cursor: grabbing; }
+.guide-hand-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.guide-hand-tag {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: rgba(0,0,0,.75);
+  border: 1px solid rgba(246,195,74,.7);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* One turn: a header with the AP controls and a row of droppable slots. */
+.guide-turn-editor {
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  background: rgba(0,0,0,.22);
+}
+.guide-turn-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.guide-turn-no { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--gold); }
+.guide-slot-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; }
+.guide-slot {
+  position: relative;
+  width: 58px;
+  height: 78px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgba(255,255,255,.03);
+  cursor: pointer;
+  overflow: hidden;
+}
+.guide-slot.empty { border-style: dashed; border-color: rgba(255,255,255,.22); }
+.guide-slot:hover { border-color: var(--gold-soft); }
+.guide-slot.is-target { border-color: var(--gold); background: rgba(246,195,74,.16); }
+.guide-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.guide-slot-empty { display: block; line-height: 78px; color: var(--text-muted); font-size: 18px; }
+.guide-slot-tag {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  padding: 0 3px;
+  border-radius: 2px;
+  background: rgba(0,0,0,.8);
+  border: 1px solid rgba(246,195,74,.7);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+}
+.guide-slot-owner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1px 2px;
+  background: rgba(0,0,0,.8);
+  color: var(--text);
+  font-size: 8px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- rotation round / slot editor ---- */
+.guide-round-editor {
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  background: rgba(0,0,0,.22);
+}
+.guide-round-note-input { flex: 1; min-width: 140px; }
+.guide-slot-editor {
+  position: relative;
+  width: 96px;
+  min-height: 132px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgba(255,255,255,.03);
+  cursor: pointer;
+}
+.guide-slot-editor:hover { border-color: var(--gold-soft); }
+.guide-slot-editor.is-target { border-color: var(--gold); background: rgba(246,195,74,.16); }
+.guide-slot-cards { display: flex; align-items: flex-end; gap: 4px; flex-wrap: nowrap; min-height: 74px; }
+.guide-slot-card { position: relative; display: block; height: 70px; flex: none; }
+.guide-slot-card img { height: 100%; width: auto; object-fit: contain; display: block; }
+.guide-slot-remove {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  line-height: 1;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  background: rgba(0,0,0,.85);
+  border: 1px solid var(--bad);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.guide-or { font-family: var(--mono); font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+.guide-slot-empty { display: block; width: 100%; text-align: center; line-height: 70px; color: var(--text-muted); font-size: 18px; }
+.guide-slot-note-input { width: 100%; font-size: 11px; }
+.guide-slot-remove-slot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  line-height: 1;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--bad);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.special-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+.special-card-grid .guide-hand-card { width: 100%; height: 62px; }
+
+.guide-slot-editor.is-lb { width: 64px; }
+.guide-slot-editor.is-lb .guide-slot-card img { height: 34px; }
+.guide-slot-editor.is-or { min-width: 168px; }
+.guide-slot-editor.is-text {
+  width: 130px;
+  height: auto;
+  align-self: flex-end;
+  justify-content: flex-start;
+  padding-bottom: 16px;
+}
+.guide-slot-editor.is-text .guide-slot-text { flex: none; min-height: 64px; }
+.guide-slot-text {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  font: inherit;
+  font-size: 11px;
+  resize: none;
+  box-sizing: border-box;
+}
+.guide-slot-type {
+  position: absolute;
+  bottom: 2px;
+  left: 4px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+}
+
+/* No number spinners: the values are typed, not stepped. */
+.pattern-cell input[type="number"]::-webkit-outer-spin-button,
+.pattern-cell input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.pattern-cell input[type="number"] { -moz-appearance: textfield; appearance: textfield; }

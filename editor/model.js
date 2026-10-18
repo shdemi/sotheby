@@ -29,7 +29,11 @@ export const FILES = [
   "name_map.json",
   "psychube_id.json",
   "team_archetypes.json",
-  "characters_recommendation.json",
+  "characters_progressions.json",
+  "guide_builds.json",
+  "guide_rotations.json",
+  "guide_skills.json",
+  "guide_cards.json",
 ];
 
 /** Read-only inputs: maintained elsewhere, never written by the editor. */
@@ -40,6 +44,46 @@ export const AFFLATUSES = ["Beast", "Plant", "Star", "Mineral", "Spirit", "Intel
 export const SHAPES = ["Z shape", "Plus shape", "T shape", "U shape"];
 export const PSYCHUBE_TAGS = ["ATK", "Critical", "Heal", "Survival", "Support"];
 export const PSYCHUBE_RARITIES = ["6", "5"];
+
+/** Team-archetype tags a rotation may carry (mirrors app.js). */
+export const ROTATION_ARCHETYPES = [
+  "Burn", "HP Sacrifice", "Poison", "Ritual", "Rank Up", "Extra Action", "Bloodtithe",
+  "Dynamo", "Inspiration", "Lingering Glow", "Shift", "Conduit", "Pursuit",
+];
+
+/** Tags that have a dedicated icon: the two damage types plus the six afflatus. */
+export const GUIDE_ICON_TAGS = [
+  { label: "Reality DMG", icon: "images/dmg_type_icon/reality_dmg.png" },
+  { label: "Mental DMG", icon: "images/dmg_type_icon/mental_dmg.png" },
+  { label: "Beast", icon: "images/tag_afflatus/Beast_Icon.webp" },
+  { label: "Plant", icon: "images/tag_afflatus/Plant_Icon.webp" },
+  { label: "Star", icon: "images/tag_afflatus/star_icon.webp" },
+  { label: "Mineral", icon: "images/tag_afflatus/mineral_Icon.webp" },
+  { label: "Spirit", icon: "images/tag_afflatus/Spirit_Icon.webp" },
+  { label: "Intellect", icon: "images/tag_afflatus/intellect_icon.webp" },
+];
+
+/** The four tunings a rotation can be built around. */
+export const TUNINGS = ["First Melody", "Grand Orchestra", "Unfinished Tune", "Atonal Sequence"];
+
+/**
+ * Build tags, grouped the way they are edited. A tag is stored as a plain
+ * string; the group only decides which row it appears in.
+ */
+export const GUIDE_TAG_GROUPS = [
+  { id: "dmg", label: "DMG Type", tags: ["Reality DMG", "Mental DMG"] },
+  { id: "afflatus", label: "Afflatus", tags: ["Mineral", "Star", "Plant", "Beast", "Spirit", "Intellect"] },
+  { id: "role", label: "Role", tags: ["DPS", "Support", "Heal", "Shield"] },
+  { id: "archetype", label: "Archetype", tags: ROTATION_ARCHETYPES },
+  {
+    id: "feature",
+    label: "Feature",
+    tags: [
+      "DPS", "Remove Buffs", "Remove Debuffs", "Support", "Riposte", "Follow-Up", "Control",
+      "Bullet", "Immunity", "Rewrite", "Assassination", "Array", "Channel", "Eureka",
+    ],
+  },
+];
 
 /* ------------------------------------------------------------------ *
  * Name resolution (mirrors app.js)
@@ -369,6 +413,13 @@ export class Model {
   }
 
   /* ---- list helpers ---- */
+  /** Patterns available to a character, taken from its resonance shape. */
+  buildPatterns(name) {
+    const shape = this.shapeOf.get(this.resolve(name)) || "";
+    const table = this.value("shape_patterns.json") || {};
+    const list = Array.isArray(table[shape]) ? table[shape] : [];
+    return list.map((pattern) => ({ shape, pattern }));
+  }
 
   /** The array at `path`, plus the index of `name` inside it (-1 when absent). */
   findInList(file, path, name) {
@@ -700,94 +751,6 @@ export class Model {
     return changed;
   }
 
-  /* ---- build recommendations ---- */
-
-  /** The raw recommendation entry for a character, or null. */
-  recommendation(name) {
-    const doc = this.doc("characters_recommendation.json");
-    if (!doc) return null;
-    const node = doc.nodeAt([name]);
-    return node ? doc.value[name] : null;
-  }
-
-  /** Every character that has a recommendation entry. */
-  recommendationNames() {
-    const value = this.value("characters_recommendation.json") || {};
-    return Object.keys(value);
-  }
-
-  /**
-   * Sets one recommendation field for a character.
-   *
-   * `resonance` takes an object of {label: code}; every other field takes a
-   * string (psychube accepts "A | B" for several alternatives). A blank value
-   * removes the field, and removing the last field drops the character entry.
-   */
-  setRecommendationField(name, field, value) {
-    const doc = this.doc("characters_recommendation.json");
-    if (!doc) return false;
-    const canonical = this.resolve(name);
-    if (!canonical) return false;
-
-    const entryExists = doc.nodeAt([canonical]) !== null;
-    let changed = false;
-    let payload;
-
-    if (field === "Resonance") {
-      payload = {};
-      for (const [label, code] of Object.entries(value || {})) {
-        const cleanLabel = String(label).trim();
-        const cleanCode = String(code == null ? "" : code).trim();
-        if (cleanLabel && cleanCode) payload[cleanLabel] = cleanCode;
-      }
-      if (Object.keys(payload).length === 0) payload = null;
-    } else if (field === "Psychube") {
-      const list = (Array.isArray(value) ? value : String(value || "").split("|"))
-        .map((v) => String(v).trim())
-        .filter(Boolean);
-      // One psychube is stored as a string, several as an array: that keeps the
-      // file readable and matches what the app accepts.
-      payload = list.length === 0 ? null : list.length === 1 ? list[0] : list;
-    } else {
-      const text = String(value == null ? "" : value).trim();
-      payload = text === "" ? null : text;
-    }
-
-    if (payload === null) {
-      if (entryExists && doc.nodeAt([canonical, field])) {
-        changed = doc.deleteProperty([canonical], field);
-      }
-    } else if (!entryExists) {
-      doc.setProperty([], canonical, { [field]: payload });
-      changed = true;
-    } else if (doc.nodeAt([canonical, field])) {
-      changed = doc.set([canonical, field], payload);
-    } else {
-      changed = doc.setProperty([canonical], field, payload);
-    }
-
-    // A character entry with no fields left is noise; drop it.
-    if (changed) {
-      const current = doc.nodeAt([canonical]);
-      if (current && current.type === "object" && current.entries.length === 0) {
-        doc.deleteProperty([], canonical);
-      }
-    }
-
-    if (changed) this.reload();
-    return changed;
-  }
-
-  /** Drops every recommendation for a character. */
-  removeRecommendation(name) {
-    const doc = this.doc("characters_recommendation.json");
-    if (!doc) return false;
-    const canonical = this.resolve(name);
-    const changed = doc.deleteProperty([], canonical);
-    if (changed) this.reload();
-    return changed;
-  }
-
   /* ---- team presets ---- */
 
   team(archetype) {
@@ -814,6 +777,15 @@ export class Model {
     const doc = this.doc("team_archetypes.json");
     if (!doc) return false;
     const changed = doc.reorderProperty([], name, toIndex);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Moves a member up or down inside one variant. All indices are 0-based. */
+  moveTeamSlot(archetype, variant, from, to) {
+    const doc = this.doc("team_archetypes.json");
+    if (!doc) return false;
+    const changed = doc.reorderAt([archetype, variant], from, to);
     if (changed) this.reload();
     return changed;
   }
@@ -926,6 +898,435 @@ export class Model {
 
     if (changed) this.reload();
     return changed;
+  }
+
+  /* ---- guide: character builds ---- */
+
+  /** `{ name: { tags, psychubes, resonance, pattern, portrait, notes } }`. */
+  guideBuilds() {
+    const value = this.value("guide_builds.json") || {};
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  }
+
+  guideBuild(name) {
+    const canonical = this.resolve(name);
+    return this.guideBuilds()[canonical] || null;
+  }
+
+  /** Creates the entry for a character with an empty shape. */
+  ensureGuideBuild(name) {
+    const doc = this.doc("guide_builds.json");
+    if (!doc) return false;
+    const canonical = this.resolve(name);
+    if (!canonical) return false;
+    if (doc.nodeAt([canonical])) return false;
+    doc.setProperty([], canonical, { tags: [], psychubes: [], resonance: {}, pattern: "", portrait: "", notes: "" });
+    this.reload();
+    return true;
+  }
+
+  removeGuideBuild(name) {
+    const doc = this.doc("guide_builds.json");
+    if (!doc) return false;
+    const changed = doc.deleteProperty([], this.resolve(name));
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /**
+   * Sets one build field. `tags` takes a list of plain labels, `psychubes` a list
+   * of names, `resonance` a `{label: code}` map; the rest are plain strings.
+   * A blank value removes the property.
+   */
+  setGuideBuildField(name, field, value) {
+    const doc = this.doc("guide_builds.json");
+    if (!doc) return false;
+    const canonical = this.resolve(name);
+    if (!canonical) return false;
+    // Every edit may create the entry: a character starts filling in immediately.
+    if (!doc.nodeAt([canonical])) doc.setProperty([], canonical, {});
+
+    let payload = value;
+    if (field === "tags") {
+      payload = (Array.isArray(value) ? value : [])
+        .map((tag) => (typeof tag === "string" ? tag : tag && tag.label))
+        .map((label) => String(label ?? "").trim())
+        .filter(Boolean);
+    } else if (field === "psychubes") {
+      payload = (Array.isArray(value) ? value : String(value || "").split("|"))
+        .map((v) => String(v).trim())
+        .filter(Boolean);
+    } else if (field === "resonance") {
+      const map = {};
+      for (const [label, code] of Object.entries(value || {})) {
+        const cleanLabel = String(label).trim();
+        // An empty code is kept: the editor writes the row first, then fills it.
+        if (cleanLabel) map[cleanLabel] = String(code ?? "").trim();
+      }
+      payload = map;
+    } else {
+      payload = String(value ?? "").trim();
+    }
+
+    const empty =
+      payload === "" || (Array.isArray(payload) && payload.length === 0) ||
+      (payload && typeof payload === "object" && !Array.isArray(payload) && Object.keys(payload).length === 0);
+
+    let changed;
+    if (empty) changed = doc.deleteProperty([canonical], field);
+    else if (doc.nodeAt([canonical, field])) changed = doc.set([canonical, field], payload);
+    else changed = doc.setProperty([canonical], field, payload);
+
+    // An entry with no fields left is noise; drop it so the list stays honest.
+    if (changed) {
+      const current = doc.nodeAt([canonical]);
+      if (current && current.type === "object" && current.entries.length === 0) {
+        doc.deleteProperty([], canonical);
+      }
+    }
+
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /* ---- guide: rotations ---- */
+
+  guideRotations() {
+    const value = this.value("guide_rotations.json") || {};
+    return Array.isArray(value.rotations) ? value.rotations : [];
+  }
+
+  guideRotation(id) {
+    return this.guideRotations().find((r) => r && r.id === id) || null;
+  }
+
+  guideRotationIndex(id) {
+    return this.guideRotations().findIndex((r) => r && r.id === id);
+  }
+
+  /** A URL-safe id that does not collide with an existing rotation. */
+  guideRotationId(name) {
+    const base =
+      String(name || "rotation")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "rotation";
+    const taken = new Set(this.guideRotations().map((r) => r && r.id));
+    let id = base;
+    let n = 2;
+    while (taken.has(id)) id = `${base}-${n++}`;
+    return id;
+  }
+
+  addGuideRotation(name) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return null;
+    const label = String(name || "New rotation").trim() || "New rotation";
+    if (!doc.nodeAt(["rotations"])) doc.setProperty([], "rotations", []);
+    const id = this.guideRotationId(label);
+    const first = this.characters[0] || "";
+    // Eight empty rounds is the usual cycle length; each starts with four slots.
+    const rounds = Array.from({ length: 8 }, () => ({
+      note: "",
+      slots: Array.from({ length: 4 }, () => ({ cards: [] })),
+    }));
+    doc.append(["rotations"], {
+      id,
+      name: label,
+      archetypes: [],
+      tuning: "",
+      members: [{ character: first, psychube: "" }],
+      notes: "",
+      rounds,
+    });
+    this.reload();
+    return id;
+  }
+
+  removeGuideRotation(id) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    doc.removeAt(["rotations"], index);
+    this.reload();
+    return true;
+  }
+
+  /** Sets `name`, `notes`, `tuning` or `archetypes` on a rotation. */
+  setGuideRotationField(id, field, value) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, field];
+
+    let payload = value;
+    if (field === "archetypes") payload = (Array.isArray(value) ? value : []).filter(Boolean);
+    else payload = String(value ?? "");
+
+    // An empty list or string has no meaning, so drop the key instead of writing it.
+    const empty = payload === "" || (Array.isArray(payload) && payload.length === 0);
+    const changed = empty && field !== "tuning" && field !== "notes" && field !== "name"
+      ? doc.deleteProperty(["rotations", index], field)
+      : doc.nodeAt(path)
+        ? doc.set(path, payload)
+        : doc.setProperty(["rotations", index], field, payload);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Sets one member slot's character or psychube. */
+  setGuideRotationMember(id, slotIndex, field, value) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const rotation = this.guideRotations()[index];
+    const members = (Array.isArray(rotation.members) ? rotation.members : []).map((entry) =>
+      typeof entry === "string" ? { character: this.resolve(entry) || entry, psychube: "" } : { ...entry }
+    );
+    const slot = Math.max(0, Number(slotIndex) || 0);
+    while (members.length <= slot) members.push({ character: "", psychube: "" });
+
+    if (field === "character") {
+      members[slot].character = this.resolve(value) || String(value || "");
+    } else {
+      members[slot].psychube = String(value || "");
+    }
+    if (!members[slot].psychube) delete members[slot].psychube;
+    if (!members[slot].character && !members[slot].psychube) members.splice(slot, 1);
+    else if (!members[slot].character) members.splice(slot, 1);
+
+    const changed = this.writeValue(["rotations", index], "members", members);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /* ---- guide: rounds ---- */
+
+  guideRound(id, roundIndex) {
+    const rotation = this.guideRotation(id);
+    if (!rotation || !Array.isArray(rotation.rounds)) return null;
+    return rotation.rounds[roundIndex] || null;
+  }
+
+  addGuideRound(id) {
+    return this.appendToRotation(id, "rounds", { note: "", slots: [] });
+  }
+
+  removeGuideRound(id, roundIndex) {
+    return this.removeFromRotation(id, "rounds", roundIndex);
+  }
+
+  setGuideRoundNote(id, roundIndex, note) {
+    return this.setRoundField(id, roundIndex, "note", String(note || ""));
+  }
+
+  addGuideSlot(id, roundIndex, type = "normal") {
+    const kind = ["normal", "or", "lb", "text"].includes(type) ? type : "normal";
+    return this.appendRoundSlot(id, roundIndex, kind === "text" ? { type: kind, text: "" } : { type: kind, cards: [] });
+  }
+
+  /** Sets a slot's type; switching to text drops the cards and vice versa. */
+  setGuideSlotType(id, roundIndex, slotIndex, type) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
+    if (!doc.nodeAt(path)) return false;
+    const kind = ["normal", "or", "lb", "text"].includes(type) ? type : "normal";
+    let changed = doc.nodeAt([...path, "type"]) ? doc.set([...path, "type"], kind) : doc.setProperty(path, "type", kind);
+    if (kind === "text") {
+      if (doc.nodeAt([...path, "cards"])) changed = doc.deleteProperty(path, "cards") || changed;
+      if (!doc.nodeAt([...path, "text"])) changed = doc.setProperty(path, "text", "") || changed;
+    } else {
+      if (doc.nodeAt([...path, "text"])) changed = doc.deleteProperty(path, "text") || changed;
+      if (!doc.nodeAt([...path, "cards"])) changed = doc.setProperty(path, "cards", []) || changed;
+    }
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Sets the free text of a text slot. */
+  setGuideSlotText(id, roundIndex, slotIndex, text) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
+    if (!doc.nodeAt(path)) return false;
+    const value = String(text || "");
+    const changed = doc.nodeAt([...path, "text"])
+      ? doc.set([...path, "text"], value)
+      : doc.setProperty(path, "text", value);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  removeGuideSlot(id, roundIndex, slotIndex) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots"];
+    if (!doc.nodeAt([...path, slotIndex])) return false;
+    doc.removeAt(path, slotIndex);
+    this.reload();
+    return true;
+  }
+
+  setGuideSlotNote(id, roundIndex, slotIndex, note) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
+    if (!doc.nodeAt(path)) return false;
+    const text = String(note || "");
+    const changed = text
+      ? doc.nodeAt([...path, "note"]) ? doc.set([...path, "note"], text) : doc.setProperty(path, "note", text)
+      : doc.deleteProperty(path, "note");
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Adds a card to a slot. A second card makes the slot an either/or choice. */
+  addGuideSlotCard(id, roundIndex, slotIndex, card) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const slot = this.guideRotations()[index].rounds?.[roundIndex]?.slots?.[slotIndex];
+    if (!slot) return false;
+
+    const entry = this.normalizeCard(card);
+    if (!entry) return false;
+    const cards = Array.isArray(slot.cards) ? slot.cards.slice() : [];
+    const limit = slot.type === "or" ? 2 : 1;
+    // A normal or LB slot holds one card: a drop replaces it.
+    if (limit === 1) cards.length = 0;
+    else if (cards.length >= limit) return false;
+    cards.push(entry);
+
+    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex, "cards"];
+    const changed = doc.nodeAt(path) ? doc.set(path, cards) : doc.setProperty([...path.slice(0, -1)], "cards", cards);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  removeGuideSlotCard(id, roundIndex, slotIndex, cardIndex) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex, "cards"];
+    if (!doc.nodeAt([...path, cardIndex])) return false;
+    doc.removeAt(path, cardIndex);
+    this.reload();
+    return true;
+  }
+
+  normalizeCard(card) {
+    if (!card) return null;
+    if (card.special) return { special: String(card.special) };
+    if (!card.character) return null;
+    const entry = { character: this.resolve(card.character) || String(card.character), skill: Number(card.skill) || 1 };
+    // The exact icon variant (e.g. an alternative card) is pinned when known.
+    if (card.icon) entry.icon = String(card.icon);
+    return entry;
+  }
+
+  setRoundField(id, roundIndex, field, value) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex];
+    if (!doc.nodeAt(path)) return false;
+    const changed = value
+      ? doc.nodeAt([...path, field]) ? doc.set([...path, field], value) : doc.setProperty(path, field, value)
+      : doc.deleteProperty(path, field);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  appendRoundSlot(id, roundIndex, slot) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots"];
+    const changed = doc.nodeAt(path) ? doc.append(path, slot) : doc.setProperty(["rotations", index, "rounds", roundIndex], "slots", [slot]);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  appendToRotation(id, field, entry) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, field];
+    const changed = doc.nodeAt(path) ? doc.append(path, entry) : doc.setProperty(["rotations", index], field, [entry]);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  removeFromRotation(id, field, at) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, field];
+    if (!doc.nodeAt([...path, at])) return false;
+    doc.removeAt(path, at);
+    this.reload();
+    return true;
+  }
+
+  /** Writes an object property, replacing or creating it as needed. */
+  writeValue(parentPath, key, value) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const path = [...parentPath, key];
+    const changed = doc.nodeAt(path)
+      ? doc.set(path, value)
+      : doc.setProperty(parentPath, key, value);
+    return changed;
+  }
+
+  /* ---- guide: portrait progressions ---- */
+
+  progression(name) {
+    const value = this.value("characters_progressions.json") || {};
+    return Array.isArray(value[this.resolve(name)]) ? value[this.resolve(name)] : [];
+  }
+
+  /** Sets one badge's percentage; the badge must already exist. */
+  setProgressionValue(name, badge, val) {
+    const doc = this.doc("characters_progressions.json");
+    if (!doc) return false;
+    const canonical = this.resolve(name);
+    const list = this.progression(canonical);
+    const at = list.findIndex((p) => p && p.badge === badge);
+    if (at === -1) return false;
+    const changed = doc.set([canonical, at, "val"], Number(val) || 0);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Creates the default P1–P5 chart for a character that has none. */
+  ensureProgression(name) {
+    const doc = this.doc("characters_progressions.json");
+    if (!doc) return false;
+    const canonical = this.resolve(name);
+    if (!canonical) return false;
+    if (doc.nodeAt([canonical])) return false;
+    doc.setProperty([], canonical, [1, 2, 3, 4, 5].map((n) => ({ badge: `P${n}`, val: 0 })));
+    this.reload();
+    return true;
   }
 
   /* ---- output ---- */
@@ -1104,7 +1505,7 @@ export function validate(model) {
     });
   }
 
-  const psychubeNames = new Set(Object.keys(seenNames));
+  const psychubeNames = new Set(seenNames.keys());
   for (const [rarity, ids] of Object.entries(fs.Psychube || {})) {
     ids.forEach((id, i) => {
       if (!psychubeId[rarity]) {
@@ -1201,62 +1602,6 @@ export function validate(model) {
   const dupSkin = (fs.Skin || []).filter((s, i) => (fs.Skin || []).indexOf(s) !== i);
   if (dupSkin.length) err(`future_sight.json → Skin: duplicate ids ${[...new Set(dupSkin)].join(", ")}`);
 
-  /* build recommendations */
-  {
-    const recommendations = model.value("characters_recommendation.json") || {};
-    for (const [name, entry] of Object.entries(recommendations)) {
-      const label = `characters_recommendation.json → ${name}`;
-      if (!known.has(name)) {
-        err(`${label}: "${name}" is not a known character`);
-        continue;
-      }
-      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
-        err(`${label}: expected an object`);
-        continue;
-      }
-      for (const key of Object.keys(entry)) {
-        if (!["Resonance", "Pattern", "Portrait", "Psychube"].includes(key)) {
-          warn(`${label}: unknown field "${key}" (expected Resonance, Pattern, Portrait, Psychube)`);
-        }
-      }
-
-      if (entry.Resonance !== undefined) {
-        if (!entry.Resonance || typeof entry.Resonance !== "object" || Array.isArray(entry.Resonance)) {
-          err(`${label}: Resonance must be an object of {label: code}`);
-        } else {
-          for (const [resLabel, code] of Object.entries(entry.Resonance)) {
-            if (String(resLabel).trim() === "") err(`${label}: a Resonance entry has no label`);
-            if (String(code == null ? "" : code).trim() === "") {
-              err(`${label}: Resonance "${resLabel}" has an empty code`);
-            }
-          }
-          if (Object.keys(entry.Resonance).length === 0) warn(`${label}: Resonance is empty`);
-        }
-      }
-
-      if (entry.Pattern !== undefined && String(entry.Pattern).trim() === "") {
-        warn(`${label}: Pattern is empty`);
-      }
-      if (entry.Portrait !== undefined && String(entry.Portrait).trim() === "") {
-        warn(`${label}: Portrait is empty`);
-      }
-
-      if (entry.Psychube !== undefined) {
-        const list = Array.isArray(entry.Psychube) ? entry.Psychube : [entry.Psychube];
-        if (list.length === 0) warn(`${label}: Psychube is empty`);
-        const knownPsychubes = new Set(Object.keys(psychubeId).flatMap((r) => (psychubeId[r] || []).map((p) => String(p.name || "").toLowerCase())));
-        for (const item of list) {
-          const text = String(item == null ? "" : item).trim();
-          if (text === "") {
-            warn(`${label}: an empty Psychube entry`);
-          } else if (!knownPsychubes.has(text.toLowerCase())) {
-            warn(`${label}: Psychube "${text}" does not match any name in psychube_id.json`);
-          }
-        }
-      }
-    }
-  }
-
   /* global name transfer */
   for (const [raw, canonical] of Object.entries(model.value("global_name_transfer.json") || {})) {
     if (!model.arcanistByNameEng.has(raw)) {
@@ -1265,6 +1610,138 @@ export function validate(model) {
     if (!known.has(canonical)) {
       err(`global_name_transfer.json: "${raw}" maps to "${canonical}", which is not a known character`);
     }
+  }
+
+  /* guide: character builds */
+  {
+    const builds = model.value("guide_builds.json") || {};
+    for (const [name, build] of Object.entries(builds)) {
+      const label = `guide_builds.json → ${name}`;
+      if (!known.has(name)) {
+        err(`${label}: "${name}" is not a known character`);
+        continue;
+      }
+      if (!build || typeof build !== "object" || Array.isArray(build)) {
+        err(`${label}: expected an object`);
+        continue;
+      }
+      for (const key of Object.keys(build)) {
+        if (!["tags", "psychubes", "resonance", "pattern", "portrait", "notes"].includes(key)) {
+          warn(`${label}: unknown field "${key}"`);
+        }
+      }
+      for (const tag of build.tags || []) {
+        const text = typeof tag === "string" ? tag : tag && tag.label;
+        if (!String(text || "").trim()) warn(`${label}: a tag has no label`);
+      }
+      for (const item of build.psychubes || []) {
+        const text = String(item || "").trim();
+        if (text && !psychubeNames.has(text.toLowerCase())) {
+          warn(`${label}: psychube "${text}" does not match any name in psychube_id.json`);
+        }
+      }
+      if (build.resonance !== undefined && (typeof build.resonance !== "object" || Array.isArray(build.resonance))) {
+        err(`${label}: resonance must be an object of {label: code}`);
+      }
+    }
+  }
+
+  /* guide: rotations */
+  {
+    const value = model.value("guide_rotations.json") || {};
+    const rotations = value.rotations;
+    if (!Array.isArray(rotations)) {
+      warn("guide_rotations.json: no rotations array, so the Guide's Rotations tab stays empty");
+    } else {
+      const seenIds = new Set();
+      rotations.forEach((rotation, i) => {
+        const label = `guide_rotations.json → rotation ${i + 1}`;
+        if (!rotation || typeof rotation !== "object") {
+          err(`${label}: expected an object`);
+          return;
+        }
+        if (!String(rotation.name || "").trim()) warn(`${label}: has no name`);
+        if (!String(rotation.id || "").trim()) err(`${label}: has no id`);
+        else if (seenIds.has(rotation.id)) err(`${label}: duplicate id "${rotation.id}"`);
+        else seenIds.add(rotation.id);
+
+        if (rotation.archetypes !== undefined && !Array.isArray(rotation.archetypes)) {
+          err(`${label}: archetypes must be an array of tag names`);
+        }
+        for (const tag of rotation.archetypes || []) {
+          if (!ROTATION_ARCHETYPES.includes(tag)) warn(`${label}: unknown archetype "${tag}"`);
+        }
+
+        for (const member of rotation.members || []) {
+          const name = typeof member === "string" ? member : member && member.character;
+          if (name && !known.has(name)) err(`${label}: member "${name}" is not a known character`);
+          const chube = typeof member === "object" && member ? member.psychube : "";
+          if (chube && !psychubeNames.has(String(chube).toLowerCase())) {
+            warn(`${label}: member psychube "${chube}" does not match any name in psychube_id.json`);
+          }
+        }
+
+        const rounds = Array.isArray(rotation.rounds)
+          ? rotation.rounds
+          : Array.isArray(rotation.turns)
+            ? rotation.turns.map((turn) => ({
+                slots: (turn.cards || []).map((card) => ({ cards: card ? [card] : [] })),
+              }))
+            : [];
+
+        rounds.forEach((round, ri) => {
+          const roundLabel = `${label} round ${ri + 1}`;
+          if (!round || typeof round !== "object") {
+            err(`${roundLabel}: expected an object`);
+            return;
+          }
+          const slots = Array.isArray(round.slots) ? round.slots : [];
+          slots.forEach((slot, si) => {
+            const slotLabel = `${roundLabel} slot ${si + 1}`;
+            if (!slot || typeof slot !== "object") {
+              err(`${slotLabel}: expected an object`);
+              return;
+            }
+            const type = slot.type || "normal";
+            if (!["normal", "or", "lb", "text"].includes(type)) warn(`${slotLabel}: unknown type "${type}"`);
+            const cards = Array.isArray(slot.cards) ? slot.cards : [];
+            const limit = type === "or" ? 2 : 1;
+            if (type !== "text" && cards.length > limit) err(`${slotLabel}: a ${type} slot holds at most ${limit} card(s)`);
+            cards.forEach((card, ci) => {
+              if (!card || typeof card !== "object") {
+                err(`${slotLabel} card ${ci + 1}: expected an object`);
+                return;
+              }
+              if (card.special) {
+                if (!String(card.special).startsWith("images/skills/")) {
+                  warn(`${slotLabel} card ${ci + 1}: special "${card.special}" is not under images/skills/`);
+                }
+                return;
+              }
+              if (!card.character) err(`${slotLabel} card ${ci + 1}: no character`);
+              else if (!known.has(card.character)) err(`${slotLabel} card ${ci + 1}: "${card.character}" is not a known character`);
+              if (!Number.isInteger(Number(card.skill)) || Number(card.skill) < 1) {
+                err(`${slotLabel} card ${ci + 1}: skill must be a positive number`);
+              }
+            });
+          });
+        });
+      });
+    }
+  }
+
+  /* portrait progressions */
+  for (const [name, list] of Object.entries(model.value("characters_progressions.json") || {})) {
+    const label = `characters_progressions.json → ${name}`;
+    if (!known.has(name)) err(`${label}: "${name}" is not a known character`);
+    if (!Array.isArray(list)) {
+      err(`${label}: expected an array of {badge, val}`);
+      continue;
+    }
+    list.forEach((entry, i) => {
+      if (!entry || typeof entry !== "object") err(`${label}[${i}]: expected an object`);
+      else if (entry.val !== undefined && !Number.isFinite(Number(entry.val))) err(`${label}[${i}]: val must be a number`);
+    });
   }
 
   return { errors, warnings };

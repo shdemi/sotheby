@@ -1,0 +1,251 @@
+{
+  "rotations": [
+    {
+      "id": "sotheby-wheelchair",
+      "name": "Sotheby Wheelchair",
+      "archetypes": [
+        "Dynamo",
+        "Poison"
+      ],
+      "tuning": "First Melody",
+      "members": [
+  {
+    "character": "Enigma",
+    "psychube": "The Third Commitment"
+  },
+  {
+    "character": "Charon",
+    "psychube": "Buds Yet to Bloom"
+  },
+  {
+    "character": "Sotheby",
+    "psychube": "Her Mournful Face"
+  },
+  {
+    "character": "Rhiannon",
+    "psychube": "The Soft Rain of Yesterday"
+  }
+],
+      "notes": "Repeat the loop from Round 01 after the ultimate round.",
+      "rounds": [
+        {
+          "note": "Pulsing Field Lv.1",
+          "slots": [
+            {
+              "type": "normal",
+              "cards": [
+                {
+                  "character": "Rhiannon",
+                  "skill": 1,
+                  "icon": "images/skills/31460111.png"
+                }
+              ]
+            },
+            {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Rhiannon",
+    "skill": 2,
+    "icon": "images/skills/31460121.png"
+  }
+]
+},
+            {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Charon",
+    "skill": 2,
+    "icon": "images/skills/31280121.png"
+  }
+]
+},
+            {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Charon",
+    "skill": 1,
+    "icon": "images/skills/31280111.png"
+  }
+]
+}
+          ]
+        },
+        {
+          "slots": [
+            {
+              "type": "normal",
+              "cards": [
+  {
+    "character": "Rhiannon",
+    "skill": 4,
+    "icon": "images/skills/31460141.png"
+  }
+]
+            },
+            {
+              "type": "normal",
+              "cards": [
+  {
+    "character": "Charon",
+    "skill": 3,
+    "icon": "images/skills/31280131.png"
+  }
+]
+            },
+            {
+              "type": "normal",
+              "cards": [
+  {
+    "character": "Sotheby",
+    "skill": 1,
+    "icon": "images/skills/30090111.png"
+  }
+]
+            },
+            {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Enigma",
+    "skill": 2,
+    "icon": "images/skills/31430121.png"
+  },
+  {
+    "character": "Enigma",
+    "skill": 1,
+    "icon": "images/skills/31430111.png"
+  }
+]
+}
+          ],
+          "note": "Pulsing Field Lv.1"
+        },
+        {
+          "note": "Pulsing Field Lv.3",
+          "slots": [
+            {
+              "type": "normal",
+              "cards": [
+  {
+    "character": "Enigma",
+    "skill": 3,
+    "icon": "images/skills/31430131.png"
+  }
+]
+            },
+            {
+              "type": "normal",
+              "cards": [
+  {
+    "character": "Enigma",
+    "skill": 2,
+    "icon": "images/skills/31430121.png"
+  }
+]
+            },
+            {
+              "type": "normal",
+              "cards": [
+  {
+    "character": "Rhiannon",
+    "skill": 1,
+    "icon": "images/skills/31460112.png"
+  }
+]
+            },
+            {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Rhiannon",
+    "skill": 2,
+    "icon": "images/skills/31460122.png"
+  }
+]
+},
+            {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Sotheby",
+    "skill": 1,
+    "icon": "images/skills/30090111.png"
+  }
+]
+}
+          ]
+        },
+        {
+  "note": "Pulsing Field Lv.3",
+  "slots": [{
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Rhiannon",
+    "skill": 1,
+    "icon": "images/skills/31460112.png"
+  }
+]
+},
+    {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Rhiannon",
+    "skill": 2,
+    "icon": "images/skills/31460122.png"
+  }
+]
+},
+    {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Sotheby",
+    "skill": 1,
+    "icon": "images/skills/30090111.png"
+  }
+]
+},
+    {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Sotheby",
+    "skill": 1,
+    "icon": "images/skills/30090111.png"
+  }
+]
+},
+    {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Sotheby",
+    "skill": 1,
+    "icon": "images/skills/30090111.png"
+  }
+]
+},
+    {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Sotheby",
+    "skill": 3,
+    "icon": "images/skills/30090131.png"
+  }
+]
+},
+    {
+  "type": "text",
+  "text": "Starts clapping because you won"
+}]
+}
+      ]
+    }
+  ]
+}

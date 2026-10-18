@@ -491,6 +491,28 @@ console.log("\n=== moveTeam ===");
   check("moving it back restores the file byte-for-byte", m.doc("team_archetypes.json").toString() === original);
 }
 
+console.log("\n=== moveTeamSlot ===");
+{
+  const m = freshModel();
+  const original = m.doc("team_archetypes.json").toString();
+  const preset = pickPreset(m, (_n, variants) => variants.some((slots) => slots.length >= 2));
+  const variant = m.team(preset).findIndex((slots) => slots.length >= 2);
+  const slots = m.team(preset)[variant];
+  const count = slots.length;
+  const first = slots[0].character;
+  const second = slots[1].character;
+
+  m.moveTeamSlot(preset, variant, 0, 1);
+  const after = m.team(preset)[variant];
+  check("the first two members swapped", after[0].character === second && after[1].character === first, JSON.stringify(after.slice(0, 2).map((s) => s.character)));
+  check("no member was lost", after.length === count, `${count} -> ${after.length}`);
+  check("only team_archetypes.json changed", m.changedFiles().join(",") === "team_archetypes.json");
+  check("the reordered file still validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
+
+  m.moveTeamSlot(preset, variant, 1, 0);
+  check("moving it back restores the file byte-for-byte", m.doc("team_archetypes.json").toString() === original);
+}
+
 console.log("\n=== member euphoria ===");
 {
   const m = freshModel();
@@ -695,62 +717,97 @@ console.log("\n=== addTransfer / removeTransfer ===");
 }
 
 /* ------------------------------------------------------------------ *
- * 9b. Build recommendations
+ * 9b. Builds and rotations
  * ------------------------------------------------------------------ */
 
-console.log("\n=== recommendations ===");
+console.log("\n=== builds ===");
 {
   const m = freshModel();
-  const original = m.doc("characters_recommendation.json").toString();
-  const names = m.recommendationNames();
-  check("the file loads with at least one entry", names.length > 0, JSON.stringify(names));
+  const names = m.characters;
+  const target = names.find((n) => m.guideBuild(n)) || names[0];
+  check("a build can be read", !!m.guideBuild(target), String(target));
 
-  const target = names[0];
-  const before = m.recommendation(target);
-  check("an entry has the expected shape", !!before && typeof before === "object", JSON.stringify(before));
+  m.setGuideBuildField(target, "tags", ["Reality DMG", "Intellect", "DPS"]);
+  check("tags are stored as plain strings", JSON.stringify(m.guideBuild(target).tags) === JSON.stringify(["Reality DMG", "Intellect", "DPS"]), JSON.stringify(m.guideBuild(target).tags));
 
-  // Pattern: a plain string field. Use a value different from the shipped one so
-  // the edit is guaranteed to touch the file.
-  const originalPattern = String(before.Pattern || "");
-  const newPattern = originalPattern === "Elucidation" ? "Genuinity" : "Elucidation";
-  m.setRecommendationField(target, "Pattern", newPattern);
-  check("Pattern is written", m.recommendation(target).Pattern === newPattern, JSON.stringify(m.recommendation(target).Pattern));
-  check("only characters_recommendation.json changed", m.changedFiles().join(",") === "characters_recommendation.json", m.changedFiles().join(","));
-  check("the edit validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
+  m.setGuideBuildField(target, "resonance", { Attack: "AAA", Crit: "" });
+  check("an empty resonance code is kept so it can be filled later", m.guideBuild(target).resonance.Crit === "", JSON.stringify(m.guideBuild(target).resonance));
 
-  // Resonance: one named code at a time.
-  m.setRecommendationField(target, "Resonance", { Attack: "AAA", Crit: "BBB" });
-  check("Resonance is written", Object.keys(m.recommendation(target).Resonance).join(",") === "Attack,Crit", JSON.stringify(m.recommendation(target).Resonance));
-  check("one code can be removed", (() => {
-    m.setRecommendationField(target, "Resonance", { Attack: "AAA" });
-    return Object.keys(m.recommendation(target).Resonance).join(",") === "Attack";
-  })());
+  m.setGuideBuildField(target, "psychubes", ["Steps Forward", "A Free Heart"]);
+  check("two psychubes are written", m.guideBuild(target).psychubes.length === 2, JSON.stringify(m.guideBuild(target).psychubes));
 
-  // Psychube: one value is a string, several become an array.
-  m.setRecommendationField(target, "Psychube", "Steps Forward");
-  check("a single psychube is stored as a string", m.recommendation(target).Psychube === "Steps Forward", JSON.stringify(m.recommendation(target).Psychube));
-  m.setRecommendationField(target, "Psychube", "Steps Forward | The Leap of Time");
-  check("several psychubes become an array", Array.isArray(m.recommendation(target).Psychube) && m.recommendation(target).Psychube.length === 2, JSON.stringify(m.recommendation(target).Psychube));
+  m.setGuideBuildField(target, "pattern", "Genuinity");
+  check("a pattern is written", m.guideBuild(target).pattern === "Genuinity", JSON.stringify(m.guideBuild(target).pattern));
+  check("the build edits validate", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
-  // Clearing every field in the shipped entry removes the character entry.
-  const entryKeys = Object.keys(before);
-  for (const key of entryKeys) {
-    if (key === "Resonance") m.setRecommendationField(target, "Resonance", {});
-    else m.setRecommendationField(target, key, "");
-  }
-  check("clearing every field drops the entry", m.recommendation(target) === null, JSON.stringify(m.recommendation(target)));
-  check(
-    "an entry with no fields leaves an empty object, not a stray key",
-    m.doc("characters_recommendation.json").toString().trim() === "{}",
-    m.doc("characters_recommendation.json").toString().trim()
-  );
+  m.setGuideBuildField(target, "pattern", "");
+  check("a blank pattern removes the property", m.guideBuild(target).pattern === undefined, JSON.stringify(m.guideBuild(target).pattern));
+}
 
-  // An unknown psychube is a warning, not an error.
-  const probe = freshModel();
-  probe.setRecommendationField(target, "Psychube", "Definitely Not A Chube");
-  const probeResult = validate(probe);
-  check("an unknown psychube warns", probeResult.warnings.some((w) => w.includes("Definitely Not A Chube")), probeResult.warnings.filter((w) => w.includes("Chube")).join("; "));
-  check("but does not block", probeResult.errors.length === 0, probeResult.errors.join("; "));
+console.log("\n=== rotations ===");
+{
+  const m = freshModel();
+  const original = m.doc("guide_rotations.json").toString();
+  const before = m.guideRotations();
+  check("the file loads with at least one rotation", before.length > 0, String(before.length));
+
+  const id = before[0].id;
+  const rounds = before[0].rounds || [];
+  check("a rotation has rounds with slots", rounds.length > 0 && Array.isArray(rounds[0].slots), JSON.stringify(rounds[0]));
+
+  m.setGuideRotationField(id, "tuning", "Grand Orchestra");
+  check("the tuning is written", m.guideRotation(id).tuning === "Grand Orchestra", String(m.guideRotation(id).tuning));
+
+  // Work on a fresh round so the shipped data stays irrelevant to the assertions.
+  m.addGuideRound(id);
+  const ri = m.guideRotation(id).rounds.length - 1;
+  m.addGuideSlot(id, ri, "normal");
+  check("a normal AP slot holds one card", m.guideRotation(id).rounds[ri].slots.length === 1, String(m.guideRotation(id).rounds[ri].slots.length));
+
+  const card = { character: m.characters[0], skill: 2 };
+  m.addGuideSlotCard(id, ri, 0, card);
+  // A normal slot replaces its card rather than stacking.
+  m.addGuideSlotCard(id, ri, 0, { character: m.characters[1], skill: 1 });
+  check("a normal slot keeps only the newest card", m.guideRotation(id).rounds[ri].slots[0].cards.length === 1, JSON.stringify(m.guideRotation(id).rounds[ri].slots[0].cards));
+
+  m.addGuideSlot(id, ri, "or");
+  const orIndex = m.guideRotation(id).rounds[ri].slots.length - 1;
+  m.addGuideSlotCard(id, ri, orIndex, { character: m.characters[0], skill: 2 });
+  m.addGuideSlotCard(id, ri, orIndex, { character: m.characters[1], skill: 1 });
+  check("an OR slot holds two alternatives", m.guideRotation(id).rounds[ri].slots[orIndex].cards.length === 2, JSON.stringify(m.guideRotation(id).rounds[ri].slots[orIndex].cards));
+
+  m.addGuideSlotCard(id, ri, orIndex, { character: m.characters[2], skill: 1 });
+  check("an OR slot refuses a third card", m.guideRotation(id).rounds[ri].slots[orIndex].cards.length === 2, JSON.stringify(m.guideRotation(id).rounds[ri].slots[orIndex].cards));
+
+  m.removeGuideSlotCard(id, ri, orIndex, 1);
+  check("one alternative can be removed", m.guideRotation(id).rounds[ri].slots[orIndex].cards.length === 1, JSON.stringify(m.guideRotation(id).rounds[ri].slots[orIndex].cards));
+  m.addGuideSlotCard(id, ri, orIndex, { special: "images/skills/760001.png" });
+  check("a special card is stored by path only", m.guideRotation(id).rounds[ri].slots[orIndex].cards[1].special === "images/skills/760001.png", JSON.stringify(m.guideRotation(id).rounds[ri].slots[orIndex].cards[1]));
+
+  m.addGuideSlot(id, ri, "text");
+  const textIndex = m.guideRotation(id).rounds[ri].slots.length - 1;
+  m.setGuideSlotText(id, ri, textIndex, "Hold the buff");
+  check("a text slot stores its text", m.guideRotation(id).rounds[ri].slots[textIndex].text === "Hold the buff", JSON.stringify(m.guideRotation(id).rounds[ri].slots[textIndex]));
+
+  m.setGuideRoundNote(id, ri, "Pulsing Field Lv.1");
+  check("a round note is written", m.guideRotation(id).rounds[ri].note === "Pulsing Field Lv.1", String(m.guideRotation(id).rounds[ri].note));
+
+  m.setGuideRotationMember(id, 0, "psychube", "Steps Forward");
+  check("a member psychube is written", m.guideRotation(id).members[0].psychube === "Steps Forward", JSON.stringify(m.guideRotation(id).members[0]));
+
+  const roundCount = m.guideRotation(id).rounds.length;
+  m.addGuideRound(id);
+  check("a round can be added", m.guideRotation(id).rounds.length === roundCount + 1, String(m.guideRotation(id).rounds.length));
+  m.removeGuideRound(id, roundCount);
+  check("a round can be removed", m.guideRotation(id).rounds.length === roundCount, String(m.guideRotation(id).rounds.length));
+
+  check("the rotation edits validate", validate(m).errors.length === 0, validate(m).errors.join("; "));
+  check("only guide_rotations.json changed", m.changedFiles().join(",") === "guide_rotations.json", m.changedFiles().join(","));
+
+  m.setGuideRotationField(id, "archetypes", []);
+  check("an empty archetype list removes the key", m.guideRotation(id).archetypes === undefined, JSON.stringify(m.guideRotation(id).archetypes));
+
+  void original;
 }
 
 console.log("\n=== diff rendering ===");

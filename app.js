@@ -228,6 +228,17 @@ function refreshDynamicTranslations() {
     if (labels[0]) labels[0].textContent = t("stats.level60");
     if (labels[1]) labels[1].textContent = t("stats.r10plus");
   }
+
+  // The Guide builds its section titles in JS, so re-render it on a language change.
+  // Both guide modals build their section titles in JS, so re-render them.
+  const buildsModal = document.getElementById("builds-modal");
+  if (buildsModal && buildsModal.style.display !== "none") renderBuilds();
+  const rotationsModal = document.getElementById("rotations-modal");
+  if (rotationsModal && rotationsModal.style.display !== "none") {
+    renderRotations();
+    const rotationsCard = document.getElementById("rotations-card");
+    if (rotationsCard) setRotationsRailOpen(!rotationsCard.classList.contains("is-rail-collapsed"));
+  }
 }
 
 let characterDb = {}; // { "Name": "images/headicon_small/..." }
@@ -372,9 +383,6 @@ const TEAM_COLUMN_MIN_VIEWPORT = { 1: 0, 2: 1000, 3: 1480 };
 const TEAM_MODAL_MAX_WIDTH = { 1: 1040, 2: 1040, 3: 1500 };
 const TEAM_MAX_COLUMNS = 3;
 let teamArchetypes = {};   // { presetName: [ [ {character, psychube, euphoria?}, ... ], ... ] }
-// { characterName: { Resonance?: {label: code}, Pattern?: string, Portrait?: string, Psychube?: string|string[] } }
-// from data/characters_recommendation.json — build guidance shown in the edit modal.
-let characterRecommendations = {};
 let teamsConfig = { teams: [] };
 let teamsAllowUnowned = false;  // "Show Unowned" toggle inside the Team Building modal
 let teamsFormableOnly = false;  // Team Presets: only presets the roster can field
@@ -612,7 +620,7 @@ let rosterVisibleNames = [];               // Names passing the current search/r
 const btnExportImage = document.getElementById("btn-export-image");
 const btnJson = document.getElementById("btn-json");
 const inputImportFile = document.getElementById("input-import-file");
-const btnResetData = document.getElementById("btn-reset-data");
+const btnResetData = document.getElementById("btn-roster-reset");
 
 const OPTIONS_STORAGE_KEY = "r1999_display_options_v1";
 
@@ -1114,7 +1122,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, recommendRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, guideCardsRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -1129,7 +1137,10 @@ async function initApp() {
       fetch("data/collab_character.json").catch(() => null),
       fetch("data/global_name_transfer.json").catch(() => null),
       fetch("data/team_archetypes.json").catch(() => null),
-      fetch("data/characters_recommendation.json").catch(() => null),
+      fetch("data/guide_builds.json").catch(() => null),
+      fetch("data/guide_rotations.json").catch(() => null),
+      fetch("data/guide_skills.json").catch(() => null),
+      fetch("data/characters_progressions.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1254,14 +1265,22 @@ async function initApp() {
       }
     }
 
-    if (recommendRes && recommendRes.ok) {
+    // Guide content is optional: a missing file just leaves that tab empty.
+    const readJson = async (res) => {
+      if (!res || !res.ok) return null;
       try {
-        const recommendData = await recommendRes.json();
-        buildRecommendationMap(recommendData);
+        return await res.json();
       } catch (e) {
-        console.warn("Could not parse characters_recommendation.json", e);
+        console.warn("Could not parse guide data", e);
+        return null;
       }
-    }
+    };
+    buildGuideData({
+      builds: await readJson(guideBuildsRes),
+      rotations: (await readJson(guideRotationsRes))?.rotations,
+      skills: await readJson(guideSkillsRes),
+      progressions: await readJson(guideProgRes),
+    });
 
     loadLanguage();
     applyTranslations();
@@ -3271,214 +3290,6 @@ function updateModalView() {
   checkE2.checked = !!tempEditState.e2 && eligibleEuphoriaLevels.includes(2);
   checkE1.closest("label").style.display = eligibleEuphoriaLevels.includes(1) ? "flex" : "none";
   checkE2.closest("label").style.display = eligibleEuphoriaLevels.includes(2) ? "flex" : "none";
-
-  renderRecommendations(currentEditingName || "", tempEditState.owned);
-}
-
-/* ---------------- Build recommendations ---------------- */
-
-/** The four hint buttons and their popovers, keyed by field. */
-const RECOMMEND_FIELDS = ["resonance", "pattern", "portrait", "psychube"];
-
-function recommendHintEl(field) {
-  return document.getElementById(`btn-rec-${field}`);
-}
-
-function recommendPopoverEl(field) {
-  return document.getElementById(`rec-popover-${field}`);
-}
-
-/** Closes every popover. */
-function closeRecommendationPopovers(except) {
-  for (const field of RECOMMEND_FIELDS) {
-    if (field === except) continue;
-    const btn = recommendHintEl(field);
-    const pop = recommendPopoverEl(field);
-    if (pop) pop.hidden = true;
-    if (btn) btn.setAttribute("aria-expanded", "false");
-  }
-}
-
-/** Shows or hides the hint button for one field, returning whether it is shown. */
-function setRecommendationHint(field, visible) {
-  const btn = recommendHintEl(field);
-  const pop = recommendPopoverEl(field);
-  if (btn) btn.hidden = !visible;
-  if (!visible && pop) pop.hidden = true;
-  return visible;
-}
-
-/**
- * Copies text to the clipboard.
- *
- * `navigator.clipboard` needs a secure context and a user gesture; the textarea
- * fallback covers older browsers and any non-secure origin.
- */
-async function copyToClipboard(text) {
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch {
-    // fall through to the fallback
-  }
-  try {
-    const area = document.createElement("textarea");
-    area.value = text;
-    area.setAttribute("readonly", "");
-    area.style.position = "fixed";
-    area.style.opacity = "0";
-    document.body.appendChild(area);
-    area.select();
-    const ok = document.execCommand("copy");
-    area.remove();
-    return ok;
-  } catch {
-    return false;
-  }
-}
-
-/** A copy button that flashes a confirmation, then reverts. */
-function makeCopyButton(label, value) {
-  const btn = document.createElement("button");
-  btn.type = "button";
-  btn.className = "recommend-copy";
-  btn.textContent = label;
-  btn.title = `${label}: ${value}`;
-  btn.addEventListener("click", async () => {
-    const ok = await copyToClipboard(value);
-    const original = btn.textContent;
-    btn.textContent = ok ? "Copied!" : "Copy failed";
-    btn.classList.toggle("is-copied", ok);
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.classList.remove("is-copied");
-    }, 1100);
-  });
-  return btn;
-}
-
-/**
- * Builds the body of a recommendation popover.
- *
- * Resonance is a map of named codes, so it gets one copy button per code.
- * Pattern and portrait are single values shown as text. Psychube accepts several
- * alternatives, listed in order.
- */
-function buildRecommendationBody(field, record) {
-  const body = document.createElement("div");
-  body.style.display = "flex";
-  body.style.flexDirection = "column";
-  body.style.gap = "7px";
-
-  if (field === "resonance") {
-    const entries = Object.entries(record.resonance);
-    if (entries.length === 0) return null;
-    const label = document.createElement("div");
-    label.className = "recommend-label";
-    label.textContent = t("recommend.resonanceCodes");
-    body.appendChild(label);
-    const options = document.createElement("div");
-    options.className = "recommend-options";
-    for (const [name, code] of entries) options.appendChild(makeCopyButton(name, code));
-    body.appendChild(options);
-    return body;
-  }
-
-  if (field === "pattern") {
-    if (!record.pattern) return null;
-    const line = document.createElement("p");
-    line.className = "recommend-line";
-    const strong = document.createElement("strong");
-    strong.textContent = `${t("recommend.pattern")}: `;
-    line.appendChild(strong);
-    line.appendChild(document.createTextNode(record.pattern));
-    body.appendChild(line);
-    return body;
-  }
-
-  if (field === "portrait") {
-    if (!record.portrait) return null;
-    const line = document.createElement("p");
-    line.className = "recommend-line";
-    const strong = document.createElement("strong");
-    strong.textContent = `${t("recommend.portrait")}: `;
-    line.appendChild(strong);
-    line.appendChild(document.createTextNode(record.portrait));
-    body.appendChild(line);
-    return body;
-  }
-
-  if (field === "psychube") {
-    const list = record.psychubes || [];
-    if (list.length === 0) return null;
-    const label = document.createElement("div");
-    label.className = "recommend-label";
-    label.textContent = list.length > 1 ? t("recommend.psychubes") : t("recommend.psychube");
-    body.appendChild(label);
-    for (const name of list) {
-      const line = document.createElement("p");
-      line.className = "recommend-line";
-      line.textContent = name;
-      body.appendChild(line);
-    }
-    return body;
-  }
-
-  return null;
-}
-
-/**
- * Wires the four recommendation hints for the character being edited.
- *
- * A field with no recommendation in the data hides its hint entirely, so the
- * modal only advertises what actually exists.
- */
-function renderRecommendations(name, owned) {
-  const record = name ? getRecommendation(name) : null;
-
-  for (const field of RECOMMEND_FIELDS) {
-    const btn = recommendHintEl(field);
-    const pop = recommendPopoverEl(field);
-    if (!btn || !pop) continue;
-
-    const body = record ? buildRecommendationBody(field, record) : null;
-    // The psychube hint is not part of the owned/unowned toggle — it is advice
-    // about the character, so it shows even for an unowned entry.
-    const visible = !!body && (owned || field === "psychube");
-
-    if (!setRecommendationHint(field, visible)) {
-      pop.innerHTML = "";
-      continue;
-    }
-
-    pop.innerHTML = "";
-    if (body) pop.appendChild(body);
-    pop.hidden = true;
-    btn.setAttribute("aria-expanded", "false");
-    btn.onclick = (e) => {
-      e.stopPropagation();
-      const willShow = pop.hidden;
-      closeRecommendationPopovers(willShow ? field : null);
-      pop.hidden = !willShow;
-      btn.setAttribute("aria-expanded", willShow ? "true" : "false");
-    };
-  }
-}
-
-/** Closes the popovers on an outside click or Escape. */
-function setupRecommendationDismissal() {
-  document.addEventListener("click", (e) => {
-    if (!editModal || editModal.style.display === "none") return;
-    if (e.target.closest(".recommend-hint") || e.target.closest(".recommend-popover")) return;
-    closeRecommendationPopovers(null);
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && editModal && editModal.style.display !== "none") {
-      closeRecommendationPopovers(null);
-    }
-  });
 }
 
 function closeEditModal() {
@@ -3640,12 +3451,15 @@ function setManageTab(tab) {
   document.querySelectorAll(".manage-panel").forEach((panel) => {
     const on = panel.dataset.managePanel === next;
     // Respect panels that hide themselves (e.g. the bulk bar when idle).
-    if (on) {
-      panel.hidden = panel.dataset.keepHidden === "true";
-    } else {
-      panel.hidden = true;
-    }
+    panel.hidden = !on || panel.dataset.keepHidden === "true";
   });
+
+  // Bulk-selection bars stay hidden until their own Select mode is switched on
+  // and their tab is the active one.
+  const rosterBar = document.getElementById("roster-select-bar");
+  if (rosterBar) rosterBar.hidden = !(rosterSelectMode && next === "characters");
+  const chubesBar = document.getElementById("chubes-select-bar");
+  if (chubesBar) chubesBar.hidden = !(chubesSelectMode && next === "chubes");
 
   if (next === "chubes") {
     renderChubesManager();
@@ -3665,6 +3479,8 @@ function openRosterModal() {
 function closeRosterModal() {
   rosterModal.style.display = "none";
   exitRosterSelectMode();
+  chubesSelectMode = false;
+  chubesSelection.clear();
   // Board refresh is deferred until the modal closes, so bulk edits stay fast
   if (rosterNeedsShowcaseRefresh) {
     rosterNeedsShowcaseRefresh = false;
@@ -4249,59 +4065,6 @@ function psychubeKeyByName(name) {
 
 function buildTeamArchetypes(data) {
   teamArchetypes = (data && typeof data === "object" && !Array.isArray(data)) ? data : {};
-}
-
-/**
- * Normalises characters_recommendation.json.
- *
- * Shape per character: `{ Resonance?: {label: code}, Pattern?: string,
- * Portrait?: string, Psychube?: string | string[] }`. Anchors are resolved so a
- * recommendation keyed by an alias still matches its canonical character.
- */
-function buildRecommendationMap(data) {
-  characterRecommendations = {};
-  if (!data || typeof data !== "object" || Array.isArray(data)) return;
-
-  for (const [rawName, entry] of Object.entries(data)) {
-    if (!entry || typeof entry !== "object") continue;
-    const name = resolveCharacterName(rawName);
-    if (!name) continue;
-
-    const resonance = {};
-    if (entry.Resonance && typeof entry.Resonance === "object" && !Array.isArray(entry.Resonance)) {
-      for (const [label, code] of Object.entries(entry.Resonance)) {
-        const value = String(code == null ? "" : code).trim();
-        if (value) resonance[String(label).trim()] = value;
-      }
-    }
-
-    const psychubes = (Array.isArray(entry.Psychube) ? entry.Psychube : [entry.Psychube])
-      .map((p) => (p == null ? "" : String(p).trim()))
-      .filter(Boolean);
-
-    const record = {
-      resonance,
-      pattern: entry.Pattern == null ? "" : String(entry.Pattern).trim(),
-      portrait: entry.Portrait == null ? "" : String(entry.Portrait).trim(),
-      psychubes,
-    };
-
-    if (
-      Object.keys(record.resonance).length === 0 &&
-      !record.pattern &&
-      !record.portrait &&
-      record.psychubes.length === 0
-    ) {
-      continue;
-    }
-    characterRecommendations[name] = record;
-  }
-}
-
-/** The recommendation record for a character, or null. */
-function getRecommendation(name) {
-  const canonical = resolveCharacterName(name);
-  return characterRecommendations[canonical] || null;
 }
 
 /**
@@ -6096,11 +5859,793 @@ function setupTierCountTooltip() {
   }, { passive: true });
 }
 
+/* ================= GUIDE DATA (Builds + Rotations) ================= */
+
+// { name: { tags: [string], psychubes: [string], resonance: {label: code}, pattern, notes } }
+let buildsData = {};
+let rotationsData = [];
+let guideSkills = {};        // { name: [{ skill, icon }] }
+let guideProgressions = {};  // { name: [{ badge, val }] }
+let specialCards = [];       // ["images/skills/760001.png", ...]
+
+/** Team-archetype tags a build or a rotation can carry. */
+const ROTATION_ARCHETYPES = [
+  "Burn", "HP Sacrifice", "Poison", "Ritual", "Rank Up", "Extra Action", "Bloodtithe",
+  "Dynamo", "Inspiration", "Lingering Glow", "Shift", "Conduit", "Pursuit",
+];
+
+/** The four tunings a rotation can be built around. */
+const TUNINGS = ["First Melody", "Grand Orchestra", "Unfinished Tune", "Atonal Sequence"];
+
+/** Tags that have a dedicated icon: the two damage types plus the six afflatus. */
+const GUIDE_ICON_TAGS = {
+  "Reality DMG": "images/dmg_type_icon/reality_dmg.png",
+  "Mental DMG": "images/dmg_type_icon/mental_dmg.png",
+  Beast: "images/tag_afflatus/Beast_Icon.webp",
+  Plant: "images/tag_afflatus/Plant_Icon.webp",
+  Star: "images/tag_afflatus/star_icon.webp",
+  Mineral: "images/tag_afflatus/mineral_Icon.webp",
+  Spirit: "images/tag_afflatus/Spirit_Icon.webp",
+  Intellect: "images/tag_afflatus/intellect_icon.webp",
+};
+
+/** Bar colour per rarity, taken from the game's rarity palette. */
+const RARITY_COLORS = { 6: "#CB7820", 5: "#C8AF6C", 4: "#9E6BAD", 3: "#555E7F", 2: "#496441" };
+
+const GUIDE_AFFLATUS = [
+  { key: "Beast", icon: "images/tag_afflatus/Beast_Icon.webp" },
+  { key: "Plant", icon: "images/tag_afflatus/Plant_Icon.webp" },
+  { key: "Star", icon: "images/tag_afflatus/star_icon.webp" },
+  { key: "Mineral", icon: "images/tag_afflatus/mineral_Icon.webp" },
+  { key: "Spirit", icon: "images/tag_afflatus/Spirit_Icon.webp" },
+  { key: "Intellect", icon: "images/tag_afflatus/intellect_icon.webp" },
+];
+
+const GUIDE_AFFLATUS_ICONS = Object.fromEntries(GUIDE_AFFLATUS.map((a) => [a.key, a.icon]));
+
+function guideAfflatusKey(afflatus) {
+  if (!afflatus) return "";
+  return afflatus === "Mineral_Star" ? "Mineral" : afflatus;
+}
+
+function guideAfflatusIcon(afflatus) {
+  return GUIDE_AFFLATUS_ICONS[guideAfflatusKey(afflatus)] || "";
+}
+
+function rarityColor(rarity) {
+  return RARITY_COLORS[Number(rarity)] || "#B5B5B3";
+}
+
+function buildGuideData(data) {
+  const clean = data || {};
+  buildsData = clean.builds && typeof clean.builds === "object" && !Array.isArray(clean.builds) ? clean.builds : {};
+  rotationsData = Array.isArray(clean.rotations) ? clean.rotations.filter((r) => r && (r.id || r.name)) : [];
+  guideSkills = clean.skills && typeof clean.skills === "object" ? clean.skills : {};
+  guideProgressions = clean.progressions && typeof clean.progressions === "object" ? clean.progressions : {};
+  specialCards = Array.isArray(clean.cards && clean.cards.special) ? clean.cards.special : [];
+}
+
+/** Skill cards for a character, as `{ skill, icon }`. */
+function guideSkillsFor(name) {
+  return guideSkills[resolveCharacterName(name)] || [];
+}
+
+function guideSkillIcon(name, skill) {
+  const hit = guideSkillsFor(name).find((s) => Number(s.skill) === Number(skill));
+  return hit ? hit.icon : (characterDb[name] || "");
+}
+
+function guideProgressionFor(name) {
+  const canonical = resolveCharacterName(name);
+  if (Array.isArray(guideProgressions[canonical])) return guideProgressions[canonical];
+  if (Array.isArray(guideProgressions[name])) return guideProgressions[name];
+  return [];
+}
+
+/** Build record for a character, resolved through aliases. */
+function getBuild(name) {
+  const canonical = resolveCharacterName(name);
+  return buildsData[canonical] || buildsData[name] || null;
+}
+
+/** Tag labels can be plain strings or legacy `{label, icon}` objects. */
+function buildTagLabels(build) {
+  const tags = Array.isArray(build && build.tags) ? build.tags : [];
+  return tags.map((tag) => (typeof tag === "string" ? tag : tag && tag.label)).filter(Boolean);
+}
+
+/** Psychube name -> "rarity:id" key. */
+function psychubeKeyFromName(name) {
+  const wanted = String(name || "").trim().toLowerCase();
+  if (!wanted) return "";
+  for (const key of Object.keys(psychubeDb)) {
+    const chube = psychubeDb[key];
+    if (!chube) continue;
+    if (String(chube.name || "").toLowerCase() === wanted) return key;
+    if (String(chube.nameCn || "").toLowerCase() === wanted) return key;
+  }
+  return "";
+}
+
+function psychubeNameFromName(name) {
+  const key = psychubeKeyFromName(name);
+  return key && psychubeDb[key] ? psychubeName(key) : name;
+}
+
+/** Characters sorted the way the editor lists them: ArcanistMap id descending. */
+function guideCharacterNames() {
+  return Object.keys(characterDb)
+    .filter((name) => futureSightEnabled || !futureSightChars.has(name))
+    .sort((a, b) => {
+      // Rarity first, then release order (ArcanistMap id descending).
+      const rarity = getCharacterRarity(b) - getCharacterRarity(a);
+      if (rarity !== 0) return rarity;
+      const id = getCharacterReleaseId(b) - getCharacterReleaseId(a);
+      return id !== 0 ? id : a.localeCompare(b);
+    });
+}
+
+/** Copies text, with a textarea fallback for non-secure origins. */
+async function guideCopyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // fall through
+  }
+  try {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    area.remove();
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+function guideEmptyState(key) {
+  return `<div class="guide-empty"><span>${escapeHtml(t(key))}</span></div>`;
+}
+
+/** The shared "el" section header used across the modals. */
+function guideSectionHeader(key, extra) {
+  return `<div class="archetype-section-header">
+    <span class="archetype-section-title"><span>${escapeHtml(t(key))}</span></span>
+    <div class="archetype-section-divider"></div>
+    ${extra || ""}
+  </div>`;
+}
+
+/* ---------------- Character Build Recommendations ---------------- */
+
+let buildsSelected = null;
+const buildsRarityFilter = new Set();
+const buildsAfflatusFilter = new Set();
+
+function openBuildsModal() {
+  renderBuilds();
+  document.getElementById("builds-modal").style.display = "flex";
+}
+
+function closeBuildsModal() {
+  document.getElementById("builds-modal").style.display = "none";
+}
+
+function buildsVisibleNames() {
+  const input = document.getElementById("builds-search");
+  const query = (input ? input.value : "").trim();
+  return guideCharacterNames().filter((name) => {
+    if (!characterMatchesQuery(name, query)) return false;
+    if (buildsRarityFilter.size > 0 && !buildsRarityFilter.has(getCharacterRarity(name))) return false;
+    if (buildsAfflatusFilter.size > 0 && !buildsAfflatusFilter.has(guideAfflatusKey(getCharacterAfflatus(name)))) return false;
+    return true;
+  });
+}
+
+/** Whether a character has anything recorded to show in InfoBook. */
+function characterHasBuild(name) {
+  const build = getBuild(name) || {};
+  const resonance = build.resonance && typeof build.resonance === "object" ? build.resonance : {};
+  return !!(
+    buildTagLabels(build).length ||
+    (Array.isArray(build.psychubes) && build.psychubes.length) ||
+    Object.keys(resonance).length ||
+    build.pattern ||
+    build.notes ||
+    guideProgressionFor(name).length
+  );
+}
+
+function renderBuilds() {
+  const names = buildsVisibleNames();
+  const list = document.getElementById("builds-list");
+  const count = document.getElementById("builds-count");
+  if (!list) return;
+
+  if (count) count.textContent = t("builds.count", { n: names.length });
+
+  // Keep the current selection; only fall back when it is filtered out. The
+  // whole roster is listed now, so prefer a character with a full build.
+  if (!buildsSelected || !names.includes(buildsSelected)) {
+    buildsSelected = names.find((name) => getBuild(name)) || names.find(characterHasBuild) || names[0] || null;
+  }
+
+  list.innerHTML = names.length
+    ? names
+        .map((name) => {
+          const stars = Math.max(0, Number(getCharacterRarity(name)) || 0);
+          return `
+            <button type="button" class="builds-row${name === buildsSelected ? " is-active" : ""}" data-name="${escapeHtml(name)}">
+              <span class="builds-row-portrait"><img src="${escapeHtml(characterDb[name] || "")}" alt="" loading="lazy" /></span>
+              <span class="builds-row-text">
+                <span class="builds-row-name">${escapeHtml(displayCharName(name))}</span>
+                <span class="builds-row-stars" style="color:${rarityColor(stars)}">${"✦".repeat(stars)}</span>
+              </span>
+            </button>`;
+        })
+        .join("")
+    : guideEmptyState("builds.noData");
+
+  list.querySelectorAll(".builds-row").forEach((row) => {
+    row.addEventListener("click", () => {
+      buildsSelected = row.dataset.name;
+      renderBuilds();
+    });
+  });
+
+  const active = list.querySelector(".builds-row.is-active");
+  if (active && list.scrollHeight > list.clientHeight) {
+    const top = active.offsetTop;
+    if (top < list.scrollTop || top + active.offsetHeight > list.scrollTop + list.clientHeight) {
+      list.scrollTop = Math.max(0, top - list.clientHeight / 2);
+    }
+  }
+
+  renderBuildsDetail();
+}
+
+function renderBuildsDetail() {
+  const host = document.getElementById("builds-detail");
+  if (!host) return;
+
+  const name = buildsSelected;
+  if (!name) {
+    host.innerHTML = guideEmptyState("builds.select");
+    return;
+  }
+
+  const build = getBuild(name) || {};
+  const rarity = Math.max(0, Number(getCharacterRarity(name)) || 0);
+  const accent = rarityColor(rarity);
+
+  const tags = buildTagLabels(build);
+  const psychubes = (Array.isArray(build.psychubes) ? build.psychubes : []).slice(0, 2);
+  const resonance = build.resonance && typeof build.resonance === "object" ? build.resonance : {};
+  const progression = guideProgressionFor(name);
+  const maxVal = progression.reduce((max, p) => Math.max(max, Number(p.val) || 0), 0) || 1;
+
+  // A character with no recorded build gets one clear message instead of
+  // four empty cards.
+  if (!characterHasBuild(name)) {
+    host.innerHTML = guideEmptyState("builds.noBuild");
+    return;
+  }
+
+  const tagHtml = tags
+    .map((label) => {
+      const icon = GUIDE_ICON_TAGS[label] || "";
+      return `<span class="build-tag">${icon ? `<img src="${escapeHtml(icon)}" alt="" />` : ""}${escapeHtml(label)}</span>`;
+    })
+    .join("");
+
+  const chartHtml = progression.length
+    ? `<div class="build-chart" style="--build-accent:${accent}">${progression
+        .map((p) => {
+          const val = Number(p.val) || 0;
+          const height = Math.max(4, Math.round((val / maxVal) * 100));
+          return `
+            <div class="build-chart-col">
+              <span class="build-chart-val">${val}%</span>
+              <span class="build-chart-track"><span class="build-chart-bar" style="height:${height}%"></span></span>
+              <span class="build-chart-badge">${escapeHtml(p.badge || "")}</span>
+            </div>`;
+        })
+        .join("")}</div>`
+    : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
+
+  const psychubeHtml = psychubes.length
+    ? psychubes
+        .map((entry) => {
+          const key = psychubeKeyFromName(entry);
+          const chube = key ? psychubeDb[key] : null;
+          return `<span class="build-psychube">${
+            chube ? `<img src="${escapeHtml(chube.iconUrl)}" alt="" />` : `<span class="build-psychube-blank"></span>`
+          }<span class="build-psychube-name">${escapeHtml(psychubeNameFromName(entry))}</span></span>`;
+        })
+        .join("")
+    : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
+
+  const resonanceHtml = Object.keys(resonance).length
+    ? Object.entries(resonance)
+        .map(
+          ([label, code]) => `
+            <button type="button" class="build-resonance-btn" data-code="${escapeHtml(code)}" title="${escapeHtml(
+              t("builds.copyHint")
+            )}">${escapeHtml(label)}</button>`
+        )
+        .join("")
+    : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
+
+  const patternIcon = build.pattern ? getPatternIconPath(name, build.pattern) : "";
+  const patternHtml = build.pattern
+    ? `<div class="build-pattern">
+         ${patternIcon ? `<img src="${escapeHtml(patternIcon)}" alt="" />` : ""}
+         <span class="build-pattern-name" style="color:${getResonanceTextColor(build.pattern)}">${escapeHtml(
+           build.pattern
+         )}</span>
+       </div>`
+    : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
+
+  const chartSection = progression.length
+    ? `<section class="build-section build-section-chart">
+         <h4 class="build-section-title">${escapeHtml(t("builds.portrait"))}</h4>
+         ${chartHtml}
+       </section>`
+    : "";
+
+  const psychubeSection = psychubes.length
+    ? `<section class="build-section">
+         <h4 class="build-section-title">${escapeHtml(t("builds.psychubes"))}</h4>
+         <div class="build-psychubes">${psychubeHtml}</div>
+       </section>`
+    : "";
+
+  const resonanceSection =
+    build.pattern || Object.keys(resonance).length
+      ? `<section class="build-section">
+           <h4 class="build-section-title">${escapeHtml(t("builds.resonance"))}</h4>
+           <div class="build-resonance-block">
+             ${patternHtml}
+             <div class="build-resonance-buttons">${resonanceHtml}</div>
+           </div>
+         </section>`
+      : "";
+
+  const sideSections = psychubeSection + resonanceSection;
+  const singleColumn = !chartSection || !sideSections;
+
+  host.innerHTML = `
+    <div class="builds-hero" style="--build-accent:${accent}">
+      <span class="builds-hero-portrait"><img src="${escapeHtml(characterDb[name] || "")}" alt="" /></span>
+      <div class="builds-hero-text">
+        <div class="builds-hero-head">
+          <h3 class="builds-hero-name">${escapeHtml(displayCharName(name))}</h3>
+          <span class="builds-hero-stars" style="color:${accent}">${"✦".repeat(rarity)}</span>
+        </div>
+        ${
+          tagHtml
+            ? `<div class="build-tags">${tagHtml}</div>`
+            : ""
+        }
+      </div>
+    </div>
+
+    <div class="builds-grid${singleColumn ? " is-single" : ""}">
+      ${chartSection}
+      ${sideSections ? `<div class="builds-column">${sideSections}</div>` : ""}
+    </div>
+
+    ${
+      build.notes
+        ? `<div class="build-notes-box">
+             <span class="build-notes-label">${escapeHtml(t("builds.notes"))}</span>
+             <p class="build-notes">${escapeHtml(build.notes)}</p>
+           </div>`
+        : ""
+    }
+  `;
+
+  // The label is the copy button for its code.
+  host.querySelectorAll(".build-resonance-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const original = btn.textContent;
+      const ok = await guideCopyText(btn.dataset.code || "");
+      btn.textContent = ok ? t("builds.copied") : t("builds.copyFailed");
+      btn.classList.toggle("is-copied", ok);
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove("is-copied");
+      }, 1100);
+    });
+  });
+}
+
+/* ---------------- Skill Rotations ---------------- */
+
+let rotationsSelected = null;
+const rotationArchetypeFilter = new Set();
+
+/** Rotation members accept the legacy `"Name"` shorthand and `{character, psychube}`. */
+function rotationMembers(rotation) {
+  return (rotation.members || [])
+    .map((entry) => {
+      if (typeof entry === "string") return { character: resolveCharacterName(entry) || entry, psychube: "" };
+      if (!entry || !entry.character) return null;
+      return {
+        character: resolveCharacterName(entry.character) || entry.character,
+        psychube: entry.psychube || "",
+      };
+    })
+    .filter(Boolean);
+}
+
+/** Rounds accept the legacy `turns` key, whose cards were a flat list. */
+function rotationRounds(rotation) {
+  if (Array.isArray(rotation.rounds)) return rotation.rounds;
+  if (!Array.isArray(rotation.turns)) return [];
+  return rotation.turns.map((turn) => ({
+    note: "",
+    slots: (turn.cards || []).map((card) => ({ cards: card ? [card] : [] })),
+  }));
+}
+
+function rotationArchetypes(rotation) {
+  if (Array.isArray(rotation.archetypes)) return rotation.archetypes.filter(Boolean);
+  return rotation.archetype ? [rotation.archetype] : [];
+}
+
+function rotationsVisible() {
+  const input = document.getElementById("rotations-search");
+  const query = (input ? input.value : "").trim().toLowerCase();
+  return rotationsData.filter((rotation) => {
+    const archetypes = rotationArchetypes(rotation);
+    if (rotationArchetypeFilter.size > 0 && !archetypes.some((a) => rotationArchetypeFilter.has(a))) return false;
+    if (!query) return true;
+    const haystack = [
+      rotation.name || "",
+      rotation.tuning || "",
+      ...archetypes,
+      ...rotationMembers(rotation).map((m) => displayCharName(m.character)),
+      rotation.notes || "",
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(query);
+  });
+}
+
+function renderRotationFilters() {
+  const host = document.getElementById("rotations-filters");
+  if (!host) return;
+  host.innerHTML = ROTATION_ARCHETYPES.map(
+    (tag) =>
+      `<button type="button" class="rotation-filter${rotationArchetypeFilter.has(tag) ? " is-active" : ""}" data-tag="${escapeHtml(
+        tag
+      )}">${escapeHtml(tag)}</button>`
+  ).join("");
+
+  host.querySelectorAll(".rotation-filter").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const tag = btn.dataset.tag;
+      if (rotationArchetypeFilter.has(tag)) rotationArchetypeFilter.delete(tag);
+      else rotationArchetypeFilter.add(tag);
+      renderRotations();
+    });
+  });
+}
+
+function setRotationsRailOpen(open) {
+  const card = document.getElementById("rotations-card");
+  const toggle = document.getElementById("rotations-rail-toggle");
+  if (!card || !toggle) return;
+  card.classList.toggle("is-rail-collapsed", !open);
+  toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  const label = toggle.querySelector(".rotations-rail-toggle-text");
+  if (label) label.textContent = t(open ? "rotations.hideList" : "rotations.showList");
+}
+
+function openRotationsModal() {
+  renderRotations();
+  document.getElementById("rotations-modal").style.display = "flex";
+}
+
+function closeRotationsModal() {
+  document.getElementById("rotations-modal").style.display = "none";
+}
+
+function renderRotations() {
+  renderRotationFilters();
+
+  const list = document.getElementById("rotations-list");
+  if (!list) return;
+  const visible = rotationsVisible();
+
+  if (!rotationsSelected || !visible.some((r) => r.id === rotationsSelected)) {
+    rotationsSelected = visible[0] ? visible[0].id : null;
+  }
+
+  list.innerHTML = visible.length
+    ? visible
+        .map((rotation) => {
+          const members = rotationMembers(rotation);
+          const archetypes = rotationArchetypes(rotation);
+          const tuning = rotation.tuning || "";
+          return `
+            <button type="button" class="rotation-card${rotation.id === rotationsSelected ? " is-active" : ""}" data-id="${escapeHtml(
+              rotation.id || ""
+            )}">
+              <span class="rotation-card-top">
+                <span class="rotation-card-name">${escapeHtml(rotation.name || rotation.id || "")}</span>
+                ${
+                  tuning
+                    ? `<img class="rotation-card-tuning" src="images/tuning_abilities/${encodeURIComponent(
+                        tuning
+                      )}.png" alt="" title="${escapeHtml(tuning)}" />`
+                    : ""
+                }
+              </span>
+              <span class="rotation-card-team">
+                ${members
+                  .map(
+                    (member) =>
+                      `<span class="rotation-card-face" title="${escapeHtml(displayCharName(member.character))}"><img src="${escapeHtml(
+                        characterDb[member.character] || ""
+                      )}" alt="" /></span>`
+                  )
+                  .join("")}
+              </span>
+              ${
+                archetypes.length
+                  ? `<span class="rotation-card-tags">${archetypes
+                      .map((tag) => `<span class="rotation-card-tag">${escapeHtml(tag)}</span>`)
+                      .join("")}</span>`
+                  : ""
+              }
+            </button>`;
+        })
+        .join("")
+    : guideEmptyState("rotations.empty");
+
+  list.querySelectorAll(".rotation-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      rotationsSelected = card.dataset.id;
+      renderRotations();
+    });
+  });
+
+  renderRotationsDetail();
+}
+
+/** One skill card: character art, or a special card with no owner. */
+function rotationCardHtml(card, variant) {
+  if (!card) return "";
+  const cls = variant === "lb" ? "rot-card is-lb" : "rot-card";
+  if (card.special) {
+    return `<span class="${cls}"><img src="${escapeHtml(card.special)}" alt="" /></span>`;
+  }
+  const char = resolveCharacterName(card.character) || card.character;
+  // A pinned icon wins: it keeps the exact variant the author picked.
+  const icon = card.icon || guideSkillIcon(char, card.skill);
+  return `<span class="${cls}" title="${escapeHtml(displayCharName(char))}">
+      <img src="${escapeHtml(icon)}" alt="" />
+    </span>`;
+}
+
+/** A slot renders by type: normal AP, either/or AP, a quarter-size LB card, or text. */
+function rotationSlotHtml(slot) {
+  if (!slot) return "";
+  const type = slot.type || "normal";
+  const cards = Array.isArray(slot.cards) ? slot.cards.filter(Boolean) : [];
+
+  if (type === "text") {
+    const text = slot.text || "";
+    return text ? `<span class="rot-slot is-text">${escapeHtml(text)}</span>` : `<span class="rot-slot is-empty"></span>`;
+  }
+
+  if (cards.length === 0) return `<span class="rot-slot is-empty"></span>`;
+
+  if (type === "lb") {
+    return `<span class="rot-slot is-lb">${rotationCardHtml(cards[0], "lb")}</span>`;
+  }
+
+  if (type === "or") {
+    // The second card peeks out behind the first: together they take the same
+    // room as one normal card.
+    const front = cards[0] ? rotationCardHtml(cards[0]) : "";
+    const behind = cards[1]
+      ? `<span class="rot-card is-behind"><img src="${escapeHtml(
+          cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
+        )}" alt="" /></span>`
+      : "";
+    return `<span class="rot-slot is-or"><span class="rot-or-stack">${front}${behind}</span></span>`;
+  }
+
+  return `<span class="rot-slot">${rotationCardHtml(cards[0])}</span>`;
+}
+
+function renderRotationsDetail() {
+  const host = document.getElementById("rotations-detail");
+  if (!host) return;
+
+  const rotation = rotationsData.find((r) => r.id === rotationsSelected);
+  if (!rotation) {
+    host.innerHTML = guideEmptyState("rotations.select");
+    return;
+  }
+
+  const members = rotationMembers(rotation);
+  const rounds = rotationRounds(rotation);
+  const archetypes = rotationArchetypes(rotation);
+  const tuning = rotation.tuning || "";
+
+  const tuningHtml = TUNINGS.map(
+    (name) => `
+      <span class="rot-tuning${name === tuning ? " is-active" : ""}" title="${escapeHtml(name)}">
+        <img src="images/tuning_abilities/${encodeURIComponent(name)}.png" alt="" />
+        <span class="rot-tuning-name">${escapeHtml(name)}</span>
+      </span>`
+  ).join("");
+
+  const teamHtml = members.length
+    ? members
+        .map((member) => {
+          const chubeKey = psychubeKeyFromName(member.psychube);
+          const chube = chubeKey ? psychubeDb[chubeKey] : null;
+          return `
+            <span class="rot-member">
+              <span class="rot-member-portrait"><img src="${escapeHtml(characterDb[member.character] || "")}" alt="" /></span>
+              <span class="rot-member-text">
+                <span class="rot-member-name">${escapeHtml(displayCharName(member.character))}</span>
+                ${
+                  chube
+                    ? `<span class="rot-member-chube" title="${escapeHtml(psychubeNameFromName(member.psychube))}">
+                         <img src="${escapeHtml(chube.iconUrl)}" alt="" />
+                         <span>${escapeHtml(psychubeNameFromName(member.psychube))}</span>
+                       </span>`
+                    : ""
+                }
+              </span>
+            </span>`;
+        })
+        .join("")
+    : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
+
+  const roundsHtml = rounds.length
+    ? rounds
+        .map((round, index) => {
+          const slots = Array.isArray(round.slots) ? round.slots : [];
+          const slotsHtml = slots.length
+            ? slots.map(rotationSlotHtml).join("")
+            : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
+
+          return `
+            <div class="rot-round">
+              <div class="rot-round-head">
+                <span class="rot-round-label">${escapeHtml(t("rotations.round", { n: String(index + 1).padStart(2, "0") }))}</span>
+                ${round.note ? `<span class="rot-round-note">${escapeHtml(round.note)}</span>` : ""}
+              </div>
+              <div class="rot-round-separator"></div>
+              <div class="rot-round-slots">${slotsHtml}</div>
+            </div>`;
+        })
+        .join("")
+    : guideEmptyState("rotations.empty");
+
+  host.innerHTML = `
+    <div class="rot-hero">
+      <h3 class="rot-hero-name">${escapeHtml(rotation.name || rotation.id || "")}</h3>
+      ${
+        archetypes.length
+          ? `<div class="rot-hero-tags">${archetypes
+              .map((tag) => `<span class="rot-hero-tag">${escapeHtml(tag)}</span>`)
+              .join("")}</div>`
+          : ""
+      }
+    </div>
+
+    <section class="rot-block">
+      ${guideSectionHeader("rotations.tuning")}
+      <div class="rot-tunings">${tuningHtml}</div>
+    </section>
+
+    <section class="rot-block">
+      ${guideSectionHeader("rotations.team")}
+      <div class="rot-team">${teamHtml}</div>
+    </section>
+
+    ${
+      rotation.notes
+        ? `<section class="rot-block">
+             ${guideSectionHeader("rotations.notes")}
+             <p class="build-notes">${escapeHtml(rotation.notes)}</p>
+           </section>`
+        : ""
+    }
+
+    <section class="rot-block">
+      ${guideSectionHeader("rotations.rounds")}
+      <div class="rot-rounds">${roundsHtml}</div>
+    </section>
+  `;
+}
+
+function setupGuideListeners() {
+  const buildsBtn = document.getElementById("btn-builds");
+  const buildsModal = document.getElementById("builds-modal");
+  if (buildsBtn && buildsModal) {
+    buildsBtn.addEventListener("click", openBuildsModal);
+    document.getElementById("builds-btn-close").addEventListener("click", closeBuildsModal);
+    buildsModal.addEventListener("click", (e) => {
+      if (e.target === buildsModal) closeBuildsModal();
+    });
+
+    const search = document.getElementById("builds-search");
+    if (search) search.addEventListener("input", renderBuilds);
+
+    document.querySelectorAll("#builds-rarity-group .filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const rarity = Number(btn.dataset.rarity);
+        if (buildsRarityFilter.has(rarity)) buildsRarityFilter.delete(rarity);
+        else buildsRarityFilter.add(rarity);
+        btn.classList.toggle("active", buildsRarityFilter.has(rarity));
+        renderBuilds();
+      });
+    });
+
+    document.querySelectorAll("#builds-afflatus-group .builds-afflatus-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const afflatus = btn.dataset.afflatus;
+        if (buildsAfflatusFilter.has(afflatus)) buildsAfflatusFilter.delete(afflatus);
+        else buildsAfflatusFilter.add(afflatus);
+        btn.classList.toggle("is-active", buildsAfflatusFilter.has(afflatus));
+        renderBuilds();
+      });
+    });
+  }
+
+  const rotationsBtn = document.getElementById("btn-rotations");
+  const rotationsModal = document.getElementById("rotations-modal");
+  if (rotationsBtn && rotationsModal) {
+    rotationsBtn.addEventListener("click", openRotationsModal);
+    document.getElementById("rotations-btn-close").addEventListener("click", closeRotationsModal);
+    rotationsModal.addEventListener("click", (e) => {
+      if (e.target === rotationsModal) closeRotationsModal();
+    });
+
+    const search = document.getElementById("rotations-search");
+    if (search) search.addEventListener("input", renderRotations);
+
+    const toggle = document.getElementById("rotations-rail-toggle");
+    if (toggle) {
+      toggle.addEventListener("click", () => {
+        const card = document.getElementById("rotations-card");
+        setRotationsRailOpen(card.classList.contains("is-rail-collapsed"));
+      });
+    }
+
+    const clear = document.getElementById("rotations-clear-filters");
+    if (clear) {
+      clear.addEventListener("click", () => {
+        rotationArchetypeFilter.clear();
+        renderRotations();
+      });
+    }
+  }
+}
+
 // Event Listeners
 function setupEventListeners() {
   setupPatternTooltip();
   setupTierCountTooltip();
-  setupRecommendationDismissal();
+  setupGuideListeners();
 
   // Language switcher
   document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -8439,37 +8984,48 @@ function setupEventListeners() {
   }
 
   /**
-   * Team Building moves into the Menu drawer on narrow screens, to the right of
-   * the language switcher: once the Menu button appears the stats row no longer
-   * has room for it. The node is moved rather than duplicated so the click
-   * handler and the modal wiring stay attached to one element.
+   * JSON and Reset sit in the stats row, right of the language switcher. Once
+   * the Menu button takes over (<= 1260px) that row has no room for them, so
+   * they move into the drawer's data group beside Teams. The nodes are moved
+   * rather than duplicated so the click handlers stay attached to one element.
    */
-  const teamBtn = document.getElementById("btn-team");
-  const teamBtnHome = document.querySelector(".header-stats-row");
-  const teamBtnAnchor = document.querySelector(".header-stats-row .stat-badge-wrap");
-  const drawerLangGroup = document.querySelector(".tools-lang-group");
+  const statsRow = document.querySelector(".header-stats-row");
+  const headerLangGroup = document.getElementById("lang-switcher-header");
+  const drawerDataGroup = document.querySelector(".tools-data-group");
+  const drawerTeamsBtn = document.getElementById("btn-team");
   const narrowTools = window.matchMedia("(max-width: 1260px)");
 
-  const syncTeamButtonPlacement = () => {
-    if (!teamBtn || !teamBtnHome || !drawerLangGroup) return;
+  const syncDataButtonPlacement = () => {
+    if (!statsRow || !drawerDataGroup) return;
+    const buttons = [
+      document.getElementById("btn-json"),
+      document.getElementById("btn-reset-data"),
+    ].filter(Boolean);
+
     if (narrowTools.matches) {
-      // Last child of the group => right of the language switcher.
-      if (teamBtn.parentElement !== drawerLangGroup) drawerLangGroup.appendChild(teamBtn);
-    } else if (teamBtn.parentElement !== teamBtnHome) {
-      if (teamBtnAnchor && teamBtnAnchor.parentElement === teamBtnHome) {
-        teamBtnHome.insertBefore(teamBtn, teamBtnAnchor);
-      } else {
-        teamBtnHome.appendChild(teamBtn);
-      }
+      // Keep source order (JSON then Reset), both left of Teams.
+      buttons.forEach((btn) => {
+        if (drawerTeamsBtn && drawerTeamsBtn.parentElement === drawerDataGroup) {
+          drawerDataGroup.insertBefore(btn, drawerTeamsBtn);
+        } else {
+          drawerDataGroup.appendChild(btn);
+        }
+      });
+    } else if (headerLangGroup && headerLangGroup.parentElement === statsRow) {
+      // Reverse order: each insert lands directly after the switcher, so JSON
+      // finishes on the left and Reset on the right.
+      [...buttons].reverse().forEach((btn) => {
+        headerLangGroup.insertAdjacentElement("afterend", btn);
+      });
     }
   };
 
-  syncTeamButtonPlacement();
+  syncDataButtonPlacement();
   if (typeof narrowTools.addEventListener === "function") {
-    narrowTools.addEventListener("change", syncTeamButtonPlacement);
+    narrowTools.addEventListener("change", syncDataButtonPlacement);
   } else if (typeof narrowTools.addListener === "function") {
     // Safari < 14
-    narrowTools.addListener(syncTeamButtonPlacement);
+    narrowTools.addListener(syncDataButtonPlacement);
   }
 
   // Roster Manager
@@ -9038,7 +9594,7 @@ function setupEventListeners() {
     reader.readAsText(file);
   });
 
-  // Reset Data
+  // Reset Data (lives in the Manage modal, left of the Characters/Psychubes tabs)
   btnResetData.addEventListener("click", () => {
     showConfirmModal(
       t("confirm.resetRosterTitle"),
@@ -9046,10 +9602,18 @@ function setupEventListeners() {
       () => {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(TEAMS_STORAGE_KEY);
+        localStorage.removeItem(PSYCHUBE_STORAGE_KEY);
         userRoster = {};
+        userPsychubes = {};
         teamsConfig = { teams: [] };
         pendingTeamCharacter = null;
         loadRoster();
+        loadPsychubes();
+        if (rosterModal.style.display !== "none") {
+          setManageTab(manageActiveTab);
+          exitRosterSelectMode();
+          setChubesSelectMode(false);
+        }
         renderShowcase();
       }
     );

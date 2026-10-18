@@ -199,6 +199,14 @@ body::before {
   justify-self: end;
 }
 
+/* JSON and Reset sit beside the language switcher, so the icon-only Reset
+   button matches the row height instead of the 30px default. */
+.header-stats-row .btn-icon-only {
+  width: 31px;
+  height: 31px;
+  min-width: 31px;
+}
+
 /* ================= LANGUAGE SWITCHER ================= */
 .lang-switcher {
   display: inline-flex;
@@ -5526,35 +5534,10 @@ body::before {
 
 /* ================= TEAM BUILDING ================= */
 
-/* Toolbar entry: sits next to the language switcher, so it borrows the
-   switcher's metrics and only adds an icon button. */
+/* Toolbar entry: a labelled button in the Menu drawer's data group, so it
+   borrows the shared .btn metrics and only needs icon sizing. */
 .btn-team {
-  width: 31px;
-  height: 31px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #B5B5B3;
-  background: rgba(0, 0, 0, 0.03);
-  border-radius: 0;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
   flex-shrink: 0;
-}
-
-.btn-team:hover {
-  background: rgba(181, 181, 179, 0.12);
-  border-color: #EBE3D7;
-}
-
-.btn-team:focus {
-  outline: none;
-}
-
-.btn-team:focus-visible {
-  outline: 2px solid #ED7D31;
-  outline-offset: -2px;
 }
 
 .btn-team-icon {
@@ -5564,16 +5547,7 @@ body::before {
   display: block;
 }
 
-/* The square button must track .stat-badge's responsive heights, otherwise it
-   stays 31px while the crew badge shrinks to 28/26 and the row looks misaligned.
-   These live AFTER the base rule on purpose — same specificity, so source order
-   decides, and the earlier .stat-badge media queries would otherwise win. */
-@media screen and (max-width: 1260px) and (min-width: 769px) {
-  .btn-team {
-    width: 28px;
-    height: 28px;
-  }
-
+@media screen and (max-width: 1260px) {
   .btn-team-icon {
     width: 15px;
     height: 15px;
@@ -5581,11 +5555,6 @@ body::before {
 }
 
 @media screen and (max-width: 768px) {
-  .btn-team {
-    width: 26px;
-    height: 26px;
-  }
-
   .btn-team-icon {
     width: 14px;
     height: 14px;
@@ -6614,9 +6583,14 @@ body.team-resizing * {
 .manage-tabs {
   display: flex;
   gap: 8px;
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(17, 15, 12, 0.18);
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(208, 81, 38, 0.38);
   flex: none;
+}
+
+/* Search/filter row sits right under the tabs, separated by a light rule. */
+.manage-tabs + .roster-toolbar {
+  padding-top: 10px;
 }
 
 /* Tabs read as buttons: outlined, white label, orange when active. */
@@ -6653,6 +6627,1033 @@ body.team-resizing * {
 
 /* The hidden attribute must win over the flex/grid display of these panels. */
 .manage-panel[hidden] { display: none !important; }
+
+/* Reset sits at the far right of the Characters / Psychubes row. */
+.manage-tabs .manage-reset {
+  margin-left: auto;
+  width: 31px;
+  height: 31px;
+  min-width: 31px;
+  align-self: center;
+}
+
+/* ================= CHARACTER BUILD RECOMMENDATIONS ================= */
+
+#builds-modal { z-index: 1000; }
+
+.guide-empty {
+  margin: auto;
+  padding: 28px;
+  color: #B5B5B3;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.74rem;
+  text-align: center;
+}
+
+.builds-modal-card {
+  max-width: 1080px;
+  width: 100%;
+  height: min(88vh, 820px);
+}
+
+.builds-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ---- Left rail ---- */
+
+.builds-rail {
+  flex: 0 0 264px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.builds-rail-tools {
+  flex: none;
+  padding: 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.builds-rail-tools .search-input {
+  width: 100%;
+  max-width: none;
+  height: 30px;
+  font-size: 0.7rem;
+}
+
+.builds-rarity-group {
+  width: 100%;
+  height: 26px;
+}
+
+.builds-rarity-group .filter-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 0 2px;
+  font-size: 0.6rem;
+}
+
+.builds-afflatus-group {
+  display: flex;
+  gap: 4px;
+}
+
+.builds-afflatus-btn {
+  flex: 1;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(181, 181, 179, 0.4);
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.builds-afflatus-btn img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  display: block;
+}
+
+.builds-afflatus-btn:hover { opacity: 1; border-color: #EBE3D7; }
+
+.builds-afflatus-btn.is-active {
+  opacity: 1;
+  border-color: #ED7D31;
+  background: rgba(208, 81, 38, 0.28);
+}
+
+.builds-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.builds-rail-footer {
+  flex: none;
+  padding: 8px 14px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.builds-count {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8f8a83;
+}
+
+.builds-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 7px;
+  background: none;
+  border: 1px solid transparent;
+  color: #ECE5D9;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+}
+
+.builds-row:hover { background: rgba(255, 255, 255, 0.04); }
+
+.builds-row.is-active {
+  border-color: #ED7D31;
+  background: rgba(208, 81, 38, 0.16);
+}
+
+.builds-row-portrait {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  overflow: hidden;
+  background: #2a2825;
+  border: 1px solid rgba(181, 181, 179, 0.28);
+  display: block;
+}
+
+.builds-row-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.builds-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.builds-row-name {
+  font-size: 0.7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.builds-row-stars {
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+/* ---- Right pane ---- */
+
+.builds-detail {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 20px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.builds-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.builds-hero-portrait {
+  width: 76px;
+  height: 76px;
+  flex: none;
+  overflow: hidden;
+  background: #2a2825;
+  border: 1px solid var(--build-accent, #D05126);
+  display: block;
+}
+
+.builds-hero-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.builds-hero-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.builds-hero-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.builds-hero-name {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: normal;
+  color: #ECE5D9;
+  line-height: 1.1;
+}
+
+.builds-hero-stars {
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  line-height: 1;
+}
+
+.builds-note {
+  margin: 0;
+  padding: 9px 12px;
+  border-left: 2px solid rgba(237, 125, 49, 0.6);
+  background: rgba(208, 81, 38, 0.1);
+  color: #D6D1C8;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.7rem;
+}
+
+.builds-muted {
+  color: #8f8a83;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.68rem;
+}
+
+/* Portrait value chart on the left, the two loadout cards on the right. */
+.builds-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* One column when only one side has content to show. */
+.builds-grid.is-single { grid-template-columns: minmax(0, 1fr); }
+
+/* Without the chart, the loadout cards share the row instead of stacking. */
+.builds-grid.is-single .builds-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  align-items: start;
+}
+
+.builds-column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.build-section {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.build-section-chart { flex: 1; }
+
+.build-section-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B5B5B3;
+}
+
+.build-section-title::before {
+  content: "";
+  flex: none;
+  width: 3px;
+  height: 11px;
+  background: #D05126;
+}
+
+/* Tags live in the hero as light chips, so they read as metadata. */
+.build-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.build-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border: 1px solid rgba(181, 181, 179, 0.3);
+  background: rgba(0, 0, 0, 0.22);
+  color: #D6D1C8;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.build-tag img {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  flex: none;
+}
+
+/* Portrait value chart: bars take the character's rarity colour. */
+.build-chart {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  min-height: 168px;
+  padding: 0 4px;
+}
+
+.build-chart-col {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.build-chart-val {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.64rem;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The track shows the full scale, so short bars still read as a proportion. */
+.build-chart-track {
+  flex: 1;
+  width: 100%;
+  max-width: 46px;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(255, 255, 255, 0.045);
+  border-bottom: 1px solid rgba(181, 181, 179, 0.3);
+}
+
+.build-chart-bar {
+  width: 100%;
+  display: block;
+  background: var(--build-accent, #D05126);
+}
+
+.build-chart-badge {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #B5B5B3;
+}
+
+/* Psychubes: one row each, no tile behind the art. */
+.build-psychubes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.build-psychube {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: #ECE5D9;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+}
+
+.build-psychube + .build-psychube {
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.build-psychube img,
+.build-psychube-blank {
+  width: 54px;
+  height: 64px;
+  object-fit: contain;
+  flex: none;
+  display: block;
+}
+
+/* A missing psychube still keeps the row's height, without a filled tile. */
+.build-psychube-blank {
+  border: 1px dashed rgba(181, 181, 179, 0.3);
+  box-sizing: border-box;
+}
+
+.build-psychube-name {
+  min-width: 0;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+/* Pattern and codes share the card, aligned to the same left edge. */
+.build-resonance-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.build-resonance-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* The label is the copy button for its code; no code is printed any more. */
+.build-resonance-btn {
+  flex: 1 1 88px;
+  font: inherit;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  height: 32px;
+  padding: 0 14px;
+  color: #fff;
+  background: #D05126;
+  border: 1px solid #E9853F;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.build-resonance-btn:hover { background: #ED7D31; border-color: #ED7D31; }
+
+.build-resonance-btn.is-copied {
+  background: #2f7d32;
+  border-color: #2f7d32;
+}
+
+.build-pattern {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.build-pattern img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex: none;
+  display: block;
+}
+
+.build-pattern-name {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Notes close the panel as a callout, not as another boxed section. */
+.build-notes-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 11px 14px;
+  border-left: 2px solid rgba(237, 125, 49, 0.65);
+  background: rgba(208, 81, 38, 0.08);
+}
+
+.build-notes-label {
+  flex: none;
+  padding-top: 2px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ED7D31;
+}
+
+.build-notes {
+  margin: 0;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.65;
+  color: #D6D1C8;
+  white-space: pre-wrap;
+}
+
+/* A narrow detail pane stacks the chart over the loadout cards. */
+@media (max-width: 980px) {
+  .builds-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ================= SKILL ROTATIONS ================= */
+
+#rotations-modal { z-index: 1000; }
+
+.rotations-modal-card {
+  max-width: 1320px;
+  width: 100%;
+  height: min(90vh, 860px);
+}
+
+.rotations-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.rotations-header-tools .search-input {
+  width: 210px;
+  height: 30px;
+  font-size: 0.68rem;
+}
+
+.rotations-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ---- Collapsible rail: filters over the rotation list ---- */
+
+.rotations-rail {
+  flex: 0 0 320px;
+  min-width: 0;
+  display: flex;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.is-rail-collapsed .rotations-rail { display: none; }
+
+.rotations-rail-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rotations-rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rotations-rail-head-list { margin-top: 6px; }
+
+.rotations-clear {
+  font: inherit;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  color: #8f8a83;
+  background: none;
+  border: 1px solid rgba(181, 181, 179, 0.3);
+  cursor: pointer;
+}
+
+.rotations-clear:hover { color: #fff; border-color: #EBE3D7; }
+
+.rotations-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.rotation-filter {
+  font: inherit;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  color: #B5B5B3;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(181, 181, 179, 0.35);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.rotation-filter:hover { color: #fff; border-color: #EBE3D7; }
+
+.rotation-filter.is-active {
+  color: #fff;
+  border-color: #ED7D31;
+  background: rgba(208, 81, 38, 0.24);
+}
+
+/* Rotation cards reuse the Team Building card surface. */
+.rotations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.rotation-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px 11px 10px;
+  background: var(--team-card-bg);
+  border: 1px solid rgba(50, 60, 52, 0.35);
+  color: #1f1c19;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rotation-card:hover { border-color: #D05126; }
+
+.rotation-card.is-active {
+  border-color: #D05126;
+  box-shadow: inset 0 0 0 1px rgba(208, 81, 38, 0.55);
+}
+
+.rotation-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rotation-card-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.rotation-card-tuning {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex: none;
+  display: block;
+}
+
+.rotation-card-team {
+  display: flex;
+  gap: 4px;
+}
+
+.rotation-card-face {
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+  background: #2a2825;
+  border: 1px solid rgba(31, 28, 25, 0.25);
+  display: block;
+  flex: none;
+}
+
+.rotation-card-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rotation-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rotation-card-tag {
+  padding: 1px 6px;
+  border: 1px solid rgba(31, 28, 25, 0.35);
+  background: rgba(255, 255, 255, 0.28);
+  color: #2a2622;
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---- Detail pane ---- */
+
+.rotations-detail {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 20px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.rot-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.rot-hero-name {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 28px;
+  font-weight: normal;
+  color: #ECE5D9;
+}
+
+.rot-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rot-hero-tag {
+  padding: 3px 10px;
+  border: 1px solid #ED7D31;
+  background: rgba(208, 81, 38, 0.16);
+  color: #ED7D31;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rot-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rot-block .archetype-section-header { margin: 0; }
+
+.rot-tunings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rot-tuning {
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border: 1px solid rgba(181, 181, 179, 0.25);
+  background: rgba(0, 0, 0, 0.25);
+  opacity: 0.45;
+}
+
+.rot-tuning img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+}
+
+.rot-tuning-name {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.54rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #B5B5B3;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.rot-tuning.is-active {
+  opacity: 1;
+  border-color: #ED7D31;
+  background: rgba(208, 81, 38, 0.16);
+}
+
+.rot-tuning.is-active .rot-tuning-name { color: #ED7D31; }
+
+.rot-team {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rot-member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 7px;
+  border: 1px solid rgba(181, 181, 179, 0.3);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.rot-member-portrait {
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  background: #2a2825;
+  display: block;
+  flex: none;
+}
+
+.rot-member-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rot-member-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rot-member-name {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.74rem;
+  color: #ECE5D9;
+}
+
+.rot-member-chube {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  color: #8f8a83;
+}
+
+.rot-member-chube img {
+  width: 26px;
+  height: 31px;
+  object-fit: contain;
+  display: block;
+  flex: none;
+}
+
+/* ---- Rounds ---- */
+
+.rot-rounds {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rot-round {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+/* Round label and its note sit above the cards. */
+.rot-round-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rot-round-label {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ED7D31;
+}
+
+.rot-round-note {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.62rem;
+  color: #8f8a83;
+}
+
+/* A hairline separates the round label from its cards. */
+.rot-round-separator {
+  flex: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.16);
+  margin: -3px 0 0;
+}
+
+.rot-round-slots {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.rot-slot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  /* One shared height keeps every card on the same baseline. */
+  height: 116px;
+  box-sizing: border-box;
+  border: none;
+  background: none;
+}
+
+.rot-slot.is-empty {
+  width: 62px;
+  border: 1px dashed rgba(181, 181, 179, 0.16);
+}
+
+/* A text slot is a note chip the same size as one normal card. */
+.rot-slot.is-text {
+  width: 62px;
+  height: 81px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74, 119, 201, 0.2);
+  border: 1px solid rgba(122, 160, 224, 0.5);
+  box-sizing: border-box;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.52rem;
+  line-height: 1.35;
+  color: #C9D7EC;
+  text-align: center;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* Either/or: both cards shrink and overlap, so the pair reads as one slot
+   while the back card still peeks out from behind the front one. */
+.rot-slot.is-or { width: 72px; justify-content: flex-start; }
+.rot-or-stack { position: relative; width: 72px; height: 100%; }
+.rot-or-stack > .rot-card:not(.is-behind) { position: absolute; left: 0; bottom: 0; z-index: 2; }
+.rot-or-stack > .rot-card img { width: 44px; }
+.rot-card.is-behind {
+  position: absolute;
+  left: 27px;
+  bottom: 24px;
+  z-index: 1;
+  opacity: 0.95;
+  filter: brightness(0.7);
+}
+
+/* Every card keeps the same width; the height follows the art's aspect ratio. */
+.rot-card {
+  display: block;
+  flex: none;
+  position: relative;
+}
+
+.rot-card img {
+  width: 62px;
+  height: auto;
+  display: block;
+}
+
+/* A quarter-size (LB) card is drawn at a quarter of the normal area. */
+.rot-slot.is-lb { padding: 4px; }
+.rot-card.is-lb img { width: 31px; }
+
+.rot-or {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8f8a83;
+}
 
 /* ================= JSON MODAL ================= */
 
@@ -6698,101 +7699,3 @@ body.team-resizing * {
 
 .btn-icon-only .btn-reset-icon { width: 15px; height: 15px; }
 
-/* ================= RECOMMENDATION HINTS ================= */
-
-.setting-label-with-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.recommend-hint {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-  opacity: 0.75;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  flex: none;
-}
-
-.recommend-hint:hover { opacity: 1; transform: scale(1.1); }
-
-.recommend-hint img {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  display: block;
-}
-
-.recommend-hint[hidden] { display: none !important; }
-
-/* Popover sits under its label row, inside the setting group */
-.recommend-popover {
-  margin-top: 8px;
-  padding: 9px 11px;
-  border: 1px solid #ED7D31;
-  border-left-width: 3px;
-  background: #fdf6ec;
-  border-radius: 2px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  animation: recommendIn 0.14s ease-out;
-}
-
-.recommend-popover[hidden] { display: none !important; }
-
-@keyframes recommendIn {
-  from { opacity: 0; transform: translateY(-3px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.recommend-line {
-  margin: 0;
-  font-family: var(--mono-font);
-  font-size: 0.68rem;
-  line-height: 1.5;
-  color: #35302a;
-  word-break: break-word;
-}
-
-.recommend-line strong { color: #B4531E; font-weight: 700; }
-
-/* Named copy buttons for resonance codes */
-.recommend-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.recommend-copy {
-  font: inherit;
-  font-family: var(--mono-font);
-  font-size: 0.64rem;
-  letter-spacing: 0.03em;
-  padding: 4px 10px;
-  border: 1px solid #C98B5E;
-  border-radius: 2px;
-  background: #fff;
-  color: #7a3d12;
-  cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
-}
-
-.recommend-copy:hover { background: #ED7D31; border-color: #ED7D31; color: #fff; }
-.recommend-copy.is-copied { background: #2f7d32; border-color: #2f7d32; color: #fff; }
-
-.recommend-popover .recommend-label {
-  font-family: var(--main-font-family);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #8a6a4a;
-}

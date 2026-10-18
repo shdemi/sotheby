@@ -29,7 +29,11 @@ export const WRITABLE = [
   "name_map.json",
   "psychube_id.json",
   "team_archetypes.json",
-  "characters_recommendation.json",
+  "characters_progressions.json",
+  "guide_builds.json",
+  "guide_rotations.json",
+  "guide_skills.json",
+  "guide_cards.json",
 ];
 
 /** Files the editor reads but never writes. */

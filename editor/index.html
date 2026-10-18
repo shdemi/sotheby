@@ -21,7 +21,10 @@
     <button class="tab active" data-tab="characters" role="tab">Characters</button>
     <button class="tab" data-tab="psychubes" role="tab">Psychubes</button>
     <button class="tab" data-tab="teams" role="tab">Team Presets</button>
-    <button class="tab" data-tab="patterns" role="tab">Patterns &amp; Skins</button>
+
+    <button class="tab" data-tab="builds" role="tab">InfoBook</button>
+    <button class="tab" data-tab="rotations" role="tab">Rotations</button>
+    <button class="tab" data-tab="patterns" role="tab">Skins &amp; Naming</button>
     <button class="tab" data-tab="review" role="tab">Review<span class="badge" id="review-badge" hidden>0</span></button>
   </nav>
 
@@ -40,8 +43,7 @@
     <aside class="list" id="char-list">
       <div class="list-tools">
         <input type="search" id="char-search" placeholder="Search name, CN name, alias…" autocomplete="off">
-        <div class="list-filters" id="char-filters"></div>
-        <div class="list-count" id="char-count"></div>
+        <div class="list-filters" id="char-filters"></div>        <div class="list-count" id="char-count"></div>
       </div>
       <div class="list-body" id="char-list-body"></div>
     </aside>
@@ -103,6 +105,36 @@
         <p class="hint"><code>global_name_transfer.json</code> — a raw ArcanistMap name that should display as its canonical name.</p>
         <div id="transfer-editor"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ Builds ============ -->
+  <section class="pane" data-pane="builds">
+    <aside class="list" id="build-list">
+      <div class="list-tools">
+        <input type="search" id="build-search" placeholder="Search name, CN name, alias…" autocomplete="off">
+        <div class="list-filters" id="build-filters"></div>
+        <div class="list-count" id="build-count"></div>
+      </div>
+      <div class="list-body" id="build-list-body"></div>
+    </aside>
+    <div class="detail" id="build-detail">
+      <div class="empty">Select a character.</div>
+    </div>
+  </section>
+
+  <!-- ============ Rotations ============ -->
+  <section class="pane" data-pane="rotations">
+    <aside class="list" id="rotation-list">
+      <div class="list-tools">
+        <input type="search" id="rotation-search" placeholder="Search rotation, archetype, member…" autocomplete="off">
+        <div class="list-filters" id="rotation-filters"></div>
+        <div class="list-count" id="rotation-count"></div>
+      </div>
+      <div class="list-body" id="rotation-list-body"></div>
+    </aside>
+    <div class="detail" id="rotation-detail">
+      <div class="empty">Select a rotation.</div>
     </div>
   </section>
 

@@ -49,15 +49,15 @@
         </button>
       </div>
 
-      <!-- Controls Row B: Roster Stats & Tools Button -->
+      <!-- Controls Row B: Language, JSON / Reset, Roster Stats & Tools Button -->
       <div class="header-stats-row">
         <div class="lang-switcher lang-switcher-header" id="lang-switcher-header" role="group" aria-label="Language">
           <button type="button" class="lang-btn" data-lang="cn">CN</button>
           <button type="button" class="lang-btn" data-lang="vi">VI</button>
           <button type="button" class="lang-btn active" data-lang="en">EN</button>
         </div>
-        <button type="button" class="btn-team" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
-          <img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
+        <button class="btn btn-secondary" id="btn-json" title="Import or export JSON" data-i18n-title="toolbar.json">
+          <span data-i18n="toolbar.json">JSON</span>
         </button>
         <div class="stat-badge-wrap">
           <span class="stat-badge" id="roster-stat" style="cursor: pointer;">Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" /></span>
@@ -101,11 +101,17 @@
       </div>
 
       <div class="secondary-tools-group tools-data-group">
-        <button class="btn btn-secondary" id="btn-json" title="Import or export JSON" data-i18n-title="toolbar.json">
-          <span data-i18n="toolbar.json">JSON</span>
+        <button type="button" class="btn btn-secondary btn-team" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
+          <span data-i18n="toolbar.teams">Teams</span>
+          <img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
         </button>
-        <button class="btn btn-danger btn-icon-only" id="btn-reset-data" title="Reset all data" data-i18n-title="toolbar.reset" aria-label="Reset all data">
-          <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" />
+        <button type="button" class="btn btn-secondary btn-team" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
+          <span data-i18n="toolbar.builds">InfoBook</span>
+          <img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
+        </button>
+        <button type="button" class="btn btn-secondary btn-team" id="btn-rotations" title="Skill Rotations" data-i18n-title="rotations.title" aria-label="Skill Rotations" data-i18n-aria-label="rotations.title">
+          <span data-i18n="toolbar.rotations">Rotations</span>
+          <img src="images/random_icon/Rotation_icon.png" alt="" class="btn-team-icon" />
         </button>
       </div>
 
@@ -206,43 +212,25 @@
         <!-- Resonance (R1 - R15) -->
         <div class="setting-group" id="group-resonance">
           <div class="setting-label-row">
-            <div class="setting-label-with-hint">
-              <label class="setting-label"><span data-i18n="setting.resonance">Resonance / Reasoning</span></label>
-              <button type="button" class="recommend-hint" id="btn-rec-resonance" hidden aria-expanded="false" title="Recommended">
-                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
-              </button>
-            </div>
+            <label class="setting-label"><span data-i18n="setting.resonance">Resonance / Reasoning</span></label>
             <span class="setting-val-display" id="display-resonance">R10</span>
           </div>
-          <div class="recommend-popover" id="rec-popover-resonance" hidden></div>
           <input type="range" id="input-resonance" min="1" max="15" value="10" class="custom-slider" style="margin-top: 8px;" />
         </div>
 
         <div class="setting-group" id="group-pattern">
           <div class="setting-label-row">
-            <div class="setting-label-with-hint">
-              <label class="setting-label"><span data-i18n="opt.pattern">Pattern</span></label>
-              <button type="button" class="recommend-hint" id="btn-rec-pattern" hidden aria-expanded="false" title="Recommended">
-                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
-              </button>
-            </div>
+            <label class="setting-label"><span data-i18n="opt.pattern">Pattern</span></label>
           </div>
-          <div class="recommend-popover" id="rec-popover-pattern" hidden></div>
           <div class="shape-pattern-grid" id="shape-pattern-grid" aria-label="Pattern selection"></div>
         </div>
 
         <!-- Portrait (P0 - P5) -->
         <div class="setting-group" id="group-portrait">
           <div class="setting-label-row">
-            <div class="setting-label-with-hint">
-              <label class="setting-label"><span data-i18n="setting.portrait">Portrait</span></label>
-              <button type="button" class="recommend-hint" id="btn-rec-portrait" hidden aria-expanded="false" title="Recommended">
-                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
-              </button>
-            </div>
+            <label class="setting-label"><span data-i18n="setting.portrait">Portrait</span></label>
             <span class="setting-val-display" id="display-portrait">P0</span>
           </div>
-          <div class="recommend-popover" id="rec-popover-portrait" hidden></div>
           <div class="portrait-quick-picks">
             <button type="button" class="btn-pill-p" data-p="0">P0</button>
             <button type="button" class="btn-pill-p" data-p="1">P1</button>
@@ -251,19 +239,6 @@
             <button type="button" class="btn-pill-p" data-p="4">P4</button>
             <button type="button" class="btn-pill-p" data-p="5">P5</button>
           </div>
-        </div>
-
-        <!-- Psychube recommendation (character-level; the app has no per-character psychube field) -->
-        <div class="setting-group" id="group-rec-psychube">
-          <div class="setting-label-row">
-            <div class="setting-label-with-hint">
-              <label class="setting-label"><span data-i18n="setting.psychubeRecommend">Psychube</span></label>
-              <button type="button" class="recommend-hint" id="btn-rec-psychube" hidden aria-expanded="false" title="Recommended">
-                <img src="images/random_icon/explanation_sign_icon.png" alt="" />
-              </button>
-            </div>
-          </div>
-          <div class="recommend-popover" id="rec-popover-psychube" hidden></div>
         </div>
 
         <!-- Euphoria (E1, E2) -->
@@ -1166,13 +1141,16 @@
         <button class="modal-close" id="roster-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
 
-      <!-- Characters / Psychubes switch -->
+      <!-- Characters / Psychubes switch (Reset sits at the far right) -->
       <div class="manage-tabs" role="tablist" aria-label="Manage">
         <button type="button" class="manage-tab active" id="manage-tab-characters" role="tab" aria-selected="true" data-manage-tab="characters">
           <span data-i18n="toolbar.manageCharacters">Characters</span>
         </button>
         <button type="button" class="manage-tab" id="manage-tab-chubes" role="tab" aria-selected="false" data-manage-tab="chubes">
           <span data-i18n="toolbar.chubes">Psychubes</span>
+        </button>
+        <button type="button" class="btn btn-danger btn-icon-only manage-reset" id="btn-roster-reset" title="Reset roster and psychubes" data-i18n-title="toolbar.resetAll" aria-label="Reset roster and psychubes">
+          <img src="images/random_icon/reset_png.png" alt="" class="btn-reset-icon" />
         </button>
       </div>
 
@@ -1233,6 +1211,86 @@
 
       <div class="roster-grid manage-panel" id="chubes-grid-list" data-manage-panel="chubes" hidden>
         <!-- Will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Character Build Recommendations Modal -->
+  <div id="builds-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card builds-modal-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="builds.title">InfoBook</span></h2>
+        <button class="modal-close" id="builds-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+
+      <div class="builds-body">
+        <aside class="builds-rail">
+          <div class="builds-rail-tools">
+            <input type="text" id="builds-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
+            <div class="filter-btn-group builds-rarity-group" id="builds-rarity-group" role="group" aria-label="Rarity">
+              <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+              <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+              <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+              <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+              <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+            </div>
+            <div class="builds-afflatus-group" id="builds-afflatus-group" role="group" aria-label="Afflatus">
+              <button type="button" class="builds-afflatus-btn" data-afflatus="Beast" title="Beast"><img src="images/tag_afflatus/Beast_Icon.webp" alt="Beast" /></button>
+              <button type="button" class="builds-afflatus-btn" data-afflatus="Plant" title="Plant"><img src="images/tag_afflatus/Plant_Icon.webp" alt="Plant" /></button>
+              <button type="button" class="builds-afflatus-btn" data-afflatus="Star" title="Star"><img src="images/tag_afflatus/star_icon.webp" alt="Star" /></button>
+              <button type="button" class="builds-afflatus-btn" data-afflatus="Mineral" title="Mineral"><img src="images/tag_afflatus/mineral_Icon.webp" alt="Mineral" /></button>
+              <button type="button" class="builds-afflatus-btn" data-afflatus="Spirit" title="Spirit"><img src="images/tag_afflatus/Spirit_Icon.webp" alt="Spirit" /></button>
+              <button type="button" class="builds-afflatus-btn" data-afflatus="Intellect" title="Intellect"><img src="images/tag_afflatus/intellect_icon.webp" alt="Intellect" /></button>
+            </div>
+          </div>
+          <div class="builds-list" id="builds-list">
+            <!-- Populated dynamically -->
+          </div>
+          <div class="builds-rail-footer">
+            <span class="builds-count" id="builds-count"></span>
+          </div>
+        </aside>
+
+        <div class="builds-detail" id="builds-detail">
+          <div class="guide-empty"><span data-i18n="builds.select">Select a character to see its build recommendations.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skill Rotations Modal -->
+  <div id="rotations-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card rotations-modal-card" id="rotations-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="rotations.title">Skill Rotations</span></h2>
+        <div class="rotations-header-tools">
+          <input type="text" id="rotations-search" class="search-input" data-i18n-placeholder="rotations.search" placeholder="Search Rotations" />
+          <button type="button" class="btn btn-secondary btn-sm" id="rotations-rail-toggle" aria-expanded="true" aria-controls="rotations-rail">
+            <span class="rotations-rail-toggle-text" data-i18n="rotations.hideList">Hide list</span>
+          </button>
+          <button class="modal-close" id="rotations-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        </div>
+      </div>
+
+      <div class="rotations-body">
+        <aside class="rotations-rail" id="rotations-rail">
+          <div class="rotations-rail-scroll">
+            <div class="rotations-rail-head">
+              <span class="archetype-section-title"><span data-i18n="rotations.filters">Filters</span></span>
+              <button type="button" class="rotations-clear" id="rotations-clear-filters"><span data-i18n="rotations.clear">Clear</span></button>
+            </div>
+            <div class="rotations-filters" id="rotations-filters" role="group" aria-label="Archetype"></div>
+
+            <div class="rotations-rail-head rotations-rail-head-list">
+              <span class="archetype-section-title"><span data-i18n="rotations.list">Rotations</span></span>
+            </div>
+            <div class="rotations-list" id="rotations-list"></div>
+          </div>
+        </aside>
+
+        <div class="rotations-detail" id="rotations-detail">
+          <div class="guide-empty"><span data-i18n="rotations.select">Select a rotation to see its card plan.</span></div>
+        </div>
       </div>
     </div>
   </div>

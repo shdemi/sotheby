@@ -398,6 +398,37 @@ console.log("\n=== reorderProperty ===");
   check("an unknown key is a no-op", doc4.reorderProperty([], "No Such Preset", 1) === false);
 }
 
+console.log("\n=== reorderAt ===");
+{
+  const original = read("team_archetypes.json");
+  const doc = new JsonDoc(original);
+  const preset = Object.keys(doc.value).find((k) => Array.isArray(doc.value[k][0]) && doc.value[k][0].length >= 2);
+  check("a preset with two members is available", typeof preset === "string", String(preset));
+
+  const before = doc.value[preset][0].map((m) => m.character);
+  const moved = doc.reorderAt([preset, 0], 0, 1);
+  check("reorder reports a change", moved === true);
+  const after = doc.toString();
+  check("reordered file is valid JSON", parses(after));
+
+  const afterNames = JSON.parse(after)[preset][0].map((m) => m.character);
+  check("the first two members swapped", afterNames[0] === before[1] && afterNames[1] === before[0], JSON.stringify(afterNames.slice(0, 2)));
+  check("no member was lost", afterNames.length === before.length, `${before.length} -> ${afterNames.length}`);
+
+  doc.reorderAt([preset, 0], 1, 0);
+  check("moving it back is byte-identical", doc.toString() === original, "differs");
+
+  const doc2 = new JsonDoc(original);
+  check("reordering to the same index is a no-op", doc2.reorderAt([preset, 0], 0, 0) === false);
+  check("and it did not change the text", doc2.toString() === original);
+
+  const doc3 = new JsonDoc(original);
+  check("an out-of-range source is a no-op", doc3.reorderAt([preset, 0], 99, 0) === false);
+  doc3.reorderAt([preset, 0], 0, 999);
+  const clamped = JSON.parse(doc3.toString())[preset][0].map((m) => m.character);
+  check("an out-of-range target clamps to the end", clamped[clamped.length - 1] === before[0], JSON.stringify(clamped.slice(-2)));
+}
+
 console.log("\n=== reorderProperty on a nested object ===");
 {
   const original = read("psychube_id.json");

@@ -101,6 +101,42 @@ const readSegs = () =>
 const readBadge = () => page.evaluate(() => document.getElementById("review-badge").textContent);
 const readSave = () => page.evaluate(() => document.getElementById("btn-save").textContent);
 
+/** Character names of the slots in the first variant card. */
+const readFirstVariant = () =>
+  page.evaluate(() => {
+    const card = document.querySelector("#team-detail .card");
+    if (!card) return [];
+    // Each slot has a character cell and a psychube cell; both use .sub-pick.
+    // The character one is the cell whose focus key ends in "-char".
+    return [...card.querySelectorAll(".slot")].map(
+      (slot) => slot.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
+    );
+  });
+
+/**
+ * Simulates an HTML5 drag of a slot handle onto another slot. `below` picks the
+ * drop half, which decides whether the member lands after the target.
+ */
+const dragSlot = (fromIndex, toIndex, below) =>
+  page.evaluate(
+    ({ fromIndex, toIndex, below }) => {
+      const card = document.querySelector("#team-detail .card");
+      const slots = [...card.querySelectorAll(".slot")];
+      const source = slots[fromIndex].querySelector(".slot-handle");
+      const target = slots[toIndex];
+      const data = new DataTransfer();
+      const rect = target.getBoundingClientRect();
+      const clientY = below ? rect.top + rect.height * 0.75 : rect.top + rect.height * 0.25;
+      const fire = (node, type) =>
+        node.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: data, clientY }));
+      fire(source, "dragstart");
+      fire(target, "dragover");
+      fire(target, "drop");
+      fire(source, "dragend");
+    },
+    { fromIndex, toIndex, below }
+  );
+
 try {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(BASE, { waitUntil: "networkidle" });
@@ -135,6 +171,32 @@ try {
   check("clicking – clears it", (await readSegs())[0] === "–*E1E2", (await readSegs())[0]);
   check("and the file is clean again", (await readBadge()) === "0", await readBadge());
   check("and the button goes back to idle", (await readSave()) === "Download changes", await readSave());
+
+  /* ------------------------------------------------------------------ *
+   * 1b. Dragging a member reorders its variant
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== dragging a member reorders the variant ===");
+  const namesBefore = await readFirstVariant();
+  check("the first variant has at least two members", namesBefore.length >= 2, JSON.stringify(namesBefore));
+  check("the first member starts first", namesBefore[0] === "The Twins", JSON.stringify(namesBefore));
+
+  await dragSlot(0, 1, true);
+  await page.waitForTimeout(700);
+  const namesAfter = await readFirstVariant();
+  check(
+    "the first member moved below the second",
+    namesAfter[0] === namesBefore[1] && namesAfter[1] === namesBefore[0],
+    JSON.stringify(namesAfter.slice(0, 2))
+  );
+  check("no member was lost", namesAfter.length === namesBefore.length, `${namesBefore.length} -> ${namesAfter.length}`);
+  check("and the file is dirty", (await readBadge()) === "1", await readBadge());
+
+  await dragSlot(1, 0, false);
+  await page.waitForTimeout(700);
+  const namesBack = await readFirstVariant();
+  check("dragging it back restores the order", JSON.stringify(namesBack) === JSON.stringify(namesBefore), JSON.stringify(namesBack.slice(0, 2)));
+  check("and the file is clean again", (await readBadge()) === "0", await readBadge());
 
   /* ------------------------------------------------------------------ *
    * 2. Other slot controls re-render too
@@ -241,25 +303,31 @@ try {
     await page.waitForTimeout(2500);
 
     const toolbar = await page.evaluate(() => {
-      const reset = document.getElementById("btn-reset-data");
+      const reset = document.getElementById("btn-roster-reset");
+      const tabs = document.querySelector(".manage-tabs");
       return {
         manageButtons: [...document.querySelectorAll("#btn-manage-all, #btn-chubes")].map((b) => b.id),
         jsonButtons: [...document.querySelectorAll("#btn-json, #btn-export-data")].map((b) => b.id),
         resetText: (reset?.textContent ?? "").trim(),
-        resetHasIcon: !!document.querySelector("#btn-reset-data .btn-reset-icon"),
+        resetHasIcon: !!document.querySelector("#btn-roster-reset .btn-reset-icon"),
+        resetInTabs: !!reset && reset.parentElement === tabs,
+        resetIsLast: !!reset && tabs.lastElementChild === reset,
+        resetOutsideToolbar: !document.getElementById("btn-reset-data"),
       };
     });
     check("only one Manage button exists", toolbar.manageButtons.join(",") === "btn-manage-all", toolbar.manageButtons.join(","));
     check("only one JSON button exists", toolbar.jsonButtons.join(",") === "btn-json", toolbar.jsonButtons.join(","));
     check("Reset is icon-only", toolbar.resetText === "" && toolbar.resetHasIcon, JSON.stringify(toolbar.resetText));
+    check("Reset lives in the Manage tab row, right of the tabs", toolbar.resetInTabs && toolbar.resetIsLast, JSON.stringify(toolbar));
+    check("the old toolbar Reset is gone", toolbar.resetOutsideToolbar);
 
     await page.locator("#btn-manage-all").click();
     await page.waitForTimeout(900);
 
     const opened = await page.evaluate(() => ({
       open: getComputedStyle(document.getElementById("roster-modal")).display,
-      tabs: [...document.querySelectorAll(".manage-tab")].map((b) => b.textContent.trim()),
-      active: document.querySelector(".manage-tab.active")?.dataset.manageTab,
+      tabs: [...document.querySelectorAll("#roster-modal .manage-tab")].map((b) => b.textContent.trim()),
+      active: document.querySelector("#roster-modal .manage-tab.active")?.dataset.manageTab,
       charVisible: !document.getElementById("roster-grid-list").hidden,
       chubeVisible: !document.getElementById("chubes-grid-list").hidden,
       charItems: document.querySelectorAll("#roster-grid-list .roster-char-item").length,
@@ -273,7 +341,7 @@ try {
     await page.locator('.manage-tab[data-manage-tab="chubes"]').click();
     await page.waitForTimeout(700);
     const switched = await page.evaluate(() => ({
-      active: document.querySelector(".manage-tab.active")?.dataset.manageTab,
+      active: document.querySelector("#roster-modal .manage-tab.active")?.dataset.manageTab,
       charVisible: !document.getElementById("roster-grid-list").hidden,
       chubeVisible: !document.getElementById("chubes-grid-list").hidden,
       chubeItems: document.querySelectorAll("#chubes-grid-list > *").length,
@@ -303,8 +371,8 @@ try {
     /* The two tabs look deliberately different, and an earlier unscoped rule
        made the character tiles inherit the psychube layout. */
     const styling = await page.evaluate(() => {
-      const active = getComputedStyle(document.querySelector(".manage-tab.active"));
-      const idleEl = [...document.querySelectorAll(".manage-tab")].find((b) => !b.classList.contains("active"));
+      const active = getComputedStyle(document.querySelector("#roster-modal .manage-tab.active"));
+      const idleEl = [...document.querySelectorAll("#roster-modal .manage-tab")].find((b) => !b.classList.contains("active"));
       const idle = idleEl ? getComputedStyle(idleEl) : null;
       const box = (el) => {
         if (!el) return null;
@@ -410,98 +478,182 @@ try {
   }
 
   /* ------------------------------------------------------------------ *
-   * 10. Build recommendations in the character modal
+   * 10. Builds and Rotations are separate, read-only reference modals
    * ------------------------------------------------------------------ */
 
-  console.log("\n=== recommendation hints in the character modal ===");
+  console.log("\n=== the character modal no longer carries build recommendations ===");
   {
-    // Give the first character that has a recommendation an owned roster entry.
-    const recName = await page.evaluate(async () => {
-      const res = await fetch("data/characters_recommendation.json", { cache: "no-store" });
-      const data = await res.json();
-      return Object.keys(data)[0] || null;
+    const removed = await page.evaluate(() => ({
+      hints: document.querySelectorAll(".recommend-hint").length,
+      popovers: document.querySelectorAll(".recommend-popover").length,
+      psychubeGroup: !!document.getElementById("group-rec-psychube"),
+    }));
+    check("no recommendation hint buttons remain", removed.hints === 0, String(removed.hints));
+    check("no recommendation popovers remain", removed.popovers === 0, String(removed.popovers));
+    check("the psychube recommendation group is gone", !removed.psychubeGroup, String(removed.psychubeGroup));
+  }
+
+  console.log("\n=== the toolbar carries Builds and Rotations instead of Guide ===");
+  {
+    await page.goto(APP, { waitUntil: "networkidle" });
+    await page.waitForTimeout(2200);
+
+    const toolbar = await page.evaluate(() => {
+      const group = document.querySelector(".tools-data-group");
+      return {
+        order: [...group.children].map((el) => el.id),
+        labels: [...group.children].map((el) => el.textContent.trim()),
+        guideGone: !document.getElementById("btn-guide") && !document.getElementById("guide-modal"),
+      };
     });
-    check("characters_recommendation.json has an entry", !!recName, String(recName));
+    check("the data group is Teams → Builds → Rotations", toolbar.order.join(",") === "btn-team,btn-builds,btn-rotations", JSON.stringify(toolbar.order));
+    check("Builds and Rotations are labelled", toolbar.labels.join(",") === "Teams,InfoBook,Rotations", JSON.stringify(toolbar.labels));
+    check("the old Guide button and modal are gone", toolbar.guideGone);
+  }
 
-    if (recName) {
-      await page.evaluate((name) => {
-        localStorage.setItem(
-          "r1999_character_roster_v2",
-          JSON.stringify({
-            [name]: { owned: true, insight: 3, level: 60, resonance: 10, portrait: 0, e1: false, e2: false, skin: "", patterns: [], patternMain: "", boxKind: "", favourite: false },
-          })
-        );
-      }, recName);
-      await page.reload({ waitUntil: "networkidle" });
-      await page.waitForTimeout(2200);
+  console.log("\n=== InfoBook: all characters, filters, build panel ===");
+  {
+    await page.goto(APP, { waitUntil: "networkidle" });
+    await page.evaluate(() => localStorage.setItem("r1999_character_roster_v2", JSON.stringify({ "Lorentz Butterfly": { owned: true } })));
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(2200);
 
-      await page.evaluate((name) => {
-        const card = [...document.querySelectorAll(".char-card")].find((c) => c.querySelector(".ct-name")?.textContent === name);
-        if (card) card.querySelector(".char-avatar-box")?.click() ?? card.click();
-      }, recName);
-      await page.waitForTimeout(900);
+    await page.locator("#btn-builds").click();
+    await page.waitForTimeout(600);
 
-      const hints = await page.evaluate(() => ({
-        open: document.getElementById("edit-modal").style.display !== "none",
-        name: document.getElementById("modal-char-name")?.textContent,
-        visible: [...document.querySelectorAll(".recommend-hint")].filter((b) => !b.hidden).map((b) => b.id),
-      }));
-      check("the character modal opened", hints.open, String(hints.open));
-      check("the recommendation hints are shown", hints.visible.length > 0, JSON.stringify(hints.visible));
+    const listed = await page.evaluate(() => ({
+      rows: document.querySelectorAll(".builds-row").length,
+      hasUnownedToggle: !!document.getElementById("builds-show-unowned"),
+    }));
+    check("it lists every character without an ownership filter", listed.rows > 100, String(listed.rows));
+    check("the Show Unowned toggle is gone", !listed.hasUnownedToggle);
+    await page.waitForTimeout(700);
 
-      // Resonance: one copy button per named code.
-      const resHint = await page.evaluate(() => !!document.getElementById("btn-rec-resonance") && !document.getElementById("btn-rec-resonance").hidden);
-      if (resHint) {
-        await page.evaluate(() => document.getElementById("btn-rec-resonance").click());
-        await page.waitForTimeout(400);
-        const popover = await page.evaluate(() => {
-          const p = document.getElementById("rec-popover-resonance");
-          return {
-            hidden: p.hidden,
-            copyButtons: [...p.querySelectorAll(".recommend-copy")].map((b) => b.textContent.trim()),
-            expanded: document.getElementById("btn-rec-resonance").getAttribute("aria-expanded"),
-          };
-        });
-        check("clicking the hint opens the popover", !popover.hidden);
-        check("it offers one copy button per code", popover.copyButtons.length > 0, JSON.stringify(popover.copyButtons));
-        check("aria-expanded is set", popover.expanded === "true", String(popover.expanded));
+    const opened = await page.evaluate(() => {
+      const modal = document.getElementById("builds-modal");
+      const card = modal.querySelector(".builds-modal-card");
+      const rows = [...document.querySelectorAll(".builds-row")];
+      return {
+        open: getComputedStyle(modal).display,
+        rows: rows.length,
+        rarityFilters: document.querySelectorAll("#builds-rarity-group .filter-btn").length,
+        afflatusFilters: document.querySelectorAll("#builds-afflatus-group .builds-afflatus-btn").length,
+        hasSearch: !!document.getElementById("builds-search"),
+        width: Math.round(card.getBoundingClientRect().width),
+        maxWidth: getComputedStyle(card).maxWidth,
+        teamMaxWidth: getComputedStyle(document.querySelector(".team-modal-card")).maxWidth,
+        hero: document.querySelector(".builds-hero-name")?.textContent || "",
+        title: document.querySelector("#builds-modal .archetype-modal-title")?.textContent.trim() || "",
+      };
+    });
+    check("the Builds modal opens", opened.open === "flex", opened.open);
+    check("it lists the whole roster", opened.rows > 100, String(opened.rows));
+    check("the modal title is InfoBook", opened.title === "InfoBook", opened.title);
+    check("it has a search box", opened.hasSearch);
+    check("it has five rarity filters", opened.rarityFilters === 5, String(opened.rarityFilters));
+    check("it has six afflatus filters", opened.afflatusFilters === 6, String(opened.afflatusFilters));
+    check("the card is at least as wide as the Team Building modal", parseInt(opened.maxWidth, 10) >= parseInt(opened.teamMaxWidth, 10), `${opened.maxWidth} vs ${opened.teamMaxWidth}`);
+    check("it opens on a character that has a build", opened.hero.length > 0, opened.hero);
 
-        await page.evaluate(() => document.querySelector("#rec-popover-resonance .recommend-copy").click());
-        await page.waitForTimeout(400);
-        const copied = await page.evaluate(() => {
-          const b = document.querySelector("#rec-popover-resonance .recommend-copy");
-          return { text: b.textContent, marked: b.classList.contains("is-copied") };
-        });
-        check("clicking a copy button confirms the copy", copied.text === "Copied!" && copied.marked, JSON.stringify(copied));
+    const detail = await page.evaluate(() => ({
+      sections: [...document.querySelectorAll(".build-section-title")].map((e) => e.textContent.trim()),
+      tags: document.querySelectorAll(".build-tag").length,
+      bars: document.querySelectorAll(".build-chart-bar").length,
+      psychubes: document.querySelectorAll(".build-psychube").length,
+      psychubeImgs: [...document.querySelectorAll(".build-psychube img")].filter((i) => i.naturalWidth > 0).length,
+      psychubeBorder: (() => {
+        const el = document.querySelector(".build-psychube");
+        return el ? getComputedStyle(el).borderTopWidth : null;
+      })(),
+      resonanceBtns: document.querySelectorAll(".build-resonance-btn").length,
+      patternIcon: !!document.querySelector(".build-pattern img"),
+    }));
+    check("the build shows all of its sections", detail.sections.length >= 3, JSON.stringify(detail.sections));
+    check("the tags render", detail.tags > 0, String(detail.tags));
+    check("the portrait value chart is drawn", detail.bars > 0, String(detail.bars));
+    check("the psychubes are listed", detail.psychubes > 0, String(detail.psychubes));
+    check("the psychube icons load", detail.psychubeImgs === detail.psychubes, `${detail.psychubeImgs}/${detail.psychubes}`);
+    check("the psychube entry has no border", detail.psychubeBorder === "0px", String(detail.psychubeBorder));
+    check("the resonance label is a button", detail.resonanceBtns > 0, String(detail.resonanceBtns));
+    check("the pattern shows its icon", detail.patternIcon);
 
-        // Opening another popover closes this one.
-        await page.evaluate(() => {
-          const other = document.getElementById("btn-rec-portrait") || document.getElementById("btn-rec-pattern");
-          if (other && !other.hidden) other.click();
-        });
-        await page.waitForTimeout(400);
-        const closed = await page.evaluate(() => document.getElementById("rec-popover-resonance").hidden);
-        check("opening another hint closes the first", closed);
-      }
+    await page.evaluate(() => document.querySelector(".build-resonance-btn").click());
+    await page.waitForTimeout(350);
+    const copied = await page.evaluate(() => {
+      const b = document.querySelector(".build-resonance-btn");
+      return { text: b.textContent.trim(), marked: b.classList.contains("is-copied") };
+    });
+    check("clicking the resonance label copies its code", copied.marked, JSON.stringify(copied));
 
-      // The text popovers.
-      const textPopovers = await page.evaluate(() => {
-        const out = {};
-        for (const f of ["pattern", "portrait", "psychube"]) {
-          const btn = document.getElementById("btn-rec-" + f);
-          const pop = document.getElementById("rec-popover-" + f);
-          if (!btn || btn.hidden) continue;
-          out[f] = pop.textContent.trim();
-        }
-        return out;
-      });
-      if (textPopovers.pattern) check("the pattern popover names the pattern", /Recommended Pattern/i.test(textPopovers.pattern), textPopovers.pattern);
-      if (textPopovers.portrait) check("the portrait popover names the portrait", /Recommended Portrait/i.test(textPopovers.portrait), textPopovers.portrait);
-      if (textPopovers.psychube) check("the psychube popover lists a psychube", /Recommended Psychube/i.test(textPopovers.psychube), textPopovers.psychube);
+    const before = await page.evaluate(() => document.querySelectorAll(".builds-row").length);
+    await page.locator('#builds-rarity-group .filter-btn[data-rarity="6"]').click();
+    await page.waitForTimeout(350);
+    const afterRarity = await page.evaluate(() => document.querySelectorAll(".builds-row").length);
+    check("the rarity filter narrows the list", afterRarity < before && afterRarity > 0, `${before} → ${afterRarity}`);
 
-      await page.evaluate(() => document.getElementById("modal-btn-close").click());
-      await page.waitForTimeout(400);
-    }
+    await page.locator('#builds-afflatus-group .builds-afflatus-btn[data-afflatus="Star"]').click();
+    await page.waitForTimeout(350);
+    const afterAfflatus = await page.evaluate(() => document.querySelectorAll(".builds-row").length);
+    check("the afflatus filter narrows it further", afterAfflatus <= afterRarity, `${afterRarity} → ${afterAfflatus}`);
+
+    await page.locator('#builds-afflatus-group .builds-afflatus-btn[data-afflatus="Star"]').click();
+    await page.locator('#builds-rarity-group .filter-btn[data-rarity="6"]').click();
+    await page.waitForTimeout(350);
+
+    await page.evaluate(() => document.getElementById("builds-btn-close").click());
+    await page.waitForTimeout(400);
+  }
+
+  console.log("\n=== Rotations: archetype filters, search and the turn plan ===");
+  {
+    await page.locator("#btn-rotations").click();
+    await page.waitForTimeout(700);
+
+    const opened = await page.evaluate(() => {
+      const modal = document.getElementById("rotations-modal");
+      return {
+        open: getComputedStyle(modal).display,
+        filters: [...document.querySelectorAll(".rotation-filter")].map((b) => b.dataset.tag),
+        hasSearch: !!document.getElementById("rotations-search"),
+        cards: document.querySelectorAll(".rotation-card").length,
+        turns: document.querySelectorAll(".rot-round").length,
+        slots: document.querySelectorAll(".rot-slot").length,
+        filled: [...document.querySelectorAll(".rot-card img")].filter((i) => i.naturalWidth > 0).length,
+        team: document.querySelectorAll(".rot-member").length,
+        cardText: [...document.querySelectorAll(".rotation-card")].map((c) => c.textContent.replace(/\s+/g, " ").trim()),
+      };
+    });
+    check("the Rotations modal opens", opened.open === "flex", opened.open);
+    check("it offers the 13 archetype filters", opened.filters.length === 13, JSON.stringify(opened.filters));
+    check("it has a search box", opened.hasSearch);
+    check("the rotation list is populated", opened.cards > 0, String(opened.cards));
+    check("the card plan renders its rounds", opened.turns > 0, String(opened.turns));
+    check("each round has card slots", opened.slots > 0, String(opened.slots));
+    check("the skill cards load", opened.filled > 0, String(opened.filled));
+    check("the rotation names its team", opened.team > 0, String(opened.team));
+    check("a card never prints the member names", opened.cardText.every((text) => !/isolde|kakania|regulus/i.test(text)), JSON.stringify(opened.cardText));
+
+    await page.evaluate(() => document.querySelector('.rotation-filter[data-tag="Burn"]').click());
+    await page.waitForTimeout(350);
+    const burn = await page.evaluate(() => document.querySelectorAll(".rotation-card").length);
+    check("an unmatched archetype filter empties the list", burn === 0, String(burn));
+
+    await page.evaluate(() => document.querySelector('.rotation-filter[data-tag="Burn"]').click());
+    await page.waitForTimeout(350);
+    const back = await page.evaluate(() => document.querySelectorAll(".rotation-card").length);
+    check("clearing the filter restores the list", back > 0, String(back));
+
+    await page.evaluate(() => {
+      const input = document.getElementById("rotations-search");
+      input.value = "zzzz";
+      input.dispatchEvent(new Event("input"));
+    });
+    await page.waitForTimeout(350);
+    const none = await page.evaluate(() => document.querySelectorAll(".rotation-card").length);
+    check("the search filters the list", none === 0, String(none));
+
+    await page.evaluate(() => document.getElementById("rotations-btn-close").click());
+    await page.waitForTimeout(400);
   }
 
   /* ------------------------------------------------------------------ *
