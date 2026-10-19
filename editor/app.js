@@ -8,7 +8,7 @@
  * The editor only rewrites the ranges it changes (see json-patch.js), so an
  * untouched file is never modified and a one-field edit is a one-line diff.
  */
-import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, GUIDE_ICON_TAGS, GUIDE_TAG_GROUPS, TUNINGS, validate, readNameTables, diffHunks } from "./model.js";
+import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, TUNINGS, validate, readNameTables, diffHunks } from "./model.js";
 import * as files from "./files.js";
 import * as icons from "./icons.js";
 
@@ -1760,13 +1760,6 @@ function addTransferFlow() {
  * Builds — per-character build data (guide_builds.json)
  * ------------------------------------------------------------------ */
 
-/** Icon tags: the two damage types and the six afflatus. */
-const BUILD_ICON_TAGS = GUIDE_ICON_TAGS;
-
-function buildIconTag(label) {
-  return BUILD_ICON_TAGS.find((tag) => tag.label.toLowerCase() === String(label || "").toLowerCase()) || null;
-}
-
 /** Characters that already have an entry in guide_builds.json. */
 function buildNames() {
   return new Set(Object.keys(state.model.guideBuilds()));
@@ -1892,9 +1885,6 @@ function renderBuildDetail() {
 
   const c = model.character(name);
   const build = model.guideBuild(name) || {};
-  const tags = (Array.isArray(build.tags) ? build.tags : [])
-    .map((tag) => (typeof tag === "string" ? tag : tag && tag.label))
-    .filter(Boolean);
   const psychubes = Array.isArray(build.psychubes) ? build.psychubes : [];
 
   host.appendChild(
@@ -1906,52 +1896,6 @@ function renderBuildDetail() {
       ]),
     ])
   );
-
-  /* --- tags, grouped --- */
-  const tagCard = el("div", { class: "card" }, [
-    el("h2", { text: "Tags" }),
-    el("p", { class: "hint", text: "Click a tag to add or remove it. Reality/Mental and the six afflatus show an icon in the app." }),
-  ]);
-
-  const commitTags = (next) => {
-    model.setGuideBuildField(name, "tags", next);
-    afterEdit({ list: false });
-  };
-
-  for (const group of GUIDE_TAG_GROUPS) {
-    const row = el("div", { class: "pick" });
-    for (const tag of group.tags) {
-      const active = tags.includes(tag);
-      const iconTag = buildIconTag(tag);
-      row.appendChild(
-        el("button", {
-          class: `chip${active ? " on" : ""}${iconTag ? " chip-icon" : ""}`,
-          title: tag,
-          onclick: () => commitTags(active ? tags.filter((t) => t !== tag) : [...tags, tag]),
-        }, [
-          iconTag ? el("img", { src: `../${iconTag.icon}`, alt: "" }) : null,
-          el("span", { text: tag }),
-        ])
-      );
-    }
-    tagCard.appendChild(el("div", { class: "field" }, [el("label", { class: "field-label", text: group.label }), row]));
-  }
-
-  const unknown = tags.filter((tag) => !GUIDE_TAG_GROUPS.some((group) => group.tags.includes(tag)));
-  if (unknown.length) {
-    const row = el("div", { class: "pick" });
-    for (const tag of unknown) {
-      row.appendChild(
-        el("button", {
-          class: "chip on",
-          title: "Remove this tag",
-          onclick: () => commitTags(tags.filter((t) => t !== tag)),
-        }, [el("span", { text: tag }), el("span", { class: "chip-x", text: "×" })])
-      );
-    }
-    tagCard.appendChild(el("div", { class: "field" }, [el("label", { class: "field-label", text: "Other" }), row]));
-  }
-  host.appendChild(tagCard);
 
   /* --- psychubes: two slots --- */
   const chubeCard = el("div", { class: "card" }, [
@@ -2075,42 +2019,114 @@ function renderBuildDetail() {
   }
   host.appendChild(patternCard);
 
-  /* --- portrait value chart: editable for every character --- */
-  const progression = model.progression(name);
+  /* --- portrait value charts: any number, each with an editable title --- */
+  const charts = model.progressionCharts(name);
   const chartCard = el("div", { class: "card" }, [
-    el("h2", { text: "Portrait value bar chart" }),
-    el("p", { class: "hint", text: "From characters_progressions.json — the percentage drawn above each bar." }),
+    el("h2", { text: "Portrait value charts" }),
+    el("p", {
+      class: "hint",
+      text: "From characters_progressions.json. Each chart has a title and its own bars; an untitled chart shows as “Chart N” in the app.",
+    }),
   ]);
-  if (progression.length === 0) {
+
+  const commitCharts = (fn) => {
+    fn();
+    afterEdit({ list: false });
+  };
+
+  if (charts.length === 0) {
     chartCard.appendChild(
       el("div", { class: "field-row" }, [
         el("span", { class: "field-note", text: "This character has no progression data yet." }),
         el("button", {
           class: "btn btn-sm",
           text: "+ Add chart",
-          onclick: () => {
-            model.ensureProgression(name);
-            afterEdit({ list: false });
-          },
+          onclick: () => commitCharts(() => model.addProgressionChart(name)),
         }),
       ])
     );
   } else {
-    const grid = el("div", { class: "pattern-grid" });
-    progression.forEach((entry) => {
-      const input = el("input", { type: "number", step: "0.1", value: entry.val, style: "width:100%" });
-      input.addEventListener("change", () => {
-        model.setProgressionValue(name, entry.badge, input.value);
-        afterEdit({ list: false });
+    charts.forEach((chart, chartIndex) => {
+      const block = el("div", { class: "chart-editor" });
+
+      const titleInput = el("input", {
+        type: "text",
+        value: chart.label,
+        placeholder: `Chart ${chartIndex + 1}`,
+        class: "chart-editor-title",
       });
-      grid.appendChild(
-        el("div", { class: "pattern-cell static" }, [
-          el("div", { class: "field-label", text: entry.badge || "" }),
-          input,
+      titleInput.addEventListener("change", () => {
+        commitCharts(() => model.setProgressionLabel(name, chartIndex, titleInput.value));
+      });
+
+      block.appendChild(
+        el("div", { class: "chart-editor-head" }, [
+          el("span", { class: "field-label", text: `Chart ${chartIndex + 1}` }),
+          titleInput,
+          el("button", {
+            class: "btn btn-sm btn-ghost",
+            text: "Remove chart",
+            title: "Delete this chart",
+            onclick: () => commitCharts(() => model.removeProgressionChart(name, chartIndex)),
+          }),
         ])
       );
+
+      const grid = el("div", { class: "pattern-grid" });
+      chart.bars.forEach((entry) => {
+        const badgeInput = el("input", {
+          type: "text",
+          value: entry.badge || "",
+          placeholder: "P1",
+          class: "chart-bar-badge",
+          title: "Bar label",
+        });
+        badgeInput.addEventListener("change", () => {
+          commitCharts(() => model.setProgressionBadge(name, chartIndex, entry.badge, badgeInput.value));
+        });
+
+        const valInput = el("input", { type: "number", step: "0.1", value: entry.val, style: "width:100%" });
+        valInput.addEventListener("change", () => {
+          commitCharts(() => model.setProgressionValue(name, entry.badge, valInput.value, chartIndex));
+        });
+
+        grid.appendChild(
+          el("div", { class: "pattern-cell static" }, [
+            badgeInput,
+            valInput,
+            el("button", {
+              class: "btn btn-sm btn-ghost",
+              text: "×",
+              title: "Remove this bar",
+              onclick: () => commitCharts(() => model.removeProgressionBar(name, chartIndex, entry.badge)),
+            }),
+          ])
+        );
+      });
+
+      block.appendChild(grid);
+      block.appendChild(
+        el("div", { class: "field-row" }, [
+          el("button", {
+            class: "btn btn-sm",
+            text: "+ Add bar",
+            onclick: () => commitCharts(() => model.addProgressionBar(name, chartIndex)),
+          }),
+        ])
+      );
+
+      chartCard.appendChild(block);
     });
-    chartCard.appendChild(grid);
+
+    chartCard.appendChild(
+      el("div", { class: "field-row", style: "margin-top:10px" }, [
+        el("button", {
+          class: "btn btn-sm",
+          text: "+ Add chart",
+          onclick: () => commitCharts(() => model.addProgressionChart(name)),
+        }),
+      ])
+    );
   }
   host.appendChild(chartCard);
 

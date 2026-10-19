@@ -558,6 +558,7 @@ try {
     const detail = await page.evaluate(() => ({
       sections: [...document.querySelectorAll(".build-section-title")].map((e) => e.textContent.trim()),
       tags: document.querySelectorAll(".build-tag").length,
+      charts: document.querySelectorAll(".build-chart").length,
       bars: document.querySelectorAll(".build-chart-bar").length,
       psychubes: document.querySelectorAll(".build-psychube").length,
       psychubeImgs: [...document.querySelectorAll(".build-psychube img")].filter((i) => i.naturalWidth > 0).length,
@@ -569,8 +570,8 @@ try {
       patternIcon: !!document.querySelector(".build-pattern img"),
     }));
     check("the build shows all of its sections", detail.sections.length >= 3, JSON.stringify(detail.sections));
-    check("the tags render", detail.tags > 0, String(detail.tags));
-    check("the portrait value chart is drawn", detail.bars > 0, String(detail.bars));
+    check("it shows no tag chips", detail.tags === 0, String(detail.tags));
+    check("the portrait value chart is drawn", detail.charts > 0 && detail.bars > 0, `${detail.charts} charts / ${detail.bars} bars`);
     check("the psychubes are listed", detail.psychubes > 0, String(detail.psychubes));
     check("the psychube icons load", detail.psychubeImgs === detail.psychubes, `${detail.psychubeImgs}/${detail.psychubes}`);
     check("the psychube entry has no border", detail.psychubeBorder === "0px", String(detail.psychubeBorder));
@@ -604,6 +605,103 @@ try {
     await page.waitForTimeout(400);
   }
 
+  console.log("\n=== Team Presets: Automatic vs Manual mode ===");
+  {
+    await page.goto(APP, { waitUntil: "networkidle" });
+    await page.evaluate(() =>
+      localStorage.setItem("r1999_character_roster_v2", JSON.stringify({ Isolde: { owned: true }, Rhiannon: { owned: true } }))
+    );
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(2200);
+
+    await page.locator("#btn-team").click();
+    await page.waitForTimeout(400);
+    await page.locator("#btn-team-presets").click();
+    await page.waitForTimeout(700);
+
+    const initial = await page.evaluate(() => {
+      const btn = document.getElementById("btn-preset-mode");
+      return {
+        label: btn ? btn.textContent.trim() : "",
+        pressed: btn ? btn.getAttribute("aria-pressed") : "",
+        pickable: document.querySelectorAll(".preset-sub.is-pickable").length,
+      };
+    });
+    check("presets start in Automatic mode", initial.label === "Mode: Automatic" && initial.pressed === "false", JSON.stringify(initial));
+    check("automatic mode keeps the substitute chips inert", initial.pickable === 0, String(initial.pickable));
+
+    await page.locator("#btn-preset-mode").click();
+    await page.waitForTimeout(500);
+    const manual = await page.evaluate(() => {
+      const btn = document.getElementById("btn-preset-mode");
+      return {
+        label: btn.textContent.trim(),
+        pressed: btn.getAttribute("aria-pressed"),
+        pickable: document.querySelectorAll(".preset-sub.is-pickable").length,
+      };
+    });
+    check("clicking it switches to Manual mode", manual.label === "Mode: Manual" && manual.pressed === "true", JSON.stringify(manual));
+    check("manual mode makes the substitutes pickable", manual.pickable > 0, String(manual.pickable));
+
+    // Promote Rhiannon into the slot that offers her as a substitute. Find the
+    // slot index once manual mode has made the chips pickable.
+    const slotIndex = await page.evaluate(() => {
+      const slots = [...document.querySelectorAll(".preset-slot")];
+      return slots.findIndex((s) => [...s.querySelectorAll(".preset-sub.is-pickable")].some((c) => /Rhiannon/.test(c.title)));
+    });
+    check("the fixture exposes a Rhiannon substitute", slotIndex >= 0, String(slotIndex));
+
+    await page.evaluate((i) => {
+      const slot = document.querySelectorAll(".preset-slot")[i];
+      const chip = [...slot.querySelectorAll(".preset-sub.is-pickable")].find((c) => /Rhiannon/.test(c.title));
+      chip.click();
+    }, slotIndex);
+    await page.waitForTimeout(500);
+    const picked = await page.evaluate((i) => {
+      const slot = document.querySelectorAll(".preset-slot")[i];
+      return {
+        main: slot.querySelector(".preset-member").title,
+        subs: [...slot.querySelectorAll(".preset-sub")].map((c) => c.title),
+      };
+    }, slotIndex);
+    check("the picked substitute moves into the main slot", /^Rhiannon/.test(picked.main), picked.main);
+    check("the previous main becomes a substitute", picked.subs.some((t) => /^Isolde/.test(t)), JSON.stringify(picked.subs));
+
+    await page.evaluate((i) => {
+      const slot = document.querySelectorAll(".preset-slot")[i];
+      slot.closest(".preset-row").querySelector(".preset-add-btn").click();
+    }, slotIndex);
+    await page.waitForTimeout(700);
+    const manualTeam = await page.evaluate(() => {
+      const team = teamsConfig.teams[teamsConfig.teams.length - 1];
+      return team ? team.slots.map((s) => s.character) : [];
+    });
+    check("Add uses the manual choice", manualTeam.includes("Rhiannon") && !manualTeam.includes("Isolde"), JSON.stringify(manualTeam));
+
+    await page.evaluate(() => {
+      teamsConfig.teams.pop();
+      saveTeams();
+      renderTeamModal();
+      openTeamPresets();
+    });
+    await page.waitForTimeout(600);
+    await page.locator("#btn-preset-mode").click();
+    await page.waitForTimeout(500);
+    await page.evaluate((i) => {
+      const slot = document.querySelectorAll(".preset-slot")[i];
+      slot.closest(".preset-row").querySelector(".preset-add-btn").click();
+    }, slotIndex);
+    await page.waitForTimeout(700);
+    const autoTeam = await page.evaluate(() => {
+      const team = teamsConfig.teams[teamsConfig.teams.length - 1];
+      return team ? team.slots.map((s) => s.character) : [];
+    });
+    check("Automatic mode fills the slot itself", autoTeam.length === 4 && autoTeam.some((c) => !!c), JSON.stringify(autoTeam));
+
+    await page.evaluate(() => document.getElementById("team-btn-close")?.click());
+    await page.waitForTimeout(300);
+  }
+
   console.log("\n=== Rotations: archetype filters, search and the turn plan ===");
   {
     await page.locator("#btn-rotations").click();
@@ -616,22 +714,42 @@ try {
         filters: [...document.querySelectorAll(".rotation-filter")].map((b) => b.dataset.tag),
         hasSearch: !!document.getElementById("rotations-search"),
         cards: document.querySelectorAll(".rotation-card").length,
-        turns: document.querySelectorAll(".rot-round").length,
-        slots: document.querySelectorAll(".rot-slot").length,
-        filled: [...document.querySelectorAll(".rot-card img")].filter((i) => i.naturalWidth > 0).length,
-        team: document.querySelectorAll(".rot-member").length,
+        detailHidden: getComputedStyle(document.getElementById("rotations-detail")).display === "none",
+        backHidden: document.getElementById("rotations-back").hidden,
         cardText: [...document.querySelectorAll(".rotation-card")].map((c) => c.textContent.replace(/\s+/g, " ").trim()),
       };
     });
-    check("the Rotations modal opens", opened.open === "flex", opened.open);
+    check("the Rotations modal opens on the list", opened.open === "flex", opened.open);
     check("it offers the 13 archetype filters", opened.filters.length === 13, JSON.stringify(opened.filters));
     check("it has a search box", opened.hasSearch);
     check("the rotation list is populated", opened.cards > 0, String(opened.cards));
-    check("the card plan renders its rounds", opened.turns > 0, String(opened.turns));
-    check("each round has card slots", opened.slots > 0, String(opened.slots));
-    check("the skill cards load", opened.filled > 0, String(opened.filled));
-    check("the rotation names its team", opened.team > 0, String(opened.team));
+    check("the plan stays hidden until a rotation is picked", opened.detailHidden && opened.backHidden);
     check("a card never prints the member names", opened.cardText.every((text) => !/isolde|kakania|regulus/i.test(text)), JSON.stringify(opened.cardText));
+
+    await page.locator(".rotation-card").first().click();
+    await page.waitForTimeout(500);
+    const plan = await page.evaluate(() => ({
+      browseHidden: getComputedStyle(document.getElementById("rotations-browse")).display === "none",
+      backShown: !document.getElementById("rotations-back").hidden,
+      turns: document.querySelectorAll(".rot-round").length,
+      slots: document.querySelectorAll(".rot-slot").length,
+      filled: [...document.querySelectorAll(".rot-card img")].filter((i) => i.naturalWidth > 0).length,
+      team: document.querySelectorAll(".rot-member").length,
+    }));
+    check("clicking a rotation opens its plan full width", plan.browseHidden && plan.backShown);
+    check("the card plan renders its rounds", plan.turns > 0, String(plan.turns));
+    check("each round has card slots", plan.slots > 0, String(plan.slots));
+    check("the skill cards load", plan.filled > 0, String(plan.filled));
+    check("the rotation names its team", plan.team > 0, String(plan.team));
+
+    await page.locator("#rotations-back").click();
+    await page.waitForTimeout(400);
+    const backToList = await page.evaluate(() => ({
+      browseShown: getComputedStyle(document.getElementById("rotations-browse")).display !== "none",
+      backHidden: document.getElementById("rotations-back").hidden,
+      searchShown: !document.getElementById("rotations-search").hidden,
+    }));
+    check("the back button returns to the list", backToList.browseShown && backToList.backHidden && backToList.searchShown);
 
     await page.evaluate(() => document.querySelector('.rotation-filter[data-tag="Burn"]').click());
     await page.waitForTimeout(350);

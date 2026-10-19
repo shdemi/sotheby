@@ -727,14 +727,12 @@ console.log("\n=== builds ===");
   const target = names.find((n) => m.guideBuild(n)) || names[0];
   check("a build can be read", !!m.guideBuild(target), String(target));
 
-  m.setGuideBuildField(target, "tags", ["Reality DMG", "Intellect", "DPS"]);
-  check("tags are stored as plain strings", JSON.stringify(m.guideBuild(target).tags) === JSON.stringify(["Reality DMG", "Intellect", "DPS"]), JSON.stringify(m.guideBuild(target).tags));
-
   m.setGuideBuildField(target, "resonance", { Attack: "AAA", Crit: "" });
   check("an empty resonance code is kept so it can be filled later", m.guideBuild(target).resonance.Crit === "", JSON.stringify(m.guideBuild(target).resonance));
 
   m.setGuideBuildField(target, "psychubes", ["Steps Forward", "A Free Heart"]);
   check("two psychubes are written", m.guideBuild(target).psychubes.length === 2, JSON.stringify(m.guideBuild(target).psychubes));
+  check("tags are no longer part of a build", m.guideBuild(target).tags === undefined, JSON.stringify(m.guideBuild(target).tags));
 
   m.setGuideBuildField(target, "pattern", "Genuinity");
   check("a pattern is written", m.guideBuild(target).pattern === "Genuinity", JSON.stringify(m.guideBuild(target).pattern));
@@ -742,6 +740,50 @@ console.log("\n=== builds ===");
 
   m.setGuideBuildField(target, "pattern", "");
   check("a blank pattern removes the property", m.guideBuild(target).pattern === undefined, JSON.stringify(m.guideBuild(target).pattern));
+}
+
+console.log("\n=== portrait value charts ===");
+{
+  const m = freshModel();
+  const name = m.characters.find((n) => m.progressionCharts(n).length > 0) || m.characters[0];
+  const before = m.progressionCharts(name);
+  check("a character reads as a list of charts", before.length >= 1 && Array.isArray(before[0].bars), JSON.stringify(before).slice(0, 120));
+
+  m.addProgressionChart(name, "Lv.60");
+  const two = m.progressionCharts(name);
+  check("a chart can be added", two.length === before.length + 1, String(two.length));
+  check("the new chart keeps its title", two[two.length - 1].label === "Lv.60", two[two.length - 1].label);
+  check("the new chart starts with the same badges", two[two.length - 1].bars.length === before[0].bars.length, String(two[two.length - 1].bars.length));
+
+  const idx = two.length - 1;
+  m.setProgressionLabel(name, idx, "Portrait Lv.60");
+  check("a chart title can be renamed", m.progressionCharts(name)[idx].label === "Portrait Lv.60", m.progressionCharts(name)[idx].label);
+
+  m.setProgressionValue(name, m.progressionCharts(name)[idx].bars[0].badge, 42, idx);
+  check("a bar value is written in the right chart", m.progressionCharts(name)[idx].bars[0].val === 42, JSON.stringify(m.progressionCharts(name)[idx].bars[0]));
+  check("the first chart is untouched", m.progressionCharts(name)[0].bars[0].val === before[0].bars[0].val, JSON.stringify(m.progressionCharts(name)[0].bars[0]));
+
+  const badge = m.progressionCharts(name)[idx].bars[0].badge;
+  m.setProgressionBadge(name, idx, badge, "First");
+  check("a bar can be relabelled", m.progressionCharts(name)[idx].bars[0].badge === "First", m.progressionCharts(name)[idx].bars[0].badge);
+
+  const barsBefore = m.progressionCharts(name)[idx].bars.length;
+  m.addProgressionBar(name, idx);
+  check("a bar can be added", m.progressionCharts(name)[idx].bars.length === barsBefore + 1, String(m.progressionCharts(name)[idx].bars.length));
+
+  m.removeProgressionBar(name, idx, "First");
+  check("a bar can be removed", m.progressionCharts(name)[idx].bars.every((b) => b.badge !== "First"));
+
+  m.removeProgressionChart(name, idx);
+  check("a chart can be removed", m.progressionCharts(name).length === before.length, String(m.progressionCharts(name).length));
+  check("chart edits validate", validate(m).errors.length === 0, validate(m).errors.join("; "));
+
+  // The legacy flat shape still reads as one chart.
+  const legacy = freshModel();
+  legacy.doc("characters_progressions.json").set([name], [{ badge: "P1", val: 1 }, { badge: "P2", val: 2 }]);
+  legacy.reload();
+  const legacyCharts = legacy.progressionCharts(name);
+  check("the old flat shape reads as one chart", legacyCharts.length === 1 && legacyCharts[0].label === "" && legacyCharts[0].bars.length === 2, JSON.stringify(legacyCharts));
 }
 
 console.log("\n=== rotations ===");

@@ -236,8 +236,6 @@ function refreshDynamicTranslations() {
   const rotationsModal = document.getElementById("rotations-modal");
   if (rotationsModal && rotationsModal.style.display !== "none") {
     renderRotations();
-    const rotationsCard = document.getElementById("rotations-card");
-    if (rotationsCard) setRotationsRailOpen(!rotationsCard.classList.contains("is-rail-collapsed"));
   }
 }
 
@@ -386,11 +384,14 @@ let teamArchetypes = {};   // { presetName: [ [ {character, psychube, euphoria?}
 let teamsConfig = { teams: [] };
 let teamsAllowUnowned = false;  // "Show Unowned" toggle inside the Team Building modal
 let teamsFormableOnly = false;  // Team Presets: only presets the roster can field
+let teamsManualPick = false;    // Team Presets: take the main card, substitutes on demand
 let teamsHideWarning = false;   // "Hide Warning": suppresses every Used marker
 let teamModalDirty = false;     // Defers the board re-render until the modal closes
 let pendingTeamCharacter = null; // Carried from the unused strip into a team slot
 const teamSlotPicker = { teamId: null, slotIndex: 0 };
 const teamCollapsedGroups = new Set(); // Preset names whose extra variants are collapsed
+// Manual mode: the substitute the player promoted into a slot, keyed "preset#variant#slot".
+const presetManualChoices = new Map();
 let teamModalSearch = null;     // #team-search (assigned in setupEventListeners)
 let teamPresetSearch = null;    // #team-preset-search
 let teamRecommendTeamId = null; // Team whose Recommend modal is open (null = closed)
@@ -4211,6 +4212,7 @@ function loadTeams() {
       teamsConfig = { teams: Array.isArray(parsed.teams) ? parsed.teams : [] };
       teamsAllowUnowned = !!parsed.allowUnowned;
       teamsFormableOnly = !!parsed.formableOnly;
+      teamsManualPick = !!parsed.manualPick;
       teamsHideWarning = !!parsed.hideWarning;
       if (typeof parsed.stripRatio === "number") {
         teamStripRatio = Math.min(0.75, Math.max(0.12, parsed.stripRatio));
@@ -4231,6 +4233,7 @@ function saveTeams() {
     teams: teamsConfig.teams,
     allowUnowned: teamsAllowUnowned,
     formableOnly: teamsFormableOnly,
+    manualPick: teamsManualPick,
     hideWarning: teamsHideWarning,
     stripRatio: teamStripRatio,
     columns: teamColumns,
@@ -4973,6 +4976,32 @@ function presetNames() {
   return Object.keys(teamArchetypes).filter((name) => Array.isArray(teamArchetypes[name]));
 }
 
+/**
+ * Manual mode: the member a slot shows. The authored primary stays put until the
+ * player promotes a substitute by clicking its chip; the previous primary then
+ * becomes a chip of its own, so the choice is always reversible.
+ */
+function manualVariantMembers(presetName, variantIndex, members) {
+  return members.map((member, slotIndex) => {
+    const chosen = presetManualChoices.get(`${presetName}#${variantIndex}#${slotIndex}`);
+    const subs = member.substitutes || [];
+    const idx = subs.findIndex((sub) => sub.character === chosen);
+    if (idx < 0) return member;
+
+    const picked = subs[idx];
+    return {
+      character: picked.character,
+      psychube: picked.psychube,
+      isEssential: member.isEssential,
+      euphoria: picked.euphoria,
+      substitutes: [
+        { character: member.character, psychube: member.psychube, euphoria: member.euphoria },
+        ...subs.filter((_, i) => i !== idx),
+      ],
+    };
+  });
+}
+
 function renderTeamPresets() {
   const body = document.getElementById("team-presets-body");
   if (!body) return;
@@ -4983,6 +5012,15 @@ function renderTeamPresets() {
     btnFormable.setAttribute("aria-pressed", String(teamsFormableOnly));
   }
 
+  // Manual mode keeps the authored mains and lets the player promote a substitute.
+  const btnMode = document.getElementById("btn-preset-mode");
+  if (btnMode) {
+    btnMode.classList.toggle("active", teamsManualPick);
+    btnMode.setAttribute("aria-pressed", String(teamsManualPick));
+    const label = btnMode.querySelector(".preset-mode-label");
+    if (label) label.textContent = t(teamsManualPick ? "team.modeManual" : "team.modeAutomatic");
+  }
+
   const query = (teamPresetSearch ? teamPresetSearch.value : "").trim();
   const presetQuery = query.toLowerCase();
 
@@ -4990,19 +5028,19 @@ function renderTeamPresets() {
   const groups = [];
   presetNames().forEach((presetName) => {
     let variants = (teamArchetypes[presetName] || [])
-      .map((variant) => resolvePresetVariant(variant))
-      .filter((members) => members !== null)
-      .filter((members) => futureSightEnabled || !presetVariantHasFutureSight(members));
+      .map((variant, index) => ({ index, members: resolvePresetVariant(variant) }))
+      .filter((entry) => entry.members !== null)
+      .filter((entry) => futureSightEnabled || !presetVariantHasFutureSight(entry.members));
 
     // "Formable Only": every slot must be satisfiable (primary or a substitute)
     if (teamsFormableOnly) {
-      variants = variants.filter((members) => members.every(memberIsFormable));
+      variants = variants.filter((entry) => entry.members.every(memberIsFormable));
     }
 
     // Search matches the preset name or any member's name
     if (query) {
       const hitName = presetName.toLowerCase().includes(presetQuery);
-      const hitMember = variants.some((members) => members.some((m) => characterMatchesQuery(m.character, query)));
+      const hitMember = variants.some((entry) => entry.members.some((m) => characterMatchesQuery(m.character, query)));
       if (!hitName && !hitMember) return;
     }
 
@@ -5013,6 +5051,15 @@ function renderTeamPresets() {
   renderArchetypeBlocks(body, groups, {
     emptyText: t("team.noPresets"),
     usedSet: usedMarkerSet(null),
+    keyOf: (presetName, entry) => `${presetName}#${entry.index}`,
+    membersOf: (presetName, entry) =>
+      teamsManualPick ? manualVariantMembers(presetName, entry.index, entry.members) : entry.members,
+    onSubstitutePick: teamsManualPick
+      ? (key, slotIndex, character) => {
+          presetManualChoices.set(`${key}#${slotIndex}`, character);
+          renderTeamPresets();
+        }
+      : null,
     onToggle: (presetName) => {
       if (teamCollapsedGroups.has(presetName)) teamCollapsedGroups.delete(presetName);
       else teamCollapsedGroups.add(presetName);
@@ -5023,7 +5070,10 @@ function renderTeamPresets() {
       const team = createTeam(presetName);
       members.forEach((member, i) => {
         if (i >= TEAM_SLOT_COUNT) return;
-        team.slots[i] = preferredVariantChoice(member);
+        // Manual mode fields exactly what the row shows.
+        team.slots[i] = teamsManualPick
+          ? { character: member.character, psychube: member.psychube }
+          : preferredVariantChoice(member);
       });
       teamsConfig.teams.push(team);
       saveTeams();
@@ -5080,13 +5130,26 @@ function renderArchetypeBlocks(body, groups, opts) {
     rows.className = "preset-rows";
 
     const shown = collapsed ? variants.slice(0, 1) : variants;
-    shown.forEach((members) => {
+    shown.forEach((entry) => {
+      // Presets pass keyed entries (so a manual pick can be remembered);
+      // Recommendation passes plain member arrays.
+      const members = opts.membersOf ? opts.membersOf(presetName, entry) : Array.isArray(entry) ? entry : entry.members;
+      const key = opts.keyOf ? opts.keyOf(presetName, entry) : "";
+
       const row = document.createElement("div");
       row.className = "preset-row";
 
       const membersWrap = document.createElement("div");
       membersWrap.className = "preset-members";
-      members.forEach((member) => membersWrap.appendChild(presetSlotCell(member, usedSet)));
+      members.forEach((member, slotIndex) =>
+        membersWrap.appendChild(
+          presetSlotCell(
+            member,
+            usedSet,
+            opts.onSubstitutePick ? (character) => opts.onSubstitutePick(key, slotIndex, character) : null
+          )
+        )
+      );
 
       const btnAction = document.createElement("button");
       btnAction.type = "button";
@@ -5182,8 +5245,10 @@ function presetMemberCell(member, dupes) {
 /**
  * A slot: the primary member with its interchangeable alternatives underneath.
  * Substitutes render as portrait-only chips — their psychube is the player's call.
+ * When `onPick` is given (manual mode), a chip is a button that promotes that
+ * substitute into the main slot.
  */
-function presetSlotCell(member, dupes) {
+function presetSlotCell(member, dupes, onPick) {
   const usedSet = dupes || duplicatedTeamCharacters();
   const slot = document.createElement("div");
   slot.className = "preset-slot";
@@ -5201,8 +5266,16 @@ function presetSlotCell(member, dupes) {
 
     subs.forEach((sub) => {
       const isUsed = usedSet.has(sub.character);
-      const chip = document.createElement("span");
-      chip.className = "preset-sub" + (isCharacterOwned(sub.character) ? "" : " is-unowned");
+      const chip = document.createElement(onPick ? "button" : "span");
+      chip.className =
+        "preset-sub" +
+        (isCharacterOwned(sub.character) ? "" : " is-unowned") +
+        (onPick ? " is-pickable" : "");
+      if (onPick) {
+        chip.type = "button";
+        chip.setAttribute("aria-label", t("team.pickSubstitute", { name: displayCharName(sub.character) }));
+        chip.addEventListener("click", () => onPick(sub.character));
+      }
       chip.title = `${displayCharName(sub.character)}${sub.psychube ? " · " + psychubeName(sub.psychube) : ""}${sub.euphoria ? " · " + sub.euphoria : ""}${isUsed ? " · " + t("team.usedElsewhere") : ""}`;
       chip.innerHTML = `
         <img src="${escapeHtml(characterDb[sub.character])}" alt="${escapeHtml(displayCharName(sub.character))}" loading="lazy" decoding="async" />
@@ -5217,6 +5290,7 @@ function presetSlotCell(member, dupes) {
 }
 
 function openTeamPresets() {
+  presetManualChoices.clear();
   renderTeamPresets();
   document.getElementById("team-presets-modal").style.display = "flex";
 }
@@ -5266,11 +5340,20 @@ function setupTeamBuildingListeners() {
     teamModalSearch.addEventListener("input", renderTeamModal);
   }
 
-  // Team Presets: search + Formable Only
+  // Team Presets: search + Formable Only + Automatic/Manual mode
   const btnFormableOnly = document.getElementById("btn-preset-formable-only");
   if (btnFormableOnly) {
     btnFormableOnly.addEventListener("click", () => {
       teamsFormableOnly = !teamsFormableOnly;
+      saveTeams();
+      renderTeamPresets();
+    });
+  }
+  const btnPresetMode = document.getElementById("btn-preset-mode");
+  if (btnPresetMode) {
+    btnPresetMode.addEventListener("click", () => {
+      teamsManualPick = !teamsManualPick;
+      presetManualChoices.clear();
       saveTeams();
       renderTeamPresets();
     });
@@ -5877,18 +5960,6 @@ const ROTATION_ARCHETYPES = [
 /** The four tunings a rotation can be built around. */
 const TUNINGS = ["First Melody", "Grand Orchestra", "Unfinished Tune", "Atonal Sequence"];
 
-/** Tags that have a dedicated icon: the two damage types plus the six afflatus. */
-const GUIDE_ICON_TAGS = {
-  "Reality DMG": "images/dmg_type_icon/reality_dmg.png",
-  "Mental DMG": "images/dmg_type_icon/mental_dmg.png",
-  Beast: "images/tag_afflatus/Beast_Icon.webp",
-  Plant: "images/tag_afflatus/Plant_Icon.webp",
-  Star: "images/tag_afflatus/star_icon.webp",
-  Mineral: "images/tag_afflatus/mineral_Icon.webp",
-  Spirit: "images/tag_afflatus/Spirit_Icon.webp",
-  Intellect: "images/tag_afflatus/intellect_icon.webp",
-};
-
 /** Bar colour per rarity, taken from the game's rarity palette. */
 const RARITY_COLORS = { 6: "#CB7820", 5: "#C8AF6C", 4: "#9E6BAD", 3: "#555E7F", 2: "#496441" };
 
@@ -5937,21 +6008,29 @@ function guideSkillIcon(name, skill) {
 
 function guideProgressionFor(name) {
   const canonical = resolveCharacterName(name);
-  if (Array.isArray(guideProgressions[canonical])) return guideProgressions[canonical];
-  if (Array.isArray(guideProgressions[name])) return guideProgressions[name];
-  return [];
+  const raw = Array.isArray(guideProgressions[canonical])
+    ? guideProgressions[canonical]
+    : Array.isArray(guideProgressions[name])
+      ? guideProgressions[name]
+      : [];
+
+  // Legacy shape: one flat bar list, which is a single chart with no title.
+  const isLegacy = raw.every((entry) => entry && typeof entry === "object" && !Array.isArray(entry.bars));
+  if (isLegacy) return raw.length ? [{ label: "", bars: raw }] : [];
+
+  return raw
+    .filter((chart) => chart && typeof chart === "object")
+    .map((chart) => ({
+      label: String(chart.label || "").trim(),
+      bars: Array.isArray(chart.bars) ? chart.bars.filter(Boolean) : [],
+    }))
+    .filter((chart) => chart.bars.length);
 }
 
 /** Build record for a character, resolved through aliases. */
 function getBuild(name) {
   const canonical = resolveCharacterName(name);
   return buildsData[canonical] || buildsData[name] || null;
-}
-
-/** Tag labels can be plain strings or legacy `{label, icon}` objects. */
-function buildTagLabels(build) {
-  const tags = Array.isArray(build && build.tags) ? build.tags : [];
-  return tags.map((tag) => (typeof tag === "string" ? tag : tag && tag.label)).filter(Boolean);
 }
 
 /** Psychube name -> "rarity:id" key. */
@@ -6055,7 +6134,6 @@ function characterHasBuild(name) {
   const build = getBuild(name) || {};
   const resonance = build.resonance && typeof build.resonance === "object" ? build.resonance : {};
   return !!(
-    buildTagLabels(build).length ||
     (Array.isArray(build.psychubes) && build.psychubes.length) ||
     Object.keys(resonance).length ||
     build.pattern ||
@@ -6126,11 +6204,9 @@ function renderBuildsDetail() {
   const rarity = Math.max(0, Number(getCharacterRarity(name)) || 0);
   const accent = rarityColor(rarity);
 
-  const tags = buildTagLabels(build);
   const psychubes = (Array.isArray(build.psychubes) ? build.psychubes : []).slice(0, 2);
   const resonance = build.resonance && typeof build.resonance === "object" ? build.resonance : {};
-  const progression = guideProgressionFor(name);
-  const maxVal = progression.reduce((max, p) => Math.max(max, Number(p.val) || 0), 0) || 1;
+  const charts = guideProgressionFor(name);
 
   // A character with no recorded build gets one clear message instead of
   // four empty cards.
@@ -6139,27 +6215,21 @@ function renderBuildsDetail() {
     return;
   }
 
-  const tagHtml = tags
-    .map((label) => {
-      const icon = GUIDE_ICON_TAGS[label] || "";
-      return `<span class="build-tag">${icon ? `<img src="${escapeHtml(icon)}" alt="" />` : ""}${escapeHtml(label)}</span>`;
-    })
-    .join("");
-
-  const chartHtml = progression.length
-    ? `<div class="build-chart" style="--build-accent:${accent}">${progression
-        .map((p) => {
-          const val = Number(p.val) || 0;
-          const height = Math.max(4, Math.round((val / maxVal) * 100));
-          return `
+  const chartHtml = (chart) => {
+    const maxVal = chart.bars.reduce((max, p) => Math.max(max, Number(p.val) || 0), 0) || 1;
+    return `<div class="build-chart" style="--build-accent:${accent}">${chart.bars
+      .map((p) => {
+        const val = Number(p.val) || 0;
+        const height = Math.max(4, Math.round((val / maxVal) * 100));
+        return `
             <div class="build-chart-col">
               <span class="build-chart-val">${val}%</span>
               <span class="build-chart-track"><span class="build-chart-bar" style="height:${height}%"></span></span>
               <span class="build-chart-badge">${escapeHtml(p.badge || "")}</span>
             </div>`;
-        })
-        .join("")}</div>`
-    : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
+      })
+      .join("")}</div>`;
+  };
 
   const psychubeHtml = psychubes.length
     ? psychubes
@@ -6194,10 +6264,23 @@ function renderBuildsDetail() {
        </div>`
     : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
 
-  const chartSection = progression.length
+  const chartSection = charts.length
     ? `<section class="build-section build-section-chart">
          <h4 class="build-section-title">${escapeHtml(t("builds.portrait"))}</h4>
-         ${chartHtml}
+         <div class="build-charts${charts.length > 1 ? " is-multi" : ""}${charts.length > 2 ? " is-many" : ""}">${charts
+           .map(
+             (chart, index) => `<div class="build-chart-block">
+               ${
+                 chart.label
+                   ? `<span class="build-chart-label">${escapeHtml(chart.label)}</span>`
+                   : charts.length > 1
+                     ? `<span class="build-chart-label">${escapeHtml(t("builds.chartN", { n: index + 1 }))}</span>`
+                     : ""
+               }
+               ${chartHtml(chart)}
+             </div>`
+           )
+           .join("")}</div>
        </section>`
     : "";
 
@@ -6220,6 +6303,9 @@ function renderBuildsDetail() {
       : "";
 
   const sideSections = psychubeSection + resonanceSection;
+  // One chart keeps the two-column layout; several charts take the full width
+  // so they can sit side by side above the loadout cards.
+  const stacked = charts.length > 2;
   const singleColumn = !chartSection || !sideSections;
 
   host.innerHTML = `
@@ -6230,15 +6316,10 @@ function renderBuildsDetail() {
           <h3 class="builds-hero-name">${escapeHtml(displayCharName(name))}</h3>
           <span class="builds-hero-stars" style="color:${accent}">${"✦".repeat(rarity)}</span>
         </div>
-        ${
-          tagHtml
-            ? `<div class="build-tags">${tagHtml}</div>`
-            : ""
-        }
       </div>
     </div>
 
-    <div class="builds-grid${singleColumn ? " is-single" : ""}">
+    <div class="builds-grid${singleColumn ? " is-single" : ""}${stacked ? " is-stacked" : ""}">
       ${chartSection}
       ${sideSections ? `<div class="builds-column">${sideSections}</div>` : ""}
     </div>
@@ -6342,17 +6423,37 @@ function renderRotationFilters() {
   });
 }
 
-function setRotationsRailOpen(open) {
+/** The modal has two views: the rotation list, or one rotation's full plan. */
+function setRotationsView(view) {
   const card = document.getElementById("rotations-card");
-  const toggle = document.getElementById("rotations-rail-toggle");
-  if (!card || !toggle) return;
-  card.classList.toggle("is-rail-collapsed", !open);
-  toggle.setAttribute("aria-expanded", open ? "true" : "false");
-  const label = toggle.querySelector(".rotations-rail-toggle-text");
-  if (label) label.textContent = t(open ? "rotations.hideList" : "rotations.showList");
+  if (card) card.classList.toggle("is-detail", view === "detail");
+
+  const back = document.getElementById("rotations-back");
+  if (back) back.hidden = view !== "detail";
+
+  const search = document.getElementById("rotations-search");
+  if (search) search.hidden = view === "detail";
+}
+
+/** Opens one rotation: the list collapses into the full-width plan. */
+function openRotationDetail(id) {
+  rotationsSelected = id || null;
+  setRotationsView(rotationsSelected ? "detail" : "browse");
+  renderRotationsDetail();
+  const detail = document.getElementById("rotations-detail");
+  if (detail) detail.scrollTop = 0;
+}
+
+/** Back to the list, keeping the filters and search exactly as they were. */
+function showRotationsList() {
+  rotationsSelected = null;
+  setRotationsView("browse");
+  renderRotations();
 }
 
 function openRotationsModal() {
+  rotationsSelected = null;
+  setRotationsView("browse");
   renderRotations();
   document.getElementById("rotations-modal").style.display = "flex";
 }
@@ -6368,20 +6469,19 @@ function renderRotations() {
   if (!list) return;
   const visible = rotationsVisible();
 
-  if (!rotationsSelected || !visible.some((r) => r.id === rotationsSelected)) {
-    rotationsSelected = visible[0] ? visible[0].id : null;
-  }
+  const count = document.getElementById("rotations-count");
+  if (count) count.textContent = t("rotations.count", { n: visible.length });
 
   list.innerHTML = visible.length
     ? visible
-        .map((rotation) => {
+        .map((rotation, index) => {
           const members = rotationMembers(rotation);
           const archetypes = rotationArchetypes(rotation);
           const tuning = rotation.tuning || "";
           return `
             <button type="button" class="rotation-card${rotation.id === rotationsSelected ? " is-active" : ""}" data-id="${escapeHtml(
               rotation.id || ""
-            )}">
+            )}" style="--card-index:${index}">
               <span class="rotation-card-top">
                 <span class="rotation-card-name">${escapeHtml(rotation.name || rotation.id || "")}</span>
                 ${
@@ -6415,13 +6515,11 @@ function renderRotations() {
     : guideEmptyState("rotations.empty");
 
   list.querySelectorAll(".rotation-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      rotationsSelected = card.dataset.id;
-      renderRotations();
-    });
+    card.addEventListener("click", () => openRotationDetail(card.dataset.id));
   });
 
-  renderRotationsDetail();
+  // The list is the whole modal now, so the plan only draws when one is open.
+  if (rotationsSelected) renderRotationsDetail();
 }
 
 /** One skill card: character art, or a special card with no owner. */
@@ -6623,13 +6721,8 @@ function setupGuideListeners() {
     const search = document.getElementById("rotations-search");
     if (search) search.addEventListener("input", renderRotations);
 
-    const toggle = document.getElementById("rotations-rail-toggle");
-    if (toggle) {
-      toggle.addEventListener("click", () => {
-        const card = document.getElementById("rotations-card");
-        setRotationsRailOpen(card.classList.contains("is-rail-collapsed"));
-      });
-    }
+    const back = document.getElementById("rotations-back");
+    if (back) back.addEventListener("click", showRotationsList);
 
     const clear = document.getElementById("rotations-clear-filters");
     if (clear) {
@@ -9465,6 +9558,7 @@ function setupEventListeners() {
           teams: teamsConfig.teams,
           allowUnowned: teamsAllowUnowned,
           formableOnly: teamsFormableOnly,
+          manualPick: teamsManualPick,
           hideWarning: teamsHideWarning,
           columns: teamColumns,
           stripRatio: teamStripRatio,
@@ -9555,6 +9649,7 @@ function setupEventListeners() {
               teamsConfig = { teams: Array.isArray(t.teams) ? t.teams : [] };
               teamsAllowUnowned = !!t.allowUnowned;
               teamsFormableOnly = !!t.formableOnly;
+              teamsManualPick = !!t.manualPick;
               teamsHideWarning = !!t.hideWarning;
               if (typeof t.columns === "number") {
                 teamColumns = Math.min(TEAM_MAX_COLUMNS, Math.max(1, Math.round(t.columns)));

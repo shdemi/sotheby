@@ -6267,6 +6267,23 @@ body.team-resizing * {
   display: block;
 }
 
+/* Manual mode: a chip promotes its character into the main slot. */
+.preset-sub.is-pickable {
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+
+.preset-sub.is-pickable:hover {
+  border-color: #ED7D31;
+  transform: translateY(-1px);
+}
+
+.preset-sub.is-pickable:focus-visible {
+  outline: 1px solid #ED7D31;
+  outline-offset: 1px;
+}
+
 .preset-sub.is-unowned img {
   opacity: var(--unowned-char-opacity, 0.35);
   filter: saturate(0.82) contrast(1.05) brightness(0.9);
@@ -6909,6 +6926,15 @@ body.team-resizing * {
 /* One column when only one side has content to show. */
 .builds-grid.is-single { grid-template-columns: minmax(0, 1fr); }
 
+/* Three or more charts: the chart card spans the row, loadout cards sit below. */
+.builds-grid.is-stacked { grid-template-columns: minmax(0, 1fr); }
+
+.builds-grid.is-stacked .builds-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  align-items: start;
+}
+
 /* Without the chart, the loadout cards share the row instead of stacking. */
 .builds-grid.is-single .builds-column {
   display: grid;
@@ -6956,32 +6982,30 @@ body.team-resizing * {
   background: #D05126;
 }
 
-/* Tags live in the hero as light chips, so they read as metadata. */
-.build-tags {
+/* Charts: one per block, stacked so several read as a small dashboard. */
+.build-charts {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.build-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border: 1px solid rgba(181, 181, 179, 0.3);
-  background: rgba(0, 0, 0, 0.22);
-  color: #D6D1C8;
+.build-chart-block {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.build-chart-label {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
   font-size: 0.6rem;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.build-tag img {
-  width: 13px;
-  height: 13px;
-  object-fit: contain;
-  flex: none;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ECE5D9;
 }
 
 /* Portrait value chart: bars take the character's rarity colour. */
@@ -6990,8 +7014,30 @@ body.team-resizing * {
   display: flex;
   align-items: flex-end;
   gap: 18px;
-  min-height: 168px;
+  min-height: 140px;
   padding: 0 4px;
+}
+
+/* Several charts share the card, so each one is a little shorter. */
+.build-charts.is-multi .build-chart {
+  min-height: 96px;
+}
+
+/* From the third chart on, pair them up so the card does not run off-screen. */
+.build-charts.is-many {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  align-items: start;
+  gap: 18px 24px;
+}
+
+/* A fixed height per chart keeps every row of the grid the same size. */
+.build-charts.is-many .build-chart-block { height: 150px; }
+
+.build-charts.is-many .build-chart-block { height: 150px; }
+
+.build-charts.is-many .build-chart {
+  min-height: 110px;
 }
 
 .build-chart-col {
@@ -7182,6 +7228,76 @@ body.team-resizing * {
   height: min(90vh, 860px);
 }
 
+/* The modal pops in from slightly below, a touch deeper than the other modals. */
+#rotations-card {
+  animation: rotationsModalIn 0.32s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+}
+
+@keyframes rotationsModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Cards follow the modal in, one after another, so the list reads as it lands. */
+.rotation-card {
+  animation: rotationsCardIn 0.3s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 28ms);
+}
+
+@keyframes rotationsCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Opening a plan: the hero settles first, then each block slides up. */
+#rotations-card.is-detail .rot-hero {
+  animation: rotationsBlockIn 0.26s ease-out both;
+}
+
+#rotations-card.is-detail .rot-block {
+  animation: rotationsBlockIn 0.3s ease-out both;
+  animation-delay: calc(60ms + var(--block-index, 0) * 45ms);
+}
+
+@keyframes rotationsBlockIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger the plan's sections in reading order. */
+#rotations-card.is-detail .rot-block:nth-of-type(1) { --block-index: 0; }
+#rotations-card.is-detail .rot-block:nth-of-type(2) { --block-index: 1; }
+#rotations-card.is-detail .rot-block:nth-of-type(3) { --block-index: 2; }
+#rotations-card.is-detail .rot-block:nth-of-type(4) { --block-index: 3; }
+
+/* Respect the OS "reduce motion" preference: show everything immediately. */
+@media (prefers-reduced-motion: reduce) {
+  #rotations-card,
+  .rotation-card,
+  #rotations-card.is-detail .rot-hero,
+  #rotations-card.is-detail .rot-block {
+    animation: none;
+  }
+}
+
 .rotations-header-tools {
   display: flex;
   align-items: center;
@@ -7195,6 +7311,40 @@ body.team-resizing * {
   font-size: 0.68rem;
 }
 
+/* Back button: hidden on the list, top-left of the header on a rotation's plan. */
+.rotations-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  padding: 2px 10px 2px 2px;
+  margin-right: 2px;
+  font: inherit;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #B5B5B3;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+
+.rotations-back[hidden] { display: none; }
+
+.rotations-back img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.12s ease;
+}
+
+.rotations-back:hover { color: #fff; }
+.rotations-back:hover img { transform: translateX(-2px); }
+
 .rotations-body {
   flex: 1;
   min-height: 0;
@@ -7202,37 +7352,44 @@ body.team-resizing * {
   overflow: hidden;
 }
 
-/* ---- Collapsible rail: filters over the rotation list ---- */
+/* ---- Browse view: filters, a separator, then the rotation grid ---- */
 
-.rotations-rail {
-  flex: 0 0 320px;
-  min-width: 0;
-  display: flex;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
-.is-rail-collapsed .rotations-rail { display: none; }
-
-.rotations-rail-scroll {
+.rotations-browse {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   overflow-y: auto;
-  padding: 14px 14px 18px;
+  padding: 18px 26px 26px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.rotations-rail-head {
+.rotations-browse-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
 }
 
-.rotations-rail-head-list { margin-top: 6px; }
+.rotations-browse-separator {
+  flex: none;
+  height: 1px;
+  margin: 6px 0;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.rotations-browse-count {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8f8a83;
+}
+
+/* The list is the whole modal now; the plan takes its place when one is open. */
+#rotations-card.is-detail .rotations-browse { display: none; }
+#rotations-card:not(.is-detail) .rotations-detail { display: none; }
 
 .rotations-clear {
   font: inherit;
@@ -7278,11 +7435,13 @@ body.team-resizing * {
   background: rgba(208, 81, 38, 0.24);
 }
 
-/* Rotation cards reuse the Team Building card surface. */
+/* Rotation cards reuse the Team Building card surface; 1-4 per row depending
+   on the viewport, so a wide modal never stretches a card across the screen. */
 .rotations-list {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  align-items: start;
 }
 
 .rotation-card {

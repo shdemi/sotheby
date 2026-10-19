@@ -66,25 +66,6 @@ export const GUIDE_ICON_TAGS = [
 /** The four tunings a rotation can be built around. */
 export const TUNINGS = ["First Melody", "Grand Orchestra", "Unfinished Tune", "Atonal Sequence"];
 
-/**
- * Build tags, grouped the way they are edited. A tag is stored as a plain
- * string; the group only decides which row it appears in.
- */
-export const GUIDE_TAG_GROUPS = [
-  { id: "dmg", label: "DMG Type", tags: ["Reality DMG", "Mental DMG"] },
-  { id: "afflatus", label: "Afflatus", tags: ["Mineral", "Star", "Plant", "Beast", "Spirit", "Intellect"] },
-  { id: "role", label: "Role", tags: ["DPS", "Support", "Heal", "Shield"] },
-  { id: "archetype", label: "Archetype", tags: ROTATION_ARCHETYPES },
-  {
-    id: "feature",
-    label: "Feature",
-    tags: [
-      "DPS", "Remove Buffs", "Remove Debuffs", "Support", "Riposte", "Follow-Up", "Control",
-      "Bullet", "Immunity", "Rewrite", "Assassination", "Array", "Channel", "Eureka",
-    ],
-  },
-];
-
 /* ------------------------------------------------------------------ *
  * Name resolution (mirrors app.js)
  * ------------------------------------------------------------------ */
@@ -947,12 +928,7 @@ export class Model {
     if (!doc.nodeAt([canonical])) doc.setProperty([], canonical, {});
 
     let payload = value;
-    if (field === "tags") {
-      payload = (Array.isArray(value) ? value : [])
-        .map((tag) => (typeof tag === "string" ? tag : tag && tag.label))
-        .map((label) => String(label ?? "").trim())
-        .filter(Boolean);
-    } else if (field === "psychubes") {
+    if (field === "psychubes") {
       payload = (Array.isArray(value) ? value : String(value || "").split("|"))
         .map((v) => String(v).trim())
         .filter(Boolean);
@@ -1299,34 +1275,150 @@ export class Model {
 
   /* ---- guide: portrait progressions ---- */
 
-  progression(name) {
+   /**
+   * Charts for one character, always `[{ label, bars: [{badge, val}] }]`.
+   * The original flat `[{badge, val}]` shape is read as one untitled chart.
+   */
+  progressionCharts(name) {
     const value = this.value("characters_progressions.json") || {};
-    return Array.isArray(value[this.resolve(name)]) ? value[this.resolve(name)] : [];
+    const raw = value[this.resolve(name)];
+    if (!Array.isArray(raw)) return [];
+    if (raw.every((entry) => entry && typeof entry === "object" && !Array.isArray(entry.bars))) {
+      return raw.length ? [{ label: "", bars: raw }] : [];
+    }
+    return raw
+      .filter((chart) => chart && typeof chart === "object")
+      .map((chart) => ({
+        label: String(chart.label || ""),
+        bars: Array.isArray(chart.bars) ? chart.bars : [],
+      }));
   }
 
-  /** Sets one badge's percentage; the badge must already exist. */
-  setProgressionValue(name, badge, val) {
-    const doc = this.doc("characters_progressions.json");
-    if (!doc) return false;
-    const canonical = this.resolve(name);
-    const list = this.progression(canonical);
-    const at = list.findIndex((p) => p && p.badge === badge);
-    if (at === -1) return false;
-    const changed = doc.set([canonical, at, "val"], Number(val) || 0);
-    if (changed) this.reload();
-    return changed;
+  progression(name) {
+    return this.progressionCharts(name)[0]?.bars || [];
   }
 
-  /** Creates the default P1–P5 chart for a character that has none. */
-  ensureProgression(name) {
+  /** Writes every chart back, dropping the key when the list is empty. */
+  setProgressionCharts(name, charts) {
     const doc = this.doc("characters_progressions.json");
     if (!doc) return false;
     const canonical = this.resolve(name);
     if (!canonical) return false;
-    if (doc.nodeAt([canonical])) return false;
-    doc.setProperty([], canonical, [1, 2, 3, 4, 5].map((n) => ({ badge: `P${n}`, val: 0 })));
-    this.reload();
-    return true;
+
+    const clean = (Array.isArray(charts) ? charts : [])
+      .map((chart) => ({
+        label: String(chart && chart.label ? chart.label : "").trim(),
+        bars: (Array.isArray(chart && chart.bars) ? chart.bars : [])
+          .map((bar) => ({
+            badge: String(bar && bar.badge !== undefined ? bar.badge : "").trim(),
+            val: Number(bar && bar.val) || 0,
+          })),
+      }))
+      .filter((chart) => chart.bars.length);
+
+    let changed;
+    if (clean.length === 0) {
+      changed = doc.nodeAt([canonical]) ? doc.deleteProperty([], canonical) : false;
+    } else if (doc.nodeAt([canonical])) {
+      changed = doc.set([canonical], clean);
+    } else {
+      changed = doc.setProperty([], canonical, clean);
+    }
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Sets one badge's percentage inside one chart. */
+  setProgressionValue(name, badge, val, chartIndex = 0) {
+    const charts = this.progressionCharts(name).map((chart) => ({
+      label: chart.label,
+      bars: chart.bars.slice(),
+    }));
+    const chart = charts[chartIndex];
+    if (!chart) return false;
+    const at = chart.bars.findIndex((bar) => bar && bar.badge === badge);
+    if (at === -1) return false;
+    chart.bars[at] = { ...chart.bars[at], val: Number(val) || 0 };
+    return this.setProgressionCharts(name, charts);
+  }
+
+  /** Renames one chart; an empty title is allowed and reads as "Chart N". */
+  setProgressionLabel(name, chartIndex, label) {
+    const charts = this.progressionCharts(name).map((chart) => ({
+      label: chart.label,
+      bars: chart.bars.slice(),
+    }));
+    if (!charts[chartIndex]) return false;
+    charts[chartIndex].label = String(label || "").trim();
+    return this.setProgressionCharts(name, charts);
+  }
+
+  /** Appends a chart. A character with no data starts with one P1–P5 chart. */
+  addProgressionChart(name, label = "", bars = null) {
+    const charts = this.progressionCharts(name).map((chart) => ({
+      label: chart.label,
+      bars: chart.bars.slice(),
+    }));
+    const seed = Array.isArray(bars)
+      ? bars
+      : charts[charts.length - 1]?.bars.map((bar) => ({ badge: bar.badge, val: 0 })) ||
+        [1, 2, 3, 4, 5].map((n) => ({ badge: `P${n}`, val: 0 }));
+    charts.push({ label: String(label || "").trim(), bars: seed });
+    return this.setProgressionCharts(name, charts);
+  }
+
+  /** Removes one chart; removing the last one drops the character's data. */
+  removeProgressionChart(name, chartIndex) {
+    const charts = this.progressionCharts(name)
+      .filter((_, index) => index !== chartIndex)
+      .map((chart) => ({ label: chart.label, bars: chart.bars.slice() }));
+    return this.setProgressionCharts(name, charts);
+  }
+
+  /** Adds one bar to a chart, continuing the P1…Pn badge numbering. */
+  addProgressionBar(name, chartIndex) {
+    const charts = this.progressionCharts(name).map((chart) => ({
+      label: chart.label,
+      bars: chart.bars.slice(),
+    }));
+    const chart = charts[chartIndex];
+    if (!chart) return false;
+    let n = chart.bars.length + 1;
+    while (chart.bars.some((bar) => bar.badge === `P${n}`)) n++;
+    chart.bars.push({ badge: `P${n}`, val: 0 });
+    return this.setProgressionCharts(name, charts);
+  }
+
+  /** Removes one bar from a chart. */
+  removeProgressionBar(name, chartIndex, badge) {
+    const charts = this.progressionCharts(name).map((chart) => ({
+      label: chart.label,
+      bars: chart.bars.filter((bar) => bar.badge !== badge),
+    }));
+    return this.setProgressionCharts(name, charts);
+  }
+
+  /** Renames one bar's badge (P1, P2, … or any label). */
+  setProgressionBadge(name, chartIndex, badge, nextBadge) {
+    const wanted = String(nextBadge || "").trim();
+    if (!wanted) return false;
+    const charts = this.progressionCharts(name).map((chart) => ({
+      label: chart.label,
+      bars: chart.bars.map((bar) => ({ ...bar })),
+    }));
+    const chart = charts[chartIndex];
+    if (!chart) return false;
+    const at = chart.bars.findIndex((bar) => bar.badge === badge);
+    if (at === -1) return false;
+    if (chart.bars.some((bar, index) => index !== at && bar.badge === wanted)) return false;
+    chart.bars[at].badge = wanted;
+    return this.setProgressionCharts(name, charts);
+  }
+
+  /** Creates the default P1–P5 chart for a character that has none. */
+  ensureProgression(name) {
+    if (this.progressionCharts(name).length > 0) return false;
+    return this.addProgressionChart(name);
   }
 
   /* ---- output ---- */
@@ -1626,13 +1718,9 @@ export function validate(model) {
         continue;
       }
       for (const key of Object.keys(build)) {
-        if (!["tags", "psychubes", "resonance", "pattern", "portrait", "notes"].includes(key)) {
+        if (!["psychubes", "resonance", "pattern", "portrait", "notes"].includes(key)) {
           warn(`${label}: unknown field "${key}"`);
         }
-      }
-      for (const tag of build.tags || []) {
-        const text = typeof tag === "string" ? tag : tag && tag.label;
-        if (!String(text || "").trim()) warn(`${label}: a tag has no label`);
       }
       for (const item of build.psychubes || []) {
         const text = String(item || "").trim();
@@ -1735,12 +1823,54 @@ export function validate(model) {
     const label = `characters_progressions.json → ${name}`;
     if (!known.has(name)) err(`${label}: "${name}" is not a known character`);
     if (!Array.isArray(list)) {
-      err(`${label}: expected an array of {badge, val}`);
+      err(`${label}: expected an array of charts`);
       continue;
     }
-    list.forEach((entry, i) => {
-      if (!entry || typeof entry !== "object") err(`${label}[${i}]: expected an object`);
-      else if (entry.val !== undefined && !Number.isFinite(Number(entry.val))) err(`${label}[${i}]: val must be a number`);
+    if (list.length === 0) warn(`${label}: has no charts, so nothing is drawn`);
+
+    // A flat bar list is the legacy single-chart shape.
+    const legacy = list.every((entry) => entry && typeof entry === "object" && !Array.isArray(entry.bars));
+    if (legacy) {
+      list.forEach((entry, i) => {
+        if (!entry || typeof entry !== "object") err(`${label}[${i}]: expected an object`);
+        else if (entry.val !== undefined && !Number.isFinite(Number(entry.val))) err(`${label}[${i}]: val must be a number`);
+      });
+      continue;
+    }
+
+    const seenLabels = new Set();
+    list.forEach((chart, i) => {
+      if (!chart || typeof chart !== "object" || Array.isArray(chart)) {
+        err(`${label}[${i}]: expected a chart object`);
+        return;
+      }
+      for (const key of Object.keys(chart)) {
+        if (!["label", "bars"].includes(key)) warn(`${label}[${i}]: unknown field "${key}"`);
+      }
+      if (!Array.isArray(chart.bars)) {
+        err(`${label}[${i}]: expected a bars array`);
+        return;
+      }
+      if (chart.bars.length === 0) warn(`${label}[${i}]: has no bars, so nothing is drawn`);
+
+      const title = String(chart.label || "").trim();
+      if (title) {
+        if (seenLabels.has(title.toLowerCase())) warn(`${label}: two charts are both called "${title}"`);
+        seenLabels.add(title.toLowerCase());
+      }
+
+      const seenBadges = new Set();
+      chart.bars.forEach((bar, j) => {
+        if (!bar || typeof bar !== "object") {
+          err(`${label}[${i}].bars[${j}]: expected an object`);
+          return;
+        }
+        const badge = String(bar.badge ?? "").trim();
+        if (!badge) warn(`${label}[${i}].bars[${j}]: has no badge label`);
+        else if (seenBadges.has(badge)) warn(`${label}[${i}]: two bars are both called "${badge}"`);
+        seenBadges.add(badge);
+        if (bar.val !== undefined && !Number.isFinite(Number(bar.val))) err(`${label}[${i}].bars[${j}]: val must be a number`);
+      });
     });
   }
 

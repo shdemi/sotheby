@@ -577,6 +577,35 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 .pattern-cell.static:hover { border-color: var(--border); }
 .pattern-cell.static img { display: none; }
 
+/* Portrait value charts: one block per chart, each with its own title. */
+.chart-editor {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chart-editor + .chart-editor { margin-top: 10px; }
+
+.chart-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-editor-head .field-label { flex: none; min-width: 58px; }
+.chart-editor-head .chart-editor-title { flex: 1; min-width: 120px; }
+.chart-editor-head .btn { flex: none; margin-left: auto; }
+
+.chart-bar-badge {
+  width: 100%;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
 /* Skill-card hand: the cards you drag onto an AP slot. */
 .guide-hand { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .guide-hand-card {

@@ -1,17 +1,6 @@
 {
   "Lorentz Butterfly": {
-    "tags": [
-      "Reality DMG",
-      "Intellect",
-      "Support",
-      "Lingering Glow",
-      "DPS",
-      "Rewrite"
-    ],
-    "psychubes": [
-      "The Fluttering Moment",
-      "Singleness of Heart"
-    ],
+    "psychubes": ["The Fluttering Moment", "Singleness of Heart"],
     "resonance": {
       "Attack": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
       "Crit": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
@@ -20,14 +9,7 @@
     "notes": ""
   },
   "Regulus": {
-    "tags": [
-      "Reality DMG",
-      "Star",
-      "DPS"
-    ],
-    "psychubes": [
-      "Steps Forward"
-    ],
+    "psychubes": ["Steps Forward"],
     "resonance": {
       "Attack": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
       "Crit": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
@@ -35,35 +17,28 @@
     "pattern": "Elucidation",
     "notes": ""
   },
-  "The Twins": {"tags": [
-  "Reality DMG",
-  "Star",
-  "Mineral",
-  "DPS",
-  "Conduit"
-],
+  "The Twins": {
     "psychubes": ["The Art of Atoms", "The Dance of Science"],
     "resonance": {
-  "Crit": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA",
-  "Attack": "APQkOAU4RSUEK0QkAS0RRABFIDQyNDA8UDxg"
-},
-    "pattern": "Elucidation"},
-  "Ms. Stranger": {"tags": ["DPS", "Mental DMG", "Mineral", "Ritual"], "pattern": "Elucidation", "resonance": {
-  "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
-  "Crit (R12+)": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
-},
-    "psychubes": ["Long Night Talk", "Until I Am Me"]},
-  "Everecho": {"tags": [
-  "Mineral",
-  "Reality DMG",
-  "Heal",
-  "Support",
-  "Conduit"
-],
+      "Crit": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA",
+      "Attack": "APQkOAU4RSUEK0QkAS0RRABFIDQyNDA8UDxg"
+    },
+    "pattern": "Elucidation"
+  },
+  "Ms. Stranger": {
+    "pattern": "Elucidation",
+    "resonance": {
+      "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
+      "Crit (R12+)": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
+    },
+    "psychubes": ["Long Night Talk", "Until I Am Me"]
+  },
+  "Everecho": {
     "psychubes": ["A Dream Beyond Light", "Cracks in the Shell"],
     "resonance": {
-  "Healing": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
-  "Survivability": "APwlMTMxIjQFNAM8UzxjOAE4QUAAQCBAQEgxRWA"
-},
-    "pattern": "Hyper"}
+      "Healing": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
+      "Survivability": "APwlMTMxIjQFNAM8UzxjOAE4QUAAQCBAQEgxRWA"
+    },
+    "pattern": "Hyper"
+  }
 }

@@ -1262,31 +1262,33 @@
   <div id="rotations-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card rotations-modal-card" id="rotations-card">
       <div class="archetype-modal-header">
+        <button type="button" class="rotations-back" id="rotations-back" hidden>
+          <img src="images/random_icon/back_button.png" alt="" />
+          <span data-i18n="rotations.back">Back</span>
+        </button>
         <h2 class="archetype-modal-title"><span data-i18n="rotations.title">Skill Rotations</span></h2>
         <div class="rotations-header-tools">
           <input type="text" id="rotations-search" class="search-input" data-i18n-placeholder="rotations.search" placeholder="Search Rotations" />
-          <button type="button" class="btn btn-secondary btn-sm" id="rotations-rail-toggle" aria-expanded="true" aria-controls="rotations-rail">
-            <span class="rotations-rail-toggle-text" data-i18n="rotations.hideList">Hide list</span>
-          </button>
           <button class="modal-close" id="rotations-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
         </div>
       </div>
 
       <div class="rotations-body">
-        <aside class="rotations-rail" id="rotations-rail">
-          <div class="rotations-rail-scroll">
-            <div class="rotations-rail-head">
-              <span class="archetype-section-title"><span data-i18n="rotations.filters">Filters</span></span>
-              <button type="button" class="rotations-clear" id="rotations-clear-filters"><span data-i18n="rotations.clear">Clear</span></button>
-            </div>
-            <div class="rotations-filters" id="rotations-filters" role="group" aria-label="Archetype"></div>
-
-            <div class="rotations-rail-head rotations-rail-head-list">
-              <span class="archetype-section-title"><span data-i18n="rotations.list">Rotations</span></span>
-            </div>
-            <div class="rotations-list" id="rotations-list"></div>
+        <div class="rotations-browse" id="rotations-browse">
+          <div class="rotations-browse-head">
+            <span class="archetype-section-title"><span data-i18n="rotations.filters">Filters</span></span>
+            <button type="button" class="rotations-clear" id="rotations-clear-filters"><span data-i18n="rotations.clear">Clear</span></button>
           </div>
-        </aside>
+          <div class="rotations-filters" id="rotations-filters" role="group" aria-label="Archetype"></div>
+
+          <div class="rotations-browse-separator"></div>
+
+          <div class="rotations-browse-head">
+            <span class="archetype-section-title"><span data-i18n="rotations.list">Rotations</span></span>
+            <span class="rotations-browse-count" id="rotations-count"></span>
+          </div>
+          <div class="rotations-list" id="rotations-list"></div>
+        </div>
 
         <div class="rotations-detail" id="rotations-detail">
           <div class="guide-empty"><span data-i18n="rotations.select">Select a rotation to see its card plan.</span></div>
@@ -1400,6 +1402,7 @@
       <div class="archetype-modal-header">
         <h2 class="archetype-modal-title"><span data-i18n="team.presetsTitle">Team Presets</span></h2>
         <div class="team-header-actions">
+          <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-preset-mode" aria-pressed="false"><span class="preset-mode-label">Mode: Automatic</span></button>
           <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-preset-formable-only" aria-pressed="false"><span data-i18n="team.formableOnly">Formable Only</span></button>
           <input type="text" id="team-preset-search" class="search-input" data-i18n-placeholder="team.searchPresets" placeholder="Search Characters" />
           <button class="modal-close" id="team-presets-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
