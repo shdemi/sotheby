@@ -116,14 +116,88 @@ const readFirstVariant = () =>
 /**
  * Simulates an HTML5 drag of a slot handle onto another slot. `below` picks the
  * drop half, which decides whether the member lands after the target.
- */
-const dragSlot = (fromIndex, toIndex, below) =>
+ */const dragSlot = (fromIndex, toIndex, below) =>
   page.evaluate(
     ({ fromIndex, toIndex, below }) => {
       const card = document.querySelector("#team-detail .card");
       const slots = [...card.querySelectorAll(".slot")];
       const source = slots[fromIndex].querySelector(".slot-handle");
       const target = slots[toIndex];
+      const data = new DataTransfer();
+      const rect = target.getBoundingClientRect();
+      const clientY = below ? rect.top + rect.height * 0.75 : rect.top + rect.height * 0.25;
+      const fire = (node, type) =>
+        node.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: data, clientY }));
+      fire(source, "dragstart");
+      fire(target, "dragover");
+      fire(target, "drop");
+      fire(source, "dragend");
+    },
+    { fromIndex, toIndex, below }
+  );
+
+/** Character names of the substitutes under the first slot of the first variant. */
+const readFirstSlotSubs = () =>
+  page.evaluate(() => {
+    const slot = document.querySelector("#team-detail .card .slot");
+    if (!slot) return [];
+    return [...slot.querySelectorAll(".subs .sub-editor")].map(
+      (row) => row.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
+    );
+  });
+
+/** Character names of the substitutes in the slot holding two or more of them. */
+const readSlotSubs = (slotIndex) =>
+  page.evaluate((slotIndex) => {
+    const slot = [...document.querySelectorAll("#team-detail .card .slot")][slotIndex];
+    if (!slot) return [];
+    return [...slot.querySelectorAll(".subs .sub-editor")].map(
+      (row) => row.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
+    );
+  });
+
+/** Simulates a drag of one substitute handle onto another substitute row. */
+const dragSub = (fromIndex, toIndex, below, slotIndex = 0) =>
+  page.evaluate(
+    ({ fromIndex, toIndex, below, slotIndex }) => {
+      // Rows are scoped to one slot: different slots never mix.
+      const scope = [...document.querySelectorAll("#team-detail .card .slot")][slotIndex];
+      const rows = [...scope.querySelectorAll(".subs .sub-editor")];
+      const source = rows[fromIndex].querySelector(".sub-handle");
+      const target = rows[toIndex];
+      const data = new DataTransfer();
+      const rect = target.getBoundingClientRect();
+      const clientY = below ? rect.top + rect.height * 0.75 : rect.top + rect.height * 0.25;
+      const fire = (node, type) =>
+        node.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: data, clientY }));
+      fire(source, "dragstart");
+      fire(target, "dragover");
+      fire(target, "drop");
+      fire(source, "dragend");
+    },
+    { fromIndex, toIndex, below, slotIndex }
+  );
+
+/** Index of the first slot in the first variant that has at least two substitutes. */
+const firstSlotWithTwoSubs = () =>
+  page.evaluate(() => {
+    const slots = [...document.querySelectorAll("#team-detail .card .slot")];
+    return slots.findIndex((slot) => slot.querySelectorAll(".subs .sub-editor").length >= 2);
+  });
+
+/** Team names in the Team Building modal, in display order. */
+const readTeamOrder = () =>
+  page.evaluate(() =>
+    [...document.querySelectorAll("#team-list .team-card .team-name-input")].map((i) => i.value)
+  );
+
+/** Simulates dragging one team card by its handle onto another card. */
+const dragTeamCard = (fromIndex, toIndex, below) =>
+  page.evaluate(
+    ({ fromIndex, toIndex, below }) => {
+      const cards = [...document.querySelectorAll("#team-list .team-card")];
+      const source = cards[fromIndex].querySelector(".team-drag-handle");
+      const target = cards[toIndex];
       const data = new DataTransfer();
       const rect = target.getBoundingClientRect();
       const clientY = below ? rect.top + rect.height * 0.75 : rect.top + rect.height * 0.25;
@@ -197,6 +271,34 @@ try {
   const namesBack = await readFirstVariant();
   check("dragging it back restores the order", JSON.stringify(namesBack) === JSON.stringify(namesBefore), JSON.stringify(namesBack.slice(0, 2)));
   check("and the file is clean again", (await readBadge()) === "0", await readBadge());
+
+  /* ------------------------------------------------------------------ *
+   * 1c. Dragging a substitute reorders it within its slot
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== dragging a substitute reorders it ===");
+  await page.waitForTimeout(500);
+  const subsBefore = await readFirstSlotSubs();
+  check("the first slot offers at least two substitutes", subsBefore.length >= 2, JSON.stringify(subsBefore));
+
+  if (subsBefore.length >= 2) {
+    await dragSub(0, 1, true);
+    await page.waitForTimeout(700);
+    const subsAfter = await readFirstSlotSubs();
+    check(
+      "the first substitute moved below the second",
+      subsAfter[0] === subsBefore[1] && subsAfter[1] === subsBefore[0],
+      JSON.stringify(subsAfter.slice(0, 2))
+    );
+    check("no substitute was lost", subsAfter.length === subsBefore.length, `${subsBefore.length} -> ${subsAfter.length}`);
+    check("and the file is dirty", (await readBadge()) === "1", await readBadge());
+
+    await dragSub(1, 0, false);
+    await page.waitForTimeout(700);
+    const subsBack = await readFirstSlotSubs();
+    check("dragging it back restores the order", JSON.stringify(subsBack) === JSON.stringify(subsBefore), JSON.stringify(subsBack.slice(0, 2)));
+    check("and the file is clean again", (await readBadge()) === "0", await readBadge());
+  }
 
   /* ------------------------------------------------------------------ *
    * 2. Other slot controls re-render too
@@ -700,6 +802,56 @@ try {
 
     await page.evaluate(() => document.getElementById("team-btn-close")?.click());
     await page.waitForTimeout(300);
+  }
+
+  console.log("\n=== Team Building: cards are drag-reorderable ===");
+  {
+    await page.goto(APP, { waitUntil: "networkidle" });
+    await page.evaluate(() => {
+      const slots = (names) =>
+        Array.from({ length: 4 }, (_, i) => ({ character: names[i] || null, psychube: null }));
+      localStorage.setItem(
+        "r1999_teams_v1",
+        JSON.stringify({
+          teams: [
+            { id: "team_a", name: "Alpha", slots: slots(["Isolde"]) },
+            { id: "team_b", name: "Bravo", slots: slots(["Rhiannon"]) },
+            { id: "team_c", name: "Charlie", slots: slots(["Matilda"]) },
+          ],
+        })
+      );
+    });
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(2200);
+
+    await page.locator("#btn-team").click();
+    await page.waitForTimeout(600);
+    const orderBefore = await readTeamOrder();
+    check("the modal lists the teams in stored order", orderBefore.join(",") === "Alpha,Bravo,Charlie", JSON.stringify(orderBefore));
+    check("every card carries a drag handle", (await page.evaluate(() => document.querySelectorAll("#team-list .team-drag-handle").length)) === 3);
+
+    await dragTeamCard(0, 2, true);
+    await page.waitForTimeout(500);
+    const orderAfter = await readTeamOrder();
+    check("dragging Alpha below Charlie moves it last", orderAfter.join(",") === "Bravo,Charlie,Alpha", JSON.stringify(orderAfter));
+    check(
+      "the new order is saved",
+      (await page.evaluate(() => JSON.parse(localStorage.getItem("r1999_teams_v1")).teams.map((t) => t.name).join(","))) === "Bravo,Charlie,Alpha"
+    );
+
+    await dragTeamCard(2, 1, false);
+    await page.waitForTimeout(500);
+    const orderBack = await readTeamOrder();
+    check("dragging it back above Bravo restores the order", orderBack.join(",") === "Alpha,Bravo,Charlie", JSON.stringify(orderBack));
+
+    // Keyboard fallback: ArrowDown on the handle moves the team.
+    await page.locator("#team-list .team-card").first().locator(".team-drag-handle").focus();
+    await page.keyboard.press("ArrowDown");
+    await page.waitForTimeout(500);
+    const orderKeys = await readTeamOrder();
+    check("ArrowDown on the handle moves the team down", orderKeys.join(",") === "Bravo,Alpha,Charlie", JSON.stringify(orderKeys));
+
+    await page.evaluate(() => document.getElementById("team-modal").style.display = "none");
   }
 
   console.log("\n=== Rotations: archetype filters, search and the turn plan ===");

@@ -861,6 +861,15 @@ export class Model {
     return changed;
   }
 
+  /** Moves a substitute up or down inside its slot. All indices are 0-based. */
+  moveSubstitute(archetype, variant, slot, from, to) {
+    const doc = this.doc("team_archetypes.json");
+    if (!doc) return false;
+    const changed = doc.reorderAt([archetype, variant, slot, "substitutes"], from, to);
+    if (changed) this.reload();
+    return changed;
+  }
+
   /** Removes a substitute, dropping the array when it becomes empty. */
   removeSubstitute(archetype, variant, slot, subIndex) {
     const doc = this.doc("team_archetypes.json");

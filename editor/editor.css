@@ -470,6 +470,7 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 /* substitutes: a compact strip under its slot */
 .subs { display: flex; flex-direction: column; gap: 6px; }
 .sub-editor {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -478,6 +479,19 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   margin: 6px 0 0 12px;
   border-left: 2px solid var(--border);
 }
+.sub-editor.dragging { opacity: .45; }
+.sub-editor.drop-above::before,
+.sub-editor.drop-below::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+}
+.sub-editor.drop-above::before { top: -1px; }
+.sub-editor.drop-below::after { bottom: -1px; }
+.sub-editor .sub-handle { align-self: center; }
 .sub-editor .sub-pick { padding: 3px 8px; }
 .sub-editor .sub-pick img.face { width: 24px; height: 24px; }
 .sub-editor .sub-pick img.chube { height: 24px; }

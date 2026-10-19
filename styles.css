@@ -5641,6 +5641,55 @@ body::before {
   box-sizing: border-box;
 }
 
+/* Drag to reorder: the handle is the only drag source. */
+.team-drag-handle {
+  flex: none;
+  cursor: grab;
+  color: rgba(50, 60, 52, 0.6);
+  font-size: 13px;
+  line-height: 1;
+  padding: 0 2px;
+  user-select: none;
+  touch-action: none;
+}
+
+.team-drag-handle:hover {
+  color: #ED7D31;
+}
+
+.team-drag-handle:active {
+  cursor: grabbing;
+}
+
+.team-drag-handle:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 2px;
+}
+
+.team-card.is-dragging {
+  opacity: 0.45;
+}
+
+.team-card.drop-above::before,
+.team-card.drop-below::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #ED7D31;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.team-card.drop-above::before {
+  top: -2px;
+}
+
+.team-card.drop-below::after {
+  bottom: -2px;
+}
+
 /* No "currently edited" highlight: every team is edited in place. */
 
 .team-card-head {

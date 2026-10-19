@@ -1434,44 +1434,103 @@ function renderTeamDetail() {
 
       /* substitutes */
       const subs = member.substitutes || [];
+      let subHost = null;
       if (subs.length) {
-        const subHost = el("div", { class: "subs" });
+        subHost = el("div", { class: "subs" });
         subs.forEach((sub, subi) => {
           const subName = typeof sub === "string" ? sub : sub.character;
           const subPsychube = typeof sub === "string" ? "" : sub.psychube || "";
           const subEuphoria = typeof sub === "string" ? "" : String(sub.euphoria || "").replace(/^e/i, "");
           const subKey = `${slotKey}-sub${subi}`;
 
-          subHost.appendChild(
-            el("div", { class: "sub-editor" }, [
-              el("span", { class: "flag", text: "SUB" }),
-              characterCell(subName, (name) => {
-                model.setSubstituteField(archetype, vi, si, subi, "character", name);
+          const subRow = el("div", { class: "sub-editor" }, [
+            el("span", {
+              class: "drag-handle sub-handle",
+              text: "⠿",
+              title: "Drag to reorder",
+              draggable: "true",
+            }),
+            el("span", { class: "flag", text: "SUB" }),
+            characterCell(subName, (name) => {
+              model.setSubstituteField(archetype, vi, si, subi, "character", name);
+              afterEdit({ list: false });
+            }, `${subKey}-char`),
+            psychubeCell(subPsychube, (name) => {
+              model.setSubstituteField(archetype, vi, si, subi, "psychube", name);
+              afterEdit({ list: false });
+            }, `${subKey}-chube`),
+            euphoriaSeg(
+              ["1", "2"].includes(subEuphoria) ? subEuphoria : "",
+              (tier) => {
+                model.setSubstituteField(archetype, vi, si, subi, "euphoria", tier === "" ? "" : `E${tier}`);
                 afterEdit({ list: false });
-              }, `${subKey}-char`),
-              psychubeCell(subPsychube, (name) => {
-                model.setSubstituteField(archetype, vi, si, subi, "psychube", name);
+              },
+              `${subKey}-eu`
+            ),
+            el("button", {
+              class: "btn btn-sm btn-ghost",
+              text: "×",
+              title: "Remove substitute",
+              onclick: () => {
+                model.removeSubstitute(archetype, vi, si, subi);
                 afterEdit({ list: false });
-              }, `${subKey}-chube`),
-              euphoriaSeg(
-                ["1", "2"].includes(subEuphoria) ? subEuphoria : "",
-                (tier) => {
-                  model.setSubstituteField(archetype, vi, si, subi, "euphoria", tier === "" ? "" : `E${tier}`);
-                  afterEdit({ list: false });
-                },
-                `${subKey}-eu`
-              ),
-              el("button", {
-                class: "btn btn-sm btn-ghost",
-                text: "×",
-                title: "Remove substitute",
-                onclick: () => {
-                  model.removeSubstitute(archetype, vi, si, subi);
-                  afterEdit({ list: false });
-                },
-              }),
-            ])
-          );
+              },
+            }),
+          ]);
+          subRow.dataset.index = String(subi);
+
+          // Same pattern as the member rows above: only the handle starts a
+          // drag so the cells stay clickable, and the drop listeners live on
+          // every row because dragstart does not trigger a re-render.
+          const subHandle = subRow.querySelector(".sub-handle");
+          subHandle.addEventListener("dragstart", (e) => {
+            state.drag = { kind: "sub", archetype, variant: vi, slot: si, index: subi };
+            subRow.classList.add("dragging");
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", subName || "");
+            // Keep the outer slot (and the preset list) from starting a drag.
+            e.stopPropagation();
+          });
+          subHandle.addEventListener("dragend", () => {
+            subRow.classList.remove("dragging");
+            state.drag = null;
+            for (const r of subHost.querySelectorAll(".sub-editor")) r.classList.remove("drop-above", "drop-below");
+          });
+
+          subRow.addEventListener("dragover", (e) => {
+            const drag = state.drag;
+            if (!drag || drag.kind !== "sub" || drag.archetype !== archetype) return;
+            if (drag.variant !== vi || drag.slot !== si || drag.index === subi) return;
+            e.preventDefault();
+            e.stopPropagation();
+            e.dataTransfer.dropEffect = "move";
+            const rect = subRow.getBoundingClientRect();
+            const above = e.clientY < rect.top + rect.height / 2;
+            subRow.classList.toggle("drop-above", above);
+            subRow.classList.toggle("drop-below", !above);
+          });
+          subRow.addEventListener("dragleave", () => subRow.classList.remove("drop-above", "drop-below"));
+          subRow.addEventListener("drop", (e) => {
+            const drag = state.drag;
+            subRow.classList.remove("drop-above", "drop-below");
+            if (!drag || drag.kind !== "sub" || drag.archetype !== archetype) return;
+            if (drag.variant !== vi || drag.slot !== si || drag.index === subi) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            const rect = subRow.getBoundingClientRect();
+            const above = e.clientY < rect.top + rect.height / 2;
+            // Removing the dragged substitute first shifts the rest down by one.
+            let target = above ? subi : subi + 1;
+            if (drag.index < target) target -= 1;
+            target = Math.max(0, Math.min(subs.length - 1, target));
+
+            state.drag = null;
+            model.moveSubstitute(archetype, vi, si, drag.index, target);
+            afterEdit({ list: false });
+          });
+
+          subHost.appendChild(subRow);
         });
         slotHost.appendChild(subHost);
       }

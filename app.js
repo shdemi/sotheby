@@ -4556,6 +4556,24 @@ function deleteTeam(teamId) {
   renderTeamModal();
 }
 
+/**
+ * Moves a team to `target` in the stored order. Used by drag and drop in the
+ * Team Building modal. The visible list can hide teams (search / ownable
+ * filters), so the target index is in the full list.
+ */
+function moveTeamTo(teamId, target) {
+  const teams = teamsConfig.teams;
+  const from = teams.findIndex((tm) => tm.id === teamId);
+  if (from < 0) return false;
+  const to = Math.max(0, Math.min(teams.length - 1, target));
+  if (from === to) return false;
+  const [team] = teams.splice(from, 1);
+  teams.splice(to, 0, team);
+  saveTeams();
+  teamModalDirty = true;
+  return true;
+}
+
 function renameTeam(teamId, name) {
   const team = findTeam(teamId);
   if (!team) return;
@@ -4628,6 +4646,65 @@ function teamSlotPortraitHtml(character) {
   `;
 }
 
+/* ---- Team card drag and drop ---- */
+
+/** The team card being dragged (null when no card drag is in progress). */
+let teamDragId = null;
+
+function clearTeamDropMarks(exceptCard) {
+  document.querySelectorAll("#team-list .team-card").forEach((card) => {
+    if (card === exceptCard) return;
+    card.classList.remove("is-dragging", "drop-above", "drop-below");
+  });
+}
+
+function onTeamCardDragStart(event, team, card) {
+  teamDragId = team.id;
+  card.classList.add("is-dragging");
+  event.dataTransfer.effectAllowed = "move";
+  // Firefox refuses to start a drag without payload data.
+  event.dataTransfer.setData("text/plain", team.id);
+}
+
+function endTeamCardDrag(card) {
+  teamDragId = null;
+  clearTeamDropMarks(null);
+  if (card) card.classList.remove("is-dragging");
+}
+
+function onTeamCardDragOver(event, team, card) {
+  if (!teamDragId || teamDragId === team.id) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+
+  const rect = card.getBoundingClientRect();
+  const above = event.clientY < rect.top + rect.height / 2;
+  clearTeamDropMarks(card);
+  card.classList.toggle("drop-above", above);
+  card.classList.toggle("drop-below", !above);
+}
+
+function onTeamCardDrop(event, team, card) {
+  if (!teamDragId || teamDragId === team.id) return;
+  event.preventDefault();
+
+  const rect = card.getBoundingClientRect();
+  const above = event.clientY < rect.top + rect.height / 2;
+  const draggedId = teamDragId;
+  teamDragId = null;
+  clearTeamDropMarks(null);
+
+  const from = teamsConfig.teams.findIndex((tm) => tm.id === draggedId);
+  const to = teamsConfig.teams.findIndex((tm) => tm.id === team.id);
+  if (from < 0 || to < 0) return;
+
+  // Removing the dragged team first shifts every team after it down by one.
+  let target = above ? to : to + 1;
+  if (from < target) target -= 1;
+
+  if (moveTeamTo(draggedId, target)) renderTeamModal();
+}
+
 function renderTeamCard(team) {
   const card = document.createElement("div");
   card.className = "team-card";
@@ -4635,6 +4712,30 @@ function renderTeamCard(team) {
 
   const head = document.createElement("div");
   head.className = "team-card-head";
+
+  // The handle is the only drag source, so renaming and the buttons stay usable.
+  const dragHandle = document.createElement("span");
+  dragHandle.className = "team-drag-handle";
+  dragHandle.textContent = "⠿";
+  dragHandle.title = t("team.dragReorder");
+  dragHandle.setAttribute("draggable", "true");
+  dragHandle.setAttribute("role", "button");
+  dragHandle.setAttribute("tabindex", "0");
+  dragHandle.addEventListener("dragstart", (e) => onTeamCardDragStart(e, team, card));
+  dragHandle.addEventListener("dragend", () => endTeamCardDrag(card));
+  // Keyboard fallback: arrow keys move the team without a mouse.
+  dragHandle.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    const from = teamsConfig.teams.findIndex((tm) => tm.id === team.id);
+    if (from < 0) return;
+    if (moveTeamTo(team.id, from + (e.key === "ArrowUp" ? -1 : 1))) {
+      renderTeamModal();
+      const next = document.querySelector(`#team-list .team-card[data-team-id="${team.id}"] .team-drag-handle`);
+      if (next) next.focus();
+    }
+  });
+  head.appendChild(dragHandle);
 
   const nameInput = document.createElement("input");
   nameInput.type = "text";
@@ -4667,6 +4768,17 @@ function renderTeamCard(team) {
 
   head.appendChild(btnDel);
   card.appendChild(head);
+
+  // The whole card accepts the drop; drop listeners are attached on every
+  // render because dragstart does not re-render the list.
+  card.addEventListener("dragover", (e) => onTeamCardDragOver(e, team, card));
+  card.addEventListener("dragleave", (e) => {
+    if (!card.contains(e.relatedTarget)) {
+      card.classList.remove("drop-above", "drop-below");
+      if (!teamDragId) card.classList.remove("is-dragging");
+    }
+  });
+  card.addEventListener("drop", (e) => onTeamCardDrop(e, team, card));
 
   const slotRow = document.createElement("div");
   slotRow.className = "team-slots";
