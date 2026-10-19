@@ -136,28 +136,19 @@ const readFirstVariant = () =>
     { fromIndex, toIndex, below }
   );
 
-/** Character names of the substitutes under the first slot of the first variant. */
-const readFirstSlotSubs = () =>
-  page.evaluate(() => {
-    const slot = document.querySelector("#team-detail .card .slot");
-    if (!slot) return [];
-    return [...slot.querySelectorAll(".subs .sub-editor")].map(
-      (row) => row.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
-    );
-  });
-
-/** Character names of the substitutes in the slot holding two or more of them. */
-const readSlotSubs = (slotIndex) =>
-  page.evaluate((slotIndex) => {
-    const slot = [...document.querySelectorAll("#team-detail .card .slot")][slotIndex];
-    if (!slot) return [];
-    return [...slot.querySelectorAll(".subs .sub-editor")].map(
-      (row) => row.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
-    );
-  });
+/** Per-slot substitute names of the first variant, as `{ index, subs }`. */
+const readAllSlotSubs = () =>
+  page.evaluate(() =>
+    [...document.querySelectorAll("#team-detail .card .slot")].map((slot, index) => ({
+      index,
+      subs: [...slot.querySelectorAll(".subs .sub-editor")].map(
+        (row) => row.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
+      ),
+    }))
+  );
 
 /** Simulates a drag of one substitute handle onto another substitute row. */
-const dragSub = (fromIndex, toIndex, below, slotIndex = 0) =>
+const dragSub = (fromIndex, toIndex, below, slotIndex) =>
   page.evaluate(
     ({ fromIndex, toIndex, below, slotIndex }) => {
       // Rows are scoped to one slot: different slots never mix.
@@ -177,13 +168,6 @@ const dragSub = (fromIndex, toIndex, below, slotIndex = 0) =>
     },
     { fromIndex, toIndex, below, slotIndex }
   );
-
-/** Index of the first slot in the first variant that has at least two substitutes. */
-const firstSlotWithTwoSubs = () =>
-  page.evaluate(() => {
-    const slots = [...document.querySelectorAll("#team-detail .card .slot")];
-    return slots.findIndex((slot) => slot.querySelectorAll(".subs .sub-editor").length >= 2);
-  });
 
 /** Team names in the Team Building modal, in display order. */
 const readTeamOrder = () =>
@@ -277,28 +261,38 @@ try {
    * ------------------------------------------------------------------ */
 
   console.log("\n=== dragging a substitute reorders it ===");
-  await page.waitForTimeout(500);
-  const subsBefore = await readFirstSlotSubs();
-  check("the first slot offers at least two substitutes", subsBefore.length >= 2, JSON.stringify(subsBefore));
+  // No shipped preset stacks two substitutes in one slot, so add a second one
+  // to the first slot of the selected preset to exercise the drag.
+  await page.locator("#team-detail .card").first().locator(".slot-actions").first()
+    .locator("button", { hasText: "+ Substitute" }).click();
+  await page.waitForTimeout(700);
 
-  if (subsBefore.length >= 2) {
-    await dragSub(0, 1, true);
-    await page.waitForTimeout(700);
-    const subsAfter = await readFirstSlotSubs();
-    check(
-      "the first substitute moved below the second",
-      subsAfter[0] === subsBefore[1] && subsAfter[1] === subsBefore[0],
-      JSON.stringify(subsAfter.slice(0, 2))
-    );
-    check("no substitute was lost", subsAfter.length === subsBefore.length, `${subsBefore.length} -> ${subsAfter.length}`);
-    check("and the file is dirty", (await readBadge()) === "1", await readBadge());
+  const allSubs = await readAllSlotSubs();
+  const staged = allSubs.find((slot) => slot.subs.length >= 2);
+  check("a slot now has two substitutes", !!staged, JSON.stringify(allSubs.map((s) => s.subs.length)));
+  const subSlot = staged ? staged.index : 0;
+  const subsBefore = staged ? staged.subs : [];
 
-    await dragSub(1, 0, false);
-    await page.waitForTimeout(700);
-    const subsBack = await readFirstSlotSubs();
-    check("dragging it back restores the order", JSON.stringify(subsBack) === JSON.stringify(subsBefore), JSON.stringify(subsBack.slice(0, 2)));
-    check("and the file is clean again", (await readBadge()) === "0", await readBadge());
-  }
+  await dragSub(0, 1, true, subSlot);
+  await page.waitForTimeout(700);
+  const subsAfter = (await readAllSlotSubs())[subSlot]?.subs ?? [];
+  check(
+    "the first substitute moved below the second",
+    subsAfter[0] === subsBefore[1] && subsAfter[1] === subsBefore[0],
+    JSON.stringify(subsAfter.slice(0, 2))
+  );
+  check("no substitute was lost", subsAfter.length === subsBefore.length, `${subsBefore.length} -> ${subsAfter.length}`);
+  check("and the file is dirty", (await readBadge()) === "1", await readBadge());
+
+  await dragSub(1, 0, false, subSlot);
+  await page.waitForTimeout(700);
+  const subsBack = (await readAllSlotSubs())[subSlot]?.subs ?? [];
+  check("dragging it back restores the order", JSON.stringify(subsBack) === JSON.stringify(subsBefore), JSON.stringify(subsBack.slice(0, 2)));
+
+  // Removing the staged substitute leaves the file as it started.
+  await page.locator("#team-detail .card .slot").nth(subSlot).locator(".sub-editor button").last().click();
+  await page.waitForTimeout(700);
+  check("removing it leaves the file clean again", (await readBadge()) === "0", await readBadge());
 
   /* ------------------------------------------------------------------ *
    * 2. Other slot controls re-render too

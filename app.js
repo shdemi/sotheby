@@ -123,6 +123,79 @@ function setLanguage(lang) {
   const rosterModalEl = document.getElementById("roster-modal");
   if (rosterModalEl && rosterModalEl.style.display === "flex") renderRosterManager();
   refreshOpenTeamModals();
+
+  // Slide the highlight to the language that was just picked.
+  syncSlidingThumbs({ animate: true });
+}
+
+/* ---- Language switcher: a highlight that slides to the chosen language ---- */
+
+/** Controls that get a sliding highlight. */
+const SLIDING_CONTROLS = [{ container: ".lang-switcher", item: ".lang-btn", thumb: "lang-thumb" }];
+
+/**
+ * Injects the highlight element into each control. It is absolutely positioned
+ * and sits behind the buttons, so the labels keep their own contrast and the
+ * buttons keep their layout.
+ */
+function setupSlidingThumbs() {
+  SLIDING_CONTROLS.forEach(({ container, thumb: className }) => {
+    document.querySelectorAll(container).forEach((host) => {
+      if (host.querySelector(`.${className}`)) return;
+      const thumb = document.createElement("span");
+      thumb.className = className;
+      thumb.setAttribute("aria-hidden", "true");
+      host.insertBefore(thumb, host.firstChild);
+    });
+  });
+  refreshSlidingThumbs();
+  // Fonts can settle after the first paint, so measure once more next frame.
+  if (typeof requestAnimationFrame === "function") requestAnimationFrame(refreshSlidingThumbs);
+}
+
+/**
+ * Moves a highlight under `active`.
+ *
+ * The items are real buttons whose widths depend on their translated labels,
+ * so the position comes from the measured offset rather than a fixed share of
+ * the container. A hidden control measures as zero and is skipped until it is
+ * shown again.
+ */
+function placeSlidingThumb(thumb, active, { animate = true } = {}) {
+  const width = active.offsetWidth;
+  if (!width) return;
+
+  if (!animate) {
+    // Jump to the spot, then re-arm the transition for the next switch.
+    thumb.style.transition = "none";
+  }
+  thumb.style.width = `${width}px`;
+  thumb.style.transform = `translateX(${active.offsetLeft}px)`;
+  if (!animate) {
+    void thumb.offsetWidth;
+    thumb.style.transition = "";
+  }
+}
+
+/**
+ * Syncs every control. `animate` is false for placement after a layout change
+ * (first paint, drawer open, resize) so the highlight does not slide in from
+ * the left edge.
+ */
+function syncSlidingThumbs({ animate = false } = {}) {
+  SLIDING_CONTROLS.forEach(({ container, item, thumb: className }) => {
+    document.querySelectorAll(container).forEach((host) => {
+      const thumb = host.querySelector(`.${className}`);
+      const active = host.querySelector(`${item}.active`);
+      if (!thumb || !active) return;
+      placeSlidingThumb(thumb, active, { animate });
+    });
+  });
+}
+
+/** Re-measures without animating. */
+function refreshSlidingThumbs() {
+  syncSlidingThumbs({ animate: false });
 }
 
 /** Re-renders whichever Team Building modal is currently open (i18n / CN toggle). */
@@ -1286,6 +1359,7 @@ async function initApp() {
     loadLanguage();
     applyTranslations();
     refreshDynamicTranslations();
+    setupSlidingThumbs();
     loadTitle();
     loadListingConfig();
     loadFutureSightState();
@@ -5904,6 +5978,11 @@ function renderStatsModal() {
       ${statsRarityBlockHtml(t("stats.chubeAmp"), m.chubeAmpMax, rarityColors, { rarities: [6, 5] })}
     </div>
   `;
+
+  // Stagger the sections so the modal fills in top-down as it opens.
+  body.querySelectorAll(".stat-section").forEach((section, index) => {
+    section.style.setProperty("--stat-index", String(index));
+  });
 }
 
 function openStatsModal() {
@@ -6328,13 +6407,14 @@ function renderBuildsDetail() {
   }
 
   const chartHtml = (chart) => {
-    const maxVal = chart.bars.reduce((max, p) => Math.max(max, Number(p.val) || 0), 0) || 1;
     return `<div class="build-chart" style="--build-accent:${accent}">${chart.bars
-      .map((p) => {
-        const val = Number(p.val) || 0;
-        const height = Math.max(4, Math.round((val / maxVal) * 100));
+      .map((p, index) => {
+        const val = Math.max(0, Number(p.val) || 0);
+        // The axis is a fixed 0–100 scale, so bars compare across charts and a
+        // full bar always means 100%.
+        const height = Math.max(2, Math.min(100, val));
         return `
-            <div class="build-chart-col">
+            <div class="build-chart-col" style="--bar-index:${index}">
               <span class="build-chart-val">${val}%</span>
               <span class="build-chart-track"><span class="build-chart-bar" style="height:${height}%"></span></span>
               <span class="build-chart-badge">${escapeHtml(p.badge || "")}</span>
@@ -9185,43 +9265,33 @@ function setupEventListeners() {
       btnToolsToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
       const icon = btnToolsToggle.querySelector(".toggle-icon");
       if (icon) icon.textContent = isOpen ? "▴" : "▾";
+      // The drawer switcher only has a measurable size once it is visible.
+      if (isOpen) refreshSlidingThumbs();
     });
   }
 
+  // Keep the highlights aligned when the layout reflows.
+  window.addEventListener("resize", refreshSlidingThumbs);
+
   /**
-   * JSON and Reset sit in the stats row, right of the language switcher. Once
-   * the Menu button takes over (<= 1260px) that row has no room for them, so
-   * they move into the drawer's data group beside Teams. The nodes are moved
-   * rather than duplicated so the click handlers stay attached to one element.
+   * JSON sits in the stats row, right of the language switcher. Once the Menu
+   * button takes over (<= 1260px) that row has no room for it, so it moves into
+   * the drawer and trails the drawer's language switcher instead. The node is
+   * moved rather than duplicated so the click handler stays attached.
    */
   const statsRow = document.querySelector(".header-stats-row");
   const headerLangGroup = document.getElementById("lang-switcher-header");
-  const drawerDataGroup = document.querySelector(".tools-data-group");
-  const drawerTeamsBtn = document.getElementById("btn-team");
+  const drawerLangGroup = document.querySelector(".tools-lang-group");
+  const jsonBtn = document.getElementById("btn-json");
   const narrowTools = window.matchMedia("(max-width: 1260px)");
 
   const syncDataButtonPlacement = () => {
-    if (!statsRow || !drawerDataGroup) return;
-    const buttons = [
-      document.getElementById("btn-json"),
-      document.getElementById("btn-reset-data"),
-    ].filter(Boolean);
+    if (!statsRow || !jsonBtn) return;
 
     if (narrowTools.matches) {
-      // Keep source order (JSON then Reset), both left of Teams.
-      buttons.forEach((btn) => {
-        if (drawerTeamsBtn && drawerTeamsBtn.parentElement === drawerDataGroup) {
-          drawerDataGroup.insertBefore(btn, drawerTeamsBtn);
-        } else {
-          drawerDataGroup.appendChild(btn);
-        }
-      });
+      if (drawerLangGroup) drawerLangGroup.appendChild(jsonBtn);
     } else if (headerLangGroup && headerLangGroup.parentElement === statsRow) {
-      // Reverse order: each insert lands directly after the switcher, so JSON
-      // finishes on the left and Reset on the right.
-      [...buttons].reverse().forEach((btn) => {
-        headerLangGroup.insertAdjacentElement("afterend", btn);
-      });
+      headerLangGroup.insertAdjacentElement("afterend", jsonBtn);
     }
   };
 

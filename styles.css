@@ -207,8 +207,34 @@ body::before {
   min-width: 31px;
 }
 
+/* ================= SLIDING SEGMENTED CONTROLS ================= */
+
+/* The language highlight glides to the active option. It is absolutely
+   positioned behind the buttons and sized from the measured offset in
+   syncSlidingThumbs(), so translated labels of different widths stay aligned. */
+.lang-thumb {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background: #2a2825;
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    transform 0.28s cubic-bezier(0.16, 0.84, 0.32, 1),
+    width 0.28s cubic-bezier(0.16, 0.84, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-thumb {
+    transition: none;
+  }
+}
+
 /* ================= LANGUAGE SWITCHER ================= */
 .lang-switcher {
+  position: relative;
   display: inline-flex;
   align-items: stretch;
   border: 1px solid #B5B5B3;
@@ -220,6 +246,8 @@ body::before {
 }
 
 .lang-btn {
+  position: relative;
+  z-index: 1;
   background: transparent;
   border: none;
   border-right: 1px solid #B5B5B3;
@@ -247,9 +275,15 @@ body::before {
   color: #FFFFFF;
 }
 
+/* The sliding thumb supplies the fill, so the button only sets its ink. */
 .lang-btn.active {
-  background: #2a2825;
+  background: transparent;
   color: #FFFFFF;
+}
+
+/* Hovering the active button must not paint over the thumb. */
+.lang-btn.active:hover {
+  background: transparent;
 }
 
 .lang-btn:focus {
@@ -3152,6 +3186,43 @@ body::before {
 /* ================= STATISTICS MODAL ================= */
 #stats-modal .modal-card {
   max-height: 82vh;
+  animation: statsCardIn 0.26s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+}
+
+@keyframes statsCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Each block rises in after the card lands, one after another. */
+#stats-modal .stat-section {
+  animation: statsBlockIn 0.28s ease-out both;
+  animation-delay: calc(70ms + var(--stat-index, 0) * 40ms);
+}
+
+@keyframes statsBlockIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respect the OS "reduce motion" preference: show everything immediately. */
+@media (prefers-reduced-motion: reduce) {
+  #stats-modal .modal-card,
+  #stats-modal .stat-section {
+    animation: none;
+  }
 }
 
 #stats-modal .modal-body {
@@ -4863,6 +4934,16 @@ body::before {
     padding: 0 10px;
     font-size: 0.64rem;
   }
+
+  /* JSON now trails the drawer's language switcher instead of sitting in the
+     data group, so it needs its own size to line up with it. */
+  .tools-lang-group .btn {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 0.64rem;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
 }
 
 /* Narrow tablet / small-laptop: the centred action row no longer fits beside
@@ -5171,6 +5252,14 @@ body::before {
   .tools-lang-group .lang-btn {
     padding: 0 10px;
     font-size: 0.62rem;
+  }
+
+  .tools-lang-group .btn {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 0.6rem;
+    white-space: nowrap;
+    box-sizing: border-box;
   }
 
   .btn {
@@ -5699,7 +5788,7 @@ body::before {
   margin-bottom: 8px;
 }
 
-/* Renameable team title â€” reads as a label until hovered/focused.
+/* Renameable team title — reads as a label until hovered/focused.
    Dark ink, because the card now carries a light gradient. */
 .team-name-input {
   flex: 1;
@@ -6902,6 +6991,47 @@ body.team-resizing * {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Opening a character: the hero settles first, then the cards slide up. */
+.builds-detail .builds-hero {
+  animation: buildsSectionIn 0.3s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+}
+
+.builds-detail .builds-hero-portrait img {
+  animation: buildsPortraitIn 0.5s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+}
+
+.builds-detail .builds-grid {
+  animation: buildsSectionIn 0.34s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+  animation-delay: 70ms;
+}
+
+.builds-detail .build-notes-box {
+  animation: buildsSectionIn 0.3s ease-out both;
+  animation-delay: 130ms;
+}
+
+@keyframes buildsSectionIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes buildsPortraitIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .builds-hero-portrait {
   width: 76px;
   height: 76px;
@@ -7101,9 +7231,10 @@ body.team-resizing * {
 
 .build-chart-val {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 0.64rem;
+  font-size: 0.6rem;
   color: #ECE5D9;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* The track shows the full scale, so short bars still read as a proportion. */
@@ -7121,6 +7252,38 @@ body.team-resizing * {
   width: 100%;
   display: block;
   background: var(--build-accent, #D05126);
+  transform-origin: bottom;
+  animation: buildBarGrow 0.55s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+  animation-delay: calc(var(--bar-index, 0) * 55ms);
+}
+
+@keyframes buildBarGrow {
+  from {
+    transform: scaleY(0);
+    opacity: 0.35;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Labels follow their bar in, so the eye reads the column top-down. */
+.build-chart-val,
+.build-chart-badge {
+  animation: buildChartLabelIn 0.3s ease-out both;
+  animation-delay: calc(180ms + var(--bar-index, 0) * 55ms);
+}
+
+@keyframes buildChartLabelIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .build-chart-badge {
@@ -7129,6 +7292,19 @@ body.team-resizing * {
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #B5B5B3;
+}
+
+/* Respect the OS "reduce motion" preference: show everything immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .builds-detail .builds-hero,
+  .builds-detail .builds-hero-portrait img,
+  .builds-detail .builds-grid,
+  .builds-detail .build-notes-box,
+  .build-chart-bar,
+  .build-chart-val,
+  .build-chart-badge {
+    animation: none;
+  }
 }
 
 /* Psychubes: one row each, no tile behind the art. */

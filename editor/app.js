@@ -1468,7 +1468,7 @@ function renderTeamDetail() {
               `${subKey}-eu`
             ),
             el("button", {
-              class: "btn btn-sm btn-ghost",
+              class: "btn btn-sm btn-danger",
               text: "×",
               title: "Remove substitute",
               onclick: () => {
