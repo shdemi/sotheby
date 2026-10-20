@@ -4704,8 +4704,10 @@ function setTeamSlotPsychube(teamId, slotIndex, key) {
 
 /**
  * Portrait art for a slot: the character image with the afflatus emblem in the
- * top-left corner and a dark band carrying the insight icon + level. Unowned
- * characters show neither insight nor level. The psychube tile is a separate
+ * top-left corner, a dark band carrying the insight icon + level and, under that
+ * band, a two-pixel portrait tier line. Unowned characters show none of them.
+ * Presets use their own markup, so they never get the tier line. The psychube
+ * tile is a separate
  * sibling block (see renderTeamCard) so the two never share a hover frame.
  */
 function teamSlotPortraitHtml(character) {
@@ -4723,11 +4725,19 @@ function teamSlotPortraitHtml(character) {
     ? `<img src="images/random_icon/Used_icon.png" alt="" class="team-slot-used" loading="lazy" decoding="async" />`
     : "";
 
+  // Insight sits beside the level in the bottom band; the portrait tier line
+  // runs under that band.
+  const insightHtml = char.owned && insight > 0
+    ? `<img src="images/insight_icon/I${insight}.png" alt="${escapeHtml(fmtInsight(insight))}" class="team-slot-insight" loading="lazy" decoding="async" />`
+    : "";
+
   const metaHtml = char.owned
-    ? `<span class="team-slot-meta">
-        ${insight > 0 ? `<img src="images/insight_icon/I${insight}.png" alt="${escapeHtml(fmtInsight(insight))}" class="team-slot-insight" loading="lazy" decoding="async" />` : ""}
-        <span class="team-slot-level">${escapeHtml(fmtLevel(level))}</span>
-      </span>`
+    ? `<span class="team-slot-meta">${insightHtml}<span class="team-slot-level">${escapeHtml(fmtLevel(level))}</span></span>`
+    : "";
+
+  // Portrait tier line: two pixels of dashes inside the portrait, under the level
+  const portraitBarHtml = char.owned
+    ? `<span class="team-slot-portrait-bar">${rotationPortraitDashesHtml(char.portrait, getCharacterRarity(character))}</span>`
     : "";
 
   return `
@@ -4735,6 +4745,7 @@ function teamSlotPortraitHtml(character) {
       <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(displayCharName(character))}" class="team-slot-img" loading="lazy" decoding="async" />
       ${afflatusHtml}
       ${metaHtml}
+      ${portraitBarHtml}
     </span>
     ${dupeHtml}
   `;
@@ -7078,18 +7089,64 @@ function renderRotations() {
   renderRotationsDetail();
 }
 
+/** Legacy slot types and the tag they stand for. */
+const ROT_LEGACY_SLOT_TAGS = { free: "ap-free", precast: "precast" };
+
+/**
+ * Slot tags. The layout lives in `type`; the meaning lives here, so a slot can
+ * be both AP Free and Precast and the badge is drawn once per group.
+ */
+const ROT_SLOT_TAGS = [
+  { key: "ap-free", label: "AP Free", kind: "badge" },
+  { key: "precast", label: "Precast", kind: "plaque" },
+  { key: "move", label: "Move", kind: "plaque" },
+  { key: "merge", label: "Merge", kind: "inline" },
+];
+
+function rotationSlotLayout(slot) {
+  const type = slot?.type || "normal";
+  return ROT_LEGACY_SLOT_TAGS[type] ? "normal" : type;
+}
+
+function rotationSlotTags(slot) {
+  const tags = Array.isArray(slot?.tags) ? slot.tags.filter((tag) => typeof tag === "string") : [];
+  const legacy = ROT_LEGACY_SLOT_TAGS[slot?.type];
+  return legacy && !tags.includes(legacy) ? [...tags, legacy] : tags;
+}
+
+function rotationTagInfo(key) {
+  return ROT_SLOT_TAGS.find((tag) => tag.key === key) || null;
+}
+
+/** Skill 3 is the ultimate for every character; `frame` overrides either way. */
+function rotationCardIsUltimate(card) {
+  if (!card) return false;
+  if (card.frame === "ultimate") return true;
+  if (card.frame === "normal") return false;
+  if (card.special) return false;
+  return Number(card.skill) === 3;
+}
+
 /** One skill card: character art, or a special card with no owner. */
 function rotationCardHtml(card, variant) {
   if (!card) return "";
-  const cls = variant === "lb" ? "rot-card is-lb" : "rot-card";
+  const cls = ["rot-card"];
+  if (variant === "lb") cls.push("is-lb");
+  if (rotationCardIsUltimate(card)) cls.push("is-ultimate");
+  if (card.preferred) cls.push("is-preferred");
+  const className = cls.join(" ");
   if (card.special) {
-    return `<span class="${cls}"><img src="${escapeHtml(card.special)}" alt="" /></span>`;
+    return `<span class="${className}"><img class="rot-card-art" src="${escapeHtml(card.special)}" alt="" /></span>`;
   }
   const char = resolveCharacterName(card.character) || card.character;
   // A pinned icon wins: it keeps the exact variant the author picked.
   const icon = card.icon || guideSkillIcon(char, card.skill);
-  return `<span class="${cls}" title="${escapeHtml(displayCharName(char))}">
-      <img src="${escapeHtml(icon)}" alt="" />
+  const frame = rotationCardIsUltimate(card)
+    ? `<img class="rot-card-frame" src="images/card_modulo/Ultimate.png" alt="" />`
+    : "";
+  return `<span class="${className}" title="${escapeHtml(displayCharName(char))}">
+      ${frame}
+      <img class="rot-card-art" src="${escapeHtml(icon)}" alt="" />
     </span>`;
 }
 
@@ -7099,21 +7156,28 @@ const SLOT_TYPE_LABELS = {
   or: "OR",
   lb: "1/4 AP",
   text: "TEXT",
-  free: "FREE AP",
   tuning: "TUNING",
-  precast: "PRECAST",
 };
 
 function rotationSlotHtml(slot) {
   if (!slot) return "";
-  const type = slot.type || "normal";
+  const type = rotationSlotLayout(slot);
+  const tags = rotationSlotTags(slot);
   const cards = Array.isArray(slot.cards) ? slot.cards.filter(Boolean) : [];
   const label = SLOT_TYPE_LABELS[type] || SLOT_TYPE_LABELS.normal;
 
+  const infos = tags.map(rotationTagInfo).filter(Boolean);
+  const badge = infos.find((tag) => tag.kind === "badge");
+  const plaques = infos.filter((tag) => tag.kind === "plaque");
+  const inline = infos.find((tag) => tag.kind === "inline");
+  const overlay =
+    (badge ? `<span class="rot-tag-badge">${escapeHtml(badge.label)}</span>` : "") +
+    plaques.map((tag) => `<span class="rot-tag-plaque">${escapeHtml(tag.label)}</span>`).join("");
+
   const wrap = (inner, extraClass = "") =>
-    `<span class="rot-slot${extraClass}"><span class="rot-slot-body">${inner}</span><span class="rot-slot-type">${escapeHtml(
-      label
-    )}</span></span>`;
+    `<span class="rot-slot${extraClass}"><span class="rot-slot-body">${overlay}${inner}</span><span class="rot-slot-type${
+      type === "normal" ? " is-plain" : ""
+    }">${escapeHtml(label)}</span></span>`;
 
   if (type === "text") {
     const text = slot.text || "";
@@ -7121,7 +7185,7 @@ function rotationSlotHtml(slot) {
     return wrap(`<span class="rot-slot-text">${escapeHtml(text)}</span>`, " is-text");
   }
 
-  if (cards.length === 0) return `<span class="rot-slot is-empty"><span class="rot-slot-body"></span></span>`;
+  if (cards.length === 0) return `<span class="rot-slot is-empty"><span class="rot-slot-body">${overlay}</span></span>`;
 
   if (type === "lb") {
     return wrap(rotationCardHtml(cards[0], "lb"), " is-lb");
@@ -7132,11 +7196,14 @@ function rotationSlotHtml(slot) {
     // room as one normal card.
     const front = cards[0] ? rotationCardHtml(cards[0]) : "";
     const behind = cards[1]
-      ? `<span class="rot-card is-behind"><img src="${escapeHtml(
+      ? `<span class="rot-card is-behind"><img class="rot-card-art" src="${escapeHtml(
           cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
         )}" alt="" /></span>`
       : "";
-    return wrap(`<span class="rot-or-stack">${front}${behind}</span>`, " is-or");
+    return wrap(
+      `<span class="rot-or-stack">${front}${behind}</span>${inline ? `<span class="rot-tag-inline">${escapeHtml(inline.label)}</span>` : ""}`,
+      " is-or"
+    );
   }
 
   // A tuning slot is a text box with the tuning card shrunk into its bottom-right
@@ -7152,8 +7219,67 @@ function rotationSlotHtml(slot) {
     );
   }
 
-  return wrap(rotationCardHtml(cards[0]));
+  return wrap(rotationCardHtml(cards[0]) + (inline ? `<span class="rot-tag-inline">${escapeHtml(inline.label)}</span>` : ""));
 }
+
+/**
+ * Draws the bracket / box / fork connector for every callout, from the cards it
+ * points at down to its text box. Runs after layout because the spans follow
+ * the card widths, which the CSS alone cannot know.
+ */
+function drawRotationConnectors(root = document) {
+  const NS = "http://www.w3.org/2000/svg";
+  for (const node of root.querySelectorAll(".rot-annotation")) {
+    const rail = node.querySelector(".rot-annotation-rail");
+    if (!rail) continue;
+    const round = node.closest(".rot-round");
+    const slots = [...(round?.querySelectorAll(".rot-round-slots > .rot-slot") || [])];
+    const from = slots[Number(node.dataset.from)];
+    const to = slots[Number(node.dataset.to)] || from;
+    if (!from || !to) continue;
+
+    const base = rail.getBoundingClientRect();
+    const a = from.getBoundingClientRect();
+    const b = to.getBoundingClientRect();
+    const x1 = a.left + a.width / 2 - base.left;
+    const x2 = b.left + b.width / 2 - base.left;
+    const left = Math.min(x1, x2);
+    const right = Math.max(x1, x2);
+    const mid = (left + right) / 2;
+    const style = node.dataset.style || "bracket";
+    const height = rail.clientHeight || 12;
+
+    const line = (d) => {
+      const path = document.createElementNS(NS, "path");
+      path.setAttribute("d", d);
+      path.setAttribute("class", "rot-connector");
+      rail.appendChild(path);
+    };
+
+    rail.replaceChildren();
+    if (style === "box") {
+      line(`M ${mid} 0 V ${height}`);
+    } else if (style === "fork") {
+      line(`M ${left} 0 V 5 H ${right} V 0`);
+      line(`M ${mid} 5 V ${height}`);
+    } else {
+      // Ticks up toward the cards, a bar under them, then a stem to the note.
+      line(`M ${left} 0 V 6 H ${right} V 0`);
+      line(`M ${mid} 6 V ${height}`);
+    }
+
+    // The note box is centred under its bracket, so the stem lands on its top
+    // edge instead of somewhere off to the left.
+    const textNode = node.querySelector(".rot-annotation-text");
+    if (textNode) {
+      textNode.style.marginLeft = "0px";
+      const width = textNode.getBoundingClientRect().width;
+      const limit = Math.max(0, node.clientWidth - width);
+      textNode.style.marginLeft = `${Math.max(0, Math.min(limit, mid - width / 2))}px`;
+    }
+  }
+}
+
 
 /**
  * Grows or shrinks a tuning note until it fills its box: a short note gets big
@@ -7266,14 +7392,34 @@ function renderRotationsDetail() {
             ? slots.map(rotationSlotHtml).join("")
             : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
 
+          // A callout underlines the cards it explains, so its ends are slot
+          // indices rather than free text in the round header.
+          const annotations = Array.isArray(round.annotations) ? round.annotations : [];
+          const annotationsHtml = annotations.length
+            ? `<div class="rot-annotations">${annotations
+                .map((annotation) => {
+                  const text = String(annotation.text || "").trim();
+                  if (!text) return "";
+                  const last = Math.max(0, slots.length - 1);
+                  const from = Math.max(0, Math.min(last, Number(annotation.from) || 0));
+                  const to = Math.max(from, Math.min(last, Number(annotation.to) || 0));
+                  const style = ["bracket", "box", "fork"].includes(annotation.style) ? annotation.style : "bracket";
+                  return `<div class="rot-annotation is-${style}" data-from="${from}" data-to="${to}" data-style="${style}">
+                      <svg class="rot-annotation-rail" aria-hidden="true"></svg>
+                      <span class="rot-annotation-text">${escapeHtml(text)}</span>
+                    </div>`;
+                })
+                .join("")}</div>`
+            : "";
+
           return `
             <div class="rot-round">
               <div class="rot-round-head">
                 <span class="rot-round-label">${escapeHtml(t("rotations.round", { n: String(index + 1).padStart(2, "0") }))}</span>
                 ${round.note ? `<span class="rot-round-note">${escapeHtml(round.note)}</span>` : ""}
               </div>
-              <div class="rot-round-separator"></div>
               <div class="rot-round-slots">${slotsHtml}</div>
+              ${annotationsHtml}
             </div>`;
         })
         .join("")
@@ -7311,9 +7457,19 @@ function renderRotationsDetail() {
     </section>
   `;
 
-  // The tuning notes only have a size once they are in the document.
-  requestAnimationFrame(() => fitRotationTuningNotes(host));
+  // The tuning notes only have a size once they are in the document, and the
+  // callout connectors need the final card widths.
+  requestAnimationFrame(() => {
+    fitRotationTuningNotes(host);
+    drawRotationConnectors(host);
+  });
 }
+
+// Card widths change with the viewport, so the connectors are redrawn on resize.
+window.addEventListener("resize", () => {
+  const modal = document.getElementById("rotations-modal");
+  if (modal && modal.style.display === "flex") drawRotationConnectors();
+});
 
 /**
  * Wires the drag handle that splits a stacked modal body (list on top, detail
