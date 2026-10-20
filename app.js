@@ -7157,12 +7157,10 @@ function renderRotationsDetail() {
   const archetypes = rotationArchetypes(rotation);
   const tuning = rotation.tuning || "";
 
-  // Only the chosen tuning is shown: the full row of four took a lot of space
-  // for one piece of information.
+  // Only the chosen tuning is shown, as a bare icon in a team-sized tile.
   const tuningHtml = tuning
-    ? `<span class="rot-tuning is-active" title="${escapeHtml(tuning)}">
+    ? `<span class="rot-team-tuning" title="${escapeHtml(tuning)}">
          <img src="images/tuning_abilities/${encodeURIComponent(tuning)}.png" alt="" />
-         <span class="rot-tuning-name">${escapeHtml(tuning)}</span>
        </span>`
     : "";
 
@@ -7236,15 +7234,14 @@ function renderRotationsDetail() {
 
     <section class="rot-block">
       ${guideSectionHeader("rotations.team")}
-      <div class="rot-team">${teamHtml}</div>
+      <div class="rot-team">${teamHtml}${tuningHtml}</div>
     </section>
 
     ${
-      rotation.notes || tuningHtml
+      rotation.notes
         ? `<section class="rot-block">
              ${guideSectionHeader("rotations.notes")}
-             ${rotation.notes ? `<p class="build-notes">${escapeHtml(rotation.notes)}</p>` : ""}
-             ${tuningHtml ? `<div class="rot-tuning-row">${tuningHtml}</div>` : ""}
+             <p class="build-notes">${escapeHtml(rotation.notes)}</p>
            </section>`
         : ""
     }
