@@ -831,11 +831,34 @@ console.log("\n=== rotations ===");
   m.setGuideSlotText(id, ri, textIndex, "Hold the buff");
   check("a text slot stores its text", m.guideRotation(id).rounds[ri].slots[textIndex].text === "Hold the buff", JSON.stringify(m.guideRotation(id).rounds[ri].slots[textIndex]));
 
+  // Free AP / Tuning / Precast are normal AP slots with a different caption.
+  for (const type of ["free", "tuning", "precast"]) {
+    m.addGuideSlot(id, ri, type);
+    const index = m.guideRotation(id).rounds[ri].slots.length - 1;
+    m.addGuideSlotCard(id, ri, index, { character: m.characters[0], skill: 1 });
+    m.addGuideSlotCard(id, ri, index, { character: m.characters[1], skill: 1 });
+    const slot = m.guideRotation(id).rounds[ri].slots[index];
+    check(
+      `a ${type} slot behaves like normal AP`,
+      slot.type === type && slot.cards.length === 1 && !("text" in slot),
+      JSON.stringify(slot)
+    );
+  }
+
   m.setGuideRoundNote(id, ri, "Pulsing Field Lv.1");
   check("a round note is written", m.guideRotation(id).rounds[ri].note === "Pulsing Field Lv.1", String(m.guideRotation(id).rounds[ri].note));
 
   m.setGuideRotationMember(id, 0, "psychube", "Steps Forward");
   check("a member psychube is written", m.guideRotation(id).members[0].psychube === "Steps Forward", JSON.stringify(m.guideRotation(id).members[0]));
+
+  /* ---- member portrait tier ---- */
+  m.setGuideRotationMember(id, 0, "portrait", 4);
+  check("a member portrait tier is written", m.guideRotation(id).members[0].portrait === 4, JSON.stringify(m.guideRotation(id).members[0]));
+  m.setGuideRotationMember(id, 0, "portrait", 0);
+  check("tier 0 drops the key", m.guideRotation(id).members[0].portrait === undefined, JSON.stringify(m.guideRotation(id).members[0]));
+  m.setGuideRotationMember(id, 0, "portrait", 99);
+  check("the tier is clamped to 5", m.guideRotation(id).members[0].portrait === 5, JSON.stringify(m.guideRotation(id).members[0]));
+  m.setGuideRotationMember(id, 0, "portrait", 0);
 
   const roundCount = m.guideRotation(id).rounds.length;
   m.addGuideRound(id);
@@ -846,10 +869,83 @@ console.log("\n=== rotations ===");
   check("the rotation edits validate", validate(m).errors.length === 0, validate(m).errors.join("; "));
   check("only guide_rotations.json changed", m.changedFiles().join(",") === "guide_rotations.json", m.changedFiles().join(","));
 
+  /* ---- reordering ---- */
+  const rotationIds = m.guideRotations().map((r) => r.id);
+  if (rotationIds.length >= 2) {
+    const firstId = rotationIds[0];
+    m.moveGuideRotation(0, 1);
+    check("a rotation moves down the list", m.guideRotations()[1].id === firstId, m.guideRotations().map((r) => r.id).join(","));
+    m.moveGuideRotation(1, 0);
+    check("moving it back restores the order", m.guideRotations().map((r) => r.id).join(",") === rotationIds.join(","), m.guideRotations().map((r) => r.id).join(","));
+  } else {
+    m.addGuideRotation("Second rotation");
+    const ids = m.guideRotations().map((r) => r.id);
+    m.moveGuideRotation(ids.length - 1, 0);
+    check("a rotation moves to the top", m.guideRotations()[0].id === ids[ids.length - 1], m.guideRotations().map((r) => r.id).join(","));
+    m.moveGuideRotation(0, ids.length - 1);
+    check("moving it back restores the order", m.guideRotations().map((r) => r.id).join(",") === ids.join(","), m.guideRotations().map((r) => r.id).join(","));
+  }
+
+  // Three AP slots with distinct types, so a swap is observable.
+  const swapRound = m.guideRotation(id).rounds.length;
+  m.addGuideRound(id);
+  m.addGuideSlot(id, swapRound, "normal");
+  m.addGuideSlot(id, swapRound, "or");
+  m.addGuideSlot(id, swapRound, "text");
+  const slotTypes = m.guideRotation(id).rounds[swapRound].slots.map((s) => s.type || "normal");
+  m.moveRotationSlot(id, swapRound, 0, 2);
+  check(
+    "an AP slot moves to the end of its round",
+    m.guideRotation(id).rounds[swapRound].slots.map((s) => s.type || "normal").join(",") === [slotTypes[1], slotTypes[2], slotTypes[0]].join(","),
+    m.guideRotation(id).rounds[swapRound].slots.map((s) => s.type || "normal").join(",")
+  );
+  m.moveRotationSlot(id, swapRound, 2, 0);
+  check(
+    "moving it back restores the AP order",
+    m.guideRotation(id).rounds[swapRound].slots.map((s) => s.type || "normal").join(",") === slotTypes.join(","),
+    m.guideRotation(id).rounds[swapRound].slots.map((s) => s.type || "normal").join(",")
+  );
+  m.removeGuideRound(id, swapRound);
+
+  check("the reorder edits validate", validate(m).errors.length === 0, validate(m).errors.join("; "));
+
   m.setGuideRotationField(id, "archetypes", []);
   check("an empty archetype list removes the key", m.guideRotation(id).archetypes === undefined, JSON.stringify(m.guideRotation(id).archetypes));
 
   void original;
+}
+
+console.log("\n=== credits ===");
+{
+  const m = freshModel();
+  const original = JSON.stringify(m.value("credits.json"));
+
+  const before = m.creditEntries().length;
+  m.addCredit();
+  check("a credit row is added", m.creditEntries().length === before + 1, String(m.creditEntries().length));
+
+  const index = m.creditEntries().length - 1;
+  m.setCreditField(index, "name", "Test Person");
+  m.setCreditField(index, "url", "https://example.com/");
+  m.setCreditField(index, "description", "Did a thing.");
+  const entry = m.creditEntries()[index];
+  check(
+    "a credit keeps its name, link and description",
+    entry.name === "Test Person" && entry.url === "https://example.com/" && entry.description === "Did a thing.",
+    JSON.stringify(entry)
+  );
+
+  m.moveCredit(index, 0);
+  check("a credit can move to the top", m.creditEntries()[0].name === "Test Person", m.creditEntries()[0].name);
+  m.moveCredit(0, index);
+  check("and back down again", m.creditEntries()[index].name === "Test Person", m.creditEntries()[index].name);
+
+  check("the edited file is marked changed", m.changedFiles().includes("credits.json"), m.changedFiles().join(","));
+
+  m.removeCredit(index);
+  check("a credit row is removed", m.creditEntries().length === before, String(m.creditEntries().length));
+  check("removing the last edit restores the original", JSON.stringify(m.value("credits.json")) === original, JSON.stringify(m.value("credits.json")));
+  check("the credits edits validate", validate(m).errors.length === 0, validate(m).errors.join("; "));
 }
 
 console.log("\n=== diff rendering ===");

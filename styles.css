@@ -146,14 +146,16 @@ body::before {
   display: flex;
   flex-direction: column;
   padding: 12px 18px;
-  gap: 10px;
+  gap: 6px;
   box-shadow: none;
 }
 
 .header-primary-bar {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  /* Equal side columns keep the middle column exactly on the toolbar's centre
+     line, so the search row and the filter row below it share one axis. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 14px;
 }
@@ -371,11 +373,39 @@ body::before {
   position: relative;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
-  padding-top: 8px;
+  padding-top: 6px;
   border-top: 1px solid rgba(17, 15, 12, 0.06);
+}
+
+/* Grouping wrapper: it only matters in the narrow drawer, so on a desktop the
+   two groups sit directly in the toolbar grid and keep their old places. */
+.tools-buttons-row {
+  display: contents;
+}
+
+.tools-filters-group {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: center;
+  margin: 0 auto;
+}
+
+.tools-config-group {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.tools-data-group {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
 }
 
 /* Language switcher sits at the far right without disturbing the
@@ -385,14 +415,6 @@ body::before {
   right: 0;
   top: 8px;
   justify-self: auto;
-}
-
-.tools-config-group {
-  justify-self: start;
-}
-
-.tools-data-group {
-  justify-self: end;
 }
 
 .secondary-tools-group {
@@ -410,6 +432,12 @@ body::before {
   overflow: hidden;
   height: 31px;
   box-sizing: border-box;
+}
+
+/* Hairline between the ownership and rarity groups. Only the drawer layout
+   shows it: on a desktop the two groups already read as separate controls. */
+.filter-group-separator {
+  display: none;
 }
 
 .filter-btn {
@@ -609,14 +637,16 @@ body::before {
 }
 
 .header-actions-row #btn-manage-all,
-.header-actions-row #btn-chubes {
+.header-actions-row #btn-chubes,
+.header-actions-row #btn-json {
   border: 1px solid #D05126;
   color: #ECE5D9;
   border-radius: 4px;
 }
 
 .header-actions-row #btn-manage-all:hover,
-.header-actions-row #btn-chubes:hover {
+.header-actions-row #btn-chubes:hover,
+.header-actions-row #btn-json:hover {
   background: rgba(208, 81, 38, 0.15);
   border-color: #D05126;
   color: #FFFFFF;
@@ -4581,6 +4611,112 @@ body::before {
   color: #f6f2ed;
 }
 
+/* The hand-drawn "Credits" wordmark doubles as the button that opens the
+   credits modal. A soft shadow keeps it readable over the board background. */
+.footer-credits-btn {
+  align-self: center;
+  display: block;
+  padding: 0;
+  margin: 0 0 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55));
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.footer-credits-btn img {
+  display: block;
+  width: 150px;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.footer-credits-btn:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.65)) brightness(1.08);
+}
+
+.footer-credits-btn:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 4px;
+}
+
+/* ---- Credits modal ---- */
+
+#credits-modal {
+  z-index: 1150;
+}
+
+.credits-modal-card {
+  max-width: 720px;
+  width: 100%;
+  height: min(84vh, 780px);
+}
+
+.credits-modal-body {
+  overflow-y: auto;
+  gap: 0;
+  padding: 6px 0 10px;
+}
+
+.credits-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* One credit: a link icon, the name, and the note under it. */
+.credit-entry {
+  padding: 14px 24px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.credit-entry:last-child {
+  border-bottom: none;
+}
+
+.credit-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.credit-link-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: #7ea2e8;
+  opacity: 0.9;
+}
+
+.credit-name {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #ECE5D9;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+a.credit-name:hover {
+  color: #ED7D31;
+  text-decoration: underline;
+}
+
+.credit-desc {
+  margin: 5px 0 0 27px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: #9d968c;
+}
+
 /* Chess Pieces Container */
 .chess-pieces-container {
   display: inline-flex;
@@ -4711,25 +4847,59 @@ body::before {
   visibility: visible;
 }
 
-/* Export Image Modal Preview */
-.export-help-tip {
-  font-family: var(--mono-font);
-  font-size: 0.72rem;
-  line-height: 1.45;
-  color: #111111;
-  background: rgba(215, 177, 85, 0.16);
-  border: 1px solid rgba(215, 177, 85, 0.4);
-  padding: 10px 14px;
+/* ---- Export PNG modal ----
+   Uses the same shell as the other modals (archetype card, dark header with the
+   orange hairline, footer with a single accent action). The preview is the only
+   thing that differs: a scrollable dark stage that holds the generated image. */
+
+#export-modal {
+  z-index: 1100;
+}
+
+.export-modal-card {
+  max-width: 720px;
+  width: 100%;
+  height: min(88vh, 860px);
+}
+
+.export-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  /* The preview owns the remaining height instead of the shared 70vh cap. */
+  max-height: none;
+  overflow: hidden;
   text-align: left;
 }
 
+.export-help-tip {
+  flex: none;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: #CFC7BA;
+  background: rgba(215, 177, 85, 0.1);
+  border: 1px solid rgba(215, 177, 85, 0.32);
+  border-left: 3px solid #D7B155;
+  padding: 9px 12px;
+}
+
+.export-help-tip strong {
+  color: #EDD9A3;
+  font-weight: 700;
+}
+
+/* The stage keeps the board's own proportions without stealing the whole modal. */
 .export-preview-container {
-  overflow-y: auto;
-  max-height: 55vh;
-  max-height: 55dvh;
-  border: 1px solid rgba(17, 15, 12, 0.1);
-  background: #111111;
-  padding: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+    #141312;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -4740,29 +4910,83 @@ body::before {
   max-width: 100%;
   height: auto;
   display: block;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
   user-select: auto !important;
   -webkit-user-select: auto !important;
   -webkit-touch-callout: default !important;
 }
 
-@keyframes toolsDrawerIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+.export-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  /* Same quiet footer as the other archetype modals. */
+  background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 22px;
 }
 
-/* Responsive: collapse the secondary tools into the Menu drawer
-   (used by both tablet and phone widths) */
+.export-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.export-modal-footer .btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 0;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+}
+
+.export-modal-footer #export-modal-btn-download {
+  background: #D05126;
+  border: 1px solid #D05126;
+  color: #FFFFFF;
+}
+
+.export-modal-footer #export-modal-btn-download:hover {
+  background: #B55829;
+  border-color: #B55829;
+  color: #FFFFFF;
+}
+
+/* ================= RESPONSIVE TOOLBAR ================= */
+
+/* Below 1260px the secondary row collapses into the Menu drawer. Every control
+   in the header and in the drawer shares one height per breakpoint, so no
+   button looks hand-placed next to its neighbours. */
 @media screen and (max-width: 1260px) {
+  :root {
+    --toolbar-h: 32px;
+  }
+
+  /* Menu keeps its label at every width: it is the only way into the drawer. */
   .btn-tools-toggle {
     display: inline-flex !important;
     align-items: center;
-    gap: 3px;
-    border-color: #EBE3D7;
+    justify-content: center;
+    gap: 5px;
+    height: var(--toolbar-h);
+    padding: 0 12px;
+    border: 1px solid #EBE3D7;
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
     cursor: pointer;
   }
 
-  /* Swap the language switcher into the drawer once Menu appears */
+  /* The caret glyph is swapped by the toggle handler (▾ closed / ▴ open). */
+  .btn-tools-toggle .toggle-icon {
+    font-size: 0.6rem;
+    line-height: 1;
+  }
+
+  /* The header switcher hands over to the one inside the drawer. */
   .header-stats-row .lang-switcher-header {
     display: none;
   }
@@ -4771,28 +4995,19 @@ body::before {
     display: inline-flex;
   }
 
-  /* Back to normal flow inside the drawer */
   .tools-lang-group {
     position: static;
     right: auto;
     top: auto;
   }
 
-  .top-controls.tools-open .btn-tools-toggle {
-    background: #2a2825;
-    color: #f7f7f7;
-    border-color: #2a2825;
-  }
-
+  /* ---- Drawer shell ---- */
   .header-secondary-tools {
     display: none;
-    flex-direction: column;
-    gap: 7px;
     width: 100%;
     max-width: 100%;
-    padding-top: 8px;
-    border-top: 1px dashed rgba(17, 15, 12, 0.15);
-    animation: toolsDrawerIn 0.18s ease-out;
+    padding-top: 0;
+    border-top: none;
     box-sizing: border-box;
     overflow: hidden;
     grid-template-columns: none;
@@ -4800,61 +5015,163 @@ body::before {
 
   .top-controls.tools-open .header-secondary-tools {
     display: flex;
+    flex-direction: column;
+    gap: 6px;
+    animation: toolsDrawerIn 0.18s ease-out;
   }
 
-  .tools-lang-group {
-    width: 100%;
+  /* Row 1: ownership + rarity, sitting right under the search group on the
+     same centre line. No divider above it: the filters read as part of the
+     search block, and the hairline moves down to separate the tool row. */
+  .tools-filters-group {
+    order: 1;
     display: flex;
-    justify-content: flex-end;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding-top: 2px;
+    position: static;
+  }
+
+  .filter-btn-group {
+    height: var(--toolbar-h);
+    flex: 0 0 auto;
+  }
+
+  .filter-btn {
+    padding: 0 10px;
+    font-size: 0.64rem;
+  }
+
+  /* The drawer puts both filter groups on one row, so a hairline splits them. */
+  .filter-group-separator {
+    display: block;
+    flex: 0 0 auto;
+    align-self: stretch;
+    width: 1px;
+    margin: 0 2px;
+    background: rgba(181, 181, 179, 0.28);
+  }
+
+  /* Row 2: display tools, guide tools, then language + JSON on the right. */
+  .tools-buttons-row {
+    order: 2;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(17, 15, 12, 0.15);
+  }
+
+  .tools-config-group,
+  .tools-data-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    margin: 0;
+    justify-self: auto;
+    min-width: 0;
+  }
+
+  /* Display settings and guide content are different jobs; a hairline splits
+     the six icons into two readable sets. */
+  .tools-data-group {
+    padding-left: 12px;
+    border-left: 1px solid rgba(181, 181, 179, 0.28);
+  }
+
+  /* Language switcher closes the tool row: the same hairline that splits
+     display from guide also introduces it. JSON moved to the search cluster,
+     so it no longer needs a rule of its own. */
+  .tools-lang-group {
+    display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0;
+    width: auto;
+    margin-left: 0;
+    padding-left: 12px;
+    border-left: 1px solid rgba(181, 181, 179, 0.28);
     justify-self: auto;
-    box-sizing: border-box;
-  }
-
-  .tools-config-group {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    justify-self: auto;
-    margin: 0;
-    box-sizing: border-box;
     min-width: 0;
   }
 
-  .tools-filters-group {
-    width: 100%;
-    max-width: 100%;
-    display: flex;
-    gap: 6px;
-    align-items: stretch;
-    margin: 0;
-    justify-self: auto;
+  .tools-config-group .btn,
+  .tools-data-group .btn {
+    height: var(--toolbar-h);
+    padding: 0 10px;
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    flex: 0 0 auto;
     box-sizing: border-box;
-    min-width: 0;
   }
 
-  .tools-data-group {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Icon-only buttons: square, so the row reads as one set of tools. */
+  .tools-buttons-row .btn-icon-tool {
+    width: var(--toolbar-h);
+    min-width: var(--toolbar-h);
+    height: var(--toolbar-h);
+    padding: 0;
+    gap: 0;
+    flex: 0 0 auto;
+  }
+
+  .tools-buttons-row .btn-icon-tool > span {
+    display: none;
+  }
+
+  .tools-buttons-row .btn-tool-icon,
+  .tools-buttons-row .btn-team-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .tools-lang-group .lang-switcher {
+    height: var(--toolbar-h);
+  }
+
+  .tools-lang-group .lang-btn {
+    padding: 0 10px;
+    font-size: 0.64rem;
+  }
+}
+
+/* Wide tablets have room for the labels, so the drawer keeps the desktop
+   reading of the tool buttons; squares only take over when they must. With the
+   labels back the whole set fits, so it is centred under the filter row. */
+@media screen and (min-width: 1001px) and (max-width: 1260px) {
+  .tools-buttons-row {
+    justify-content: center;
+  }
+
+  .tools-buttons-row .btn-icon-tool {
+    width: auto;
+    padding: 0 12px;
     gap: 6px;
-    justify-self: auto;
-    box-sizing: border-box;
-    min-width: 0;
+  }
+
+  .tools-buttons-row .btn-icon-tool > span {
+    display: inline;
   }
 }
 
 @media screen and (max-width: 1260px) and (min-width: 769px) {
   .header-primary-bar {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   }
 
   .header-stats-row {
-    gap: 6px;
+    gap: 8px;
     min-width: 0;
+    flex-wrap: nowrap;
   }
 
   .lang-btn {
@@ -4864,24 +5181,17 @@ body::before {
   }
 
   .stat-badge {
-    height: 28px;
+    height: var(--toolbar-h);
     font-size: 0.62rem;
     padding: 0 8px;
     letter-spacing: 0.04em;
   }
 
-  .btn-tools-toggle {
-    height: 28px !important;
-    padding: 0 9px !important;
-    font-size: 0.62rem !important;
-    letter-spacing: 0.05em;
-    border-color: #EBE3D7;
-  }
-
   #btn-manage-all,
   #btn-chubes,
+  #btn-json,
   #btn-export-image {
-    height: 30px;
+    height: var(--toolbar-h);
     padding: 0 10px;
     font-size: 0.62rem;
     white-space: nowrap;
@@ -4890,70 +5200,20 @@ body::before {
   }
 
   .header-actions-row .search-input {
-    height: 30px;
+    height: var(--toolbar-h);
     font-size: 0.68rem;
-  }
-
-  .tools-config-group .btn,
-  .tools-data-group .btn {
-    height: 30px;
-    padding: 0 6px;
-    font-size: 0.64rem;
-    white-space: nowrap;
-    width: 100%;
-    min-width: 0;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-  }
-
-  #filter-ownership-group,
-  #filter-rarity-group {
-    flex: 1;
-    min-width: 0;
-    height: 30px;
-    display: flex;
-    overflow: hidden;
-  }
-
-  #filter-ownership-group .filter-btn,
-  #filter-rarity-group .filter-btn {
-    flex: 1;
-    min-width: 0;
-    padding: 0 4px;
-    font-size: 0.62rem;
-    text-align: center;
-  }
-
-  .tools-lang-group .lang-switcher {
-    height: 30px;
-  }
-
-  .tools-lang-group .lang-btn {
-    padding: 0 10px;
-    font-size: 0.64rem;
-  }
-
-  /* JSON now trails the drawer's language switcher instead of sitting in the
-     data group, so it needs its own size to line up with it. */
-  .tools-lang-group .btn {
-    height: 30px;
-    padding: 0 10px;
-    font-size: 0.64rem;
-    white-space: nowrap;
-    box-sizing: border-box;
   }
 }
 
 /* Narrow tablet / small-laptop: the centred action row no longer fits beside
    the stat badge in a single line, so it overflows its grid column and lands on
    top of the badge and the Export PNG button. Give the actions their own
-   full-width row so nothing collides. */
-@media screen and (max-width: 900px) and (min-width: 769px) {
+   full-width row so nothing collides. The search then stretches across that
+   row, so everything under it — filters included — hangs off its left edge. */
+@media screen and (max-width: 1000px) and (min-width: 769px) {
   .header-primary-bar {
     grid-template-columns: auto 1fr;
-    row-gap: 8px;
+    row-gap: 6px;
   }
 
   .header-actions-row {
@@ -4974,10 +5234,19 @@ body::before {
   .header-actions-row .search-input {
     width: 100%;
   }
+
+  /* The filter row starts at the same x as the stretched search field. */
+  .tools-filters-group {
+    justify-content: flex-start;
+  }
 }
 
 /* Responsive Mobile-Only UI adjustments (phones and small screens) */
 @media screen and (max-width: 768px) {
+  :root {
+    --toolbar-h: 30px;
+  }
+
   body {
     padding-bottom: 40px;
   }
@@ -4988,7 +5257,7 @@ body::before {
     width: calc(100% - 16px);
     max-width: calc(100% - 16px);
     padding: 8px 10px;
-    gap: 7px;
+    gap: 8px;
     border-radius: 12px 0 12px 0;
     box-shadow: 0 4px 16px rgba(16, 13, 10, 0.06);
     box-sizing: border-box;
@@ -5034,7 +5303,8 @@ body::before {
     height: 24px;
   }
 
-  /* Row 1, Right: Roster Stat & Tools Toggle */
+  /* Row 1, Right: roster stat + Menu. The Menu label is kept (it is the only
+     entry to the drawer) but shortened to its icon on very small phones. */
   .header-stats-row {
     grid-column: 2;
     grid-row: 1;
@@ -5043,38 +5313,24 @@ body::before {
     gap: 6px;
     justify-content: flex-end;
     width: auto;
+    flex-wrap: nowrap;
   }
 
   .stat-badge {
-    height: 26px;
+    height: var(--toolbar-h);
     font-size: 0.58rem;
     padding: 0 7px;
     letter-spacing: 0.04em;
   }
 
   .btn-tools-toggle {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 3px;
-    height: 26px;
-    padding: 0 8px;
+    height: var(--toolbar-h);
+    padding: 0 9px;
     font-size: 0.6rem;
-    font-weight: 700;
     letter-spacing: 0.06em;
-    cursor: pointer;
-    background: rgba(17, 15, 12, 0.04);
-    border: 1px solid #EBE3D7;
-    color: var(--text-primary);
-    transition: all 0.15s ease;
   }
 
-  .top-controls.tools-open .btn-tools-toggle {
-    background: #2a2825;
-    color: #f7f7f7;
-    border-color: #2a2825;
-  }
-
-  /* Row 2: Search, Quick Edit, Export PNG */
+  /* Row 2: Search, Manage, Export PNG */
   .header-actions-row {
     grid-column: 1 / span 2;
     grid-row: 2;
@@ -5090,7 +5346,7 @@ body::before {
 
   .header-actions-row .header-search-wrap {
     flex: 1 1 auto;
-    /* Keep the search field usable: the three action buttons would otherwise
+    /* Keep the search field usable: the action buttons would otherwise
        squeeze it down to ~73px on a 375px phone. */
     min-width: 96px;
     display: flex;
@@ -5098,24 +5354,17 @@ body::before {
 
   .header-actions-row .search-input {
     width: 100%;
-    height: 30px;
-    font-size: 0.68rem;
+    height: var(--toolbar-h);
+    font-size: 0.66rem;
     padding: 0 8px;
     box-sizing: border-box;
   }
 
   #btn-manage-all,
-  #btn-chubes {
-    height: 30px;
-    padding: 0 7px;
-    font-size: 0.58rem;
-    white-space: nowrap;
-    flex-shrink: 0;
-    letter-spacing: 0.03em;
-  }
-
+  #btn-chubes,
+  #btn-json,
   #btn-export-image {
-    height: 30px;
+    height: var(--toolbar-h);
     padding: 0 8px;
     font-size: 0.58rem;
     white-space: nowrap;
@@ -5129,137 +5378,133 @@ body::before {
     transform: none;
   }
 
-  .tools-filters-group {
-    width: 100%;
-    max-width: 100%;
-    display: flex;
-    gap: 6px;
-    align-items: stretch;
-    box-sizing: border-box;
-    min-width: 0;
-  }
-
-  #filter-ownership-group {
-    flex: 1;
-    min-width: 0;
-    height: 28px;
-    display: flex;
-    overflow: hidden;
-  }
-
-  #filter-ownership-group .filter-btn {
-    flex: 1;
-    min-width: 0;
-    padding: 0 4px;
-    font-size: 0.58rem;
-    text-align: center;
-  }
-
-  #filter-rarity-group {
-    flex: 1.35;
-    min-width: 0;
-    height: 28px;
-    display: flex;
-    overflow: hidden;
-  }
-
-  #filter-rarity-group .filter-btn {
-    flex: 1;
-    min-width: 0;
-    padding: 0 2px;
-    font-size: 0.56rem;
-    text-align: center;
-  }
-
-  /* Secondary Tools Drawer */
+  /* ---- Phone drawer ---- */
   .header-secondary-tools {
     display: none;
-    flex-direction: column;
-    gap: 7px;
     width: 100%;
     max-width: 100%;
-    padding-top: 8px;
-    border-top: 1px dashed rgba(17, 15, 12, 0.15);
-    animation: toolsDrawerIn 0.18s ease-out;
+    padding-top: 0;
+    border-top: none;
     box-sizing: border-box;
     overflow: hidden;
   }
 
   .top-controls.tools-open .header-secondary-tools {
     display: flex;
-  }
-
-  .tools-config-group {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex-direction: column;
     gap: 6px;
-    justify-self: auto;
+    animation: toolsDrawerIn 0.18s ease-out;
+  }
+
+  /* Filters stay under the stretched search row and hang off its left edge,
+     matching where the search field itself starts. */
+  .tools-filters-group {
+    order: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    margin: 0;
+    padding-top: 2px;
+    position: static;
     box-sizing: border-box;
     min-width: 0;
   }
 
-  .tools-config-group .btn {
-    height: 28px !important;
-    padding: 0 4px !important;
-    font-size: 0.6rem !important;
-    white-space: nowrap;
+  .filter-btn-group {
+    height: var(--toolbar-h);
+    flex: 0 0 auto;
+  }
+
+  #filter-ownership-group .filter-btn {
+    padding: 0 8px;
+    font-size: 0.6rem;
+  }
+
+  /* Rarity filters become squares the same size as the icon buttons below,
+     so the whole toolbar shares one button rhythm on phones. */
+  #filter-rarity-group .filter-btn {
+    width: var(--toolbar-h);
+    padding: 0;
+    font-size: 0.58rem;
+    text-align: center;
+  }
+
+  /* Tools on one row; the language switcher wraps below when it must. */
+  .tools-buttons-row {
+    order: 2;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
     width: 100%;
     min-width: 0;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(17, 15, 12, 0.15);
+  }
+
+  .tools-config-group,
+  .tools-data-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: auto;
+    margin: 0;
+    justify-self: auto;
+    min-width: 0;
   }
 
   .tools-data-group {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    justify-self: auto;
-    box-sizing: border-box;
-    min-width: 0;
+    padding-left: 10px;
+    border-left: 1px solid rgba(181, 181, 179, 0.28);
   }
 
-  .tools-data-group .btn {
-    height: 28px;
-    padding: 0 4px;
-    font-size: 0.6rem;
-    width: 100%;
-    min-width: 0;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-  }
-
-  /* Language switcher sits under the data buttons, aligned right */
+  /* Language switcher keeps the hairline that separates it from the guide
+     tools; JSON lives in the search cluster now. */
   .tools-lang-group {
-    width: 100%;
+    order: 3;
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    width: auto;
     margin: 0;
-    justify-self: auto;
+    padding-left: 12px;
+    border-left: 1px solid rgba(181, 181, 179, 0.28);
+    justify-content: flex-start;
     box-sizing: border-box;
+  }
+
+  /* Square icon buttons: labels stay in the DOM for i18n and screen readers. */
+  .tools-buttons-row .btn-icon-tool {
+    flex: 0 0 auto;
+    width: var(--toolbar-h);
+    height: var(--toolbar-h);
+    min-width: var(--toolbar-h);
+    padding: 0;
+    gap: 0;
+    box-sizing: border-box;
+  }
+
+  .tools-buttons-row .btn-icon-tool > span {
+    display: none;
+  }
+
+  .tools-buttons-row .btn-tool-icon,
+  .tools-buttons-row .btn-team-icon {
+    width: 16px;
+    height: 16px;
   }
 
   .tools-lang-group .lang-switcher {
-    height: 28px;
+    height: var(--toolbar-h);
   }
 
   .tools-lang-group .lang-btn {
-    padding: 0 10px;
-    font-size: 0.62rem;
-  }
-
-  .tools-lang-group .btn {
-    height: 28px;
-    padding: 0 8px;
+    padding: 0 9px;
     font-size: 0.6rem;
-    white-space: nowrap;
-    box-sizing: border-box;
   }
 
   .btn {
@@ -5480,12 +5725,30 @@ body::before {
   .export-help-tip {
     font-size: 0.62rem;
     padding: 8px 10px;
+    border-left-width: 2px;
   }
 
   .export-preview-container {
-    max-height: 50vh;
-    max-height: 50dvh;
-    padding: 4px;
+    padding: 6px;
+  }
+
+  .export-modal-card {
+    height: min(92vh, 900px);
+    max-height: 92dvh;
+  }
+
+  .export-modal-footer {
+    gap: 6px;
+  }
+
+  .export-modal-footer .btn {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 0.6rem;
+  }
+
+  .export-modal-actions {
+    gap: 6px;
   }
 
   .roster-toolbar {
@@ -5615,11 +5878,60 @@ body::before {
     padding: 10px 12px 0;
   }
 
+  .footer-credits-btn img {
+    width: 118px;
+  }
+
+  .credit-entry {
+    padding: 12px 16px 14px;
+  }
+
+  .credit-name {
+    font-size: 0.84rem;
+  }
+
+  .credit-desc {
+    font-size: 0.7rem;
+    margin-left: 0;
+  }
+
   .app-footer p {
     font-size: 0.58rem;
   }
 }
 
+/* Small phones: the brand, the crew badge and the Menu button share one row.
+   The badge drops its word and the Menu drops its label so nothing is clipped. */
+@media screen and (max-width: 480px) {
+  .stat-badge {
+    padding: 0 6px;
+    gap: 4px;
+  }
+
+  .stat-badge > span[data-i18n="toolbar.crew"] {
+    display: none;
+  }
+
+  .roster-stat-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .btn-tools-toggle {
+    width: var(--toolbar-h);
+    min-width: var(--toolbar-h);
+    padding: 0;
+    gap: 0;
+  }
+
+  .btn-tools-toggle .toggle-text {
+    display: none;
+  }
+
+  .btn-tools-toggle .toggle-icon {
+    font-size: 0.7rem;
+  }
+}
 
 /* ================= TEAM BUILDING ================= */
 
@@ -5668,13 +5980,33 @@ body::before {
   height: min(88vh, 820px);
 }
 
-/* Teams-per-row selector (3 / 2 / 1) — sits beside the Presets button */
+/* Teams-per-row selector (3 / 2) — sits beside the Presets button.
+   `flex: 0 0 32px` gives both digits the same width, and the divider is drawn
+   between the *visible* buttons only (see the rule below). */
 .team-columns-group .filter-btn {
-  padding: 0 10px;
+  flex: 0 0 32px;
+  width: 32px;
+  padding: 0 !important;
   font-size: 0.68rem;
+  text-align: center;
+  justify-content: center;
+  /* The base rule draws a divider on the right of every button; here it is
+     moved to the left so the last visible cell has no trailing line. */
+  border-right: none;
+}
+
+/* The hidden "1" is still the last child, so `.filter-btn:last-child` would
+   leave a trailing divider on "2". Draw the divider on every button that has
+   one before it instead. */
+.team-columns-group .filter-btn + .filter-btn {
+  border-left: 1px solid #B5B5B3;
 }
 
 .team-columns-group .filter-btn[hidden] {
+  display: none;
+}
+
+.team-columns-group[hidden] {
   display: none;
 }
 
@@ -6637,6 +6969,96 @@ body.team-resizing * {
 
 /* ================= TEAM BUILDING: MOBILE ================= */
 
+/* Presets are laid out for a wide modal: a 500px minimum column and 96x64
+   member tiles overflow a phone. Below a tablet the grid drops to one column
+   and the tiles scale down with it. */
+@media (max-width: 900px) {
+  .team-presets-body {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 14px 16px 18px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 620px) {
+  .team-presets-body {
+    padding: 10px 10px 14px;
+    gap: 10px;
+  }
+
+  /* Header controls wrap into rows instead of overflowing the modal. */
+  #team-presets-modal .archetype-modal-header,
+  #team-recommend-modal .archetype-modal-header {
+    position: relative;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 44px 10px 12px;
+  }
+
+  /* Close button floats in the corner instead of taking a row of its own. */
+  #team-presets-modal .archetype-modal-header .modal-close,
+  #team-recommend-modal .archetype-modal-header .modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  #team-presets-modal .archetype-modal-title,
+  #team-recommend-modal .archetype-modal-title {
+    font-size: 18px;
+  }
+
+  .team-header-actions {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: 0;
+  }
+
+  .team-header-actions .search-input {
+    flex: 1 1 100%;
+    width: 100%;
+    height: 30px;
+  }
+
+  .preset-head { padding: 6px 10px; }
+  .preset-name { font-size: 0.74rem; }
+
+  .preset-row {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 7px 8px;
+  }
+
+  .preset-members {
+    gap: 5px;
+    flex: 1 1 100%;
+  }
+
+  /* Later rules widen this back to 8px, so keep it tight here. */
+  .preset-row .preset-members {
+    gap: 5px;
+  }
+
+  /* 4 x 72px tiles plus gaps fit a 360px card on one row. */
+  .preset-member {
+    width: 72px;
+    height: 48px;
+  }
+
+  .preset-slot { gap: 3px; }
+  .preset-subs { gap: 3px; }
+  .preset-subs-label { font-size: 0.44rem; }
+  .preset-sub { width: 18px; height: 18px; }
+  .preset-sub .preset-sub-used { width: 9px; height: 9px; }
+
+  .preset-add-btn {
+    flex: 1 1 100%;
+    height: 30px;
+    font-size: 0.6rem;
+  }
+}
+
 /* Phones keep all four slots on ONE row (4x1) instead of wrapping to 2x2.
    That only fits by tightening the gutters and scaling every overlay down with
    the slot — an 18px insight icon would otherwise swallow a 45px portrait. */
@@ -6805,6 +7227,27 @@ body.team-resizing * {
   text-align: center;
 }
 
+/* An empty pane shows the sign instead of a sentence; the words survive in the
+   image's alt text and tooltip. */
+.guide-empty-sign img {
+  display: block;
+  width: min(100%, 220px);
+  height: auto;
+  margin: 0 auto;
+  opacity: 0.9;
+  user-select: none;
+}
+
+/* Inside the narrow rotation rail the sign has to stay small. */
+.guide-empty-sign.is-rail {
+  padding: 18px 10px;
+}
+
+.guide-empty-sign.is-rail img {
+  width: min(100%, 140px);
+  opacity: 0.75;
+}
+
 .builds-modal-card {
   max-width: 1080px;
   width: 100%;
@@ -6816,6 +7259,99 @@ body.team-resizing * {
   min-height: 0;
   display: flex;
   overflow: hidden;
+}
+
+/* ---- Drag handle between the list and the detail pane ----
+   Shared by InfoBook and Skill Rotations. It only exists in the stacked layout
+   (list on top, plan below), where it changes the list's height. */
+.guide-rail-resizer {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .guide-rail-resizer {
+    display: block;
+    flex: 0 0 auto;
+    width: 100%;
+    height: 12px;
+    cursor: row-resize;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    touch-action: none;
+    box-sizing: border-box;
+  }
+
+  .guide-rail-resizer::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 46px;
+    height: 2px;
+    background: #6a6a68;
+    transition: background 0.15s ease;
+  }
+
+  .guide-rail-resizer:hover::after,
+  .guide-rail-resizer.is-dragging::after {
+    background: #ED7D31;
+  }
+
+  .guide-rail-resizer:focus-visible {
+    outline: 2px solid #ED7D31;
+    outline-offset: -2px;
+  }
+}
+
+/* While dragging, stop the cursor flickering over child elements */
+body.guide-rail-resizing,
+body.guide-rail-resizing * {
+  cursor: row-resize !important;
+  user-select: none !important;
+}
+
+/* A hidden list has no rail to resize. */
+.builds-body.is-list-hidden .guide-rail-resizer,
+.rotations-body.is-list-hidden .guide-rail-resizer {
+  display: none;
+}
+
+/* Header actions: hide/show the list, plus close. */
+.builds-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.builds-rail-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.builds-rail-toggle-icon {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  display: block;
+  opacity: 0.85;
+}
+
+/* Hidden list: the build takes the full width. */
+.builds-body.is-list-hidden .builds-rail {
+  display: none;
+}
+
+.builds-body.is-list-hidden .builds-detail {
+  flex: 1 1 100%;
 }
 
 /* ---- Left rail ---- */
@@ -7443,6 +7979,96 @@ body.team-resizing * {
   .builds-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* ---- InfoBook: narrower screens ---- */
+
+/* Below a full desktop the fixed 264px rail eats the detail pane, so it
+   narrows first and only then gives up its column. */
+@media (max-width: 1180px) {
+  .builds-rail { flex-basis: 228px; }
+  .builds-rail-tools { padding: 12px 12px 10px; }
+  .builds-detail { padding: 18px 20px 24px; gap: 18px; }
+  .builds-hero-portrait { width: 64px; height: 64px; }
+  .builds-hero-name { font-size: 23px; }
+  .build-chart { gap: 14px; }
+}
+
+@media (max-width: 900px) {
+  .builds-rail { flex-basis: 200px; }
+  .builds-row-portrait { width: 30px; height: 30px; }
+  .builds-row-name { font-size: 0.66rem; }
+  .builds-rail-tools .search-input { height: 30px; font-size: 0.66rem; }
+  .builds-afflatus-btn { height: 24px; }
+}
+
+/* Phones: side by side leaves a ~90px detail pane, so the list stacks on top. */
+@media (max-width: 768px) {
+  .builds-modal-card {
+    height: min(92vh, 900px);
+    max-height: 92dvh;
+  }
+
+  .builds-body { flex-direction: column; }
+
+  .builds-rail {
+    flex: 0 0 auto;
+    width: 100%;
+    height: var(--builds-rail-h, 40%);
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .builds-rail-tools { padding: 10px 12px 8px; gap: 6px; }
+  .builds-rail-tools .search-input { height: 32px; font-size: 0.7rem; }
+
+  .builds-rarity-group { height: 26px; }
+  .builds-rarity-group .filter-btn { font-size: 0.58rem; }
+  .builds-afflatus-btn { height: 26px; }
+  .builds-afflatus-btn img { width: 14px; height: 14px; }
+
+  .builds-list { padding: 4px 6px; }
+  .builds-row { padding: 6px 8px; gap: 9px; }
+  .builds-row-portrait { width: 34px; height: 34px; }
+  .builds-row-name { font-size: 0.72rem; }
+  .builds-row-stars { font-size: 0.5rem; }
+  .builds-rail-footer { padding: 6px 12px 8px; }
+  .builds-count { font-size: 0.52rem; }
+
+  .builds-detail {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 14px 12px 20px;
+    gap: 16px;
+  }
+
+  .builds-hero { gap: 12px; padding-bottom: 12px; }
+  .builds-hero-portrait { width: 54px; height: 54px; }
+  .builds-hero-name { font-size: 20px; }
+  .builds-hero-stars { font-size: 0.66rem; letter-spacing: 0.14em; }
+
+  .build-section { padding: 12px; gap: 12px; }
+  .build-section-title { font-size: 0.54rem; }
+
+  .build-charts { gap: 12px; }
+  .build-chart { gap: 10px; min-height: 118px; padding: 0; }
+  .build-charts.is-many {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 12px;
+  }
+  .build-charts.is-many .build-chart-block { height: 124px; }
+  .build-charts.is-many .build-chart { min-height: 92px; }
+  .build-chart-track { max-width: 36px; }
+  .build-chart-val { font-size: 0.56rem; }
+  .build-chart-badge { font-size: 0.54rem; }
+
+  .build-psychube { gap: 10px; }
+  .build-psychube img,
+  .build-psychube-blank { width: 44px; height: 53px; }
+  .build-psychube-name { font-size: 0.74rem; }
+  .build-resonance-btn { font-size: 0.62rem; }
+  .build-notes { font-size: 0.68rem; }
+}
+
 /* ================= SKILL ROTATIONS ================= */
 
 #rotations-modal { z-index: 1000; }
@@ -7571,23 +8197,26 @@ body.team-resizing * {
 .rotations-back:hover img { transform: translateX(-2px); }
 
 .rotations-body {
+  position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
   overflow: hidden;
 }
 
-/* ---- Browse view: filters, a separator, then the rotation grid ---- */
+/* ---- Left rail: filters, a separator, then the rotation list ---- */
 
 .rotations-browse {
-  flex: 1;
+  flex: 0 0 300px;
   min-width: 0;
   min-height: 0;
   overflow-y: auto;
-  padding: 18px 26px 26px;
+  padding: 18px 18px 26px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .rotations-browse-head {
@@ -7612,9 +8241,34 @@ body.team-resizing * {
   color: #8f8a83;
 }
 
-/* The list is the whole modal now; the plan takes its place when one is open. */
-#rotations-card.is-detail .rotations-browse { display: none; }
-#rotations-card:not(.is-detail) .rotations-detail { display: none; }
+/* List and plan are both visible: the rail on the left, the plan on the right. */
+.rotations-body.is-list-hidden .rotations-browse {
+  display: none;
+}
+
+.rotations-body.is-list-hidden .rotations-detail {
+  flex: 1 1 100%;
+}
+
+/* Header toggle for the list. */
+.rotations-rail-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.rotations-rail-toggle-icon {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  display: block;
+  opacity: 0.85;
+}
 
 .rotations-clear {
   font: inherit;
@@ -7660,20 +8314,21 @@ body.team-resizing * {
   background: rgba(208, 81, 38, 0.24);
 }
 
-/* Rotation cards reuse the Team Building card surface; 1-4 per row depending
-   on the viewport, so a wide modal never stretches a card across the screen. */
+/* Rotation cards sit in the left rail, so they are a single column that fits
+   the rail's width instead of the old multi-column grid. */
 .rotations-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
   align-items: start;
 }
 
 .rotation-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 9px 11px 10px;
+  gap: 7px;
+  min-width: 0;
+  padding: 8px 9px 9px;
   background: var(--team-card-bg);
   border: 1px solid rgba(50, 60, 52, 0.35);
   color: #1f1c19;
@@ -7685,6 +8340,11 @@ body.team-resizing * {
 
 .rotation-card:hover { border-color: #D05126; }
 
+.rotation-card:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
 .rotation-card.is-active {
   border-color: #D05126;
   box-shadow: inset 0 0 0 1px rgba(208, 81, 38, 0.55);
@@ -7692,34 +8352,39 @@ body.team-resizing * {
 
 .rotation-card-top {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
 }
 
 .rotation-card-name {
   flex: 1;
   min-width: 0;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .rotation-card-tuning {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   flex: none;
   display: block;
+  margin-top: 1px;
 }
 
 .rotation-card-team {
   display: flex;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-width: 0;
 }
 
 .rotation-card-face {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   overflow: hidden;
   background: #2a2825;
   border: 1px solid rgba(31, 28, 25, 0.25);
@@ -7737,7 +8402,7 @@ body.team-resizing * {
 .rotation-card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 3px;
 }
 
 .rotation-card-tag {
@@ -7749,6 +8414,133 @@ body.team-resizing * {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+/* Preset marker: the card is a read-only copy of a bundled rotation. */
+.rotation-card-tag.is-preset {
+  border-color: rgba(160, 60, 20, 0.55);
+  background: rgba(208, 81, 38, 0.16);
+  color: #7d2f10;
+}
+
+/* Remove-from-list button on a rotation card. */
+.rotation-card-remove {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(31, 28, 25, 0.3);
+  background: rgba(255, 255, 255, 0.22);
+  color: #3a332c;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.rotation-card-remove:hover {
+  background: rgba(208, 81, 38, 0.85);
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+.rotation-card-remove:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+/* ---- Rotation presets modal ---- */
+
+.rotation-presets-backdrop {
+  z-index: 1200;
+}
+
+.rotation-presets-card {
+  max-width: 1080px;
+  width: 100%;
+  height: min(86vh, 820px);
+}
+
+.rotation-presets-body {
+  overflow-y: auto;
+  gap: 12px;
+  /* The presets grid scrolls inside the card instead of being capped by the
+     shared modal-body limit. */
+  max-height: none;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Preset cards reuse the rotation card's look; the grid decides how many fit
+   per row, so the same card works at one, two or three columns. */
+.rotation-presets-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+.rotation-presets-list .rotation-card {
+  cursor: default;
+}
+
+.rotation-presets-list .rotation-card:hover {
+  border-color: rgba(50, 60, 52, 0.35);
+}
+
+.rotation-preset.is-added {
+  opacity: 0.55;
+}
+
+/* Add action sits under the card's own content, on the card's light surface. */
+.rotation-preset-add {
+  align-self: stretch;
+  margin-top: auto;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid rgba(31, 28, 25, 0.45);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.34);
+  color: #241f1b;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.rotation-preset-add:hover:not(:disabled) {
+  background: #D05126;
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+.rotation-preset-add:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+.rotation-preset-add:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+@media (max-width: 1000px) {
+  .rotation-presets-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .rotation-presets-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* ---- Detail pane ---- */
@@ -7782,6 +8574,7 @@ body.team-resizing * {
 .rot-hero-tags {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 6px;
 }
 
@@ -7804,27 +8597,28 @@ body.team-resizing * {
 
 .rot-block .archetype-section-header { margin: 0; }
 
-.rot-tunings {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+/* Only the chosen tuning is rendered: a compact chip in the Notes block.
+   Its size is unchanged from when it sat beside the Team header. */
+.rot-tuning {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid #ED7D31;
+  background: rgba(208, 81, 38, 0.16);
 }
 
-.rot-tuning {
-  width: 96px;
+/* The chip sits under the notes text, left-aligned. */
+.rot-tuning-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
-  padding: 8px 6px;
-  border: 1px solid rgba(181, 181, 179, 0.25);
-  background: rgba(0, 0, 0, 0.25);
-  opacity: 0.45;
 }
 
 .rot-tuning img {
-  width: 56px;
-  height: 56px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
   display: block;
 }
@@ -7834,18 +8628,11 @@ body.team-resizing * {
   font-size: 0.54rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #B5B5B3;
+  color: #ED7D31;
   text-align: center;
   line-height: 1.3;
+  white-space: nowrap;
 }
-
-.rot-tuning.is-active {
-  opacity: 1;
-  border-color: #ED7D31;
-  background: rgba(208, 81, 38, 0.16);
-}
-
-.rot-tuning.is-active .rot-tuning-name { color: #ED7D31; }
 
 .rot-team {
   display: flex;
@@ -7862,6 +8649,12 @@ body.team-resizing * {
   background: rgba(0, 0, 0, 0.22);
 }
 
+.rot-member-avatar {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+}
+
 .rot-member-portrait {
   width: 56px;
   height: 56px;
@@ -7876,6 +8669,22 @@ body.team-resizing * {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Portrait bar under the avatar: five dashes, same look as the board cards. */
+.rot-member-portrait-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  height: 3px;
+  margin: 2px -1px 0;
+  width: calc(100% + 2px);
+  box-sizing: border-box;
+}
+
+.rot-member-portrait-bar .portrait-dash {
+  height: 100%;
+  min-width: 0;
 }
 
 .rot-member-text {
@@ -7965,8 +8774,10 @@ body.team-resizing * {
 
 .rot-slot {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
   padding: 0;
   /* One shared height keeps every card on the same baseline. */
   height: 116px;
@@ -7975,34 +8786,62 @@ body.team-resizing * {
   background: none;
 }
 
-.rot-slot.is-empty {
-  width: 62px;
-  border: 1px dashed rgba(181, 181, 179, 0.16);
+/* The card area sits above a small type caption, so AP, OR, 1/4 AP and TEXT
+   all line up and each slot says what kind of card it is. */
+.rot-slot-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
 }
 
-/* A text slot is a note chip the same size as one normal card. */
-.rot-slot.is-text {
+.rot-slot-type {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.46rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6f6a63;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rot-slot.is-empty .rot-slot-body {
   width: 62px;
   height: 81px;
-  padding: 5px;
-  align-items: center;
-  justify-content: center;
-  background: rgba(74, 119, 201, 0.2);
-  border: 1px solid rgba(122, 160, 224, 0.5);
+  border: 1px dashed rgba(181, 181, 179, 0.16);
   box-sizing: border-box;
-  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 0.52rem;
-  line-height: 1.35;
-  color: #C9D7EC;
-  text-align: center;
+}
+
+/* A text slot is a note chip: wider than one card, with room to read. */
+.rot-slot.is-text .rot-slot-body {
+  width: 132px;
+  min-height: 81px;
+  padding: 8px 10px;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgba(74, 119, 201, 0.18);
+  border: 1px solid rgba(122, 160, 224, 0.45);
+  box-sizing: border-box;
   overflow: hidden;
+}
+
+.rot-slot-text {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.58rem;
+  line-height: 1.45;
+  color: #DCE6F5;
+  text-align: left;
   word-break: break-word;
+}
+
+.rot-slot.is-text .rot-slot-type {
+  color: #7d94b8;
 }
 
 /* Either/or: both cards shrink and overlap, so the pair reads as one slot
    while the back card still peeks out from behind the front one. */
-.rot-slot.is-or { width: 72px; justify-content: flex-start; }
-.rot-or-stack { position: relative; width: 72px; height: 100%; }
+.rot-slot.is-or .rot-slot-body { width: 72px; justify-content: flex-start; }
+.rot-or-stack { position: relative; width: 72px; height: 81px; }
 .rot-or-stack > .rot-card:not(.is-behind) { position: absolute; left: 0; bottom: 0; z-index: 2; }
 .rot-or-stack > .rot-card img { width: 44px; }
 .rot-card.is-behind {
@@ -8025,10 +8864,23 @@ body.team-resizing * {
   width: 62px;
   height: auto;
   display: block;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.rot-slot:hover .rot-card:not(.is-behind) img {
+  border-color: rgba(237, 125, 49, 0.55);
+  transform: translateY(-2px);
+}
+
+.rot-card.is-behind img {
+  border: none;
+  box-shadow: none;
 }
 
 /* A quarter-size (LB) card is drawn at a quarter of the normal area. */
-.rot-slot.is-lb { padding: 4px; }
+.rot-slot.is-lb .rot-slot-body { padding: 4px; }
 .rot-card.is-lb img { width: 31px; }
 
 .rot-or {
@@ -8037,6 +8889,171 @@ body.team-resizing * {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #8f8a83;
+}
+
+/* ---- Rotations: narrower screens ---- */
+
+/* The header packs a title, a 210px search box and a close button into one
+   row; below a desktop width that no longer fits. */
+@media (max-width: 1180px) {
+  .rotations-browse { flex-basis: 260px; padding: 16px 16px 22px; }
+  .rotations-detail { padding: 18px 20px 24px; gap: 20px; }
+  .rot-hero-name { font-size: 24px; }
+  .rotations-header-tools .search-input { width: 180px; }
+}
+
+@media (max-width: 900px) {
+  .rotations-modal-card {
+    height: min(92vh, 900px);
+    max-height: 92dvh;
+  }
+
+  #rotations-modal .archetype-modal-header { gap: 8px; padding: 12px 16px 10px; }
+  #rotations-modal .archetype-modal-title { font-size: 21px; }
+
+  .rotations-header-tools { gap: 8px; min-width: 0; }
+  .rotations-header-tools .search-input {
+    width: 150px;
+    min-width: 0;
+    height: 30px;
+    font-size: 0.64rem;
+  }
+
+  .rotations-browse { flex-basis: 220px; padding: 14px 12px 20px; }
+  .rotations-detail { padding: 16px 16px 22px; gap: 18px; }
+  .rot-hero-name { font-size: 21px; }
+  .rot-tuning { padding: 3px 8px 3px 3px; }
+  .rot-tuning img { width: 22px; height: 22px; }
+  .rot-tuning-name { font-size: 0.5rem; }
+  .rot-member-portrait { width: 46px; height: 46px; }
+}
+
+@media (max-width: 768px) {
+  .rotations-modal-card {
+    height: min(94vh, 900px);
+    max-height: 94dvh;
+  }
+
+  /* Row 1: Back + title. Row 2: the full-width search field. */
+  #rotations-modal .archetype-modal-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 44px 10px 12px;
+  }
+
+  #rotations-modal .archetype-modal-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 19px;
+    line-height: 1.2;
+  }
+
+  .rotations-back { order: -1; padding-right: 6px; }
+
+  .rotations-header-tools { flex: 1 1 100%; margin-left: 0; gap: 8px; flex-wrap: wrap; }
+  .rotations-header-tools .search-input {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    height: 34px;
+    font-size: 0.72rem;
+  }
+  .rotations-header-tools .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  /* Phones stack the rail above the plan instead of side by side. */
+  .rotations-body {
+    flex-direction: column;
+  }
+
+  .rotations-browse {
+    flex: 0 0 auto;
+    width: 100%;
+    height: var(--rotations-rail-h, 40%);
+    max-height: none;
+    padding: 12px 12px 14px;
+    gap: 10px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .rotations-rail-toggle {
+    height: 30px;
+    padding: 0 9px;
+    font-size: 0.56rem;
+  }
+  .rotations-presets-btn {
+    height: 30px;
+    padding: 0 9px;
+    font-size: 0.56rem;
+  }
+  .rotations-browse-head { gap: 8px; }
+  .rotations-filters { gap: 4px; }
+  .rotation-filter { padding: 3px 7px; font-size: 0.54rem; }
+
+  /* A 280px minimum card would overflow a 360px phone. */
+  .rotations-list { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .rotation-card { padding: 9px 10px; gap: 7px; }
+  .rotation-card-name { font-size: 0.76rem; }
+  .rotation-card-face { width: 32px; height: 32px; }
+  .rotation-card-tag { font-size: 0.48rem; }
+
+  .rotations-detail { padding: 14px 12px 20px; gap: 16px; }
+  .rot-hero { gap: 8px; padding-bottom: 12px; }
+  .rot-hero-name { font-size: 19px; }
+  .rot-hero-tag { font-size: 0.52rem; padding: 2px 8px; }
+
+  .rot-block { gap: 10px; }
+
+  /* The tuning chip shrinks with the hero tags on a phone. */
+  .rot-tuning { padding: 2px 7px 2px 2px; gap: 5px; }
+  .rot-tuning img { width: 20px; height: 20px; }
+  .rot-tuning-name { font-size: 0.48rem; }
+
+  /* Two members per row: four full-width rows wasted the screen height. */
+  .rot-team {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .rot-member { padding: 5px 8px 5px 5px; gap: 7px; min-width: 0; }
+  .rot-member-portrait { width: 38px; height: 38px; }
+  .rot-member-text { min-width: 0; gap: 3px; }
+  .rot-member-name {
+    font-size: 0.66rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .rot-member-chube { font-size: 0.5rem; gap: 4px; min-width: 0; }
+  .rot-member-chube img { width: 18px; height: 22px; }
+  /* The psychube name is long; clip it rather than stretch the card. */
+  .rot-member-chube > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rot-rounds { gap: 10px; }
+  .rot-round { padding: 9px 10px; gap: 8px; }
+  .rot-round-label { font-size: 0.64rem; }
+  .rot-round-note { font-size: 0.56rem; }
+
+  /* Cards scale down together so a full round still fits one row. */
+  .rot-slot { height: 96px; }
+  .rot-card img { width: 52px; }
+  .rot-slot.is-empty .rot-slot-body { width: 52px; height: 68px; }
+  .rot-slot.is-text .rot-slot-body { width: 96px; min-height: 68px; padding: 6px 8px; }
+  .rot-slot-text { font-size: 0.52rem; line-height: 1.4; }
+  .rot-slot.is-or .rot-slot-body { width: 62px; }
+  .rot-or-stack { width: 62px; height: 68px; }
+  .rot-or-stack > .rot-card img { width: 38px; }
+  .rot-card.is-behind { left: 23px; bottom: 20px; }
+  .rot-card.is-lb img { width: 26px; }
 }
 
 /* ================= JSON MODAL ================= */

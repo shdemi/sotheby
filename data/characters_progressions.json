@@ -1,48 +1,112 @@
 {
   "Lorentz Butterfly": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 18 },
-        { "badge": "P2", "val": 15.2 },
-        { "badge": "P3", "val": 5.7 },
-        { "badge": "P4", "val": 6.1 },
-        { "badge": "P5", "val": 10.5 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 18
+      },
+      {
+        "badge": "P2",
+        "val": 15
+      },
+      {
+        "badge": "P3",
+        "val": 6
+      },
+      {
+        "badge": "P4",
+        "val": 6
+      },
+      {
+        "badge": "P5",
+        "val": 11
+      }
+    ]
+  }
+],
   "Flutterpage": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 20 },
-        { "badge": "P2", "val": 6.5 },
-        { "badge": "P3", "val": 22.2 },
-        { "badge": "P4", "val": 12 },
-        { "badge": "P5", "val": 16 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 20
+      },
+      {
+        "badge": "P2",
+        "val": 7
+      },
+      {
+        "badge": "P3",
+        "val": 22
+      },
+      {
+        "badge": "P4",
+        "val": 12
+      },
+      {
+        "badge": "P5",
+        "val": 16
+      }
+    ]
+  }
+],
   "Corvus": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 21 },
-        { "badge": "P2", "val": 35 },
-        { "badge": "P3", "val": 11.6 },
-        { "badge": "P4", "val": 11.3 },
-        { "badge": "P5", "val": 11.9 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 20
+      },
+      {
+        "badge": "P2",
+        "val": 30
+      },
+      {
+        "badge": "P3",
+        "val": 10
+      },
+      {
+        "badge": "P4",
+        "val": 11
+      },
+      {
+        "badge": "P5",
+        "val": 12
+      }
+    ]
+  }
+],
   "Rubuska": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 11.3 },
-        { "badge": "P2", "val": 11.5 },
-        { "badge": "P3", "val": 0.1 },
-        { "badge": "P4", "val": 2.9 },
-        { "badge": "P5", "val": 15.5 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 12
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 3
+      },
+      {
+        "badge": "P5",
+        "val": 15
+      }
+    ]
+  }
+],
   "Tooth Fairy": [
     {
       "bars": [
@@ -66,27 +130,59 @@
     }
   ],
   "Coppélia": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 8.71 },
-        { "badge": "P2", "val": 15.86 },
-        { "badge": "P3", "val": 16.12 },
-        { "badge": "P4", "val": 32.58 },
-        { "badge": "P5", "val": 19.57 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 9
+      },
+      {
+        "badge": "P2",
+        "val": 16
+      },
+      {
+        "badge": "P3",
+        "val": 16
+      },
+      {
+        "badge": "P4",
+        "val": 33
+      },
+      {
+        "badge": "P5",
+        "val": 20
+      }
+    ]
+  }
+],
   "Tuesday": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 22.2 },
-        { "badge": "P2", "val": 11.8 },
-        { "badge": "P3", "val": 19.9 },
-        { "badge": "P4", "val": 12.9 },
-        { "badge": "P5", "val": 11.3 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 20
+      },
+      {
+        "badge": "P2",
+        "val": 12
+      },
+      {
+        "badge": "P3",
+        "val": 20
+      },
+      {
+        "badge": "P4",
+        "val": 11
+      },
+      {
+        "badge": "P5",
+        "val": 10
+      }
+    ]
+  }
+],
   "Cheng Heguang": [
     {
       "bars": [
@@ -99,38 +195,86 @@
     }
   ],
   "Aleph": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 20 },
-        { "badge": "P2", "val": 12 },
-        { "badge": "P3", "val": 11 },
-        { "badge": "P4", "val": 7 },
-        { "badge": "P5", "val": 16 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 16
+      },
+      {
+        "badge": "P2",
+        "val": 9
+      },
+      {
+        "badge": "P3",
+        "val": 10
+      },
+      {
+        "badge": "P4",
+        "val": 9
+      },
+      {
+        "badge": "P5",
+        "val": 15
+      }
+    ]
+  }
+],
   "Semmelweis": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 9.4 },
-        { "badge": "P2", "val": 14 },
-        { "badge": "P3", "val": 11.2 },
-        { "badge": "P4", "val": 2.5 },
-        { "badge": "P5", "val": 10.8 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 14
+      },
+      {
+        "badge": "P3",
+        "val": 11
+      },
+      {
+        "badge": "P4",
+        "val": 3
+      },
+      {
+        "badge": "P5",
+        "val": 11
+      }
+    ]
+  }
+],
   "Ramona": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 36.08 },
-        { "badge": "P2", "val": 25.2 },
-        { "badge": "P3", "val": 11.82 },
-        { "badge": "P4", "val": 5.28 },
-        { "badge": "P5", "val": 35.8 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 25
+      },
+      {
+        "badge": "P2",
+        "val": 20
+      },
+      {
+        "badge": "P3",
+        "val": 1
+      },
+      {
+        "badge": "P4",
+        "val": 6
+      },
+      {
+        "badge": "P5",
+        "val": 31
+      }
+    ]
+  }
+],
   "Isolde": [
     {
       "bars": [
@@ -143,38 +287,86 @@
     }
   ],
   "Marsha": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 8.1 },
-        { "badge": "P2", "val": 6 },
-        { "badge": "P3", "val": 11.1 },
-        { "badge": "P4", "val": 0 },
-        { "badge": "P5", "val": 20.3 }
-      ]
-    }
-  ],
+  {
+    "label": "P4: Survival Improvement",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 9
+      },
+      {
+        "badge": "P2",
+        "val": 4
+      },
+      {
+        "badge": "P3",
+        "val": 10
+      },
+      {
+        "badge": "P4",
+        "val": 0
+      },
+      {
+        "badge": "P5",
+        "val": 20
+      }
+    ]
+  }
+],
   "Igor": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 29 },
-        { "badge": "P2", "val": 19 },
-        { "badge": "P3", "val": 17 },
-        { "badge": "P4", "val": 23 },
-        { "badge": "P5", "val": 76 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 35
+      },
+      {
+        "badge": "P2",
+        "val": 10
+      },
+      {
+        "badge": "P3",
+        "val": 15
+      },
+      {
+        "badge": "P4",
+        "val": 12
+      },
+      {
+        "badge": "P5",
+        "val": 41
+      }
+    ]
+  }
+],
   "Recoleta": [
-    {
-      "bars": [
-        { "badge": "P1", "val": 11 },
-        { "badge": "P2", "val": 9 },
-        { "badge": "P3", "val": 15 },
-        { "badge": "P4", "val": 9 },
-        { "badge": "P5", "val": 20 }
-      ]
-    }
-  ],
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 8
+      },
+      {
+        "badge": "P3",
+        "val": 13
+      },
+      {
+        "badge": "P4",
+        "val": 12
+      },
+      {
+        "badge": "P5",
+        "val": 20
+      }
+    ]
+  }
+],
   "The Twins": [
     {
       "bars": [
@@ -185,5 +377,1077 @@
         { "badge": "P5", "val": 30 }
       ]
     }
-  ]
+  ],
+  "Drake": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 25
+      },
+      {
+        "badge": "P2",
+        "val": 8
+      },
+      {
+        "badge": "P3",
+        "val": 7
+      },
+      {
+        "badge": "P4",
+        "val": 6
+      },
+      {
+        "badge": "P5",
+        "val": 42
+      }
+    ]
+  }
+],
+  "Huntsworn Lilya": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 35
+      },
+      {
+        "badge": "P2",
+        "val": 30
+      },
+      {
+        "badge": "P3",
+        "val": 40
+      },
+      {
+        "badge": "P4",
+        "val": 8
+      },
+      {
+        "badge": "P5",
+        "val": 26
+      }
+    ]
+  }
+],
+  "Narcissus": [
+  {
+    "label": "P3: Survivablity",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 7
+      },
+      {
+        "badge": "P2",
+        "val": 6
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 2
+      },
+      {
+        "badge": "P5",
+        "val": 13
+      }
+    ]
+  }
+],
+  "Hedone": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 6
+      },
+      {
+        "badge": "P2",
+        "val": 10
+      },
+      {
+        "badge": "P3",
+        "val": 3
+      },
+      {
+        "badge": "P4",
+        "val": 3
+      },
+      {
+        "badge": "P5",
+        "val": 31
+      }
+    ]
+  }
+],
+  "Cornerstone": [
+  {
+    "label": "P4: Survival Improvement",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 51
+      },
+      {
+        "badge": "P2",
+        "val": 36
+      },
+      {
+        "badge": "P3",
+        "val": 4
+      },
+      {
+        "badge": "P4",
+        "val": 0
+      },
+      {
+        "badge": "P5",
+        "val": 28
+      }
+    ]
+  }
+],
+  "Everecho": [
+  {
+    "label": "P4: Survival Improvement",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 11
+      },
+      {
+        "badge": "P3",
+        "val": 6
+      },
+      {
+        "badge": "P4",
+        "val": 0
+      },
+      {
+        "badge": "P5",
+        "val": 24
+      }
+    ]
+  }
+],
+  "Ms. Stranger": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 19
+      },
+      {
+        "badge": "P2",
+        "val": 39
+      },
+      {
+        "badge": "P3",
+        "val": 6
+      },
+      {
+        "badge": "P4",
+        "val": 14
+      },
+      {
+        "badge": "P5",
+        "val": 40
+      }
+    ]
+  }
+],
+  "Rhiannon": [
+  {
+    "label": "Overall",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 8
+      },
+      {
+        "badge": "P2",
+        "val": 16
+      },
+      {
+        "badge": "P3",
+        "val": 9
+      },
+      {
+        "badge": "P4",
+        "val": 2
+      },
+      {
+        "badge": "P5",
+        "val": 20
+      }
+    ]
+  }
+],
+  "Enigma": [
+  {
+    "label": "P4: Survival Improvement",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 31
+      },
+      {
+        "badge": "P2",
+        "val": 10
+      },
+      {
+        "badge": "P3",
+        "val": 6
+      },
+      {
+        "badge": "P4",
+        "val": 0
+      },
+      {
+        "badge": "P5",
+        "val": 12
+      }
+    ]
+  }
+],
+  "Paper Heron": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 20
+      },
+      {
+        "badge": "P2",
+        "val": 35
+      },
+      {
+        "badge": "P3",
+        "val": 13
+      },
+      {
+        "badge": "P4",
+        "val": 12
+      },
+      {
+        "badge": "P5",
+        "val": 33
+      }
+    ]
+  }
+],
+  "Beryl": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 30
+      },
+      {
+        "badge": "P2",
+        "val": 40
+      },
+      {
+        "badge": "P3",
+        "val": 15
+      },
+      {
+        "badge": "P4",
+        "val": 2
+      },
+      {
+        "badge": "P5",
+        "val": 31
+      }
+    ]
+  }
+],
+  "Charon": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 0
+      },
+      {
+        "badge": "P3",
+        "val": 17
+      },
+      {
+        "badge": "P4",
+        "val": 15
+      },
+      {
+        "badge": "P5",
+        "val": 16
+      }
+    ]
+  }
+],
+  "Sentinel": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 6
+      },
+      {
+        "badge": "P3",
+        "val": 4
+      },
+      {
+        "badge": "P4",
+        "val": 3
+      },
+      {
+        "badge": "P5",
+        "val": 20
+      }
+    ]
+  }
+],
+  "Kassandra": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 1
+      },
+      {
+        "badge": "P2",
+        "val": 15
+      },
+      {
+        "badge": "P3",
+        "val": 15
+      },
+      {
+        "badge": "P4",
+        "val": 12
+      },
+      {
+        "badge": "P5",
+        "val": 11
+      }
+    ]
+  }
+],
+  "Ezio Auditore": [
+  {
+    "label": "FuA",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 15
+      },
+      {
+        "badge": "P2",
+        "val": 11
+      },
+      {
+        "badge": "P3",
+        "val": 10
+      },
+      {
+        "badge": "P4",
+        "val": 15
+      },
+      {
+        "badge": "P5",
+        "val": 11
+      }
+    ]
+  },
+  {
+    "label": "Ultimate",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 19
+      },
+      {
+        "badge": "P2",
+        "val": 7
+      },
+      {
+        "badge": "P3",
+        "val": 15
+      },
+      {
+        "badge": "P4",
+        "val": 15
+      },
+      {
+        "badge": "P5",
+        "val": 8
+      }
+    ]
+  },
+  {
+    "label": "Poison",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 30
+      },
+      {
+        "badge": "P2",
+        "val": 30
+      },
+      {
+        "badge": "P3",
+        "val": 10
+      },
+      {
+        "badge": "P4",
+        "val": 16
+      },
+      {
+        "badge": "P5",
+        "val": 20
+      }
+    ]
+  }
+],
+  "Moldir": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 20
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 7
+      },
+      {
+        "badge": "P5",
+        "val": 11
+      }
+    ]
+  }
+],
+  "Nautika": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 20
+      },
+      {
+        "badge": "P2",
+        "val": 16
+      },
+      {
+        "badge": "P3",
+        "val": 9
+      },
+      {
+        "badge": "P4",
+        "val": 2
+      },
+      {
+        "badge": "P5",
+        "val": 30
+      }
+    ]
+  }
+],
+  "Ulrich": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 25
+      },
+      {
+        "badge": "P2",
+        "val": 10
+      },
+      {
+        "badge": "P3",
+        "val": 14
+      },
+      {
+        "badge": "P4",
+        "val": 11
+      },
+      {
+        "badge": "P5",
+        "val": 18
+      }
+    ]
+  }
+],
+  "Kiperina": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 3
+      },
+      {
+        "badge": "P2",
+        "val": 3
+      },
+      {
+        "badge": "P3",
+        "val": 2
+      },
+      {
+        "badge": "P4",
+        "val": 0
+      },
+      {
+        "badge": "P5",
+        "val": 4
+      }
+    ]
+  }
+],
+  "Hissabeth": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 22
+      },
+      {
+        "badge": "P2",
+        "val": 0
+      },
+      {
+        "badge": "P3",
+        "val": 11
+      },
+      {
+        "badge": "P4",
+        "val": 15
+      },
+      {
+        "badge": "P5",
+        "val": 9
+      }
+    ]
+  }
+],
+  "Noire": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 9
+      },
+      {
+        "badge": "P2",
+        "val": 3
+      },
+      {
+        "badge": "P3",
+        "val": 25
+      },
+      {
+        "badge": "P4",
+        "val": 8
+      },
+      {
+        "badge": "P5",
+        "val": 13
+      }
+    ]
+  }
+],
+  "Liang Yue": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 7
+      },
+      {
+        "badge": "P2",
+        "val": 22
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 5
+      },
+      {
+        "badge": "P5",
+        "val": 42
+      }
+    ]
+  }
+],
+  "Fatutu": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 0
+      },
+      {
+        "badge": "P2",
+        "val": 0
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 0
+      },
+      {
+        "badge": "P5",
+        "val": 0
+      }
+    ]
+  }
+],
+  "Barcarola": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 20
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 5
+      },
+      {
+        "badge": "P5",
+        "val": 13
+      }
+    ]
+  }
+],
+  "Willow": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 7
+      },
+      {
+        "badge": "P2",
+        "val": 40
+      },
+      {
+        "badge": "P3",
+        "val": 7
+      },
+      {
+        "badge": "P4",
+        "val": 15
+      },
+      {
+        "badge": "P5",
+        "val": 2
+      }
+    ]
+  }
+],
+  "Lopera": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 10
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 10
+      },
+      {
+        "badge": "P5",
+        "val": 8
+      }
+    ]
+  }
+],
+  "Anjo Nala": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 7
+      },
+      {
+        "badge": "P2",
+        "val": 13
+      },
+      {
+        "badge": "P3",
+        "val": 9
+      },
+      {
+        "badge": "P4",
+        "val": 5
+      },
+      {
+        "badge": "P5",
+        "val": 16
+      }
+    ]
+  }
+],
+  "Argus": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 15
+      },
+      {
+        "badge": "P2",
+        "val": 15
+      },
+      {
+        "badge": "P3",
+        "val": 13
+      },
+      {
+        "badge": "P4",
+        "val": 15
+      },
+      {
+        "badge": "P5",
+        "val": 9
+      }
+    ]
+  }
+],
+  "Mercuria": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 0
+      },
+      {
+        "badge": "P2",
+        "val": 17
+      },
+      {
+        "badge": "P3",
+        "val": 8
+      },
+      {
+        "badge": "P4",
+        "val": 30
+      },
+      {
+        "badge": "P5",
+        "val": 36
+      }
+    ]
+  }
+],
+  "J": [
+  {
+    "label": "Riposte",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 22
+      },
+      {
+        "badge": "P2",
+        "val": 40
+      },
+      {
+        "badge": "P3",
+        "val": 41
+      },
+      {
+        "badge": "P4",
+        "val": 9
+      },
+      {
+        "badge": "P5",
+        "val": 31
+      }
+    ]
+  },
+  {
+    "label": "Ultimate",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 6
+      },
+      {
+        "badge": "P2",
+        "val": 40
+      },
+      {
+        "badge": "P3",
+        "val": 32
+      },
+      {
+        "badge": "P4",
+        "val": 32
+      },
+      {
+        "badge": "P5",
+        "val": 32
+      }
+    ]
+  }
+],
+  "Marcus": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 3
+      },
+      {
+        "badge": "P2",
+        "val": 5
+      },
+      {
+        "badge": "P3",
+        "val": 13
+      },
+      {
+        "badge": "P4",
+        "val": 11
+      },
+      {
+        "badge": "P5",
+        "val": 4
+      }
+    ]
+  }
+],
+  "Lucy": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 17
+      },
+      {
+        "badge": "P2",
+        "val": 9
+      },
+      {
+        "badge": "P3",
+        "val": 12
+      },
+      {
+        "badge": "P4",
+        "val": 10
+      },
+      {
+        "badge": "P5",
+        "val": 21
+      }
+    ]
+  }
+],
+  "Windsong": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 16
+      },
+      {
+        "badge": "P2",
+        "val": 13
+      },
+      {
+        "badge": "P3",
+        "val": 5
+      },
+      {
+        "badge": "P4",
+        "val": 9
+      },
+      {
+        "badge": "P5",
+        "val": 10
+      }
+    ]
+  }
+],
+  "Kakania": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 8
+      },
+      {
+        "badge": "P2",
+        "val": 22
+      },
+      {
+        "badge": "P3",
+        "val": 40
+      },
+      {
+        "badge": "P4",
+        "val": 3
+      },
+      {
+        "badge": "P5",
+        "val": 10
+      }
+    ]
+  }
+],
+  "Jiu Niangzi": [
+  {
+    "label": "",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 8
+      },
+      {
+        "badge": "P2",
+        "val": 15
+      },
+      {
+        "badge": "P3",
+        "val": 9
+      },
+      {
+        "badge": "P4",
+        "val": 9
+      },
+      {
+        "badge": "P5",
+        "val": 9
+      }
+    ]
+  }
+],
+  "6": [
+  {
+    "label": "Team Improvement",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 10
+      },
+      {
+        "badge": "P2",
+        "val": 0
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 9
+      },
+      {
+        "badge": "P5",
+        "val": 21
+      }
+    ]
+  },
+  {
+    "label": "Overall Improvement",
+    "bars": [
+      {
+        "badge": "P1",
+        "val": 6
+      },
+      {
+        "badge": "P2",
+        "val": 10
+      },
+      {
+        "badge": "P3",
+        "val": 0
+      },
+      {
+        "badge": "P4",
+        "val": 5
+      },
+      {
+        "badge": "P5",
+        "val": 12
+      }
+    ]
+  }
+]
 }

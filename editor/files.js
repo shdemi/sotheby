@@ -34,6 +34,7 @@ export const WRITABLE = [
   "guide_rotations.json",
   "guide_skills.json",
   "guide_cards.json",
+  "credits.json",
 ];
 
 /** Files the editor reads but never writes. */

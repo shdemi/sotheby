@@ -25,6 +25,7 @@
     <button class="tab" data-tab="builds" role="tab">InfoBook</button>
     <button class="tab" data-tab="rotations" role="tab">Rotations</button>
     <button class="tab" data-tab="patterns" role="tab">Skins &amp; Naming</button>
+    <button class="tab" data-tab="credits" role="tab">Credits</button>
     <button class="tab" data-tab="review" role="tab">Review<span class="badge" id="review-badge" hidden>0</span></button>
   </nav>
 
@@ -135,6 +136,20 @@
     </aside>
     <div class="detail" id="rotation-detail">
       <div class="empty">Select a rotation.</div>
+    </div>
+  </section>
+
+  <!-- ============ Credits ============ -->
+  <section class="pane" data-pane="credits">
+    <div class="wide">
+      <div class="card">
+        <div class="card-head">
+          <h2>Credits</h2>
+          <button class="btn btn-sm" id="credit-add">+ Credit</button>
+        </div>
+        <p class="hint"><code>credits.json</code> — one row per entry. Name is required; the URL only becomes a link when it starts with http(s). The modal lists them in this order.</p>
+        <div id="credit-editor"></div>
+      </div>
     </div>
   </section>
 

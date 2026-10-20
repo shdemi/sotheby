@@ -203,6 +203,11 @@ Common task → where to look:
 ### 1.14. Localization
 - Full **EN / CN / VI** support for both UI strings and character/skin names.
 
+### 1.15. Credits
+- The hand-drawn **Credits** wordmark at the bottom of the page (`images/random_icon/Credits.png`) opens the credits modal.
+- Content lives in `data/credits.json` as `{ entries: [{ name, url, description }] }`, so it is edited from the editor's **Credits** tab rather than in code.
+- `url` is optional; only `http(s)` links render as anchors (anything else is plain text, so a stray `javascript:` value can never become a link).
+
 ---
 
 ## 2. Tech stack & architecture
@@ -678,3 +683,5 @@ Character names must match **exactly** across the JSON files (or be covered by a
 - **Icon Artist:** ena.
 - **Developed by:** sh, assisted by 91.
 - Sotheby's Mansion is not affiliated with BluePoch. All images and data belong to their respective owners.
+
+The in-app credits modal reads `data/credits.json`; keep that file in sync with the list above.

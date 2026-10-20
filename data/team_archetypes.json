@@ -84,7 +84,7 @@
 	{
 		"character": "Matilda",
 		"psychube": "Shadows in the Subconscious",
-		"euphoria": "E1"
+		"euphoria": "E2"
 	},
 	{
 		"character": "Flutterpage",
@@ -180,7 +180,7 @@
         "psychube": "Family Mentor",
         "euphoria": "E1"
       },
-      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday", "euphoria": "E1", "substitutes": [
+      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday", "substitutes": [
 	{
 		"character": "Lopera",
 		"psychube": "The Third Commitment",
@@ -244,6 +244,14 @@
 	],
 	[
 	{
+		"character": "Enigma",
+		"psychube": "The Third Commitment"
+	},
+	{
+		"character": "Charon",
+		"psychube": "Buds Yet to Bloom"
+	},
+	{
 		"character": "Ms. Stranger",
 		"is_essential": true,
 		"psychube": "Long Night Talk"
@@ -251,15 +259,6 @@
 	{
 		"character": "Rhiannon",
 		"psychube": "The Soft Rain of Yesterday"
-	},
-	{
-		"character": "Charon",
-		"euphoria": "E1",
-		"psychube": "Buds Yet to Bloom"
-	},
-	{
-		"character": "Enigma",
-		"psychube": "The Third Commitment"
 	}
 ]
 ],
@@ -356,6 +355,14 @@
 ],
     [
 	{
+		"character": "Enigma",
+		"psychube": "The Third Commitment"
+	},
+	{
+		"character": "Charon",
+		"psychube": "Buds Yet to Bloom"
+	},
+	{
 		"character": "Hissabeth",
 		"is_essential": true,
 		"euphoria": "E1",
@@ -364,15 +371,6 @@
 	{
 		"character": "Rhiannon",
 		"psychube": "The Soft Rain of Yesterday"
-	},
-	{
-		"character": "Charon",
-		"euphoria": "E1",
-		"psychube": "Buds Yet to Bloom"
-	},
-	{
-		"character": "Enigma",
-		"psychube": "The Third Commitment"
 	}
 ]
   ],
@@ -413,6 +411,14 @@
 ],
   	[
 	{
+		"character": "Enigma",
+		"psychube": "The Third Commitment"
+	},
+	{
+		"character": "Charon",
+		"psychube": "Buds Yet to Bloom"
+	},
+	{
 		"character": "Lucy",
 		"is_essential": true,
 		"psychube": "Steps Forward",
@@ -422,10 +428,6 @@
 		"psychube": "Long Night Talk"
 	}
 ]
-	},
-	{
-		"character": "Charon",
-		"psychube": "Buds Yet to Bloom"
 	},
 	{
 		"character": "Rhiannon",
@@ -440,21 +442,12 @@
 			}
 		],
 		"psychube": "The Soft Rain of Yesterday"
-	},
-	{
-		"character": "Enigma",
-		"psychube": "The Third Commitment"
 	}
 ],
   	[
 	{
-		"character": "Brume",
-		"is_essential": true,
-		"psychube": "On the Hand of Time"
-	},
-	{
-		"character": "Rhiannon",
-		"psychube": "The Soft Rain of Yesterday"
+		"character": "Enigma",
+		"psychube": "The Third Commitment"
 	},
 	{
 		"character": "Charon",
@@ -472,8 +465,13 @@
 		"psychube": "Buds Yet to Bloom"
 	},
 	{
-		"character": "Enigma",
-		"psychube": "The Third Commitment"
+		"character": "Brume",
+		"is_essential": true,
+		"psychube": "On the Hand of Time"
+	},
+	{
+		"character": "Rhiannon",
+		"psychube": "The Soft Rain of Yesterday"
 	}
 ]],
   "Plant Impromptu": [
@@ -494,7 +492,12 @@
   "Liang Yue": [
     [
       { "character": "Liang Yue", "psychube": "Ready on Call", "euphoria": "E1", "is_essential": true },
-      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday" },
+      { "character": "Rhiannon", "psychube": "The Soft Rain of Yesterday", "substitutes": [
+	{
+		"character": "Cheng Heguang",
+		"psychube": "In Their Figures"
+	}
+] },
       {
 	"character": "Flutterpage",
 	"psychube": "Arrow of Verdict"
@@ -520,7 +523,14 @@
 	},
 	{
 		"character": "Rhiannon",
-		"psychube": "The Soft Rain of Yesterday"
+		"psychube": "The Soft Rain of Yesterday",
+		"substitutes": [
+	{
+		"character": "Isolde",
+		"psychube": "The Fluttering Moment",
+		"euphoria": "E1"
+	}
+]
 	},
 	{
 		"character": "Lorentz Butterfly",
@@ -543,7 +553,8 @@
 		"character": "Windsong",
 		"psychube": "On the Hand of Time"
 	}
-]
+],
+			"euphoria": "E1"
 		},
 		{
 	"character": "Flutterpage",
@@ -647,6 +658,11 @@
 	"character": "Regulus",
 	"euphoria": "E1",
 	"psychube": "In Their Figures"
+},
+          {
+	"character": "Voyager",
+	"psychube": "In Their Figures",
+	"euphoria": "E1"
 }
         ]
       }
@@ -674,7 +690,8 @@
       { "character": "Vila", "psychube": "One with the Flow", "euphoria": "E1" },
       {
 	"character": "Mercuria",
-	"psychube": "Arrow of Verdict"
+	"psychube": "Arrow of Verdict",
+	"euphoria": "E1"
 }
     ]
   ],
@@ -694,8 +711,7 @@
 ] },
       {
         "character": "Flutterpage",
-        "psychube": "Arrow of Verdict",
-        "euphoria": "E1"
+        "psychube": "Arrow of Verdict"
       },
       {
         "character": "J",
@@ -706,7 +722,38 @@
         ],
         "euphoria": "E1"
       }
-    ]
+    ],
+    [
+	{
+		"character": "Ezio Auditore",
+		"is_essential": true,
+		"psychube": "As the Bell Tolls"
+	},
+	{
+	"character": "Kassandra",
+	"psychube": "In Their Figures",
+	"substitutes": [
+	{
+		"character": "Rhiannon",
+		"psychube": "The Soft Rain of Yesterday"
+	}
+]
+},
+	{
+	"character": "Getian"
+},
+	{
+	"character": "Narcissus",
+	"substitutes": [
+	{
+		"character": "J",
+		"psychube": "Family Mentor",
+		"euphoria": "E1"
+	}
+],
+	"psychube": "Tides Held Within"
+}
+]
   ],
   "Anjo Nala": [
 	[

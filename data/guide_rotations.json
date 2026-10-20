@@ -11,7 +11,8 @@
       "members": [
   {
     "character": "Enigma",
-    "psychube": "The Third Commitment"
+    "psychube": "The Third Commitment",
+    "portrait": 1
   },
   {
     "character": "Charon",
@@ -117,6 +118,14 @@
     "character": "Enigma",
     "skill": 1,
     "icon": "images/skills/31430111.png"
+  }
+]
+},
+            {
+  "type": "tuning",
+  "cards": [
+  {
+    "special": "images/skills/Tuning_S1.png"
   }
 ]
 }
@@ -239,10 +248,6 @@
     "icon": "images/skills/30090131.png"
   }
 ]
-},
-    {
-  "type": "text",
-  "text": "Starts clapping because you won"
 }]
 }
       ]

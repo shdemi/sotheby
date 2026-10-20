@@ -34,6 +34,7 @@ export const FILES = [
   "guide_rotations.json",
   "guide_skills.json",
   "guide_cards.json",
+  "credits.json",
 ];
 
 /** Read-only inputs: maintained elsewhere, never written by the editor. */
@@ -50,6 +51,12 @@ export const ROTATION_ARCHETYPES = [
   "Burn", "HP Sacrifice", "Poison", "Ritual", "Rank Up", "Extra Action", "Bloodtithe",
   "Dynamo", "Inspiration", "Lingering Glow", "Shift", "Conduit", "Pursuit",
 ];
+
+/**
+ * Slot types a rotation round can hold. "free", "tuning" and "precast" behave
+ * exactly like "normal" (one card); only the caption under the card differs.
+ */
+export const GUIDE_SLOT_TYPES = ["normal", "or", "lb", "text", "free", "tuning", "precast"];
 
 /** Tags that have a dedicated icon: the two damage types plus the six afflatus. */
 export const GUIDE_ICON_TAGS = [
@@ -1038,6 +1045,28 @@ export class Model {
     return true;
   }
 
+  /** Moves a rotation up or down the list. All indices are 0-based. */
+  moveGuideRotation(from, to) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const changed = doc.reorderAt(["rotations"], from, to);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Moves one AP slot within a round, reordering the turn's card plan. */
+  moveRotationSlot(id, roundIndex, from, to) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots"];
+    if (!doc.nodeAt(path)) return false;
+    const changed = doc.reorderAt(path, from, to);
+    if (changed) this.reload();
+    return changed;
+  }
+
   /** Sets `name`, `notes`, `tuning` or `archetypes` on a rotation. */
   setGuideRotationField(id, field, value) {
     const doc = this.doc("guide_rotations.json");
@@ -1076,9 +1105,17 @@ export class Model {
 
     if (field === "character") {
       members[slot].character = this.resolve(value) || String(value || "");
-    } else {
+    } else if (field === "psychube") {
       members[slot].psychube = String(value || "");
     }
+
+    // Portrait tier: 0 is the default, so the key is dropped instead of written.
+    if (field === "portrait") {
+      const tier = Math.max(0, Math.min(5, Number(value) || 0));
+      if (tier > 0) members[slot].portrait = tier;
+      else delete members[slot].portrait;
+    }
+
     if (!members[slot].psychube) delete members[slot].psychube;
     if (!members[slot].character && !members[slot].psychube) members.splice(slot, 1);
     else if (!members[slot].character) members.splice(slot, 1);
@@ -1109,7 +1146,7 @@ export class Model {
   }
 
   addGuideSlot(id, roundIndex, type = "normal") {
-    const kind = ["normal", "or", "lb", "text"].includes(type) ? type : "normal";
+    const kind = GUIDE_SLOT_TYPES.includes(type) ? type : "normal";
     return this.appendRoundSlot(id, roundIndex, kind === "text" ? { type: kind, text: "" } : { type: kind, cards: [] });
   }
 
@@ -1121,7 +1158,7 @@ export class Model {
     if (index === -1) return false;
     const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
     if (!doc.nodeAt(path)) return false;
-    const kind = ["normal", "or", "lb", "text"].includes(type) ? type : "normal";
+    const kind = GUIDE_SLOT_TYPES.includes(type) ? type : "normal";
     let changed = doc.nodeAt([...path, "type"]) ? doc.set([...path, "type"], kind) : doc.setProperty(path, "type", kind);
     if (kind === "text") {
       if (doc.nodeAt([...path, "cards"])) changed = doc.deleteProperty(path, "cards") || changed;
@@ -1428,6 +1465,59 @@ export class Model {
   ensureProgression(name) {
     if (this.progressionCharts(name).length > 0) return false;
     return this.addProgressionChart(name);
+  }
+
+  /* ---- credits ---- */
+
+  /** The credits list, always an array of plain objects. */
+  creditEntries() {
+    const value = this.value("credits.json");
+    const list = value && Array.isArray(value.entries) ? value.entries : [];
+    return list.filter((entry) => entry && typeof entry === "object" && !Array.isArray(entry));
+  }
+
+  /** Replaces the whole list; used by every credit mutation below. */
+  setCreditEntries(entries) {
+    const doc = this.doc("credits.json");
+    if (!doc) return false;
+    const list = (Array.isArray(entries) ? entries : []).map((entry) => ({
+      name: String(entry.name || ""),
+      url: String(entry.url || ""),
+      description: String(entry.description || ""),
+    }));
+    const changed = doc.nodeAt(["entries"])
+      ? doc.set(["entries"], list)
+      : doc.setProperty([], "entries", list);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  addCredit() {
+    return this.setCreditEntries([...this.creditEntries(), { name: "", url: "", description: "" }]);
+  }
+
+  /** Sets `name`, `url` or `description` on one entry. */
+  setCreditField(index, field, value) {
+    if (!["name", "url", "description"].includes(field)) return false;
+    const entries = this.creditEntries().map((entry) => ({ ...entry }));
+    if (!entries[index]) return false;
+    entries[index][field] = String(value || "");
+    return this.setCreditEntries(entries);
+  }
+
+  removeCredit(index) {
+    const entries = this.creditEntries();
+    if (!entries[index]) return false;
+    return this.setCreditEntries(entries.filter((_, i) => i !== index));
+  }
+
+  moveCredit(from, to) {
+    const entries = this.creditEntries();
+    if (from === to || from < 0 || to < 0 || from >= entries.length || to >= entries.length) return false;
+    const next = entries.slice();
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    return this.setCreditEntries(next);
   }
 
   /* ---- output ---- */
@@ -1800,7 +1890,7 @@ export function validate(model) {
               return;
             }
             const type = slot.type || "normal";
-            if (!["normal", "or", "lb", "text"].includes(type)) warn(`${slotLabel}: unknown type "${type}"`);
+            if (!GUIDE_SLOT_TYPES.includes(type)) warn(`${slotLabel}: unknown type "${type}"`);
             const cards = Array.isArray(slot.cards) ? slot.cards : [];
             const limit = type === "or" ? 2 : 1;
             if (type !== "text" && cards.length > limit) err(`${slotLabel}: a ${type} slot holds at most ${limit} card(s)`);

@@ -125,6 +125,7 @@ function renderAll() {
   renderTeamList();
   renderTeamDetail();
   renderPatterns();
+  renderCredits();
   renderBuildList();
   renderRotationList();
   renderReview();
@@ -171,6 +172,7 @@ function afterEdit({ list = true, detail = true } = {}) {
     if (state.tab === "rotations") renderRotationDetail();
   }
   if (state.tab === "patterns") renderPatterns();
+  if (state.tab === "credits") renderCredits();
   renderReview();
   updateSaveState();
 
@@ -1206,6 +1208,34 @@ function euphoriaSeg(current, onPick, focusKey) {
   return wrap;
 }
 
+/** A small segmented control for the portrait tier: "–", "P1" … "P5". */
+function portraitSeg(current, onPick, focusKey) {
+  const wrap = el("div", { class: "seg seg-portrait" });
+  const tier = Math.max(0, Math.min(5, Number(current) || 0));
+  for (const [value, label] of [
+    [0, "–"],
+    [1, "P1"],
+    [2, "P2"],
+    [3, "P3"],
+    [4, "P4"],
+    [5, "P5"],
+  ]) {
+    wrap.appendChild(
+      el("button", {
+        class: tier === value ? "on" : "",
+        text: label,
+        title: value === 0 ? "No portrait" : `Portrait ${value}`,
+        dataset: focusKey ? { focusKey: `${focusKey}-${value}` } : {},
+        onclick: (e) => {
+          e.stopPropagation();
+          onPick(value);
+        },
+      })
+    );
+  }
+  return wrap;
+}
+
 /** Opens the psychube picker, offering "(none)" first. */
 function pickPsychube(current, onPick) {
   const model = state.model;
@@ -1785,6 +1815,79 @@ function renderPatterns() {
   transferHost.appendChild(rows);
 }
 
+/* ------------------------------------------------------------------ *
+ * Credits
+ * ------------------------------------------------------------------ */
+
+function renderCredits() {
+  if (!state.model) return;
+  const model = state.model;
+  const host = $("credit-editor");
+  if (!host) return;
+  host.replaceChildren();
+
+  const entries = model.creditEntries();
+  if (entries.length === 0) {
+    host.appendChild(el("p", { class: "hint", text: "No credits yet. Use + Credit to add one." }));
+    return;
+  }
+
+  const rows = el("div", { class: "slots" });
+  entries.forEach((entry, index) => {
+    const nameInput = el("input", { type: "text", value: entry.name || "", placeholder: "Name", style: "width:100%" });
+    nameInput.addEventListener("change", () => {
+      model.setCreditField(index, "name", nameInput.value.trim());
+      afterEdit({ list: false });
+    });
+
+    const urlInput = el("input", { type: "text", value: entry.url || "", placeholder: "https://…", style: "width:100%" });
+    urlInput.addEventListener("change", () => {
+      model.setCreditField(index, "url", urlInput.value.trim());
+      afterEdit({ list: false });
+    });
+
+    const descInput = el("textarea", { rows: 2, placeholder: "What this credit is for", style: "width:100%" });
+    descInput.value = entry.description || "";
+    descInput.addEventListener("change", () => {
+      model.setCreditField(index, "description", descInput.value.trim());
+      afterEdit({ list: false });
+    });
+
+    const move = (delta) => {
+      const target = index + delta;
+      if (target < 0 || target >= entries.length) return;
+      model.moveCredit(index, target);
+      afterEdit({ list: false });
+    };
+
+    rows.appendChild(
+      el("div", { class: "slot", style: "grid-template-columns: 1fr auto" }, [
+        el("div", {}, [
+          el("div", { class: "field-label", text: "Name" }),
+          nameInput,
+          el("div", { class: "field-label", text: "Link (optional)" }),
+          urlInput,
+          el("div", { class: "field-label", text: "Description" }),
+          descInput,
+        ]),
+        el("div", { class: "pick", style: "flex-direction:column" }, [
+          el("button", { class: "btn btn-sm", text: "↑", title: "Move up", onclick: () => move(-1) }),
+          el("button", { class: "btn btn-sm", text: "↓", title: "Move down", onclick: () => move(1) }),
+          el("button", {
+            class: "btn btn-sm btn-danger",
+            text: "Remove",
+            onclick: () => {
+              model.removeCredit(index);
+              afterEdit({ list: false });
+            },
+          }),
+        ]),
+      ])
+    );
+  });
+  host.appendChild(rows);
+}
+
 /** "+ Name transfer": pick the raw name, then the canonical target. */
 function addTransferFlow() {
   const model = state.model;
@@ -2210,7 +2313,7 @@ function rotationSkills(name) {
   return Array.isArray(list) ? list : [];
 }
 
-const SLOT_LABELS = { normal: "AP", or: "OR", lb: "1/4 AP", text: "TEXT" };
+const SLOT_LABELS = { normal: "AP", or: "OR", lb: "1/4 AP", text: "TEXT", free: "FREE AP", tuning: "TUNING", precast: "PRECAST" };
 
 /** The icon for one card: the pinned icon wins, else the skill's first variant. */
 function cardIcon(card) {
@@ -2290,26 +2393,83 @@ function renderRotationList() {
 
   for (const rotation of rotations) {
     const tags = Array.isArray(rotation.archetypes) ? rotation.archetypes : [];
-    body.appendChild(
-      el("div", {
-        class: `row${state.guide.rotation === rotation.id ? " on" : ""}`,
-        onclick: () => {
-          state.guide.rotation = rotation.id;
-          state.guide.hand = null;
-          state.guide.special = false;
-          renderRotationList();
-          renderRotationDetail();
-        },
-      }, [
-        el("div", { class: "row-main" }, [
-          el("div", { class: "row-name", text: rotation.name || rotation.id || "" }),
-          el("div", { class: "row-sub", text: `${rotationRounds(rotation).length} round(s)${tags.length ? ` · ${tags.join(", ")}` : ""}` }),
-        ]),
-        el("div", { class: "row-flags" }, rotationMembers(rotation).slice(0, 4).map((member) =>
-          el("img", { src: state.model.character(member.character).avatar, class: "row-face", alt: "", title: member.character })
-        )),
-      ])
-    );
+    // The index in the full list, so a filtered view still reorders correctly.
+    const index = state.model.guideRotations().findIndex((r) => r && r.id === rotation.id);
+    const row = el("div", {
+      class: `row${state.guide.rotation === rotation.id ? " on" : ""}`,
+      onclick: () => {
+        state.guide.rotation = rotation.id;
+        state.guide.hand = null;
+        state.guide.special = false;
+        renderRotationList();
+        renderRotationDetail();
+      },
+    }, [
+      el("span", {
+        class: "drag-handle rot-handle",
+        text: "⠿",
+        title: "Drag to reorder",
+        draggable: "true",
+      }),
+      el("div", { class: "row-main" }, [
+        el("div", { class: "row-name", text: rotation.name || rotation.id || "" }),
+        el("div", { class: "row-sub", text: `${rotationRounds(rotation).length} round(s)${tags.length ? ` · ${tags.join(", ")}` : ""}` }),
+      ]),
+      el("div", { class: "row-flags" }, rotationMembers(rotation).slice(0, 4).map((member) =>
+        el("img", { src: state.model.character(member.character).avatar, class: "row-face", alt: "", title: member.character })
+      )),
+    ]);
+
+    // Same pattern as the team presets list: only the handle starts a drag so
+    // clicking the row still selects it, and the drop listeners live on every
+    // row because dragstart does not re-render.
+    const handle = row.querySelector(".rot-handle");
+    handle.addEventListener("dragstart", (e) => {
+      state.drag = { kind: "rotation", id: rotation.id, index };
+      row.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", rotation.id || "");
+      e.stopPropagation();
+    });
+    handle.addEventListener("dragend", () => {
+      row.classList.remove("dragging");
+      state.drag = null;
+      for (const r of body.querySelectorAll(".row")) r.classList.remove("drop-above", "drop-below");
+    });
+
+    row.addEventListener("dragover", (e) => {
+      const drag = state.drag;
+      if (!drag || drag.kind !== "rotation" || drag.id === rotation.id) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = "move";
+      const rect = row.getBoundingClientRect();
+      const above = e.clientY < rect.top + rect.height / 2;
+      row.classList.toggle("drop-above", above);
+      row.classList.toggle("drop-below", !above);
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("drop-above", "drop-below"));
+    row.addEventListener("drop", (e) => {
+      const drag = state.drag;
+      row.classList.remove("drop-above", "drop-below");
+      if (!drag || drag.kind !== "rotation" || drag.id === rotation.id) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const total = state.model.guideRotations().length;
+      const rect = row.getBoundingClientRect();
+      const above = e.clientY < rect.top + rect.height / 2;
+      // Removing the dragged rotation first shifts the rest down by one.
+      let target = above ? index : index + 1;
+      if (drag.index < target) target -= 1;
+      target = Math.max(0, Math.min(total - 1, target));
+
+      state.drag = null;
+      state.model.moveGuideRotation(drag.index, target);
+      afterEdit();
+    });
+
+    body.appendChild(row);
   }
 
   if (rotations.length === 0) body.appendChild(el("div", { class: "empty", text: "No rotation matches these filters." }));
@@ -2429,12 +2589,12 @@ function renderRotationDetail() {
     ])
   );
 
-  /* --- team: character + psychube per slot --- */
+  /* --- team: character + psychube + portrait per slot --- */
   const memberHost = el("div", { class: "pick" });
   for (let slot = 0; slot < 4; slot++) {
     const member = members[slot] || { character: "", psychube: "" };
     memberHost.appendChild(
-      el("div", { class: "pick" }, [
+      el("div", { class: "pick pick-member" }, [
         characterCell(member.character, (value) => {
           model.setGuideRotationMember(id, slot, "character", value);
           if (!state.guide.hand && value) state.guide.hand = model.resolve(value);
@@ -2444,13 +2604,17 @@ function renderRotationDetail() {
           model.setGuideRotationMember(id, slot, "psychube", value);
           afterEdit({ list: false });
         }, `rotation-member-chube-${slot}`),
+        portraitSeg(member.portrait || 0, (tier) => {
+          model.setGuideRotationMember(id, slot, "portrait", tier);
+          afterEdit({ list: false });
+        }, `rotation-member-portrait-${slot}`),
       ])
     );
   }
   host.appendChild(
     el("div", { class: "card" }, [
       el("h2", { text: "Team" }),
-      el("p", { class: "hint", text: "Up to four characters, each with the psychube they run." }),
+      el("p", { class: "hint", text: "Up to four characters, each with the psychube they run and their portrait tier (the five dashes under the avatar)." }),
       memberHost,
     ])
   );
@@ -2558,7 +2722,7 @@ function renderRotationDetail() {
       el("h2", { text: "Rounds" }),
       el("button", { class: "btn btn-sm", text: "+ Round", onclick: () => { model.addGuideRound(id); afterEdit(); } }),
     ]),
-    el("p", { class: "hint", text: "Add the slot types you need: Normal AP holds one card, OR AP holds either of two, 1/4 AP (LB) draws the card at a quarter size, Text is a free note." }),
+    el("p", { class: "hint", text: "Add the slot types you need: Normal AP holds one card, OR AP holds either of two, 1/4 AP (LB) draws the card at a quarter size, Text is a free note. Free AP, Tuning and Precast hold one card each and only differ in the label shown under the card." }),
   ]);
 
   rounds.forEach((round, roundIndex) => {
@@ -2577,6 +2741,9 @@ function renderRotationDetail() {
           roundNote,
           el("button", { class: "btn btn-sm", text: "+ Normal AP", title: "One card", onclick: () => { model.addGuideSlot(id, roundIndex, "normal"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ OR AP", title: "Either of two cards", onclick: () => { model.addGuideSlot(id, roundIndex, "or"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm", text: "+ Free AP", title: "One card, labelled Free AP", onclick: () => { model.addGuideSlot(id, roundIndex, "free"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm", text: "+ Tuning", title: "One card, labelled Tuning", onclick: () => { model.addGuideSlot(id, roundIndex, "tuning"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm", text: "+ Precast", title: "One card, labelled Precast", onclick: () => { model.addGuideSlot(id, roundIndex, "precast"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ 1/4 AP (LB)", title: "A quarter-size card", onclick: () => { model.addGuideSlot(id, roundIndex, "lb"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ Text", title: "Free text instead of a card", onclick: () => { model.addGuideSlot(id, roundIndex, "text"); afterEdit(); } }),
           el("button", { class: "btn btn-sm btn-danger", text: "Remove round", onclick: () => { model.removeGuideRound(id, roundIndex); afterEdit(); } }),
@@ -2590,6 +2757,32 @@ function renderRotationDetail() {
       const type = slot.type || "normal";
       const cards = Array.isArray(slot.cards) ? slot.cards : [];
       const slotEl = el("div", { class: `guide-slot-editor is-${type}` });
+
+      // Every slot is draggable by its handle, so a turn's AP order can be
+      // rearranged without deleting and re-adding cards.
+      slotEl.appendChild(
+        el("span", {
+          class: "drag-handle slot-order-handle",
+          text: "⠿",
+          title: "Drag to reorder this AP slot",
+          draggable: "true",
+        })
+      );
+      const orderHandle = slotEl.firstChild;
+      orderHandle.addEventListener("dragstart", (e) => {
+        state.drag = { kind: "rotation-slot", id, round: roundIndex, index: slotIndex };
+        slotEl.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", `slot:${slotIndex}`);
+        e.stopPropagation();
+      });
+      orderHandle.addEventListener("dragend", () => {
+        slotEl.classList.remove("dragging");
+        state.drag = null;
+        for (const s of slotRow.querySelectorAll(".guide-slot-editor")) {
+          s.classList.remove("drop-before", "drop-after");
+        }
+      });
 
       if (type === "text") {
         const textInput = el("textarea", { rows: 3, class: "guide-slot-text", placeholder: "Text" });
@@ -2636,28 +2829,69 @@ function renderRotationDetail() {
         })
       );
 
-      if (type !== "text") {
-        slotEl.addEventListener("dragover", (e) => {
+      // Reordering an AP slot inside this round takes precedence over dropping
+      // a card onto it, so both gestures can share the same element.
+      slotEl.addEventListener("dragover", (e) => {
+        const drag = state.drag;
+        if (drag && drag.kind === "rotation-slot") {
+          if (drag.round !== roundIndex || drag.index === slotIndex) return;
           e.preventDefault();
-          slotEl.classList.add("is-target");
-        });
-        slotEl.addEventListener("dragleave", () => slotEl.classList.remove("is-target"));
-        slotEl.addEventListener("drop", (e) => {
+          e.stopPropagation();
+          e.dataTransfer.dropEffect = "move";
+          const rect = slotEl.getBoundingClientRect();
+          const before = e.clientX < rect.left + rect.width / 2;
+          slotEl.classList.toggle("drop-before", before);
+          slotEl.classList.toggle("drop-after", !before);
+          return;
+        }
+        if (type === "text") return;
+        e.preventDefault();
+        slotEl.classList.add("is-target");
+      });
+
+      slotEl.addEventListener("dragleave", () => {
+        slotEl.classList.remove("is-target", "drop-before", "drop-after");
+      });
+
+      slotEl.addEventListener("drop", (e) => {
+        const drag = state.drag;
+        slotEl.classList.remove("is-target", "drop-before", "drop-after");
+
+        if (drag && drag.kind === "rotation-slot") {
+          if (drag.round !== roundIndex || drag.index === slotIndex) return;
           e.preventDefault();
-          slotEl.classList.remove("is-target");
-          let payload = state.drag;
-          try {
-            const raw = e.dataTransfer?.getData("text/plain");
-            if (raw) payload = JSON.parse(raw);
-          } catch {
-            // keep the armed card
-          }
-          if (!payload) return;
-          model.addGuideSlotCard(id, roundIndex, slotIndex, payload);
+          e.stopPropagation();
+
+          const rect = slotEl.getBoundingClientRect();
+          const before = e.clientX < rect.left + rect.width / 2;
+          // Removing the dragged slot first shifts the rest left by one.
+          let target = before ? slotIndex : slotIndex + 1;
+          if (drag.index < target) target -= 1;
+          target = Math.max(0, Math.min(slots.length - 1, target));
+
+          state.drag = null;
+          model.moveRotationSlot(id, roundIndex, drag.index, target);
           afterEdit();
-        });
+          return;
+        }
+
+        if (type === "text") return;
+        e.preventDefault();
+        let payload = drag;
+        try {
+          const raw = e.dataTransfer?.getData("text/plain");
+          if (raw) payload = JSON.parse(raw);
+        } catch {
+          // keep the armed card
+        }
+        if (!payload) return;
+        model.addGuideSlotCard(id, roundIndex, slotIndex, payload);
+        afterEdit();
+      });
+
+      if (type !== "text") {
         slotEl.addEventListener("click", () => {
-          if (!state.drag) return;
+          if (!state.drag || state.drag.kind === "rotation-slot") return;
           model.addGuideSlotCard(id, roundIndex, slotIndex, state.drag);
           afterEdit();
         });
@@ -2863,6 +3097,10 @@ function wire() {
 
   $("team-new").addEventListener("click", addTeamFlow);
   $("transfer-add").addEventListener("click", addTransferFlow);
+  $("credit-add").addEventListener("click", () => {
+    state.model.addCredit();
+    afterEdit({ list: false });
+  });
 
   $("picker-search").addEventListener("input", (e) => renderPicker(e.target.value));
   $("picker-cancel").addEventListener("click", closePicker);

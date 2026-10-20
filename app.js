@@ -123,6 +123,18 @@ function setLanguage(lang) {
   const rosterModalEl = document.getElementById("roster-modal");
   if (rosterModalEl && rosterModalEl.style.display === "flex") renderRosterManager();
   refreshOpenTeamModals();
+  // Toggle labels depend on their current state, not just the locale.
+  syncBuildsToggleLabel();
+  syncRotationsToggleLabel();
+
+  // The rotation cards carry generated labels (the Preset tag, remove tooltip).
+  const rotationsModalEl = document.getElementById("rotations-modal");
+  if (rotationsModalEl && rotationsModalEl.style.display === "flex") renderRotations();
+  const presetsModalEl = document.getElementById("rotation-presets-modal");
+  if (presetsModalEl && presetsModalEl.style.display === "flex") renderRotationPresets();
+
+  // The credits modal's empty state is translated too.
+  renderCredits();
 
   // Slide the highlight to the language that was just picked.
   syncSlidingThumbs({ animate: true });
@@ -1196,7 +1208,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, guideCardsRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, guideCardsRes, creditsRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -1215,6 +1227,7 @@ async function initApp() {
       fetch("data/guide_rotations.json").catch(() => null),
       fetch("data/guide_skills.json").catch(() => null),
       fetch("data/characters_progressions.json").catch(() => null),
+      fetch("data/credits.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1355,6 +1368,8 @@ async function initApp() {
       skills: await readJson(guideSkillsRes),
       progressions: await readJson(guideProgRes),
     });
+    loadRotationList();
+    buildCredits(await readJson(creditsRes));
 
     loadLanguage();
     applyTranslations();
@@ -2997,7 +3012,7 @@ function createCharacterCard(name, char, iconUrl) {
     </div>
   ` : "";
 
-  const rarityLineHtml = (char.owned && displayOptions.showRarityLine && !displayOptions.hideRarityLine) ? `
+  const rarityLineHtml = char.owned && !displayOptions.hideRarityLine ? `
     <img src="images/colour_references/${rarityVal}.png" alt="" class="char-rarity-line" loading="lazy" decoding="async" />
   ` : "";
 
@@ -4344,9 +4359,14 @@ function applyTeamColumns() {
   const group = document.getElementById("team-columns-group");
   if (!group) return;
   const max = maxTeamColumnsForViewport();
+  // "1" is never offered: it only appears when the viewport cannot host two
+  // columns, and then there is nothing to choose, so the selector is hidden.
+  const options = [];
+  for (let n = 2; n <= max; n++) options.push(n);
+  group.hidden = options.length < 2;
   group.querySelectorAll(".team-cols-btn").forEach((btn) => {
     const n = Number(btn.dataset.cols);
-    btn.hidden = n > max;
+    btn.hidden = !options.includes(n);
     btn.classList.toggle("active", n === cols);
     btn.setAttribute("aria-pressed", String(n === cols));
   });
@@ -6137,19 +6157,20 @@ function setupTierCountTooltip() {
 
 // { name: { tags: [string], psychubes: [string], resonance: {label: code}, pattern, notes } }
 let buildsData = {};
-let rotationsData = [];
+let rotationPresets = [];    // Bundled, read-only rotations shipped with the site
+let rotationList = [];       // The user's list: [{ uid, presetId }]
 let guideSkills = {};        // { name: [{ skill, icon }] }
 let guideProgressions = {};  // { name: [{ badge, val }] }
 let specialCards = [];       // ["images/skills/760001.png", ...]
+
+/** The user's rotation list. Presets are added to it, and removed from it. */
+const ROTATION_LIST_STORAGE_KEY = "r1999_rotation_list_v1";
 
 /** Team-archetype tags a build or a rotation can carry. */
 const ROTATION_ARCHETYPES = [
   "Burn", "HP Sacrifice", "Poison", "Ritual", "Rank Up", "Extra Action", "Bloodtithe",
   "Dynamo", "Inspiration", "Lingering Glow", "Shift", "Conduit", "Pursuit",
 ];
-
-/** The four tunings a rotation can be built around. */
-const TUNINGS = ["First Melody", "Grand Orchestra", "Unfinished Tune", "Atonal Sequence"];
 
 /** Bar colour per rarity, taken from the game's rarity palette. */
 const RARITY_COLORS = { 6: "#CB7820", 5: "#C8AF6C", 4: "#9E6BAD", 3: "#555E7F", 2: "#496441" };
@@ -6181,10 +6202,145 @@ function rarityColor(rarity) {
 function buildGuideData(data) {
   const clean = data || {};
   buildsData = clean.builds && typeof clean.builds === "object" && !Array.isArray(clean.builds) ? clean.builds : {};
-  rotationsData = Array.isArray(clean.rotations) ? clean.rotations.filter((r) => r && (r.id || r.name)) : [];
+  rotationPresets = Array.isArray(clean.rotations) ? clean.rotations.filter((r) => r && (r.id || r.name)) : [];
   guideSkills = clean.skills && typeof clean.skills === "object" ? clean.skills : {};
   guideProgressions = clean.progressions && typeof clean.progressions === "object" ? clean.progressions : {};
   specialCards = Array.isArray(clean.cards && clean.cards.special) ? clean.cards.special : [];
+}
+
+/* ---- Rotation list: presets are copied in, never edited in place ---- */
+
+function loadRotationList() {
+  try {
+    const raw = localStorage.getItem(ROTATION_LIST_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    rotationList = Array.isArray(parsed)
+      ? parsed.filter((entry) => entry && typeof entry.uid === "string" && typeof entry.presetId === "string")
+      : [];
+  } catch (e) {
+    rotationList = [];
+  }
+}
+
+function saveRotationList() {
+  try {
+    localStorage.setItem(ROTATION_LIST_STORAGE_KEY, JSON.stringify(rotationList));
+  } catch (e) {
+    // A full quota should not break the modal; the list just is not persisted.
+  }
+}
+
+function rotationPresetById(presetId) {
+  return rotationPresets.find((preset) => preset.id === presetId) || null;
+}
+
+/** A list entry resolved against its preset. Presets are read-only. */
+function rotationEntry(uid) {
+  const entry = rotationList.find((item) => item.uid === uid);
+  if (!entry) return null;
+  const preset = rotationPresetById(entry.presetId);
+  if (!preset) return null;
+  return { ...preset, uid: entry.uid, presetId: preset.id, isPreset: true };
+}
+
+function rotationEntries() {
+  return rotationList.map((entry) => rotationEntry(entry.uid)).filter(Boolean);
+}
+
+function rotationPresetAdded(presetId) {
+  return rotationList.some((entry) => entry.presetId === presetId);
+}
+
+/** Copies a preset into the user's list and returns the new entry's uid. */
+function addRotationPreset(presetId) {
+  const preset = rotationPresetById(presetId);
+  if (!preset || rotationPresetAdded(presetId)) return null;
+  const uid = `preset-${preset.id}-${Date.now().toString(36)}`;
+  rotationList.push({ uid, presetId: preset.id });
+  saveRotationList();
+  return uid;
+}
+
+function removeRotationEntry(uid) {
+  const before = rotationList.length;
+  rotationList = rotationList.filter((entry) => entry.uid !== uid);
+  if (rotationList.length === before) return false;
+  saveRotationList();
+  return true;
+}
+
+/* ---------------- Credits ---------------- */
+
+let creditEntries = [];   // [{ name, url, description }]
+
+function buildCredits(data) {
+  const list = data && Array.isArray(data.entries) ? data.entries : [];
+  creditEntries = list
+    .filter((entry) => entry && (entry.name || entry.description))
+    .map((entry) => ({
+      name: String(entry.name || ""),
+      url: String(entry.url || ""),
+      description: String(entry.description || ""),
+    }));
+  renderCredits();
+}
+
+/** Only http(s) links become anchors; anything else is shown as plain text. */
+function creditSafeUrl(url) {
+  const value = String(url || "").trim();
+  return /^https?:\/\//i.test(value) ? value : "";
+}
+
+function renderCredits() {
+  const host = document.getElementById("credits-list");
+  if (!host) return;
+
+  host.innerHTML = creditEntries.length
+    ? creditEntries
+        .map((entry) => {
+          const href = creditSafeUrl(entry.url);
+          const name = escapeHtml(entry.name || entry.url || "");
+          const title = href
+            ? `<a class="credit-name" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${name}</a>`
+            : `<span class="credit-name">${name}</span>`;
+          return `
+            <li class="credit-entry">
+              <div class="credit-head">
+                <svg class="credit-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10.6 13.4a1 1 0 0 1 0-1.4l3.5-3.5a3 3 0 0 1 4.2 4.2l-1.8 1.8a1 1 0 0 1-1.4-1.4l1.8-1.8a1 1 0 0 0-1.4-1.4l-3.5 3.5a1 1 0 0 1-1.4 0Z" />
+                  <path d="M13.4 10.6a1 1 0 0 1 0 1.4l-3.5 3.5a3 3 0 0 1-4.2-4.2l1.8-1.8a1 1 0 0 1 1.4 1.4l-1.8 1.8a1 1 0 0 0 1.4 1.4l3.5-3.5a1 1 0 0 1 1.4 0Z" />
+                </svg>
+                ${title}
+              </div>
+              ${entry.description ? `<p class="credit-desc">${escapeHtml(entry.description)}</p>` : ""}
+            </li>`;
+        })
+        .join("")
+    : guideEmptyState("credits.empty");
+}
+
+function openCreditsModal() {
+  renderCredits();
+  const modal = document.getElementById("credits-modal");
+  if (modal) modal.style.display = "flex";
+}
+
+function closeCreditsModal() {
+  const modal = document.getElementById("credits-modal");
+  if (modal) modal.style.display = "none";
+}
+
+function setupCreditsListeners() {
+  const trigger = document.getElementById("btn-credits");
+  if (trigger) trigger.addEventListener("click", openCreditsModal);
+
+  const modal = document.getElementById("credits-modal");
+  if (!modal) return;
+  const close = document.getElementById("credits-btn-close");
+  if (close) close.addEventListener("click", closeCreditsModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeCreditsModal();
+  });
 }
 
 /** Skill cards for a character, as `{ skill, icon }`. */
@@ -6285,6 +6441,16 @@ function guideEmptyState(key) {
   return `<div class="guide-empty"><span>${escapeHtml(t(key))}</span></div>`;
 }
 
+/**
+ * The "nothing here" sign for an empty pane. The text moves into the image's
+ * alt attribute, so screen readers and the tooltip still get the message.
+ */
+function guideEmptySign(key, extraClass = "") {
+  return `<div class="guide-empty guide-empty-sign${extraClass ? ` ${extraClass}` : ""}">
+    <img src="images/random_icon/empty_sign.png" alt="${escapeHtml(t(key))}" title="${escapeHtml(t(key))}" />
+  </div>`;
+}
+
 /** The shared "el" section header used across the modals. */
 function guideSectionHeader(key, extra) {
   return `<div class="archetype-section-header">
@@ -6300,13 +6466,40 @@ let buildsSelected = null;
 const buildsRarityFilter = new Set();
 const buildsAfflatusFilter = new Set();
 
+/**
+ * Shows or hides the character list, so the build can use the full modal.
+ * Works at every resolution; the choice is kept while the page is open.
+ */
+let buildsListVisible = true;
+
 function openBuildsModal() {
   renderBuilds();
   document.getElementById("builds-modal").style.display = "flex";
+  // Remember the list visibility across openings.
+  setBuildsListVisible(buildsListVisible);
 }
 
 function closeBuildsModal() {
   document.getElementById("builds-modal").style.display = "none";
+}
+
+function setBuildsListVisible(visible) {
+  buildsListVisible = !!visible;
+  const body = document.querySelector("#builds-modal .builds-body");
+  if (body) body.classList.toggle("is-list-hidden", !buildsListVisible);
+
+  const toggle = document.getElementById("builds-rail-toggle");
+  if (toggle) toggle.setAttribute("aria-pressed", String(buildsListVisible));
+  syncBuildsToggleLabel();
+}
+
+/** The button label follows the current state (and the current language). */
+function syncBuildsToggleLabel() {
+  const label = document.querySelector("#builds-rail-toggle [data-i18n]");
+  if (!label) return;
+  const key = buildsListVisible ? "builds.toggleList" : "builds.showList";
+  label.setAttribute("data-i18n", key);
+  label.textContent = t(key);
 }
 
 function buildsVisibleNames() {
@@ -6411,12 +6604,16 @@ function renderBuildsDetail() {
       .map((p, index) => {
         const val = Math.max(0, Number(p.val) || 0);
         // The axis is a fixed 0–100 scale, so bars compare across charts and a
-        // full bar always means 100%.
-        const height = Math.max(2, Math.min(100, val));
+        // full bar always means 100%. A 0% bar is omitted entirely: a minimum
+        // height would draw a line at the baseline and read as a real value.
+        const bar =
+          val > 0
+            ? `<span class="build-chart-bar" style="height:${Math.min(100, val)}%"></span>`
+            : "";
         return `
             <div class="build-chart-col" style="--bar-index:${index}">
               <span class="build-chart-val">${val}%</span>
-              <span class="build-chart-track"><span class="build-chart-bar" style="height:${height}%"></span></span>
+              <span class="build-chart-track">${bar}</span>
               <span class="build-chart-badge">${escapeHtml(p.badge || "")}</span>
             </div>`;
       })
@@ -6550,14 +6747,46 @@ const rotationArchetypeFilter = new Set();
 function rotationMembers(rotation) {
   return (rotation.members || [])
     .map((entry) => {
-      if (typeof entry === "string") return { character: resolveCharacterName(entry) || entry, psychube: "" };
+      if (typeof entry === "string") {
+        return { character: resolveCharacterName(entry) || entry, psychube: "", portrait: 0 };
+      }
       if (!entry || !entry.character) return null;
+      const portrait = Number(entry.portrait);
       return {
         character: resolveCharacterName(entry.character) || entry.character,
         psychube: entry.psychube || "",
+        // Portrait tier drives the 5-dash bar under the member's avatar.
+        portrait: Number.isFinite(portrait) ? Math.max(0, Math.min(5, portrait)) : 0,
       };
     })
     .filter(Boolean);
+}
+
+/**
+ * Colour of the active portrait dash for a rarity, honouring the custom
+ * portrait colours from the Styling modal.
+ */
+function portraitDashColor(rarity) {
+  const app = displayOptions.appearance;
+  if (!app || !app.customPortraitColorsEnabled) return "";
+  const colors = {
+    6: app.portraitColorR6 || "#DD9925",
+    5: app.portraitColorR5 || "#C7AF6C",
+    4: app.portraitColorR4 || "#6A4972",
+    3: app.portraitColorR3 || "#545C7D",
+    2: app.portraitColorR2 || "#496441",
+  };
+  return colors[Number(rarity)] || "";
+}
+
+/** The five-slot portrait bar, reusing the board's dash markup and colours. */
+function rotationPortraitDashesHtml(portrait, rarity) {
+  const activeColor = portraitDashColor(rarity);
+  const style = activeColor ? ` style="background-color: ${activeColor};"` : "";
+  const tier = Math.max(0, Math.min(5, Number(portrait) || 0));
+  return Array.from({ length: 5 }, (_, i) =>
+    `<span class="portrait-dash ${i < tier ? "active" : ""}"${i < tier ? style : ""}></span>`
+  ).join("");
 }
 
 /** Rounds accept the legacy `turns` key, whose cards were a flat list. */
@@ -6578,7 +6807,7 @@ function rotationArchetypes(rotation) {
 function rotationsVisible() {
   const input = document.getElementById("rotations-search");
   const query = (input ? input.value : "").trim().toLowerCase();
-  return rotationsData.filter((rotation) => {
+  return rotationEntries().filter((rotation) => {
     const archetypes = rotationArchetypes(rotation);
     if (rotationArchetypeFilter.size > 0 && !archetypes.some((a) => rotationArchetypeFilter.has(a))) return false;
     if (!query) return true;
@@ -6615,19 +6844,39 @@ function renderRotationFilters() {
   });
 }
 
-/** The modal has two views: the rotation list, or one rotation's full plan. */
+/** The modal keeps the list on the left and the plan on the right. */
 function setRotationsView(view) {
   const card = document.getElementById("rotations-card");
   if (card) card.classList.toggle("is-detail", view === "detail");
 
+  // The list is always visible now, so the back button is not needed.
   const back = document.getElementById("rotations-back");
-  if (back) back.hidden = view !== "detail";
-
-  const search = document.getElementById("rotations-search");
-  if (search) search.hidden = view === "detail";
+  if (back) back.hidden = true;
 }
 
-/** Opens one rotation: the list collapses into the full-width plan. */
+/** Shows or hides the rotation list, so the plan can use the full modal. */
+let rotationsListVisible = true;
+
+function setRotationsListVisible(visible) {
+  rotationsListVisible = !!visible;
+  const body = document.querySelector("#rotations-modal .rotations-body");
+  if (body) body.classList.toggle("is-list-hidden", !rotationsListVisible);
+
+  const toggle = document.getElementById("rotations-rail-toggle");
+  if (toggle) toggle.setAttribute("aria-pressed", String(rotationsListVisible));
+  syncRotationsToggleLabel();
+}
+
+/** The button label follows the current state (and the current language). */
+function syncRotationsToggleLabel() {
+  const label = document.querySelector("#rotations-rail-toggle [data-i18n]");
+  if (!label) return;
+  const key = rotationsListVisible ? "rotations.toggleList" : "rotations.showList";
+  label.setAttribute("data-i18n", key);
+  label.textContent = t(key);
+}
+
+/** Opens one rotation: the plan fills the right pane, the list stays put. */
 function openRotationDetail(id) {
   rotationsSelected = id || null;
   setRotationsView(rotationsSelected ? "detail" : "browse");
@@ -6636,7 +6885,7 @@ function openRotationDetail(id) {
   if (detail) detail.scrollTop = 0;
 }
 
-/** Back to the list, keeping the filters and search exactly as they were. */
+/** Back to the empty plan pane, keeping the filters and search as they were. */
 function showRotationsList() {
   rotationsSelected = null;
   setRotationsView("browse");
@@ -6648,34 +6897,42 @@ function openRotationsModal() {
   setRotationsView("browse");
   renderRotations();
   document.getElementById("rotations-modal").style.display = "flex";
+  // Remember the list visibility across openings.
+  setRotationsListVisible(rotationsListVisible);
 }
 
 function closeRotationsModal() {
   document.getElementById("rotations-modal").style.display = "none";
 }
 
-function renderRotations() {
-  renderRotationFilters();
+/* ---- Rotation presets: the bundled rotations, copied into the user's list ---- */
 
-  const list = document.getElementById("rotations-list");
-  if (!list) return;
-  const visible = rotationsVisible();
+function openRotationPresetsModal() {
+  renderRotationPresets();
+  const modal = document.getElementById("rotation-presets-modal");
+  if (modal) modal.style.display = "flex";
+}
 
-  const count = document.getElementById("rotations-count");
-  if (count) count.textContent = t("rotations.count", { n: visible.length });
+function closeRotationPresetsModal() {
+  const modal = document.getElementById("rotation-presets-modal");
+  if (modal) modal.style.display = "none";
+}
 
-  list.innerHTML = visible.length
-    ? visible
-        .map((rotation, index) => {
-          const members = rotationMembers(rotation);
-          const archetypes = rotationArchetypes(rotation);
-          const tuning = rotation.tuning || "";
+function renderRotationPresets() {
+  const host = document.getElementById("rotation-presets-list");
+  if (!host) return;
+
+  host.innerHTML = rotationPresets.length
+    ? rotationPresets
+        .map((preset) => {
+          const added = rotationPresetAdded(preset.id);
+          const members = rotationMembers(preset);
+          const archetypes = rotationArchetypes(preset);
+          const tuning = preset.tuning || "";
           return `
-            <button type="button" class="rotation-card${rotation.id === rotationsSelected ? " is-active" : ""}" data-id="${escapeHtml(
-              rotation.id || ""
-            )}" style="--card-index:${index}">
+            <div class="rotation-card rotation-preset${added ? " is-added" : ""}" data-preset-id="${escapeHtml(preset.id)}">
               <span class="rotation-card-top">
-                <span class="rotation-card-name">${escapeHtml(rotation.name || rotation.id || "")}</span>
+                <span class="rotation-card-name">${escapeHtml(preset.name || preset.id)}</span>
                 ${
                   tuning
                     ? `<img class="rotation-card-tuning" src="images/tuning_abilities/${encodeURIComponent(
@@ -6701,17 +6958,124 @@ function renderRotations() {
                       .join("")}</span>`
                   : ""
               }
-            </button>`;
+              <button type="button" class="rotation-preset-add" data-add="${escapeHtml(
+                preset.id
+              )}" ${added ? "disabled" : ""}>${escapeHtml(added ? t("rotations.added") : t("rotations.add"))}</button>
+            </div>`;
         })
         .join("")
-    : guideEmptyState("rotations.empty");
+    : guideEmptyState("rotations.presetsEmpty");
+
+  host.querySelectorAll(".rotation-preset-add").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const uid = addRotationPreset(btn.dataset.add);
+      if (!uid) return;
+      renderRotationPresets();
+      // Selecting what was just added makes the copy obvious.
+      openRotationDetail(uid);
+      renderRotations();
+    });
+  });
+}
+
+function renderRotations() {
+  renderRotationFilters();
+
+  const list = document.getElementById("rotations-list");
+  if (!list) return;
+
+  // A selection that no longer resolves (its preset was removed) is dropped,
+  // so the modal never keeps a plan that is no longer in the list.
+  if (rotationsSelected && !rotationEntry(rotationsSelected)) {
+    rotationsSelected = null;
+    setRotationsView("browse");
+  }
+
+  const visible = rotationsVisible();
+
+  const count = document.getElementById("rotations-count");
+  if (count) count.textContent = t("rotations.count", { n: visible.length });
+
+  list.innerHTML = visible.length
+    ? visible
+        .map((rotation, index) => {
+          const members = rotationMembers(rotation);
+          const archetypes = rotationArchetypes(rotation);
+          const tuning = rotation.tuning || "";
+          return `
+            <div class="rotation-card${rotation.uid === rotationsSelected ? " is-active" : ""}" role="button" tabindex="0" data-uid="${escapeHtml(
+              rotation.uid
+            )}" style="--card-index:${index}">
+              <span class="rotation-card-top">
+                <span class="rotation-card-name">${escapeHtml(rotation.name || rotation.id || "")}</span>
+                ${
+                  tuning
+                    ? `<img class="rotation-card-tuning" src="images/tuning_abilities/${encodeURIComponent(
+                        tuning
+                      )}.png" alt="" title="${escapeHtml(tuning)}" />`
+                    : ""
+                }
+                <button type="button" class="rotation-card-remove" data-remove="${escapeHtml(
+                  rotation.uid
+                )}" title="${escapeHtml(t("rotations.remove"))}" aria-label="${escapeHtml(t("rotations.remove"))}">×</button>
+              </span>
+              <span class="rotation-card-team">
+                ${members
+                  .map(
+                    (member) =>
+                      `<span class="rotation-card-face" title="${escapeHtml(displayCharName(member.character))}"><img src="${escapeHtml(
+                        characterDb[member.character] || ""
+                      )}" alt="" /></span>`
+                  )
+                  .join("")}
+              </span>
+              ${
+                rotation.isPreset || archetypes.length
+                  ? `<span class="rotation-card-tags">
+                      ${rotation.isPreset ? `<span class="rotation-card-tag is-preset">${escapeHtml(t("rotations.preset"))}</span>` : ""}
+                      ${archetypes
+                        .map((tag) => `<span class="rotation-card-tag">${escapeHtml(tag)}</span>`)
+                        .join("")}
+                    </span>`
+                  : ""
+              }
+            </div>`;
+        })
+        .join("")
+    : rotationList.length === 0
+      ? guideEmptySign("rotations.listEmpty", "is-rail")
+      : guideEmptyState("rotations.empty");
 
   list.querySelectorAll(".rotation-card").forEach((card) => {
-    card.addEventListener("click", () => openRotationDetail(card.dataset.id));
+    const open = () => openRotationDetail(card.dataset.uid);
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".rotation-card-remove")) return;
+      open();
+    });
+    card.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      open();
+    });
   });
 
-  // The list is the whole modal now, so the plan only draws when one is open.
-  if (rotationsSelected) renderRotationsDetail();
+  list.querySelectorAll(".rotation-card-remove").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const uid = btn.dataset.remove;
+      if (!removeRotationEntry(uid)) return;
+      if (rotationsSelected === uid) {
+        showRotationsList();
+      } else {
+        renderRotations();
+      }
+      renderRotationPresets();
+    });
+  });
+
+  // The detail pane always follows the list: a removed rotation must not keep
+  // showing its plan, and an empty selection falls back to the hint state.
+  renderRotationsDetail();
 }
 
 /** One skill card: character art, or a special card with no owner. */
@@ -6730,20 +7094,37 @@ function rotationCardHtml(card, variant) {
 }
 
 /** A slot renders by type: normal AP, either/or AP, a quarter-size LB card, or text. */
+const SLOT_TYPE_LABELS = {
+  normal: "AP",
+  or: "OR",
+  lb: "1/4 AP",
+  text: "TEXT",
+  free: "FREE AP",
+  tuning: "TUNING",
+  precast: "PRECAST",
+};
+
 function rotationSlotHtml(slot) {
   if (!slot) return "";
   const type = slot.type || "normal";
   const cards = Array.isArray(slot.cards) ? slot.cards.filter(Boolean) : [];
+  const label = SLOT_TYPE_LABELS[type] || SLOT_TYPE_LABELS.normal;
+
+  const wrap = (inner, extraClass = "") =>
+    `<span class="rot-slot${extraClass}"><span class="rot-slot-body">${inner}</span><span class="rot-slot-type">${escapeHtml(
+      label
+    )}</span></span>`;
 
   if (type === "text") {
     const text = slot.text || "";
-    return text ? `<span class="rot-slot is-text">${escapeHtml(text)}</span>` : `<span class="rot-slot is-empty"></span>`;
+    if (!text) return `<span class="rot-slot is-empty"><span class="rot-slot-body"></span></span>`;
+    return wrap(`<span class="rot-slot-text">${escapeHtml(text)}</span>`, " is-text");
   }
 
-  if (cards.length === 0) return `<span class="rot-slot is-empty"></span>`;
+  if (cards.length === 0) return `<span class="rot-slot is-empty"><span class="rot-slot-body"></span></span>`;
 
   if (type === "lb") {
-    return `<span class="rot-slot is-lb">${rotationCardHtml(cards[0], "lb")}</span>`;
+    return wrap(rotationCardHtml(cards[0], "lb"), " is-lb");
   }
 
   if (type === "or") {
@@ -6755,17 +7136,17 @@ function rotationSlotHtml(slot) {
           cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
         )}" alt="" /></span>`
       : "";
-    return `<span class="rot-slot is-or"><span class="rot-or-stack">${front}${behind}</span></span>`;
+    return wrap(`<span class="rot-or-stack">${front}${behind}</span>`, " is-or");
   }
 
-  return `<span class="rot-slot">${rotationCardHtml(cards[0])}</span>`;
+  return wrap(rotationCardHtml(cards[0]));
 }
 
 function renderRotationsDetail() {
   const host = document.getElementById("rotations-detail");
   if (!host) return;
 
-  const rotation = rotationsData.find((r) => r.id === rotationsSelected);
+  const rotation = rotationEntry(rotationsSelected);
   if (!rotation) {
     host.innerHTML = guideEmptyState("rotations.select");
     return;
@@ -6776,22 +7157,34 @@ function renderRotationsDetail() {
   const archetypes = rotationArchetypes(rotation);
   const tuning = rotation.tuning || "";
 
-  const tuningHtml = TUNINGS.map(
-    (name) => `
-      <span class="rot-tuning${name === tuning ? " is-active" : ""}" title="${escapeHtml(name)}">
-        <img src="images/tuning_abilities/${encodeURIComponent(name)}.png" alt="" />
-        <span class="rot-tuning-name">${escapeHtml(name)}</span>
-      </span>`
-  ).join("");
+  // Only the chosen tuning is shown: the full row of four took a lot of space
+  // for one piece of information.
+  const tuningHtml = tuning
+    ? `<span class="rot-tuning is-active" title="${escapeHtml(tuning)}">
+         <img src="images/tuning_abilities/${encodeURIComponent(tuning)}.png" alt="" />
+         <span class="rot-tuning-name">${escapeHtml(tuning)}</span>
+       </span>`
+    : "";
 
   const teamHtml = members.length
     ? members
         .map((member) => {
           const chubeKey = psychubeKeyFromName(member.psychube);
           const chube = chubeKey ? psychubeDb[chubeKey] : null;
+          const rarity = getCharacterRarity(member.character);
+          const showPortraitBar = !displayOptions.hidePortrait;
           return `
             <span class="rot-member">
-              <span class="rot-member-portrait"><img src="${escapeHtml(characterDb[member.character] || "")}" alt="" /></span>
+              <span class="rot-member-avatar">
+                <span class="rot-member-portrait">
+                  <img src="${escapeHtml(characterDb[member.character] || "")}" alt="" />
+                </span>
+                ${
+                  showPortraitBar
+                    ? `<span class="rot-member-portrait-bar">${rotationPortraitDashesHtml(member.portrait, rarity)}</span>`
+                    : ""
+                }
+              </span>
               <span class="rot-member-text">
                 <span class="rot-member-name">${escapeHtml(displayCharName(member.character))}</span>
                 ${
@@ -6842,20 +7235,16 @@ function renderRotationsDetail() {
     </div>
 
     <section class="rot-block">
-      ${guideSectionHeader("rotations.tuning")}
-      <div class="rot-tunings">${tuningHtml}</div>
-    </section>
-
-    <section class="rot-block">
       ${guideSectionHeader("rotations.team")}
       <div class="rot-team">${teamHtml}</div>
     </section>
 
     ${
-      rotation.notes
+      rotation.notes || tuningHtml
         ? `<section class="rot-block">
              ${guideSectionHeader("rotations.notes")}
-             <p class="build-notes">${escapeHtml(rotation.notes)}</p>
+             ${rotation.notes ? `<p class="build-notes">${escapeHtml(rotation.notes)}</p>` : ""}
+             ${tuningHtml ? `<div class="rot-tuning-row">${tuningHtml}</div>` : ""}
            </section>`
         : ""
     }
@@ -6865,6 +7254,82 @@ function renderRotationsDetail() {
       <div class="rot-rounds">${roundsHtml}</div>
     </section>
   `;
+}
+
+/**
+ * Wires the drag handle that splits a stacked modal body (list on top, detail
+ * below). Only the stacked layout has a handle: on a side-by-side layout the
+ * rail keeps its CSS width. The chosen height is remembered per modal.
+ */
+function setupGuideRailResizer({ bodySelector, handleId, cssVar, storageKey }) {
+  const body = document.querySelector(bodySelector);
+  const handle = document.getElementById(handleId);
+  if (!body || !handle) return;
+
+  const stacked = window.matchMedia("(max-width: 768px)");
+
+  const clamp = (height) => {
+    // A hidden modal measures as zero; keep the stored value untouched then.
+    if (body.clientHeight <= 0) return height;
+    // Keep a sliver of both panes visible: 120px list, 160px detail.
+    const max = Math.max(120, body.clientHeight - 160);
+    return Math.min(max, Math.max(120, height));
+  };
+
+  const applyHeight = (height) => {
+    body.style.setProperty(cssVar, `${Math.round(clamp(height))}px`);
+  };
+
+  const saved = Number(localStorage.getItem(storageKey));
+  if (Number.isFinite(saved) && saved > 0) applyHeight(saved);
+
+  let dragging = false;
+  const onMove = (clientY) => {
+    const rect = body.getBoundingClientRect();
+    applyHeight(clientY - rect.top);
+  };
+
+  const stop = () => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove("is-dragging");
+    document.body.classList.remove("guide-rail-resizing");
+    const height = parseFloat(body.style.getPropertyValue(cssVar));
+    if (Number.isFinite(height)) localStorage.setItem(storageKey, String(Math.round(height)));
+  };
+
+  handle.addEventListener("pointerdown", (e) => {
+    if (!stacked.matches) return;
+    dragging = true;
+    handle.classList.add("is-dragging");
+    document.body.classList.add("guide-rail-resizing");
+    handle.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  handle.addEventListener("pointermove", (e) => {
+    if (dragging) onMove(e.clientY);
+  });
+  handle.addEventListener("pointerup", stop);
+  handle.addEventListener("pointercancel", stop);
+
+  handle.addEventListener("dblclick", () => {
+    body.style.removeProperty(cssVar);
+    localStorage.removeItem(storageKey);
+  });
+
+  // Keyboard support: arrow keys nudge the split.
+  handle.addEventListener("keydown", (e) => {
+    const rail = body.firstElementChild;
+    if (!rail || !stacked.matches) return;
+    const step = 16;
+    const current = rail.getBoundingClientRect().height;
+    if (e.key === "ArrowUp") applyHeight(current - step);
+    else if (e.key === "ArrowDown") applyHeight(current + step);
+    else return;
+    const height = parseFloat(body.style.getPropertyValue(cssVar));
+    if (Number.isFinite(height)) localStorage.setItem(storageKey, String(Math.round(height)));
+    e.preventDefault();
+  });
 }
 
 function setupGuideListeners() {
@@ -6877,8 +7342,20 @@ function setupGuideListeners() {
       if (e.target === buildsModal) closeBuildsModal();
     });
 
+    const railToggle = document.getElementById("builds-rail-toggle");
+    if (railToggle) {
+      railToggle.addEventListener("click", () => setBuildsListVisible(!buildsListVisible));
+    }
+
     const search = document.getElementById("builds-search");
     if (search) search.addEventListener("input", renderBuilds);
+
+    setupGuideRailResizer({
+      bodySelector: "#builds-modal .builds-body",
+      handleId: "builds-rail-resizer",
+      cssVar: "--builds-rail-h",
+      storageKey: "r1999_builds_rail_height_v1",
+    });
 
     document.querySelectorAll("#builds-rarity-group .filter-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -6913,14 +7390,38 @@ function setupGuideListeners() {
     const search = document.getElementById("rotations-search");
     if (search) search.addEventListener("input", renderRotations);
 
+    setupGuideRailResizer({
+      bodySelector: "#rotations-modal .rotations-body",
+      handleId: "rotations-rail-resizer",
+      cssVar: "--rotations-rail-h",
+      storageKey: "r1999_rotations_rail_height_v1",
+    });
+
     const back = document.getElementById("rotations-back");
     if (back) back.addEventListener("click", showRotationsList);
+
+    const railToggle = document.getElementById("rotations-rail-toggle");
+    if (railToggle) {
+      railToggle.addEventListener("click", () => setRotationsListVisible(!rotationsListVisible));
+    }
 
     const clear = document.getElementById("rotations-clear-filters");
     if (clear) {
       clear.addEventListener("click", () => {
         rotationArchetypeFilter.clear();
         renderRotations();
+      });
+    }
+
+    const presetsBtn = document.getElementById("rotations-presets-btn");
+    if (presetsBtn) presetsBtn.addEventListener("click", openRotationPresetsModal);
+
+    const presetsModal = document.getElementById("rotation-presets-modal");
+    const presetsClose = document.getElementById("rotation-presets-btn-close");
+    if (presetsClose) presetsClose.addEventListener("click", closeRotationPresetsModal);
+    if (presetsModal) {
+      presetsModal.addEventListener("click", (e) => {
+        if (e.target === presetsModal) closeRotationPresetsModal();
       });
     }
   }
@@ -6931,6 +7432,7 @@ function setupEventListeners() {
   setupPatternTooltip();
   setupTierCountTooltip();
   setupGuideListeners();
+  setupCreditsListeners();
 
   // Language switcher
   document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -7245,7 +7747,7 @@ function setupEventListeners() {
     ` : "";
 
     // Preview rarity line (mirrors the card, controlled by Hide Rarity Line)
-    const previewRarityLineHtml = (displayOptions.showRarityLine && !hideRarityLine)
+    const previewRarityLineHtml = !hideRarityLine
       ? `<img src="images/colour_references/${rarityVal}.png" alt="" class="char-rarity-line" />`
       : "";
 
@@ -9272,36 +9774,6 @@ function setupEventListeners() {
 
   // Keep the highlights aligned when the layout reflows.
   window.addEventListener("resize", refreshSlidingThumbs);
-
-  /**
-   * JSON sits in the stats row, right of the language switcher. Once the Menu
-   * button takes over (<= 1260px) that row has no room for it, so it moves into
-   * the drawer and trails the drawer's language switcher instead. The node is
-   * moved rather than duplicated so the click handler stays attached.
-   */
-  const statsRow = document.querySelector(".header-stats-row");
-  const headerLangGroup = document.getElementById("lang-switcher-header");
-  const drawerLangGroup = document.querySelector(".tools-lang-group");
-  const jsonBtn = document.getElementById("btn-json");
-  const narrowTools = window.matchMedia("(max-width: 1260px)");
-
-  const syncDataButtonPlacement = () => {
-    if (!statsRow || !jsonBtn) return;
-
-    if (narrowTools.matches) {
-      if (drawerLangGroup) drawerLangGroup.appendChild(jsonBtn);
-    } else if (headerLangGroup && headerLangGroup.parentElement === statsRow) {
-      headerLangGroup.insertAdjacentElement("afterend", jsonBtn);
-    }
-  };
-
-  syncDataButtonPlacement();
-  if (typeof narrowTools.addEventListener === "function") {
-    narrowTools.addEventListener("change", syncDataButtonPlacement);
-  } else if (typeof narrowTools.addListener === "function") {
-    // Safari < 14
-    narrowTools.addListener(syncDataButtonPlacement);
-  }
 
   // Roster Manager
   btnManageAll.addEventListener("click", openRosterModal);

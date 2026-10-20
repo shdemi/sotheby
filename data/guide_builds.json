@@ -1,44 +1,1448 @@
 {
-  "Lorentz Butterfly": {
-    "psychubes": ["The Fluttering Moment", "Singleness of Heart"],
+  "6": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Melodies Old and New",
+      "Addio Coda"
+    ],
     "resonance": {
-      "Attack": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
-      "Crit": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
+      "General": "ACQELxQvRCpQKFEmVPAkPQA0ESQBOCI7MA",
+      "Damage": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
     },
+    "portrait": "0/2/5"
+  },
+  "37": {
+    "pattern": "Aspirational",
+    "psychubes": [
+  "Flows in All Things Alike",
+  "On the Hand of Time"
+],
+    "resonance": {
+      "Portrait 0": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Portrait 1+": "APQjSDY0FTRFJlQqBDxgPAA5EDogLBJCQERCRkM"
+    },
+    "portrait": "0/2/4"
+  },
+  "A Knight": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Balance, Please",
+      "Hopscotch"
+    ],
+    "resonance": {
+      "General Use": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
+    },
+    "portrait": "0/1"
+  },
+  "Aleph": {
     "pattern": "Genuinity",
-    "notes": ""
-  },
-  "Regulus": {
-    "psychubes": ["Steps Forward"],
+    "psychubes": [
+      "Mental Cage",
+      "Long Night Talk"
+    ],
     "resonance": {
-      "Attack": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
-      "Crit": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
+      "With Barcarola": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC",
+      "Without Barcarola": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
     },
-    "pattern": "Elucidation",
-    "notes": ""
+    "portrait": "0/1/2/5"
   },
-  "The Twins": {
-    "psychubes": ["The Art of Atoms", "The Dance of Science"],
+  "Alexios": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Never-Ending Q&A",
+      "Balance, Please"
+    ],
     "resonance": {
-      "Crit": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA",
-      "Attack": "APQkOAU4RSUEK0QkAS0RRABFIDQyNDA8UDxg"
+      "Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
     },
-    "pattern": "Elucidation"
+    "portrait": "5"
   },
-  "Ms. Stranger": {
-    "pattern": "Elucidation",
+  "AliEn T": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "General (Survivability)": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
+    }
+  },
+  "An-an Lee": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Melodies Old and New",
+      "Long Night Talk"
+    ],
+    "resonance": {
+      "General Use": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw",
+      "Impromptu": "APgkJAQoVDRENBQ8YDxQOCI7MEASQCBCAEcCSAA"
+    },
+    "portrait": "0"
+  },
+  "Anjo Nala": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Transcendent Love",
+      "On the Hand of Time"
+    ],
+    "resonance": {
+      "General Use": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
+      "Crit Damage (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
+    },
+    "portrait": "0/1/2/5"
+  },
+  "APPLe": {
+    "pattern": "Delirament",
+    "resonance": {
+      "Healing/Survivability": "AKgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA",
+      "Damage": "ADQRJQA5AjsTNAWoJC1ELUItQCZQPDA8Yw"
+    }
+  },
+  "Argus": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Stray Off the Path",
+      "Your Friendly Exorcist"
+    ],
+    "resonance": {
+      "General": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
+      "With Vila": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE"
+    },
+    "portrait": "0/2/4"
+  },
+  "Avgust": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Off the Scene",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Survivability": "APAkJAQlQC0UMEU5QjtTRFFMUkxiPAA8EDQiNCA",
+      "Healing/Survivability": "APAkLRQkBDwAPBA0IjQgOkA7UUFFQVRAQ0hmTEJMQQ"
+    },
+    "portrait": "0/2/5"
+  },
+  "Baby Blue": {
+    "pattern": "Prudentiality",
+    "psychubes": [
+      "Belt It Out",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
+    },
+    "portrait": "0/5"
+  },
+  "Balloon Party": {
+    "pattern": "Quiescence",
+    "psychubes": [
+      "Melodies Old and New",
+      "The Wandering Improviser"
+    ],
+    "resonance": {
+      "Defense": "APwVMSMxEiUALAE8AzxDNFU0UzhBOTBIYExhTFBIQA",
+      "Damage (just don't)": "ADQANAI8IDwwKkA7UDhCKgT8FSUkLEQnRQ"
+    },
+    "portrait": "0/3"
+  },
+  "Barbara": {
+    "pattern": "Overindulgence",
+    "psychubes": [
+      "Aurora After Winter",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "HP": "APwlMTMxIjEgPBM8AzRVNFM6ADhBK0BMQUgSTAJIAQ",
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
+    },
+    "portrait": "0/5"
+  },
+  "Barcarola": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Addio Coda",
+      "In Their Figures"
+    ],
+    "resonance": {
+      "General Use": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
+    },
+    "portrait": "0/1/2"
+  },
+  "Beryl": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "The Thousandfold Fate",
+      "Long Night Talk"
+    ],
     "resonance": {
       "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
-      "Crit (R12+)": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
     },
-    "psychubes": ["Long Night Talk", "Until I Am Me"]
+    "portrait": "0/1/2/5"
+  },
+  "Bette": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "Shield": "AKAkQUVBFUIBOgM6MyZUJAQ8YD0gNEE0IUgATBBMAQ"
+    }
+  },
+  "Bkornblume": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Luxurious Leisure",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Damage": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
+      "Crit (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
+    },
+    "portrait": "0/2/5"
+  },
+  "Blonney": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "Spinning Yarns",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "Damage/Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Crit Damage": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
+    },
+    "portrait": "0/5"
+  },
+  "Brimley": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Off the Scene",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Attack": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA"
+    },
+    "portrait": "0/5"
+  },
+  "Brume": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "On the Hand of Time",
+      "Her Willful Leap"
+    ],
+    "resonance": {
+      "DPS/Support (With Other Supports)": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI"
+    },
+    "portrait": "0/1/4"
+  },
+  "Buddy Fairchild": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Never-Ending Q&A",
+      "Balance, Please"
+    ],
+    "resonance": {
+      "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Slightly More Crit DMG": "APAkJAQtFC1EJlQ8ADwQNCA0IjhCOUBFYURQ"
+    },
+    "portrait": "5"
+  },
+  "Bunny Bunny": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "Crit": "AEAASBE0AiQELRSgJC1EJlRFYEFSJEFBQCghKiA",
+      "Damage": "AKAkJAQtFC1EQVRIZjxgPFA0MjQwOAI7EEAASAI"
+    }
+  },
+  "Centurion": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Yearning Desire",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "General/Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
+    },
+    "portrait": "0/1"
+  },
+  "Charlie": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "For Rehabilitation",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
+    },
+    "notes": "⌽ High, consistent ST damage with lenient skill requirements for bonus DMG.\n⌽ Ultimate becomes an AoE nuke at higher  levels.\n⌽ The only 5✦ carry that actually slays.\n⌽ Insight 3 passive overwrites existing buffs; synergy with non-DMG-Bonus buffers (Baby Blue, Shamane, etc.)\n⌽ Very low base Crit Rate; must invest heavily for Crit-oriented play."
+  },
+  "Charon": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Buds Yet to Bloom",
+      "Offbeat Strides"
+    ],
+    "resonance": {
+      "General": "APwlJAQmAyhUKlMtIzxBPTA0UTQBQSJDIEQA",
+      "Survivability": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA"
+    },
+    "portrait": "0"
+  },
+  "Cheng Heguang": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Singleness of Heart",
+      "In Their Figures"
+    ],
+    "resonance": {
+      "Attack": "APAkKFQqBDQVNEQ8YDxQQjJAMUQwOxE6ACQB",
+      "Crit (Resonance 12+)": "APAkKgQoVDQVNEQ8YDxQQjJAMUQwOgA7EUUBRgM"
+    },
+    "portrait": "0/1"
+  },
+  "Click": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Balance, Please",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "Damage/Survivability": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ",
+      "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
+    },
+    "portrait": "0"
+  },
+  "Coppélia": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "The Silent Anthem",
+      "Long Night Talk"
+    ],
+    "resonance": {
+      "Crit": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
+      "Damage": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA"
+    },
+    "portrait": "0/1/4/5"
+  },
+  "Cornerstone": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Outside the City",
+      "Where Light and Shadows Rest"
+    ],
+    "resonance": {
+      "General": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE",
+      "Crit (Resonance 12+)": "APAkKgQoVDQVNEQ8YDxQQjJAMUQwOgA7EUUBRgM"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Corvus": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "On the Hand of Time",
+      "Outside the City"
+    ],
+    "resonance": {
+      "Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw",
+      "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
+    },
+    "portrait": "0/2/5"
+  },
+  "Cristallo": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw",
+      "Damage": "AKwlNFU0BTgiOiQ8YTwBJkIqEkgAQBBAUCcgSDA"
+    }
+  },
+  "Darley Clatter": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "General (Healing)": "AD0GPQWsRTFTMUIxMTtQNANDIzQgOAFAAExATFA",
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
+    }
+  },
+  "Desert Flannel": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Family Mentor",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Damage/Crit": "APAkJwUkAyZULURAE0AQQhFIAkUAPDA8QCpQKFE",
+      "Damage/Survivability": "APAkLRQkBCQBJgA8IDwwRWJHYEBAKEEwRStETEI"
+    },
+    "portrait": "0/5"
+  },
+  "Diggers": {
+    "pattern": "Equanimity",
+    "psychubes": [
+      "His Bounden Duty",
+      "Blasphemer of Night"
+    ],
+    "resonance": {
+      "Damage/Survivability": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ",
+      "Damage": "APAkNBU0RChUKgQ8ADwQJFEmUCYwOCI5IA"
+    },
+    "portrait": "0/4"
+  },
+  "Dikke": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "His Bounden Duty",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Healing": "APAkLRQtREAQQVRDBUhmOQI7ETxgPFA0MjQwSAFMAA",
+      "Attack/Survivability": "APAkNBU0VSVEPAM5EjkARhBFMERAQyFAQUJCPGBMMw"
+    },
+    "portrait": "0/4"
+  },
+  "Door": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "Survivability/Shield": "AKAkQUVBFUIBOgM6MyZUJAQ8YD0gNEE0IUgATBBMAQ"
+    }
+  },
+  "Drake": {
+    "psychubes": [
+      "To Choose Against Fate",
+      "Shadows in the Subconscious"
+    ],
+    "portrait": "0/1/5",
+    "resonance": {
+  "R10-15": "APAkNEQoVoENBUKASYAJCFBIEyR0BCUkhgOVA="
+},
+    "pattern": "Genuinity",
+    "notes": "Recommended Portrait: 0/1/5."
+  },
+  "Druvis III": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Your Friendly Exorcist",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Utility": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE",
+      "Crit/Damage": "ACQELxQvRCpQKFEmVPAkPQA0ESQBOCI7MA"
+    },
+    "portrait": "0/1"
+  },
+  "Eagle": {
+    "pattern": "Hyperphrenia",
+    "psychubes": [
+      "Outside the City",
+      "Rehearsal of Dreams"
+    ],
+    "resonance": {
+      "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUEpCQ"
+    },
+    "portrait": "5"
+  },
+  "Enigma": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "The Riddle's Limit",
+      "The Third Commitment"
+    ],
+    "resonance": {
+      "Attack": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
+      "Survivability": "APwlMTMxIjQFNAM8UzxjOAE4QUAAQCBAQEgxRWA"
+    },
+    "portrait": "0"
+  },
+  "Erick": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "General": "AKAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
+      "Survivability": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
+    }
+  },
+  "Eternity": {
+    "pattern": "Equanimity",
+    "psychubes": [
+      "The Final Roll",
+      "From The Depths"
+    ],
+    "resonance": {
+      "General": "APAkJAMmVCcFLUQoUSpQPEA8MDkSOxBIAkgATAFMEA",
+      "Crit": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
+    },
+    "portrait": "0/1"
   },
   "Everecho": {
-    "psychubes": ["A Dream Beyond Light", "Cracks in the Shell"],
+    "pattern": "Hyper",
+    "psychubes": [
+      "A Dream Beyond Light",
+      "Cracks in the Shell"
+    ],
     "resonance": {
       "Healing": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
       "Survivability": "APwlMTMxIjQFNAM8UzxjOAE4QUAAQCBAQEgxRWA"
     },
-    "pattern": "Hyper"
+    "portrait": "0"
+  },
+  "Ezio Auditore": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "As the Bell Tolls",
+      "Falling for a Sweet Phenomenon"
+    ],
+    "resonance": {
+      "Poison": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
+      "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Follow-Up Attack": "APQkOAU4RSUEK0QoUSpQPEA+MCQBQRJBAEcg",
+      "Ultimate": "APQkOAU4RSUEK0QoUSpQNDI0MC0RQRBDAkUA"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Ezra": {
+    "pattern": "Stupefaction",
+    "psychubes": [
+      "Addio Coda",
+      "Aurora After Winter"
+    ],
+    "resonance": {
+      "HP": "APQkOEU4BSUEK0QoUSpQPAA8ECYwRDNFMUgjTCJIIUwg",
+      "Dynamo": "APQkOEU4BSUEK0QkAS0RKFEqUDxAPDBMAEwgSBBIIQ"
+    },
+    "portrait": "0/2/5"
+  },
+  "Fatutu": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Cracks in the Shell",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Healing": "APgkPAM8Y0ETQEM7RDkUJ0EpAUUyQQA0IDRATGA"
+    },
+    "portrait": "0/1/2/3"
+  },
+  "Flutterpage": {
+    "pattern": "Hyperphrenia",
+    "psychubes": [
+      "Aurora After Winter",
+      "In Their Figures"
+    ],
+    "resonance": {
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Survivability (Swap L to 1x1 for more HP)": "APQkOEU4BTxiPDA0QzQRJQQlACkCKkAxUA"
+    },
+    "portrait": "0/1/3"
+  },
+  "Getian": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "The Third Commitment",
+      "The Wind’s Listener"
+    ],
+    "resonance": {
+      "General": "ADQANAI8IDkwOkAoUSwyJQQsBfgkL0QmVA"
+    },
+    "portrait": "0/1/3/5"
+  },
+  "Hedone": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Faded Epitaphs",
+      "The Silent Anthem"
+    ],
+    "resonance": {
+      "Damage": "APAkNBU0RChUKgQ8ADwQJFEmUCYwOCI5IA"
+    },
+    "portrait": "0/5"
+  },
+  "Hissabeth": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Never-Ending Q&A",
+      "Luck Be A Lady"
+    ],
+    "resonance": {
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
+    },
+    "portrait": "0/1"
+  },
+  "Horropedia": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "The Final Roll",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Damage/Survivability": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ"
+    },
+    "portrait": "0/5"
+  },
+  "Huntsworn Lilya": {
+    "psychubes": [
+      "Atop the Tempest",
+      "For Rehabilitation"
+    ],
+    "portrait": "0/1/2/3/5",
+    "pattern": "Aspirational",
+    "resonance": {
+  "R10  + P0 37": "BPQkOEUrRDoEKQUkASYAKSJAUEJRRFMtIEEwSEI=",
+  "R15 + P0 37": "BDhFK0Q6BCkFJAEmACkiLSD0JDRQQTBIQkViRVI=",
+  "R10 + P1 37": "BPQkOEU4BTwCPGI0EzRDLwArQEEiSDBBEEgxREFEQg==",
+  "R15 + P1 37": "BPQkOEU4BTwCPGI0EzRDLQAmECUyRTBFQEVQSGBIYQ=="
+}
+  },
+  "Igor": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Across the Acheron",
+      "The Final Roll"
+    ],
+    "resonance": {
+      "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
+      "Crit (w/ Flutterpage)": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
+    },
+    "portrait": "0/1/5"
+  },
+  "Isolde": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Blasphemer of Night",
+      "Knock on the Door"
+    ],
+    "resonance": {
+      "Burn Team": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI",
+      "General": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
+    },
+    "portrait": "0/1/3/5"
+  },
+  "J": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "The Unbearable Lightness",
+      "Knock on the Door"
+    ],
+    "resonance": {
+      "No-Euphoria General": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
+      "Crit (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI=",
+      "Euphoria": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Jessica": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Blasphemer of Night",
+      "Hopscotch"
+    ],
+    "resonance": {
+      "Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw",
+      "Poison": "APgkJAQoVDRENBQ8YDxQOCI7MEASQCBCAEcCSAA"
+    },
+    "portrait": "0"
+  },
+  "Jiu Niangzi": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Outside the City",
+      "Stray Off the Path"
+    ],
+    "resonance": {
+      "Crit": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
+      "Crit (Resonance 12+)": "ACpQKFEkBC0ULUQmVPAkRDBFIEYAJjFAAUEiQgJIIw"
+    },
+    "portrait": "0/2/3/5"
+  },
+  "John Titor": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "The Unbearable Lightness",
+      "Knock on the Door"
+    ],
+    "resonance": {
+      "Damage": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Survivability": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Kaalaa Baunaa": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Luxurious Leisure",
+      "Brave New World"
+    ],
+    "resonance": {
+      "General": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
+    },
+    "portrait": "0/1"
+  },
+  "Kakania": {
+    "pattern": "Overindulgence",
+    "psychubes": [
+      "The Fighter's Best Wishes",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "General (Survivability)": "ACUAJxA5AjgTMzEzQjNTPQU9BkQSREBIUUhiTGFMYPxF"
+    },
+    "portrait": "0/2/3/5"
+  },
+  "Kanjira": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "His Bounden Duty",
+      "Blasphemer of Night"
+    ],
+    "resonance": {
+      "Poison Damage (Attack)": "APAkJwUoVCogNEQ0BDxgPFA7MDgiQgJAAEgCSBE",
+      "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
+    },
+    "portrait": "1"
+  },
+  "Kassandra": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "An Epic's End",
+      "Blasphemer of Night"
+    ],
+    "resonance": {
+      "Follow-Up Attack": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA",
+      "Ultimate": "APQkOAU4RSUEK0Q8ADwQNCA0IitAR0FGQy1R"
+    },
+    "portrait": "0/2"
+  },
+  "Kiperina": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Aurora After Winter",
+      "Long Night Talk"
+    ],
+    "resonance": {
+      "Shield and Crit": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE"
+    },
+    "portrait": "0"
+  },
+  "La Source": {
+    "pattern": "Delirament",
+    "resonance": {
+      "Survivability": "AKgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA",
+      "Damage": "AKgkLAUtRCUEJlQ8YDxQNDI0MDgCOxAqAA"
+    }
+  },
+  "Lady by the Lake": {
+    "pattern": "Delirament",
+    "resonance": {
+      "Survivability": "AKgkJAQwRTQUPAA8EDQgJSI6MztTRFFGUEhSSEFMYkxA",
+      "Marginally More Attack": "AKgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA"
+    }
+  },
+  "Leilani": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "Damage": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Crit": "AEAASBE0AiQELRSgJC1EJlRFYEFSJEFBQCghKiA"
+    }
+  },
+  "Liang Yue": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "Ready on Call",
+      "Outside the City"
+    ],
+    "resonance": {
+      "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Lilya": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "For Rehabilitation",
+      "Outside the City"
+    ],
+    "resonance": {
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
+    },
+    "portrait": "0"
+  },
+  "Loggerhead": {
+    "pattern": "Delirament",
+    "psychubes": [
+      "Melodies Old and New",
+      "That Inquisitive Dear"
+    ],
+    "resonance": {
+      "General (Survivability)": "APgkJAQwRTQUPAA8EDQgJSI6MztTRFFGUEhSSEFMYkxA"
+    },
+    "portrait": "0/3/4/5"
+  },
+  "Lopera": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "The Third Commitment",
+      "The Wind’s Listener"
+    ],
+    "resonance": {
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
+    },
+    "portrait": "0"
+  },
+  "Lorelei": {
+    "pattern": "Stupefaction",
+    "psychubes": [
+      "Melodies Old and New",
+      "Spinning Yarns"
+    ],
+    "resonance": {
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
+    },
+    "portrait": "1/3/5"
+  },
+  "Lorentz Butterfly": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "The Fluttering Moment",
+      "Singleness of Heart"
+    ],
+    "resonance": {
+      "Attack": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
+      "Crit": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Lucy": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Steps Forward",
+      "Knock on the Door"
+    ],
+    "resonance": {
+      "Crit (with supports)": "ADQwNDIqUChRJAEtEUQARSD0JDhFOAUlBCtE",
+      "No-Euphoria Other Crit (R12+ with supports)": "ADQwNDIkAS0RRABFIEhQSGBFUShR9CQlBCtEOEU4BQ",
+      "Dynamo (Euphoria)": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
+    },
+    "portrait": "0/1/3/5"
+  },
+  "Marcus": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Blasphemer of Night"
+    ],
+    "resonance": {
+      "General": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw",
+      "Crit": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
+    },
+    "portrait": "0/4"
+  },
+  "Marsha": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Singleness of Heart",
+      "Family Mentor"
+    ],
+    "resonance": {
+      "General": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI"
+    },
+    "portrait": "0/5"
+  },
+  "Matilda": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "Luxurious Leisure",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
+    },
+    "notes": "⌽ Five star version of Lilya. High ST DPT with Ult.\n⌽ Can inflict [Confusion].\n⌽ Cannot trigger her own Insight passives.\n⌽ s are unavailable due to her not being in the gacha pool. Only given out during Anniversaries."
+  },
+  "Medicine Pocket": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Melodies Old and New",
+      "That Inquisitive Dear"
+    ],
+    "resonance": {
+      "Healing": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
+      "Damage (why?)": "ADQANAI8IDwwKkA7UDhCKgT8FSUkLEQnRQ"
+    },
+    "portrait": "0"
+  },
+  "Melania": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Luxurious Leisure",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Crit": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
+    },
+    "portrait": "0/2/5"
+  },
+  "Mercuria": {
+    "pattern": "Stupefaction",
+    "psychubes": [
+      "One with the Flow",
+      "Balance, Please"
+    ],
+    "resonance": {
+      "General": "APQkOEU4BTwCPGI0QzQTKxIrECkAJUAsQQ",
+      "Damage": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw",
+      "Euphoria": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
+    },
+    "portrait": "0/2/4/5"
+  },
+  "Mesmer Jr.": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "The Unbearable Lightness",
+      "Knock on the Door"
+    ],
+    "resonance": {
+      "Survivability": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA",
+      "Damage": "AKAkNBU0RChUKgQ8ADwQJFEmUCYwOCI5IA"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Moldir": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Family Mentor",
+      "Parting's Quiet Lament"
+    ],
+    "resonance": {
+      "Attack": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI",
+      "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
+    },
+    "portrait": "0/1"
+  },
+  "Mondlicht": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "Damage": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Crit": "ACQELxQvRCpQKFEmVKAkPQA0ESQBOCI7MA"
+    }
+  },
+  "Mr. Duncan": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Outside the City",
+      "Luxurious Leisure"
+    ],
+    "resonance": {
+      "Damage/Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Hybrid": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
+    },
+    "portrait": "0/5"
+  },
+  "Ms. Moissan": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "Attack/Shield": "AKAkQUVBFUIBOgM6MyZUJAQ8YD0gNEE0IUgATBBMAQ",
+      "Survivability": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
+    }
+  },
+  "Ms. NewBabel": {
+    "pattern": "Quiescence",
+    "psychubes": [
+      "Off the Scene",
+      "Approaching Rain"
+    ],
+    "resonance": {
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
+    },
+    "portrait": "0"
+  },
+  "Ms. Radio": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "General (Survivability)": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
+    }
+  },
+  "Ms. Stranger": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Long Night Talk",
+      "Until I Am Me"
+    ],
+    "resonance": {
+  "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
+  "Crit (R12+)": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
+},
+    "portrait": "0/2/5"
+  },
+  "Name Day": {
+    "pattern": "Equanimity",
+    "psychubes": [
+      "The Wandering Improviser",
+      "Her Second Life"
+    ],
+    "resonance": {
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
+    },
+    "portrait": "0/4/5"
+  },
+  "Narcissus": {
+    "pattern": "Overindulgence",
+    "psychubes": [
+      "Tides Held Within",
+      "Arrow of Verdict"
+    ],
+    "resonance": {
+      "Survivability": "APwlMTMxIjQFNAM8UzxjOQA7UEIRQ0FBIERATBA"
+    },
+    "portrait": "0"
+  },
+  "Nautika": {
+    "pattern": "Stupefaction",
+    "psychubes": [
+      "Embrace the Past",
+      "On the Hand of Time"
+    ],
+    "resonance": {
+      "Damage": "APQkOEU4BSUEK0QkAS0RKFEqUDxAPDBMAEwgSBBIIQ",
+      "Crit (Resonance 12+)": "APQkOEU4BSUEK0QoUSpQJAEtET0AR0BHMUdCSDNIIQ"
+    },
+    "portrait": "0/1/2/3/5"
+  },
+  "Necrologist": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "The Wandering Improviser",
+      "One with the Flow"
+    ],
+    "resonance": {
+      "Healing": "APgkLAUtREFUSGY5AzsSNDI0MDxgPFBCAUEQTAFIAA",
+      "Survivability": "APgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA"
+    },
+    "portrait": "1/5"
+  },
+  "Nick Bottom": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "General (Survivability)": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
+    }
+  },
+  "Noire": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Rehearsal of Dreams",
+      "Balance, Please"
+    ],
+    "resonance": {
+      "Crit (with supports)": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC",
+      "Attack/Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
+    },
+    "portrait": "0/3"
+  },
+  "NORA": {},
+  "Oliver Fog": {
+    "pattern": "Equibalance",
+    "resonance": {
+      "Damage": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Crit": "ACQELxQvRCpQKFEmVKAkPQA0ESQBOCI7MA"
+    }
+  },
+  "ONiON": {
+    "pattern": "Hyperphrenia",
+    "resonance": {
+      "General (Survivability)": "AKQkOEU4BTxiPDA0QzQRJQQlACkCKkAxUA",
+      "Slightly More Damage": "AKQkOEU4BTEDLVNBMyYSJzE8YDwANBA0MEhQ"
+    }
+  },
+  "Paper Heron": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Wayfarer of the Tao",
+      "Addio Coda"
+    ],
+    "resonance": {
+      "General": "APgkJAQoVDRENBQ8YDxQOCI7MEASQCBCAEcCSAA"
+    },
+    "portrait": "0/2/5"
+  },
+  "Pavia": {
+    "pattern": "Delirament",
+    "resonance": {
+      "Crit": "AKgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC",
+      "Damage": "ADQRJQA5AjsTNAWoJC1ELUItQCZQPDA8Yw"
+    }
+  },
+  "Pickles": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Luxurious Leisure",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "General": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
+      "Crit": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
+    },
+    "portrait": "0/2"
+  },
+  "Pioneer": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "HP/Survivability": "AKwlMTMxIjEgPBM8AzRVNFM6ADhBK0BMQUgSTAJIAQ"
+    }
+  },
+  "Poltergeist": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "General (Survivability)": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
+    }
+  },
+  "Rabies": {
+    "pattern": "Delirament",
+    "resonance": {
+      "General": "ADQRJQA5AjsTNAWoJC1ELUItQCZQPDA8Yw",
+      "Poison Damage (Attack)": "AKgkLUQuBUAEQVRBADkBOxJFIDQyNDA8UDxgSGY"
+    }
+  },
+  "Ramona": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "Falling for a Sweet Phenomenon",
+      "Drown Out The Hustle"
+    ],
+    "resonance": {
+      "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
+      "Crit (Resonance 12+)": "APQkOAU4RSoAK0Q0MjQwPFA8YEIQQRJFBEQDRBQ"
+    },
+    "portrait": "0/1"
+  },
+  "Recoleta": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "The Final Roll",
+      "Balance, Please"
+    ],
+    "resonance": {
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Attack": "APQkJ0UtADgFOkQ8YDxQNDI0MEEQQARFI0cCSCJIEw"
+    },
+    "portrait": "0/1/4"
+  },
+  "Regulus": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Belt It Out",
+      "For Rehabilitation"
+    ],
+    "resonance": {
+      "Attack": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
+      "Crit": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM",
+      "Subdps Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
+    },
+    "portrait": "0/1"
+  },
+  "Rhiannon": {
+    "pattern": "Equanimity",
+    "psychubes": [
+      "The Soft Rain of Yesterday",
+      "Family Mentor"
+    ],
+    "resonance": {
+      "Survivability": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA",
+      "Crit (Kinda)": "APwlMTMxIjQFNAM8UzxjOAE4QUMgQTBBUEwBSABMEA",
+      "Impromptu": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
+      "Bloodtithe": "ACUAJxA5AjgTMzEzQjNTPQU9BkQSREBIUUhiTGFMYPxF"
+    },
+    "portrait": "0/2/5"
+  },
+  "Rubuska": {
+    "pattern": "Overindulgence",
+    "psychubes": [
+      "The Wandering Improviser",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Damage Reduction": "APwlNAU8YzxTMTMxIjERJAInQTpAOgBIQUgBTTFNMA",
+      "Defense": "APwlNAU0AzxjPFMxMzEiMSAnQTpAOgBIQUgCTBJMAQ"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Satsuki": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "Luxurious Leisure",
+      "Blasphemer of Night"
+    ],
+    "resonance": {
+      "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Damage": "APQkOEU4BSUEK0QkAS0RKwA0MjQwPFA8YA"
+    },
+    "portrait": "0/5"
+  },
+  "Semmelweis": {
+    "pattern": "Equanimity",
+    "psychubes": [
+      "The Third Commitment",
+      "From The Depths"
+    ],
+    "resonance": {
+      "General (Bloodtithe)": "APAkJAMmVCcFLUQoUSpQPEA8MDkSOxBIAkgATAFMEA",
+      "Crit": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Sentinel": {
+    "pattern": "Equanimity",
+    "psychubes": [
+      "Cracks in the Shell",
+      "Embrace the Past"
+    ],
+    "resonance": {
+      "Crit": "APAkJAMmVCcFLUQoUSpQPEA8MDkSOxBIAkgATAFMEA",
+      "Damage": "APAkLUQtFCQEJlQoUSpQPEA8MDgCOxBIAkgATBBMAQ"
+    },
+    "portrait": "0/1/5"
+  },
+  "Shamane": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Never-Ending Q&A",
+      "Family Mentor"
+    ],
+    "resonance": {
+      "General": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
+      "Crit Damage (Resonance 12+)": "ACpQKFEkBC0ULUQmVPAkRDBFIEYAJjFAAUEiQgJIIw"
+    },
+    "portrait": "0/2/5"
+  },
+  "Silverwing Eagle": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Outside the City",
+      "Rehearsal of Dreams"
+    ],
+    "resonance": {
+      "Crit": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC",
+      "Attack": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
+    },
+    "portrait": "5"
+  },
+  "Sonetto": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "Off the Scene",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Damage": "APwlNFU0BTxhPFElQCQCOiQ4Ei0AQTJCIEggSBA",
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
+    },
+    "portrait": "5"
+  },
+  "Sotheby": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Melodies Old and New",
+      "That Inquisitive Dear"
+    ],
+    "resonance": {
+      "Healing": "APAkMEU7UzQVPAM6M0ATJAA9IjQQQDBCQExhSGBIYg=="
+    },
+    "portrait": "0"
+  },
+  "Spathodea": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "Luxurious Leisure",
+      "Long Night Talk"
+    ],
+    "resonance": {
+      "Crit": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
+    },
+    "portrait": "0/3/5"
+  },
+  "Sputnik": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "General (Survivability)": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
+    }
+  },
+  "Sweetheart": {
+    "pattern": "Aspirational",
+    "psychubes": [
+      "Blasphemer of Night",
+      "Luxurious Leisure"
+    ],
+    "resonance": {
+      "Damage/Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw",
+      "Damage/Survivability": "APQkOEU4BTxiPDA0QzQRJQQlACkCKkAxUA"
+    },
+    "portrait": "1/5"
+  },
+  "Tennant": {
+    "pattern": "Stupefaction",
+    "psychubes": [
+      "Melodies Old and New",
+      "Off the Scene"
+    ],
+    "resonance": {
+      "General": "APQkOEU4BTwCPGI0QzQTKxIrECkAJUAsQQ"
+    },
+    "portrait": "0/4"
+  },
+  "The Fool": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw",
+      "HP/Corrosion Damage": "ADQANAI8IDwwKkA7UDhCKgSsFSUkLEQnRQ"
+    }
+  },
+  "The Twins": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "The Art of Atoms",
+      "The Dance of Science"
+    ],
+    "resonance": {
+      "Crit": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA",
+      "Attack": "APQkOAU4RSUEK0QkAS0RRABFIDQyNDA8UDxg"
+    },
+    "portrait": "0/1/2/5"
+  },
+  "Tooth Fairy": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Melodies Old and New",
+      "That Inquisitive Dear"
+    ],
+    "resonance": {
+      "Impromptu": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
+      "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
+    },
+    "portrait": "0/2/5"
+  },
+  "TTT": {
+    "resonance": {
+      "Survivability": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA",
+      "Damage": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA"
+    }
+  },
+  "Tuesday": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "And the Maid Says",
+      "One with the Flow"
+    ],
+    "resonance": {
+      "General": "APgkNBQ0RChUQwVIBDwAPGA5ETtBQRBAQEcwRTJII0xD",
+      "Slightly More Crit (Resonance 12+)": "APgkNBQ0RChUQwVIBDwAPGA5EDgSQSBBMkVSR1BHQA"
+    },
+    "portrait": "0/2"
+  },
+  "Twins Sleep": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw",
+      "General (Damage)": "ADQANAI8IDwwKkA7UDhCKgSsFSUkLEQnRQ"
+    }
+  },
+  "Ulrich": {
+    "pattern": "Elucidation",
+    "psychubes": [
+      "On the Hand of Time",
+      "The Third Commitment"
+    ],
+    "resonance": {
+      "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
+      "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
+    },
+    "portrait": "0/1/3/5"
+  },
+  "Ulu": {
+    "pattern": "Hyper",
+    "psychubes": [
+      "The Wandering Improviser",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Survivability": "APgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA",
+      "Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
+    },
+    "portrait": "0/5"
+  },
+  "Vila": {
+    "pattern": "Equanimity",
+    "psychubes": [
+      "Melodies Old and New",
+      "Dawn is Coming"
+    ],
+    "resonance": {
+      "Healing": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA"
+    },
+    "portrait": "0/1/3"
+  },
+  "Voyager": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Luxurious Leisure",
+      "His Bounden Duty"
+    ],
+    "resonance": {
+      "Crit": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
+      "Crit (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
+    },
+    "portrait": "0/5"
+  },
+  "White Rum": {
+    "pattern": "Equanimity",
+    "resonance": {
+      "General (Survivability)": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
+    }
+  },
+  "Willow": {
+    "pattern": "Equibalance",
+    "psychubes": [
+      "Her Mournful Face",
+      "Offbeat Strides"
+    ],
+    "resonance": {
+      "With Tuesday": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
+      "Without Tuesday": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI"
+    },
+    "portrait": "0/1/2"
+  },
+  "Windsong": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Outside the City",
+      "On the Hand of Time"
+    ],
+    "resonance": {
+      "General": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
+      "Portrait 2+": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
+    },
+    "portrait": "0/1/2/5"
+  },
+  "X": {
+    "pattern": "Genuinity",
+    "psychubes": [
+      "Balance, Please",
+      "Her Second Life"
+    ],
+    "resonance": {
+      "General": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
+    },
+    "portrait": "0"
+  },
+  "Yenisei": {
+    "pattern": "Overindulgence",
+    "psychubes": [
+      "Beyond Wonderland",
+      "Melodies Old and New"
+    ],
+    "resonance": {
+      "Healing/Shield": "APwlMTMxIjEgPBM8AzRVNFM6ADhBK0BMQUgSTAJIAQ",
+      "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
+    },
+    "portrait": "0/4"
+  },
+  "Зима": {
+    "pattern": "Delirament",
+    "resonance": {
+      "Survivability": "AKgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA",
+      "Damage": "ADQRJQA5AjsTNAWoJC1ELUItQCZQPDA8Yw"
+    }
   }
 }

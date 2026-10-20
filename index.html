@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <!-- Controls Row A: Search, Quick Edit, Export PNG -->
+      <!-- Controls Row A: Search, Manage, JSON, Export PNG (one cluster) -->
       <div class="header-actions-row">
         <div class="header-search-wrap">
           <input type="text" id="filter-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
@@ -44,21 +44,21 @@
         <button class="btn btn-secondary" id="btn-manage-all" title="Manage characters and psychubes" data-i18n-title="toolbar.manage">
           <span data-i18n="toolbar.manage">Manage</span>
         </button>
+        <button class="btn btn-secondary" id="btn-json" title="Import or export JSON" data-i18n-title="toolbar.json">
+          <span data-i18n="toolbar.json">JSON</span>
+        </button>
         <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG" data-i18n-title="toolbar.exportPng">
           <span data-i18n="toolbar.exportPng">Export PNG</span>
         </button>
       </div>
 
-      <!-- Controls Row B: Language, JSON / Reset, Roster Stats & Tools Button -->
+      <!-- Controls Row B: Language, Roster Stats & Tools Button -->
       <div class="header-stats-row">
         <div class="lang-switcher lang-switcher-header" id="lang-switcher-header" role="group" aria-label="Language">
           <button type="button" class="lang-btn" data-lang="cn">CN</button>
           <button type="button" class="lang-btn" data-lang="vi">VI</button>
           <button type="button" class="lang-btn active" data-lang="en">EN</button>
         </div>
-        <button class="btn btn-secondary" id="btn-json" title="Import or export JSON" data-i18n-title="toolbar.json">
-          <span data-i18n="toolbar.json">JSON</span>
-        </button>
         <div class="stat-badge-wrap">
           <span class="stat-badge" id="roster-stat" style="cursor: pointer;">Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" /></span>
         </div>
@@ -71,25 +71,15 @@
 
     <!-- Secondary Tools Panel (Collapsible drawer on mobile, integrated toolbar row on desktop) -->
     <div class="header-secondary-tools" id="header-secondary-tools">
-      <div class="secondary-tools-group tools-config-group">
-        <button type="button" class="btn btn-secondary" id="btn-options" title="Display Options">
-          <img src="images/random_icon/options.png" alt="" class="btn-tool-icon" /><span data-i18n="toolbar.options">Options</span>
-        </button>
-        <button type="button" class="btn btn-secondary" id="btn-customize" title="Customize Colors & Typography">
-          <img src="images/random_icon/vertin_hat.png" alt="" class="btn-tool-icon" /><span data-i18n="toolbar.styling">Styling</span>
-        </button>
-        <button type="button" class="btn btn-secondary" id="btn-listing" title="Customize Tier Listing">
-          <img src="images/random_icon/tiers.png" alt="" class="btn-tool-icon" /><span data-i18n="toolbar.tiers">Tiers</span>
-        </button>
-      </div>
-
-      <!-- Filters (Ownership & Rarity, Old Rename Suitcase position) -->
+      <!-- Filters (Ownership & Rarity) sit above the tool buttons -->
       <div class="secondary-tools-group tools-filters-group">
         <div class="filter-btn-group" id="filter-ownership-group">
           <button type="button" class="filter-btn active" data-ownership="all"><span data-i18n="filter.all">All</span></button>
           <button type="button" class="filter-btn" data-ownership="owned"><span data-i18n="filter.owned">Owned</span></button>
           <button type="button" class="filter-btn" data-ownership="unowned"><span data-i18n="filter.unowned">Unowned</span></button>
         </div>
+
+        <div class="filter-group-separator" aria-hidden="true"></div>
 
         <div class="filter-btn-group" id="filter-rarity-group">
           <button type="button" class="filter-btn" data-rarity="6">✦6</button>
@@ -100,27 +90,40 @@
         </div>
       </div>
 
-      <div class="secondary-tools-group tools-data-group">
-        <button type="button" class="btn btn-secondary btn-team" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
-          <span data-i18n="toolbar.teams">Teams</span>
-          <img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
-        </button>
-        <button type="button" class="btn btn-secondary btn-team" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
-          <span data-i18n="toolbar.builds">InfoBook</span>
-          <img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
-        </button>
-        <button type="button" class="btn btn-secondary btn-team" id="btn-rotations" title="Skill Rotations" data-i18n-title="rotations.title" aria-label="Skill Rotations" data-i18n-aria-label="rotations.title">
-          <span data-i18n="toolbar.rotations">Rotations</span>
-          <img src="images/random_icon/Rotation_icon.png" alt="" class="btn-team-icon" />
-        </button>
-      </div>
+      <!-- Right cluster: tool buttons + language switcher (the switcher only
+           shows once the Menu button takes over on narrow screens) -->
+      <div class="tools-buttons-row">
+        <div class="secondary-tools-group tools-config-group">
+          <button type="button" class="btn btn-secondary btn-icon-tool" id="btn-options" title="Display Options" aria-label="Display Options" data-i18n-aria-label="toolbar.options">
+            <span data-i18n="toolbar.options">Options</span><img src="images/random_icon/options.png" alt="" class="btn-tool-icon" />
+          </button>
+          <button type="button" class="btn btn-secondary btn-icon-tool" id="btn-customize" title="Customize Colors & Typography" aria-label="Styling" data-i18n-aria-label="toolbar.styling">
+            <span data-i18n="toolbar.styling">Styling</span><img src="images/random_icon/vertin_hat.png" alt="" class="btn-tool-icon" />
+          </button>
+          <button type="button" class="btn btn-secondary btn-icon-tool" id="btn-listing" title="Customize Tier Listing" aria-label="Tiers" data-i18n-aria-label="toolbar.tiers">
+            <span data-i18n="toolbar.tiers">Tiers</span><img src="images/random_icon/tiers.png" alt="" class="btn-tool-icon" />
+          </button>
+        </div>
 
-      <!-- Language switcher (lives inside the Menu) -->
-      <div class="secondary-tools-group tools-lang-group">
-        <div class="lang-switcher" id="lang-switcher" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-lang="cn">CN</button>
-          <button type="button" class="lang-btn" data-lang="vi">VI</button>
-          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+        <div class="secondary-tools-group tools-data-group">
+          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
+            <span data-i18n="toolbar.teams">Teams</span><img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
+          </button>
+          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
+            <span data-i18n="toolbar.builds">InfoBook</span><img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
+          </button>
+          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-rotations" title="Skill Rotations" data-i18n-title="rotations.title" aria-label="Skill Rotations" data-i18n-aria-label="rotations.title">
+            <span data-i18n="toolbar.rotations">Rotations</span><img src="images/random_icon/Rotation_icon.png" alt="" class="btn-team-icon" />
+          </button>
+        </div>
+
+        <!-- Language switcher: only shows once the Menu button takes over. -->
+        <div class="secondary-tools-group tools-lang-group">
+          <div class="lang-switcher" id="lang-switcher" role="group" aria-label="Language">
+            <button type="button" class="lang-btn" data-lang="cn">CN</button>
+            <button type="button" class="lang-btn" data-lang="vi">VI</button>
+            <button type="button" class="lang-btn active" data-lang="en">EN</button>
+          </div>
         </div>
       </div>
     </div>
@@ -140,10 +143,26 @@
 
   <!-- Footer Info / Credits -->
   <footer class="app-footer no-export">
+    <button type="button" class="footer-credits-btn" id="btn-credits" aria-label="Credits">
+      <img src="images/random_icon/Credits.png" alt="Credits" />
+    </button>
     <p data-i18n="footer.disclaimer">Sotheby's Mansion is not affiliated with BluePoch. All images and data belong to their respective owners.</p>
     <p data-i18n-html="footer.iconArtist">Icon Artist: <strong>ena.</strong></p>
     <p data-i18n-html="footer.credits">Developed by <strong>sh</strong>, assisted by <strong>91</strong>.</p>
   </footer>
+
+  <!-- Credits Modal -->
+  <div id="credits-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card credits-modal-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="credits.title">Credits</span></h2>
+        <button class="modal-close" id="credits-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="archetype-modal-body credits-modal-body">
+        <ul class="credits-list" id="credits-list"></ul>
+      </div>
+    </div>
+  </div>
 
   <!-- Edit Character Modal (Pop-up when clicking a character) -->
   <div id="edit-modal" class="modal-backdrop" style="display: none;">
@@ -1220,7 +1239,13 @@
     <div class="modal-card archetype-modal-card builds-modal-card">
       <div class="archetype-modal-header">
         <h2 class="archetype-modal-title"><span data-i18n="builds.title">InfoBook</span></h2>
-        <button class="modal-close" id="builds-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        <div class="builds-header-actions">
+          <button type="button" class="btn btn-secondary btn-sm builds-rail-toggle" id="builds-rail-toggle" aria-pressed="true">
+            <img src="images/random_icon/hide_tier.png" alt="" class="builds-rail-toggle-icon" />
+            <span data-i18n="builds.toggleList">Hide list</span>
+          </button>
+          <button class="modal-close" id="builds-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        </div>
       </div>
 
       <div class="builds-body">
@@ -1251,6 +1276,8 @@
           </div>
         </aside>
 
+        <div class="guide-rail-resizer" id="builds-rail-resizer" role="separator" aria-orientation="vertical" tabindex="0" data-i18n-title="team.dragResize" title="Drag to resize the list"></div>
+
         <div class="builds-detail" id="builds-detail">
           <div class="guide-empty"><span data-i18n="builds.select">Select a character to see its build recommendations.</span></div>
         </div>
@@ -1269,12 +1296,19 @@
         <h2 class="archetype-modal-title"><span data-i18n="rotations.title">Skill Rotations</span></h2>
         <div class="rotations-header-tools">
           <input type="text" id="rotations-search" class="search-input" data-i18n-placeholder="rotations.search" placeholder="Search Rotations" />
+          <button type="button" class="btn btn-secondary btn-sm rotations-presets-btn" id="rotations-presets-btn">
+            <span data-i18n="rotations.presets">Presets</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm rotations-rail-toggle" id="rotations-rail-toggle" aria-pressed="true">
+            <img src="images/random_icon/hide_tier.png" alt="" class="rotations-rail-toggle-icon" />
+            <span data-i18n="rotations.toggleList">Hide list</span>
+          </button>
           <button class="modal-close" id="rotations-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
         </div>
       </div>
 
       <div class="rotations-body">
-        <div class="rotations-browse" id="rotations-browse">
+        <aside class="rotations-browse" id="rotations-browse">
           <div class="rotations-browse-head">
             <span class="archetype-section-title"><span data-i18n="rotations.filters">Filters</span></span>
             <button type="button" class="rotations-clear" id="rotations-clear-filters"><span data-i18n="rotations.clear">Clear</span></button>
@@ -1288,11 +1322,27 @@
             <span class="rotations-browse-count" id="rotations-count"></span>
           </div>
           <div class="rotations-list" id="rotations-list"></div>
-        </div>
+        </aside>
+
+        <div class="guide-rail-resizer" id="rotations-rail-resizer" role="separator" aria-orientation="vertical" tabindex="0" data-i18n-title="team.dragResize" title="Drag to resize the list"></div>
 
         <div class="rotations-detail" id="rotations-detail">
           <div class="guide-empty"><span data-i18n="rotations.select">Select a rotation to see its card plan.</span></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rotation Presets Modal -->
+  <div id="rotation-presets-modal" class="modal-backdrop rotation-presets-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card rotation-presets-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="rotations.presetsTitle">Rotation Presets</span></h2>
+        <button class="modal-close" id="rotation-presets-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="modal-body archetype-modal-body rotation-presets-body">
+        <p class="builds-muted" data-i18n="rotations.presetsHint">Add a preset to your rotation list.</p>
+        <div class="rotation-presets-list" id="rotation-presets-list"></div>
       </div>
     </div>
   </div>
@@ -1620,12 +1670,12 @@
 
   <!-- Export Image Preview Modal (especially for mobile/iOS saving) -->
   <div id="export-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card modal-card-large" style="max-width: 640px;">
-      <div class="modal-header">
-        <h2><span data-i18n="toolbar.exportPng"><span data-i18n="toolbar.exportPng">Export PNG</span></span></h2>
+    <div class="modal-card archetype-modal-card export-modal-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.exportPng">Export PNG</span></h2>
         <button class="modal-close" id="export-modal-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
       </div>
-      <div class="modal-body" style="text-align: center; gap: 12px;">
+      <div class="archetype-modal-body export-modal-body">
         <div class="export-help-tip" id="export-help-tip">
           Tap and hold (long press) the image below and select <strong><span data-i18n="action.savePhotos">Save to Photos</span></strong>, or use the buttons below.
         </div>
@@ -1633,9 +1683,9 @@
           <img id="export-preview-img" src="" alt="Exported Showcase Board" />
         </div>
       </div>
-      <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-        <button type="button" class="btn btn-secondary" id="export-modal-btn-close-action">Close</button>
-        <div style="display: flex; gap: 8px;">
+      <div class="modal-footer export-modal-footer">
+        <button type="button" class="btn btn-secondary" id="export-modal-btn-close-action"><span data-i18n="action.close">Close</span></button>
+        <div class="export-modal-actions">
           <button type="button" class="btn btn-secondary" id="export-modal-btn-share" style="display: none;"><span data-i18n="action.share">Share</span></button>
           <button type="button" class="btn btn-primary" id="export-modal-btn-download"><span data-i18n="action.downloadPng">Download PNG</span></button>
         </div>
