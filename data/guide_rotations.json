@@ -251,6 +251,515 @@
 }]
 }
       ]
+    },
+    {
+  "id": "beryl-w-drake-p0-lb",
+  "name": "Beryl w/ Drake (P0 LB)",
+  "archetypes": ["Lingering Glow"],
+  "tuning": "First Melody",
+  "members": [
+  {
+    "character": "Beryl",
+    "psychube": "Long Night Talk"
+  },
+  {
+    "character": "Drake",
+    "psychube": "Shadows in the Subconscious"
+  },
+  {
+    "character": "Lorentz Butterfly",
+    "psychube": "The Fluttering Moment"
+  },
+  {
+    "character": "Marsha",
+    "psychube": "Singleness of Heart"
+  }
+],
+  "notes": "Cubes: Drake can use his sig if you want to boost Beryl DMG (e.g. afflatus advantage, portrait)\nFor better survival: Marsha -> SiS, Drake -> sig, LB -> SoH",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "text",
+  "text": "Select as many Purple Crystals, then Blue"
+},
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 2,
+    "icon": "images/skills/31390121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Drake",
+    "skill": 1,
+    "icon": "images/skills/31580111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Marsha",
+    "skill": 1,
+    "icon": "images/skills/31270111.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Drake",
+    "skill": 3,
+    "icon": "images/skills/31580131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 3,
+    "icon": "images/skills/31390131.png"
+  }
+]
+        },
+        {
+  "type": "lb",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Drake",
+    "skill": 2,
+    "icon": "images/skills/31580121.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 2,
+    "icon": "images/skills/31390121.png"
+  }
+]
+        },
+        {
+  "type": "free",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+},
+        {
+  "type": "free",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+},
+        {
+  "type": "free",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Marsha",
+    "skill": 3,
+    "icon": "images/skills/31270131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Drake",
+    "skill": 1,
+    "icon": "images/skills/31580111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 3,
+    "icon": "images/skills/31340131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [{
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Drake",
+    "skill": 3,
+    "icon": "images/skills/31580131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 3,
+    "icon": "images/skills/31390131.png"
+  }
+]
+},
+        {
+  "type": "lb",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Drake",
+    "skill": 1,
+    "icon": "images/skills/31580111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Marsha",
+    "skill": 1,
+    "icon": "images/skills/31270111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+}]
+    },
+    {
+      "note": "",
+      "slots": [{
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 2,
+    "icon": "images/skills/31390121.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Drake",
+    "skill": 2,
+    "icon": "images/skills/31580121.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Marsha",
+    "skill": 3,
+    "icon": "images/skills/31270131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 3,
+    "icon": "images/skills/31340131.png"
+  }
+]
+},
+        {
+  "type": "free",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+},
+        {
+  "type": "free",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+},
+        {
+  "type": "free",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+}]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Drake",
+    "skill": 3,
+    "icon": "images/skills/31580131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 3,
+    "icon": "images/skills/31390131.png"
+  }
+]
+        },
+        {
+  "type": "lb",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Drake",
+    "skill": 1,
+    "icon": "images/skills/31580111.png"
+  }
+]
+        },
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Marsha",
+    "skill": 1,
+    "icon": "images/skills/31270111.png"
+  },
+  {
+    "character": "Marsha",
+    "skill": 2,
+    "icon": "images/skills/31270121.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "Repeat turn 5-6",
+      "slots": []
     }
+  ]
+}
   ]
 }

@@ -1045,6 +1045,37 @@ export class Model {
     return true;
   }
 
+  /** Copies a rotation, places the copy right after it and returns its new id. */
+  duplicateGuideRotation(id) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return null;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return null;
+    const source = this.guideRotations()[index];
+    const name = `${String(source.name || id).trim()} (copy)`;
+    const copyId = this.guideRotationId(name);
+    const copy = JSON.parse(JSON.stringify(source));
+    copy.id = copyId;
+    copy.name = name;
+    doc.insertAt(["rotations"], index + 1, copy);
+    this.reload();
+    return copyId;
+  }
+
+  /** Copies a round, places the copy right after it and returns its new index. */
+  duplicateGuideRound(id, roundIndex) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return -1;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return -1;
+    const rounds = this.guideRotations()[index].rounds || [];
+    if (!rounds[roundIndex]) return -1;
+    const copy = JSON.parse(JSON.stringify(rounds[roundIndex]));
+    doc.insertAt(["rotations", index, "rounds"], roundIndex + 1, copy);
+    this.reload();
+    return roundIndex + 1;
+  }
+
   /** Moves a rotation up or down the list. All indices are 0-based. */
   moveGuideRotation(from, to) {
     const doc = this.doc("guide_rotations.json");
@@ -1145,9 +1176,37 @@ export class Model {
     return this.setRoundField(id, roundIndex, "note", String(note || ""));
   }
 
+  /**
+   * Sets a tuning slot's card: Tuning_S1 or Tuning_S2. An empty value clears it.
+   * A tuning slot also carries text, set through `setGuideSlotText`.
+   */
+  setGuideTuningIcon(id, roundIndex, slotIndex, icon) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const slot = this.guideRotations()[index].rounds?.[roundIndex]?.slots?.[slotIndex];
+    if (!slot) return false;
+    if (icon && !/\/Tuning_S\d+\.png$/i.test(String(icon))) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
+    const match = /\/Tuning_S\d+\.png$/i.exec(String(icon || ""));
+    let changed = false;
+    if (match) {
+      changed = doc.nodeAt([...path, "cards"])
+        ? doc.set([...path, "cards"], [{ special: String(icon) }])
+        : doc.setProperty(path, "cards", [{ special: String(icon) }]);
+    } else if (doc.nodeAt([...path, "cards"])) {
+      changed = doc.deleteProperty(path, "cards");
+    }
+    if (changed) this.reload();
+    return changed;
+  }
+
   addGuideSlot(id, roundIndex, type = "normal") {
     const kind = GUIDE_SLOT_TYPES.includes(type) ? type : "normal";
-    return this.appendRoundSlot(id, roundIndex, kind === "text" ? { type: kind, text: "" } : { type: kind, cards: [] });
+    // Tuning slots take a text caption as well as their S1/S2 card.
+    if (kind === "text" || kind === "tuning") return this.appendRoundSlot(id, roundIndex, { type: kind, text: "" });
+    return this.appendRoundSlot(id, roundIndex, { type: kind, cards: [] });
   }
 
   /** Sets a slot's type; switching to text drops the cards and vice versa. */

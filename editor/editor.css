@@ -827,6 +827,150 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 }
 .special-card-grid .guide-hand-card { width: 100%; height: 62px; }
 
+/* ---- floating card palette ---- */
+.float-hand {
+  position: fixed;
+  top: 96px;
+  right: 24px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 320px;
+  min-width: 170px;
+  min-height: 140px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-strong);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+}
+.float-hand[hidden] { display: none; }
+.float-hand-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px 7px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.35);
+  cursor: grab;
+  user-select: none;
+}
+.float-hand-head:active { cursor: grabbing; }
+.float-hand-title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.float-hand-close {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  line-height: 1;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.float-hand-close:hover { color: var(--bad); }
+.float-hand-body { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
+/* Edge and corner grips: every side can be dragged to resize the panel. */
+.fh-grip { position: absolute; z-index: 2; touch-action: none; }
+.fh-n, .fh-s { left: 10px; right: 10px; height: 8px; cursor: ns-resize; }
+.fh-n { top: -2px; }
+.fh-s { bottom: -2px; }
+.fh-w, .fh-e { top: 10px; bottom: 10px; width: 8px; cursor: ew-resize; }
+.fh-w { left: -2px; }
+.fh-e { right: -2px; }
+.fh-nw, .fh-ne, .fh-sw, .fh-se { width: 14px; height: 14px; }
+.fh-nw { top: -2px; left: -2px; cursor: nwse-resize; }
+.fh-ne { top: -2px; right: -2px; cursor: nesw-resize; }
+.fh-sw { bottom: -2px; left: -2px; cursor: nesw-resize; }
+.fh-se { bottom: -2px; right: -2px; cursor: nwse-resize; }
+/* The corner grips show where the panel can be grabbed. */
+.fh-se::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, transparent 50%, rgba(246,195,74,.55) 50%, rgba(246,195,74,.55) 62%, transparent 62%);
+}
+
+/* Every character's cards, one block per member. */
+.hand-member { margin-top: 10px; }
+.hand-member-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.hand-member-title img { width: 16px; height: 16px; border-radius: 3px; object-fit: cover; display: block; }
+.hand-member-title .hand-member-note { margin-left: auto; color: var(--text-muted); font-size: 9px; text-transform: none; letter-spacing: 0; }
+/* Narrow panels: the mode chips share the row instead of stacking. */
+.float-hand .float-hand-body > .pick { display: flex; gap: 6px; }
+.float-hand .float-hand-body > .pick .chip { flex: 1; min-width: 0; text-align: center; }
+/* Inside the palette the hand flows to the panel width. */
+.float-hand .guide-hand-tags { display: none; }
+.float-hand .special-card-grid { max-height: none; margin-top: 6px; }
+
+/* Special-card sections and the tuning round picker. */
+.hand-group-title {
+  margin: 12px 0 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+/* A Tuning AP slot: a compact text box at the top, with the S1 / S2 choice
+   below it, so the icons can never stretch the AP box. */
+.guide-slot-editor.is-tuning {
+  width: 96px;
+  height: auto;
+  min-height: 132px;
+  align-self: flex-end;
+  justify-content: flex-start;
+  padding-bottom: 16px;
+}
+.guide-slot-editor.is-tuning .guide-slot-text {
+  flex: none;
+  height: 56px;
+  min-height: 0;
+  resize: none;
+}
+.guide-slot-tuning-icons { display: flex; gap: 4px; }
+.guide-tuning-icon {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgba(0,0,0,.45);
+  overflow: hidden;
+  cursor: pointer;
+  opacity: .55;
+}
+.guide-tuning-icon:hover { border-color: var(--gold-soft); opacity: .85; }
+.guide-tuning-icon.on { border-color: var(--gold); opacity: 1; }
+.guide-tuning-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
 .guide-slot-editor.is-lb { width: 64px; }
 .guide-slot-editor.is-lb .guide-slot-card img { height: 34px; }
 .guide-slot-editor.is-or { min-width: 168px; }

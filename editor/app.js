@@ -26,7 +26,7 @@ const state = {
   chubeRarities: new Set(PSYCHUBE_RARITIES),
   picker: null,
   drag: null,
-  guide: { build: null, rotation: null, hand: null, special: false },
+  guide: { build: null, rotation: null, hand: null, special: false, panelOpen: false },
   import: { art: null, frame: null, frames: [], rarity: "6", id: "", name: "", nameCN: "", tags: [], releasePatch: "", futureSight: false, open: false },
 };
 
@@ -190,6 +190,9 @@ function setTab(name) {
   state.tab = name;
   for (const tab of document.querySelectorAll(".tab")) tab.classList.toggle("active", tab.dataset.tab === name);
   for (const pane of document.querySelectorAll(".pane")) pane.classList.toggle("active", pane.dataset.pane === name);
+  // The card panel belongs to the Rotations tab; it must not float over others.
+  const handPanel = $("float-hand");
+  if (handPanel && name !== "rotations") handPanel.hidden = true;
   afterEdit({ list: true, detail: true });
 }
 
@@ -2329,6 +2332,19 @@ function specialCardIcons() {
   return Array.isArray(value.special) ? value.special : [];
 }
 
+/** The two tuning cards a Tuning AP slot can carry. */
+const TUNING_ICONS = {
+  S1: "images/skills/Tuning_S1.png",
+  S2: "images/skills/Tuning_S2.png",
+};
+
+/** Special cards are grouped by id prefix; Tuning_S*.png are not special cards. */
+const SPECIAL_GROUPS = [
+  { key: "archetype", label: "Archetype cards", test: (id) => id.startsWith("790") || id === "228101" },
+  { key: "energy", label: "Energy cards", test: (id) => id.startsWith("780") },
+  { key: "myth", label: "Myth cards", test: (id) => id.startsWith("770") },
+];
+
 function rotationMembers(rotation) {
   return (rotation.members || [])
     .map((entry) => (typeof entry === "string" ? { character: entry, psychube: "" } : entry))
@@ -2496,6 +2512,236 @@ function renderRotationList() {
   renderRotationDetail();
 }
 
+/** The panel's position and size survive a reload of the page. */
+const HAND_PANEL_KEY = "editor.cardPanel.v1";
+
+function restoreHandPanelFrame(panel) {
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(HAND_PANEL_KEY) || "null");
+  } catch {
+    saved = null;
+  }
+  if (!saved) return;
+  if (Number.isFinite(saved.x)) panel.style.left = `${saved.x}px`;
+  if (Number.isFinite(saved.y)) panel.style.top = `${saved.y}px`;
+  else panel.style.top = "96px";
+  panel.style.right = "auto";
+  if (Number.isFinite(saved.w)) panel.style.width = `${saved.w}px`;
+  if (Number.isFinite(saved.h)) panel.style.height = `${saved.h}px`;
+}
+
+function saveHandPanelFrame(panel) {
+  const rect = panel.getBoundingClientRect();
+  localStorage.setItem(HAND_PANEL_KEY, JSON.stringify({ x: rect.left, y: rect.top, w: rect.width, h: rect.height }));
+}
+
+/** Keeps the panel on screen after the window shrinks or it is dragged out. */
+function clampHandPanel(panel) {
+  const rect = panel.getBoundingClientRect();
+  const maxLeft = Math.max(0, window.innerWidth - 80);
+  const maxTop = Math.max(0, window.innerHeight - 60);
+  const left = Math.min(Math.max(0, rect.left), maxLeft);
+  const top = Math.min(Math.max(0, rect.top), maxTop);
+  if (left !== rect.left) panel.style.left = `${left}px`;
+  if (top !== rect.top) panel.style.top = `${top}px`;
+}
+
+function wireHandPanel(panel) {
+  const head = $("float-hand-head");
+  if (!head || panel.dataset.wired) return;
+  panel.dataset.wired = "1";
+
+  const MIN_W = 170;
+  const MIN_H = 140;
+
+  /** Follows the pointer until it is released, then stores the new frame. */
+  const startGesture = (e, move) => {
+    e.preventDefault();
+    const rect = panel.getBoundingClientRect();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    panel.style.right = "auto";
+    panel.style.left = `${rect.left}px`;
+    panel.style.top = `${rect.top}px`;
+    const onMove = (ev) => move(ev.clientX - startX, ev.clientY - startY, rect);
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      saveHandPanelFrame(panel);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
+  head.addEventListener("pointerdown", (e) => {
+    if (e.target.closest(".float-hand-close") || e.target.closest(".fh-grip")) return;
+    startGesture(e, (dx, dy, rect) => {
+      panel.style.left = `${Math.max(-rect.width + 80, Math.min(window.innerWidth - 80, rect.left + dx))}px`;
+      panel.style.top = `${Math.max(0, Math.min(window.innerHeight - 40, rect.top + dy))}px`;
+    });
+  });
+
+  // Every edge and corner resizes from that side, so the opposite edge stays put.
+  for (const grip of panel.querySelectorAll(".fh-grip")) {
+    const edge = grip.dataset.edge || "";
+    grip.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      startGesture(e, (dx, dy, rect) => {
+        let left = rect.left;
+        let top = rect.top;
+        let width = rect.width;
+        let height = rect.height;
+        if (edge.includes("e")) width = rect.width + dx;
+        if (edge.includes("s")) height = rect.height + dy;
+        if (edge.includes("w")) {
+          width = rect.width - dx;
+          left = rect.left + dx;
+        }
+        if (edge.includes("n")) {
+          height = rect.height - dy;
+          top = rect.top + dy;
+        }
+        // A shrink stops at the minimum instead of pushing the near edge further.
+        if (width < MIN_W) {
+          if (edge.includes("w")) left -= MIN_W - width;
+          width = MIN_W;
+        }
+        if (height < MIN_H) {
+          if (edge.includes("n")) top -= MIN_H - height;
+          height = MIN_H;
+        }
+        width = Math.min(width, window.innerWidth - 8);
+        height = Math.min(height, window.innerHeight - 8);
+        panel.style.left = `${Math.max(0, left)}px`;
+        panel.style.top = `${Math.max(0, top)}px`;
+        panel.style.width = `${width}px`;
+        panel.style.height = `${height}px`;
+      });
+    });
+  }
+
+  window.addEventListener("resize", () => clampHandPanel(panel));
+}
+
+/** Draws the character/special card hand into the floating panel. */
+function renderRotationHand(id) {
+  const panel = $("float-hand");
+  const body = $("float-hand-body");
+  const model = state.model;
+  if (!panel || !body) return;
+  const rotation = id ? model.guideRotation(id) : null;
+  if (!rotation) {
+    panel.hidden = true;
+    body.replaceChildren();
+    return;
+  }
+  if (!state.guide.panelOpen) {
+    panel.hidden = true;
+    return;
+  }
+  panel.hidden = false;
+  // The grips have no size until the panel is visible, so wire it here.
+  wireHandPanel(panel);
+
+  const members = rotationMembers(rotation);
+  const head = el("div", { class: "pick" }, [
+    el("button", {
+      class: `chip${state.guide.special ? "" : " on"}`,
+      text: "Character",
+      onclick: () => {
+        state.guide.special = false;
+        renderRotationDetail();
+      },
+    }),
+    el("button", {
+      class: `chip${state.guide.special ? " on" : ""}`,
+      text: "Special",
+      onclick: () => {
+        state.guide.special = true;
+        renderRotationDetail();
+      },
+    }),
+  ]);
+  const children = [head];
+
+  if (state.guide.special) {
+    const specials = specialCardIcons().filter((icon) => !/\/Tuning_S\d+\.png$/i.test(icon));
+    // Arm a card for a click-to-place, and let a drag carry it too.
+    const placeCard = (icon) => (e) => {
+      state.drag = { special: icon };
+      if (e?.dataTransfer) {
+        e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
+        e.dataTransfer.effectAllowed = "copy";
+      }
+    };
+    for (const group of SPECIAL_GROUPS) {
+      const icons = specials.filter((icon) => group.test((icon.split("/").pop() || "").replace(/\.png$/i, "")));
+      if (icons.length === 0) continue;
+      children.push(el("h3", { class: "hand-group-title", text: group.label }));
+      const grid = el("div", { class: "special-card-grid" });
+      for (const icon of icons) {
+        const card = el("button", {
+          class: "guide-hand-card is-special",
+          title: group.label.replace(/s$/, ""),
+          draggable: "true",
+          onclick: () => {
+            placeCard(icon)();
+            banner(`${group.label.replace(/s$/, "")} armed — click a slot to place it.`, "info");
+          },
+        }, [el("img", { src: `../${icon}`, alt: "" })]);
+        card.addEventListener("dragstart", placeCard(icon));
+        grid.appendChild(card);
+      }
+      children.push(grid);
+    }
+    panel.title = "Special cards";
+  } else {
+    // Every member's cards are shown at once, so placing a card never needs a
+    // trip back to a character tab.
+    const seen = new Set();
+    for (const member of members) {
+      const memberName = model.resolve(member.character);
+      if (!memberName || seen.has(memberName)) continue;
+      seen.add(memberName);
+      const c = model.character(memberName);
+      const skills = rotationSkills(memberName);
+      children.push(
+        el("div", { class: "hand-member" }, [
+          el("div", { class: "hand-member-title", title: memberName }, [
+            c.avatar ? el("img", { src: c.avatar, alt: "" }) : null,
+            el("span", { text: memberName }),
+            skills.length === 0 ? el("span", { class: "hand-member-note", text: "no icons" }) : null,
+          ]),
+          el("div", { class: "guide-hand" }, skills.map((entry) => {
+            const arm = (e) => {
+              state.drag = { character: memberName, skill: entry.skill, icon: entry.icon };
+              if (e?.dataTransfer) {
+                e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
+                e.dataTransfer.effectAllowed = "copy";
+              }
+            };
+            const card = el("button", {
+              class: "guide-hand-card",
+              title: `${memberName} · ${entry.skill} — drag onto a slot, or click then click a slot`,
+              draggable: "true",
+              onclick: () => {
+                arm();
+                banner(`${memberName} card armed — click a slot to place it.`, "info");
+              },
+            }, [el("img", { src: `../${entry.icon}`, alt: "" })]);
+            card.addEventListener("dragstart", arm);
+            return card;
+          })),
+        ])
+      );
+    }
+  }
+
+  $("float-hand-title").textContent = state.guide.special ? "Special cards" : "Character cards";
+  body.replaceChildren(...children);
+}
+
 function renderRotationDetail() {
   const host = $("rotation-detail");
   host.replaceChildren();
@@ -2504,6 +2750,7 @@ function renderRotationDetail() {
 
   if (!rotation) {
     host.appendChild(el("div", { class: "empty", text: "Select a rotation, or create one with “+ New rotation”." }));
+    renderRotationHand(null);
     return;
   }
 
@@ -2519,6 +2766,17 @@ function renderRotationDetail() {
         el("div", { class: "detail-title", text: rotation.name || id }),
         el("div", { class: "detail-sub", text: `${rounds.length} round(s) → guide_rotations.json` }),
       ]),
+      el("button", {
+        class: "btn btn-sm",
+        text: "Duplicate rotation",
+        title: "Copy this rotation, placed right after it",
+        onclick: () => {
+          const copyId = model.duplicateGuideRotation(id);
+          if (copyId) state.guide.rotation = copyId;
+          state.guide.hand = null;
+          afterEdit();
+        },
+      }),
       el("button", {
         class: "btn btn-sm btn-danger",
         text: "Remove rotation",
@@ -2619,102 +2877,24 @@ function renderRotationDetail() {
     ])
   );
 
-  /* --- skill hand --- */
-  const handName = state.guide.hand && model.character(state.guide.hand) ? state.guide.hand : model.resolve((members[0] || {}).character || "");
+  /* --- skill hand (floating palette, so a long list of rounds never hides it) --- */
   const handCard = el("div", { class: "card" }, [
     el("div", { class: "card-head" }, [
       el("h2", { text: "Cards" }),
-      el("div", { class: "pick" }, [
-        el("button", {
-          class: `chip${state.guide.special ? "" : " on"}`,
-          text: "Character cards",
-          onclick: () => {
-            state.guide.special = false;
-            renderRotationDetail();
-          },
-        }),
-        el("button", {
-          class: `chip${state.guide.special ? " on" : ""}`,
-          text: "Special cards",
-          onclick: () => {
-            state.guide.special = true;
-            renderRotationDetail();
-          },
-        }),
-      ]),
-    ]),
-  ]);
-
-  if (state.guide.special) {
-    const specials = specialCardIcons();
-    handCard.appendChild(el("p", { class: "hint", text: "Special cards carry no character name. Drag one onto a slot." }));
-    const grid = el("div", { class: "special-card-grid" });
-    for (const icon of specials) {
-      const card = el("button", {
-        class: "guide-hand-card is-special",
-        title: "Special card",
-        draggable: "true",
+      el("button", {
+        class: "btn btn-sm",
+        text: "Open card panel",
+        title: "A card panel you can drag anywhere and resize",
         onclick: () => {
-          state.drag = { special: icon };
-          banner("Special card armed — click a slot to place it.", "info");
+          state.guide.panelOpen = true;
+          renderRotationDetail();
         },
-      }, [el("img", { src: `../${icon}`, alt: "" })]);
-      card.addEventListener("dragstart", (e) => {
-        state.drag = { special: icon };
-        if (e.dataTransfer) {
-          e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
-          e.dataTransfer.effectAllowed = "copy";
-        }
-      });
-      grid.appendChild(card);
-    }
-    handCard.appendChild(grid);
-  } else {
-    const handTabs = el("div", { class: "pick" });
-    for (const member of members) {
-      const memberName = model.resolve(member.character);
-      const c = model.character(memberName);
-      handTabs.appendChild(
-        el("button", {
-          class: `sub-pick${memberName === handName ? " on" : ""}`,
-          title: `Show ${memberName}'s cards`,
-          onclick: () => {
-            state.guide.hand = memberName;
-            renderRotationDetail();
-          },
-        }, [c.avatar ? el("img", { src: c.avatar, class: "face", alt: "" }) : null, el("span", { class: "name", text: memberName })])
-      );
-    }
-    handCard.appendChild(handTabs);
-
-    const skills = rotationSkills(handName);
-    if (skills.length === 0) {
-      handCard.appendChild(el("p", { class: "hint", text: `No skill icons for ${handName || "this character"} in images/skills.` }));
-    } else {
-      const hand = el("div", { class: "guide-hand" });
-      for (const entry of skills) {
-        const card = el("button", {
-          class: "guide-hand-card",
-          title: "Drag onto a slot, or click then click a slot",
-          draggable: "true",
-          onclick: () => {
-            state.drag = { character: handName, skill: entry.skill, icon: entry.icon };
-            banner(`${handName} card armed — click a slot to place it.`, "info");
-          },
-        }, [el("img", { src: `../${entry.icon}`, alt: "" })]);
-        card.addEventListener("dragstart", (e) => {
-          state.drag = { character: handName, skill: entry.skill, icon: entry.icon };
-          if (e.dataTransfer) {
-            e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
-            e.dataTransfer.effectAllowed = "copy";
-          }
-        });
-        hand.appendChild(card);
-      }
-      handCard.appendChild(hand);
-    }
-  }
+      }),
+    ]),
+    el("p", { class: "hint", text: "The cards live in a floating panel: drag it by its title bar and resize it from the corner, then drag a card onto a slot. While the panel is open it stays in view however far you scroll." }),
+  ]);
   host.appendChild(handCard);
+  renderRotationHand(id);
 
   /* --- rounds --- */
   const roundsCard = el("div", { class: "card" }, [
@@ -2722,7 +2902,7 @@ function renderRotationDetail() {
       el("h2", { text: "Rounds" }),
       el("button", { class: "btn btn-sm", text: "+ Round", onclick: () => { model.addGuideRound(id); afterEdit(); } }),
     ]),
-    el("p", { class: "hint", text: "Add the slot types you need: Normal AP holds one card, OR AP holds either of two, 1/4 AP (LB) draws the card at a quarter size, Text is a free note. Free AP, Tuning and Precast hold one card each and only differ in the label shown under the card." }),
+    el("p", { class: "hint", text: "Add the slot types you need: Normal AP holds one card, OR AP holds either of two, 1/4 AP (LB) draws the card at a quarter size, Text is a free note. Free AP and Precast hold one card each and only differ in the label. Tuning holds a text box and a choice of Tuning S1 or Tuning S2." }),
   ]);
 
   rounds.forEach((round, roundIndex) => {
@@ -2742,10 +2922,16 @@ function renderRotationDetail() {
           el("button", { class: "btn btn-sm", text: "+ Normal AP", title: "One card", onclick: () => { model.addGuideSlot(id, roundIndex, "normal"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ OR AP", title: "Either of two cards", onclick: () => { model.addGuideSlot(id, roundIndex, "or"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ Free AP", title: "One card, labelled Free AP", onclick: () => { model.addGuideSlot(id, roundIndex, "free"); afterEdit(); } }),
-          el("button", { class: "btn btn-sm", text: "+ Tuning", title: "One card, labelled Tuning", onclick: () => { model.addGuideSlot(id, roundIndex, "tuning"); afterEdit(); } }),
+          el("button", { class: "btn btn-sm", text: "+ Tuning", title: "A text box plus Tuning S1 / Tuning S2", onclick: () => { model.addGuideSlot(id, roundIndex, "tuning"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ Precast", title: "One card, labelled Precast", onclick: () => { model.addGuideSlot(id, roundIndex, "precast"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ 1/4 AP (LB)", title: "A quarter-size card", onclick: () => { model.addGuideSlot(id, roundIndex, "lb"); afterEdit(); } }),
           el("button", { class: "btn btn-sm", text: "+ Text", title: "Free text instead of a card", onclick: () => { model.addGuideSlot(id, roundIndex, "text"); afterEdit(); } }),
+          el("button", {
+            class: "btn btn-sm",
+            text: "Duplicate round",
+            title: "Copy this round, placed right after it",
+            onclick: () => { model.duplicateGuideRound(id, roundIndex); afterEdit(); },
+          }),
           el("button", { class: "btn btn-sm btn-danger", text: "Remove round", onclick: () => { model.removeGuideRound(id, roundIndex); afterEdit(); } }),
         ]),
       ])
@@ -2792,6 +2978,36 @@ function renderRotationDetail() {
           afterEdit({ list: false });
         });
         slotEl.appendChild(textInput);
+      } else if (type === "tuning") {
+        const textInput = el("textarea", { rows: 3, class: "guide-slot-text", placeholder: "Text" });
+        textInput.value = slot.text || "";
+        textInput.addEventListener("change", () => {
+          model.setGuideSlotText(id, roundIndex, slotIndex, textInput.value);
+          afterEdit({ list: false });
+        });
+        slotEl.appendChild(textInput);
+
+        // The tuning icon is a choice, not a drop target. Read the current card
+        // on every click, because the slot element is not re-created in place.
+        const currentIcon = () => slot.cards?.[0]?.special
+          || model.guideRotations().find((r) => r && r.id === id)?.rounds?.[roundIndex]?.slots?.[slotIndex]?.cards?.[0]?.special
+          || "";
+        const iconRow = el("div", { class: "guide-slot-tuning-icons" });
+        for (const [key, icon] of Object.entries(TUNING_ICONS)) {
+          iconRow.appendChild(
+            el("button", {
+              class: `guide-tuning-icon${currentIcon() === icon ? " on" : ""}`,
+              title: `Tuning ${key}`,
+              "aria-pressed": currentIcon() === icon ? "true" : "false",
+              onclick: (e) => {
+                e.stopPropagation();
+                model.setGuideTuningIcon(id, roundIndex, slotIndex, currentIcon() === icon ? "" : icon);
+                afterEdit({ list: false });
+              },
+            }, [el("img", { src: `../${icon}`, alt: key })])
+          );
+        }
+        slotEl.appendChild(iconRow);
       } else {
         const cardRow = el("div", { class: "guide-slot-cards" });
         cards.forEach((card, cardIndex) => {
@@ -2844,7 +3060,7 @@ function renderRotationDetail() {
           slotEl.classList.toggle("drop-after", !before);
           return;
         }
-        if (type === "text") return;
+        if (type === "text" || type === "tuning") return;
         e.preventDefault();
         slotEl.classList.add("is-target");
       });
@@ -2875,7 +3091,8 @@ function renderRotationDetail() {
           return;
         }
 
-        if (type === "text") return;
+        // A Tuning slot picks S1/S2 with its icon buttons instead of taking cards.
+        if (type === "text" || type === "tuning") return;
         e.preventDefault();
         let payload = drag;
         try {
@@ -2889,7 +3106,7 @@ function renderRotationDetail() {
         afterEdit();
       });
 
-      if (type !== "text") {
+      if (type !== "text" && type !== "tuning") {
         slotEl.addEventListener("click", () => {
           if (!state.drag || state.drag.kind === "rotation-slot") return;
           model.addGuideSlotCard(id, roundIndex, slotIndex, state.drag);
@@ -3070,6 +3287,14 @@ function wire() {
   }
 
   $("btn-save").addEventListener("click", downloadChanges);
+
+  // The floating card panel keeps its frame, and closes without losing the tab.
+  const handPanel = $("float-hand");
+  if (handPanel) restoreHandPanelFrame(handPanel);
+  $("float-hand-close").addEventListener("click", () => {
+    state.guide.panelOpen = false;
+    renderRotationDetail();
+  });
 
   $("char-search").addEventListener("input", renderCharacterList);
   $("chube-search").addEventListener("input", renderPsychubeList);

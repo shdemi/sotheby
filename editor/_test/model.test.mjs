@@ -831,8 +831,8 @@ console.log("\n=== rotations ===");
   m.setGuideSlotText(id, ri, textIndex, "Hold the buff");
   check("a text slot stores its text", m.guideRotation(id).rounds[ri].slots[textIndex].text === "Hold the buff", JSON.stringify(m.guideRotation(id).rounds[ri].slots[textIndex]));
 
-  // Free AP / Tuning / Precast are normal AP slots with a different caption.
-  for (const type of ["free", "tuning", "precast"]) {
+  // Free AP / Precast are normal AP slots with a different caption.
+  for (const type of ["free", "precast"]) {
     m.addGuideSlot(id, ri, type);
     const index = m.guideRotation(id).rounds[ri].slots.length - 1;
     m.addGuideSlotCard(id, ri, index, { character: m.characters[0], skill: 1 });
@@ -847,6 +847,47 @@ console.log("\n=== rotations ===");
 
   m.setGuideRoundNote(id, ri, "Pulsing Field Lv.1");
   check("a round note is written", m.guideRotation(id).rounds[ri].note === "Pulsing Field Lv.1", String(m.guideRotation(id).rounds[ri].note));
+
+  /* ---- tuning slots ---- */
+  m.addGuideSlot(id, ri, "tuning");
+  const tuningIndex = m.guideRotation(id).rounds[ri].slots.length - 1;
+  const tuningSlot = () => m.guideRotation(id).rounds[ri].slots[tuningIndex];
+  check("a tuning slot starts as a text box", tuningSlot().type === "tuning" && tuningSlot().text === "" && !tuningSlot().cards, JSON.stringify(tuningSlot()));
+  m.setGuideSlotText(id, ri, tuningIndex, "Pulsing Field Lv.2");
+  check("a tuning slot stores its text", tuningSlot().text === "Pulsing Field Lv.2", JSON.stringify(tuningSlot()));
+  m.setGuideTuningIcon(id, ri, tuningIndex, "images/skills/Tuning_S2.png");
+  check("a tuning slot picks S2", tuningSlot().cards.length === 1 && tuningSlot().cards[0].special === "images/skills/Tuning_S2.png", JSON.stringify(tuningSlot()));
+  check("and keeps its text", tuningSlot().text === "Pulsing Field Lv.2", JSON.stringify(tuningSlot()));
+  m.setGuideTuningIcon(id, ri, tuningIndex, "images/skills/Tuning_S1.png");
+  check("the tuning icon switches to S1", tuningSlot().cards.length === 1 && tuningSlot().cards[0].special === "images/skills/Tuning_S1.png", JSON.stringify(tuningSlot()));
+  m.setGuideTuningIcon(id, ri, tuningIndex, "images/skills/770001.png");
+  check("a non-tuning icon is refused", tuningSlot().cards[0].special === "images/skills/Tuning_S1.png", JSON.stringify(tuningSlot()));
+  m.setGuideTuningIcon(id, ri, tuningIndex, "");
+  check("clearing drops the tuning icon", !tuningSlot().cards, JSON.stringify(tuningSlot()));
+  m.removeGuideSlot(id, ri, tuningIndex);
+
+  /* ---- duplicate rotation / round ---- */
+  const beforeDup = m.guideRotations().length;
+  const srcIndex = m.guideRotationIndex(id);
+  const copyId = m.duplicateGuideRotation(id);
+  const afterDup = m.guideRotations();
+  check("duplicating adds one rotation", afterDup.length === beforeDup + 1, String(afterDup.length));
+  check("the copy sits right after the original", afterDup[srcIndex + 1] && afterDup[srcIndex + 1].id === copyId, String(copyId));
+  check("the copy has a new id", copyId && copyId !== id, String(copyId));
+  const copy = m.guideRotation(copyId);
+  check("the copy carries the rounds", copy.rounds.length === m.guideRotation(id).rounds.length, `${copy.rounds.length}`);
+  check("the copy is named as a copy", /\(copy\)$/.test(copy.name), copy.name);
+  copy.rounds[0].slots.push({ type: "text", text: "mutated" });
+  m.reload();
+  check("the copy is independent of the original", m.guideRotation(id).rounds[0].slots.every((s) => s.text !== "mutated"));
+  m.removeGuideRotation(copyId);
+
+  const roundsBeforeDup = m.guideRotation(id).rounds.length;
+  const newRound = m.duplicateGuideRound(id, 0);
+  const roundsNow = m.guideRotation(id).rounds;
+  check("duplicating a round adds one", roundsNow.length === roundsBeforeDup + 1 && newRound === 1, `${roundsNow.length} @ ${newRound}`);
+  check("the round copy is identical", JSON.stringify(roundsNow[1]) === JSON.stringify(roundsNow[0]), "mismatch");
+  m.removeGuideRound(id, newRound);
 
   m.setGuideRotationMember(id, 0, "psychube", "Steps Forward");
   check("a member psychube is written", m.guideRotation(id).members[0].psychube === "Steps Forward", JSON.stringify(m.guideRotation(id).members[0]));

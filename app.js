@@ -7139,7 +7139,66 @@ function rotationSlotHtml(slot) {
     return wrap(`<span class="rot-or-stack">${front}${behind}</span>`, " is-or");
   }
 
+  // A tuning slot is a text box with the tuning card shrunk into its bottom-right
+  // corner, so the note never sits on top of the art.
+  if (type === "tuning") {
+    const text = slot.text || "";
+    return wrap(
+      `<span class="rot-slot-tuning">` +
+        `<span class="rot-slot-tuning-note${text ? "" : " is-empty"}">${escapeHtml(text)}</span>` +
+        `<span class="rot-slot-tuning-card">${rotationCardHtml(cards[0], "tiny")}</span>` +
+        `</span>`,
+      " is-tuning"
+    );
+  }
+
   return wrap(rotationCardHtml(cards[0]));
+}
+
+/**
+ * Grows or shrinks a tuning note until it fills its box: a short note gets big
+ * type, a long one shrinks to fit rather than being cut off.
+ */
+function fitRotationTuningNotes(root = document) {
+  for (const note of root.querySelectorAll(".rot-slot-tuning-note")) {
+    const text = (note.textContent || "").trim();
+    if (!text) continue;
+    const max = 20;
+    const min = 5.5;
+    let low = min;
+    let high = max;
+    const overflows = (size) => {
+      note.style.fontSize = `${size}px`;
+      return note.scrollHeight > note.clientHeight + 1 || note.scrollWidth > note.clientWidth + 1;
+    };
+    note.style.fontSize = `${max}px`;
+    for (let i = 0; i < 8; i++) {
+      const size = (low + high) / 2;
+      if (overflows(size)) high = size;
+      else low = size;
+    }
+    // The corner card only matters when the note is long enough to reach it:
+    // the text area is shortened by the overlap so the type can stay larger.
+    const corner = note.parentElement?.querySelector(".rot-slot-tuning-card");
+    if (corner) {
+      const card = corner.getBoundingClientRect();
+      const box = (note.parentElement || note).getBoundingClientRect();
+      note.style.setProperty("--tuning-reserve", "0px");
+      const overlap = note.scrollHeight - note.clientHeight;
+      const bottom = box.bottom - card.top - 3;
+      if (overlap > 0 && bottom > 0) {
+        note.style.setProperty("--tuning-reserve", `${Math.round(bottom)}px`);
+        low = min;
+        high = max;
+        for (let i = 0; i < 8; i++) {
+          const size = (low + high) / 2;
+          if (overflows(size)) high = size;
+          else low = size;
+        }
+      }
+    }
+    note.style.fontSize = `${low}px`;
+  }
 }
 
 function renderRotationsDetail() {
@@ -7251,6 +7310,9 @@ function renderRotationsDetail() {
       <div class="rot-rounds">${roundsHtml}</div>
     </section>
   `;
+
+  // The tuning notes only have a size once they are in the document.
+  requestAnimationFrame(() => fitRotationTuningNotes(host));
 }
 
 /**

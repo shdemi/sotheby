@@ -8864,6 +8864,51 @@ body.guide-rail-resizing * {
   box-shadow: none;
 }
 
+/* A Tuning slot keeps the AP box as a text box; the tuning card shrinks into
+   its bottom-right corner so the note and the art never overlap. */
+.rot-slot.is-tuning .rot-slot-body { width: 62px; justify-content: center; }
+.rot-slot-tuning {
+  position: relative;
+  display: block;
+  width: 62px;
+  height: 81px;
+  box-sizing: border-box;
+  border: 1px solid rgba(237, 125, 49, 0.55);
+  background: rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.rot-slot-tuning-note {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  /* The extra reserve keeps long notes clear of the corner card. */
+  bottom: calc(4px + var(--tuning-reserve, 0px));
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  line-height: 1.25;
+  color: #ECE5D9;
+  text-align: left;
+  /* Words never break mid-word; the fit pass shrinks the type instead. */
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
+  overflow: hidden;
+  white-space: normal;
+}
+.rot-slot-tuning-note.is-empty { display: none; }
+.rot-slot-tuning-card {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  z-index: 1;
+}
+.rot-slot-tuning-card .rot-card img {
+  width: 24px;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+.rot-slot.is-tuning .rot-slot-type { color: #ED7D31; }
+
 /* A quarter-size (LB) card is drawn at a quarter of the normal area. */
 .rot-slot.is-lb .rot-slot-body { padding: 4px; }
 .rot-card.is-lb img { width: 31px; }
@@ -9036,6 +9081,10 @@ body.guide-rail-resizing * {
   .rot-or-stack > .rot-card img { width: 38px; }
   .rot-card.is-behind { left: 23px; bottom: 20px; }
   .rot-card.is-lb img { width: 26px; }
+  .rot-slot.is-tuning .rot-slot-body { width: 52px; }
+  .rot-slot-tuning { width: 52px; height: 68px; }
+  .rot-slot-tuning-note { top: 3px; left: 3px; right: 3px; bottom: calc(3px + var(--tuning-reserve, 0px)); }
+  .rot-slot-tuning-card .rot-card img { width: 20px; }
 }
 
 /* ================= JSON MODAL ================= */
