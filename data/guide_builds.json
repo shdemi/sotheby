@@ -9,7 +9,8 @@
       "General": "ACQELxQvRCpQKFEmVPAkPQA0ESQBOCI7MA",
       "Damage": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "37": {
     "pattern": "Aspirational",
@@ -21,7 +22,8 @@
       "Portrait 0": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Portrait 1+": "APQjSDY0FTRFJlQqBDxgPAA5EDogLBJCQERCRkM"
     },
-    "portrait": "0/2/4"
+    "portrait": "0/2/4",
+    "notes": "Recommended Portrait: 0/2/4."
   },
   "A Knight": {
     "pattern": "Elucidation",
@@ -32,7 +34,8 @@
     "resonance": {
       "General Use": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Aleph": {
     "pattern": "Genuinity",
@@ -44,7 +47,8 @@
       "With Barcarola": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC",
       "Without Barcarola": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Alexios": {
     "pattern": "Elucidation",
@@ -55,7 +59,8 @@
     "resonance": {
       "Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
     },
-    "portrait": "5"
+    "portrait": "5",
+    "notes": "Recommended Portrait: 5."
   },
   "AliEn T": {
     "pattern": "Equanimity",
@@ -73,7 +78,8 @@
       "General Use": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw",
       "Impromptu": "APgkJAQoVDRENBQ8YDxQOCI7MEASQCBCAEcCSAA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Anjo Nala": {
     "pattern": "Genuinity",
@@ -85,7 +91,8 @@
       "General Use": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
       "Crit Damage (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "APPLe": {
     "pattern": "Delirament",
@@ -104,7 +111,8 @@
       "General": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
       "With Vila": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE"
     },
-    "portrait": "0/2/4"
+    "portrait": "0/2/4",
+    "notes": "Recommended Portrait: 0/2/4."
   },
   "Avgust": {
     "pattern": "Equibalance",
@@ -116,7 +124,8 @@
       "Survivability": "APAkJAQlQC0UMEU5QjtTRFFMUkxiPAA8EDQiNCA",
       "Healing/Survivability": "APAkLRQkBDwAPBA0IjQgOkA7UUFFQVRAQ0hmTEJMQQ"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Baby Blue": {
     "pattern": "Prudentiality",
@@ -127,7 +136,8 @@
     "resonance": {
       "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Balloon Party": {
     "pattern": "Quiescence",
@@ -139,7 +149,8 @@
       "Defense": "APwVMSMxEiUALAE8AzxDNFU0UzhBOTBIYExhTFBIQA",
       "Damage (just don't)": "ADQANAI8IDwwKkA7UDhCKgT8FSUkLEQnRQ"
     },
-    "portrait": "0/3"
+    "portrait": "0/3",
+    "notes": "Recommended Portrait: 0/3."
   },
   "Barbara": {
     "pattern": "Overindulgence",
@@ -151,7 +162,8 @@
       "HP": "APwlMTMxIjEgPBM8AzRVNFM6ADhBK0BMQUgSTAJIAQ",
       "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Barcarola": {
     "pattern": "Genuinity",
@@ -162,7 +174,8 @@
     "resonance": {
       "General Use": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
     },
-    "portrait": "0/1/2"
+    "portrait": "0/1/2",
+    "notes": "Recommended Portrait: 0/1/2."
   },
   "Beryl": {
     "pattern": "Genuinity",
@@ -174,7 +187,8 @@
       "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Bette": {
     "pattern": "Equibalance",
@@ -192,7 +206,8 @@
       "Damage": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
       "Crit (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Blonney": {
     "pattern": "Aspirational",
@@ -204,7 +219,8 @@
       "Damage/Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Crit Damage": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Brimley": {
     "pattern": "Hyper",
@@ -215,7 +231,8 @@
     "resonance": {
       "Attack": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Brume": {
     "pattern": "Elucidation",
@@ -226,7 +243,8 @@
     "resonance": {
       "DPS/Support (With Other Supports)": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI"
     },
-    "portrait": "0/1/4"
+    "portrait": "0/1/4",
+    "notes": "Recommended Portrait: 0/1/4."
   },
   "Buddy Fairchild": {
     "pattern": "Elucidation",
@@ -238,7 +256,8 @@
       "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
       "Slightly More Crit DMG": "APAkJAQtFC1EJlQ8ADwQNCA0IjhCOUBFYURQ"
     },
-    "portrait": "5"
+    "portrait": "5",
+    "notes": "Recommended Portrait: 5."
   },
   "Bunny Bunny": {
     "pattern": "Equibalance",
@@ -256,7 +275,8 @@
     "resonance": {
       "General/Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Charlie": {
     "pattern": "Genuinity",
@@ -279,7 +299,8 @@
       "General": "APwlJAQmAyhUKlMtIzxBPTA0UTQBQSJDIEQA",
       "Survivability": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Cheng Heguang": {
     "pattern": "Equibalance",
@@ -291,7 +312,8 @@
       "Attack": "APAkKFQqBDQVNEQ8YDxQQjJAMUQwOxE6ACQB",
       "Crit (Resonance 12+)": "APAkKgQoVDQVNEQ8YDxQQjJAMUQwOgA7EUUBRgM"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Click": {
     "pattern": "Equibalance",
@@ -303,7 +325,8 @@
       "Damage/Survivability": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ",
       "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Coppélia": {
     "pattern": "Aspirational",
@@ -315,7 +338,8 @@
       "Crit": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
       "Damage": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA"
     },
-    "portrait": "0/1/4/5"
+    "portrait": "0/1/4/5",
+    "notes": "Recommended Portrait: 0/1/4/5."
   },
   "Cornerstone": {
     "pattern": "Elucidation",
@@ -327,7 +351,8 @@
       "General": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE",
       "Crit (Resonance 12+)": "APAkKgQoVDQVNEQ8YDxQQjJAMUQwOgA7EUUBRgM"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Corvus": {
     "pattern": "Aspirational",
@@ -339,7 +364,8 @@
       "Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw",
       "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Cristallo": {
     "pattern": "Equanimity",
@@ -365,7 +391,8 @@
       "Damage/Crit": "APAkJwUkAyZULURAE0AQQhFIAkUAPDA8QCpQKFE",
       "Damage/Survivability": "APAkLRQkBCQBJgA8IDwwRWJHYEBAKEEwRStETEI"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Diggers": {
     "pattern": "Equanimity",
@@ -377,7 +404,8 @@
       "Damage/Survivability": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ",
       "Damage": "APAkNBU0RChUKgQ8ADwQJFEmUCYwOCI5IA"
     },
-    "portrait": "0/4"
+    "portrait": "0/4",
+    "notes": "Recommended Portrait: 0/4."
   },
   "Dikke": {
     "pattern": "Equibalance",
@@ -389,7 +417,8 @@
       "Healing": "APAkLRQtREAQQVRDBUhmOQI7ETxgPFA0MjQwSAFMAA",
       "Attack/Survivability": "APAkNBU0VSVEPAM5EjkARhBFMERAQyFAQUJCPGBMMw"
     },
-    "portrait": "0/4"
+    "portrait": "0/4",
+    "notes": "Recommended Portrait: 0/4."
   },
   "Door": {
     "pattern": "Equibalance",
@@ -419,7 +448,8 @@
       "Utility": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE",
       "Crit/Damage": "ACQELxQvRCpQKFEmVPAkPQA0ESQBOCI7MA"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Eagle": {
     "pattern": "Hyperphrenia",
@@ -430,7 +460,8 @@
     "resonance": {
       "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUEpCQ"
     },
-    "portrait": "5"
+    "portrait": "5",
+    "notes": "Recommended Portrait: 5."
   },
   "Enigma": {
     "pattern": "Hyper",
@@ -442,7 +473,8 @@
       "Attack": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
       "Survivability": "APwlMTMxIjQFNAM8UzxjOAE4QUAAQCBAQEgxRWA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Erick": {
     "pattern": "Equibalance",
@@ -461,7 +493,8 @@
       "General": "APAkJAMmVCcFLUQoUSpQPEA8MDkSOxBIAkgATAFMEA",
       "Crit": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Everecho": {
     "pattern": "Hyper",
@@ -473,7 +506,8 @@
       "Healing": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
       "Survivability": "APwlMTMxIjQFNAM8UzxjOAE4QUAAQCBAQEgxRWA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Ezio Auditore": {
     "pattern": "Aspirational",
@@ -487,7 +521,8 @@
       "Follow-Up Attack": "APQkOAU4RSUEK0QoUSpQPEA+MCQBQRJBAEcg",
       "Ultimate": "APQkOAU4RSUEK0QoUSpQNDI0MC0RQRBDAkUA"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Ezra": {
     "pattern": "Stupefaction",
@@ -499,7 +534,8 @@
       "HP": "APQkOEU4BSUEK0QoUSpQPAA8ECYwRDNFMUgjTCJIIUwg",
       "Dynamo": "APQkOEU4BSUEK0QkAS0RKFEqUDxAPDBMAEwgSBBIIQ"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Fatutu": {
     "pattern": "Hyper",
@@ -510,7 +546,8 @@
     "resonance": {
       "Healing": "APgkPAM8Y0ETQEM7RDkUJ0EpAUUyQQA0IDRATGA"
     },
-    "portrait": "0/1/2/3"
+    "portrait": "0/1/2/3",
+    "notes": "Recommended Portrait: 0/1/2/3."
   },
   "Flutterpage": {
     "pattern": "Hyperphrenia",
@@ -522,7 +559,8 @@
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Survivability (Swap L to 1x1 for more HP)": "APQkOEU4BTxiPDA0QzQRJQQlACkCKkAxUA"
     },
-    "portrait": "0/1/3"
+    "portrait": "0/1/3",
+    "notes": "Recommended Portrait: 0/1/3."
   },
   "Getian": {
     "pattern": "Elucidation",
@@ -533,7 +571,8 @@
     "resonance": {
       "General": "ADQANAI8IDkwOkAoUSwyJQQsBfgkL0QmVA"
     },
-    "portrait": "0/1/3/5"
+    "portrait": "0/1/3/5",
+    "notes": "Recommended Portrait: 0/1/3/5."
   },
   "Hedone": {
     "pattern": "Genuinity",
@@ -544,7 +583,8 @@
     "resonance": {
       "Damage": "APAkNBU0RChUKgQ8ADwQJFEmUCYwOCI5IA"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Hissabeth": {
     "pattern": "Elucidation",
@@ -556,7 +596,8 @@
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Horropedia": {
     "pattern": "Genuinity",
@@ -568,7 +609,8 @@
       "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
       "Damage/Survivability": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Huntsworn Lilya": {
     "psychubes": [
@@ -582,7 +624,8 @@
   "R15 + P0 37": "BDhFK0Q6BCkFJAEmACkiLSD0JDRQQTBIQkViRVI=",
   "R10 + P1 37": "BPQkOEU4BTwCPGI0EzRDLwArQEEiSDBBEEgxREFEQg==",
   "R15 + P1 37": "BPQkOEU4BTwCPGI0EzRDLQAmECUyRTBFQEVQSGBIYQ=="
-}
+},
+    "notes": "Recommended Portrait: 0/1/2/3/5."
   },
   "Igor": {
     "pattern": "Elucidation",
@@ -594,7 +637,8 @@
       "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
       "Crit (w/ Flutterpage)": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
     },
-    "portrait": "0/1/5"
+    "portrait": "0/1/5",
+    "notes": "Recommended Portrait: 0/1/5."
   },
   "Isolde": {
     "pattern": "Genuinity",
@@ -606,7 +650,8 @@
       "Burn Team": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI",
       "General": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
     },
-    "portrait": "0/1/3/5"
+    "portrait": "0/1/3/5",
+    "notes": "Recommended Portrait: 0/1/3/5."
   },
   "J": {
     "pattern": "Genuinity",
@@ -619,7 +664,8 @@
       "Crit (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI=",
       "Euphoria": "APAkLUQtFEMFQANBVEhmPGA8UDQyNDA6ADsRRQE"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Jessica": {
     "pattern": "Hyper",
@@ -631,7 +677,8 @@
       "Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw",
       "Poison": "APgkJAQoVDRENBQ8YDxQOCI7MEASQCBCAEcCSAA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Jiu Niangzi": {
     "pattern": "Genuinity",
@@ -643,7 +690,8 @@
       "Crit": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
       "Crit (Resonance 12+)": "ACpQKFEkBC0ULUQmVPAkRDBFIEYAJjFAAUEiQgJIIw"
     },
-    "portrait": "0/2/3/5"
+    "portrait": "0/2/3/5",
+    "notes": "Recommended Portrait: 0/2/3/5."
   },
   "John Titor": {
     "pattern": "Equibalance",
@@ -655,7 +703,8 @@
       "Damage": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA",
       "Survivability": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Kaalaa Baunaa": {
     "pattern": "Genuinity",
@@ -666,7 +715,8 @@
     "resonance": {
       "General": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Kakania": {
     "pattern": "Overindulgence",
@@ -677,7 +727,8 @@
     "resonance": {
       "General (Survivability)": "ACUAJxA5AjgTMzEzQjNTPQU9BkQSREBIUUhiTGFMYPxF"
     },
-    "portrait": "0/2/3/5"
+    "portrait": "0/2/3/5",
+    "notes": "Recommended Portrait: 0/2/3/5."
   },
   "Kanjira": {
     "pattern": "Equibalance",
@@ -689,7 +740,8 @@
       "Poison Damage (Attack)": "APAkJwUoVCogNEQ0BDxgPFA7MDgiQgJAAEgCSBE",
       "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
     },
-    "portrait": "1"
+    "portrait": "1",
+    "notes": "Recommended Portrait: 1."
   },
   "Kassandra": {
     "pattern": "Elucidation",
@@ -701,7 +753,8 @@
       "Follow-Up Attack": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA",
       "Ultimate": "APQkOAU4RSUEK0Q8ADwQNCA0IitAR0FGQy1R"
     },
-    "portrait": "0/2"
+    "portrait": "0/2",
+    "notes": "Recommended Portrait: 0/2."
   },
   "Kiperina": {
     "pattern": "Hyper",
@@ -712,7 +765,8 @@
     "resonance": {
       "Shield and Crit": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "La Source": {
     "pattern": "Delirament",
@@ -745,7 +799,8 @@
       "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Lilya": {
     "pattern": "Elucidation",
@@ -757,7 +812,8 @@
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Loggerhead": {
     "pattern": "Delirament",
@@ -768,7 +824,8 @@
     "resonance": {
       "General (Survivability)": "APgkJAQwRTQUPAA8EDQgJSI6MztTRFFGUEhSSEFMYkxA"
     },
-    "portrait": "0/3/4/5"
+    "portrait": "0/3/4/5",
+    "notes": "Recommended Portrait: 0/3/4/5."
   },
   "Lopera": {
     "pattern": "Aspirational",
@@ -780,7 +837,8 @@
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Lorelei": {
     "pattern": "Stupefaction",
@@ -792,7 +850,8 @@
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
     },
-    "portrait": "1/3/5"
+    "portrait": "1/3/5",
+    "notes": "Recommended Portrait: 1/3/5."
   },
   "Lorentz Butterfly": {
     "pattern": "Genuinity",
@@ -804,7 +863,8 @@
       "Attack": "APQkOEU4BStEPGA8UDQyNDAoEkgFQANDAUIQRAA",
       "Crit": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Lucy": {
     "pattern": "Genuinity",
@@ -817,7 +877,8 @@
       "No-Euphoria Other Crit (R12+ with supports)": "ADQwNDIkAS0RRABFIEhQSGBFUShR9CQlBCtEOEU4BQ",
       "Dynamo (Euphoria)": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
     },
-    "portrait": "0/1/3/5"
+    "portrait": "0/1/3/5",
+    "notes": "Recommended Portrait: 0/1/3/5."
   },
   "Marcus": {
     "pattern": "Genuinity",
@@ -828,7 +889,8 @@
       "General": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw",
       "Crit": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
     },
-    "portrait": "0/4"
+    "portrait": "0/4",
+    "notes": "Recommended Portrait: 0/4."
   },
   "Marsha": {
     "pattern": "Equibalance",
@@ -839,7 +901,8 @@
     "resonance": {
       "General": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Matilda": {
     "pattern": "Aspirational",
@@ -862,7 +925,8 @@
       "Healing": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
       "Damage (why?)": "ADQANAI8IDwwKkA7UDhCKgT8FSUkLEQnRQ"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Melania": {
     "pattern": "Elucidation",
@@ -874,7 +938,8 @@
       "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
       "Crit": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Mercuria": {
     "pattern": "Stupefaction",
@@ -887,7 +952,8 @@
       "Damage": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw",
       "Euphoria": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
     },
-    "portrait": "0/2/4/5"
+    "portrait": "0/2/4/5",
+    "notes": "Recommended Portrait: 0/2/4/5."
   },
   "Mesmer Jr.": {
     "pattern": "Equibalance",
@@ -899,7 +965,8 @@
       "Survivability": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA",
       "Damage": "AKAkNBU0RChUKgQ8ADwQJFEmUCYwOCI5IA"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Moldir": {
     "pattern": "Elucidation",
@@ -911,7 +978,8 @@
       "Attack": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI",
       "Damage": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Mondlicht": {
     "pattern": "Equibalance",
@@ -930,7 +998,8 @@
       "Damage/Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Hybrid": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Ms. Moissan": {
     "pattern": "Equibalance",
@@ -948,7 +1017,8 @@
     "resonance": {
       "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Ms. Radio": {
     "pattern": "Equanimity",
@@ -966,7 +1036,8 @@
   "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
   "Crit (R12+)": "APQkOEU4BStEPAI9AEQBRUAoUSpQNDI0Ey4R"
 },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Name Day": {
     "pattern": "Equanimity",
@@ -977,7 +1048,8 @@
     "resonance": {
       "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
     },
-    "portrait": "0/4/5"
+    "portrait": "0/4/5",
+    "notes": "Recommended Portrait: 0/4/5."
   },
   "Narcissus": {
     "pattern": "Overindulgence",
@@ -988,7 +1060,8 @@
     "resonance": {
       "Survivability": "APwlMTMxIjQFNAM8UzxjOQA7UEIRQ0FBIERATBA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Nautika": {
     "pattern": "Stupefaction",
@@ -1000,7 +1073,8 @@
       "Damage": "APQkOEU4BSUEK0QkAS0RKFEqUDxAPDBMAEwgSBBIIQ",
       "Crit (Resonance 12+)": "APQkOEU4BSUEK0QoUSpQJAEtET0AR0BHMUdCSDNIIQ"
     },
-    "portrait": "0/1/2/3/5"
+    "portrait": "0/1/2/3/5",
+    "notes": "Recommended Portrait: 0/1/2/3/5."
   },
   "Necrologist": {
     "pattern": "Hyper",
@@ -1012,7 +1086,8 @@
       "Healing": "APgkLAUtREFUSGY5AzsSNDI0MDxgPFBCAUEQTAFIAA",
       "Survivability": "APgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA"
     },
-    "portrait": "1/5"
+    "portrait": "1/5",
+    "notes": "Recommended Portrait: 1/5."
   },
   "Nick Bottom": {
     "pattern": "Equanimity",
@@ -1030,7 +1105,8 @@
       "Crit (with supports)": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC",
       "Attack/Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
     },
-    "portrait": "0/3"
+    "portrait": "0/3",
+    "notes": "Recommended Portrait: 0/3."
   },
   "NORA": {},
   "Oliver Fog": {
@@ -1056,7 +1132,8 @@
     "resonance": {
       "General": "APgkJAQoVDRENBQ8YDxQOCI7MEASQCBCAEcCSAA"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Pavia": {
     "pattern": "Delirament",
@@ -1075,7 +1152,8 @@
       "General": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA",
       "Crit": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
     },
-    "portrait": "0/2"
+    "portrait": "0/2",
+    "notes": "Recommended Portrait: 0/2."
   },
   "Pioneer": {
     "pattern": "Equanimity",
@@ -1106,7 +1184,8 @@
       "Attack": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
       "Crit (Resonance 12+)": "APQkOAU4RSoAK0Q0MjQwPFA8YEIQQRJFBEQDRBQ"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Recoleta": {
     "pattern": "Elucidation",
@@ -1118,7 +1197,8 @@
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Attack": "APQkJ0UtADgFOkQ8YDxQNDI0MEEQQARFI0cCSCJIEw"
     },
-    "portrait": "0/1/4"
+    "portrait": "0/1/4",
+    "notes": "Recommended Portrait: 0/1/4."
   },
   "Regulus": {
     "pattern": "Genuinity",
@@ -1131,7 +1211,8 @@
       "Crit": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM",
       "Subdps Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
     },
-    "portrait": "0/1"
+    "portrait": "0/1",
+    "notes": "Recommended Portrait: 0/1."
   },
   "Rhiannon": {
     "pattern": "Equanimity",
@@ -1145,7 +1226,8 @@
       "Impromptu": "APwlNAU0VTxhPAE4IjokKhJBQkhUQFBBACsgRCE",
       "Bloodtithe": "ACUAJxA5AjgTMzEzQjNTPQU9BkQSREBIUUhiTGFMYPxF"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Rubuska": {
     "pattern": "Overindulgence",
@@ -1157,7 +1239,8 @@
       "Damage Reduction": "APwlNAU8YzxTMTMxIjERJAInQTpAOgBIQUgBTTFNMA",
       "Defense": "APwlNAU0AzxjPFMxMzEiMSAnQTpAOgBIQUgCTBJMAQ"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Satsuki": {
     "pattern": "Aspirational",
@@ -1169,7 +1252,8 @@
       "Crit": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Damage": "APQkOEU4BSUEK0QkAS0RKwA0MjQwPFA8YA"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Semmelweis": {
     "pattern": "Equanimity",
@@ -1181,7 +1265,8 @@
       "General (Bloodtithe)": "APAkJAMmVCcFLUQoUSpQPEA8MDkSOxBIAkgATAFMEA",
       "Crit": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Sentinel": {
     "pattern": "Equanimity",
@@ -1193,7 +1278,8 @@
       "Crit": "APAkJAMmVCcFLUQoUSpQPEA8MDkSOxBIAkgATAFMEA",
       "Damage": "APAkLUQtFCQEJlQoUSpQPEA8MDgCOxBIAkgATBBMAQ"
     },
-    "portrait": "0/1/5"
+    "portrait": "0/1/5",
+    "notes": "Recommended Portrait: 0/1/5."
   },
   "Shamane": {
     "pattern": "Elucidation",
@@ -1205,7 +1291,8 @@
       "General": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
       "Crit Damage (Resonance 12+)": "ACpQKFEkBC0ULUQmVPAkRDBFIEYAJjFAAUEiQgJIIw"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "Silverwing Eagle": {
     "pattern": "Elucidation",
@@ -1217,7 +1304,8 @@
       "Crit": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC",
       "Attack": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
     },
-    "portrait": "5"
+    "portrait": "5",
+    "notes": "Recommended Portrait: 5."
   },
   "Sonetto": {
     "pattern": "Hyper",
@@ -1229,7 +1317,8 @@
       "Damage": "APwlNFU0BTxhPFElQCQCOiQ4Ei0AQTJCIEggSBA",
       "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
     },
-    "portrait": "5"
+    "portrait": "5",
+    "notes": "Recommended Portrait: 5."
   },
   "Sotheby": {
     "pattern": "Equibalance",
@@ -1240,7 +1329,8 @@
     "resonance": {
       "Healing": "APAkMEU7UzQVPAM6M0ATJAA9IjQQQDBCQExhSGBIYg=="
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Spathodea": {
     "pattern": "Elucidation",
@@ -1251,7 +1341,8 @@
     "resonance": {
       "Crit": "APgkJQQsBSwyJlQtRChRSGBBQDkwOxBAAEACRBM"
     },
-    "portrait": "0/3/5"
+    "portrait": "0/3/5",
+    "notes": "Recommended Portrait: 0/3/5."
   },
   "Sputnik": {
     "pattern": "Equanimity",
@@ -1269,7 +1360,8 @@
       "Damage/Crit": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw",
       "Damage/Survivability": "APQkOEU4BTxiPDA0QzQRJQQlACkCKkAxUA"
     },
-    "portrait": "1/5"
+    "portrait": "1/5",
+    "notes": "Recommended Portrait: 1/5."
   },
   "Tennant": {
     "pattern": "Stupefaction",
@@ -1280,7 +1372,8 @@
     "resonance": {
       "General": "APQkOEU4BTwCPGI0QzQTKxIrECkAJUAsQQ"
     },
-    "portrait": "0/4"
+    "portrait": "0/4",
+    "notes": "Recommended Portrait: 0/4."
   },
   "The Fool": {
     "pattern": "Equanimity",
@@ -1299,7 +1392,8 @@
       "Crit": "APQkOAUoRDxjOUItQCZQJQQ0IjQgKAEqAA",
       "Attack": "APQkOAU4RSUEK0QkAS0RRABFIDQyNDA8UDxg"
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "Tooth Fairy": {
     "pattern": "Genuinity",
@@ -1311,7 +1405,8 @@
       "Impromptu": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh",
       "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
     },
-    "portrait": "0/2/5"
+    "portrait": "0/2/5",
+    "notes": "Recommended Portrait: 0/2/5."
   },
   "TTT": {
     "resonance": {
@@ -1329,7 +1424,8 @@
       "General": "APgkNBQ0RChUQwVIBDwAPGA5ETtBQRBAQEcwRTJII0xD",
       "Slightly More Crit (Resonance 12+)": "APgkNBQ0RChUQwVIBDwAPGA5EDgSQSBBMkVSR1BHQA"
     },
-    "portrait": "0/2"
+    "portrait": "0/2",
+    "notes": "Recommended Portrait: 0/2."
   },
   "Twins Sleep": {
     "pattern": "Equanimity",
@@ -1348,7 +1444,8 @@
       "General": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ",
       "Crit (Resonance 12+)": "APQkJQQ4BThFK0QoUSpQJAEtEUMyQTFEMEYARSA"
     },
-    "portrait": "0/1/3/5"
+    "portrait": "0/1/3/5",
+    "notes": "Recommended Portrait: 0/1/3/5."
   },
   "Ulu": {
     "pattern": "Hyper",
@@ -1360,7 +1457,8 @@
       "Survivability": "APgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA",
       "Damage": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "Vila": {
     "pattern": "Equanimity",
@@ -1371,7 +1469,8 @@
     "resonance": {
       "Healing": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA"
     },
-    "portrait": "0/1/3"
+    "portrait": "0/1/3",
+    "notes": "Recommended Portrait: 0/1/3."
   },
   "Voyager": {
     "pattern": "Genuinity",
@@ -1383,7 +1482,8 @@
       "Crit": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
       "Crit (Resonance 12+)": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
     },
-    "portrait": "0/5"
+    "portrait": "0/5",
+    "notes": "Recommended Portrait: 0/5."
   },
   "White Rum": {
     "pattern": "Equanimity",
@@ -1401,7 +1501,8 @@
       "With Tuesday": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUA0UkBQSGE",
       "Without Tuesday": "ADRENBUoVCoEQAFCAkQA8CQ8YDxQOCI5IEEwSEI"
     },
-    "portrait": "0/1/2"
+    "portrait": "0/1/2",
+    "notes": "Recommended Portrait: 0/1/2."
   },
   "Windsong": {
     "pattern": "Genuinity",
@@ -1413,7 +1514,8 @@
       "General": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA",
       "Portrait 2+": "APAkJAQmVC1ELRQoASoAJCFBIEEyRUBEUUZQNFI="
     },
-    "portrait": "0/1/2/5"
+    "portrait": "0/1/2/5",
+    "notes": "Recommended Portrait: 0/1/2/5."
   },
   "X": {
     "pattern": "Genuinity",
@@ -1424,7 +1526,8 @@
     "resonance": {
       "General": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
     },
-    "portrait": "0"
+    "portrait": "0",
+    "notes": "Recommended Portrait: 0."
   },
   "Yenisei": {
     "pattern": "Overindulgence",
@@ -1436,7 +1539,8 @@
       "Healing/Shield": "APwlMTMxIjEgPBM8AzRVNFM6ADhBK0BMQUgSTAJIAQ",
       "Survivability": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
     },
-    "portrait": "0/4"
+    "portrait": "0/4",
+    "notes": "Recommended Portrait: 0/4."
   },
   "Зима": {
     "pattern": "Delirament",
