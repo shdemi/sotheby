@@ -26,6 +26,7 @@
     <button class="tab" data-tab="rotations" role="tab">Rotations</button>
     <button class="tab" data-tab="patterns" role="tab">Skins &amp; Naming</button>
     <button class="tab" data-tab="credits" role="tab">Credits</button>
+    <button class="tab" data-tab="i18n" role="tab">i18n</button>
     <button class="tab" data-tab="review" role="tab">Review<span class="badge" id="review-badge" hidden>0</span></button>
   </nav>
 
@@ -150,6 +151,21 @@
         <p class="hint"><code>credits.json</code> — one row per entry. Name is required; the URL only becomes a link when it starts with http(s). The modal lists them in this order.</p>
         <div id="credit-editor"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ i18n ============ -->
+  <section class="pane" data-pane="i18n">
+    <aside class="list" id="i18n-list">
+      <div class="list-tools">
+        <input type="search" id="i18n-search" placeholder="Search key or text…" autocomplete="off">
+        <div class="list-filters" id="i18n-filters"></div>
+        <div class="list-count" id="i18n-count"></div>
+      </div>
+      <div class="list-body" id="i18n-list-body"></div>
+    </aside>
+    <div class="detail" id="i18n-detail">
+      <div class="empty">Select a translation key.</div>
     </div>
   </section>
 

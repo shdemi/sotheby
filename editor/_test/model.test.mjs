@@ -831,19 +831,100 @@ console.log("\n=== rotations ===");
   m.setGuideSlotText(id, ri, textIndex, "Hold the buff");
   check("a text slot stores its text", m.guideRotation(id).rounds[ri].slots[textIndex].text === "Hold the buff", JSON.stringify(m.guideRotation(id).rounds[ri].slots[textIndex]));
 
-  // Free AP / Precast are normal AP slots with a different caption.
-  for (const type of ["free", "precast"]) {
+  // Free AP / Precast are legacy types: the slot becomes normal AP plus a tag,
+  // so one slot can carry both and the caption is no longer the only meaning.
+  for (const [type, tag] of [["free", "ap-free"], ["precast", "precast"]]) {
     m.addGuideSlot(id, ri, type);
     const index = m.guideRotation(id).rounds[ri].slots.length - 1;
     m.addGuideSlotCard(id, ri, index, { character: m.characters[0], skill: 1 });
     m.addGuideSlotCard(id, ri, index, { character: m.characters[1], skill: 1 });
     const slot = m.guideRotation(id).rounds[ri].slots[index];
     check(
-      `a ${type} slot behaves like normal AP`,
-      slot.type === type && slot.cards.length === 1 && !("text" in slot),
+      `a legacy ${type} slot becomes normal AP plus the ${tag} tag`,
+      slot.type === "normal" && slot.tags.includes(tag) && slot.cards.length === 1 && !("text" in slot),
       JSON.stringify(slot)
     );
   }
+
+  /* ---- slot tags ---- */
+  m.addGuideSlot(id, ri, "normal");
+  const tagIndex = m.guideRotation(id).rounds[ri].slots.length - 1;
+  const tagSlot = () => m.guideRotation(id).rounds[ri].slots[tagIndex];
+  m.setGuideSlotTag(id, ri, tagIndex, "ap-free");
+  check("a tag is written on the slot", tagSlot().tags.includes("ap-free"), JSON.stringify(tagSlot()));
+  m.setGuideSlotTag(id, ri, tagIndex, "precast");
+  check("a second tag is added", tagSlot().tags.length === 2 && tagSlot().tags.includes("precast"), JSON.stringify(tagSlot()));
+  m.setGuideSlotTag(id, ri, tagIndex, "ap-free", false);
+  check("a tag can be removed", !tagSlot().tags.includes("ap-free") && tagSlot().tags.includes("precast"), JSON.stringify(tagSlot()));
+  check("an unknown tag is refused", m.setGuideSlotTag(id, ri, tagIndex, "nope") === false, "");
+  m.setGuideSlotTag(id, ri, tagIndex, "precast", false);
+  check("the last tag drops the key", !("tags" in tagSlot()), JSON.stringify(tagSlot()));
+
+  /* ---- card frame / surface / preferred ---- */
+  m.addGuideSlotCard(id, ri, tagIndex, { character: m.characters[0], skill: 3 });
+  const tagCard = () => m.guideRotation(id).rounds[ri].slots[tagIndex].cards[0];
+  m.setGuideCardField(id, ri, tagIndex, 0, "frame", "ultimate");
+  check("an ultimate frame is written", tagCard().frame === "ultimate", JSON.stringify(tagCard()));
+  m.setGuideCardField(id, ri, tagIndex, 0, "frame", "ramona-normal");
+  check("an unknown frame is refused", tagCard().frame === "ultimate", JSON.stringify(tagCard()));
+  m.setGuideCardField(id, ri, tagIndex, 0, "frame", "normal");
+  check("a normal frame overrides the skill-3 default", tagCard().frame === "normal", JSON.stringify(tagCard()));
+  m.setGuideCardField(id, ri, tagIndex, 0, "frame", "");
+  check("clearing the frame drops the key", !("frame" in tagCard()), JSON.stringify(tagCard()));
+
+  m.setGuideCardField(id, ri, tagIndex, 0, "surface", "ramona");
+  check("a surface is written", tagCard().surface === "ramona", JSON.stringify(tagCard()));
+  check("a normal surface leaves the frame alone", !("frame" in tagCard()), JSON.stringify(tagCard()));
+  m.setGuideCardField(id, ri, tagIndex, 0, "surface", "ramona-ultimate");
+  check(
+    "the ultimate surface brings the ultimate frame with it",
+    tagCard().surface === "ramona-ultimate" && tagCard().frame === "ultimate",
+    JSON.stringify(tagCard())
+  );
+  m.setGuideCardField(id, ri, tagIndex, 0, "surface", "nope");
+  check("an unknown surface is refused", tagCard().surface === "ramona-ultimate", JSON.stringify(tagCard()));
+  m.setGuideCardField(id, ri, tagIndex, 0, "surface", "");
+  check("the surface can be cleared", !("surface" in tagCard()), JSON.stringify(tagCard()));
+
+  m.setGuideCardField(id, ri, tagIndex, 0, "preferred", true);
+  check("a card can be the preferred side of an OR slot", tagCard().preferred === true, JSON.stringify(tagCard()));
+  m.setGuideCardField(id, ri, tagIndex, 0, "preferred", false);
+  check("the preferred flag can be cleared", !("preferred" in tagCard()), JSON.stringify(tagCard()));
+
+  /* ---- inserting a slot ---- */
+  const beforeInsert = m.guideRotation(id).rounds[ri].slots.length;
+  m.insertRoundSlot(id, ri, 0, { type: "or", cards: [{ character: m.characters[0], skill: 2 }] });
+  const inserted = m.guideRotation(id).rounds[ri].slots[0];
+  check(
+    "a slot can be inserted at the front",
+    m.guideRotation(id).rounds[ri].slots.length === beforeInsert + 1 && inserted.type === "or" && inserted.cards.length === 1,
+    JSON.stringify(inserted)
+  );
+  m.removeGuideSlot(id, ri, 0);
+
+  /* ---- bracket callouts ---- */
+  m.addGuideSlot(id, ri, "normal");
+  m.addGuideSlot(id, ri, "normal");
+  const annFrom = m.guideRotation(id).rounds[ri].slots.length - 2;
+  m.addGuideAnnotation(id, ri, annFrom, annFrom + 1, "Use this every 3 rounds", "bracket");
+  const callout = () => m.guideRotation(id).rounds[ri].annotations?.[0];
+  check(
+    "a callout spans the picked slots",
+    callout().from === annFrom && callout().to === annFrom + 1 && callout().style === "bracket",
+    JSON.stringify(callout())
+  );
+  m.setGuideAnnotationField(id, ri, 0, "style", "fork");
+  check("the callout style changes", callout().style === "fork", JSON.stringify(callout()));
+  m.setGuideAnnotationField(id, ri, 0, "text", "Every 3 rounds");
+  check("the callout text changes", callout().text === "Every 3 rounds", JSON.stringify(callout()));
+  m.removeGuideSlot(id, ri, annFrom);
+  check(
+    "removing a slot shrinks the callout instead of dropping it",
+    callout() && callout().from === callout().to,
+    JSON.stringify(callout())
+  );
+  m.removeGuideAnnotation(id, ri, 0);
+  check("a callout can be removed", !m.guideRotation(id).rounds[ri].annotations, JSON.stringify(m.guideRotation(id).rounds[ri].annotations));
 
   m.setGuideRoundNote(id, ri, "Pulsing Field Lv.1");
   check("a round note is written", m.guideRotation(id).rounds[ri].note === "Pulsing Field Lv.1", String(m.guideRotation(id).rounds[ri].note));

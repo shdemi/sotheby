@@ -80,6 +80,7 @@ without the local tooling folder.
 | **Characters** | rarity, afflatus, resonance shape, euphoria (both tiers + CN-only flag), exclude / collab / future-sight flags, CN name, name transfer. Sorted newest first, by ArcanistMap id descending |
 | **Psychubes** | name, CN name, release patch, tags, CN-only flag, plus **import a new icon**. Rarity 6 first |
 | **Team Presets** | add / delete presets, drag presets and the members inside a variant, per-member euphoria, substitutes with their own psychube and euphoria |
+| **Rotations** | the card plan: drag AP slots and skill cards into a round, tag slots, add bracket callouts, mark ultimate cards |
 | **Patterns & Skins** | Future Sight skins and name transfer |
 | **Review** | validation report and the exact pending diff |
 
@@ -118,6 +119,69 @@ they are a fixed table that does not change between game updates.
 - A substitute written as a bare string (`"substitutes": ["J"]`) is accepted by
   the app; setting a psychube or euphoria on one rewrites it as an object, because
   the shorthand has nowhere to put the value.
+
+### Rotations (card plan)
+
+The **Cards** button opens a floating palette with three tabs. Everything in it is
+dragged into the round, so the round header only keeps the note and the round
+actions.
+
+- **AP** holds the slot stamps: **Normal AP**, **OR AP** and **1/4 AP**. Drag one
+  onto the thin gap between two cards to insert a slot there. An empty slot shows
+  `images/card_modulo/Normal.png`, so the AP order can be laid out before the art
+  exists. Dropping a skill card straight into a round inserts a slot already
+  filled with it, so the stamp is only needed when the cards are not decided yet.
+- **Cards** lists every member's skills plus the special cards. Dropping one on an
+  empty slot fills it; dropping it on a filled slot replaces the card; dropping it
+  on a gap inserts a new slot.
+- **Extra** holds two sections. **Tags** — `AP Free` and `Precast` — are dropped on
+  a slot to add or remove them; the tag lives on the slot, not on the card, so one
+  slot can carry both. **Frame** — `Normal`, `Ultimate`, `Ramona`,
+  `Ramona Ultimate` — is dropped on a card to repaint just that card.
+- Hover a card for two switches: **U** toggles between the normal and the ultimate
+  frame, **★** marks the preferred side of an OR slot. Skill 3 is treated as an
+  ultimate by default, so most cards need no click at all.
+- **+ Note** adds a bracket callout that starts out spanning the whole round. The
+  row below the strip edits the style (`bracket`, `box`, `fork`), the slot range
+  and the text; **Pick** re-picks the range by clicking two cards. Esc cancels the
+  pick. Notes whose ranges do not overlap share a lane, so two callouts over
+  different cards sit side by side.
+
+Card frames live in `GUIDE_CARD_FRAMES` (`editor/model.js`) and `ROT_CARD_FRAMES`
+(`app.js`), one entry per frame:
+
+| Frame | File | Mode |
+|---|---|---|
+| `normal` | `images/card_modulo/Normal.png` | `inset` — the art is clipped into the plate's inner window |
+| `ultimate` | `images/card_modulo/Ultimate.png` | `inset` |
+| `ramona-normal` | `images/card_modulo/Frame/Ramona_Normal_Card.png` | `over` — the translucent ornaments sit on top of the art |
+| `ramona-ultimate` | `images/card_modulo/Frame/Ramona_Ultimate_Card.png` | `over` |
+
+`inset` frames are opaque in the middle, so the art is drawn **above** them and
+clipped to a percentage inset: `Normal.png` uses `left: 1.19% / top: 1.36% /
+width: 97.62% / height: 97.74%`, which is its 2px border; `Ultimate.png` uses
+`6.32 / 7.30 / 84.74 / 87.30` (x 12–172, y 23–297 of a 190×315 card). `over`
+frames invert the stacking, because their middle is translucent.
+
+Adding a frame is one entry: drop the PNG in `images/card_modulo/Frame/`, then add
+its key, size and inset to both lists.
+
+Slot tags use the shipped plate art (`Tag_APFree.png`, `Tag_Precast.png`) pinned to
+the card's top-left corner. When a slot carries both, the Precast plate sits 3px
+below the AP Free badge. `--parchment` is still the app's shared card surface:
+
+```css
+--parchment: linear-gradient(to top right, #ddb39f 0%, #d5d3cf 20%, #d5d3cf 80%, #ddb39f 100%);
+```
+
+`styles.css` keeps `--team-card-bg: var(--parchment)` as the older name, so
+existing rules keep working. Both files declare the token because the editor loads
+`editor.css` on its own.
+
+Older rotations may still use `"type": "free"` or `"type": "precast"`. Both are
+read as a normal slot plus the matching tag, and the slot is rewritten that way
+the first time it is edited — so the data migrates as it is touched, not in one
+big rewrite.
 
 ### Importing a psychube icon
 
@@ -222,6 +286,7 @@ npm run test:ui      # just the browser suite
 | `icon.test.mjs` | Geometry and frame detection in Node; the browser composite compared against `compose.py`'s output — every difference must be premultiplied-alpha rounding on the art's top edge, never a colour shift or a footer mistake; `editor/frame.png` loads and is the default |
 | `e2e.test.mjs` | The save path: copies `data/` to a scratch directory, applies a realistic session, then checks untouched files are byte-identical, diffs stay minimal, and a fresh load sees every change |
 | `ui.test.mjs` | Runs the real page in a browser: euphoria buttons, the essential checkbox, substitute euphoria and shape pickers all re-render when clicked; focus survives the re-render; the change reaches the Review diff; no Open folder control exists; noindex is set; **the download really is a ZIP containing the changed file at its repository path**; no console errors |
+| `rotation-ui.test.mjs` | The card-plan editor: the round header offers no AP buttons; the palette opens on AP; dropping a stamp inserts an empty slot; dropping a card fills it; a tag toggles on and off; **+ Note** picks a slot range and keeps its text; no page errors |
 
 The UI suite exists because of a bug a model-level test cannot see: the data was
 correct and the file was correctly marked dirty, but the control kept its old

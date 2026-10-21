@@ -21,3 +21,8 @@ testCodeChube/needed to edit/
 testCodeChube/results/
 testCodeChube/_placeholder5/
 testCodeChube/_placeholder6/
+
+# Scratch scripts and test screenshots
+_*.mjs
+/*.png
+editor/_test/*.png

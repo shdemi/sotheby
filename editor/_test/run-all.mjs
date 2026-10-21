@@ -16,6 +16,7 @@ const SUITES = [
   ["icon", "icon.test.mjs"],
   ["e2e", "e2e.test.mjs"],
   ["ui", "ui.test.mjs"],
+  ["rotation-ui", "rotation-ui.test.mjs"],
 ];
 
 let failed = 0;

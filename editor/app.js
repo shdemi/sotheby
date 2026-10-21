@@ -8,7 +8,7 @@
  * The editor only rewrites the ranges it changes (see json-patch.js), so an
  * untouched file is never modified and a one-field edit is a one-line diff.
  */
-import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, TUNINGS, validate, readNameTables, diffHunks } from "./model.js";
+import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, TUNINGS, GUIDE_SLOT_TAGS, GUIDE_CARD_SURFACES, GUIDE_ANNOTATION_STYLES, guideSlotLayout, guideSlotTags, guideCardIsUltimate, guideCardSurface, validate, readNameTables, diffHunks } from "./model.js";
 import * as files from "./files.js";
 import * as icons from "./icons.js";
 
@@ -26,8 +26,10 @@ const state = {
   chubeRarities: new Set(PSYCHUBE_RARITIES),
   picker: null,
   drag: null,
-  guide: { build: null, rotation: null, hand: null, special: false, panelOpen: false },
+  guide: { build: null, rotation: null, hand: null, panelTab: "ap", panelOpen: false, notePick: null, focusNote: null, focusRoundNote: null },
   import: { art: null, frame: null, frames: [], rarity: "6", id: "", name: "", nameCN: "", tags: [], releasePatch: "", futureSight: false, open: false },
+  i18n: { selectedKey: null, filterNs: null, search: "" },
+  noteLang: "en",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -128,6 +130,8 @@ function renderAll() {
   renderCredits();
   renderBuildList();
   renderRotationList();
+  renderI18nList();
+  renderI18nDetail();
   renderReview();
   updateSaveState();
 }
@@ -163,6 +167,7 @@ function afterEdit({ list = true, detail = true } = {}) {
     if (state.tab === "teams") renderTeamList();
     if (state.tab === "builds") renderBuildList();
     if (state.tab === "rotations") renderRotationList();
+    if (state.tab === "i18n") renderI18nList();
   }
   if (detail) {
     if (state.tab === "characters") renderCharacterDetail();
@@ -170,6 +175,7 @@ function afterEdit({ list = true, detail = true } = {}) {
     if (state.tab === "teams") renderTeamDetail();
     if (state.tab === "builds") renderBuildDetail();
     if (state.tab === "rotations") renderRotationDetail();
+    if (state.tab === "i18n") renderI18nDetail();
   }
   if (state.tab === "patterns") renderPatterns();
   if (state.tab === "credits") renderCredits();
@@ -2100,8 +2106,23 @@ function renderBuildDetail() {
     if (labels.length === 0) resHost.appendChild(el("div", { class: "field-note", text: "No codes yet." }));
 
     for (const label of labels) {
-      const labelInput = el("input", { type: "text", value: label, placeholder: "Attack", style: "width:120px" });
-      const codeInput = el("input", { type: "text", value: current[label], placeholder: "codes", style: "flex:1;min-width:180px" });
+      const resoKey = `reso.${label}`;
+      const entry = model.i18nEntry(resoKey);
+
+      const labelInput = el("input", {
+        type: "text",
+        value: label,
+        placeholder: "Name (EN)",
+        style: "width:130px",
+        title: "Resonance build code name (English / Key)",
+      });
+      const codeInput = el("input", {
+        type: "text",
+        value: current[label],
+        placeholder: "Resonance code",
+        style: "flex:1;min-width:180px",
+        title: "Game resonance code string",
+      });
 
       labelInput.addEventListener("change", () => {
         const nextLabel = labelInput.value.trim();
@@ -2111,27 +2132,76 @@ function renderBuildDetail() {
         }
         const rebuilt = {};
         for (const key of labels) rebuilt[key === label ? nextLabel : key] = current[key];
+        if (entry.vi || entry.cn) {
+          model.setI18nEntry("vi", `reso.${nextLabel}`, entry.vi || "");
+          model.setI18nEntry("cn", `reso.${nextLabel}`, entry.cn || "");
+          model.setI18nEntry("en", `reso.${nextLabel}`, nextLabel);
+        }
         commitResonance(rebuilt);
       });
       codeInput.addEventListener("change", () => {
         commitResonance({ ...current, [label]: codeInput.value.trim() });
       });
 
-      resHost.appendChild(
-        el("div", { class: "pick" }, [
-          labelInput,
-          codeInput,
-          el("button", {
-            class: "btn btn-sm btn-ghost",
-            text: "×",
-            onclick: () => {
-              const next = { ...current };
-              delete next[label];
-              commitResonance(next);
-            },
-          }),
-        ])
+      const viInput = el("input", {
+        type: "text",
+        value: entry.vi || "",
+        placeholder: "Tên Tiếng Việt (VI)",
+        style: "flex: 1; font-size: 11px;",
+        title: `Vietnamese translation for "${label}"`,
+      });
+      viInput.addEventListener("change", () => {
+        model.setI18nEntry("vi", resoKey, viInput.value.trim());
+        model.setI18nEntry("en", resoKey, label);
+        afterEdit({ list: false });
+      });
+
+      const cnInput = el("input", {
+        type: "text",
+        value: entry.cn || "",
+        placeholder: "中文翻译 (CN)",
+        style: "flex: 1; font-size: 11px;",
+        title: `Chinese translation for "${label}"`,
+      });
+      cnInput.addEventListener("change", () => {
+        model.setI18nEntry("cn", resoKey, cnInput.value.trim());
+        model.setI18nEntry("en", resoKey, label);
+        afterEdit({ list: false });
+      });
+
+      const rowBlock = el(
+        "div",
+        {
+          class: "reso-code-entry",
+          style:
+            "margin-bottom: 8px; padding: 6px 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius);",
+        },
+        [
+          el("div", { class: "pick", style: "align-items: center; gap: 6px; margin-bottom: 4px;" }, [
+            el("span", { class: "flag flag-ns", text: "NAME" }),
+            labelInput,
+            codeInput,
+            el("button", {
+              class: "btn btn-sm btn-ghost",
+              text: "×",
+              title: "Delete code",
+              onclick: () => {
+                const next = { ...current };
+                delete next[label];
+                commitResonance(next);
+              },
+            }),
+          ]),
+          el("div", { style: "display: flex; gap: 6px; align-items: center; padding-left: 20px;" }, [
+            el("span", { class: "flag", text: "VI" }),
+            viInput,
+            el("span", { class: "flag", text: "CN" }),
+            cnInput,
+          ]),
+        ]
       );
+
+      resHost.appendChild(rowBlock);
     }
 
     resHost.appendChild(
@@ -2213,20 +2283,55 @@ function renderBuildDetail() {
   } else {
     charts.forEach((chart, chartIndex) => {
       const block = el("div", { class: "chart-editor" });
+      const chartCurLang = state.chartLang || state.noteLang || "en";
+
+      const getChartLabel = (l) => {
+        if (!chart.label) return "";
+        if (typeof chart.label === "object") return chart.label[l] || "";
+        return l === "en" ? chart.label : "";
+      };
 
       const titleInput = el("input", {
         type: "text",
-        value: chart.label,
-        placeholder: `Chart ${chartIndex + 1}`,
+        value: getChartLabel(chartCurLang),
+        placeholder: `Title (${chartCurLang.toUpperCase()})`,
         class: "chart-editor-title",
       });
       titleInput.addEventListener("change", () => {
-        commitCharts(() => model.setProgressionLabel(name, chartIndex, titleInput.value));
+        let newLabel;
+        const txt = titleInput.value.trim();
+        if (typeof chart.label === "object" && chart.label !== null) {
+          newLabel = { ...chart.label, [chartCurLang]: txt };
+        } else if (chartCurLang === "en") {
+          newLabel = txt;
+        } else {
+          newLabel = { en: chart.label || "", [chartCurLang]: txt };
+        }
+        if (typeof newLabel === "object" && !newLabel.vi && !newLabel.cn) newLabel = newLabel.en || "";
+        commitCharts(() => model.setProgressionLabel(name, chartIndex, newLabel));
       });
+
+      const langChips = el(
+        "div",
+        { class: "note-inline-langs" },
+        ["en", "vi", "cn"].map((l) =>
+          el("button", {
+            class: `chip chip-xs${chartCurLang === l ? " on" : ""}`,
+            text: l.toUpperCase(),
+            type: "button",
+            onclick: (e) => {
+              e.stopPropagation();
+              state.chartLang = l;
+              afterEdit({ list: false });
+            },
+          })
+        )
+      );
 
       block.appendChild(
         el("div", { class: "chart-editor-head" }, [
           el("span", { class: "field-label", text: `Chart ${chartIndex + 1}` }),
+          langChips,
           titleInput,
           el("button", {
             class: "btn btn-sm btn-ghost",
@@ -2296,13 +2401,16 @@ function renderBuildDetail() {
   host.appendChild(chartCard);
 
   /* --- notes --- */
-  const notes = el("textarea", { rows: 3, style: "width:100%", placeholder: "Optional notes" });
-  notes.value = build.notes || "";
-  notes.addEventListener("change", () => {
-    model.setGuideBuildField(name, "notes", notes.value);
-    afterEdit({ list: false });
-  });
-  host.appendChild(el("div", { class: "card" }, [el("h2", { text: "Notes" }), notes]));
+  host.appendChild(
+    renderMultilingualNotesEditor({
+      value: build.notes,
+      onSave: (val) => {
+        model.setGuideBuildField(name, "notes", val);
+        afterEdit({ list: false });
+      },
+      placeholder: "Recommended Portrait, playstyle notes…",
+    })
+  );
 }
 
 /* ------------------------------------------------------------------ *
@@ -2316,7 +2424,446 @@ function rotationSkills(name) {
   return Array.isArray(list) ? list : [];
 }
 
-const SLOT_LABELS = { normal: "AP", or: "OR", lb: "1/4 AP", text: "TEXT", free: "FREE AP", tuning: "TUNING", precast: "PRECAST" };
+const SLOT_LABELS = { normal: "AP", or: "OR", lb: "1/4 AP", text: "TEXT", tuning: "TUNING" };
+
+/** A tag's label and rendering style, or null for an unknown key. */
+function guideTagInfo(key) {
+  return GUIDE_SLOT_TAGS.find((tag) => tag.key === key) || null;
+}
+
+/** The card layers: the art, the Ultimate plate when it applies, then a surface. */
+function guideCardLayers(card, artSrc) {
+  const ultimate = guideCardIsUltimate(card);
+  const inset = ultimate
+    ? { left: 6.56, top: 7.30, width: 87.98, height: 86.35 }
+    : { left: 0, top: 0, width: 100, height: 100 };
+  const artStyle =
+    `left:${inset.left}%;top:${inset.top}%;width:${inset.width}%;height:${inset.height}%;` +
+    `border-radius:${ultimate ? "50% 50% 0 0 / 22% 22% 0 0" : "0"}`;
+  const surface = guideCardSurface(card.surface);
+  const layers = [el("img", { class: "guide-card-art", src: artSrc, alt: "", style: artStyle })];
+  if (ultimate) {
+    layers.push(el("img", { class: "guide-card-frame", src: "../images/card_modulo/Ultimate.png", alt: "" }));
+  }
+  // A surface is the same size as its card shape, so it is simply laid on top.
+  if (surface) layers.push(el("img", { class: "guide-card-surface", src: `../${surface.image}`, alt: "" }));
+  return { ultimate, surface, html: layers };
+}
+
+/** Reads the payload a drag carries, falling back to the armed one. */
+function readDragPayload(e) {
+  try {
+    const raw = e?.dataTransfer?.getData("text/plain");
+    if (raw && raw.startsWith("{")) return JSON.parse(raw);
+  } catch {
+    // keep the armed payload
+  }
+  return state.drag;
+}
+
+/** A tag's plate, drawn from the shipped art. */
+function guideTagPlate(tag) {
+  return el("img", { class: `guide-tag-plate is-${tag.kind}`, src: `../${tag.image}`, alt: tag.label, title: tag.label });
+}
+
+/** The callout editor under a round's cards, plus a mini bracket preview. */
+function renderRoundAnnotations(id, roundIndex, round, slotCount) {
+  const annotations = Array.isArray(round.annotations) ? round.annotations : [];
+  const picking = state.guide.notePick && state.guide.notePick.round === roundIndex;
+  if (annotations.length === 0 && !picking) return el("div", { class: "guide-annotations is-empty" });
+
+  const model = state.model;
+  const max = Math.max(1, slotCount);
+  const host = el("div", { class: "guide-annotations" });
+  host.appendChild(el("h3", { class: "hand-group-title", text: "Bracket notes" }));
+  if (picking) {
+    host.appendChild(el("p", { class: "field-note", text: "Click the first card of the note, then the last one. Esc cancels." }));
+  }
+
+  annotations.forEach((annotation, annotationIndex) => {
+    const style = GUIDE_ANNOTATION_STYLES.includes(annotation.style) ? annotation.style : "bracket";
+    const from = Math.max(0, Math.min(max - 1, Number(annotation.from) || 0));
+    const to = Math.max(from, Math.min(max - 1, Number(annotation.to) || 0));
+
+    const styleSelect = el(
+      "select",
+      { class: "guide-annotation-style", title: "Callout style" },
+      GUIDE_ANNOTATION_STYLES.map((value) => el("option", { value, text: value, selected: value === style }))
+    );
+    styleSelect.addEventListener("change", () => {
+      model.setGuideAnnotationField(id, roundIndex, annotationIndex, "style", styleSelect.value);
+      afterEdit({ list: false });
+    });
+
+    const rangeInput = (field, value) => {
+      const input = el("input", { type: "number", min: 1, max, value: value + 1, class: "guide-annotation-index", title: `Slot ${field}` });
+      input.addEventListener("change", () => {
+        model.setGuideAnnotationField(id, roundIndex, annotationIndex, field, Math.max(0, Number(input.value) - 1));
+        afterEdit({ list: false });
+      });
+      return input;
+    };
+
+    const curVal = annotation.text;
+    const curLang = state.noteLang || "en";
+    const getAnnText = () => {
+      if (!curVal) return "";
+      if (typeof curVal === "object") return curVal[curLang] || "";
+      return curLang === "en" ? curVal : "";
+    };
+    const text = el("input", {
+      type: "text",
+      value: getAnnText(),
+      placeholder: `Note text (${curLang.toUpperCase()})`,
+      class: "guide-annotation-text",
+    });
+    text.addEventListener("change", () => {
+      let newVal;
+      const t = text.value;
+      if (typeof curVal === "object" && curVal !== null) {
+        newVal = { ...curVal, [curLang]: t };
+      } else if (curLang === "en") {
+        newVal = t;
+      } else {
+        newVal = { en: curVal || "", [curLang]: t };
+      }
+      if (typeof newVal === "object" && !newVal.vi && !newVal.cn) newVal = newVal.en || "";
+      model.setGuideAnnotationField(id, roundIndex, annotationIndex, "text", newVal);
+      afterEdit({ list: false });
+    });
+
+    // A freshly added note takes the focus, so the next keystroke types into it.
+    const focus = state.guide.focusNote;
+    if (focus && focus.round === roundIndex && focus.index === annotationIndex) {
+      state.guide.focusNote = null;
+      requestAnimationFrame(() => text.focus());
+    }
+
+    const langChips = el(
+      "div",
+      { class: "note-inline-langs" },
+      ["en", "vi", "cn"].map((l) =>
+        el("button", {
+          class: `chip chip-xs${curLang === l ? " on" : ""}`,
+          text: l.toUpperCase(),
+          type: "button",
+          onclick: (e) => {
+            e.stopPropagation();
+            state.noteLang = l;
+            afterEdit({ list: false });
+          },
+        })
+      )
+    );
+
+    host.appendChild(
+      el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: annotationIndex } }, [
+        styleSelect,
+        rangeInput("from", from),
+        el("span", { class: "guide-annotation-dash", text: "–" }),
+        rangeInput("to", to),
+        langChips,
+        text,
+        el("button", {
+          class: "btn btn-sm",
+          text: "Pick",
+          title: "Pick the first and last card of this note",
+          onclick: () => {
+            state.guide.notePick = { round: roundIndex, index: annotationIndex, from: null };
+            renderRotationDetail();
+            banner("Click the first card of the note, then the last one. Esc cancels.", "info");
+          },
+        }),
+        el("button", {
+          class: "guide-annotation-remove",
+          text: "×",
+          title: "Remove this note",
+          onclick: () => {
+            model.removeGuideAnnotation(id, roundIndex, annotationIndex);
+            afterEdit({ list: false });
+          },
+        }),
+      ])
+    );
+  });
+
+  return host;
+}
+
+/**
+ * The controls for notes that span several rounds. They live in the Rounds card,
+ * not in a round, because the bracket points at the gaps between rounds.
+ */
+function renderRoundNotes(id, rotation, roundCount) {
+  const notes = Array.isArray(rotation.roundNotes) ? rotation.roundNotes : [];
+  const host = el("div", { class: "guide-round-notes" });
+  if (notes.length === 0) return host;
+
+  const model = state.model;
+  const max = Math.max(1, roundCount);
+  host.appendChild(el("h3", { class: "hand-group-title", text: "Round notes" }));
+
+  notes.forEach((note, noteIndex) => {
+    const style = GUIDE_ANNOTATION_STYLES.includes(note.style) ? note.style : "bracket";
+    const from = Math.max(0, Math.min(max - 1, Number(note.from) || 0));
+    const to = Math.max(from, Math.min(max - 1, Number(note.to) || 0));
+
+    const styleSelect = el(
+      "select",
+      { class: "guide-annotation-style", title: "Callout style" },
+      GUIDE_ANNOTATION_STYLES.map((value) => el("option", { value, text: value, selected: value === style }))
+    );
+    styleSelect.addEventListener("change", () => {
+      model.setGuideRoundNoteField(id, noteIndex, "style", styleSelect.value);
+      afterEdit({ list: false });
+    });
+
+    const roundInput = (field, value) => {
+      const input = el("input", {
+        type: "number",
+        min: 1,
+        max,
+        value: value + 1,
+        class: "guide-annotation-index",
+        title: `Round ${field}`,
+      });
+      input.addEventListener("change", () => {
+        model.setGuideRoundNoteField(id, noteIndex, field, Math.max(0, Number(input.value) - 1));
+        afterEdit({ list: false });
+      });
+      return input;
+    };
+
+    const curVal = note.text;
+    const curLang = state.noteLang || "en";
+    const getRoundNoteText = () => {
+      if (!curVal) return "";
+      if (typeof curVal === "object") return curVal[curLang] || "";
+      return curLang === "en" ? curVal : "";
+    };
+    const text = el("input", {
+      type: "text",
+      value: getRoundNoteText(),
+      placeholder: `Note text (${curLang.toUpperCase()})`,
+      class: "guide-annotation-text",
+    });
+    text.addEventListener("change", () => {
+      let newVal;
+      const t = text.value;
+      if (typeof curVal === "object" && curVal !== null) {
+        newVal = { ...curVal, [curLang]: t };
+      } else if (curLang === "en") {
+        newVal = t;
+      } else {
+        newVal = { en: curVal || "", [curLang]: t };
+      }
+      if (typeof newVal === "object" && !newVal.vi && !newVal.cn) newVal = newVal.en || "";
+      model.setGuideRoundNoteField(id, noteIndex, "text", newVal);
+      afterEdit({ list: false });
+    });
+
+    // A freshly added note takes the focus, so the next keystroke types into it.
+    if (state.guide.focusRoundNote === noteIndex) {
+      state.guide.focusRoundNote = null;
+      requestAnimationFrame(() => text.focus());
+    }
+
+    const langChips = el(
+      "div",
+      { class: "note-inline-langs" },
+      ["en", "vi", "cn"].map((l) =>
+        el("button", {
+          class: `chip chip-xs${curLang === l ? " on" : ""}`,
+          text: l.toUpperCase(),
+          type: "button",
+          onclick: (e) => {
+            e.stopPropagation();
+            state.noteLang = l;
+            afterEdit({ list: false });
+          },
+        })
+      )
+    );
+
+    host.appendChild(
+      el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: noteIndex } }, [
+        styleSelect,
+        roundInput("from", from),
+        el("span", { class: "guide-annotation-dash", text: "–" }),
+        roundInput("to", to),
+        langChips,
+        text,
+        el("button", {
+          class: "guide-annotation-remove",
+          text: "×",
+          title: "Remove this note",
+          onclick: () => {
+            model.removeGuideRoundNote(id, noteIndex);
+            afterEdit({ list: false });
+          },
+        }),
+      ])
+    );
+  });
+
+  return host;
+}
+
+/**
+ * Draws the round-note brackets beside the rounds: a vertical line from the first
+ * round to the last, with a tick at each end and the text centred on it.
+ */
+function drawRoundNoteBrackets(root) {
+  const NS = "http://www.w3.org/2000/svg";
+  const rail = root.querySelector(".guide-round-note-rail");
+  const body = root.querySelector(".guide-rounds-body");
+  if (!rail || !body) return;
+  rail.replaceChildren();
+
+  const rounds = [...root.querySelectorAll(".guide-round-editor")];
+  const notes = [...root.querySelectorAll(".guide-round-notes .guide-annotation")];
+  if (rounds.length === 0 || notes.length === 0) return;
+
+    // Measure Y against the rounds body and X against the last card: a slot row is
+    // as wide as its column, so the row's own right edge is not the content edge.
+    const bodyBox = body.getBoundingClientRect();
+    const contentRight = Math.max(
+      ...rounds.map((round) => {
+        const slots = [...round.querySelectorAll(".guide-slot-editor")];
+        if (slots.length === 0) return round.getBoundingClientRect().left;
+        return slots[slots.length - 1].getBoundingClientRect().right;
+      })
+    );
+    const spineX = contentRight - bodyBox.left + 10;
+
+  notes.forEach((note, index) => {
+    const from = rounds[Number(note.dataset.from)];
+    const to = rounds[Number(note.dataset.to)] || from;
+    if (!from || !to) return;
+
+    const a = from.getBoundingClientRect();
+    const b = to.getBoundingClientRect();
+    const top = Math.min(a.top, b.top) - bodyBox.top;
+    const bottom = Math.max(a.bottom, b.bottom) - bodyBox.top;
+    // One lane per note, so several notes stack instead of overlapping.
+    const x = spineX + index * 16;
+
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("width", String(Math.max(1, bodyBox.width)));
+    svg.setAttribute("height", String(Math.max(1, bodyBox.height)));
+    const line = (d) => {
+      const path = document.createElementNS(NS, "path");
+      path.setAttribute("d", d);
+      path.setAttribute("class", "rot-connector");
+      svg.appendChild(path);
+    };
+    const style = note.dataset.style || "bracket";
+    if (style === "box") {
+      line(`M ${x} ${top} V ${bottom}`);
+    } else {
+      // The spine runs beside the rounds and its ticks point back at them, so the
+      // bracket reads as "] rounds" with the text on the outside.
+      line(`M ${x} ${top} H ${x - 5} M ${x} ${bottom} H ${x - 5} M ${x} ${top} V ${bottom}`);
+    }
+
+    const label = note.querySelector(".guide-annotation-text")?.value || "";
+    if (label) {
+      const text = document.createElementNS(NS, "text");
+      text.setAttribute("x", String(x + 8));
+      text.setAttribute("y", String(Math.round((top + bottom) / 2)));
+      text.setAttribute("class", "guide-round-note-label");
+      text.textContent = label;
+      svg.appendChild(text);
+    }
+    rail.appendChild(svg);
+  });
+}
+
+/**
+ * Packs callouts into lanes: a note joins the first lane whose spans it does not
+ * overlap, so notes over different cards sit side by side instead of stacking.
+ * Returns each note's lane index.
+ */
+function packNoteLanes(notes) {
+  const lanes = [];
+  return notes.map((note) => {
+    const lane = lanes.findIndex((spans) => spans.every(([a, b]) => note.to < a || note.from > b));
+    if (lane === -1) {
+      lanes.push([[note.from, note.to]]);
+      return lanes.length - 1;
+    }
+    lanes[lane].push([note.from, note.to]);
+    return lane;
+  });
+}
+
+/**
+ * Draws the notes under the cards, the same bracket + stem the published plan
+ * uses, so the editor shows what the reader will see. Runs after layout because
+ * the spans follow the card widths.
+ */
+function drawEditorBrackets(root) {
+  const NS = "http://www.w3.org/2000/svg";
+  const LANE = 16;
+
+  for (const round of root.querySelectorAll(".guide-round-editor")) {
+    const layer = round.querySelector(".guide-bracket-layer");
+    if (!layer) continue;
+    const slots = [...round.querySelectorAll(".guide-slot-editor")];
+    const rows = [...round.querySelectorAll(".guide-annotation")];
+    layer.replaceChildren();
+    if (rows.length === 0 || slots.length === 0) {
+      layer.style.height = "0px";
+      continue;
+    }
+
+    const lanes = packNoteLanes(
+      rows.map((row) => ({ from: Number(row.dataset.from) || 0, to: Number(row.dataset.to) || 0 }))
+    );
+    const laneCount = Math.max(...lanes) + 1;
+    layer.style.height = `${laneCount * LANE}px`;
+
+    // The SVG is attached before measuring: an empty layer is display:none and
+    // would report a zero box.
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "guide-bracket-rail");
+    layer.appendChild(svg);
+    const base = layer.getBoundingClientRect();
+    svg.setAttribute("width", String(base.width));
+    svg.setAttribute("height", String(base.height));
+
+    rows.forEach((row, index) => {
+      const from = slots[Number(row.dataset.from)];
+      const to = slots[Number(row.dataset.to)] || from;
+      if (!from || !to) return;
+      const a = (from.querySelector(".guide-slot-cards") || from).getBoundingClientRect();
+      const b = (to.querySelector(".guide-slot-cards") || to).getBoundingClientRect();
+      const left = Math.min(a.left, b.left) - base.left;
+      const right = Math.max(a.right, b.right) - base.left;
+      const mid = (left + right) / 2;
+      const top = Math.min(a.bottom, b.bottom) - base.top + 3;
+      const bar = top + 5;
+      const stem = lanes[index] * LANE + 12;
+      const style = row.dataset.style || "bracket";
+
+      const line = (d) => {
+        const path = document.createElementNS(NS, "path");
+        path.setAttribute("d", d);
+        path.setAttribute("class", "rot-connector");
+        svg.appendChild(path);
+      };
+      if (style === "box") {
+        line(`M ${mid} ${top} V ${stem}`);
+      } else if (style === "fork") {
+        line(`M ${left} ${top} V ${bar} H ${right} V ${top}`);
+        line(`M ${mid} ${bar} V ${stem}`);
+      } else {
+        line(`M ${left} ${top} V ${bar} H ${right} V ${top}`);
+        line(`M ${mid} ${bar} V ${stem}`);
+      }
+    });
+  }
+}
 
 /** The icon for one card: the pinned icon wins, else the skill's first variant. */
 function cardIcon(card) {
@@ -2338,9 +2885,9 @@ const TUNING_ICONS = {
   S2: "images/skills/Tuning_S2.png",
 };
 
-/** Special cards are grouped by id prefix; Tuning_S*.png are not special cards. */
+/** Special cards are grouped by id; Tuning_S*.png are not special cards. */
 const SPECIAL_GROUPS = [
-  { key: "archetype", label: "Archetype cards", test: (id) => id.startsWith("790") || id === "228101" },
+  { key: "archetype", label: "Archetype cards", test: (id) => id === "760100" },
   { key: "energy", label: "Energy cards", test: (id) => id.startsWith("780") },
   { key: "myth", label: "Myth cards", test: (id) => id.startsWith("770") },
 ];
@@ -2416,7 +2963,7 @@ function renderRotationList() {
       onclick: () => {
         state.guide.rotation = rotation.id;
         state.guide.hand = null;
-        state.guide.special = false;
+        state.guide.notePick = null;
         renderRotationList();
         renderRotationDetail();
       },
@@ -2624,7 +3171,29 @@ function wireHandPanel(panel) {
   window.addEventListener("resize", () => clampHandPanel(panel));
 }
 
-/** Draws the character/special card hand into the floating panel. */
+/** The floating panel's tabs: slot stamps, the card art, and the extras. */
+const PANEL_TABS = [
+  { key: "ap", label: "AP" },
+  { key: "cards", label: "Cards" },
+  { key: "extra", label: "Extra" },
+];
+
+/** Carries a card, a slot stamp or a tag from the panel to a round. */
+function armDrag(e, payload) {
+  state.drag = payload;
+  if (e?.dataTransfer) {
+    e.dataTransfer.setData("text/plain", JSON.stringify(payload));
+    e.dataTransfer.effectAllowed = "copy";
+  }
+}
+
+/** A click-to-place fallback for every draggable in the panel. */
+function armClick(payload, message) {
+  state.drag = payload;
+  banner(message, "info");
+}
+
+/** Draws the AP / Cards / Tags panel into the floating palette. */
 function renderRotationHand(id) {
   const panel = $("float-hand");
   const body = $("float-hand-body");
@@ -2644,63 +3213,114 @@ function renderRotationHand(id) {
   // The grips have no size until the panel is visible, so wire it here.
   wireHandPanel(panel);
 
-  const members = rotationMembers(rotation);
-  const head = el("div", { class: "pick" }, [
-    el("button", {
-      class: `chip${state.guide.special ? "" : " on"}`,
-      text: "Character",
-      onclick: () => {
-        state.guide.special = false;
-        renderRotationDetail();
-      },
-    }),
-    el("button", {
-      class: `chip${state.guide.special ? " on" : ""}`,
-      text: "Special",
-      onclick: () => {
-        state.guide.special = true;
-        renderRotationDetail();
-      },
-    }),
-  ]);
+  const tab = state.guide.panelTab || "ap";
+  const head = el(
+    "div",
+    { class: "pick hand-tabs" },
+    PANEL_TABS.map((entry) =>
+      el("button", {
+        class: `chip${tab === entry.key ? " on" : ""}`,
+        text: entry.label,
+        onclick: () => {
+          state.guide.panelTab = entry.key;
+          renderRotationDetail();
+        },
+      })
+    )
+  );
   const children = [head];
 
-  if (state.guide.special) {
-    const specials = specialCardIcons().filter((icon) => !/\/Tuning_S\d+\.png$/i.test(icon));
-    // Arm a card for a click-to-place, and let a drag carry it too.
-    const placeCard = (icon) => (e) => {
-      state.drag = { special: icon };
-      if (e?.dataTransfer) {
-        e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
-        e.dataTransfer.effectAllowed = "copy";
-      }
-    };
-    for (const group of SPECIAL_GROUPS) {
-      const icons = specials.filter((icon) => group.test((icon.split("/").pop() || "").replace(/\.png$/i, "")));
-      if (icons.length === 0) continue;
-      children.push(el("h3", { class: "hand-group-title", text: group.label }));
-      const grid = el("div", { class: "special-card-grid" });
-      for (const icon of icons) {
-        const card = el("button", {
-          class: "guide-hand-card is-special",
-          title: group.label.replace(/s$/, ""),
+  if (tab === "ap") {
+    // Each stamp is a slot waiting to be dropped in; the card that fills it is
+    // dragged afterwards, so the AP order can be laid out before the art.
+    const stamp = (type, label, preview) => {
+      const node = el(
+        "button",
+        {
+          class: `guide-stamp is-${type}`,
+          title: `${label} — drag onto a round, or click then click a gap`,
           draggable: "true",
-          onclick: () => {
-            placeCard(icon)();
-            banner(`${group.label.replace(/s$/, "")} armed — click a slot to place it.`, "info");
-          },
-        }, [el("img", { src: `../${icon}`, alt: "" })]);
-        card.addEventListener("dragstart", placeCard(icon));
-        grid.appendChild(card);
-      }
-      children.push(grid);
-    }
-    panel.title = "Special cards";
+          onclick: () => armClick({ kind: "slot", slotType: type }, `${label} armed — click a gap between cards.`),
+        },
+        [
+          preview === "text" || preview === "tuning"
+            ? el("span", { class: `guide-stamp-glyph is-${type}`, text: preview === "text" ? "TEXT" : "TUNE" })
+            : preview === "lb"
+              ? el("span", { class: "guide-stamp-art is-lb" }, [
+                  el("span", { class: "guide-stamp-slot is-full" }),
+                  el("span", { class: "guide-stamp-slot is-quarter" }),
+                ])
+              : el(
+                  "span",
+                  { class: `guide-stamp-art is-${preview}` },
+                  Array.from({ length: preview === "or" ? 2 : 1 }, (_, i) =>
+                    el("span", { class: `guide-stamp-slot${i ? " is-back" : ""}` })
+                  )
+                ),
+          el("span", { class: "guide-stamp-label", text: label }),
+        ]
+      );
+      node.addEventListener("dragstart", (e) => armDrag(e, { kind: "slot", slotType: type }));
+      return node;
+    };
+
+    children.push(
+      el("div", { class: "guide-stamp-grid" }, [
+        stamp("normal", "Normal AP", "normal"),
+        stamp("or", "OR AP", "or"),
+        stamp("lb", "1/4 AP", "lb"),
+      ]),
+      el("h3", { class: "hand-group-title", text: "Notes" }),
+      el("div", { class: "guide-stamp-grid" }, [stamp("text", "Text", "text"), stamp("tuning", "Tuning", "tuning")]),
+      el("p", {
+        class: "hand-help",
+        text: "Drop a stamp between two cards to insert a slot. Dropping a card straight into the round creates the slot for you.",
+      })
+    );
+    panel.title = "AP slots";
+  } else if (tab === "extra") {
+    // Tags change what a slot means; frames change how a card is drawn.
+    children.push(
+      el("h3", { class: "hand-group-title", text: "Tags" }),
+      el("p", { class: "hand-help", text: "Drop a tag on a slot to add it, or on a tagged slot to remove it." }),
+      el("div", { class: "guide-tag-grid" }, GUIDE_SLOT_TAGS.map((tag) => {
+        const sample = tag.image
+          ? el("img", { class: "guide-tag-sample is-image", src: `../${tag.image}`, alt: tag.label })
+          : el("span", { class: "guide-tag-sample", text: tag.label });
+        const tile = el("button", {
+          class: "guide-tag-tile",
+          title: `${tag.label} — drag onto a slot`,
+          draggable: "true",
+          dataset: { tag: tag.key },
+          onclick: () => armClick({ kind: "tag", tag: tag.key }, `${tag.label} armed — click a slot to toggle it.`),
+        }, [sample, el("span", { class: "guide-tag-key", text: tag.key })]);
+        tile.addEventListener("dragstart", (e) => armDrag(e, { kind: "tag", tag: tag.key }));
+        return tile;
+      })),
+
+      el("h3", { class: "hand-group-title", text: "Surface" }),
+      el("p", { class: "hand-help", text: "Drop a surface on a card to lay it over that card's art. Skill 3 cards are drawn in the Ultimate plate." }),
+      el("div", { class: "guide-surface-grid" }, GUIDE_CARD_SURFACES.map((surface) => {
+        const tile = el("button", {
+          class: "guide-surface-tile",
+          title: `${surface.label} — drag onto a card`,
+          draggable: "true",
+          dataset: { surface: surface.key },
+          onclick: () => armClick({ kind: "surface", surface: surface.key }, `${surface.label} surface armed — click a card.`),
+        }, [
+          el("span", { class: "guide-surface-art" }, [el("img", { src: `../${surface.image}`, alt: "" })]),
+          el("span", { class: "guide-surface-label", text: surface.label }),
+        ]);
+        tile.addEventListener("dragstart", (e) => armDrag(e, { kind: "surface", surface: surface.key }));
+        return tile;
+      }))
+    );
+    panel.title = "Extra";
   } else {
     // Every member's cards are shown at once, so placing a card never needs a
     // trip back to a character tab.
     const seen = new Set();
-    for (const member of members) {
+    for (const member of rotationMembers(rotation)) {
       const memberName = model.resolve(member.character);
       if (!memberName || seen.has(memberName)) continue;
       seen.add(memberName);
@@ -2714,31 +3334,43 @@ function renderRotationHand(id) {
             skills.length === 0 ? el("span", { class: "hand-member-note", text: "no icons" }) : null,
           ]),
           el("div", { class: "guide-hand" }, skills.map((entry) => {
-            const arm = (e) => {
-              state.drag = { character: memberName, skill: entry.skill, icon: entry.icon };
-              if (e?.dataTransfer) {
-                e.dataTransfer.setData("text/plain", JSON.stringify(state.drag));
-                e.dataTransfer.effectAllowed = "copy";
-              }
-            };
+            const payload = { kind: "card", character: memberName, skill: entry.skill, icon: entry.icon };
             const card = el("button", {
               class: "guide-hand-card",
               title: `${memberName} · ${entry.skill} — drag onto a slot, or click then click a slot`,
               draggable: "true",
-              onclick: () => {
-                arm();
-                banner(`${memberName} card armed — click a slot to place it.`, "info");
-              },
+              onclick: () => armClick(payload, `${memberName} card armed — click a slot to place it.`),
             }, [el("img", { src: `../${entry.icon}`, alt: "" })]);
-            card.addEventListener("dragstart", arm);
+            card.addEventListener("dragstart", (e) => armDrag(e, payload));
             return card;
           })),
         ])
       );
     }
+
+    const specials = specialCardIcons().filter((icon) => !/\/Tuning_S\d+\.png$/i.test(icon));
+    for (const group of SPECIAL_GROUPS) {
+      const icons = specials.filter((icon) => group.test((icon.split("/").pop() || "").replace(/\.png$/i, "")));
+      if (icons.length === 0) continue;
+      children.push(el("h3", { class: "hand-group-title", text: group.label }));
+      const grid = el("div", { class: "special-card-grid" });
+      for (const icon of icons) {
+        const payload = { kind: "card", special: icon };
+        const card = el("button", {
+          class: "guide-hand-card is-special",
+          title: group.label.replace(/s$/, ""),
+          draggable: "true",
+          onclick: () => armClick(payload, `${group.label.replace(/s$/, "")} armed — click a slot to place it.`),
+        }, [el("img", { src: `../${icon}`, alt: "" })]);
+        card.addEventListener("dragstart", (e) => armDrag(e, payload));
+        grid.appendChild(card);
+      }
+      children.push(grid);
+    }
+    panel.title = "Cards";
   }
 
-  $("float-hand-title").textContent = state.guide.special ? "Special cards" : "Character cards";
+  $("float-hand-title").textContent = panel.title;
   body.replaceChildren(...children);
 }
 
@@ -2796,11 +3428,14 @@ function renderRotationDetail() {
     afterEdit();
   });
 
-  const notesInput = el("textarea", { rows: 2, style: "width:100%" });
-  notesInput.value = rotation.notes || "";
-  notesInput.addEventListener("change", () => {
-    model.setGuideRotationField(id, "notes", notesInput.value);
-    afterEdit({ list: false });
+  const notesField = renderMultilingualNotesEditor({
+    value: rotation.notes,
+    onSave: (val) => {
+      model.setGuideRotationField(id, "notes", val);
+      afterEdit({ list: false });
+    },
+    placeholder: "General rotation instructions, substitutes, notes…",
+    asCard: false,
   });
 
   const tuningRow = el("div", { class: "pick" });
@@ -2843,7 +3478,7 @@ function renderRotationDetail() {
       el("div", { class: "field" }, [el("label", { class: "field-label", text: "Name" }), nameInput]),
       el("div", { class: "field" }, [el("label", { class: "field-label", text: "Tuning" }), tuningRow]),
       el("div", { class: "field" }, [el("label", { class: "field-label", text: "Archetype tags" }), archetypeRow]),
-      el("div", { class: "field" }, [el("label", { class: "field-label", text: "Notes" }), notesInput]),
+      notesField,
     ])
   );
 
@@ -2900,32 +3535,114 @@ function renderRotationDetail() {
   const roundsCard = el("div", { class: "card" }, [
     el("div", { class: "card-head" }, [
       el("h2", { text: "Rounds" }),
-      el("button", { class: "btn btn-sm", text: "+ Round", onclick: () => { model.addGuideRound(id); afterEdit(); } }),
+      el("div", { class: "pick", style: "align-items: center; gap: 8px;" }, [
+        el(
+          "div",
+          { class: "list-filters", style: "margin: 0;", title: "Language for editing bracket & round notes" },
+          ["en", "vi", "cn"].map((l) =>
+            el("button", {
+              class: `chip${(state.noteLang || "en") === l ? " on" : ""}`,
+              text: l.toUpperCase(),
+              type: "button",
+              onclick: () => {
+                state.noteLang = l;
+                afterEdit({ list: false });
+              },
+            })
+          )
+        ),
+        el("button", {
+          class: "btn btn-sm",
+          text: "+ Round note",
+          title: "A bracket beside several rounds, for “repeat these rounds”",
+          onclick: () => {
+            const count = rounds.length;
+            if (count === 0) {
+              banner("Add a round first, so the note has something to span.", "info");
+              return;
+            }
+            const existing = Array.isArray(rotation.roundNotes) ? rotation.roundNotes.length : 0;
+            state.guide.focusRoundNote = existing;
+            model.addGuideRoundNote(id, 0, Math.min(count - 1, 1), "", "bracket");
+            afterEdit({ list: false });
+          },
+        }),
+        el("button", { class: "btn btn-sm", text: "+ Round", onclick: () => { model.addGuideRound(id); afterEdit(); } }),
+      ]),
     ]),
-    el("p", { class: "hint", text: "Add the slot types you need: Normal AP holds one card, OR AP holds either of two, 1/4 AP (LB) draws the card at a quarter size, Text is a free note. Free AP and Precast hold one card each and only differ in the label. Tuning holds a text box and a choice of Tuning S1 or Tuning S2." }),
+    el("p", {
+      class: "hint",
+      text: "Lay the turn out from the card panel: drag Normal AP, OR AP or 1/4 AP between two cards to insert a slot, then drop a card onto the placeholder. Tags (AP Free, Precast) and the card surfaces come from the Extra tab. Hover a card to mark it as an ultimate or as the preferred side of an OR slot.",
+    }),
   ]);
+
+  const hasRoundNotes = Array.isArray(rotation.roundNotes) && rotation.roundNotes.length > 0;
+  const roundsBody = el("div", { class: `guide-rounds-body${hasRoundNotes ? " has-round-notes" : ""}` }, [
+    el("div", { class: "guide-rounds-column" }),
+    el("div", { class: "guide-round-note-rail" }),
+  ]);
+  const roundsColumn = roundsBody.firstChild;
 
   rounds.forEach((round, roundIndex) => {
     const roundEl = el("div", { class: "guide-round-editor" });
-
-    const roundNote = el("input", { type: "text", value: round.note || "", placeholder: "Round note (optional)", class: "guide-round-note-input" });
+    const curRoundNoteVal = round.note;
+    const curLang = state.noteLang || "en";
+    const getRoundNoteTitle = () => {
+      if (!curRoundNoteVal) return "";
+      if (typeof curRoundNoteVal === "object") return curRoundNoteVal[curLang] || "";
+      return curLang === "en" ? curRoundNoteVal : "";
+    };
+    const roundNote = el("input", {
+      type: "text",
+      value: getRoundNoteTitle(),
+      placeholder: `Round note (${curLang.toUpperCase()})`,
+      class: "guide-round-note-input",
+    });
     roundNote.addEventListener("change", () => {
-      model.setGuideRoundNote(id, roundIndex, roundNote.value);
+      let newVal;
+      const t = roundNote.value;
+      if (typeof curRoundNoteVal === "object" && curRoundNoteVal !== null) {
+        newVal = { ...curRoundNoteVal, [curLang]: t };
+      } else if (curLang === "en") {
+        newVal = t;
+      } else {
+        newVal = { en: curRoundNoteVal || "", [curLang]: t };
+      }
+      if (typeof newVal === "object" && !newVal.vi && !newVal.cn) newVal = newVal.en || "";
+      model.setGuideRoundNote(id, roundIndex, newVal);
       afterEdit({ list: false });
     });
 
     roundEl.appendChild(
+      el("span", {
+        class: "guide-turn-no",
+        text: String(roundIndex + 1).padStart(2, "0"),
+        title: `Round ${roundIndex + 1}`,
+      })
+    );
+
+    roundEl.appendChild(
       el("div", { class: "guide-turn-head" }, [
-        el("span", { class: "guide-turn-no", text: `Round ${String(roundIndex + 1).padStart(2, "0")}` }),
+        roundNote,
         el("div", { class: "pick" }, [
-          roundNote,
-          el("button", { class: "btn btn-sm", text: "+ Normal AP", title: "One card", onclick: () => { model.addGuideSlot(id, roundIndex, "normal"); afterEdit(); } }),
-          el("button", { class: "btn btn-sm", text: "+ OR AP", title: "Either of two cards", onclick: () => { model.addGuideSlot(id, roundIndex, "or"); afterEdit(); } }),
-          el("button", { class: "btn btn-sm", text: "+ Free AP", title: "One card, labelled Free AP", onclick: () => { model.addGuideSlot(id, roundIndex, "free"); afterEdit(); } }),
-          el("button", { class: "btn btn-sm", text: "+ Tuning", title: "A text box plus Tuning S1 / Tuning S2", onclick: () => { model.addGuideSlot(id, roundIndex, "tuning"); afterEdit(); } }),
-          el("button", { class: "btn btn-sm", text: "+ Precast", title: "One card, labelled Precast", onclick: () => { model.addGuideSlot(id, roundIndex, "precast"); afterEdit(); } }),
-          el("button", { class: "btn btn-sm", text: "+ 1/4 AP (LB)", title: "A quarter-size card", onclick: () => { model.addGuideSlot(id, roundIndex, "lb"); afterEdit(); } }),
-          el("button", { class: "btn btn-sm", text: "+ Text", title: "Free text instead of a card", onclick: () => { model.addGuideSlot(id, roundIndex, "text"); afterEdit(); } }),
+          el("button", {
+            class: "btn btn-sm",
+            text: "+ Note",
+            title: "Add a free bracket note under the cards",
+            onclick: () => {
+              const count = Array.isArray(round.slots) ? round.slots.length : 0;
+              if (count === 0) {
+                banner("Add a card first, so the note has something to point at.", "info");
+                return;
+              }
+              // The note appears straight away and spans the round; the ends are
+              // then adjusted with the arrows or by picking two cards.
+              const existing = Array.isArray(round.annotations) ? round.annotations.length : 0;
+              state.guide.focusNote = { round: roundIndex, index: existing };
+              model.addGuideAnnotation(id, roundIndex, 0, count - 1, "", "bracket");
+              afterEdit({ list: false });
+            },
+          }),
           el("button", {
             class: "btn btn-sm",
             text: "Duplicate round",
@@ -2939,22 +3656,63 @@ function renderRotationDetail() {
 
     const slotRow = el("div", { class: "guide-slot-row" });
     const slots = Array.isArray(round.slots) ? round.slots : [];
+
+    /** One insertion point between two slots. */
+    const gap = (at) => {
+      const node = el("span", {
+        class: `guide-drop-gap${slots.length === 0 ? " is-empty" : ""}`,
+        title: "Drop a card or a slot here",
+      });
+      node.addEventListener("dragover", (e) => {
+        const drag = state.drag;
+        if (!drag || drag.kind === "rotation-slot") return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = drag.kind === "tag" ? "none" : "copy";
+        node.classList.add("is-target");
+      });
+      node.addEventListener("dragleave", () => node.classList.remove("is-target"));
+      node.addEventListener("drop", (e) => {
+        node.classList.remove("is-target");
+        const drag = readDragPayload(e);
+        if (!drag || drag.kind === "rotation-slot" || drag.kind === "tag") return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (drag.kind === "slot") model.insertRoundSlot(id, roundIndex, at, { type: drag.slotType });
+        else model.insertRoundSlot(id, roundIndex, at, { type: "normal", cards: [drag] });
+        state.drag = null;
+        afterEdit();
+      });
+      // Clicking a gap works only while something is armed, so a stray click
+      // never adds a slot.
+      node.addEventListener("click", () => {
+        const drag = state.drag;
+        if (!drag || drag.kind === "rotation-slot" || drag.kind === "tag") return;
+        if (drag.kind === "slot") model.insertRoundSlot(id, roundIndex, at, { type: drag.slotType });
+        else model.insertRoundSlot(id, roundIndex, at, { type: "normal", cards: [drag] });
+        state.drag = null;
+        afterEdit();
+      });
+      return node;
+    };
+
+    slotRow.appendChild(gap(0));
+
     slots.forEach((slot, slotIndex) => {
-      const type = slot.type || "normal";
+      const type = guideSlotLayout(slot);
+      const tags = guideSlotTags(slot);
       const cards = Array.isArray(slot.cards) ? slot.cards : [];
-      const slotEl = el("div", { class: `guide-slot-editor is-${type}` });
+      const slotEl = el("div", { class: `guide-slot-editor is-${type}${tags.length ? " has-tags" : ""}` });
 
       // Every slot is draggable by its handle, so a turn's AP order can be
       // rearranged without deleting and re-adding cards.
-      slotEl.appendChild(
-        el("span", {
-          class: "drag-handle slot-order-handle",
-          text: "⠿",
-          title: "Drag to reorder this AP slot",
-          draggable: "true",
-        })
-      );
-      const orderHandle = slotEl.firstChild;
+      const orderHandle = el("span", {
+        class: "drag-handle slot-order-handle",
+        text: "⠿",
+        title: "Drag to reorder this AP slot",
+        draggable: "true",
+      });
+      slotEl.appendChild(orderHandle);
       orderHandle.addEventListener("dragstart", (e) => {
         state.drag = { kind: "rotation-slot", id, round: roundIndex, index: slotIndex };
         slotEl.classList.add("dragging");
@@ -2970,15 +3728,7 @@ function renderRotationDetail() {
         }
       });
 
-      if (type === "text") {
-        const textInput = el("textarea", { rows: 3, class: "guide-slot-text", placeholder: "Text" });
-        textInput.value = slot.text || "";
-        textInput.addEventListener("change", () => {
-          model.setGuideSlotText(id, roundIndex, slotIndex, textInput.value);
-          afterEdit({ list: false });
-        });
-        slotEl.appendChild(textInput);
-      } else if (type === "tuning") {
+      if (type === "text" || type === "tuning") {
         const textInput = el("textarea", { rows: 3, class: "guide-slot-text", placeholder: "Text" });
         textInput.value = slot.text || "";
         textInput.addEventListener("change", () => {
@@ -2987,52 +3737,143 @@ function renderRotationDetail() {
         });
         slotEl.appendChild(textInput);
 
-        // The tuning icon is a choice, not a drop target. Read the current card
-        // on every click, because the slot element is not re-created in place.
-        const currentIcon = () => slot.cards?.[0]?.special
-          || model.guideRotations().find((r) => r && r.id === id)?.rounds?.[roundIndex]?.slots?.[slotIndex]?.cards?.[0]?.special
-          || "";
-        const iconRow = el("div", { class: "guide-slot-tuning-icons" });
-        for (const [key, icon] of Object.entries(TUNING_ICONS)) {
-          iconRow.appendChild(
-            el("button", {
-              class: `guide-tuning-icon${currentIcon() === icon ? " on" : ""}`,
-              title: `Tuning ${key}`,
-              "aria-pressed": currentIcon() === icon ? "true" : "false",
-              onclick: (e) => {
-                e.stopPropagation();
-                model.setGuideTuningIcon(id, roundIndex, slotIndex, currentIcon() === icon ? "" : icon);
-                afterEdit({ list: false });
-              },
-            }, [el("img", { src: `../${icon}`, alt: key })])
-          );
-        }
-        slotEl.appendChild(iconRow);
-      } else {
-        const cardRow = el("div", { class: "guide-slot-cards" });
-        cards.forEach((card, cardIndex) => {
-          if (cardIndex > 0) cardRow.appendChild(el("span", { class: "guide-or", text: "or" }));
-          cardRow.appendChild(
-            el("span", { class: "guide-slot-card", title: card.special ? "Special card" : `${card.character} · ${card.skill}` }, [
-              el("img", { src: cardIcon(card), alt: "" }),
+        if (type === "tuning") {
+          // The tuning icon is a choice, not a drop target. Read the current
+          // card on every click, because the slot is not re-created in place.
+          const currentIcon = () => slot.cards?.[0]?.special
+            || model.guideRotations().find((r) => r && r.id === id)?.rounds?.[roundIndex]?.slots?.[slotIndex]?.cards?.[0]?.special
+            || "";
+          const iconRow = el("div", { class: "guide-slot-tuning-icons" });
+          for (const [key, icon] of Object.entries(TUNING_ICONS)) {
+            iconRow.appendChild(
               el("button", {
-                class: "guide-slot-remove",
-                text: "×",
-                title: "Remove this card",
+                class: `guide-tuning-icon${currentIcon() === icon ? " on" : ""}`,
+                title: `Tuning ${key}`,
+                "aria-pressed": currentIcon() === icon ? "true" : "false",
                 onclick: (e) => {
                   e.stopPropagation();
-                  model.removeGuideSlotCard(id, roundIndex, slotIndex, cardIndex);
-                  afterEdit();
+                  model.setGuideTuningIcon(id, roundIndex, slotIndex, currentIcon() === icon ? "" : icon);
+                  afterEdit({ list: false });
+                },
+              }, [el("img", { src: `../${icon}`, alt: key })])
+            );
+          }
+          slotEl.appendChild(iconRow);
+        }
+      } else {
+        const cardRow = el("div", { class: "guide-slot-cards" });
+        const badge = tags.map(guideTagInfo).find((tag) => tag && tag.kind === "badge");
+        const plaques = tags.map(guideTagInfo).filter((tag) => tag && tag.kind === "plaque");
+        // Both plates hang off the slot's first card, so they stay on its corner
+        // whatever shape the card is.
+        const plates = [
+          ...(badge ? [guideTagPlate(badge)] : []),
+          ...plaques.map((tag) => guideTagPlate(tag)),
+        ];
+
+        // An OR slot always shows two places; a normal slot one. The second
+        // placeholder is what makes "either of two" visible before a drop.
+        const places = type === "or" ? 2 : 1;
+        for (let cardIndex = 0; cardIndex < Math.max(places, cards.length); cardIndex++) {
+          const card = cards[cardIndex];
+          if (cardIndex > 0) {
+            cardRow.appendChild(el("span", { class: "guide-or", text: "or" }));
+          }
+          if (!card) {
+            // An empty slot shows the placeholder face, so the AP order reads
+            // before any art exists.
+            cardRow.appendChild(
+              el("span", { class: `guide-slot-card is-empty${badge ? " has-badge" : ""}`, title: "Drop a card here" }, [
+                ...(cardIndex === 0 ? plates : []),
+                el("img", { class: "guide-card-art", src: "../images/card_modulo/Normal.png", alt: "" }),
+              ])
+            );
+            continue;
+          }
+          const layers = guideCardLayers(card, cardIcon(card));
+          const cardEl = el("span", {
+            class: `guide-slot-card${layers.ultimate ? " is-ultimate" : ""}${layers.surface ? ` has-surface is-surface-${layers.surface.key}` : ""}${type === "lb" ? " is-lb" : ""}${card.preferred ? " is-preferred" : ""}${cardIndex === 0 && badge ? " has-badge" : ""}`,
+            title: card.special ? "Special card" : `${card.character} · ${card.skill}`,
+            dataset: { frame: layers.ultimate ? "ultimate" : "normal", surface: layers.surface?.key || "" },
+          }, [
+            ...layers.html,
+            ...(cardIndex === 0 ? plates : []),
+            el("span", { class: "guide-card-tools" }, [
+              el("button", {
+                class: `guide-card-tool${layers.ultimate ? " on" : ""}`,
+                text: "U",
+                title: "Toggle the Ultimate plate",
+                onclick: (e) => {
+                  e.stopPropagation();
+                  model.setGuideCardField(id, roundIndex, slotIndex, cardIndex, "frame", layers.ultimate ? "normal" : "ultimate");
+                  afterEdit({ list: false });
                 },
               }),
-            ])
-          );
-        });
-        if (cards.length === 0) cardRow.appendChild(el("span", { class: "guide-slot-empty", text: "+" }));
-        slotEl.appendChild(cardRow);
-      }
+              type === "or"
+                ? el("button", {
+                    class: `guide-card-tool${card.preferred ? " on" : ""}`,
+                    text: "\u2605",
+                    title: "Preferred card of this OR slot",
+                    onclick: (e) => {
+                      e.stopPropagation();
+                      model.setGuideCardField(id, roundIndex, slotIndex, cardIndex, "preferred", !card.preferred);
+                      afterEdit({ list: false });
+                    },
+                  })
+                : null,
+            ]),
+            el("button", {
+              class: "guide-slot-remove",
+              text: "\u00d7",
+              title: "Remove this card",
+              onclick: (e) => {
+                e.stopPropagation();
+                model.removeGuideSlotCard(id, roundIndex, slotIndex, cardIndex);
+                afterEdit();
+              },
+            }),
+          ]);
 
-      slotEl.appendChild(el("span", { class: "guide-slot-type", text: SLOT_LABELS[type] || SLOT_LABELS.normal }));
+          // A surface dragged from the Extra tab decorates this card.
+          const applySurface = (key) => {
+            model.setGuideCardField(id, roundIndex, slotIndex, cardIndex, "surface", key);
+            afterEdit({ list: false });
+          };
+          cardEl.addEventListener("dragover", (e) => {
+            if (state.drag?.kind !== "surface") return;
+            e.preventDefault();
+            e.stopPropagation();
+            cardEl.classList.add("is-target");
+          });
+          cardEl.addEventListener("dragleave", () => cardEl.classList.remove("is-target"));
+          cardEl.addEventListener("drop", (e) => {
+            const drag = readDragPayload(e);
+            if (drag?.kind !== "surface") return;
+            e.preventDefault();
+            e.stopPropagation();
+            cardEl.classList.remove("is-target");
+            state.drag = null;
+            applySurface(drag.surface);
+          });
+          cardEl.addEventListener("click", (e) => {
+            if (state.drag?.kind !== "surface") return;
+            e.stopPropagation();
+            const key = state.drag.surface;
+            state.drag = null;
+            applySurface(key);
+          });
+
+          cardRow.appendChild(cardEl);
+                                  }
+                                  slotEl.appendChild(cardRow);
+                                }
+
+      // The layout caption only appears when it says something the cards do not
+      // already say: an OR slot's pair and a 1/4 AP card's size speak for
+      // themselves.
+      if (type !== "normal" && type !== "lb" && type !== "or") {
+        slotEl.appendChild(el("span", { class: "guide-slot-type", text: SLOT_LABELS[type] || type }));
+      }
       slotEl.appendChild(
         el("button", {
           class: "guide-slot-remove-slot",
@@ -3049,7 +3890,8 @@ function renderRotationDetail() {
       // a card onto it, so both gestures can share the same element.
       slotEl.addEventListener("dragover", (e) => {
         const drag = state.drag;
-        if (drag && drag.kind === "rotation-slot") {
+        if (!drag) return;
+        if (drag.kind === "rotation-slot") {
           if (drag.round !== roundIndex || drag.index === slotIndex) return;
           e.preventDefault();
           e.stopPropagation();
@@ -3060,20 +3902,34 @@ function renderRotationDetail() {
           slotEl.classList.toggle("drop-after", !before);
           return;
         }
+        if (drag.kind === "tag") {
+          e.preventDefault();
+          e.stopPropagation();
+          slotEl.classList.add("is-target-tag");
+          return;
+        }
+        if (drag.kind === "slot") {
+          e.preventDefault();
+          e.stopPropagation();
+          slotEl.classList.add("is-target");
+          return;
+        }
         if (type === "text" || type === "tuning") return;
         e.preventDefault();
+        e.stopPropagation();
         slotEl.classList.add("is-target");
       });
 
       slotEl.addEventListener("dragleave", () => {
-        slotEl.classList.remove("is-target", "drop-before", "drop-after");
+        slotEl.classList.remove("is-target", "is-target-tag", "drop-before", "drop-after");
       });
 
       slotEl.addEventListener("drop", (e) => {
-        const drag = state.drag;
-        slotEl.classList.remove("is-target", "drop-before", "drop-after");
+        const drag = readDragPayload(e);
+        slotEl.classList.remove("is-target", "is-target-tag", "drop-before", "drop-after");
+        if (!drag) return;
 
-        if (drag && drag.kind === "rotation-slot") {
+        if (drag.kind === "rotation-slot") {
           if (drag.round !== roundIndex || drag.index === slotIndex) return;
           e.preventDefault();
           e.stopPropagation();
@@ -3091,39 +3947,359 @@ function renderRotationDetail() {
           return;
         }
 
+        if (drag.kind === "tag") {
+          e.preventDefault();
+          e.stopPropagation();
+          model.setGuideSlotTag(id, roundIndex, slotIndex, drag.tag, !tags.includes(drag.tag));
+          state.drag = null;
+          afterEdit({ list: false });
+          return;
+        }
+
+        if (drag.kind === "slot") {
+          e.preventDefault();
+          e.stopPropagation();
+          model.insertRoundSlot(id, roundIndex, slotIndex + 1, { type: drag.slotType });
+          state.drag = null;
+          afterEdit();
+          return;
+        }
+
         // A Tuning slot picks S1/S2 with its icon buttons instead of taking cards.
         if (type === "text" || type === "tuning") return;
         e.preventDefault();
-        let payload = drag;
-        try {
-          const raw = e.dataTransfer?.getData("text/plain");
-          if (raw) payload = JSON.parse(raw);
-        } catch {
-          // keep the armed card
-        }
-        if (!payload) return;
-        model.addGuideSlotCard(id, roundIndex, slotIndex, payload);
+        e.stopPropagation();
+        model.addGuideSlotCard(id, roundIndex, slotIndex, drag);
+        state.drag = null;
         afterEdit();
       });
 
-      if (type !== "text" && type !== "tuning") {
-        slotEl.addEventListener("click", () => {
-          if (!state.drag || state.drag.kind === "rotation-slot") return;
-          model.addGuideSlotCard(id, roundIndex, slotIndex, state.drag);
-          afterEdit();
-        });
-      }
+      slotEl.addEventListener("click", (e) => {
+        if (e.target.closest("button, textarea, input, select")) return;
+
+        // Picking the ends of a note wins over placing a card.
+        const pick = state.guide.notePick;
+        if (pick && pick.round === roundIndex) {
+          if (pick.from === null) {
+            pick.from = slotIndex;
+            banner("Now click the last card of the note.", "info");
+          } else {
+            const a = Math.min(pick.from, slotIndex);
+            const b = Math.max(pick.from, slotIndex);
+            if (typeof pick.index === "number") {
+              model.setGuideAnnotationField(id, roundIndex, pick.index, "from", a);
+              model.setGuideAnnotationField(id, roundIndex, pick.index, "to", b);
+            } else {
+              model.addGuideAnnotation(id, roundIndex, a, b);
+            }
+            state.guide.notePick = null;
+            afterEdit({ list: false });
+          }
+          return;
+        }
+
+        const drag = state.drag;
+        if (!drag) return;
+        if (drag.kind === "tag") {
+          model.setGuideSlotTag(id, roundIndex, slotIndex, drag.tag, !tags.includes(drag.tag));
+          state.drag = null;
+          afterEdit({ list: false });
+          return;
+        }
+        if (drag.kind === "slot") return;
+        if (type === "text" || type === "tuning") return;
+        model.addGuideSlotCard(id, roundIndex, slotIndex, drag);
+        state.drag = null;
+        afterEdit();
+      });
 
       slotRow.appendChild(slotEl);
+      slotRow.appendChild(gap(slotIndex + 1));
     });
 
-    if (slots.length === 0) slotRow.appendChild(el("span", { class: "field-note", text: "No slots yet." }));
     roundEl.appendChild(slotRow);
-    roundsCard.appendChild(roundEl);
+
+    // The notes are drawn under the cards exactly as they appear in the plan;
+    // the rows below are the controls for them.
+    const annotations = Array.isArray(round.annotations) ? round.annotations : [];
+    const bracketLayer = el("div", { class: "guide-bracket-layer" });
+    bracketLayer.style.height = `${Math.max(0, annotations.length) * 16}px`;
+    roundEl.appendChild(bracketLayer);
+    roundEl.appendChild(renderRoundAnnotations(id, roundIndex, round, slots.length));
+    roundsColumn.appendChild(roundEl);
   });
 
-  if (rounds.length === 0) roundsCard.appendChild(el("p", { class: "hint", text: "No rounds yet." }));
+  if (rounds.length === 0) roundsColumn.appendChild(el("p", { class: "hint", text: "No rounds yet." }));
+  roundsCard.appendChild(roundsBody);
+  roundsCard.appendChild(renderRoundNotes(id, rotation, rounds.length));
   host.appendChild(roundsCard);
+  // The note brackets follow the cards, so they are measured once laid out.
+  requestAnimationFrame(() => {
+    drawEditorBrackets(host);
+    drawRoundNoteBrackets(host);
+  });
+}
+
+/* ------------------------------------------------------------------ *
+ * Multilingual notes helper
+ * ------------------------------------------------------------------ */
+
+function renderMultilingualNotesEditor({ value, onSave, placeholder = "Optional notes", asCard = true }) {
+  let noteLang = state.noteLang || "en";
+
+  const getVal = (lang) => {
+    if (!value) return "";
+    if (typeof value === "object") return value[lang] || "";
+    return lang === "en" ? value : "";
+  };
+
+  const container = el("div", { class: asCard ? "card" : "field" });
+  const headRow = el(
+    "div",
+    { style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;" },
+    [
+      asCard
+        ? el("h2", { text: "Notes", style: "margin: 0;" })
+        : el("label", { class: "field-label", text: "Notes", style: "margin: 0;" }),
+    ]
+  );
+
+  const tabGroup = el("div", { class: "list-filters", style: "margin: 0;" });
+  ["en", "vi", "cn"].forEach((l) => {
+    const chip = el("button", {
+      class: `chip${noteLang === l ? " on" : ""}`,
+      text: l.toUpperCase(),
+      type: "button",
+      onclick: () => {
+        noteLang = l;
+        state.noteLang = l;
+        textarea.value = getVal(l);
+        textarea.placeholder = `${placeholder} (${l.toUpperCase()})`;
+        [...tabGroup.children].forEach((c, idx) => {
+          c.classList.toggle("on", ["en", "vi", "cn"][idx] === l);
+        });
+      },
+    });
+    tabGroup.appendChild(chip);
+  });
+  headRow.appendChild(tabGroup);
+  container.appendChild(headRow);
+
+  const textarea = el("textarea", {
+    rows: asCard ? 3 : 2,
+    style: "width:100%",
+    placeholder: `${placeholder} (${noteLang.toUpperCase()})`,
+  });
+  textarea.value = getVal(noteLang);
+
+  textarea.addEventListener("change", () => {
+    let newVal;
+    const txt = textarea.value;
+    if (typeof value === "object" && value !== null) {
+      newVal = { ...value, [noteLang]: txt };
+    } else if (noteLang === "en") {
+      newVal = txt;
+    } else {
+      newVal = { en: value || "", [noteLang]: txt };
+    }
+    if (typeof newVal === "object") {
+      if (!newVal.vi && !newVal.cn) newVal = newVal.en || "";
+    }
+    onSave(newVal);
+  });
+
+  container.appendChild(textarea);
+  return container;
+}
+
+/* ------------------------------------------------------------------ *
+ * i18n — translations (i18n.json)
+ * ------------------------------------------------------------------ */
+
+function renderI18nList() {
+  const host = $("i18n-list-body");
+  if (!host || !state.model) return;
+  host.replaceChildren();
+
+  const allKeys = state.model.i18nKeys;
+  const searchInput = $("i18n-search");
+  const query = (searchInput ? searchInput.value : state.i18n.search || "").trim().toLowerCase();
+
+  // Namespace filter chips
+  const filtersHost = $("i18n-filters");
+  if (filtersHost) {
+    const namespaces = ["all", "action", "afflatus", "builds", "pattern", "reso", "rotations", "team", "toolbar"];
+    filtersHost.replaceChildren();
+    namespaces.forEach((ns) => {
+      const active = (state.i18n.filterNs === null && ns === "all") || state.i18n.filterNs === ns;
+      const chip = el("button", {
+        class: `chip${active ? " on" : ""}`,
+        text: ns === "all" ? "All" : ns,
+        onclick: () => {
+          state.i18n.filterNs = ns === "all" ? null : ns;
+          renderI18nList();
+        },
+      });
+      filtersHost.appendChild(chip);
+    });
+
+    const newBtn = el("button", {
+      class: "chip",
+      text: "+ New key",
+      onclick: () => promptNewI18nKey(),
+    });
+    filtersHost.appendChild(newBtn);
+  }
+
+  const filtered = allKeys.filter((key) => {
+    if (state.i18n.filterNs && !key.startsWith(state.i18n.filterNs + ".")) return false;
+    if (!query) return true;
+    if (key.toLowerCase().includes(query)) return true;
+    const entry = state.model.i18nEntry(key);
+    if (String(entry.en).toLowerCase().includes(query)) return true;
+    if (String(entry.cn).toLowerCase().includes(query)) return true;
+    if (String(entry.vi).toLowerCase().includes(query)) return true;
+    return false;
+  });
+
+  const countEl = $("i18n-count");
+  if (countEl) countEl.textContent = `${filtered.length} key${filtered.length === 1 ? "" : "s"}`;
+
+  if (!state.i18n.selectedKey || !filtered.includes(state.i18n.selectedKey)) {
+    state.i18n.selectedKey = filtered[0] || null;
+  }
+
+  filtered.forEach((key) => {
+    const entry = state.model.i18nEntry(key);
+    const parts = key.split(".");
+    const ns = parts.length > 1 ? parts[0] : "";
+    const nameWithoutNs = parts.length > 1 ? parts.slice(1).join(".") : key;
+
+    const isCurrent = key === state.i18n.selectedKey;
+    const item = el(
+      "div",
+      {
+        class: `i18n-row${isCurrent ? " on" : ""}`,
+        onclick: () => {
+          state.i18n.selectedKey = key;
+          renderI18nList();
+          renderI18nDetail();
+        },
+      },
+      [
+        el("div", { class: "i18n-row-main" }, [
+          el("div", { class: "i18n-row-header" }, [
+            ns ? el("span", { class: "flag flag-ns", text: ns }) : null,
+            el("span", { class: "i18n-key", text: nameWithoutNs, title: key }),
+          ]),
+          el("div", { class: "i18n-preview", text: entry.en || entry.cn || entry.vi || "—" }),
+        ]),
+        el("div", { class: "i18n-lang-dots" }, [
+          el("span", {
+            class: `i18n-dot${entry.en ? " has" : ""}`,
+            title: entry.en ? `EN: ${entry.en}` : "EN missing",
+            text: "EN",
+          }),
+          el("span", {
+            class: `i18n-dot${entry.vi ? " has" : ""}`,
+            title: entry.vi ? `VI: ${entry.vi}` : "VI missing",
+            text: "VI",
+          }),
+          el("span", {
+            class: `i18n-dot${entry.cn ? " has" : ""}`,
+            title: entry.cn ? `CN: ${entry.cn}` : "CN missing",
+            text: "CN",
+          }),
+        ]),
+      ]
+    );
+    host.appendChild(item);
+  });
+
+  renderI18nDetail();
+}
+
+function promptNewI18nKey() {
+  const key = window.prompt("Enter new translation key (e.g. reso.MyKey or custom.text):");
+  if (!key || !key.trim()) return;
+  const trimmed = key.trim();
+  state.model.addI18nKey(trimmed, { en: "", cn: "", vi: "" });
+  state.i18n.selectedKey = trimmed;
+  afterEdit({ list: true, detail: true });
+}
+
+function renderI18nDetail() {
+  const host = $("i18n-detail");
+  if (!host || !state.model) return;
+  host.replaceChildren();
+
+  const key = state.i18n.selectedKey;
+  if (!key) {
+    host.appendChild(el("div", { class: "empty", text: "Select a translation key." }));
+    return;
+  }
+
+  const entry = state.model.i18nEntry(key);
+  const parts = key.split(".");
+  const ns = parts.length > 1 ? parts[0] : "general";
+
+  const head = el("div", { class: "detail-head" }, [
+    el("div", { class: "title-row" }, [
+      el("h1", { text: key }),
+      el("span", { class: "tag", text: ns }),
+    ]),
+  ]);
+
+  const makeLangField = (langCode, langLabel, value) => {
+    const isMultiLine = String(value).includes("\n") || String(value).length > 60;
+    const input = isMultiLine
+      ? el("textarea", { rows: 3, style: "width:100%" })
+      : el("input", { type: "text", style: "width:100%" });
+    input.value = value;
+    input.addEventListener("change", () => {
+      state.model.setI18nEntry(langCode, key, input.value);
+      afterEdit({ list: true, detail: false });
+    });
+    return el("div", { class: "field", style: "margin-bottom: 14px;" }, [
+      el(
+        "label",
+        {
+          class: "field-label",
+          style: "font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;",
+        },
+        [
+          el("span", { text: langLabel }),
+          el("span", { class: "tag", text: langCode.toUpperCase() }),
+        ]
+      ),
+      input,
+    ]);
+  };
+
+  const fieldsCard = el("div", { class: "card" }, [
+    el("h2", { text: "Translations" }),
+    makeLangField("en", "English", entry.en),
+    makeLangField("vi", "Tiếng Việt", entry.vi),
+    makeLangField("cn", "中文 (Chinese)", entry.cn),
+  ]);
+
+  const actionsCard = el("div", { class: "card", style: "margin-top: 16px;" }, [
+    el("button", {
+      class: "btn btn-danger",
+      text: "Delete key",
+      onclick: () => {
+        if (confirm(`Delete key "${key}" across all languages?`)) {
+          state.model.removeI18nKey(key);
+          state.i18n.selectedKey = null;
+          afterEdit({ list: true, detail: true });
+        }
+      },
+    }),
+  ]);
+
+  host.appendChild(head);
+  host.appendChild(fieldsCard);
+  host.appendChild(actionsCard);
 }
 
 /* ------------------------------------------------------------------ *
@@ -3301,6 +4477,7 @@ function wire() {
   $("team-search").addEventListener("input", renderTeamList);
   $("build-search").addEventListener("input", renderBuildList);
   $("rotation-search").addEventListener("input", renderRotationList);
+  $("i18n-search")?.addEventListener("input", renderI18nList);
 
   // psychube rarity filters and the new-psychube action
   for (const rarity of PSYCHUBE_RARITIES) {
@@ -3334,6 +4511,11 @@ function wire() {
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && state.picker) closePicker();
+    if (e.key === "Escape" && state.guide.notePick) {
+      state.guide.notePick = null;
+      banner("Callout cancelled.", "info");
+      renderRotationDetail();
+    }
   });
 
   // A warning before losing unsaved edits.

@@ -35,10 +35,11 @@ export const FILES = [
   "guide_skills.json",
   "guide_cards.json",
   "credits.json",
+  "i18n.json",
 ];
 
 /** Read-only inputs: maintained elsewhere, never written by the editor. */
-export const READ_ONLY_FILES = ["ArcanistMap.json", "i18n.json"];
+export const READ_ONLY_FILES = ["ArcanistMap.json"];
 
 export const RARITIES = ["2", "3", "4", "5", "6"];
 export const AFFLATUSES = ["Beast", "Plant", "Star", "Mineral", "Spirit", "Intellect", "Mineral_Star"];
@@ -53,10 +54,100 @@ export const ROTATION_ARCHETYPES = [
 ];
 
 /**
- * Slot types a rotation round can hold. "free", "tuning" and "precast" behave
- * exactly like "normal" (one card); only the caption under the card differs.
+ * Slot layouts. "free" and "precast" are legacy values: they only ever changed
+ * the caption, so they now map to a plain normal slot plus a tag.
  */
-export const GUIDE_SLOT_TYPES = ["normal", "or", "lb", "text", "free", "tuning", "precast"];
+export const GUIDE_SLOT_TYPES = ["normal", "or", "lb", "text", "tuning"];
+
+/** Legacy slot types and the tag they stand for. */
+export const LEGACY_SLOT_TAGS = { free: "ap-free", precast: "precast" };
+
+/**
+ * Slot tags. The layout lives in `type`; the meaning lives here, so a slot can
+ * carry both AP Free and Precast.
+ *   badge  — plate on the group's top-left corner
+ *   plaque — plate on the card, below the badge when both are present
+ * `image` is the shipped plate art; a tag without one is drawn as a parchment
+ * chip instead.
+ */
+export const GUIDE_SLOT_TAGS = [
+  { key: "ap-free", label: "AP Free", kind: "badge", image: "images/card_modulo/Tag_APFree.png" },
+  { key: "precast", label: "Precast", kind: "plaque", image: "images/card_modulo/Tag_Precast.png" },
+];
+
+/**
+ * The one card frame: a skill-3 card is drawn in the arched Ultimate plate. A
+ * card is otherwise just its art, so there is no frame list to choose from.
+ * `inset` is the plate's inner window, in percent of the card box.
+ */
+export const GUIDE_ULTIMATE_FRAME = {
+  image: "images/card_modulo/Ultimate.png",
+  box: { width: 183, height: 315 },
+  inset: { left: 6.56, top: 7.30, width: 87.98, height: 86.35 },
+  radius: "50% 50% 0 0 / 22% 22% 0 0",
+};
+
+/**
+ * The card box. `Normal.png` is the placeholder face an empty slot shows, and it
+ * also fixes the shape every card is drawn in.
+ */
+export const GUIDE_CARD_BOXES = {
+  normal: { width: 164, height: 217 },
+  ultimate: { width: 183, height: 315 },
+};
+
+/** The placeholder an empty slot shows. */
+export const GUIDE_EMPTY_CARD = "images/card_modulo/Normal.png";
+
+/**
+ * Card surfaces. A surface is translucent decoration laid straight over the art,
+ * so it is drawn at the full card size — every surface PNG matches the box of the
+ * shape it belongs to.
+ */
+export const GUIDE_CARD_SURFACES = [
+  {
+    key: "ramona",
+    label: "Ramona",
+    image: "images/card_modulo/surface/Ramona_Normal_Card.png",
+    frame: "normal",
+  },
+  {
+    key: "ramona-ultimate",
+    label: "Ramona Ultimate",
+    image: "images/card_modulo/surface/Ramona_Ultimate_Card.png",
+    frame: "ultimate",
+  },
+];
+
+/** A surface by key, or null. */
+export function guideCardSurface(key) {
+  return GUIDE_CARD_SURFACES.find((surface) => surface.key === key) || null;
+}
+
+/** Whether a card is drawn in the Ultimate plate. */
+export function guideCardIsUltimate(card) {
+  if (!card) return false;
+  if (card.frame === "ultimate") return true;
+  if (card.frame === "normal") return false;
+  if (card.special) return false;
+  return Number(card.skill) === 3;
+}
+
+/** Bracket callout styles a round can draw under its cards. */
+export const GUIDE_ANNOTATION_STYLES = ["bracket", "box", "fork"];
+
+/** A slot's layout, with the two legacy types folded into "normal". */
+export function guideSlotLayout(slot) {
+  const type = slot?.type || "normal";
+  return LEGACY_SLOT_TAGS[type] ? "normal" : type;
+}
+
+/** A slot's tags, including the one a legacy type implies. */
+export function guideSlotTags(slot) {
+  const tags = Array.isArray(slot?.tags) ? slot.tags.filter((tag) => typeof tag === "string") : [];
+  const legacy = LEGACY_SLOT_TAGS[slot?.type];
+  return legacy && !tags.includes(legacy) ? [...tags, legacy] : tags;
+}
 
 /** Tags that have a dedicated icon: the two damage types plus the six afflatus. */
 export const GUIDE_ICON_TAGS = [
@@ -1072,6 +1163,8 @@ export class Model {
     if (!rounds[roundIndex]) return -1;
     const copy = JSON.parse(JSON.stringify(rounds[roundIndex]));
     doc.insertAt(["rotations", index, "rounds"], roundIndex + 1, copy);
+    // Everything after the copy shifts down by one.
+    this.remapRoundNotes(index, (value) => (value > roundIndex ? value + 1 : value));
     this.reload();
     return roundIndex + 1;
   }
@@ -1093,9 +1186,49 @@ export class Model {
     if (index === -1) return false;
     const path = ["rotations", index, "rounds", roundIndex, "slots"];
     if (!doc.nodeAt(path)) return false;
+    // The callouts follow the cards they point at, so the ranges are remapped
+    // from the pre-move order before the array is touched.
+    const mapIndex = (value) => {
+      if (value === from) return to;
+      if (from < to) return value > from && value <= to ? value - 1 : value;
+      return value >= to && value < from ? value + 1 : value;
+    };
     const changed = doc.reorderAt(path, from, to);
-    if (changed) this.reload();
+    if (changed) {
+      this.remapAnnotations(index, roundIndex, mapIndex);
+      this.reload();
+    }
     return changed;
+  }
+
+  /**
+   * Rewrites annotation ranges through a slot edit. `mapIndex` returns the new
+   * index, or null when the slot it pointed at is gone.
+   */
+  remapAnnotations(rotationIndex, roundIndex, mapIndex) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const round = this.guideRotations()[rotationIndex]?.rounds?.[roundIndex];
+    const annotations = round?.annotations;
+    if (!Array.isArray(annotations) || annotations.length === 0) return false;
+    const count = Array.isArray(round.slots) ? round.slots.length : 0;
+    if (count === 0) return false;
+
+    const next = [];
+    for (const annotation of annotations) {
+      const from = mapIndex(Number(annotation.from) || 0);
+      const to = mapIndex(Number(annotation.to) || 0);
+      if (from === null && to === null) continue;
+      // A range with one dead end shrinks to the end that survived.
+      const a = Math.max(0, Math.min(count - 1, from === null ? to : from));
+      const b = Math.max(0, Math.min(count - 1, to === null ? a : to));
+      next.push({ ...annotation, from: Math.min(a, b), to: Math.max(a, b) });
+    }
+
+    const path = ["rotations", rotationIndex, "rounds", roundIndex, "annotations"];
+    return next.length
+      ? doc.set(path, next)
+      : doc.deleteProperty(["rotations", rotationIndex, "rounds", roundIndex], "annotations");
   }
 
   /** Sets `name`, `notes`, `tuning` or `archetypes` on a rotation. */
@@ -1169,11 +1302,129 @@ export class Model {
   }
 
   removeGuideRound(id, roundIndex) {
-    return this.removeFromRotation(id, "rounds", roundIndex);
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds"];
+    if (!doc.nodeAt([...path, roundIndex])) return false;
+    doc.removeAt(path, roundIndex);
+    // A round note that pointed at the removed round shrinks; one that only
+    // covered it disappears with it.
+    this.remapRoundNotes(index, (value) => (value === roundIndex ? null : value > roundIndex ? value - 1 : value));
+    this.reload();
+    return true;
   }
 
   setGuideRoundNote(id, roundIndex, note) {
     return this.setRoundField(id, roundIndex, "note", String(note || ""));
+  }
+
+  /* ---- guide: round notes (brackets spanning several rounds) ---- */
+
+  /**
+   * Adds a bracket beside rounds `from`..`to` (0-based, inclusive), the note that
+   * says "repeat these rounds". It lives on the rotation, not on a round, because
+   * it points at the gaps between them.
+   */
+  addGuideRoundNote(id, from, to, text = "", style = "bracket") {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const rotation = this.guideRotations()[index];
+    const count = Array.isArray(rotation.rounds) ? rotation.rounds.length : 0;
+    if (count === 0) return false;
+
+    const a = Math.max(0, Math.min(count - 1, Number(from) || 0));
+    const b = Math.max(a, Math.min(count - 1, Number(to) ?? a));
+    const entry = {
+      from: a,
+      to: b,
+      style: GUIDE_ANNOTATION_STYLES.includes(style) ? style : "bracket",
+      text: String(text || ""),
+    };
+    const path = ["rotations", index, "roundNotes"];
+    const changed = doc.nodeAt(path)
+      ? doc.append(path, entry)
+      : doc.setProperty(["rotations", index], "roundNotes", [entry]);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  setGuideRoundNoteField(id, noteIndex, field, value) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const rotation = this.guideRotations()[index];
+    const note = rotation.roundNotes?.[noteIndex];
+    if (!note) return false;
+    const path = ["rotations", index, "roundNotes", noteIndex];
+    const count = Array.isArray(rotation.rounds) ? rotation.rounds.length : 0;
+
+    let payload = value;
+    if (field === "from" || field === "to") {
+      payload = Math.max(0, Math.min(Math.max(0, count - 1), Number(value) || 0));
+    } else if (field === "style") {
+      payload = GUIDE_ANNOTATION_STYLES.includes(value) ? value : "bracket";
+    } else if (field === "text") {
+      payload = String(value || "");
+    } else {
+      return false;
+    }
+    const changed = doc.nodeAt([...path, field])
+      ? doc.set([...path, field], payload)
+      : doc.setProperty(path, field, payload);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  removeGuideRoundNote(id, noteIndex) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "roundNotes"];
+    if (!doc.nodeAt([...path, noteIndex])) return false;
+    doc.removeAt(path, noteIndex);
+    // An empty list carries no information, so the key goes with its last note.
+    const remaining = this.guideRotations()[index].roundNotes;
+    if (Array.isArray(remaining) && remaining.length === 0) {
+      doc.deleteProperty(["rotations", index], "roundNotes");
+    }
+    this.reload();
+    return true;
+  }
+
+  /**
+   * Rewrites round-note ranges after a round is added, removed or moved.
+   * `mapIndex` returns the new index, or null when the round it pointed at is
+   * gone.
+   */
+  remapRoundNotes(rotationIndex, mapIndex) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const rotation = this.guideRotations()[rotationIndex];
+    const notes = rotation?.roundNotes;
+    if (!Array.isArray(notes) || notes.length === 0) return false;
+    const count = Array.isArray(rotation.rounds) ? rotation.rounds.length : 0;
+    if (count === 0) return false;
+
+    const next = [];
+    for (const note of notes) {
+      const from = mapIndex(Number(note.from) || 0);
+      const to = mapIndex(Number(note.to) || 0);
+      if (from === null && to === null) continue;
+      const a = Math.max(0, Math.min(count - 1, from === null ? to : from));
+      const b = Math.max(0, Math.min(count - 1, to === null ? a : to));
+      next.push({ ...note, from: Math.min(a, b), to: Math.max(a, b) });
+    }
+
+    const path = ["rotations", rotationIndex, "roundNotes"];
+    return next.length
+      ? doc.set(path, next)
+      : doc.deleteProperty(["rotations", rotationIndex], "roundNotes");
   }
 
   /**
@@ -1202,11 +1453,49 @@ export class Model {
     return changed;
   }
 
-  addGuideSlot(id, roundIndex, type = "normal") {
+  addGuideSlot(id, roundIndex, type = "normal", tags = []) {
+    const legacy = LEGACY_SLOT_TAGS[type] ? type : null;
     const kind = GUIDE_SLOT_TYPES.includes(type) ? type : "normal";
+    const list = [...(Array.isArray(tags) ? tags : [])];
+    if (legacy && !list.includes(LEGACY_SLOT_TAGS[legacy])) list.push(LEGACY_SLOT_TAGS[legacy]);
+    const entry = { type: kind };
+    if (list.length) entry.tags = list;
     // Tuning slots take a text caption as well as their S1/S2 card.
-    if (kind === "text" || kind === "tuning") return this.appendRoundSlot(id, roundIndex, { type: kind, text: "" });
-    return this.appendRoundSlot(id, roundIndex, { type: kind, cards: [] });
+    if (kind === "text" || kind === "tuning") entry.text = "";
+    else entry.cards = [];
+    return this.appendRoundSlot(id, roundIndex, entry);
+  }
+
+  /** Inserts a slot at `at`, so a card can be dropped between two others. */
+  insertRoundSlot(id, roundIndex, at, slot) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots"];
+    if (!doc.nodeAt(path)) return false;
+    const entry = this.normalizeSlot(slot);
+    const list = this.guideRotations()[index].rounds?.[roundIndex]?.slots || [];
+    const position = Math.max(0, Math.min(list.length, Number(at) || 0));
+    const changed = doc.nodeAt(path)
+      ? doc.insertAt(path, position, entry)
+      : doc.setProperty(["rotations", index, "rounds", roundIndex], "slots", [entry]);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Fills in the shape of a slot the caller built by hand. */
+  normalizeSlot(slot) {
+    const type = guideSlotLayout(slot);
+    const entry = { type };
+    const tags = guideSlotTags(slot);
+    if (tags.length) entry.tags = tags;
+    if (type === "text" || type === "tuning") {
+      entry.text = String(slot?.text || "");
+    } else {
+      entry.cards = (Array.isArray(slot?.cards) ? slot.cards : []).map((card) => this.normalizeCard(card)).filter(Boolean);
+    }
+    return entry;
   }
 
   /** Sets a slot's type; switching to text drops the cards and vice versa. */
@@ -1254,6 +1543,9 @@ export class Model {
     const path = ["rotations", index, "rounds", roundIndex, "slots"];
     if (!doc.nodeAt([...path, slotIndex])) return false;
     doc.removeAt(path, slotIndex);
+    // A callout that pointed at the removed slot shrinks; one that only covered
+    // it disappears with it.
+    this.remapAnnotations(index, roundIndex, (value) => (value === slotIndex ? null : value > slotIndex ? value - 1 : value));
     this.reload();
     return true;
   }
@@ -1291,10 +1583,167 @@ export class Model {
     else if (cards.length >= limit) return false;
     cards.push(entry);
 
-    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex, "cards"];
-    const changed = doc.nodeAt(path) ? doc.set(path, cards) : doc.setProperty([...path.slice(0, -1)], "cards", cards);
+    const slotPath = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
+    let changed = this.migrateGuideSlot(slotPath, slot);
+    const path = [...slotPath, "cards"];
+    changed = (doc.nodeAt(path) ? doc.set(path, cards) : doc.setProperty(slotPath, "cards", cards)) || changed;
     if (changed) this.reload();
     return changed;
+  }
+
+  /**
+   * Rewrites a legacy "free" / "precast" slot as a normal slot plus a tag, so
+   * the old caption survives while the data moves to the current shape.
+   */
+  migrateGuideSlot(slotPath, slot) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc || !LEGACY_SLOT_TAGS[slot?.type]) return false;
+    const tags = guideSlotTags(slot);
+    let changed = doc.nodeAt([...slotPath, "type"])
+      ? doc.set([...slotPath, "type"], "normal")
+      : doc.setProperty(slotPath, "type", "normal");
+    changed = (doc.nodeAt([...slotPath, "tags"])
+      ? doc.set([...slotPath, "tags"], tags)
+      : doc.setProperty(slotPath, "tags", tags)) || changed;
+    return changed;
+  }
+
+  /** Adds or removes one tag on a slot. Returns true when something changed. */
+  setGuideSlotTag(id, roundIndex, slotIndex, tag, on = true) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const slot = this.guideRotations()[index].rounds?.[roundIndex]?.slots?.[slotIndex];
+    if (!slot) return false;
+    if (!GUIDE_SLOT_TAGS.some((entry) => entry.key === tag)) return false;
+
+    const slotPath = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
+    let changed = this.migrateGuideSlot(slotPath, slot);
+    const current = guideSlotTags(slot).filter((value) => value !== tag);
+    if (on) current.push(tag);
+    const path = [...slotPath, "tags"];
+    if (current.length === 0) {
+      if (doc.nodeAt(path)) changed = doc.deleteProperty(slotPath, "tags") || changed;
+    } else {
+      changed = (doc.nodeAt(path) ? doc.set(path, current) : doc.setProperty(slotPath, "tags", current)) || changed;
+    }
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Sets `frame`, `surface` or `preferred` on one card. */
+  setGuideCardField(id, roundIndex, slotIndex, cardIndex, field, value) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const card = this.guideRotations()[index].rounds?.[roundIndex]?.slots?.[slotIndex]?.cards?.[cardIndex];
+    if (!card) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "slots", slotIndex, "cards", cardIndex];
+
+    const write = (key, payload) => {
+      if (payload === "") {
+        return doc.nodeAt([...path, key]) ? doc.deleteProperty(path, key) : false;
+      }
+      return doc.nodeAt([...path, key])
+        ? doc.set([...path, key], payload)
+        : doc.setProperty(path, key, payload);
+    };
+
+    let changed = false;
+    if (field === "frame") {
+      // Only the Ultimate plate exists; "normal" means "no plate at all".
+      if (value && value !== "ultimate" && value !== "normal") return false;
+      changed = write("frame", value || "");
+    } else if (field === "surface") {
+      // A surface is sized to one card shape, so it carries that shape with it.
+      if (value && !guideCardSurface(value)) return false;
+      changed = write("surface", value || "");
+      const surface = guideCardSurface(value);
+      if (surface) changed = write("frame", surface.frame === "ultimate" ? "ultimate" : "") || changed;
+    } else if (field === "preferred") {
+      changed = write("preferred", value ? true : "");
+    }
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /* ---- guide: annotations (bracket callouts) ---- */
+
+  /**
+   * Adds a bracket callout under slots `from`..`to` (0-based, inclusive).
+   * `style` is one of GUIDE_ANNOTATION_STYLES.
+   */
+  addGuideAnnotation(id, roundIndex, from, to, text = "", style = "bracket") {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const round = this.guideRotations()[index].rounds?.[roundIndex];
+    if (!round) return false;
+    const count = Array.isArray(round.slots) ? round.slots.length : 0;
+    if (count === 0) return false;
+
+    const a = Math.max(0, Math.min(count - 1, Number(from) || 0));
+    const b = Math.max(a, Math.min(count - 1, Number(to) ?? a));
+    const entry = {
+      from: a,
+      to: b,
+      style: GUIDE_ANNOTATION_STYLES.includes(style) ? style : "bracket",
+      text: String(text || ""),
+    };
+    const path = ["rotations", index, "rounds", roundIndex, "annotations"];
+    const changed = doc.nodeAt(path)
+      ? doc.append(path, entry)
+      : doc.setProperty(["rotations", index, "rounds", roundIndex], "annotations", [entry]);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  setGuideAnnotationField(id, roundIndex, annotationIndex, field, value) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const round = this.guideRotations()[index].rounds?.[roundIndex];
+    const annotation = round?.annotations?.[annotationIndex];
+    if (!annotation) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "annotations", annotationIndex];
+    const count = Array.isArray(round.slots) ? round.slots.length : 0;
+
+    let payload = value;
+    if (field === "from" || field === "to") {
+      payload = Math.max(0, Math.min(Math.max(0, count - 1), Number(value) || 0));
+    } else if (field === "style") {
+      payload = GUIDE_ANNOTATION_STYLES.includes(value) ? value : "bracket";
+    } else if (field === "text") {
+      payload = String(value || "");
+    } else {
+      return false;
+    }
+    const changed = doc.nodeAt([...path, field])
+      ? doc.set([...path, field], payload)
+      : doc.setProperty(path, field, payload);
+    if (changed) this.reload();
+    return changed;
+  }
+
+  removeGuideAnnotation(id, roundIndex, annotationIndex) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const path = ["rotations", index, "rounds", roundIndex, "annotations"];
+    if (!doc.nodeAt([...path, annotationIndex])) return false;
+    doc.removeAt(path, annotationIndex);
+    // An empty list carries no information, so the key goes with its last note.
+    const remaining = this.guideRotations()[index].rounds?.[roundIndex]?.annotations;
+    if (Array.isArray(remaining) && remaining.length === 0) {
+      doc.deleteProperty(["rotations", index, "rounds", roundIndex], "annotations");
+    }
+    this.reload();
+    return true;
   }
 
   removeGuideSlotCard(id, roundIndex, slotIndex, cardIndex) {
@@ -1316,6 +1765,9 @@ export class Model {
     const entry = { character: this.resolve(card.character) || String(card.character), skill: Number(card.skill) || 1 };
     // The exact icon variant (e.g. an alternative card) is pinned when known.
     if (card.icon) entry.icon = String(card.icon);
+    if (card.frame === "ultimate" || card.frame === "normal") entry.frame = card.frame;
+    if (guideCardSurface(card.surface)) entry.surface = card.surface;
+    if (card.preferred) entry.preferred = true;
     return entry;
   }
 
@@ -1394,7 +1846,7 @@ export class Model {
     return raw
       .filter((chart) => chart && typeof chart === "object")
       .map((chart) => ({
-        label: String(chart.label || ""),
+        label: typeof chart.label === "object" && chart.label !== null ? chart.label : String(chart.label || ""),
         bars: Array.isArray(chart.bars) ? chart.bars : [],
       }));
   }
@@ -1412,7 +1864,10 @@ export class Model {
 
     const clean = (Array.isArray(charts) ? charts : [])
       .map((chart) => ({
-        label: String(chart && chart.label ? chart.label : "").trim(),
+        label:
+          typeof chart?.label === "object" && chart.label !== null
+            ? chart.label
+            : String(chart && chart.label ? chart.label : "").trim(),
         bars: (Array.isArray(chart && chart.bars) ? chart.bars : [])
           .map((bar) => ({
             badge: String(bar && bar.badge !== undefined ? bar.badge : "").trim(),
@@ -1454,7 +1909,8 @@ export class Model {
       bars: chart.bars.slice(),
     }));
     if (!charts[chartIndex]) return false;
-    charts[chartIndex].label = String(label || "").trim();
+    charts[chartIndex].label =
+      typeof label === "object" && label !== null ? label : String(label || "").trim();
     return this.setProgressionCharts(name, charts);
   }
 
@@ -1577,6 +2033,56 @@ export class Model {
     const [item] = next.splice(from, 1);
     next.splice(to, 0, item);
     return this.setCreditEntries(next);
+  }
+
+  /* ---- i18n ---- */
+
+  get i18nKeys() {
+    const data = this.doc("i18n.json")?.value;
+    if (!data) return [];
+    const en = data.en || {};
+    const cn = data.cn || {};
+    const vi = data.vi || {};
+    return Array.from(new Set([...Object.keys(en), ...Object.keys(cn), ...Object.keys(vi)])).sort();
+  }
+
+  i18nEntry(key) {
+    const data = this.doc("i18n.json")?.value;
+    if (!data) return { en: "", cn: "", vi: "" };
+    return {
+      en: data.en?.[key] ?? "",
+      cn: data.cn?.[key] ?? "",
+      vi: data.vi?.[key] ?? "",
+    };
+  }
+
+  setI18nEntry(lang, key, value) {
+    const doc = this.doc("i18n.json");
+    if (!doc) return;
+    const data = doc.value;
+    const langObj = data?.[lang];
+    if (!langObj) return;
+    if (Object.prototype.hasOwnProperty.call(langObj, key)) {
+      doc.set([lang, key], value);
+    } else {
+      doc.setProperty([lang], key, value);
+    }
+  }
+
+  addI18nKey(key, values = { en: "", cn: "", vi: "" }) {
+    const doc = this.doc("i18n.json");
+    if (!doc) return;
+    for (const lang of ["en", "cn", "vi"]) {
+      doc.setProperty([lang], key, values[lang] ?? "");
+    }
+  }
+
+  removeI18nKey(key) {
+    const doc = this.doc("i18n.json");
+    if (!doc) return;
+    for (const lang of ["en", "cn", "vi"]) {
+      doc.deleteProperty([lang], key);
+    }
   }
 
   /* ---- output ---- */
@@ -1949,14 +2455,24 @@ export function validate(model) {
               return;
             }
             const type = slot.type || "normal";
-            if (!GUIDE_SLOT_TYPES.includes(type)) warn(`${slotLabel}: unknown type "${type}"`);
+            if (!GUIDE_SLOT_TYPES.includes(type) && !LEGACY_SLOT_TAGS[type]) warn(`${slotLabel}: unknown type "${type}"`);
+            const layout = guideSlotLayout(slot);
+            for (const tag of guideSlotTags(slot)) {
+              if (!GUIDE_SLOT_TAGS.some((entry) => entry.key === tag)) warn(`${slotLabel}: unknown tag "${tag}"`);
+            }
             const cards = Array.isArray(slot.cards) ? slot.cards : [];
-            const limit = type === "or" ? 2 : 1;
-            if (type !== "text" && cards.length > limit) err(`${slotLabel}: a ${type} slot holds at most ${limit} card(s)`);
+            const limit = layout === "or" ? 2 : 1;
+            if (layout !== "text" && cards.length > limit) err(`${slotLabel}: a ${layout} slot holds at most ${limit} card(s)`);
             cards.forEach((card, ci) => {
               if (!card || typeof card !== "object") {
                 err(`${slotLabel} card ${ci + 1}: expected an object`);
                 return;
+              }
+              if (card.frame !== undefined && card.frame !== "ultimate" && card.frame !== "normal") {
+                warn(`${slotLabel} card ${ci + 1}: unknown frame "${card.frame}"`);
+              }
+              if (card.surface !== undefined && !guideCardSurface(card.surface)) {
+                warn(`${slotLabel} card ${ci + 1}: unknown surface "${card.surface}"`);
               }
               if (card.special) {
                 if (!String(card.special).startsWith("images/skills/")) {
@@ -1971,6 +2487,46 @@ export function validate(model) {
               }
             });
           });
+
+          // A callout has to point at real slots, or it has nothing to underline.
+          const annotations = Array.isArray(round.annotations) ? round.annotations : [];
+          annotations.forEach((annotation, ai) => {
+            const noteLabel = `${roundLabel} note ${ai + 1}`;
+            if (!annotation || typeof annotation !== "object") {
+              err(`${noteLabel}: expected an object`);
+              return;
+            }
+            if (annotation.style !== undefined && !GUIDE_ANNOTATION_STYLES.includes(annotation.style)) {
+              warn(`${noteLabel}: unknown style "${annotation.style}"`);
+            }
+            for (const key of ["from", "to"]) {
+              const value = Number(annotation[key]);
+              if (!Number.isInteger(value) || value < 0 || value >= slots.length) {
+                err(`${noteLabel}: ${key} must be a slot index between 1 and ${Math.max(1, slots.length)}`);
+              }
+            }
+            if (Number(annotation.from) > Number(annotation.to)) err(`${noteLabel}: from is after to`);
+          });
+        });
+
+        // A round note points at rounds, so its ends have to exist.
+        const roundNotes = Array.isArray(rotation.roundNotes) ? rotation.roundNotes : [];
+        roundNotes.forEach((note, ni) => {
+          const noteLabel = `${label} round note ${ni + 1}`;
+          if (!note || typeof note !== "object") {
+            err(`${noteLabel}: expected an object`);
+            return;
+          }
+          if (note.style !== undefined && !GUIDE_ANNOTATION_STYLES.includes(note.style)) {
+            warn(`${noteLabel}: unknown style "${note.style}"`);
+          }
+          for (const key of ["from", "to"]) {
+            const value = Number(note[key]);
+            if (!Number.isInteger(value) || value < 0 || value >= rounds.length) {
+              err(`${noteLabel}: ${key} must be a round index between 1 and ${Math.max(1, rounds.length)}`);
+            }
+          }
+          if (Number(note.from) > Number(note.to)) err(`${noteLabel}: from is after to`);
         });
       });
     }

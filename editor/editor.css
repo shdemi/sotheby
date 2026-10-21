@@ -16,6 +16,7 @@
 
 :root {
   --font: 'Regular', 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --serif: 'Regular', 'Noto Serif', Georgia, 'Times New Roman', serif;
   --mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
   --cjk: "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif;
 
@@ -37,6 +38,13 @@
   --accent: #4a6fa5;
 
   --radius: 8px;
+
+  /* Parchment: the light card surface the app uses for Team cards, Preset rows
+     and Rotation cards. Slot tags borrow it so the editor previews the real
+     material instead of a look-alike. */
+  --parchment: linear-gradient(to top right, #ddb39f 0%, #d5d3cf 20%, #d5d3cf 80%, #ddb39f 100%);
+  --parchment-ink: #2a2622;
+  --parchment-edge: rgba(31, 28, 25, 0.35);
 }
 
 * { box-sizing: border-box; }
@@ -196,6 +204,8 @@ body {
 }
 .chip:hover { color: var(--text); }
 .chip.on { background: var(--gold-soft); border-color: var(--gold-soft); color: #1a1a1a; font-weight: 700; }
+.chip.chip-xs { font-size: 9px; padding: 1px 4px; border-radius: 3px; line-height: 1.2; }
+.note-inline-langs { display: inline-flex; gap: 2px; align-items: center; flex: none; }
 .list-count { margin-top: 8px; font-size: 12px; color: var(--text-muted); font-family: var(--mono); }
 .list-body { overflow: auto; flex: 1; min-height: 0; }
 
@@ -728,31 +738,199 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   white-space: nowrap;
 }
 
+/* The rounds and the rail that carries the round-note brackets beside them. Only
+   a rotation that has a round note reserves the room for it. */
+.guide-rounds-body {
+  position: relative;
+}
+.guide-rounds-body.has-round-notes {
+  padding-right: 150px;
+}
+.guide-rounds-column { min-width: 0; }
+
+/* The rail overlays the whole rounds block, so the brackets can be measured
+   against the rounds they span without depending on grid stretch. */
+.guide-round-note-rail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.guide-round-note-rail:empty { display: none; }
+.guide-round-note-rail > svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.guide-round-note-rail .rot-connector {
+  fill: none;
+  stroke: rgba(214, 190, 150, 0.7);
+  stroke-width: 1;
+}
+.guide-round-note-label {
+  fill: #E7E0D3;
+  font-family: var(--serif);
+  font-size: 11px;
+  dominant-baseline: middle;
+}
+
+.guide-round-notes { margin-top: 10px; }
+.guide-round-notes .hand-group-title { margin: 0 0 4px; }
+
 /* ---- rotation round / slot editor ---- */
+/* The round is a numbered gutter beside its cards, matching the published plan:
+   the number sits in the left column, everything else in the right one. */
 .guide-round-editor {
-  padding: 8px 10px;
-  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  padding: 10px 12px 12px;
+  margin-bottom: 10px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius);
-  background: rgba(0,0,0,.22);
+  background: rgba(0, 0, 0, .22);
 }
+
+/* Zero-padded, so a ten-round plan still lines up. */
+/* The number sits in the gutter in a small box, just wide enough for two digits,
+   with the same transparent surface and hairline border a card has. */
+.guide-turn-no {
+  position: relative;
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+  /* Sits level with the card strip, like the published plan. */
+  margin-top: 26px;
+  padding: 5px 9px 6px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1;
+  letter-spacing: .04em;
+  color: #F0E6D2;
+  white-space: nowrap;
+}
+
+/* Two gold corners bracket the number: top-left and bottom-right. */
+.guide-turn-no::before,
+.guide-turn-no::after {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  pointer-events: none;
+}
+
+.guide-turn-no::before {
+  left: -1px;
+  top: -1px;
+  border-left: 2px solid #E8A33D;
+  border-top: 2px solid #E8A33D;
+}
+
+.guide-turn-no::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid #E8A33D;
+  border-bottom: 2px solid #E8A33D;
+}
+
+.guide-turn-head {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.guide-turn-head .pick { margin-left: auto; }
+/* The note is the round's title: a plaque with an orange spine and serif
+   capitals, the same shape the published plan uses. */
+input.guide-round-note-input {
+  flex: 1;
+  min-width: 140px;
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #F5EEDF;
+  background: linear-gradient(90deg, rgba(92, 72, 44, .92), rgba(52, 45, 36, .82) 60%, rgba(34, 31, 27, .55));
+  border: none;
+  border-left: 3px solid #E8A33D;
+  border-radius: 0;
+  padding: 4px 12px;
+}
+input.guide-round-note-input::placeholder { color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
+input.guide-round-note-input:focus { outline: none; border-left-color: var(--gold); }
 .guide-round-note-input { flex: 1; min-width: 140px; }
+
+/* The track: cards sit edge to edge, and the thin gaps between them are the
+   insertion points for a dropped stamp or card. */
+.guide-slot-row {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0;
+  min-height: 128px;
+  padding: 14px 2px 2px;
+}
+.guide-drop-gap {
+  position: relative;
+  flex: none;
+  /* The gap is both the visual spacing and the insertion point, so it matches
+     the 5px the published plan uses between cards. */
+  width: 5px;
+  align-self: stretch;
+  min-height: 96px;
+}
+.guide-drop-gap.is-empty {
+  flex: 1;
+  min-width: 140px;
+  border: 1px dashed rgba(255,255,255,.14);
+  border-radius: 4px;
+}
+.guide-drop-gap.is-target::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+}
+.guide-drop-gap.is-empty.is-target { border-color: var(--gold); background: rgba(246,195,74,.1); }
+
 .guide-slot-editor {
   position: relative;
-  width: 96px;
-  min-height: 132px;
-  /* Room for the order handle in the corner. */
-  padding: 16px 6px 6px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.guide-slot-editor.is-text,
+.guide-slot-editor.is-tuning {
+  width: 122px;
+  padding: 5px;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: rgba(255,255,255,.03);
-  cursor: pointer;
+  align-items: stretch;
 }
-.guide-slot-editor:hover { border-color: var(--gold-soft); }
-.guide-slot-editor.is-target { border-color: var(--gold); background: rgba(246,195,74,.16); }
+.guide-slot-editor.is-target .guide-slot-cards { outline: 2px solid var(--gold); outline-offset: 2px; }
+.guide-slot-editor.is-target-tag .guide-slot-cards { outline: 2px dashed var(--gold); outline-offset: 2px; }
 .guide-slot-editor.dragging { opacity: .45; }
 
 /* Drop marker for reordering AP slots inside a round. */
@@ -765,24 +943,107 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   width: 3px;
   background: var(--gold);
   border-radius: 2px;
+  z-index: 6;
 }
 .guide-slot-editor.drop-before::before { left: -4px; }
 .guide-slot-editor.drop-after::after { right: -4px; }
 
-/* The order handle sits in the slot's top-left corner, clear of the card art
-   and the remove buttons. */
+/* The order handle only shows on hover, so the strip stays as clean as the
+   reference art. */
 .slot-order-handle {
   position: absolute;
-  top: 1px;
-  left: 2px;
-  z-index: 2;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  padding: 0;
   font-size: 11px;
   line-height: 1;
-  padding: 0;
+  opacity: 0;
+  transition: opacity .12s ease;
 }
-.guide-slot-cards { display: flex; align-items: flex-end; gap: 4px; flex-wrap: nowrap; min-height: 74px; }
-.guide-slot-card { position: relative; display: block; height: 70px; flex: none; }
-.guide-slot-card img { height: 100%; width: auto; object-fit: contain; display: block; }
+.guide-slot-editor:hover .slot-order-handle { opacity: .85; }
+
+/* A card strip. The plate hangs over the top-left corner, so the strip needs no
+   extra room above the art. */
+.guide-slot-cards {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  min-height: 98px;
+}
+
+/* A card is its art. A fixed height keeps every card in a round on one
+   baseline; the width follows the art's aspect ratio. */
+.guide-slot-card {
+  position: relative;
+  display: block;
+  height: 84px;
+  aspect-ratio: 288 / 376;
+  flex: none;
+}
+.guide-slot-card > .guide-card-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
+}
+/* The Ultimate plate is opaque in the middle, so the art is drawn ON TOP of it,
+   clipped to the plate's inner window. */
+.guide-slot-card > .guide-card-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  z-index: 2;
+}
+/* A surface is decoration laid straight over the card, at the card's own size. */
+.guide-slot-card > .guide-card-surface {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 3;
+  pointer-events: none;
+}
+.guide-slot-card.is-lb { height: 42px; }
+.guide-slot-card.is-empty {
+  opacity: .55;
+  outline: 1px dashed rgba(255,255,255,.2);
+  outline-offset: -1px;
+}
+.guide-slot-card.is-empty:hover { opacity: .85; }
+.guide-slot-card.is-target { outline: 2px solid var(--gold); outline-offset: 1px; }
+.guide-slot-card.is-preferred::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #e05a4f;
+  border-radius: 5px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* The Ultimate plate is taller and arched: the art is clipped into its window
+   and the plate is drawn on top. */
+.guide-slot-card.is-ultimate { height: 126px; aspect-ratio: 183 / 315; }
+.guide-slot-card.is-ultimate > .guide-card-art {
+  inset: auto;
+  left: 6.56%;
+  top: 7.30%;
+  width: 87.98%;
+  height: 86.35%;
+  border-radius: 50% 50% 0 0 / 22% 22% 0 0;
+}
+.guide-slot-card.is-lb.is-ultimate { height: 63px; }
+
 .guide-slot-remove {
   position: absolute;
   top: -4px;
@@ -798,9 +1059,63 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   border: 1px solid var(--bad);
   border-radius: 50%;
   cursor: pointer;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity .12s ease;
 }
-.guide-or { font-family: var(--mono); font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
-.guide-slot-empty { display: block; width: 100%; text-align: center; line-height: 70px; color: var(--text-muted); font-size: 18px; }
+.guide-slot-card:hover > .guide-slot-remove,
+.guide-slot-editor:hover > .guide-slot-remove-slot { opacity: 1; }
+
+/* Per-card switches: ultimate frame and the preferred side of an OR slot. */
+.guide-card-tools {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  display: flex;
+  gap: 2px;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+.guide-slot-card:hover .guide-card-tools { opacity: 1; }
+.guide-card-tool {
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1;
+  color: var(--text-muted);
+  background: rgba(0,0,0,.85);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.guide-card-tool.on { color: #1b1409; background: var(--gold); border-color: var(--gold); }
+
+.guide-or { font-family: var(--mono); font-size: 9px; color: var(--text-muted); text-transform: uppercase; align-self: center; padding: 0 3px; }
+
+/* Tag rendering: the shipped plate art on the slot's first card, so it follows
+   that card's shape. The plaque sits exactly 5px under the badge. */
+.guide-slot-card > .guide-tag-plate {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  height: 13px;
+  width: auto;
+  z-index: 5;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65));
+  pointer-events: none;
+}
+/* 6px top + 13px tall + 5px gap = 24px. */
+.guide-slot-card.has-badge > .guide-tag-plate.is-plaque { top: 24px; }
+
+/* An Ultimate card is an arch, so its top corner is empty: the plate drops to
+   where the art begins, matching the published plan. */
+.guide-slot-card.is-ultimate > .guide-tag-plate { top: 30px; }
+/* 30px top + 13px tall + 5px gap = 48px. */
+.guide-slot-card.is-ultimate.has-badge > .guide-tag-plate.is-plaque { top: 48px; }
+
 .guide-slot-note-input { width: 100%; font-size: 11px; }
 .guide-slot-remove-slot {
   position: absolute;
@@ -816,7 +1131,242 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   background: none;
   border: none;
   cursor: pointer;
+  opacity: 0;
+  transition: opacity .12s ease;
+  z-index: 6;
 }
+.guide-slot-editor.is-text > .guide-slot-remove-slot,
+.guide-slot-editor.is-tuning > .guide-slot-remove-slot { opacity: 1; }
+/* The caption is a quiet label, not a tag: tags are the parchment plates. */
+.guide-slot-type {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+/* The bracket strip between the cards and their controls: it draws the notes
+   the way the published plan will, one lane per non-overlapping span. */
+.guide-bracket-layer {
+  grid-column: 2;
+  grid-row: 3;
+  position: relative;
+  margin-top: 2px;
+}
+.guide-bracket-layer:empty { display: none; }
+.guide-bracket-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.guide-bracket-rail .rot-connector {
+  fill: none;
+  stroke: rgba(214, 190, 150, 0.7);
+  stroke-width: 1;
+}
+
+/* ---- bracket callouts under a round ---- */
+.guide-annotations {
+  grid-column: 2;
+  grid-row: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+.guide-annotations.is-empty { display: none; }
+.guide-annotations .hand-group-title { margin: 0 0 4px; }
+.guide-annotation {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 4px 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: rgba(0,0,0,.28);
+}
+.guide-annotation-index { width: 54px; }
+.guide-annotation-dash { color: var(--text-muted); }
+.guide-annotation-text { flex: 1; min-width: 160px; }
+.guide-annotation-style { width: 90px; }
+
+/* The note's own remove button: always visible, because a note row has no hover
+   affordance of its own. */
+.guide-annotation-remove {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  line-height: 1;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--bad);
+  background: rgba(0, 0, 0, .35);
+  border: 1px solid var(--bad);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.guide-annotation-remove:hover { background: var(--bad); color: #1b1409; }
+.guide-annotation-preview {
+  flex-basis: 100%;
+  position: relative;
+  height: 14px;
+  overflow: visible;
+}
+.guide-annotation-preview .rot-connector {
+  fill: none;
+  stroke: rgba(214, 190, 150, 0.7);
+  stroke-width: 1;
+}
+
+/* ---- card panel: AP stamps and tag tiles ---- */
+.hand-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.guide-stamp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.guide-stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: grab;
+}
+.guide-stamp:hover { border-color: var(--gold-soft); }
+
+/* The stamp shows the placeholder it inserts: one card, two overlapping cards
+   for OR, and a visibly smaller card for 1/4 AP. The slots are plain outlines,
+   because a placeholder has no art yet. */
+.guide-stamp-art {
+  position: relative;
+  width: 58px;
+  height: 74px;
+}
+.guide-stamp-slot {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 45px;
+  border: 1px dashed var(--border);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .05);
+}
+.guide-stamp-art.is-or { width: 52px; }
+.guide-stamp-art.is-or > .guide-stamp-slot {
+  width: 30px;
+  height: 40px;
+  transform: none;
+  left: 0;
+}
+.guide-stamp-art.is-or > .guide-stamp-slot.is-back {
+  left: 20px;
+  bottom: 12px;
+  opacity: .75;
+}
+
+/* 1/4 AP: the full card is outlined and the quarter card sits in its corner, so
+   the scale is readable at a glance. */
+.guide-stamp-art.is-lb { width: 58px; height: 74px; }
+.guide-stamp-art.is-lb > .guide-stamp-slot.is-full {
+  width: 34px;
+  height: 45px;
+  background: none;
+}
+.guide-stamp-art.is-lb > .guide-stamp-slot.is-quarter {
+  width: 17px;
+  height: 23px;
+  left: auto;
+  right: 8px;
+  bottom: 0;
+  transform: none;
+  background: rgba(255, 255, 255, .05);
+}
+.guide-stamp-glyph {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 40px;
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+}
+.guide-stamp-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hand-help { margin: 10px 0 0; font-size: 10px; line-height: 1.5; color: var(--text-muted); }
+.guide-tag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.guide-tag-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: grab;
+}
+.guide-tag-tile:hover { border-color: var(--gold-soft); }
+.guide-tag-sample { font-size: 9px; font-weight: 700; white-space: nowrap; }
+.guide-tag-sample.is-image { height: 13px; width: auto; display: block; }
+.guide-tag-key { font-family: var(--mono); font-size: 9px; color: var(--text-muted); }
+
+/* Surface tiles: the surface art itself is the sample, capped to a fixed height
+   (a percentage height would resolve against `auto` and use the PNG's own size). */
+.guide-surface-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.guide-surface-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: grab;
+  overflow: hidden;
+}
+.guide-surface-tile:hover { border-color: var(--gold-soft); }
+.guide-surface-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 72px;
+  overflow: hidden;
+}
+.guide-surface-art img {
+  display: block;
+  max-height: 72px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.guide-surface-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+}
+
 .special-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
@@ -972,7 +1522,7 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 .guide-tuning-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 .guide-slot-editor.is-lb { width: 64px; }
-.guide-slot-editor.is-lb .guide-slot-card img { height: 34px; }
+.guide-slot-editor.is-lb .guide-slot-card { height: 40px; }
 .guide-slot-editor.is-or { min-width: 168px; }
 .guide-slot-editor.is-text {
   width: 130px;
@@ -999,6 +1549,102 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   font-size: 8px;
   letter-spacing: .06em;
   color: var(--text-muted);
+}
+
+/* ---------------- i18n manager ---------------- */
+
+.i18n-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.i18n-row:hover {
+  background: var(--panel-soft);
+}
+
+.i18n-row.on {
+  background: rgba(246, 195, 74, 0.12);
+  border-left-color: var(--gold);
+}
+
+.i18n-row-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.i18n-row-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.flag.flag-ns {
+  font-size: 9px;
+  font-family: var(--mono);
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(246, 195, 74, 0.14);
+  color: var(--gold);
+  border: 1px solid rgba(246, 195, 74, 0.3);
+  font-weight: 600;
+  flex: none;
+}
+
+.i18n-key {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.i18n-row.on .i18n-key {
+  color: #fff;
+}
+
+.i18n-preview {
+  font-size: 11px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 1px;
+}
+
+.i18n-row.on .i18n-preview {
+  color: var(--text-dim);
+}
+
+.i18n-lang-dots {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+
+.i18n-dot {
+  font-size: 8px;
+  font-family: var(--mono);
+  padding: 1px 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: 700;
+}
+
+.i18n-dot.has {
+  background: rgba(126, 200, 126, 0.15);
+  color: var(--ok);
+  border: 1px solid rgba(126, 200, 126, 0.3);
 }
 
 /* No number spinners: the values are typed, not stepped. */

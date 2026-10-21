@@ -68,6 +68,46 @@ function patternLabel(patternName) {
   return translated === key ? patternName : translated;
 }
 
+/** Localised resonance build label (e.g. General -> 通用, Crit -> 暴击). */
+function displayResonanceLabel(label) {
+  if (!label) return "";
+  const key = `reso.${label}`;
+  const translated = t(key);
+  if (translated !== key) return translated;
+  return label;
+}
+
+/**
+ * Localises free-form text or notes (from guide_rotations, guide_builds, etc.).
+ * Supports both string (with auto-translation for common patterns or i18n keys)
+ * and localized objects: { en: "...", vi: "...", cn: "..." }.
+ */
+function localizeText(val) {
+  if (!val) return "";
+  if (typeof val === "object") {
+    return val[currentLang] || val.en || Object.values(val)[0] || "";
+  }
+  if (typeof val === "string") {
+    if (val.startsWith("Recommended Portrait:")) {
+      const p = val.replace("Recommended Portrait:", "").trim();
+      if (currentLang === "cn") return `推荐塑造：${p}`;
+      if (currentLang === "vi") return `Số Khắc khuyên dùng: ${p}`;
+      return val;
+    }
+    const matchRepeat = val.match(/^Repeat (?:turn|round) (\d+)-(\d+)\.?$/i);
+    if (matchRepeat) {
+      if (currentLang === "cn") return `重复第${matchRepeat[1]}-${matchRepeat[2]}回合。`;
+      if (currentLang === "vi") return `Lặp lại lượt ${matchRepeat[1]}-${matchRepeat[2]}.`;
+      return val;
+    }
+    const translated = t(val);
+    if (translated && translated !== val) return translated;
+    return val;
+  }
+  return String(val);
+}
+window.localizeText = localizeText;
+
 /* ---------------- Stat value formatters ----------------
    EN:  I3 / Lv.60 / R10 / P0 / A5
    CN:  洞3 / 60级 / 共10 / 0塑 / 增5                      */
@@ -6649,7 +6689,7 @@ function renderBuildsDetail() {
           ([label, code]) => `
             <button type="button" class="build-resonance-btn" data-code="${escapeHtml(code)}" title="${escapeHtml(
               t("builds.copyHint")
-            )}">${escapeHtml(label)}</button>`
+            )}">${escapeHtml(displayResonanceLabel(label))}</button>`
         )
         .join("")
     : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
@@ -6659,7 +6699,7 @@ function renderBuildsDetail() {
     ? `<div class="build-pattern">
          ${patternIcon ? `<img src="${escapeHtml(patternIcon)}" alt="" />` : ""}
          <span class="build-pattern-name" style="color:${getResonanceTextColor(build.pattern)}">${escapeHtml(
-           build.pattern
+           patternLabel(build.pattern)
          )}</span>
        </div>`
     : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
@@ -6672,7 +6712,7 @@ function renderBuildsDetail() {
              (chart, index) => `<div class="build-chart-block">
                ${
                  chart.label
-                   ? `<span class="build-chart-label">${escapeHtml(chart.label)}</span>`
+                   ? `<span class="build-chart-label">${escapeHtml(localizeText(chart.label))}</span>`
                    : charts.length > 1
                      ? `<span class="build-chart-label">${escapeHtml(t("builds.chartN", { n: index + 1 }))}</span>`
                      : ""
@@ -6728,7 +6768,7 @@ function renderBuildsDetail() {
       build.notes
         ? `<div class="build-notes-box">
              <span class="build-notes-label">${escapeHtml(t("builds.notes"))}</span>
-             <p class="build-notes">${escapeHtml(build.notes)}</p>
+             <p class="build-notes">${escapeHtml(localizeText(build.notes))}</p>
            </div>`
         : ""
     }
@@ -6822,12 +6862,16 @@ function rotationsVisible() {
     const archetypes = rotationArchetypes(rotation);
     if (rotationArchetypeFilter.size > 0 && !archetypes.some((a) => rotationArchetypeFilter.has(a))) return false;
     if (!query) return true;
+    const notesStr =
+      typeof rotation.notes === "object" && rotation.notes !== null
+        ? Object.values(rotation.notes).join(" ")
+        : rotation.notes || "";
     const haystack = [
       rotation.name || "",
       rotation.tuning || "",
       ...archetypes,
       ...rotationMembers(rotation).map((m) => displayCharName(m.character)),
-      rotation.notes || "",
+      notesStr,
     ]
       .join(" ")
       .toLowerCase();
@@ -6919,6 +6963,8 @@ function closeRotationsModal() {
 /* ---- Rotation presets: the bundled rotations, copied into the user's list ---- */
 
 function openRotationPresetsModal() {
+  const search = document.getElementById("rotation-presets-search");
+  if (search) search.value = "";
   renderRotationPresets();
   const modal = document.getElementById("rotation-presets-modal");
   if (modal) modal.style.display = "flex";
@@ -6933,49 +6979,80 @@ function renderRotationPresets() {
   const host = document.getElementById("rotation-presets-list");
   if (!host) return;
 
-  host.innerHTML = rotationPresets.length
-    ? rotationPresets
-        .map((preset) => {
-          const added = rotationPresetAdded(preset.id);
-          const members = rotationMembers(preset);
-          const archetypes = rotationArchetypes(preset);
-          const tuning = preset.tuning || "";
-          return `
-            <div class="rotation-card rotation-preset${added ? " is-added" : ""}" data-preset-id="${escapeHtml(preset.id)}">
-              <span class="rotation-card-top">
-                <span class="rotation-card-name">${escapeHtml(preset.name || preset.id)}</span>
+  const searchEl = document.getElementById("rotation-presets-search");
+  const query = (searchEl ? searchEl.value : "").trim().toLowerCase();
+
+  const filtered = rotationPresets.filter((preset) => {
+    if (!query) return true;
+    const name = String(preset.name || preset.id || "").toLowerCase();
+    if (name.includes(query)) return true;
+    const tuning = String(preset.tuning || "").toLowerCase();
+    if (tuning.includes(query)) return true;
+    const archetypes = rotationArchetypes(preset);
+    if (archetypes.some((tag) => tag.toLowerCase().includes(query))) return true;
+    const members = rotationMembers(preset);
+    if (
+      members.some((member) => {
+        const charName = String(member.character || "").toLowerCase();
+        const dispName = String(displayCharName(member.character) || "").toLowerCase();
+        return charName.includes(query) || dispName.includes(query);
+      })
+    ) {
+      return true;
+    }
+    const notesStr =
+      typeof preset.notes === "object" && preset.notes !== null
+        ? Object.values(preset.notes).join(" ")
+        : preset.notes || "";
+    if (notesStr.toLowerCase().includes(query)) return true;
+    return false;
+  });
+
+  host.innerHTML = rotationPresets.length === 0
+    ? guideEmptyState("rotations.presetsEmpty")
+    : filtered.length
+      ? filtered
+          .map((preset) => {
+            const added = rotationPresetAdded(preset.id);
+            const members = rotationMembers(preset);
+            const archetypes = rotationArchetypes(preset);
+            const tuning = preset.tuning || "";
+            return `
+              <div class="rotation-card rotation-preset${added ? " is-added" : ""}" data-preset-id="${escapeHtml(preset.id)}">
+                <span class="rotation-card-top">
+                  <span class="rotation-card-name">${escapeHtml(preset.name || preset.id)}</span>
+                  ${
+                    tuning
+                      ? `<img class="rotation-card-tuning" src="images/tuning_abilities/${encodeURIComponent(
+                          tuning
+                        )}.png" alt="" title="${escapeHtml(tuning)}" />`
+                      : ""
+                  }
+                </span>
+                <span class="rotation-card-team">
+                  ${members
+                    .map(
+                      (member) =>
+                        `<span class="rotation-card-face" title="${escapeHtml(displayCharName(member.character))}"><img src="${escapeHtml(
+                          characterDb[member.character] || ""
+                        )}" alt="" /></span>`
+                    )
+                    .join("")}
+                </span>
                 ${
-                  tuning
-                    ? `<img class="rotation-card-tuning" src="images/tuning_abilities/${encodeURIComponent(
-                        tuning
-                      )}.png" alt="" title="${escapeHtml(tuning)}" />`
+                  archetypes.length
+                    ? `<span class="rotation-card-tags">${archetypes
+                        .map((tag) => `<span class="rotation-card-tag">${escapeHtml(tag)}</span>`)
+                        .join("")}</span>`
                     : ""
                 }
-              </span>
-              <span class="rotation-card-team">
-                ${members
-                  .map(
-                    (member) =>
-                      `<span class="rotation-card-face" title="${escapeHtml(displayCharName(member.character))}"><img src="${escapeHtml(
-                        characterDb[member.character] || ""
-                      )}" alt="" /></span>`
-                  )
-                  .join("")}
-              </span>
-              ${
-                archetypes.length
-                  ? `<span class="rotation-card-tags">${archetypes
-                      .map((tag) => `<span class="rotation-card-tag">${escapeHtml(tag)}</span>`)
-                      .join("")}</span>`
-                  : ""
-              }
-              <button type="button" class="rotation-preset-add" data-add="${escapeHtml(
-                preset.id
-              )}" ${added ? "disabled" : ""}>${escapeHtml(added ? t("rotations.added") : t("rotations.add"))}</button>
-            </div>`;
-        })
-        .join("")
-    : guideEmptyState("rotations.presetsEmpty");
+                <button type="button" class="rotation-preset-add" data-add="${escapeHtml(
+                  preset.id
+                )}" ${added ? "disabled" : ""}>${escapeHtml(added ? t("rotations.added") : t("rotations.add"))}</button>
+              </div>`;
+          })
+          .join("")
+      : guideEmptyState("rotations.noData");
 
   host.querySelectorAll(".rotation-preset-add").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -7094,14 +7171,50 @@ const ROT_LEGACY_SLOT_TAGS = { free: "ap-free", precast: "precast" };
 
 /**
  * Slot tags. The layout lives in `type`; the meaning lives here, so a slot can
- * be both AP Free and Precast and the badge is drawn once per group.
+ * carry both AP Free and Precast. `image` is the shipped plate art.
  */
 const ROT_SLOT_TAGS = [
-  { key: "ap-free", label: "AP Free", kind: "badge" },
-  { key: "precast", label: "Precast", kind: "plaque" },
-  { key: "move", label: "Move", kind: "plaque" },
-  { key: "merge", label: "Merge", kind: "inline" },
+  { key: "ap-free", label: "AP Free", kind: "badge", image: "images/card_modulo/Tag_APFree.png" },
+  { key: "precast", label: "Precast", kind: "plaque", image: "images/card_modulo/Tag_Precast.png" },
 ];
+
+/**
+ * The one card frame: a skill-3 card is drawn in the arched Ultimate plate.
+ * Every other card is just its art, so there is no frame to choose.
+ */
+const ROT_ULTIMATE_FRAME = {
+  image: "images/card_modulo/Ultimate.png",
+  inset: { left: 6.56, top: 7.30, width: 87.98, height: 86.35 },
+  radius: "50% 50% 0 0 / 22% 22% 0 0",
+};
+
+/**
+ * Card surfaces. A surface is translucent decoration laid straight over the art,
+ * so it is drawn at the full card size — each surface PNG matches the box of the
+ * card shape it belongs to.
+ */
+const ROT_CARD_SURFACES = [
+  { key: "ramona", label: "Ramona", image: "images/card_modulo/surface/Ramona_Normal_Card.png" },
+  { key: "ramona-ultimate", label: "Ramona Ultimate", image: "images/card_modulo/surface/Ramona_Ultimate_Card.png" },
+];
+
+function rotationCardSurface(key) {
+  return ROT_CARD_SURFACES.find((surface) => surface.key === key) || null;
+}
+
+/** Skill 3 is the ultimate for every character; `frame` overrides either way. */
+function rotationCardIsUltimate(card) {
+  if (!card) return false;
+  if (card.frame === "ultimate") return true;
+  if (card.frame === "normal") return false;
+  if (card.special) return false;
+  return Number(card.skill) === 3;
+}
+
+/** One tag's plate: the shipped art. */
+function rotationTagPlateHtml(tag) {
+  return `<img class="rot-tag-plate is-${tag.kind}" src="${escapeHtml(tag.image)}" alt="${escapeHtml(tag.label)}" />`;
+}
 
 function rotationSlotLayout(slot) {
   const type = slot?.type || "normal";
@@ -7118,35 +7231,32 @@ function rotationTagInfo(key) {
   return ROT_SLOT_TAGS.find((tag) => tag.key === key) || null;
 }
 
-/** Skill 3 is the ultimate for every character; `frame` overrides either way. */
-function rotationCardIsUltimate(card) {
-  if (!card) return false;
-  if (card.frame === "ultimate") return true;
-  if (card.frame === "normal") return false;
-  if (card.special) return false;
-  return Number(card.skill) === 3;
-}
-
 /** One skill card: character art, or a special card with no owner. */
-function rotationCardHtml(card, variant) {
+function rotationCardHtml(card, variant, plates = "", hasBadge = false) {
   if (!card) return "";
+  const ultimate = rotationCardIsUltimate(card);
   const cls = ["rot-card"];
+  if (ultimate) cls.push("is-ultimate");
   if (variant === "lb") cls.push("is-lb");
-  if (rotationCardIsUltimate(card)) cls.push("is-ultimate");
   if (card.preferred) cls.push("is-preferred");
+  if (hasBadge) cls.push("has-badge");
   const className = cls.join(" ");
-  if (card.special) {
-    return `<span class="${className}"><img class="rot-card-art" src="${escapeHtml(card.special)}" alt="" /></span>`;
-  }
-  const char = resolveCharacterName(card.character) || card.character;
-  // A pinned icon wins: it keeps the exact variant the author picked.
-  const icon = card.icon || guideSkillIcon(char, card.skill);
-  const frame = rotationCardIsUltimate(card)
-    ? `<img class="rot-card-frame" src="images/card_modulo/Ultimate.png" alt="" />`
-    : "";
-  return `<span class="${className}" title="${escapeHtml(displayCharName(char))}">
-      ${frame}
-      <img class="rot-card-art" src="${escapeHtml(icon)}" alt="" />
+
+  const art =
+    card.special
+      ? escapeHtml(card.special)
+      : // A pinned icon wins: it keeps the exact variant the author picked.
+        escapeHtml(card.icon || guideSkillIcon(resolveCharacterName(card.character) || card.character, card.skill));
+  const surface = rotationCardSurface(card.surface);
+  const title = card.special
+    ? ""
+    : ` title="${escapeHtml(displayCharName(resolveCharacterName(card.character) || card.character))}"`;
+
+  return `<span class="${className}"${title}>
+      <img class="rot-card-art" src="${art}" alt="" />
+      ${ultimate ? `<img class="rot-card-frame" src="${ROT_ULTIMATE_FRAME.image}" alt="" />` : ""}
+      ${surface ? `<img class="rot-card-surface" src="${escapeHtml(surface.image)}" alt="" />` : ""}
+      ${plates}
     </span>`;
 }
 
@@ -7169,14 +7279,20 @@ function rotationSlotHtml(slot) {
   const infos = tags.map(rotationTagInfo).filter(Boolean);
   const badge = infos.find((tag) => tag.kind === "badge");
   const plaques = infos.filter((tag) => tag.kind === "plaque");
-  const inline = infos.find((tag) => tag.kind === "inline");
-  const overlay =
-    (badge ? `<span class="rot-tag-badge">${escapeHtml(badge.label)}</span>` : "") +
-    plaques.map((tag) => `<span class="rot-tag-plaque">${escapeHtml(tag.label)}</span>`).join("");
+  // Both plates sit on the slot's first card, badge first, so the plaque lands
+  // 3px under it.
+  const platesHtml =
+    (badge ? rotationTagPlateHtml(badge) : "") + plaques.map(rotationTagPlateHtml).join("");
 
+  // A normal AP card says nothing a card does not already say, a 1/4 AP card is
+  // already visibly smaller, and an OR slot's two overlapping cards already say
+  // "either", so all three keep an empty caption for the baseline.
+  const plain = type === "normal" || type === "lb" || type === "or";
+  // The plates hang off the slot's first card, so they sit on its corner whatever
+  // shape the card is; `has-badge` keeps the plaque 3px under the badge.
   const wrap = (inner, extraClass = "") =>
-    `<span class="rot-slot${extraClass}"><span class="rot-slot-body">${overlay}${inner}</span><span class="rot-slot-type${
-      type === "normal" ? " is-plain" : ""
+    `<span class="rot-slot${extraClass}"><span class="rot-slot-body">${inner}</span><span class="rot-slot-type${
+      plain ? " is-plain" : ""
     }">${escapeHtml(label)}</span></span>`;
 
   if (type === "text") {
@@ -7185,25 +7301,26 @@ function rotationSlotHtml(slot) {
     return wrap(`<span class="rot-slot-text">${escapeHtml(text)}</span>`, " is-text");
   }
 
-  if (cards.length === 0) return `<span class="rot-slot is-empty"><span class="rot-slot-body">${overlay}</span></span>`;
+  if (cards.length === 0) {
+    // An empty slot shows the placeholder face, so the AP order reads before
+    // any art exists.
+    return `<span class="rot-slot is-empty"><span class="rot-slot-body"><span class="rot-card is-empty${badge ? " has-badge" : ""}">${platesHtml}<img class="rot-card-art" src="images/card_modulo/Normal.png" alt="" /></span></span></span>`;
+  }
 
   if (type === "lb") {
-    return wrap(rotationCardHtml(cards[0], "lb"), " is-lb");
+    return wrap(rotationCardHtml(cards[0], "lb", platesHtml, !!badge), " is-lb");
   }
 
   if (type === "or") {
     // The second card peeks out behind the first: together they take the same
     // room as one normal card.
-    const front = cards[0] ? rotationCardHtml(cards[0]) : "";
+    const front = cards[0] ? rotationCardHtml(cards[0], "", platesHtml, !!badge) : "";
     const behind = cards[1]
       ? `<span class="rot-card is-behind"><img class="rot-card-art" src="${escapeHtml(
           cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
         )}" alt="" /></span>`
       : "";
-    return wrap(
-      `<span class="rot-or-stack">${front}${behind}</span>${inline ? `<span class="rot-tag-inline">${escapeHtml(inline.label)}</span>` : ""}`,
-      " is-or"
-    );
+    return wrap(`<span class="rot-or-stack">${front}${behind}</span>`, " is-or");
   }
 
   // A tuning slot is a text box with the tuning card shrunk into its bottom-right
@@ -7219,64 +7336,171 @@ function rotationSlotHtml(slot) {
     );
   }
 
-  return wrap(rotationCardHtml(cards[0]) + (inline ? `<span class="rot-tag-inline">${escapeHtml(inline.label)}</span>` : ""));
+  return wrap(rotationCardHtml(cards[0], "", platesHtml, !!badge));
 }
 
 /**
- * Draws the bracket / box / fork connector for every callout, from the cards it
- * points at down to its text box. Runs after layout because the spans follow
- * the card widths, which the CSS alone cannot know.
+ * Packs callouts into lanes: a note joins the first lane whose spans it does not
+ * overlap, so notes over different cards sit side by side instead of stacking.
+ * Returns each note's lane index.
+ */
+function packAnnotationLanes(notes) {
+  const lanes = [];
+  return notes.map((note) => {
+    const lane = lanes.findIndex((spans) => spans.every(([a, b]) => note.to < a || note.from > b));
+    if (lane === -1) {
+      lanes.push([[note.from, note.to]]);
+      return lanes.length - 1;
+    }
+    lanes[lane].push([note.from, note.to]);
+    return lane;
+  });
+}
+
+/**
+ * Draws the rail of notes that span several rounds: a vertical spine beside the
+ * rounds list with a tick pointing back at the first and last round it covers,
+ * and the text centred on it. Runs after layout, because the span follows the
+ * round heights.
+ */
+function drawRoundNoteRail(root = document) {
+  const NS = "http://www.w3.org/2000/svg";
+  for (const body of root.querySelectorAll(".rot-rounds-body")) {
+    const rail = body.querySelector(".rot-round-notes-rail");
+    const svg = rail?.querySelector(".rot-round-notes-rail-svg");
+    const column = body.querySelector(".rot-rounds-column");
+    if (!rail || !svg || !column) continue;
+
+    const labels = [...rail.querySelectorAll(".rot-round-note-label")];
+    const rounds = [...column.querySelectorAll(".rot-round")];
+    svg.replaceChildren();
+    if (labels.length === 0 || rounds.length === 0) continue;
+
+    const bodyBox = body.getBoundingClientRect();
+    // The spine hugs the last card, not the row: a flex row is as wide as its
+    // column, so measuring it would leave the bracket floating far right.
+    const contentRight = Math.max(
+      ...rounds.map((round) => {
+        const slots = [...round.querySelectorAll(".rot-slot")];
+        if (slots.length === 0) return round.getBoundingClientRect().left;
+        return slots[slots.length - 1].getBoundingClientRect().right;
+      })
+    );
+    const spineX = contentRight - bodyBox.left + 10;
+    svg.setAttribute("width", String(Math.max(1, bodyBox.width)));
+    svg.setAttribute("height", String(Math.max(1, bodyBox.height)));
+
+    labels.forEach((label, index) => {
+      const from = rounds[Number(label.dataset.from)];
+      const to = rounds[Number(label.dataset.to)] || from;
+      if (!from || !to) return;
+
+      const a = from.getBoundingClientRect();
+      const b = to.getBoundingClientRect();
+      const top = Math.min(a.top, b.top) - bodyBox.top;
+      const bottom = Math.max(a.bottom, b.bottom) - bodyBox.top;
+      const x = spineX + index * 16;
+      const style = label.dataset.style || "bracket";
+
+      const line = (d) => {
+        const path = document.createElementNS(NS, "path");
+        path.setAttribute("d", d);
+        path.setAttribute("class", "rot-connector");
+        svg.appendChild(path);
+      };
+      if (style === "box") {
+        line(`M ${x} ${top} V ${bottom}`);
+      } else {
+        // The ticks point back at the rounds, so the bracket reads "] rounds".
+        line(`M ${x} ${top} H ${x - 5} M ${x} ${bottom} H ${x - 5} M ${x} ${top} V ${bottom}`);
+      }
+
+      // The label sits beside the spine, vertically centred on its span.
+      label.style.top = `${Math.round((top + bottom) / 2)}px`;
+      label.style.left = `${Math.round(x + 8)}px`;
+    });
+  }
+}
+
+/**
+ * Draws the bracket / box / fork connectors and lays the notes out in lanes.
+ * Runs after layout because the spans follow the card widths, which the CSS
+ * alone cannot know.
  */
 function drawRotationConnectors(root = document) {
   const NS = "http://www.w3.org/2000/svg";
-  for (const node of root.querySelectorAll(".rot-annotation")) {
-    const rail = node.querySelector(".rot-annotation-rail");
-    if (!rail) continue;
-    const round = node.closest(".rot-round");
-    const slots = [...(round?.querySelectorAll(".rot-round-slots > .rot-slot") || [])];
-    const from = slots[Number(node.dataset.from)];
-    const to = slots[Number(node.dataset.to)] || from;
-    if (!from || !to) continue;
+  const GAP = 7;
 
-    const base = rail.getBoundingClientRect();
-    const a = from.getBoundingClientRect();
-    const b = to.getBoundingClientRect();
-    const x1 = a.left + a.width / 2 - base.left;
-    const x2 = b.left + b.width / 2 - base.left;
-    const left = Math.min(x1, x2);
-    const right = Math.max(x1, x2);
-    const mid = (left + right) / 2;
-    const style = node.dataset.style || "bracket";
-    const height = rail.clientHeight || 12;
+  for (const box of root.querySelectorAll(".rot-annotations")) {
+    const round = box.closest(".rot-round");
+    const rail = box.querySelector(".rot-annotation-rail");
+    const notes = [...box.querySelectorAll(".rot-annotation")];
+    if (!round || !rail || notes.length === 0) continue;
 
-    const line = (d) => {
-      const path = document.createElementNS(NS, "path");
-      path.setAttribute("d", d);
-      path.setAttribute("class", "rot-connector");
-      rail.appendChild(path);
-    };
+    const slots = [...round.querySelectorAll(".rot-round-slots > .rot-slot")];
+    const artOf = (slot) => slot.querySelector(".rot-slot-body") || slot;
 
+    // Measure first: an absolutely positioned note keeps its size even at top 0,
+    // which is what the lane heights are read from.
+    const laneHeight = [];
+    for (const note of notes) {
+      const lane = Number(note.dataset.lane) || 0;
+      const height = note.getBoundingClientRect().height;
+      laneHeight[lane] = Math.max(laneHeight[lane] || 0, height);
+    }
+    const laneTop = [];
+    let y = 0;
+    for (let i = 0; i < laneHeight.length; i++) {
+      laneTop[i] = y;
+      y += (laneHeight[i] || 0) + GAP;
+    }
+
+    const base = box.getBoundingClientRect();
+    box.style.position = "relative";
+    box.style.height = `${Math.max(0, y - GAP)}px`;
     rail.replaceChildren();
-    if (style === "box") {
-      line(`M ${mid} 0 V ${height}`);
-    } else if (style === "fork") {
-      line(`M ${left} 0 V 5 H ${right} V 0`);
-      line(`M ${mid} 5 V ${height}`);
-    } else {
-      // Ticks up toward the cards, a bar under them, then a stem to the note.
-      line(`M ${left} 0 V 6 H ${right} V 0`);
-      line(`M ${mid} 6 V ${height}`);
-    }
 
-    // The note box is centred under its bracket, so the stem lands on its top
-    // edge instead of somewhere off to the left.
-    const textNode = node.querySelector(".rot-annotation-text");
-    if (textNode) {
-      textNode.style.marginLeft = "0px";
-      const width = textNode.getBoundingClientRect().width;
-      const limit = Math.max(0, node.clientWidth - width);
-      textNode.style.marginLeft = `${Math.max(0, Math.min(limit, mid - width / 2))}px`;
-    }
+    notes.forEach((note) => {
+      const lane = Number(note.dataset.lane) || 0;
+      const from = slots[Number(note.dataset.from)];
+      const to = slots[Number(note.dataset.to)] || from;
+      if (!from || !to) return;
+
+      // Centre the note on its span, then drop it into its lane.
+      note.style.top = `${laneTop[lane]}px`;
+      note.style.marginLeft = "0px";
+      const width = note.getBoundingClientRect().width;
+      const a = artOf(from).getBoundingClientRect();
+      const b = artOf(to).getBoundingClientRect();
+      const left = Math.min(a.left, b.left) - base.left;
+      const right = Math.max(a.right, b.right) - base.left;
+      const mid = (left + right) / 2;
+      const limit = Math.max(0, box.clientWidth - width);
+      note.style.marginLeft = `${Math.max(0, Math.min(limit, mid - width / 2))}px`;
+
+      // The stem starts a hair under the cards and lands on the note's top edge.
+      const gap = 3;
+      const top = Math.min(a.bottom, b.bottom) - base.top + gap;
+      const bar = top + 5;
+      const stem = laneTop[lane];
+      const style = note.dataset.style || "bracket";
+      const line = (d) => {
+        const path = document.createElementNS(NS, "path");
+        path.setAttribute("d", d);
+        path.setAttribute("class", "rot-connector");
+        rail.appendChild(path);
+      };
+      if (style === "box") {
+        line(`M ${mid} ${top} V ${stem}`);
+      } else if (style === "fork") {
+        line(`M ${left} ${top} V ${bar} H ${right} V ${top}`);
+        line(`M ${mid} ${bar} V ${stem}`);
+      } else {
+        // Both ends start on the cards' bottom edge, then a bar, then a stem.
+        line(`M ${left} ${top} V ${bar} H ${right} V ${top}`);
+        line(`M ${mid} ${bar} V ${stem}`);
+      }
+    });
   }
 }
 
@@ -7386,44 +7610,85 @@ function renderRotationsDetail() {
 
   const roundsHtml = rounds.length
     ? rounds
-        .map((round, index) => {
-          const slots = Array.isArray(round.slots) ? round.slots : [];
+        .map((round, index) => {          const slots = Array.isArray(round.slots) ? round.slots : [];
           const slotsHtml = slots.length
             ? slots.map(rotationSlotHtml).join("")
             : `<span class="builds-muted">${escapeHtml(t("builds.noData"))}</span>`;
 
           // A callout underlines the cards it explains, so its ends are slot
-          // indices rather than free text in the round header.
-          const annotations = Array.isArray(round.annotations) ? round.annotations : [];
-          const annotationsHtml = annotations.length
-            ? `<div class="rot-annotations">${annotations
-                .map((annotation) => {
-                  const text = String(annotation.text || "").trim();
-                  if (!text) return "";
-                  const last = Math.max(0, slots.length - 1);
-                  const from = Math.max(0, Math.min(last, Number(annotation.from) || 0));
-                  const to = Math.max(from, Math.min(last, Number(annotation.to) || 0));
-                  const style = ["bracket", "box", "fork"].includes(annotation.style) ? annotation.style : "bracket";
-                  return `<div class="rot-annotation is-${style}" data-from="${from}" data-to="${to}" data-style="${style}">
-                      <svg class="rot-annotation-rail" aria-hidden="true"></svg>
-                      <span class="rot-annotation-text">${escapeHtml(text)}</span>
-                    </div>`;
-                })
-                .join("")}</div>`
+          // indices rather than free text in the round header. Two notes that do
+          // not share a card share a lane, so a round needs no extra height for
+          // notes that never overlap.
+          const last = Math.max(0, slots.length - 1);
+          const notes = (Array.isArray(round.annotations) ? round.annotations : [])
+            .map((annotation) => {
+              const text = String(localizeText(annotation.text) || "").trim();
+              if (!text) return null;
+              const from = Math.max(0, Math.min(last, Number(annotation.from) || 0));
+              const to = Math.max(from, Math.min(last, Number(annotation.to) || 0));
+              const style = ["bracket", "box", "fork"].includes(annotation.style) ? annotation.style : "bracket";
+              return { text, from, to, style };
+            })
+            .filter(Boolean);
+          const lanes = packAnnotationLanes(notes);
+          const annotationsHtml = notes.length
+            ? `<div class="rot-annotations">
+                 <svg class="rot-annotation-rail" aria-hidden="true"></svg>
+                 ${notes
+                   .map(
+                     (note, i) => `<div class="rot-annotation is-${note.style}" data-lane="${lanes[i]}" data-from="${note.from}" data-to="${note.to}" data-style="${note.style}">
+                      <span class="rot-annotation-text">${escapeHtml(note.text)}</span>
+                    </div>`
+                   )
+                   .join("")}
+               </div>`
             : "";
 
           return `
-            <div class="rot-round">
-              <div class="rot-round-head">
-                <span class="rot-round-label">${escapeHtml(t("rotations.round", { n: String(index + 1).padStart(2, "0") }))}</span>
-                ${round.note ? `<span class="rot-round-note">${escapeHtml(round.note)}</span>` : ""}
-              </div>
+            <div class="rot-round" role="group" data-round="${index + 1}" aria-label="${escapeHtml(
+              t("rotations.round", { n: String(index + 1).padStart(2, "0") })
+            )}">
+              <span class="rot-round-no">${String(index + 1).padStart(2, "0")}</span>
+              ${
+                round.note
+                  ? `<div class="rot-round-head"><span class="rot-round-note">${escapeHtml(localizeText(round.note))}</span></div>`
+                  : ""
+              }
               <div class="rot-round-slots">${slotsHtml}</div>
               ${annotationsHtml}
             </div>`;
         })
         .join("")
     : guideEmptyState("rotations.empty");
+
+  // Round notes span several rounds, so they are drawn on a rail beside the whole
+  // list rather than inside one round.
+  const roundNotes = (Array.isArray(rotation.roundNotes) ? rotation.roundNotes : [])
+    .map((note) => {
+      const text = String(localizeText(note.text) || "").trim();
+      if (!text) return null;
+      const lastRound = Math.max(0, rounds.length - 1);
+      const from = Math.max(0, Math.min(lastRound, Number(note.from) || 0));
+      const to = Math.max(from, Math.min(lastRound, Number(note.to) || 0));
+      const style = ["bracket", "box", "fork"].includes(note.style) ? note.style : "bracket";
+      return { text, from, to, style };
+    })
+    .filter(Boolean);
+  const roundsBodyHtml = rounds.length
+    ? `<div class="rot-rounds-body${roundNotes.length ? " has-round-notes" : ""}">
+         <div class="rot-rounds-column">${roundsHtml}</div>
+         <div class="rot-round-notes-rail">
+           <svg class="rot-round-notes-rail-svg" aria-hidden="true"></svg>
+           ${roundNotes
+             .map(
+               (note, i) => `<span class="rot-round-note-label" data-lane="${i}" data-from="${note.from}" data-to="${note.to}" data-style="${note.style}">${escapeHtml(
+                 note.text
+               )}</span>`
+             )
+             .join("")}
+         </div>
+       </div>`
+    : roundsHtml;
 
   host.innerHTML = `
     <div class="rot-hero">
@@ -7446,14 +7711,14 @@ function renderRotationsDetail() {
       rotation.notes
         ? `<section class="rot-block">
              ${guideSectionHeader("rotations.notes")}
-             <p class="build-notes">${escapeHtml(rotation.notes)}</p>
+             <p class="build-notes">${escapeHtml(localizeText(rotation.notes))}</p>
            </section>`
         : ""
     }
 
     <section class="rot-block">
       ${guideSectionHeader("rotations.rounds")}
-      <div class="rot-rounds">${roundsHtml}</div>
+      ${roundsBodyHtml}
     </section>
   `;
 
@@ -7462,13 +7727,17 @@ function renderRotationsDetail() {
   requestAnimationFrame(() => {
     fitRotationTuningNotes(host);
     drawRotationConnectors(host);
+    drawRoundNoteRail(host);
   });
 }
 
 // Card widths change with the viewport, so the connectors are redrawn on resize.
 window.addEventListener("resize", () => {
   const modal = document.getElementById("rotations-modal");
-  if (modal && modal.style.display === "flex") drawRotationConnectors();
+  if (modal && modal.style.display === "flex") {
+    drawRotationConnectors();
+    drawRoundNoteRail();
+  }
 });
 
 /**
@@ -7639,6 +7908,9 @@ function setupGuideListeners() {
         if (e.target === presetsModal) closeRotationPresetsModal();
       });
     }
+
+    const presetsSearch = document.getElementById("rotation-presets-search");
+    if (presetsSearch) presetsSearch.addEventListener("input", renderRotationPresets);
   }
 }
 

@@ -35,10 +35,11 @@ export const WRITABLE = [
   "guide_skills.json",
   "guide_cards.json",
   "credits.json",
+  "i18n.json",
 ];
 
 /** Files the editor reads but never writes. */
-export const READ_ONLY = ["ArcanistMap.json", "i18n.json"];
+export const READ_ONLY = ["ArcanistMap.json"];
 
 /* ------------------------------------------------------------------ *
  * Reading

@@ -31,6 +31,11 @@
       "skill": 3,
       "variant": 1,
       "icon": "images/skills/30660131.png"
+    },
+    {
+      "skill": 9,
+      "variant": 1,
+      "icon": "images/skills/790001.png"
     }
   ],
   "A Knight": [
@@ -294,6 +299,21 @@
       "skill": 6,
       "variant": 7,
       "icon": "images/skills/31340167.png"
+    },
+    {
+      "skill": 6,
+      "variant": 10,
+      "icon": "images/skills/Beryl_Blue_Crystal.png"
+    },
+    {
+      "skill": 6,
+      "variant": 11,
+      "icon": "images/skills/Beryl_Green_Crystal.png"
+    },
+    {
+      "skill": 6,
+      "variant": 12,
+      "icon": "images/skills/Beryl_Purple_Crystal.png"
     }
   ],
   "Bette": [
@@ -985,6 +1005,11 @@
       "skill": 3,
       "variant": 1,
       "icon": "images/skills/31550131.png"
+    },
+    {
+      "skill": 9,
+      "variant": 1,
+      "icon": "images/skills/790002.png"
     }
   ],
   "Igor": [
@@ -1953,6 +1978,11 @@
       "skill": 4,
       "variant": 1,
       "icon": "images/skills/30250141.png"
+    },
+    {
+      "skill": 9,
+      "variant": 1,
+      "icon": "images/skills/228101.png"
     }
   ],
   "Rhiannon": [

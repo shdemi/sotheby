@@ -8736,54 +8736,140 @@ body.guide-rail-resizing * {
   gap: 22px;
 }
 
-/* A round is a title bar over a strip of cards, the way the plan sheets were
-   written: no box around the cards, the bar carries the name. */
-.rot-round {
+/* Rounds and the rail of round notes beside them. Only a rotation that has a
+   round note reserves the room for it. */
+.rot-rounds-body {
+  position: relative;
+}
+.rot-rounds-body.has-round-notes {
+  padding-right: 150px;
+}
+
+.rot-rounds-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
 }
 
+.rot-round-notes-rail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.rot-round-notes-rail-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.rot-round-note-label {
+  position: absolute;
+  transform: translateY(-50%);
+  font-family: var(--main-font-family);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #F0E6D2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+}
+
+/* A round is a bracketed number in a gutter beside its cards, the way the plan
+   sheets were written. Nothing else frames the strip. */
+.rot-round {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+}
+
+/* The number sits at the top of the gutter, level with the top of the cards,
+   inside an L-shaped bracket. Zero-padded, so a ten-round plan still lines up. */
+/* The number sits in the gutter in a small box, just wide enough for two digits,
+   with the same transparent surface and hairline border a card has. */
+.rot-round-no {
+  position: relative;
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+  justify-self: start;
+  /* Sits level with the card strip, like the plan sheets. */
+  margin-top: 26px;
+  padding: 6px 10px 7px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  font-family: var(--main-font-family);
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: #F0E6D2;
+}
+
+/* Two gold corners bracket the number: top-left and bottom-right. */
+.rot-round-no::before,
+.rot-round-no::after {
+  content: "";
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  pointer-events: none;
+}
+
+.rot-round-no::before {
+  left: -1px;
+  top: -1px;
+  border-left: 2px solid #E8A33D;
+  border-top: 2px solid #E8A33D;
+}
+
+.rot-round-no::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid #E8A33D;
+  border-bottom: 2px solid #E8A33D;
+}
+
+/* The round note is the round's title: a plaque cut from the same material as
+   the section headers, with an orange spine and serif capitals. */
 .rot-round-head {
+  grid-column: 2;
+  grid-row: 1;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  padding: 7px 14px;
-  border-left: 3px solid #E8A33D;
-  background: linear-gradient(90deg, rgba(74, 56, 32, 0.9), rgba(32, 30, 27, 0.72) 55%, rgba(24, 23, 21, 0.45));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  min-height: 0;
+  margin-bottom: 8px;
 }
 
-.rot-round-label {
-  font-family: var(--main-font-family);
-  font-size: 0.86rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #F3E4C4;
-}
-
-/* The separator belongs to the note, so a round with no note has no stray dot. */
 .rot-round-note {
+  display: inline-block;
+  padding: 4px 14px 4px 12px;
+  border-left: 3px solid #E8A33D;
+  background: linear-gradient(90deg, rgba(92, 72, 44, 0.92), rgba(52, 45, 36, 0.82) 60%, rgba(34, 31, 27, 0.55));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
   font-family: var(--main-font-family);
-  font-size: 0.78rem;
-  color: #C9C1B4;
-}
-
-.rot-round-note::before {
-  content: "·";
-  margin-right: 10px;
-  color: #B99B6B;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #F5EEDF;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 /* Cards sit edge to edge; the card border is the only gutter. */
 .rot-round-slots {
+  grid-column: 2;
+  grid-row: 2;
   display: flex;
-  gap: 2px;
+  /* Every card is 5px from its neighbour, whatever shape it is. */
+  gap: 5px;
   flex-wrap: wrap;
   align-items: flex-end;
-  padding-left: 14px;
 }
 
 .rot-slot {
@@ -8808,14 +8894,14 @@ body.guide-rail-resizing * {
   align-items: flex-end;
   justify-content: center;
   width: 100%;
-  /* Room for the AP Free badge over the group. */
-  padding-top: 15px;
   box-sizing: border-box;
 }
 
+/* The caption under a card is a quiet label, not a tag: tags are the parchment
+   plates, this is plain type. */
 .rot-slot-type {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 0.44rem;
+  font-size: 0.46rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #6f6a63;
@@ -8823,16 +8909,29 @@ body.guide-rail-resizing * {
   white-space: nowrap;
 }
 
-/* A plain AP card says nothing a card does not already say, so its caption only
-   reserves the baseline. */
+/* A caption that repeats what the card already shows keeps the space, not the
+   ink, so every slot stays on the same baseline. */
 .rot-slot-type.is-plain { visibility: hidden; }
 
+/* The placeholder an empty slot shows: the plate face, dimmed, so it reads as
+   "no card yet" rather than as art. */
 .rot-slot.is-empty .rot-slot-body {
   width: 62px;
-  height: 81px;
+  height: 82px;
   padding-top: 0;
   border: 1px dashed rgba(181, 181, 179, 0.16);
   box-sizing: border-box;
+}
+
+.rot-card.is-empty {
+  height: 100%;
+  aspect-ratio: 164 / 217;
+  opacity: 0.55;
+}
+
+.rot-card.is-empty .rot-card-art {
+  border: none;
+  box-shadow: none;
 }
 
 /* A text slot is a note chip: wider than one card, with room to read. */
@@ -8861,34 +8960,42 @@ body.guide-rail-resizing * {
   color: #7d94b8;
 }
 
-/* Either/or: both cards shrink and overlap, so the pair reads as one slot
-   while the back card still peeks out from behind the front one. */
-.rot-slot.is-or .rot-slot-body { width: 74px; justify-content: flex-start; }
-.rot-or-stack { position: relative; width: 74px; height: 84px; }
+/* Either/or: both cards shrink and overlap, so the pair reads as one slot while
+   the back card still peeks out from behind the front one. The stack is exactly
+   as wide as the two cards it holds, so the 5px gap to its neighbours stays even. */
+.rot-slot.is-or .rot-slot-body { width: 78px; justify-content: flex-start; }
+.rot-or-stack { position: relative; width: 78px; height: 86px; }
 .rot-or-stack > .rot-card:not(.is-behind) { position: absolute; left: 0; bottom: 0; z-index: 2; }
-.rot-or-stack > .rot-card .rot-card-art { width: 44px; }
+.rot-or-stack > .rot-card { height: 66px; }
 .rot-card.is-behind {
   position: absolute;
   left: 27px;
-  bottom: 24px;
+  bottom: 20px;
   z-index: 1;
   opacity: 0.95;
   filter: brightness(0.7);
 }
 
-/* Every card keeps the same width; the height follows the art's aspect ratio. */
+/* A card is its art. The box keeps a fixed height so every card in a round sits
+   on one baseline; the width follows the art's aspect ratio. */
 .rot-card {
   display: block;
   flex: none;
   position: relative;
+  height: 84px;
+  aspect-ratio: 288 / 376;
 }
 
 .rot-card-art {
-  width: 62px;
-  height: auto;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
+  object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  z-index: 2;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
@@ -8902,11 +9009,11 @@ body.guide-rail-resizing * {
   box-shadow: none;
 }
 
-/* The ultimate frame is drawn on top of the art, which is inset to the frame's
-   inner window (x 12–172, y 23–297 of a 190×315 card). */
+/* The Ultimate plate is opaque in the middle, so the art is drawn ON TOP of it,
+   clipped to the plate's inner window (x 12–172, y 23–294 of a 183×315 card). */
 .rot-card.is-ultimate {
-  width: 74px;
-  height: 123px;
+  height: 126px;
+  aspect-ratio: 183 / 315;
 }
 
 .rot-card.is-ultimate .rot-card-frame {
@@ -8914,21 +9021,30 @@ body.guide-rail-resizing * {
   inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
   z-index: 1;
   pointer-events: none;
 }
 
 .rot-card.is-ultimate .rot-card-art {
-  position: absolute;
-  left: 6.32%;
+  left: 6.56%;
   top: 7.30%;
-  width: 84.73%;
-  height: 87.30%;
-  object-fit: cover;
+  width: 87.98%;
+  height: 86.35%;
   border: none;
   box-shadow: none;
   border-radius: 50% 50% 0 0 / 22% 22% 0 0;
-  z-index: 2;
+}
+
+/* A surface is decoration laid straight over the card, at the card's own size. */
+.rot-card-surface {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 3;
+  pointer-events: none;
 }
 
 /* The preferred side of an either/or slot. */
@@ -8939,54 +9055,35 @@ body.guide-rail-resizing * {
   border: 2px solid #e05a4f;
   border-radius: 4px;
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
 }
 
 /* ---- slot tags ---- */
 
-/* Tags are cut from the same parchment as the rotation cards in the list, so a
-   badge on a card and the card in the rail read as one material. */
-.rot-tag-badge {
+/* The shipped plate art (AP Free / Precast), pinned to the card's top-left
+   corner. When both are present the plaque drops 3px below the badge. */
+/* Both plates hang off the slot's first card, so they stay on its corner
+   whatever shape the card is. The plaque sits 5px under the badge. */
+.rot-card > .rot-tag-plate {
   position: absolute;
   left: 0;
-  top: 0;
-  padding: 1px 5px;
-  background: var(--parchment);
-  border: 1px solid rgba(31, 28, 25, 0.35);
-  color: #2a2622;
-  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 0.5rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
+  top: 6px;
+  height: 13px;
+  width: auto;
   z-index: 4;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65));
+  pointer-events: none;
 }
 
-/* Precast / Move: a plate overlapping the card. */
-.rot-tag-plaque {
-  position: absolute;
-  left: 3px;
-  bottom: 12px;
-  padding: 1px 4px;
-  background: var(--parchment);
-  border: 1px solid rgba(31, 28, 25, 0.35);
-  color: #2a2622;
-  font-size: 0.44rem;
-  font-weight: 700;
-  z-index: 4;
-}
+/* 6px top + 13px tall + 5px gap = 24px. */
+/* 6px top + 13px tall + 5px gap = 24px. */
+.rot-card.has-badge > .rot-tag-plate.is-plaque { top: 24px; }
 
-/* Merge: a word between two cards. Text cannot carry a gradient, so it uses the
-   warm end of the parchment instead. */
-.rot-tag-inline {
-  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 0.5rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #ddb39f;
-  align-self: center;
-  padding: 0 3px;
-}
+/* An Ultimate card is an arch, so its top corner is empty: the plate drops to
+   where the art begins, the way the plan sheets draw it. */
+.rot-card.is-ultimate > .rot-tag-plate { top: 30px; }
+/* 30px top + 13px tall + 5px gap = 48px. */
+.rot-card.is-ultimate.has-badge > .rot-tag-plate.is-plaque { top: 48px; }
 
 /* A Tuning slot keeps the AP box as a text box; the tuning card shrinks into
    its bottom-right corner so the note and the art never overlap. */
@@ -9026,39 +9123,41 @@ body.guide-rail-resizing * {
   bottom: 3px;
   z-index: 1;
 }
-.rot-slot-tuning-card .rot-card-art {
-  width: 24px;
-  border: none;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+.rot-slot-tuning-card .rot-card {
+  height: 30px;
 }
 .rot-slot.is-tuning .rot-slot-type { color: #ED7D31; }
 
-/* A quarter-size (LB) card is drawn at a quarter of the normal area. */
-.rot-slot.is-lb .rot-slot-body { padding: 4px; }
-.rot-card.is-lb .rot-card-art { width: 31px; }
+/* A quarter-size (LB) card is drawn at a quarter of the normal area. The slot
+   keeps no padding, so the 5px gap to its neighbours stays even. */
+.rot-slot.is-lb .rot-slot-body { padding: 0; }
+.rot-card.is-lb { height: 42px; }
 
 /* ---- bracket callouts ---- */
 
 .rot-annotations {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-left: 14px;
+  grid-column: 2;
+  grid-row: 3;
+  position: relative;
+  margin-top: 2px;
+}
+
+/* One rail per round: the SVG paths are measured from the cards down to each
+   note, and the notes themselves are placed in lanes by JS. */
+.rot-annotation-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .rot-annotation {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-/* The rail holds the SVG connector: ticks up to the cards, a bar, a stem down. */
-.rot-annotation-rail {
-  display: block;
-  width: 100%;
-  height: 12px;
-  overflow: visible;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .rot-connector {
@@ -9070,18 +9169,18 @@ body.guide-rail-resizing * {
 .rot-annotation-text {
   display: inline-block;
   max-width: 340px;
-  margin-top: 2px;
-  padding: 6px 12px;
-  border: 1px solid rgba(201, 178, 140, 0.35);
-  background: rgba(22, 20, 18, 0.85);
+  padding: 0 2px;
   font-family: var(--main-font-family);
   font-size: 0.72rem;
-  line-height: 1.45;
-  color: #E7E0D3;
+  line-height: 1.4;
+  color: #F0E6D2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
-.rot-annotation.is-box .rot-annotation-text { border-color: rgba(201, 178, 140, 0.55); }
-.rot-annotation.is-fork .rot-annotation-text { border-style: dashed; }
+/* The note is plain type on the plan's dark ground, so the style only changes
+   how its connector is drawn, not how the text sits. */
+.rot-annotation.is-box .rot-annotation-text { color: #F3E4C4; }
+.rot-annotation.is-fork .rot-annotation-text { color: #E4DCCB; }
 
 .rot-or {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
@@ -9134,13 +9233,15 @@ body.guide-rail-resizing * {
   }
 
   /* Row 1: Back + title. Row 2: the full-width search field. */
-  #rotations-modal .archetype-modal-header {
+  #rotations-modal .archetype-modal-header,
+  #rotation-presets-modal .archetype-modal-header {
     flex-wrap: wrap;
     gap: 8px;
     padding: 12px 44px 10px 12px;
   }
 
-  #rotations-modal .archetype-modal-title {
+  #rotations-modal .archetype-modal-title,
+  #rotation-presets-modal .archetype-modal-title {
     flex: 1 1 auto;
     min-width: 0;
     font-size: 19px;
@@ -9236,27 +9337,26 @@ body.guide-rail-resizing * {
   }
 
   .rot-rounds { gap: 16px; }
-  .rot-round-head { padding: 6px 10px; }
-  .rot-round-label { font-size: 0.68rem; }
-  .rot-round-note { font-size: 0.6rem; }
-  .rot-round-slots, .rot-annotations { padding-left: 8px; }
+  .rot-round { column-gap: 7px; }
+  .rot-round-no { font-size: 1.2rem; padding: 0 7px 1px 6px; }
+  .rot-round-note { font-size: 0.68rem; }
 
   /* Cards scale down together so a full round still fits one row. */
   .rot-slot { height: 108px; }
-  .rot-card-art { width: 52px; }
-  .rot-card.is-ultimate { width: 62px; height: 103px; }
+  .rot-card { height: 72px; }
+  .rot-card.is-ultimate { height: 108px; }
   .rot-slot.is-empty .rot-slot-body { width: 52px; height: 68px; }
   .rot-slot.is-text .rot-slot-body { width: 96px; min-height: 68px; padding: 6px 8px; }
   .rot-slot-text { font-size: 0.52rem; line-height: 1.4; }
-  .rot-slot.is-or .rot-slot-body { width: 62px; }
-  .rot-or-stack { width: 62px; height: 70px; }
-  .rot-or-stack > .rot-card .rot-card-art { width: 38px; }
-  .rot-card.is-behind { left: 23px; bottom: 20px; }
-  .rot-card.is-lb .rot-card-art { width: 26px; }
+  .rot-slot.is-or .rot-slot-body { width: 66px; }
+  .rot-or-stack { width: 66px; height: 72px; }
+  .rot-or-stack > .rot-card { height: 56px; }
+  .rot-card.is-behind { left: 23px; bottom: 16px; }
+  .rot-card.is-lb { height: 36px; }
   .rot-slot.is-tuning .rot-slot-body { width: 52px; }
   .rot-slot-tuning { width: 52px; height: 68px; }
   .rot-slot-tuning-note { top: 3px; left: 3px; right: 3px; bottom: calc(3px + var(--tuning-reserve, 0px)); }
-  .rot-slot-tuning-card .rot-card-art { width: 20px; }
+  .rot-slot-tuning-card .rot-card { height: 30px; }
 }
 
 /* ================= JSON MODAL ================= */

@@ -1299,6 +1299,9 @@
           <button type="button" class="btn btn-secondary btn-sm rotations-presets-btn" id="rotations-presets-btn">
             <span data-i18n="rotations.presets">Presets</span>
           </button>
+          <button type="button" class="btn btn-secondary btn-sm rotations-export-btn" id="rotations-export-btn">
+            <span data-i18n="rotations.exportPng">Export PNG</span>
+          </button>
           <button type="button" class="btn btn-secondary btn-sm rotations-rail-toggle" id="rotations-rail-toggle" aria-pressed="true">
             <img src="images/random_icon/hide_tier.png" alt="" class="rotations-rail-toggle-icon" />
             <span data-i18n="rotations.toggleList">Hide list</span>
@@ -1338,7 +1341,10 @@
     <div class="modal-card archetype-modal-card rotation-presets-card">
       <div class="archetype-modal-header">
         <h2 class="archetype-modal-title"><span data-i18n="rotations.presetsTitle">Rotation Presets</span></h2>
-        <button class="modal-close" id="rotation-presets-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        <div class="rotations-header-tools">
+          <input type="text" id="rotation-presets-search" class="search-input" data-i18n-placeholder="rotations.search" placeholder="Search Rotations" />
+          <button class="modal-close" id="rotation-presets-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        </div>
       </div>
       <div class="modal-body archetype-modal-body rotation-presets-body">
         <p class="builds-muted" data-i18n="rotations.presetsHint">Add a preset to your rotation list.</p>
@@ -1761,5 +1767,6 @@
   </div>
 
   <script src="app.js"></script>
+  <script src="rotation-export.js"></script>
 </body>
 </html>
