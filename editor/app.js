@@ -3820,9 +3820,9 @@ function renderRotationDetail() {
                                 }
 
       // The layout caption only appears when it says something the cards do not
-      // already say: an OR slot's pair and a 1/4 AP card's size speak for
+      // already say: an OR slot's cards and a 1/4 AP card's size speak for
       // themselves.
-      if (type !== "normal" && type !== "lb" && type !== "or") {
+      if (type !== "normal" && type !== "lb" && type !== "or" && type !== "double_or" && type !== "or3") {
         slotEl.appendChild(el("span", { class: "guide-slot-type", text: SLOT_LABELS[type] || type }));
       }
       slotEl.appendChild(

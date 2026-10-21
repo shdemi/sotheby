@@ -7264,6 +7264,8 @@ function rotationCardHtml(card, variant, plates = "", hasBadge = false) {
 const SLOT_TYPE_LABELS = {
   normal: "AP",
   or: "OR",
+  double_or: "OR",
+  or3: "OR",
   lb: "1/4 AP",
   text: "TEXT",
   tuning: "TUNING",
@@ -7285,9 +7287,9 @@ function rotationSlotHtml(slot) {
     (badge ? rotationTagPlateHtml(badge) : "") + plaques.map(rotationTagPlateHtml).join("");
 
   // A normal AP card says nothing a card does not already say, a 1/4 AP card is
-  // already visibly smaller, and an OR slot's two overlapping cards already say
-  // "either", so all three keep an empty caption for the baseline.
-  const plain = type === "normal" || type === "lb" || type === "or";
+  // already visibly smaller, and an OR slot's overlapping cards already say
+  // "either", so all keep an empty caption for the baseline.
+  const plain = type === "normal" || type === "lb" || type === "or" || type === "double_or" || type === "or3";
   // The plates hang off the slot's first card, so they sit on its corner whatever
   // shape the card is; `has-badge` keeps the plaque 3px under the badge.
   const wrap = (inner, extraClass = "") =>
