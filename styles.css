@@ -8964,9 +8964,19 @@ body.guide-rail-resizing * {
    the back card still peeks out from behind the front one. The stack is exactly
    as wide as the two cards it holds, so the 5px gap to its neighbours stays even. */
 .rot-slot.is-or .rot-slot-body { width: 78px; justify-content: flex-start; }
+.rot-slot.is-double-or .rot-slot-body { width: 88px; justify-content: flex-start; }
 .rot-or-stack { position: relative; width: 78px; height: 86px; }
-.rot-or-stack > .rot-card:not(.is-behind) { position: absolute; left: 0; bottom: 0; z-index: 2; }
+.rot-or-stack.is-double { width: 88px; height: 92px; }
+.rot-or-stack > .rot-card:not(.is-behind):not(.is-mid) { position: absolute; left: 0; bottom: 0; z-index: 3; }
 .rot-or-stack > .rot-card { height: 66px; }
+.rot-card.is-mid {
+  position: absolute;
+  left: 18px;
+  bottom: 13px;
+  z-index: 2;
+  opacity: 0.95;
+  filter: brightness(0.85);
+}
 .rot-card.is-behind {
   position: absolute;
   left: 27px;
@@ -8974,6 +8984,10 @@ body.guide-rail-resizing * {
   z-index: 1;
   opacity: 0.95;
   filter: brightness(0.7);
+}
+.rot-or-stack.is-double .rot-card.is-behind {
+  left: 36px;
+  bottom: 26px;
 }
 
 /* A card is its art. The box keeps a fixed height so every card in a round sits
@@ -8999,11 +9013,12 @@ body.guide-rail-resizing * {
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
-.rot-slot:hover .rot-card:not(.is-behind) .rot-card-art {
+.rot-slot:hover .rot-card:not(.is-behind):not(.is-mid) .rot-card-art {
   border-color: rgba(237, 125, 49, 0.55);
   transform: translateY(-2px);
 }
 
+.rot-card.is-mid .rot-card-art,
 .rot-card.is-behind .rot-card-art {
   border: none;
   box-shadow: none;
@@ -9349,9 +9364,13 @@ body.guide-rail-resizing * {
   .rot-slot.is-text .rot-slot-body { width: 96px; min-height: 68px; padding: 6px 8px; }
   .rot-slot-text { font-size: 0.52rem; line-height: 1.4; }
   .rot-slot.is-or .rot-slot-body { width: 66px; }
+  .rot-slot.is-double-or .rot-slot-body { width: 74px; }
   .rot-or-stack { width: 66px; height: 72px; }
+  .rot-or-stack.is-double { width: 74px; height: 78px; }
   .rot-or-stack > .rot-card { height: 56px; }
+  .rot-card.is-mid { left: 15px; bottom: 11px; }
   .rot-card.is-behind { left: 23px; bottom: 16px; }
+  .rot-or-stack.is-double .rot-card.is-behind { left: 30px; bottom: 22px; }
   .rot-card.is-lb { height: 36px; }
   .rot-slot.is-tuning .rot-slot-body { width: 52px; }
   .rot-slot-tuning { width: 52px; height: 68px; }

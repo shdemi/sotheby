@@ -2283,60 +2283,37 @@ function renderBuildDetail() {
   } else {
     charts.forEach((chart, chartIndex) => {
       const block = el("div", { class: "chart-editor" });
-      const chartCurLang = state.chartLang || state.noteLang || "en";
 
-      const getChartLabel = (l) => {
-        if (!chart.label) return "";
-        if (typeof chart.label === "object") return chart.label[l] || "";
-        return l === "en" ? chart.label : "";
+      const makeChartTitle = (lang, label, placeholder) => {
+        const input = el("input", {
+          type: "text",
+          value: getMultiText(chart.label, lang),
+          placeholder: `${placeholder} (${label})`,
+          class: "chart-editor-title",
+          style: "flex: 1; min-width: 90px; font-size: 11px;",
+        });
+        input.addEventListener("change", () => {
+          const next = updateMultiText(chart.label, lang, input.value);
+          chart.label = next;
+          commitCharts(() => model.setProgressionLabel(name, chartIndex, next));
+        });
+        return el("div", { style: "display: flex; gap: 4px; align-items: center; flex: 1; min-width: 100px;" }, [
+          el("span", { class: "flag", text: label }),
+          input,
+        ]);
       };
 
-      const titleInput = el("input", {
-        type: "text",
-        value: getChartLabel(chartCurLang),
-        placeholder: `Title (${chartCurLang.toUpperCase()})`,
-        class: "chart-editor-title",
-      });
-      titleInput.addEventListener("change", () => {
-        let newLabel;
-        const txt = titleInput.value.trim();
-        if (typeof chart.label === "object" && chart.label !== null) {
-          newLabel = { ...chart.label, [chartCurLang]: txt };
-        } else if (chartCurLang === "en") {
-          newLabel = txt;
-        } else {
-          newLabel = { en: chart.label || "", [chartCurLang]: txt };
-        }
-        if (typeof newLabel === "object" && !newLabel.vi && !newLabel.cn) newLabel = newLabel.en || "";
-        commitCharts(() => model.setProgressionLabel(name, chartIndex, newLabel));
-      });
-
-      const langChips = el(
-        "div",
-        { class: "note-inline-langs" },
-        ["en", "vi", "cn"].map((l) =>
-          el("button", {
-            class: `chip chip-xs${chartCurLang === l ? " on" : ""}`,
-            text: l.toUpperCase(),
-            type: "button",
-            onclick: (e) => {
-              e.stopPropagation();
-              state.chartLang = l;
-              afterEdit({ list: false });
-            },
-          })
-        )
-      );
-
       block.appendChild(
-        el("div", { class: "chart-editor-head" }, [
-          el("span", { class: "field-label", text: `Chart ${chartIndex + 1}` }),
-          langChips,
-          titleInput,
+        el("div", { class: "chart-editor-head", style: "gap: 8px; flex-wrap: wrap;" }, [
+          el("span", { class: "field-label", text: `Chart ${chartIndex + 1}`, style: "flex: none;" }),
+          makeChartTitle("en", "EN", "Title"),
+          makeChartTitle("vi", "VI", "Tiêu đề"),
+          makeChartTitle("cn", "CN", "标题"),
           el("button", {
             class: "btn btn-sm btn-ghost",
             text: "Remove chart",
             title: "Delete this chart",
+            style: "flex: none;",
             onclick: () => commitCharts(() => model.removeProgressionChart(name, chartIndex)),
           }),
         ])
@@ -2504,57 +2481,40 @@ function renderRoundAnnotations(id, roundIndex, round, slotCount) {
       return input;
     };
 
-    const curVal = annotation.text;
-    const curLang = state.noteLang || "en";
-    const getAnnText = () => {
-      if (!curVal) return "";
-      if (typeof curVal === "object") return curVal[curLang] || "";
-      return curLang === "en" ? curVal : "";
-    };
-    const text = el("input", {
-      type: "text",
-      value: getAnnText(),
-      placeholder: `Note text (${curLang.toUpperCase()})`,
-      class: "guide-annotation-text",
-    });
-    text.addEventListener("change", () => {
-      let newVal;
-      const t = text.value;
-      if (typeof curVal === "object" && curVal !== null) {
-        newVal = { ...curVal, [curLang]: t };
-      } else if (curLang === "en") {
-        newVal = t;
-      } else {
-        newVal = { en: curVal || "", [curLang]: t };
+    const makeAnnotationInput = (lang, label, placeholder) => {
+      const input = el("input", {
+        type: "text",
+        value: getMultiText(annotation.text, lang),
+        placeholder: `${placeholder} (${label})`,
+        class: "guide-annotation-text",
+        style: "flex: 1; min-width: 90px; font-size: 11px;",
+        title: `${placeholder} (${label})`,
+      });
+      input.addEventListener("change", () => {
+        const next = updateMultiText(annotation.text, lang, input.value);
+        annotation.text = next;
+        model.setGuideAnnotationField(id, roundIndex, annotationIndex, "text", next);
+        afterEdit({ list: false });
+      });
+
+      // A freshly added note takes the focus on EN input
+      const focus = state.guide.focusNote;
+      if (lang === "en" && focus && focus.round === roundIndex && focus.index === annotationIndex) {
+        state.guide.focusNote = null;
+        requestAnimationFrame(() => input.focus());
       }
-      if (typeof newVal === "object" && !newVal.vi && !newVal.cn) newVal = newVal.en || "";
-      model.setGuideAnnotationField(id, roundIndex, annotationIndex, "text", newVal);
-      afterEdit({ list: false });
-    });
 
-    // A freshly added note takes the focus, so the next keystroke types into it.
-    const focus = state.guide.focusNote;
-    if (focus && focus.round === roundIndex && focus.index === annotationIndex) {
-      state.guide.focusNote = null;
-      requestAnimationFrame(() => text.focus());
-    }
+      return el("div", { class: "guide-lang-input-group" }, [
+        el("span", { class: "flag", text: label }),
+        input,
+      ]);
+    };
 
-    const langChips = el(
-      "div",
-      { class: "note-inline-langs" },
-      ["en", "vi", "cn"].map((l) =>
-        el("button", {
-          class: `chip chip-xs${curLang === l ? " on" : ""}`,
-          text: l.toUpperCase(),
-          type: "button",
-          onclick: (e) => {
-            e.stopPropagation();
-            state.noteLang = l;
-            afterEdit({ list: false });
-          },
-        })
-      )
-    );
+    const inputsRow = el("div", { class: "guide-annotation-langs" }, [
+      makeAnnotationInput("en", "EN", "Note"),
+      makeAnnotationInput("vi", "VI", "Ghi chú"),
+      makeAnnotationInput("cn", "CN", "注释"),
+    ]);
 
     host.appendChild(
       el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: annotationIndex } }, [
@@ -2562,8 +2522,6 @@ function renderRoundAnnotations(id, roundIndex, round, slotCount) {
         rangeInput("from", from),
         el("span", { class: "guide-annotation-dash", text: "–" }),
         rangeInput("to", to),
-        langChips,
-        text,
         el("button", {
           class: "btn btn-sm",
           text: "Pick",
@@ -2583,6 +2541,7 @@ function renderRoundAnnotations(id, roundIndex, round, slotCount) {
             afterEdit({ list: false });
           },
         }),
+        inputsRow,
       ])
     );
   });
@@ -2634,56 +2593,39 @@ function renderRoundNotes(id, rotation, roundCount) {
       return input;
     };
 
-    const curVal = note.text;
-    const curLang = state.noteLang || "en";
-    const getRoundNoteText = () => {
-      if (!curVal) return "";
-      if (typeof curVal === "object") return curVal[curLang] || "";
-      return curLang === "en" ? curVal : "";
-    };
-    const text = el("input", {
-      type: "text",
-      value: getRoundNoteText(),
-      placeholder: `Note text (${curLang.toUpperCase()})`,
-      class: "guide-annotation-text",
-    });
-    text.addEventListener("change", () => {
-      let newVal;
-      const t = text.value;
-      if (typeof curVal === "object" && curVal !== null) {
-        newVal = { ...curVal, [curLang]: t };
-      } else if (curLang === "en") {
-        newVal = t;
-      } else {
-        newVal = { en: curVal || "", [curLang]: t };
+    const makeRoundNoteInput = (lang, label, placeholder) => {
+      const input = el("input", {
+        type: "text",
+        value: getMultiText(note.text, lang),
+        placeholder: `${placeholder} (${label})`,
+        class: "guide-annotation-text",
+        style: "flex: 1; min-width: 90px; font-size: 11px;",
+        title: `${placeholder} (${label})`,
+      });
+      input.addEventListener("change", () => {
+        const next = updateMultiText(note.text, lang, input.value);
+        note.text = next;
+        model.setGuideRoundNoteField(id, noteIndex, "text", next);
+        afterEdit({ list: false });
+      });
+
+      // A freshly added note takes the focus on EN input
+      if (lang === "en" && state.guide.focusRoundNote === noteIndex) {
+        state.guide.focusRoundNote = null;
+        requestAnimationFrame(() => input.focus());
       }
-      if (typeof newVal === "object" && !newVal.vi && !newVal.cn) newVal = newVal.en || "";
-      model.setGuideRoundNoteField(id, noteIndex, "text", newVal);
-      afterEdit({ list: false });
-    });
 
-    // A freshly added note takes the focus, so the next keystroke types into it.
-    if (state.guide.focusRoundNote === noteIndex) {
-      state.guide.focusRoundNote = null;
-      requestAnimationFrame(() => text.focus());
-    }
+      return el("div", { class: "guide-lang-input-group" }, [
+        el("span", { class: "flag", text: label }),
+        input,
+      ]);
+    };
 
-    const langChips = el(
-      "div",
-      { class: "note-inline-langs" },
-      ["en", "vi", "cn"].map((l) =>
-        el("button", {
-          class: `chip chip-xs${curLang === l ? " on" : ""}`,
-          text: l.toUpperCase(),
-          type: "button",
-          onclick: (e) => {
-            e.stopPropagation();
-            state.noteLang = l;
-            afterEdit({ list: false });
-          },
-        })
-      )
-    );
+    const inputsRow = el("div", { class: "guide-annotation-langs" }, [
+      makeRoundNoteInput("en", "EN", "Note"),
+      makeRoundNoteInput("vi", "VI", "Ghi chú"),
+      makeRoundNoteInput("cn", "CN", "注释"),
+    ]);
 
     host.appendChild(
       el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: noteIndex } }, [
@@ -2691,8 +2633,6 @@ function renderRoundNotes(id, rotation, roundCount) {
         roundInput("from", from),
         el("span", { class: "guide-annotation-dash", text: "–" }),
         roundInput("to", to),
-        langChips,
-        text,
         el("button", {
           class: "guide-annotation-remove",
           text: "×",
@@ -2702,6 +2642,7 @@ function renderRoundNotes(id, rotation, roundCount) {
             afterEdit({ list: false });
           },
         }),
+        inputsRow,
       ])
     );
   });
@@ -3250,6 +3191,12 @@ function renderRotationHand(id) {
                   el("span", { class: "guide-stamp-slot is-full" }),
                   el("span", { class: "guide-stamp-slot is-quarter" }),
                 ])
+              : preview === "double_or"
+                ? el("span", { class: "guide-stamp-art is-double_or" }, [
+                    el("span", { class: "guide-stamp-slot is-back-2" }),
+                    el("span", { class: "guide-stamp-slot is-back" }),
+                    el("span", { class: "guide-stamp-slot" }),
+                  ])
               : el(
                   "span",
                   { class: `guide-stamp-art is-${preview}` },
@@ -3268,6 +3215,7 @@ function renderRotationHand(id) {
       el("div", { class: "guide-stamp-grid" }, [
         stamp("normal", "Normal AP", "normal"),
         stamp("or", "OR AP", "or"),
+        stamp("double_or", "Double OR AP", "double_or"),
         stamp("lb", "1/4 AP", "lb"),
       ]),
       el("h3", { class: "hand-group-title", text: "Notes" }),
@@ -3585,33 +3533,37 @@ function renderRotationDetail() {
 
   rounds.forEach((round, roundIndex) => {
     const roundEl = el("div", { class: "guide-round-editor" });
-    const curRoundNoteVal = round.note;
-    const curLang = state.noteLang || "en";
-    const getRoundNoteTitle = () => {
-      if (!curRoundNoteVal) return "";
-      if (typeof curRoundNoteVal === "object") return curRoundNoteVal[curLang] || "";
-      return curLang === "en" ? curRoundNoteVal : "";
+
+    const makeRoundNoteInput = (lang, label, placeholder) => {
+      const input = el("input", {
+        type: "text",
+        value: getMultiText(round.note, lang),
+        placeholder: `${placeholder} (${label})`,
+        class: "guide-round-note-input",
+        style: "flex: 1; min-width: 80px; font-size: 11px;",
+        title: `Round note (${label})`,
+      });
+      input.addEventListener("change", () => {
+        const next = updateMultiText(round.note, lang, input.value);
+        round.note = next;
+        model.setGuideRoundNote(id, roundIndex, next);
+        afterEdit({ list: false });
+      });
+      return el("div", { style: "display: flex; gap: 4px; align-items: center; flex: 1; min-width: 90px;" }, [
+        el("span", { class: "flag", text: label }),
+        input,
+      ]);
     };
-    const roundNote = el("input", {
-      type: "text",
-      value: getRoundNoteTitle(),
-      placeholder: `Round note (${curLang.toUpperCase()})`,
-      class: "guide-round-note-input",
-    });
-    roundNote.addEventListener("change", () => {
-      let newVal;
-      const t = roundNote.value;
-      if (typeof curRoundNoteVal === "object" && curRoundNoteVal !== null) {
-        newVal = { ...curRoundNoteVal, [curLang]: t };
-      } else if (curLang === "en") {
-        newVal = t;
-      } else {
-        newVal = { en: curRoundNoteVal || "", [curLang]: t };
-      }
-      if (typeof newVal === "object" && !newVal.vi && !newVal.cn) newVal = newVal.en || "";
-      model.setGuideRoundNote(id, roundIndex, newVal);
-      afterEdit({ list: false });
-    });
+
+    const roundNotesGroup = el(
+      "div",
+      { style: "display: flex; gap: 6px; align-items: center; flex: 1; min-width: 0; flex-wrap: wrap;" },
+      [
+        makeRoundNoteInput("en", "EN", "Round note"),
+        makeRoundNoteInput("vi", "VI", "Ghi chú lượt"),
+        makeRoundNoteInput("cn", "CN", "回合注释"),
+      ]
+    );
 
     roundEl.appendChild(
       el("span", {
@@ -3623,7 +3575,7 @@ function renderRotationDetail() {
 
     roundEl.appendChild(
       el("div", { class: "guide-turn-head" }, [
-        roundNote,
+        roundNotesGroup,
         el("div", { class: "pick" }, [
           el("button", {
             class: "btn btn-sm",
@@ -3771,9 +3723,8 @@ function renderRotationDetail() {
           ...plaques.map((tag) => guideTagPlate(tag)),
         ];
 
-        // An OR slot always shows two places; a normal slot one. The second
-        // placeholder is what makes "either of two" visible before a drop.
-        const places = type === "or" ? 2 : 1;
+        // An OR slot shows two or three places; a normal slot one.
+        const places = type === "double_or" || type === "or3" ? 3 : type === "or" ? 2 : 1;
         for (let cardIndex = 0; cardIndex < Math.max(places, cards.length); cardIndex++) {
           const card = cards[cardIndex];
           if (cardIndex > 0) {
@@ -3809,7 +3760,7 @@ function renderRotationDetail() {
                   afterEdit({ list: false });
                 },
               }),
-              type === "or"
+              type === "or" || type === "double_or" || type === "or3"
                 ? el("button", {
                     class: `guide-card-tool${card.preferred ? " on" : ""}`,
                     text: "\u2605",
@@ -4044,71 +3995,96 @@ function renderRotationDetail() {
  * Multilingual notes helper
  * ------------------------------------------------------------------ */
 
-function renderMultilingualNotesEditor({ value, onSave, placeholder = "Optional notes", asCard = true }) {
-  let noteLang = state.noteLang || "en";
+function getMultiText(val, lang) {
+  if (!val) return "";
+  if (typeof val === "object" && val !== null) {
+    return val[lang] || "";
+  }
+  return lang === "en" ? String(val) : "";
+}
 
-  const getVal = (lang) => {
-    if (!value) return "";
-    if (typeof value === "object") return value[lang] || "";
-    return lang === "en" ? value : "";
-  };
+function updateMultiText(current, lang, newText) {
+  let obj;
+  if (typeof current === "object" && current !== null) {
+    obj = { ...current };
+  } else {
+    obj = { en: current || "" };
+  }
+  obj[lang] = (newText || "").trim();
 
+  const en = (obj.en || "").trim();
+  const vi = (obj.vi || "").trim();
+  const cn = (obj.cn || "").trim();
+
+  if (!vi && !cn) {
+    return en;
+  }
+  const result = {};
+  if (en) result.en = obj.en;
+  if (vi) result.vi = obj.vi;
+  if (cn) result.cn = obj.cn;
+  return Object.keys(result).length > 0 ? result : "";
+}
+
+function renderMultilingualNotesEditor({ value, onSave, placeholder = "Notes", asCard = true }) {
   const container = el("div", { class: asCard ? "card" : "field" });
-  const headRow = el(
-    "div",
-    { style: "display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;" },
-    [
-      asCard
-        ? el("h2", { text: "Notes", style: "margin: 0;" })
-        : el("label", { class: "field-label", text: "Notes", style: "margin: 0;" }),
-    ]
-  );
 
-  const tabGroup = el("div", { class: "list-filters", style: "margin: 0;" });
-  ["en", "vi", "cn"].forEach((l) => {
-    const chip = el("button", {
-      class: `chip${noteLang === l ? " on" : ""}`,
-      text: l.toUpperCase(),
-      type: "button",
-      onclick: () => {
-        noteLang = l;
-        state.noteLang = l;
-        textarea.value = getVal(l);
-        textarea.placeholder = `${placeholder} (${l.toUpperCase()})`;
-        [...tabGroup.children].forEach((c, idx) => {
-          c.classList.toggle("on", ["en", "vi", "cn"][idx] === l);
-        });
-      },
+  if (asCard) {
+    container.appendChild(el("h2", { text: "Notes", style: "margin: 0 0 10px;" }));
+  } else {
+    container.appendChild(el("label", { class: "field-label", text: "Notes", style: "margin: 0 0 8px;" }));
+  }
+
+  const langs = [
+    { id: "en", label: "EN", title: "English" },
+    { id: "vi", label: "VI", title: "Tiếng Việt" },
+    { id: "cn", label: "CN", title: "中文" },
+  ];
+
+  const rowMap = new Map();
+
+  langs.forEach(({ id: lang, label, title }) => {
+    const row = el("div", {
+      style: "display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px;",
     });
-    tabGroup.appendChild(chip);
-  });
-  headRow.appendChild(tabGroup);
-  container.appendChild(headRow);
 
-  const textarea = el("textarea", {
-    rows: asCard ? 3 : 2,
-    style: "width:100%",
-    placeholder: `${placeholder} (${noteLang.toUpperCase()})`,
-  });
-  textarea.value = getVal(noteLang);
+    const badge = el("span", {
+      class: "flag",
+      text: label,
+      title,
+      style: "margin-top: 5px; flex: none; width: 28px; text-align: center; font-weight: 700;",
+    });
 
-  textarea.addEventListener("change", () => {
-    let newVal;
-    const txt = textarea.value;
-    if (typeof value === "object" && value !== null) {
-      newVal = { ...value, [noteLang]: txt };
-    } else if (noteLang === "en") {
-      newVal = txt;
-    } else {
-      newVal = { en: value || "", [noteLang]: txt };
-    }
-    if (typeof newVal === "object") {
-      if (!newVal.vi && !newVal.cn) newVal = newVal.en || "";
-    }
-    onSave(newVal);
+    const textarea = el("textarea", {
+      rows: asCard ? 2 : 2,
+      style: "flex: 1; min-width: 0;",
+      placeholder: `${placeholder} (${label} · ${title})`,
+    });
+    textarea.value = getMultiText(value, lang);
+
+    const updateAllFields = (nextVal) => {
+      value = nextVal;
+      langs.forEach(({ id: otherLang }) => {
+        if (otherLang !== lang) {
+          const otherInput = rowMap.get(otherLang);
+          if (otherInput) otherInput.value = getMultiText(nextVal, otherLang);
+        }
+      });
+    };
+
+    rowMap.set(lang, textarea);
+
+    textarea.addEventListener("change", () => {
+      const next = updateMultiText(value, lang, textarea.value);
+      updateAllFields(next);
+      onSave(next);
+    });
+
+    row.appendChild(badge);
+    row.appendChild(textarea);
+    container.appendChild(row);
   });
 
-  container.appendChild(textarea);
   return container;
 }
 

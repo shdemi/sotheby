@@ -136,11 +136,15 @@
   const EMPTY_W = 62;
   const EMPTY_H = 82;
 
+  const DOUBLE_OR_STACK_W = 88;
+  const DOUBLE_OR_STACK_H = 92;
+
   function slotWidth(slot) {
     const type = slot.type || "normal";
     if (type === "text") return TEXT_W;
     if (type === "tuning") return TUNING_W;
-    if (type === "or") return OR_STACK_W;
+    if (type === "double_or" || type === "or3") return DOUBLE_OR_STACK_W;
+    if (type === "or") return (Array.isArray(slot.cards) && slot.cards.length > 2) ? DOUBLE_OR_STACK_W : OR_STACK_W;
     if (type === "lb") return LB_H * NORMAL_ASPECT;
     const cards = Array.isArray(slot.cards) ? slot.cards.filter(Boolean) : [];
     if (cards.length === 0) return EMPTY_W;
@@ -151,7 +155,8 @@
     const type = slot.type || "normal";
     if (type === "text") return 81;
     if (type === "tuning") return 81;
-    if (type === "or") return OR_STACK_H;
+    if (type === "double_or" || type === "or3") return DOUBLE_OR_STACK_H;
+    if (type === "or") return (Array.isArray(slot.cards) && slot.cards.length > 2) ? DOUBLE_OR_STACK_H : OR_STACK_H;
     if (type === "lb") return LB_H;
     const cards = Array.isArray(slot.cards) ? slot.cards.filter(Boolean) : [];
     if (cards.length === 0) return EMPTY_H;
@@ -461,6 +466,49 @@
       const artSrc = cards[0] ? cardArt(cards[0]) : null;
       const special = artSrc ? image(artSrc) : null;
       if (special && special.__loaded) ctx.drawImage(special, x + TUNING_W - 26, boxTop + 81 - 26, 23, 23);
+    } else if (type === "double_or" || type === "or3" || (type === "or" && cards.length > 2)) {
+      const card2 = cards[2];
+      const card1 = cards[1];
+      const card0 = cards[0];
+      const cw = OR_CARD_H * NORMAL_ASPECT;
+      if (card2) {
+        ctx.save();
+        const backArt = image(cardArt(card2));
+        const bx = x + 36;
+        const bBottom = bodyBottom - 26;
+        if (backArt) {
+          ctx.globalAlpha = 0.95;
+          ctx.beginPath();
+          ctx.rect(bx, bBottom - OR_CARD_H, cw, OR_CARD_H);
+          ctx.clip();
+          coverDraw(ctx, backArt, bx, bBottom - OR_CARD_H, cw, OR_CARD_H);
+          ctx.globalAlpha = 0.35;
+          ctx.fillStyle = "#000";
+          ctx.fillRect(bx, bBottom - OR_CARD_H, cw, OR_CARD_H);
+        }
+        ctx.restore();
+      }
+      if (card1) {
+        ctx.save();
+        const midArt = image(cardArt(card1));
+        const mx = x + 18;
+        const mBottom = bodyBottom - 13;
+        if (midArt) {
+          ctx.globalAlpha = 0.95;
+          ctx.beginPath();
+          ctx.rect(mx, mBottom - OR_CARD_H, cw, OR_CARD_H);
+          ctx.clip();
+          coverDraw(ctx, midArt, mx, mBottom - OR_CARD_H, cw, OR_CARD_H);
+          ctx.globalAlpha = 0.2;
+          ctx.fillStyle = "#000";
+          ctx.fillRect(mx, mBottom - OR_CARD_H, cw, OR_CARD_H);
+        }
+        ctx.restore();
+      }
+      if (card0) {
+        drawCard(ctx, card0, x, bodyBottom, OR_CARD_H);
+        drawTagPlates(ctx, tags, x, bodyBottom - OR_CARD_H, isUltimate(card0));
+      }
     } else if (type === "or") {
       // The back card peeks out from behind the front one.
       const back = cards[1];

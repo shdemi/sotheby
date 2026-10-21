@@ -91,7 +91,7 @@ function localizeText(val) {
     if (val.startsWith("Recommended Portrait:")) {
       const p = val.replace("Recommended Portrait:", "").trim();
       if (currentLang === "cn") return `推荐塑造：${p}`;
-      if (currentLang === "vi") return `Số Khắc khuyên dùng: ${p}`;
+      if (currentLang === "vi") return `Portrait đề xuất: ${p}`;
       return val;
     }
     const matchRepeat = val.match(/^Repeat (?:turn|round) (\d+)-(\d+)\.?$/i);
@@ -7311,12 +7311,27 @@ function rotationSlotHtml(slot) {
     return wrap(rotationCardHtml(cards[0], "lb", platesHtml, !!badge), " is-lb");
   }
 
+  if (type === "double_or" || type === "or3" || (type === "or" && cards.length > 2)) {
+    const front = cards[0] ? rotationCardHtml(cards[0], "", platesHtml, !!badge) : "";
+    const mid = cards[1]
+      ? `<span class="rot-card is-mid" title="${escapeHtml(displayCharName(resolveCharacterName(cards[1].character) || cards[1].character))}"><img class="rot-card-art" src="${escapeHtml(
+          cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
+        )}" alt="" /></span>`
+      : "";
+    const behind = cards[2]
+      ? `<span class="rot-card is-behind" title="${escapeHtml(displayCharName(resolveCharacterName(cards[2].character) || cards[2].character))}"><img class="rot-card-art" src="${escapeHtml(
+          cards[2].icon || guideSkillIcon(cards[2].character, cards[2].skill)
+        )}" alt="" /></span>`
+      : "";
+    return wrap(`<span class="rot-or-stack is-double">${front}${mid}${behind}</span>`, " is-or is-double-or");
+  }
+
   if (type === "or") {
     // The second card peeks out behind the first: together they take the same
     // room as one normal card.
     const front = cards[0] ? rotationCardHtml(cards[0], "", platesHtml, !!badge) : "";
     const behind = cards[1]
-      ? `<span class="rot-card is-behind"><img class="rot-card-art" src="${escapeHtml(
+      ? `<span class="rot-card is-behind" title="${escapeHtml(displayCharName(resolveCharacterName(cards[1].character) || cards[1].character))}"><img class="rot-card-art" src="${escapeHtml(
           cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
         )}" alt="" /></span>`
       : "";

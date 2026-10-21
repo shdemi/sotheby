@@ -1272,6 +1272,25 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
   opacity: .75;
 }
 
+.guide-stamp-art.is-double_or { width: 56px; }
+.guide-stamp-art.is-double_or > .guide-stamp-slot {
+  width: 26px;
+  height: 35px;
+  transform: none;
+  left: 0;
+  bottom: 0;
+}
+.guide-stamp-art.is-double_or > .guide-stamp-slot.is-back {
+  left: 14px;
+  bottom: 8px;
+  opacity: .75;
+}
+.guide-stamp-art.is-double_or > .guide-stamp-slot.is-back-2 {
+  left: 28px;
+  bottom: 16px;
+  opacity: .55;
+}
+
 /* 1/4 AP: the full card is outlined and the quarter card sits in its corner, so
    the scale is readable at a glance. */
 .guide-stamp-art.is-lb { width: 58px; height: 74px; }
@@ -1524,6 +1543,7 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
 .guide-slot-editor.is-lb { width: 64px; }
 .guide-slot-editor.is-lb .guide-slot-card { height: 40px; }
 .guide-slot-editor.is-or { min-width: 168px; }
+.guide-slot-editor.is-double_or { min-width: 250px; }
 .guide-slot-editor.is-text {
   width: 130px;
   height: auto;
@@ -1549,6 +1569,31 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
   font-size: 8px;
   letter-spacing: .06em;
   color: var(--text-muted);
+}
+
+.guide-annotation-langs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+  flex-basis: 100%;
+  margin-top: 4px;
+}
+.guide-lang-input-group {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex: 1;
+  min-width: 110px;
+}
+.guide-lang-input-group .flag {
+  flex: none;
+  font-weight: 700;
+}
+.guide-lang-input-group input {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
 }
 
 /* ---------------- i18n manager ---------------- */

@@ -57,7 +57,7 @@ export const ROTATION_ARCHETYPES = [
  * Slot layouts. "free" and "precast" are legacy values: they only ever changed
  * the caption, so they now map to a plain normal slot plus a tag.
  */
-export const GUIDE_SLOT_TYPES = ["normal", "or", "lb", "text", "tuning"];
+export const GUIDE_SLOT_TYPES = ["normal", "or", "double_or", "lb", "text", "tuning"];
 
 /** Legacy slot types and the tag they stand for. */
 export const LEGACY_SLOT_TAGS = { free: "ap-free", precast: "precast" };
@@ -1047,6 +1047,12 @@ export class Model {
         if (cleanLabel) map[cleanLabel] = String(code ?? "").trim();
       }
       payload = map;
+    } else if (field === "notes") {
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        payload = value;
+      } else {
+        payload = String(value ?? "").trim();
+      }
     } else {
       payload = String(value ?? "").trim();
     }
@@ -1241,10 +1247,21 @@ export class Model {
 
     let payload = value;
     if (field === "archetypes") payload = (Array.isArray(value) ? value : []).filter(Boolean);
-    else payload = String(value ?? "");
+    else if (field === "notes") {
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        payload = value;
+      } else {
+        payload = String(value ?? "");
+      }
+    } else {
+      payload = String(value ?? "");
+    }
 
     // An empty list or string has no meaning, so drop the key instead of writing it.
-    const empty = payload === "" || (Array.isArray(payload) && payload.length === 0);
+    const empty =
+      payload === "" ||
+      (Array.isArray(payload) && payload.length === 0) ||
+      (payload && typeof payload === "object" && !Array.isArray(payload) && Object.keys(payload).length === 0);
     const changed = empty && field !== "tuning" && field !== "notes" && field !== "name"
       ? doc.deleteProperty(["rotations", index], field)
       : doc.nodeAt(path)
@@ -1317,7 +1334,9 @@ export class Model {
   }
 
   setGuideRoundNote(id, roundIndex, note) {
-    return this.setRoundField(id, roundIndex, "note", String(note || ""));
+    const payload =
+      note && typeof note === "object" && !Array.isArray(note) ? note : String(note || "");
+    return this.setRoundField(id, roundIndex, "note", payload);
   }
 
   /* ---- guide: round notes (brackets spanning several rounds) ---- */
@@ -1369,7 +1388,11 @@ export class Model {
     } else if (field === "style") {
       payload = GUIDE_ANNOTATION_STYLES.includes(value) ? value : "bracket";
     } else if (field === "text") {
-      payload = String(value || "");
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        payload = value;
+      } else {
+        payload = String(value || "");
+      }
     } else {
       return false;
     }
@@ -1577,7 +1600,7 @@ export class Model {
     const entry = this.normalizeCard(card);
     if (!entry) return false;
     const cards = Array.isArray(slot.cards) ? slot.cards.slice() : [];
-    const limit = slot.type === "or" ? 2 : 1;
+    const limit = slot.type === "double_or" || slot.type === "or3" ? 3 : slot.type === "or" ? 2 : 1;
     // A normal or LB slot holds one card: a drop replaces it.
     if (limit === 1) cards.length = 0;
     else if (cards.length >= limit) return false;
@@ -1718,7 +1741,11 @@ export class Model {
     } else if (field === "style") {
       payload = GUIDE_ANNOTATION_STYLES.includes(value) ? value : "bracket";
     } else if (field === "text") {
-      payload = String(value || "");
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        payload = value;
+      } else {
+        payload = String(value || "");
+      }
     } else {
       return false;
     }
@@ -2461,7 +2488,7 @@ export function validate(model) {
               if (!GUIDE_SLOT_TAGS.some((entry) => entry.key === tag)) warn(`${slotLabel}: unknown tag "${tag}"`);
             }
             const cards = Array.isArray(slot.cards) ? slot.cards : [];
-            const limit = layout === "or" ? 2 : 1;
+            const limit = layout === "double_or" || layout === "or3" ? 3 : layout === "or" ? 2 : 1;
             if (layout !== "text" && cards.length > limit) err(`${slotLabel}: a ${layout} slot holds at most ${limit} card(s)`);
             cards.forEach((card, ci) => {
               if (!card || typeof card !== "object") {

@@ -263,10 +263,10 @@
   }
 ],
   "notes": {
-    "en": "Cubes: Drake can use his sig if you want to boost Beryl DMG (e.g. afflatus advantage, portrait)\nFor better survival: Marsha -> SiS, Drake -> sig, LB -> SoH",
-    "vi": "Tâm Tướng: Drake có thể dùng trấn nếu bạn muốn tăng ST của Beryl (vd: khắc hệ, số khắc)\nĐể sinh tồn tốt hơn: Marsha -> SiS, Drake -> sig, LB -> SoH",
-    "cn": "心相：如果想提升贝利尔伤害（如克制、塑造），德雷克可带专武\n如需提高生存：玛莎 -> 漫长悄悄话，德雷克 -> 专武，罗蕾莱 -> 步入此夜"
-  },
+  "en": "Cubes: Drake can use his sig if you want to boost Beryl DMG (e.g. afflatus advantage, portrait)\nFor better survival: Marsha -> SiS, Drake -> sig, LB -> SoH",
+  "vi": "Psychube: Cho Drake dùng chube tủ nếu bạn muốn tăng ST của Beryl (vd: khắc hệ)\nĐể sinh tồn tốt hơn: Thay Chube Marsha -> SiS, Drake -> sig, LB -> SoH",
+  "cn": "心相：如果想提升贝利尔伤害（如克制、塑造），德雷克可带专武\n如需提高生存：玛莎 -> 漫长悄悄话，德雷克 -> 专武，罗蕾莱 -> 步入此夜"
+},
   "rounds": [
     {
       "note": "",
@@ -344,10 +344,9 @@
     "to": 2,
     "style": "bracket",
     "text": {
-      "en": "Select as many Purple Crystals, then Blue.",
-      "vi": "Chọn càng nhiều Tinh Thể Tím càng tốt, sau đó đến Xanh Dương.",
-      "cn": "尽量多选紫色水晶，其次选择蓝色。"
-    }
+  "en": "Select as many Purple Crystals, then Blue.",
+  "vi": "Ưu tiên chọn hết đá Tím, rồi đến đá Xanh."
+}
   }
 ]
     },
@@ -829,10 +828,10 @@
   }
 ],
   "notes": {
-    "en": "Cubes: Drake can use his sig if you want to boost Beryl DMG (e.g. afflatus advantage, portrait)\nFor better survival: Marsha -> SiS, Drake -> sig, LB -> SoH",
-    "vi": "Tâm Tướng: Drake có thể dùng trấn nếu bạn muốn tăng ST của Beryl (vd: khắc hệ, số khắc)\nĐể sinh tồn tốt hơn: Marsha -> SiS, Drake -> sig, LB -> SoH",
-    "cn": "心相：如果想提升贝利尔伤害（如克制、塑造），德雷克可带专武\n如需提高生存：玛莎 -> 漫长悄悄话，德雷克 -> 专武，罗蕾莱 -> 步入此夜"
-  },
+  "en": "Cubes: Drake can use his sig if you want to boost Beryl DMG (e.g. afflatus advantage, portrait)\nFor better survival: Marsha -> SiS, Drake -> sig, LB -> SoH",
+  "vi": "Psychube: Cho Drake dùng chube tủ nếu bạn muốn tăng ST của Beryl (vd: khắc hệ)\nĐể sinh tồn tốt hơn: Thay Chube Marsha -> SiS, Drake -> sig, LB -> SoH",
+  "cn": "心相：如果想提升贝利尔伤害（如克制、塑造），德雷克可带专武\n如需提高生存：玛莎 -> 漫长悄悄话，德雷克 -> 专武，罗蕾莱 -> 步入此夜"
+},
   "rounds": [
     {
       "note": "",
@@ -910,10 +909,10 @@
     "to": 2,
     "style": "bracket",
     "text": {
-      "en": "Select as many Purple Crystals, then Blue.",
-      "vi": "Chọn càng nhiều Tinh Thể Tím càng tốt, sau đó đến Xanh Dương.",
-      "cn": "尽量多选紫色水晶，其次选择蓝色。"
-    }
+  "en": "Select as many Purple Crystals, then Blue.",
+  "vi": "Ưu tiên chọn hết đá Tím, rồi đến đá Xanh.",
+  "cn": "尽量多选紫色水晶，其次选择蓝色。"
+}
   }
 ]
     },
