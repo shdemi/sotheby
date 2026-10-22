@@ -134,10 +134,17 @@ actions.
 - **Cards** lists every member's skills plus the special cards. Dropping one on an
   empty slot fills it; dropping it on a filled slot replaces the card; dropping it
   on a gap inserts a new slot.
-- **Extra** holds two sections. **Tags** — `AP Free` and `Precast` — are dropped on
-  a slot to add or remove them; the tag lives on the slot, not on the card, so one
-  slot can carry both. **Frame** — `Normal`, `Ultimate`, `Ramona`,
-  `Ramona Ultimate` — is dropped on a card to repaint just that card.
+- **Extra** holds three sections. **Tags** — `AP Free`, `Precast` and `Custom` — are
+  dropped on a slot to add or remove them; the tag lives on the slot, not on the
+  card, so one slot can carry several. All three draw their words on the same
+  blank `Tag_Empty.png` ribbon, so the plate is never a fixed bitmap: it is capped
+  at the card's width and the type shrinks (to 6px, then clips with an ellipsis)
+  instead of spilling off the art. `Custom` takes its words from the slot's **Tag
+  text** box; `AP Free` and `Precast` print their own name. **Surface** —
+  `Ramona`, `Conduit` — is dropped on a card to lay decoration over just that
+  card. **Other** holds the ownerless cards `Any`, `Move`, `Generate`, `Remove`
+  and `Refresh`; they drop into a slot exactly like a skill card and are stored as
+  `special` art.
 - Hover a card for two switches: **U** toggles between the normal and the ultimate
   frame, **★** marks the preferred side of an OR slot. Skill 3 is treated as an
   ultimate by default, so most cards need no click at all.
@@ -166,9 +173,13 @@ frames invert the stacking, because their middle is translucent.
 Adding a frame is one entry: drop the PNG in `images/card_modulo/Frame/`, then add
 its key, size and inset to both lists.
 
-Slot tags use the shipped plate art (`Tag_APFree.png`, `Tag_Precast.png`) pinned to
-the card's top-left corner. When a slot carries both, the Precast plate sits 3px
-below the AP Free badge. `--parchment` is still the app's shared card surface:
+Slot tags draw their words on the blank plate art (`Tag_Empty.png`) pinned to the
+card's top-left corner, so the same ribbon carries `AP Free`, `Precast` or the
+author's own text. When a slot carries both, the second plate sits 5px below the
+first. The plate is capped at the card's width; `fitRotationTagPlates` /
+`fitGuideTagPlates` shrink the type a half-point at a time until the words fit
+(floor 6px), and the export draws the same way, trimming with an ellipsis when the
+floor is reached. `--parchment` is still the app's shared card surface:
 
 ```css
 --parchment: linear-gradient(to top right, #ddb39f 0%, #d5d3cf 20%, #d5d3cf 80%, #ddb39f 100%);

@@ -8,7 +8,7 @@
  * The editor only rewrites the ranges it changes (see json-patch.js), so an
  * untouched file is never modified and a one-field edit is a one-line diff.
  */
-import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, TUNINGS, GUIDE_SLOT_TAGS, GUIDE_CARD_SURFACES, GUIDE_ANNOTATION_STYLES, guideSlotLayout, guideSlotTags, guideCardIsUltimate, guideCardSurface, validate, readNameTables, diffHunks } from "./model.js";
+import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, TUNINGS, GUIDE_SLOT_TAGS, PANEL_SLOT_TAGS, GUIDE_SLOT_TAG_TEXT_KEY, PANEL_CARD_SURFACES, GUIDE_OTHER_CARDS, GUIDE_ANNOTATION_STYLES, guideSlotLayout, guideSlotTags, guideSlotTagText, guideSlotTagLabel, guideCardIsUltimate, guideSkillIsUltimate, guideCardSurface, validate, readNameTables, diffHunks } from "./model.js";
 import * as files from "./files.js";
 import * as icons from "./icons.js";
 
@@ -26,7 +26,7 @@ const state = {
   chubeRarities: new Set(PSYCHUBE_RARITIES),
   picker: null,
   drag: null,
-  guide: { build: null, rotation: null, hand: null, panelTab: "ap", panelOpen: false, notePick: null, focusNote: null, focusRoundNote: null },
+  guide: { build: null, rotation: null, hand: null, panelTab: "ap", lastPanelTab: "ap", panelOpen: false, notePick: null, focusNote: null, focusRoundNote: null },
   import: { art: null, frame: null, frames: [], rarity: "6", id: "", name: "", nameCN: "", tags: [], releasePatch: "", futureSight: false, open: false },
   i18n: { selectedKey: null, filterNs: null, search: "" },
   noteLang: "en",
@@ -2065,6 +2065,7 @@ function renderBuildDetail() {
         el("div", { class: "detail-title", text: name }),
         el("div", { class: "detail-sub", text: [c.cnName, c.afflatus, c.shape].filter(Boolean).join(" · ") || "guide_builds.json" }),
       ]),
+      renderNoteLangSwitch(),
     ])
   );
 
@@ -2108,14 +2109,9 @@ function renderBuildDetail() {
     for (const label of labels) {
       const resoKey = `reso.${label}`;
       const entry = model.i18nEntry(resoKey);
+      const noteLang = currentNoteLang();
+      const curLang = noteLang.id;
 
-      const labelInput = el("input", {
-        type: "text",
-        value: label,
-        placeholder: "Name (EN)",
-        style: "width:130px",
-        title: "Resonance build code name (English / Key)",
-      });
       const codeInput = el("input", {
         type: "text",
         value: current[label],
@@ -2123,51 +2119,76 @@ function renderBuildDetail() {
         style: "flex:1;min-width:180px",
         title: "Game resonance code string",
       });
-
-      labelInput.addEventListener("change", () => {
-        const nextLabel = labelInput.value.trim();
-        if (!nextLabel || nextLabel === label) {
-          labelInput.value = label;
-          return;
-        }
-        const rebuilt = {};
-        for (const key of labels) rebuilt[key === label ? nextLabel : key] = current[key];
-        if (entry.vi || entry.cn) {
-          model.setI18nEntry("vi", `reso.${nextLabel}`, entry.vi || "");
-          model.setI18nEntry("cn", `reso.${nextLabel}`, entry.cn || "");
-          model.setI18nEntry("en", `reso.${nextLabel}`, nextLabel);
-        }
-        commitResonance(rebuilt);
-      });
       codeInput.addEventListener("change", () => {
         commitResonance({ ...current, [label]: codeInput.value.trim() });
       });
 
-      const viInput = el("input", {
-        type: "text",
-        value: entry.vi || "",
-        placeholder: "Tên Tiếng Việt (VI)",
-        style: "flex: 1; font-size: 11px;",
-        title: `Vietnamese translation for "${label}"`,
-      });
-      viInput.addEventListener("change", () => {
-        model.setI18nEntry("vi", resoKey, viInput.value.trim());
-        model.setI18nEntry("en", resoKey, label);
-        afterEdit({ list: false });
-      });
+      let nameInputEl;
+      let enHintEl = null;
+      if (curLang === "en") {
+        nameInputEl = el("input", {
+          type: "text",
+          value: label,
+          placeholder: "Name (EN)",
+          style: "width:130px",
+          title: "Resonance build code name (English / Key)",
+        });
+        nameInputEl.addEventListener("change", () => {
+          const nextLabel = nameInputEl.value.trim();
+          if (!nextLabel || nextLabel === label) {
+            nameInputEl.value = label;
+            return;
+          }
+          const rebuilt = {};
+          for (const key of labels) rebuilt[key === label ? nextLabel : key] = current[key];
+          if (entry.vi || entry.cn) {
+            model.setI18nEntry("vi", `reso.${nextLabel}`, entry.vi || "");
+            model.setI18nEntry("cn", `reso.${nextLabel}`, entry.cn || "");
+            model.setI18nEntry("en", `reso.${nextLabel}`, nextLabel);
+          }
+          commitResonance(rebuilt);
+        });
+      } else if (curLang === "vi") {
+        enHintEl = el("div", {
+          class: "hint",
+          style: "font-size: 10px; color: var(--text-muted); margin-bottom: 2px;",
+          text: `EN: ${label}`,
+        });
+        nameInputEl = el("input", {
+          type: "text",
+          value: entry.vi || "",
+          placeholder: "Tên Tiếng Việt (VI)",
+          style: "width:130px",
+          title: `Vietnamese translation for "${label}"`,
+        });
+        nameInputEl.addEventListener("change", () => {
+          model.setI18nEntry("vi", resoKey, nameInputEl.value.trim());
+          model.setI18nEntry("en", resoKey, label);
+          afterEdit({ list: false });
+        });
+      } else {
+        enHintEl = el("div", {
+          class: "hint",
+          style: "font-size: 10px; color: var(--text-muted); margin-bottom: 2px;",
+          text: `EN: ${label}`,
+        });
+        nameInputEl = el("input", {
+          type: "text",
+          value: entry.cn || "",
+          placeholder: "中文翻译 (CN)",
+          style: "width:130px",
+          title: `Chinese translation for "${label}"`,
+        });
+        nameInputEl.addEventListener("change", () => {
+          model.setI18nEntry("cn", resoKey, nameInputEl.value.trim());
+          model.setI18nEntry("en", resoKey, label);
+          afterEdit({ list: false });
+        });
+      }
 
-      const cnInput = el("input", {
-        type: "text",
-        value: entry.cn || "",
-        placeholder: "中文翻译 (CN)",
-        style: "flex: 1; font-size: 11px;",
-        title: `Chinese translation for "${label}"`,
-      });
-      cnInput.addEventListener("change", () => {
-        model.setI18nEntry("cn", resoKey, cnInput.value.trim());
-        model.setI18nEntry("en", resoKey, label);
-        afterEdit({ list: false });
-      });
+      const inputCol = enHintEl
+        ? el("div", { style: "display: flex; flex-direction: column;" }, [enHintEl, nameInputEl])
+        : nameInputEl;
 
       const rowBlock = el(
         "div",
@@ -2177,9 +2198,9 @@ function renderBuildDetail() {
             "margin-bottom: 8px; padding: 6px 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius);",
         },
         [
-          el("div", { class: "pick", style: "align-items: center; gap: 6px; margin-bottom: 4px;" }, [
-            el("span", { class: "flag flag-ns", text: "NAME" }),
-            labelInput,
+          el("div", { class: "pick", style: "align-items: center; gap: 6px;" }, [
+            el("span", { class: "flag", text: noteLang.label, title: noteLang.title, style: "flex: none; width: 28px; text-align: center; font-weight: 700;" }),
+            inputCol,
             codeInput,
             el("button", {
               class: "btn btn-sm btn-ghost",
@@ -2191,12 +2212,6 @@ function renderBuildDetail() {
                 commitResonance(next);
               },
             }),
-          ]),
-          el("div", { style: "display: flex; gap: 6px; align-items: center; padding-left: 20px;" }, [
-            el("span", { class: "flag", text: "VI" }),
-            viInput,
-            el("span", { class: "flag", text: "CN" }),
-            cnInput,
           ]),
         ]
       );
@@ -2438,9 +2453,34 @@ function readDragPayload(e) {
   return state.drag;
 }
 
-/** A tag's plate, drawn from the shipped art. */
-function guideTagPlate(tag) {
-  return el("img", { class: `guide-tag-plate is-${tag.kind}`, src: `../${tag.image}`, alt: tag.label, title: tag.label });
+/** A tag's plate, drawn from the shipped art. Every tag lays its words on the
+ *  blank ribbon, so the plate can shrink to fit the card. */
+function guideTagPlate(tag, text = "") {
+  return el("span", { class: `guide-tag-plate is-${tag.kind} is-text`, title: text || tag.label, dataset: { tag: tag.key } }, [
+    el("img", { src: `../${tag.image}`, alt: "" }),
+    el("span", { class: "guide-tag-plate-text", text }),
+  ]);
+}
+
+/**
+ * Shrinks a tag's words until the plate fits inside its card. Runs after layout,
+ * because the width the words may use is the card's, not the plate's.
+ */
+function fitGuideTagPlates(root = document) {
+  for (const plate of root.querySelectorAll(".guide-slot-card > .guide-tag-plate.is-text")) {
+    const text = plate.querySelector(".guide-tag-plate-text");
+    const card = plate.parentElement;
+    if (!text || !card) continue;
+    plate.style.fontSize = "";
+    const pad = parseFloat(getComputedStyle(plate).paddingLeft) + parseFloat(getComputedStyle(plate).paddingRight);
+    const available = card.clientWidth;
+    let size = parseFloat(getComputedStyle(plate).fontSize) || 9;
+    // Stop at 6px: below that the words stop reading, so the plate clips instead.
+    while (size > 6 && text.scrollWidth + pad > available) {
+      size -= 0.5;
+      plate.style.fontSize = `${size}px`;
+    }
+  }
 }
 
 /** The callout editor under a round's cards, plus a mini bracket preview. */
@@ -2486,7 +2526,7 @@ function renderRoundAnnotations(id, roundIndex, round, slotCount) {
         type: "text",
         value: getMultiText(annotation.text, lang),
         placeholder: `${placeholder} (${label})`,
-        class: "guide-annotation-text",
+        class: "guide-annotation-text view-${lang}",
         style: "flex: 1; min-width: 90px; font-size: 11px;",
         title: `${placeholder} (${label})`,
       });
@@ -2504,20 +2544,35 @@ function renderRoundAnnotations(id, roundIndex, round, slotCount) {
         requestAnimationFrame(() => input.focus());
       }
 
-      return el("div", { class: "guide-lang-input-group" }, [
+      const enText = getMultiText(annotation.text, "en");
+      const showEnHint = lang !== "en" && enText;
+
+      const inputBlock = showEnHint
+        ? el("div", { style: "display: flex; flex-direction: column; flex: 1; min-width: 0;" }, [
+            el("div", {
+              class: "hint",
+              style: "font-size: 10px; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
+              text: `EN: ${enText}`,
+              title: enText,
+            }),
+            input,
+          ])
+        : input;
+
+      return el("div", { class: `guide-lang-input-group view-${lang}` }, [
         el("span", { class: "flag", text: label }),
-        input,
+        inputBlock,
       ]);
     };
 
+    // The note is edited in the language picked at the top of the panel.
+    const noteLang = currentNoteLang();
     const inputsRow = el("div", { class: "guide-annotation-langs" }, [
-      makeAnnotationInput("en", "EN", "Note"),
-      makeAnnotationInput("vi", "VI", "Ghi chú"),
-      makeAnnotationInput("cn", "CN", "注释"),
+      makeAnnotationInput(noteLang.id, noteLang.label, noteLang.placeholder),
     ]);
 
     host.appendChild(
-      el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: annotationIndex } }, [
+      el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: annotationIndex, text: getMultiText(annotation.text, noteLang.id) } }, [
         styleSelect,
         rangeInput("from", from),
         el("span", { class: "guide-annotation-dash", text: "–" }),
@@ -2598,7 +2653,7 @@ function renderRoundNotes(id, rotation, roundCount) {
         type: "text",
         value: getMultiText(note.text, lang),
         placeholder: `${placeholder} (${label})`,
-        class: "guide-annotation-text",
+        class: `guide-annotation-text view-${lang}`,
         style: "flex: 1; min-width: 90px; font-size: 11px;",
         title: `${placeholder} (${label})`,
       });
@@ -2615,20 +2670,35 @@ function renderRoundNotes(id, rotation, roundCount) {
         requestAnimationFrame(() => input.focus());
       }
 
-      return el("div", { class: "guide-lang-input-group" }, [
+      const enText = getMultiText(note.text, "en");
+      const showEnHint = lang !== "en" && enText;
+
+      const inputBlock = showEnHint
+        ? el("div", { style: "display: flex; flex-direction: column; flex: 1; min-width: 0;" }, [
+            el("div", {
+              class: "hint",
+              style: "font-size: 10px; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
+              text: `EN: ${enText}`,
+              title: enText,
+            }),
+            input,
+          ])
+        : input;
+
+      return el("div", { class: `guide-lang-input-group view-${lang}` }, [
         el("span", { class: "flag", text: label }),
-        input,
+        inputBlock,
       ]);
     };
 
+    // The note follows the language switch at the top of the panel.
+    const noteLang = currentNoteLang();
     const inputsRow = el("div", { class: "guide-annotation-langs" }, [
-      makeRoundNoteInput("en", "EN", "Note"),
-      makeRoundNoteInput("vi", "VI", "Ghi chú"),
-      makeRoundNoteInput("cn", "CN", "注释"),
+      makeRoundNoteInput(noteLang.id, noteLang.label, noteLang.placeholder),
     ]);
 
     host.appendChild(
-      el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: noteIndex } }, [
+      el("div", { class: `guide-annotation is-${style}`, dataset: { from, to, style, index: noteIndex, text: getMultiText(note.text, noteLang.id) } }, [
         styleSelect,
         roundInput("from", from),
         el("span", { class: "guide-annotation-dash", text: "–" }),
@@ -2707,7 +2777,7 @@ function drawRoundNoteBrackets(root) {
       line(`M ${x} ${top} H ${x - 5} M ${x} ${bottom} H ${x - 5} M ${x} ${top} V ${bottom}`);
     }
 
-    const label = note.querySelector(".guide-annotation-text")?.value || "";
+    const label = note.dataset.text || "";
     if (label) {
       const text = document.createElementNS(NS, "text");
       text.setAttribute("x", String(x + 8));
@@ -2715,6 +2785,16 @@ function drawRoundNoteBrackets(root) {
       text.setAttribute("class", "guide-round-note-label");
       text.textContent = label;
       svg.appendChild(text);
+      // The rail is only as wide as the room beside the rounds, so a long note
+      // is clipped to what fits instead of running off the panel.
+      const room = bodyBox.width - (x + 8) - 2;
+      if (room > 0 && text.getComputedTextLength() > room) {
+        let cut = label;
+        while (cut.length > 1 && text.getComputedTextLength() > room) {
+          cut = cut.slice(0, -1);
+          text.textContent = `${cut.trimEnd()}…`;
+        }
+      }
     }
     rail.appendChild(svg);
   });
@@ -2774,15 +2854,19 @@ function drawEditorBrackets(root) {
     svg.setAttribute("height", String(base.height));
 
     rows.forEach((row, index) => {
-      const from = slots[Number(row.dataset.from)];
-      const to = slots[Number(row.dataset.to)] || from;
-      if (!from || !to) return;
-      const a = (from.querySelector(".guide-slot-cards") || from).getBoundingClientRect();
-      const b = (to.querySelector(".guide-slot-cards") || to).getBoundingClientRect();
-      const left = Math.min(a.left, b.left) - base.left;
-      const right = Math.max(a.right, b.right) - base.left;
+      const from = Number(row.dataset.from) || 0;
+      const to = Math.max(from, Number(row.dataset.to) || 0);
+      // The span covers every card between the two ends, which matters when the
+      // slot row has wrapped onto several lines.
+      const spanned = slots.slice(from, to + 1);
+      if (spanned.length === 0) return;
+      const boxes = spanned.map((slot) => (slot.querySelector(".guide-slot-cards") || slot).getBoundingClientRect());
+      const left = Math.min(...boxes.map((box) => box.left)) - base.left;
+      const right = Math.max(...boxes.map((box) => box.right)) - base.left;
       const mid = (left + right) / 2;
-      const top = Math.min(a.bottom, b.bottom) - base.top + 3;
+      // Hang the bracket under the lowest card of the span: a wrapped row puts
+      // the earlier cards on the first line, so their bottom is not the edge.
+      const top = Math.max(...boxes.map((box) => box.bottom)) - base.top + 3;
       const bar = top + 5;
       const stem = lanes[index] * LANE + 12;
       const style = row.dataset.style || "bracket";
@@ -2826,11 +2910,12 @@ const TUNING_ICONS = {
   S2: "images/skills/Tuning_S2.png",
 };
 
-/** Special cards are grouped by id; Tuning_S*.png are not special cards. */
+/**
+ * Special cards are grouped by id; Tuning_S*.png are not special cards.
+ * Archetype (760100) and Myth (770*) cards are no longer offered at all.
+ */
 const SPECIAL_GROUPS = [
-  { key: "archetype", label: "Archetype cards", test: (id) => id === "760100" },
   { key: "energy", label: "Energy cards", test: (id) => id.startsWith("780") },
-  { key: "myth", label: "Myth cards", test: (id) => id.startsWith("770") },
 ];
 
 function rotationMembers(rotation) {
@@ -3140,6 +3225,12 @@ function renderRotationHand(id) {
   const body = $("float-hand-body");
   const model = state.model;
   if (!panel || !body) return;
+
+  // The panel is rebuilt whenever the rotation re-renders (picking a tab,
+  // clicking a card). The body keeps its scroll position so the list does not
+  // jump back to the first member; a tab change still starts at the top.
+  const scrollTop = body.scrollTop;
+  const sameTab = state.guide.panelTab === state.guide.lastPanelTab;
   const rotation = id ? model.guideRotation(id) : null;
   if (!rotation) {
     panel.hidden = true;
@@ -3230,11 +3321,14 @@ function renderRotationHand(id) {
     // Tags change what a slot means; frames change how a card is drawn.
     children.push(
       el("h3", { class: "hand-group-title", text: "Tags" }),
-      el("p", { class: "hand-help", text: "Drop a tag on a slot to add it, or on a tagged slot to remove it." }),
-      el("div", { class: "guide-tag-grid" }, GUIDE_SLOT_TAGS.map((tag) => {
-        const sample = tag.image
-          ? el("img", { class: "guide-tag-sample is-image", src: `../${tag.image}`, alt: tag.label })
-          : el("span", { class: "guide-tag-sample", text: tag.label });
+      el("p", { class: "hand-help", text: "Drop the tag on a slot to add it, or on a tagged slot to remove it. Type its words under the slot — the plate shrinks to fit the card." }),
+      el("div", { class: "guide-tag-grid" }, PANEL_SLOT_TAGS.map((tag) => {
+        // Every tag is the same blank ribbon, so each tile shows the words its
+        // plate carries — "AP Free", "Precast", or the prompt for the blank one.
+        const sample = el("span", { class: "guide-tag-sample is-text" }, [
+          el("img", { src: `../${tag.image}`, alt: "" }),
+          el("span", { text: tag.text ? "Tag" : tag.label }),
+        ]);
         const tile = el("button", {
           class: "guide-tag-tile",
           title: `${tag.label} — drag onto a slot`,
@@ -3248,7 +3342,7 @@ function renderRotationHand(id) {
 
       el("h3", { class: "hand-group-title", text: "Surface" }),
       el("p", { class: "hand-help", text: "Drop a surface on a card to lay it over that card's art. Skill 3 cards are drawn in the Ultimate plate." }),
-      el("div", { class: "guide-surface-grid" }, GUIDE_CARD_SURFACES.map((surface) => {
+      el("div", { class: "guide-surface-grid" }, PANEL_CARD_SURFACES.map((surface) => {
         const tile = el("button", {
           class: "guide-surface-tile",
           title: `${surface.label} — drag onto a card`,
@@ -3261,6 +3355,21 @@ function renderRotationHand(id) {
         ]);
         tile.addEventListener("dragstart", (e) => armDrag(e, { kind: "surface", surface: surface.key }));
         return tile;
+      })),
+
+      el("h3", { class: "hand-group-title", text: "Other" }),
+      el("p", { class: "hand-help", text: "Ownerless cards — drop one on a slot like a skill card." }),
+      el("div", { class: "special-card-grid" }, GUIDE_OTHER_CARDS.map((entry) => {
+        const payload = { kind: "card", special: entry.image };
+        const card = el("button", {
+          class: "guide-hand-card is-special",
+          title: `${entry.label} — drag onto a slot`,
+          draggable: "true",
+          dataset: { other: entry.key },
+          onclick: () => armClick(payload, `${entry.label} armed — click a slot to place it.`),
+        }, [el("img", { src: `../${entry.image}`, alt: entry.label })]);
+        card.addEventListener("dragstart", (e) => armDrag(e, payload));
+        return card;
       }))
     );
     panel.title = "Extra";
@@ -3274,26 +3383,29 @@ function renderRotationHand(id) {
       seen.add(memberName);
       const c = model.character(memberName);
       const skills = rotationSkills(memberName);
-      children.push(
-        el("div", { class: "hand-member" }, [
-          el("div", { class: "hand-member-title", title: memberName }, [
-            c.avatar ? el("img", { src: c.avatar, alt: "" }) : null,
-            el("span", { text: memberName }),
-            skills.length === 0 ? el("span", { class: "hand-member-note", text: "no icons" }) : null,
-          ]),
-          el("div", { class: "guide-hand" }, skills.map((entry) => {
-            const payload = { kind: "card", character: memberName, skill: entry.skill, icon: entry.icon };
-            const card = el("button", {
-              class: "guide-hand-card",
-              title: `${memberName} · ${entry.skill} — drag onto a slot, or click then click a slot`,
-              draggable: "true",
-              onclick: () => armClick(payload, `${memberName} card armed — click a slot to place it.`),
-            }, [el("img", { src: `../${entry.icon}`, alt: "" })]);
-            card.addEventListener("dragstart", (e) => armDrag(e, payload));
-            return card;
-          })),
-        ])
-      );
+      const block = el("div", {
+        class: "hand-member",
+        dataset: { member: memberName },
+      }, [
+        el("div", { class: "hand-member-title", title: memberName }, [
+          c.avatar ? el("img", { src: c.avatar, alt: "" }) : null,
+          el("span", { text: memberName }),
+          skills.length === 0 ? el("span", { class: "hand-member-note", text: "no icons" }) : null,
+        ]),
+        el("div", { class: "guide-hand" }, skills.map((entry) => {
+          const payload = { kind: "card", character: memberName, skill: entry.skill, icon: entry.icon };
+          const ultimate = guideSkillIsUltimate(memberName, entry.skill);
+          const card = el("button", {
+            class: `guide-hand-card${ultimate ? " is-ultimate" : ""}`,
+            title: `${memberName} · ${entry.skill}${ultimate ? " (ultimate)" : ""} — drag onto a slot, or click then click a slot`,
+            draggable: "true",
+            onclick: () => armClick(payload, `${memberName} card armed — click a slot to place it.`),
+          }, [el("img", { src: `../${entry.icon}`, alt: "" })]);
+          card.addEventListener("dragstart", (e) => armDrag(e, payload));
+          return card;
+        })),
+      ]);
+      children.push(block);
     }
 
     const specials = specialCardIcons().filter((icon) => !/\/Tuning_S\d+\.png$/i.test(icon));
@@ -3320,10 +3432,15 @@ function renderRotationHand(id) {
 
   $("float-hand-title").textContent = panel.title;
   body.replaceChildren(...children);
+  body.scrollTop = sameTab ? scrollTop : 0;
+  state.guide.lastPanelTab = tab;
 }
 
 function renderRotationDetail() {
   const host = $("rotation-detail");
+  // Re-rendering replaces every node, which would otherwise throw the pane back
+  // to the top — painful when the card panel is used far down a long plan.
+  const keepScroll = host.scrollTop;
   host.replaceChildren();
   const model = state.model;
   const rotation = model.guideRotation(state.guide.rotation);
@@ -3338,7 +3455,6 @@ function renderRotationDetail() {
   const members = rotationMembers(rotation);
   const rounds = rotationRounds(rotation);
   const archetypes = Array.isArray(rotation.archetypes) ? rotation.archetypes : [];
-  if (!state.guide.hand && members[0]) state.guide.hand = model.resolve(members[0].character);
 
   host.appendChild(
     el("div", { class: "detail-head" }, [
@@ -3346,6 +3462,7 @@ function renderRotationDetail() {
         el("div", { class: "detail-title", text: rotation.name || id }),
         el("div", { class: "detail-sub", text: `${rounds.length} round(s) → guide_rotations.json` }),
       ]),
+      renderNoteLangSwitch(),
       el("button", {
         class: "btn btn-sm",
         text: "Duplicate rotation",
@@ -3484,21 +3601,6 @@ function renderRotationDetail() {
     el("div", { class: "card-head" }, [
       el("h2", { text: "Rounds" }),
       el("div", { class: "pick", style: "align-items: center; gap: 8px;" }, [
-        el(
-          "div",
-          { class: "list-filters", style: "margin: 0;", title: "Language for editing bracket & round notes" },
-          ["en", "vi", "cn"].map((l) =>
-            el("button", {
-              class: `chip${(state.noteLang || "en") === l ? " on" : ""}`,
-              text: l.toUpperCase(),
-              type: "button",
-              onclick: () => {
-                state.noteLang = l;
-                afterEdit({ list: false });
-              },
-            })
-          )
-        ),
         el("button", {
           class: "btn btn-sm",
           text: "+ Round note",
@@ -3534,6 +3636,8 @@ function renderRotationDetail() {
   rounds.forEach((round, roundIndex) => {
     const roundEl = el("div", { class: "guide-round-editor" });
 
+    const noteLang = state.noteLang || "en";
+
     const makeRoundNoteInput = (lang, label, placeholder) => {
       const input = el("input", {
         type: "text",
@@ -3549,21 +3653,31 @@ function renderRotationDetail() {
         model.setGuideRoundNote(id, roundIndex, next);
         afterEdit({ list: false });
       });
+
+      const enText = getMultiText(round.note, "en");
+      const showEnHint = lang !== "en" && enText;
+
+      const inputBlock = showEnHint
+        ? el("div", { style: "display: flex; flex-direction: column; flex: 1; min-width: 90px;" }, [
+            el("div", {
+              class: "hint",
+              style: "font-size: 10px; color: var(--text-muted); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
+              text: `EN: ${enText}`,
+              title: enText,
+            }),
+            input,
+          ])
+        : input;
+
       return el("div", { style: "display: flex; gap: 4px; align-items: center; flex: 1; min-width: 90px;" }, [
         el("span", { class: "flag", text: label }),
-        input,
+        inputBlock,
       ]);
     };
 
-    const roundNotesGroup = el(
-      "div",
-      { style: "display: flex; gap: 6px; align-items: center; flex: 1; min-width: 0; flex-wrap: wrap;" },
-      [
-        makeRoundNoteInput("en", "EN", "Round note"),
-        makeRoundNoteInput("vi", "VI", "Ghi chú lượt"),
-        makeRoundNoteInput("cn", "CN", "回合注释"),
-      ]
-    );
+    // One note field in the language picked at the top of the editor, so the
+    // other two columns do not take room away from the cards.
+    const roundNotesGroup = makeRoundNoteInput(noteLang, noteLang.toUpperCase(), "Round note");
 
     roundEl.appendChild(
       el("span", {
@@ -3716,11 +3830,13 @@ function renderRotationDetail() {
         const cardRow = el("div", { class: "guide-slot-cards" });
         const badge = tags.map(guideTagInfo).find((tag) => tag && tag.kind === "badge");
         const plaques = tags.map(guideTagInfo).filter((tag) => tag && tag.kind === "plaque");
+        const tagText = guideSlotTagText(slot);
         // Both plates hang off the slot's first card, so they stay on its corner
-        // whatever shape the card is.
+        // whatever shape the card is. Every tag draws its words on the blank
+        // ribbon, so a long tag shrinks instead of spilling off the card.
         const plates = [
-          ...(badge ? [guideTagPlate(badge)] : []),
-          ...plaques.map((tag) => guideTagPlate(tag)),
+          ...(badge ? [guideTagPlate(badge, guideSlotTagLabel(badge, tagText))] : []),
+          ...plaques.map((tag) => guideTagPlate(tag, guideSlotTagLabel(tag, tagText))),
         ];
 
         // An OR slot shows two or three places; a normal slot one.
@@ -3815,9 +3931,26 @@ function renderRotationDetail() {
           });
 
           cardRow.appendChild(cardEl);
-                                  }
-                                  slotEl.appendChild(cardRow);
-                                }
+        }
+        slotEl.appendChild(cardRow);
+
+        // The free-text plate needs somewhere to type; the field sits under the
+        // cards, so the plate on the card stays the preview.
+        if (tags.includes(GUIDE_SLOT_TAG_TEXT_KEY)) {
+          const tagTextInput = el("input", {
+            type: "text",
+            class: "guide-tag-text-input",
+            value: tagText,
+            placeholder: "Tag text",
+            title: "Text on the tag plate",
+          });
+          tagTextInput.addEventListener("change", () => {
+            model.setGuideSlotTagText(id, roundIndex, slotIndex, tagTextInput.value);
+            afterEdit({ list: false });
+          });
+          slotEl.appendChild(tagTextInput);
+        }
+      }
 
       // The layout caption only appears when it says something the cards do not
       // already say: an OR slot's cards and a 1/4 AP card's size speak for
@@ -3984,8 +4117,11 @@ function renderRotationDetail() {
   roundsCard.appendChild(roundsBody);
   roundsCard.appendChild(renderRoundNotes(id, rotation, rounds.length));
   host.appendChild(roundsCard);
-  // The note brackets follow the cards, so they are measured once laid out.
+  host.scrollTop = keepScroll;
+  // The note brackets follow the cards, and the tag plates have to be measured
+  // against the card they sit on, so both wait for layout.
   requestAnimationFrame(() => {
+    fitGuideTagPlates(host);
     drawEditorBrackets(host);
     drawRoundNoteBrackets(host);
   });
@@ -3994,6 +4130,48 @@ function renderRotationDetail() {
 /* ------------------------------------------------------------------ *
  * Multilingual notes helper
  * ------------------------------------------------------------------ */
+
+/** The languages a note can be written in, in the order they are offered. */
+const NOTE_LANGS = [
+  { id: "en", label: "EN", title: "English", placeholder: "Note" },
+  { id: "vi", label: "VI", title: "Tiếng Việt", placeholder: "Ghi chú" },
+  { id: "cn", label: "CN", title: "中文", placeholder: "注释" },
+];
+
+function currentNoteLang() {
+  const id = state.noteLang || "en";
+  return NOTE_LANGS.find((lang) => lang.id === id) || NOTE_LANGS[0];
+}
+
+/**
+ * The language a bracket / round note is edited in. The editor shows one note
+ * field per round, so this switch decides which language that field writes to.
+ */
+function renderNoteLangSwitch() {
+  const current = currentNoteLang().id;
+  return el("div", {
+    class: "note-lang-switch",
+    title: "Language used for round and bracket notes",
+    role: "group",
+    "aria-label": "Note language",
+  }, [
+    el("span", { class: "note-lang-label", text: "Notes" }),
+    ...NOTE_LANGS.map((lang) =>
+      el("button", {
+        class: `chip${current === lang.id ? " on" : ""}`,
+        text: lang.label,
+        title: lang.title,
+        type: "button",
+        "aria-pressed": current === lang.id ? "true" : "false",
+        onclick: () => {
+          if (state.noteLang === lang.id) return;
+          state.noteLang = lang.id;
+          afterEdit({ list: false });
+        },
+      })
+    ),
+  ]);
+}
 
 function getMultiText(val, lang) {
   if (!val) return "";
@@ -4035,55 +4213,50 @@ function renderMultilingualNotesEditor({ value, onSave, placeholder = "Notes", a
     container.appendChild(el("label", { class: "field-label", text: "Notes", style: "margin: 0 0 8px;" }));
   }
 
-  const langs = [
-    { id: "en", label: "EN", title: "English" },
-    { id: "vi", label: "VI", title: "Tiếng Việt" },
-    { id: "cn", label: "CN", title: "中文" },
-  ];
+  const noteLang = currentNoteLang();
+  const lang = noteLang.id;
+  const label = noteLang.label;
+  const title = noteLang.title;
 
-  const rowMap = new Map();
+  const enText = getMultiText(value, "en");
+  if (lang !== "en" && enText) {
+    container.appendChild(
+      el("div", {
+        class: "hint",
+        style: "font-size: 11px; color: var(--text-muted); margin-bottom: 6px; padding: 4px 8px; background: rgba(255, 255, 255, 0.03); border-radius: 4px;",
+        text: `EN: ${enText}`,
+        title: enText,
+      })
+    );
+  }
 
-  langs.forEach(({ id: lang, label, title }) => {
-    const row = el("div", {
-      style: "display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px;",
-    });
-
-    const badge = el("span", {
-      class: "flag",
-      text: label,
-      title,
-      style: "margin-top: 5px; flex: none; width: 28px; text-align: center; font-weight: 700;",
-    });
-
-    const textarea = el("textarea", {
-      rows: asCard ? 2 : 2,
-      style: "flex: 1; min-width: 0;",
-      placeholder: `${placeholder} (${label} · ${title})`,
-    });
-    textarea.value = getMultiText(value, lang);
-
-    const updateAllFields = (nextVal) => {
-      value = nextVal;
-      langs.forEach(({ id: otherLang }) => {
-        if (otherLang !== lang) {
-          const otherInput = rowMap.get(otherLang);
-          if (otherInput) otherInput.value = getMultiText(nextVal, otherLang);
-        }
-      });
-    };
-
-    rowMap.set(lang, textarea);
-
-    textarea.addEventListener("change", () => {
-      const next = updateMultiText(value, lang, textarea.value);
-      updateAllFields(next);
-      onSave(next);
-    });
-
-    row.appendChild(badge);
-    row.appendChild(textarea);
-    container.appendChild(row);
+  const row = el("div", {
+    style: "display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px;",
   });
+
+  const badge = el("span", {
+    class: "flag",
+    text: label,
+    title,
+    style: "margin-top: 5px; flex: none; width: 28px; text-align: center; font-weight: 700;",
+  });
+
+  const textarea = el("textarea", {
+    rows: asCard ? 2 : 2,
+    style: "flex: 1; min-width: 0;",
+    placeholder: `${placeholder} (${label} · ${title})`,
+  });
+  textarea.value = getMultiText(value, lang);
+
+  textarea.addEventListener("change", () => {
+    const next = updateMultiText(value, lang, textarea.value);
+    value = next;
+    onSave(next);
+  });
+
+  row.appendChild(badge);
+  row.appendChild(textarea);
+  container.appendChild(row);
 
   return container;
 }

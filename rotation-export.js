@@ -43,6 +43,8 @@
   const LABEL_FONT = '400 10px "gg sans", "Segoe UI", Arial, sans-serif';
   const BODY_FONT = '400 13px "gg sans", "Segoe UI", Arial, sans-serif';
   const SMALL_FONT = '400 11px "gg sans", "Segoe UI", Arial, sans-serif';
+  // The tag plate's serif; the size drops when a long tag has to fit a card.
+  const tagFont = (size) => `700 ${size}px Georgia, "Times New Roman", serif`;
 
   /* ---- image loading ---- */
 
@@ -418,19 +420,49 @@
     return w;
   }
 
-  /** The AP Free / Precast plates on the slot's first card. */
-  function drawTagPlates(ctx, tags, x, cardTop, ultimate) {
+  /**
+   * The tag plates on the slot's first card. Every tag draws its words on the
+   * blank ribbon; the plate is capped at the card's width and the words shrink
+   * until they fit, so a long tag never spills off the art.
+   */
+  function drawTagPlates(ctx, tags, x, cardTop, ultimate, tagText = "", cardWidth = 0) {
     let y = cardTop + (ultimate ? 30 : 6);
+    const limit = cardWidth || 64;
+    const room = Math.max(1, limit - 11);
     for (const key of tags) {
       const tag = ROT_SLOT_TAGS.find((entry) => entry.key === key);
       if (!tag || !tag.image) continue;
       const img = imageCache.get(tag.image);
-      if (img && img.__loaded) {
-        const h = 13;
-        const w = (img.naturalWidth / img.naturalHeight) * h;
-        ctx.drawImage(img, x, y, w, h);
-        y += h + 5;
+      const h = 13;
+      let label = String(rotationTagLabel(tag, tagText) || "").trim();
+      let size = 9;
+      let textW = 0;
+      setFont(ctx, tagFont(size), "#FFFFFF", "0.1px");
+      textW = label ? ctx.measureText(label).width : 0;
+      // The DOM shrinks the type the same way, then clips with an ellipsis.
+      while (size > 6 && textW > room) {
+        size -= 0.5;
+        setFont(ctx, tagFont(size), "#FFFFFF", "0.1px");
+        textW = label ? ctx.measureText(label).width : 0;
       }
+      if (textW > room) {
+        while (label.length > 1 && ctx.measureText(`${label}…`).width > room) label = label.slice(0, -1);
+        label = `${label}…`;
+        textW = ctx.measureText(label).width;
+      }
+      const w = Math.min(limit, Math.max(label ? 43 : 24, textW + 11));      if (img && img.__loaded) ctx.drawImage(img, x, y, w, h);
+      if (label) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x + 5, y, w - 11, h);
+        ctx.clip();
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, x + 5, y + h / 2 + 0.5);
+        ctx.textBaseline = "alphabetic";
+        ctx.restore();
+      }
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+      y += h + 5;
     }
   }
 
@@ -439,6 +471,7 @@
     const cards = Array.isArray(slot.cards) ? slot.cards.filter(Boolean) : [];
     const width = slotWidth(slot);
     const tags = rotationSlotTags(slot);
+    const tagText = typeof slot.tagText === "string" ? slot.tagText : "";
     const caption = slotCaption(slot);
     const bodyBottom = stripBottom - (caption ? CAPTION_H + CAPTION_GAP : 0);
     const height = slotHeight(slot);
@@ -507,7 +540,7 @@
       }
       if (card0) {
         drawCard(ctx, card0, x, bodyBottom, OR_CARD_H);
-        drawTagPlates(ctx, tags, x, bodyBottom - OR_CARD_H, isUltimate(card0));
+        drawTagPlates(ctx, tags, x, bodyBottom - OR_CARD_H, isUltimate(card0), tagText, OR_CARD_H * NORMAL_ASPECT);
       }
     } else if (type === "or") {
       // The back card peeks out from behind the front one.
@@ -533,7 +566,7 @@
       }
       if (front) {
         drawCard(ctx, front, x, bodyBottom, OR_CARD_H);
-        drawTagPlates(ctx, tags, x, bodyBottom - OR_CARD_H, isUltimate(front));
+        drawTagPlates(ctx, tags, x, bodyBottom - OR_CARD_H, isUltimate(front), tagText, OR_CARD_H * NORMAL_ASPECT);
       }
     } else if (cards.length === 0) {
       const boxTop = bodyBottom - EMPTY_H;
@@ -544,11 +577,11 @@
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, boxTop + 0.5, EMPTY_W - 1, EMPTY_H - 1);
       ctx.setLineDash([]);
-      drawTagPlates(ctx, tags, x, boxTop, false);
+      drawTagPlates(ctx, tags, x, boxTop, false, tagText, EMPTY_W);
     } else {
       const h = type === "lb" ? LB_H : isUltimate(cards[0]) ? ULTIMATE_H : CARD_H;
       drawCard(ctx, cards[0], x, bodyBottom, h);
-      drawTagPlates(ctx, tags, x, bodyBottom - h, isUltimate(cards[0]));
+      drawTagPlates(ctx, tags, x, bodyBottom - h, isUltimate(cards[0]), tagText, cardSize(cards[0], h).w);
     }
 
     if (caption) {
@@ -750,10 +783,11 @@
       const slots = Array.isArray(round.slots) ? round.slots : [];
       roundTop[index] = y;
 
-      // The per-round note is the round's title.
+      // The per-round note is the round's title. It starts at the section's
+      // left edge, the same place the "Rounds" header does, not above the cards.
       let stripTop = y;
       if (round.note) {
-        drawRoundNotePlaque(ctx, exportLocalizeText(round.note), stripLeft, y);
+        drawRoundNotePlaque(ctx, exportLocalizeText(round.note), x0, y);
         stripTop = y + 24 + 8;
       }
 

@@ -860,6 +860,26 @@ console.log("\n=== rotations ===");
   m.setGuideSlotTag(id, ri, tagIndex, "precast", false);
   check("the last tag drops the key", !("tags" in tagSlot()), JSON.stringify(tagSlot()));
 
+  /* ---- the free-text tag ---- */
+  m.setGuideSlotTag(id, ri, tagIndex, "custom");
+  check("the free-text tag can be added", tagSlot().tags.includes("custom"), JSON.stringify(tagSlot()));
+  m.setGuideSlotTagText(id, ri, tagIndex, "Repeat loop");
+  check("its text is written on the slot", tagSlot().tagText === "Repeat loop", JSON.stringify(tagSlot()));
+  m.setGuideSlotTagText(id, ri, tagIndex, "   ");
+  check("blank text drops the key", !("tagText" in tagSlot()), JSON.stringify(tagSlot()));
+  m.setGuideSlotTagText(id, ri, tagIndex, "Repeat loop");
+  m.setGuideSlotTag(id, ri, tagIndex, "custom", false);
+  check(
+    "removing the tag takes its text with it",
+    !("tagText" in tagSlot()) && !("tags" in tagSlot()),
+    JSON.stringify(tagSlot())
+  );
+  check(
+    "text is refused on a slot without the free-text tag",
+    m.setGuideSlotTagText(id, ri, tagIndex, "nope") === false,
+    JSON.stringify(tagSlot())
+  );
+
   /* ---- card frame / surface / preferred ---- */
   m.addGuideSlotCard(id, ri, tagIndex, { character: m.characters[0], skill: 3 });
   const tagCard = () => m.guideRotation(id).rounds[ri].slots[tagIndex].cards[0];
@@ -883,6 +903,12 @@ console.log("\n=== rotations ===");
   );
   m.setGuideCardField(id, ri, tagIndex, 0, "surface", "nope");
   check("an unknown surface is refused", tagCard().surface === "ramona-ultimate", JSON.stringify(tagCard()));
+  m.setGuideCardField(id, ri, tagIndex, 0, "surface", "conduit");
+  check(
+    "the Conduit surface keeps the normal frame",
+    tagCard().surface === "conduit" && !("frame" in tagCard()),
+    JSON.stringify(tagCard())
+  );
   m.setGuideCardField(id, ri, tagIndex, 0, "surface", "");
   check("the surface can be cleared", !("surface" in tagCard()), JSON.stringify(tagCard()));
 

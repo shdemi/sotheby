@@ -67,13 +67,36 @@ export const LEGACY_SLOT_TAGS = { free: "ap-free", precast: "precast" };
  * carry both AP Free and Precast.
  *   badge  — plate on the group's top-left corner
  *   plaque — plate on the card, below the badge when both are present
- * `image` is the shipped plate art; a tag without one is drawn as a parchment
- * chip instead.
+ * Every tag draws its words on the blank `Tag_Empty.png` ribbon, so the text can
+ * shrink to fit the card instead of overflowing it. `text` marks the tag whose
+ * words come from the slot (`tagText`) rather than from the table.
  */
 export const GUIDE_SLOT_TAGS = [
-  { key: "ap-free", label: "AP Free", kind: "badge", image: "images/card_modulo/Tag_APFree.png" },
-  { key: "precast", label: "Precast", kind: "plaque", image: "images/card_modulo/Tag_Precast.png" },
+  { key: "ap-free", label: "AP Free", kind: "badge", image: "images/card_modulo/Tag_Empty.png" },
+  { key: "precast", label: "Precast", kind: "plaque", image: "images/card_modulo/Tag_Empty.png" },
+  // The blank plaque the author types into.
+  { key: "custom", label: "Custom", kind: "plaque", image: "images/card_modulo/Tag_Empty.png", text: true },
 ];
+
+/** The tag whose plate carries the author's own text. */
+export const GUIDE_SLOT_TAG_TEXT_KEY = "custom";
+
+/**
+ * The tags the card panel offers. All three are the same blank ribbon: the two
+ * presets print their own name on it, and `custom` prints what the author typed,
+ * so the plate can shrink to fit the card instead of being a fixed bitmap.
+ */
+export const PANEL_SLOT_TAGS = GUIDE_SLOT_TAGS;
+
+/**
+ * The words a tag's plate draws. The blank tag shows what the author typed; the
+ * two presets keep their own name.
+ */
+export function guideSlotTagLabel(tag, slotTagText) {
+  if (!tag) return "";
+  if (tag.text) return String(slotTagText || "");
+  return tag.label;
+}
 
 /**
  * The one card frame: a skill-3 card is drawn in the arched Ultimate plate. A
@@ -116,12 +139,63 @@ export const GUIDE_CARD_SURFACES = [
     label: "Ramona Ultimate",
     image: "images/card_modulo/surface/Ramona_Ultimate_Card.png",
     frame: "ultimate",
+    // Still rendered where a rotation already uses it, but the card panel no
+    // longer offers it.
+    hidden: true,
   },
+  {
+    key: "conduit",
+    label: "Conduit",
+    image: "images/card_modulo/surface/Conduit.png",
+    frame: "normal",
+  },
+  {
+    key: "conduit-ultimate",
+    label: "Conduit Ultimate",
+    image: "images/card_modulo/surface/Conduit_Ultimate.png",
+    frame: "ultimate",
+  },
+];
+
+/** The surfaces the card panel offers in its Extra tab. */
+export const PANEL_CARD_SURFACES = GUIDE_CARD_SURFACES.filter((surface) => !surface.hidden);
+
+/**
+ * Stand-in cards with no owner. "Any" and "Move" describe a step rather than a
+ * skill, so they carry no character; they are stored as `special` art and are
+ * dropped into a slot exactly like a skill card.
+ */
+export const GUIDE_OTHER_CARDS = [
+  { key: "any", label: "Any", image: "images/card_modulo/Any.png" },
+  { key: "move", label: "Move", image: "images/card_modulo/Move.png" },
+  { key: "generate", label: "Generate", image: "images/card_modulo/Generate.png" },
+  { key: "remove", label: "Remove", image: "images/card_modulo/Remove.png" },
+  { key: "refresh", label: "Refresh", image: "images/card_modulo/Refresh.png" },
+  { key: "merge", label: "Merge", image: "images/card_modulo/Merge.png" },
 ];
 
 /** A surface by key, or null. */
 export function guideCardSurface(key) {
   return GUIDE_CARD_SURFACES.find((surface) => surface.key === key) || null;
+}
+
+/**
+ * Characters whose ultimate is not skill 3. One map answers both "which skill is
+ * the ultimate" (the editor handles it like any skill-3 card) and "which cards
+ * are drawn in the Ultimate plate".
+ */
+export const ULTIMATE_SKILLS = {
+  Rhiannon: 4,
+  Brume: 4,
+  Kassandra: 5,
+};
+
+/** Whether a skill card belongs to a character's ultimate. */
+export function guideSkillIsUltimate(character, skill) {
+  const name = String(character || "");
+  const key = Object.keys(ULTIMATE_SKILLS).find((entry) => entry.toLowerCase() === name.toLowerCase());
+  if (key) return Number(skill) === ULTIMATE_SKILLS[key];
+  return Number(skill) === 3;
 }
 
 /** Whether a card is drawn in the Ultimate plate. */
@@ -130,7 +204,7 @@ export function guideCardIsUltimate(card) {
   if (card.frame === "ultimate") return true;
   if (card.frame === "normal") return false;
   if (card.special) return false;
-  return Number(card.skill) === 3;
+  return guideSkillIsUltimate(card.character, card.skill);
 }
 
 /** Bracket callout styles a round can draw under its cards. */
@@ -147,6 +221,11 @@ export function guideSlotTags(slot) {
   const tags = Array.isArray(slot?.tags) ? slot.tags.filter((tag) => typeof tag === "string") : [];
   const legacy = LEGACY_SLOT_TAGS[slot?.type];
   return legacy && !tags.includes(legacy) ? [...tags, legacy] : tags;
+}
+
+/** The text a text tag draws on its plate; "" when the slot has none. */
+export function guideSlotTagText(slot) {
+  return typeof slot?.tagText === "string" ? slot.tagText : "";
 }
 
 /** Tags that have a dedicated icon: the two damage types plus the six afflatus. */
@@ -1513,6 +1592,8 @@ export class Model {
     const entry = { type };
     const tags = guideSlotTags(slot);
     if (tags.length) entry.tags = tags;
+    const tagText = guideSlotTagText(slot).trim();
+    if (tags.includes(GUIDE_SLOT_TAG_TEXT_KEY) && tagText) entry.tagText = tagText;
     if (type === "text" || type === "tuning") {
       entry.text = String(slot?.text || "");
     } else {
@@ -1651,6 +1732,28 @@ export class Model {
     } else {
       changed = (doc.nodeAt(path) ? doc.set(path, current) : doc.setProperty(slotPath, "tags", current)) || changed;
     }
+    // The text only belongs to the slot while its plate is there.
+    if (!current.includes(GUIDE_SLOT_TAG_TEXT_KEY) && doc.nodeAt([...slotPath, "tagText"])) {
+      changed = doc.deleteProperty(slotPath, "tagText") || changed;
+    }
+    if (changed) this.reload();
+    return changed;
+  }
+
+  /** Sets the text the free-text tag plate draws. */
+  setGuideSlotTagText(id, roundIndex, slotIndex, text) {
+    const doc = this.doc("guide_rotations.json");
+    if (!doc) return false;
+    const index = this.guideRotationIndex(id);
+    if (index === -1) return false;
+    const slot = this.guideRotations()[index].rounds?.[roundIndex]?.slots?.[slotIndex];
+    if (!slot || !guideSlotTags(slot).includes(GUIDE_SLOT_TAG_TEXT_KEY)) return false;
+    const slotPath = ["rotations", index, "rounds", roundIndex, "slots", slotIndex];
+    const value = String(text || "").trim();
+    const path = [...slotPath, "tagText"];
+    const changed = value
+      ? doc.nodeAt(path) ? doc.set(path, value) : doc.setProperty(slotPath, "tagText", value)
+      : doc.deleteProperty(slotPath, "tagText");
     if (changed) this.reload();
     return changed;
   }
@@ -2502,7 +2605,8 @@ export function validate(model) {
                 warn(`${slotLabel} card ${ci + 1}: unknown surface "${card.surface}"`);
               }
               if (card.special) {
-                if (!String(card.special).startsWith("images/skills/")) {
+                const knownSpecial = GUIDE_OTHER_CARDS.some((entry) => entry.image === card.special);
+                if (!String(card.special).startsWith("images/skills/") && !knownSpecial) {
                   warn(`${slotLabel} card ${ci + 1}: special "${card.special}" is not under images/skills/`);
                 }
                 return;

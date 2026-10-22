@@ -6607,6 +6607,13 @@ body.team-resizing * {
 /* Psychube pickers drop the frame entirely */
 #team-select-chube-grid .roster-avatar-box.is-chube {
   border-color: transparent;
+  background: transparent;
+  aspect-ratio: 180 / 214;
+  height: auto;
+}
+
+#team-select-chube-grid .roster-avatar-box.is-chube .roster-avatar-img {
+  object-fit: contain;
 }
 
 #team-select-chube-grid .roster-char-item.is-owned .roster-avatar-box.is-chube {
@@ -8740,15 +8747,68 @@ body.guide-rail-resizing * {
    round note reserves the room for it. */
 .rot-rounds-body {
   position: relative;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 8px;
 }
 .rot-rounds-body.has-round-notes {
   padding-right: 150px;
 }
 
+/* Rounds Scale Control in header */
+.rot-scale-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.65rem;
+  color: #B5B5B3;
+  user-select: none;
+}
+
+.rot-scale-label {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ECE5D9;
+}
+
+.rot-scale-slider {
+  width: 90px;
+  height: 4px;
+  accent-color: #E8A33D;
+  cursor: pointer;
+}
+
+.rot-scale-val {
+  min-width: 32px;
+  text-align: right;
+  font-family: var(--mono-font, monospace);
+  font-size: 0.64rem;
+  color: #F0E6D2;
+}
+
+.rot-scale-reset {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #B5B5B3;
+  padding: 1px 6px;
+  font-size: 0.6rem;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.15s ease;
+}
+
+.rot-scale-reset:hover {
+  border-color: #E8A33D;
+  color: #FFFFFF;
+}
+
 .rot-rounds-column {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: calc(22px * var(--rot-scale, 1));
 }
 
 .rot-round-notes-rail {
@@ -8780,7 +8840,7 @@ body.guide-rail-resizing * {
 .rot-round {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  column-gap: 10px;
+  column-gap: calc(10px * var(--rot-scale, 1));
   align-items: start;
 }
 
@@ -8795,14 +8855,14 @@ body.guide-rail-resizing * {
   align-self: start;
   justify-self: start;
   /* Sits level with the card strip, like the plan sheets. */
-  margin-top: 26px;
-  padding: 6px 10px 7px;
+  margin-top: calc(26px * var(--rot-scale, 1));
+  padding: calc(6px * var(--rot-scale, 1)) calc(10px * var(--rot-scale, 1)) calc(7px * var(--rot-scale, 1));
   box-sizing: border-box;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   font-family: var(--main-font-family);
-  font-size: 1.3rem;
+  font-size: calc(1.3rem * var(--rot-scale, 1));
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0.04em;
@@ -8814,8 +8874,8 @@ body.guide-rail-resizing * {
 .rot-round-no::after {
   content: "";
   position: absolute;
-  width: 13px;
-  height: 13px;
+  width: calc(13px * var(--rot-scale, 1));
+  height: calc(13px * var(--rot-scale, 1));
   pointer-events: none;
 }
 
@@ -8834,26 +8894,28 @@ body.guide-rail-resizing * {
 }
 
 /* The round note is the round's title: a plaque cut from the same material as
-   the section headers, with an orange spine and serif capitals. */
+   the section headers, with an orange spine and serif capitals. It spans the
+   whole round so the plaque starts at the Rounds header's left edge, above the
+   number gutter, rather than lining up with the cards. */
 .rot-round-head {
-  grid-column: 2;
+  grid-column: 1 / -1;
   grid-row: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(10px * var(--rot-scale, 1));
   flex-wrap: wrap;
   min-height: 0;
-  margin-bottom: 8px;
+  margin-bottom: calc(8px * var(--rot-scale, 1));
 }
 
 .rot-round-note {
   display: inline-block;
-  padding: 4px 14px 4px 12px;
-  border-left: 3px solid #E8A33D;
+  padding: calc(4px * var(--rot-scale, 1)) calc(14px * var(--rot-scale, 1)) calc(4px * var(--rot-scale, 1)) calc(12px * var(--rot-scale, 1));
+  border-left: calc(3px * var(--rot-scale, 1)) solid #E8A33D;
   background: linear-gradient(90deg, rgba(92, 72, 44, 0.92), rgba(52, 45, 36, 0.82) 60%, rgba(34, 31, 27, 0.55));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
   font-family: var(--main-font-family);
-  font-size: 0.8rem;
+  font-size: calc(0.8rem * var(--rot-scale, 1));
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -8867,9 +8929,10 @@ body.guide-rail-resizing * {
   grid-row: 2;
   display: flex;
   /* Every card is 5px from its neighbour, whatever shape it is. */
-  gap: 5px;
-  flex-wrap: wrap;
+  gap: calc(5px * var(--rot-scale, 1));
+  flex-wrap: nowrap;
   align-items: flex-end;
+  width: max-content;
 }
 
 .rot-slot {
@@ -8877,13 +8940,14 @@ body.guide-rail-resizing * {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 4px;
+  gap: calc(4px * var(--rot-scale, 1));
   padding: 0;
   /* One shared height keeps every card on the same baseline. */
-  height: 132px;
+  height: calc(132px * var(--rot-scale, 1));
   box-sizing: border-box;
   border: none;
   background: none;
+  flex-shrink: 0;
 }
 
 /* The card area sits above a small type caption, so AP, OR, 1/4 AP and TEXT
@@ -8901,7 +8965,7 @@ body.guide-rail-resizing * {
    plates, this is plain type. */
 .rot-slot-type {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 0.46rem;
+  font-size: calc(0.46rem * var(--rot-scale, 1));
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #6f6a63;
@@ -8916,8 +8980,8 @@ body.guide-rail-resizing * {
 /* The placeholder an empty slot shows: the plate face, dimmed, so it reads as
    "no card yet" rather than as art. */
 .rot-slot.is-empty .rot-slot-body {
-  width: 62px;
-  height: 82px;
+  width: calc(62px * var(--rot-scale, 1));
+  height: calc(82px * var(--rot-scale, 1));
   padding-top: 0;
   border: 1px dashed rgba(181, 181, 179, 0.16);
   box-sizing: border-box;
@@ -8936,9 +9000,9 @@ body.guide-rail-resizing * {
 
 /* A text slot is a note chip: wider than one card, with room to read. */
 .rot-slot.is-text .rot-slot-body {
-  width: 132px;
-  min-height: 81px;
-  padding: 8px 10px;
+  width: calc(132px * var(--rot-scale, 1));
+  min-height: calc(81px * var(--rot-scale, 1));
+  padding: calc(8px * var(--rot-scale, 1)) calc(10px * var(--rot-scale, 1));
   align-items: center;
   justify-content: flex-start;
   background: rgba(74, 119, 201, 0.18);
@@ -8949,7 +9013,7 @@ body.guide-rail-resizing * {
 
 .rot-slot-text {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
-  font-size: 0.58rem;
+  font-size: calc(0.58rem * var(--rot-scale, 1));
   line-height: 1.45;
   color: #DCE6F5;
   text-align: left;
@@ -8963,31 +9027,31 @@ body.guide-rail-resizing * {
 /* Either/or: both cards shrink and overlap, so the pair reads as one slot while
    the back card still peeks out from behind the front one. The stack is exactly
    as wide as the two cards it holds, so the 5px gap to its neighbours stays even. */
-.rot-slot.is-or .rot-slot-body { width: 78px; justify-content: flex-start; }
-.rot-slot.is-double-or .rot-slot-body { width: 88px; justify-content: flex-start; }
-.rot-or-stack { position: relative; width: 78px; height: 86px; }
-.rot-or-stack.is-double { width: 88px; height: 92px; }
+.rot-slot.is-or .rot-slot-body { width: calc(78px * var(--rot-scale, 1)); justify-content: flex-start; }
+.rot-slot.is-double-or .rot-slot-body { width: calc(88px * var(--rot-scale, 1)); justify-content: flex-start; }
+.rot-or-stack { position: relative; width: calc(78px * var(--rot-scale, 1)); height: calc(86px * var(--rot-scale, 1)); }
+.rot-or-stack.is-double { width: calc(88px * var(--rot-scale, 1)); height: calc(92px * var(--rot-scale, 1)); }
 .rot-or-stack > .rot-card:not(.is-behind):not(.is-mid) { position: absolute; left: 0; bottom: 0; z-index: 3; }
-.rot-or-stack > .rot-card { height: 66px; }
+.rot-or-stack > .rot-card { height: calc(66px * var(--rot-scale, 1)); }
 .rot-card.is-mid {
   position: absolute;
-  left: 18px;
-  bottom: 13px;
+  left: calc(18px * var(--rot-scale, 1));
+  bottom: calc(13px * var(--rot-scale, 1));
   z-index: 2;
   opacity: 0.95;
   filter: brightness(0.85);
 }
 .rot-card.is-behind {
   position: absolute;
-  left: 27px;
-  bottom: 20px;
+  left: calc(27px * var(--rot-scale, 1));
+  bottom: calc(20px * var(--rot-scale, 1));
   z-index: 1;
   opacity: 0.95;
   filter: brightness(0.7);
 }
 .rot-or-stack.is-double .rot-card.is-behind {
-  left: 36px;
-  bottom: 26px;
+  left: calc(36px * var(--rot-scale, 1));
+  bottom: calc(26px * var(--rot-scale, 1));
 }
 
 /* A card is its art. The box keeps a fixed height so every card in a round sits
@@ -8996,7 +9060,7 @@ body.guide-rail-resizing * {
   display: block;
   flex: none;
   position: relative;
-  height: 84px;
+  height: calc(84px * var(--rot-scale, 1));
   aspect-ratio: 288 / 376;
 }
 
@@ -9027,7 +9091,7 @@ body.guide-rail-resizing * {
 /* The Ultimate plate is opaque in the middle, so the art is drawn ON TOP of it,
    clipped to the plate's inner window (x 12–172, y 23–294 of a 183×315 card). */
 .rot-card.is-ultimate {
-  height: 126px;
+  height: calc(126px * var(--rot-scale, 1));
   aspect-ratio: 183 / 315;
 }
 
@@ -9082,8 +9146,8 @@ body.guide-rail-resizing * {
 .rot-card > .rot-tag-plate {
   position: absolute;
   left: 0;
-  top: 6px;
-  height: 13px;
+  top: calc(6px * var(--rot-scale, 1));
+  height: calc(13px * var(--rot-scale, 1));
   width: auto;
   z-index: 4;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65));
@@ -9091,23 +9155,62 @@ body.guide-rail-resizing * {
 }
 
 /* 6px top + 13px tall + 5px gap = 24px. */
-/* 6px top + 13px tall + 5px gap = 24px. */
-.rot-card.has-badge > .rot-tag-plate.is-plaque { top: 24px; }
+.rot-card.has-badge > .rot-tag-plate.is-plaque { top: calc(24px * var(--rot-scale, 1)); }
+
+/* The tag plate: the blank ribbon with the tag's words on it, so the same art
+   carries "AP Free", "Precast" or whatever the author types. It never leaves the
+   card: the plate is capped at the card's width and the words shrink to fit. */
+.rot-card > .rot-tag-plate.is-text {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  /* The plate never leaves the card: it is capped at the card's width, and the
+     words shrink to fit rather than spilling onto the next card. An empty tag
+     still shows a short stretch of ribbon, so the tag is visible. */
+  min-width: min(calc(24px * var(--rot-scale, 1)), 100%);
+  max-width: 100%;
+  height: calc(13px * var(--rot-scale, 1));
+  padding: 0 calc(6px * var(--rot-scale, 1)) 0 calc(5px * var(--rot-scale, 1));
+  box-sizing: border-box;
+  font-family: var(--serif-font);
+  font-size: calc(9px * var(--rot-scale, 1));
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #FFFFFF;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.rot-card > .rot-tag-plate.is-text > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  filter: none;
+}
+.rot-card > .rot-tag-plate.is-text > .rot-tag-plate-text {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* An Ultimate card is an arch, so its top corner is empty: the plate drops to
    where the art begins, the way the plan sheets draw it. */
-.rot-card.is-ultimate > .rot-tag-plate { top: 30px; }
+.rot-card.is-ultimate > .rot-tag-plate { top: calc(30px * var(--rot-scale, 1)); }
 /* 30px top + 13px tall + 5px gap = 48px. */
-.rot-card.is-ultimate.has-badge > .rot-tag-plate.is-plaque { top: 48px; }
+.rot-card.is-ultimate.has-badge > .rot-tag-plate.is-plaque { top: calc(48px * var(--rot-scale, 1)); }
 
 /* A Tuning slot keeps the AP box as a text box; the tuning card shrinks into
    its bottom-right corner so the note and the art never overlap. */
-.rot-slot.is-tuning .rot-slot-body { width: 62px; justify-content: center; }
+.rot-slot.is-tuning .rot-slot-body { width: calc(62px * var(--rot-scale, 1)); justify-content: center; }
 .rot-slot-tuning {
   position: relative;
   display: block;
-  width: 62px;
-  height: 81px;
+  width: calc(62px * var(--rot-scale, 1));
+  height: calc(81px * var(--rot-scale, 1));
   box-sizing: border-box;
   border: 1px solid rgba(237, 125, 49, 0.55);
   background: rgba(0, 0, 0, 0.35);
@@ -9115,12 +9218,13 @@ body.guide-rail-resizing * {
 }
 .rot-slot-tuning-note {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
+  top: calc(4px * var(--rot-scale, 1));
+  left: calc(4px * var(--rot-scale, 1));
+  right: calc(4px * var(--rot-scale, 1));
   /* The extra reserve keeps long notes clear of the corner card. */
-  bottom: calc(4px + var(--tuning-reserve, 0px));
+  bottom: calc((4px + var(--tuning-reserve, 0px)) * var(--rot-scale, 1));
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: calc(0.6rem * var(--rot-scale, 1));
   line-height: 1.25;
   color: #ECE5D9;
   text-align: left;
@@ -9134,19 +9238,19 @@ body.guide-rail-resizing * {
 .rot-slot-tuning-note.is-empty { display: none; }
 .rot-slot-tuning-card {
   position: absolute;
-  right: 3px;
-  bottom: 3px;
+  right: calc(3px * var(--rot-scale, 1));
+  bottom: calc(3px * var(--rot-scale, 1));
   z-index: 1;
 }
 .rot-slot-tuning-card .rot-card {
-  height: 30px;
+  height: calc(30px * var(--rot-scale, 1));
 }
 .rot-slot.is-tuning .rot-slot-type { color: #ED7D31; }
 
 /* A quarter-size (LB) card is drawn at a quarter of the normal area. The slot
    keeps no padding, so the 5px gap to its neighbours stays even. */
 .rot-slot.is-lb .rot-slot-body { padding: 0; }
-.rot-card.is-lb { height: 42px; }
+.rot-card.is-lb { height: calc(42px * var(--rot-scale, 1)); }
 
 /* ---- bracket callouts ---- */
 
@@ -9154,7 +9258,9 @@ body.guide-rail-resizing * {
   grid-column: 2;
   grid-row: 3;
   position: relative;
-  margin-top: 2px;
+  margin-top: calc(2px * var(--rot-scale, 1));
+  width: max-content;
+  min-width: 100%;
 }
 
 /* One rail per round: the SVG paths are measured from the cards down to each
@@ -9183,10 +9289,10 @@ body.guide-rail-resizing * {
 
 .rot-annotation-text {
   display: inline-block;
-  max-width: 340px;
+  max-width: calc(340px * var(--rot-scale, 1));
   padding: 0 2px;
   font-family: var(--main-font-family);
-  font-size: 0.72rem;
+  font-size: calc(0.72rem * var(--rot-scale, 1));
   line-height: 1.4;
   color: #F0E6D2;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
@@ -9353,29 +9459,29 @@ body.guide-rail-resizing * {
 
   .rot-rounds { gap: 16px; }
   .rot-round { column-gap: 7px; }
-  .rot-round-no { font-size: 1.2rem; padding: 0 7px 1px 6px; }
-  .rot-round-note { font-size: 0.68rem; }
+  .rot-round-no { font-size: calc(1.2rem * var(--rot-scale, 1)); padding: 0 7px 1px 6px; }
+  .rot-round-note { font-size: calc(0.68rem * var(--rot-scale, 1)); }
 
   /* Cards scale down together so a full round still fits one row. */
-  .rot-slot { height: 108px; }
-  .rot-card { height: 72px; }
-  .rot-card.is-ultimate { height: 108px; }
-  .rot-slot.is-empty .rot-slot-body { width: 52px; height: 68px; }
-  .rot-slot.is-text .rot-slot-body { width: 96px; min-height: 68px; padding: 6px 8px; }
-  .rot-slot-text { font-size: 0.52rem; line-height: 1.4; }
-  .rot-slot.is-or .rot-slot-body { width: 66px; }
-  .rot-slot.is-double-or .rot-slot-body { width: 74px; }
-  .rot-or-stack { width: 66px; height: 72px; }
-  .rot-or-stack.is-double { width: 74px; height: 78px; }
-  .rot-or-stack > .rot-card { height: 56px; }
-  .rot-card.is-mid { left: 15px; bottom: 11px; }
-  .rot-card.is-behind { left: 23px; bottom: 16px; }
-  .rot-or-stack.is-double .rot-card.is-behind { left: 30px; bottom: 22px; }
-  .rot-card.is-lb { height: 36px; }
-  .rot-slot.is-tuning .rot-slot-body { width: 52px; }
-  .rot-slot-tuning { width: 52px; height: 68px; }
-  .rot-slot-tuning-note { top: 3px; left: 3px; right: 3px; bottom: calc(3px + var(--tuning-reserve, 0px)); }
-  .rot-slot-tuning-card .rot-card { height: 30px; }
+  .rot-slot { height: calc(108px * var(--rot-scale, 1)); }
+  .rot-card { height: calc(72px * var(--rot-scale, 1)); }
+  .rot-card.is-ultimate { height: calc(108px * var(--rot-scale, 1)); }
+  .rot-slot.is-empty .rot-slot-body { width: calc(52px * var(--rot-scale, 1)); height: calc(68px * var(--rot-scale, 1)); }
+  .rot-slot.is-text .rot-slot-body { width: calc(96px * var(--rot-scale, 1)); min-height: calc(68px * var(--rot-scale, 1)); padding: calc(6px * var(--rot-scale, 1)) calc(8px * var(--rot-scale, 1)); }
+  .rot-slot-text { font-size: calc(0.52rem * var(--rot-scale, 1)); line-height: 1.4; }
+  .rot-slot.is-or .rot-slot-body { width: calc(66px * var(--rot-scale, 1)); }
+  .rot-slot.is-double-or .rot-slot-body { width: calc(74px * var(--rot-scale, 1)); }
+  .rot-or-stack { width: calc(66px * var(--rot-scale, 1)); height: calc(72px * var(--rot-scale, 1)); }
+  .rot-or-stack.is-double { width: calc(74px * var(--rot-scale, 1)); height: calc(78px * var(--rot-scale, 1)); }
+  .rot-or-stack > .rot-card { height: calc(56px * var(--rot-scale, 1)); }
+  .rot-card.is-mid { left: calc(15px * var(--rot-scale, 1)); bottom: calc(11px * var(--rot-scale, 1)); }
+  .rot-card.is-behind { left: calc(23px * var(--rot-scale, 1)); bottom: calc(16px * var(--rot-scale, 1)); }
+  .rot-or-stack.is-double .rot-card.is-behind { left: calc(30px * var(--rot-scale, 1)); bottom: calc(22px * var(--rot-scale, 1)); }
+  .rot-card.is-lb { height: calc(36px * var(--rot-scale, 1)); }
+  .rot-slot.is-tuning .rot-slot-body { width: calc(52px * var(--rot-scale, 1)); }
+  .rot-slot-tuning { width: calc(52px * var(--rot-scale, 1)); height: calc(68px * var(--rot-scale, 1)); }
+  .rot-slot-tuning-note { top: calc(3px * var(--rot-scale, 1)); left: calc(3px * var(--rot-scale, 1)); right: calc(3px * var(--rot-scale, 1)); bottom: calc((3px + var(--tuning-reserve, 0px)) * var(--rot-scale, 1)); }
+  .rot-slot-tuning-card .rot-card { height: calc(30px * var(--rot-scale, 1)); }
 }
 
 /* ================= JSON MODAL ================= */

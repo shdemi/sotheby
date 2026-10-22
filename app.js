@@ -6216,6 +6216,17 @@ let specialCards = [];       // ["images/skills/760001.png", ...]
 
 /** The user's rotation list. Presets are added to it, and removed from it. */
 const ROTATION_LIST_STORAGE_KEY = "r1999_rotation_list_v1";
+const ROTATION_SCALE_STORAGE_KEY = "r1999_rotation_scale_v1";
+
+let rotationRoundsScale = 1.0;
+try {
+  const savedRotScale = parseFloat(localStorage.getItem(ROTATION_SCALE_STORAGE_KEY));
+  if (Number.isFinite(savedRotScale) && savedRotScale >= 0.4 && savedRotScale <= 1.5) {
+    rotationRoundsScale = savedRotScale;
+  }
+} catch (e) {
+  rotationRoundsScale = 1.0;
+}
 
 /** Team-archetype tags a build or a rotation can carry. */
 const ROTATION_ARCHETYPES = [
@@ -7174,9 +7185,18 @@ const ROT_LEGACY_SLOT_TAGS = { free: "ap-free", precast: "precast" };
  * carry both AP Free and Precast. `image` is the shipped plate art.
  */
 const ROT_SLOT_TAGS = [
-  { key: "ap-free", label: "AP Free", kind: "badge", image: "images/card_modulo/Tag_APFree.png" },
-  { key: "precast", label: "Precast", kind: "plaque", image: "images/card_modulo/Tag_Precast.png" },
+  { key: "ap-free", label: "AP Free", kind: "badge", image: "images/card_modulo/Tag_Empty.png" },
+  { key: "precast", label: "Precast", kind: "plaque", image: "images/card_modulo/Tag_Empty.png" },
+  // The blank plaque the author types into.
+  { key: "custom", label: "Custom", kind: "plaque", image: "images/card_modulo/Tag_Empty.png", text: true },
 ];
+
+/** The words a tag's plate draws: the typed text for the blank tag, else its name. */
+function rotationTagLabel(tag, slotTagText) {
+  if (!tag) return "";
+  if (tag.key === "custom") return String(slotTagText || "");
+  return tag.label;
+}
 
 /**
  * The one card frame: a skill-3 card is drawn in the arched Ultimate plate.
@@ -7196,6 +7216,8 @@ const ROT_ULTIMATE_FRAME = {
 const ROT_CARD_SURFACES = [
   { key: "ramona", label: "Ramona", image: "images/card_modulo/surface/Ramona_Normal_Card.png" },
   { key: "ramona-ultimate", label: "Ramona Ultimate", image: "images/card_modulo/surface/Ramona_Ultimate_Card.png" },
+  { key: "conduit", label: "Conduit", image: "images/card_modulo/surface/Conduit.png" },
+  { key: "conduit-ultimate", label: "Conduit Ultimate", image: "images/card_modulo/surface/Conduit_Ultimate.png" },
 ];
 
 function rotationCardSurface(key) {
@@ -7211,9 +7233,12 @@ function rotationCardIsUltimate(card) {
   return Number(card.skill) === 3;
 }
 
-/** One tag's plate: the shipped art. */
-function rotationTagPlateHtml(tag) {
-  return `<img class="rot-tag-plate is-${tag.kind}" src="${escapeHtml(tag.image)}" alt="${escapeHtml(tag.label)}" />`;
+/** One tag's plate: the blank ribbon with the tag's words laid on it. */
+function rotationTagPlateHtml(tag, text = "") {
+  return `<span class="rot-tag-plate is-${tag.kind} is-text" data-tag="${escapeHtml(tag.key)}" title="${escapeHtml(text)}">
+      <img src="${escapeHtml(tag.image)}" alt="" />
+      <span class="rot-tag-plate-text">${escapeHtml(text)}</span>
+    </span>`;
 }
 
 function rotationSlotLayout(slot) {
@@ -7281,10 +7306,12 @@ function rotationSlotHtml(slot) {
   const infos = tags.map(rotationTagInfo).filter(Boolean);
   const badge = infos.find((tag) => tag.kind === "badge");
   const plaques = infos.filter((tag) => tag.kind === "plaque");
+  const tagText = typeof slot.tagText === "string" ? slot.tagText : "";
   // Both plates sit on the slot's first card, badge first, so the plaque lands
-  // 3px under it.
+  // 3px under it. Every tag draws its words on the blank ribbon.
   const platesHtml =
-    (badge ? rotationTagPlateHtml(badge) : "") + plaques.map(rotationTagPlateHtml).join("");
+    (badge ? rotationTagPlateHtml(badge, rotationTagLabel(badge, tagText)) : "") +
+    plaques.map((tag) => rotationTagPlateHtml(tag, rotationTagLabel(tag, tagText))).join("");
 
   // A normal AP card says nothing a card does not already say, a 1/4 AP card is
   // already visibly smaller, and an OR slot's overlapping cards already say
@@ -7372,6 +7399,29 @@ function packAnnotationLanes(notes) {
     lanes[lane].push([note.from, note.to]);
     return lane;
   });
+}
+
+/**
+ * Shrinks a tag's words until its plate fits inside the card. The plate is
+ * capped at the card's width, so a long tag gets smaller type instead of
+ * spilling off the art.
+ */
+function fitRotationTagPlates(root = document) {
+  for (const plate of root.querySelectorAll(".rot-card > .rot-tag-plate.is-text")) {
+    const text = plate.querySelector(".rot-tag-plate-text");
+    const card = plate.parentElement;
+    if (!text || !card) continue;
+    plate.style.fontSize = "";
+    const style = getComputedStyle(plate);
+    const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    const available = card.clientWidth;
+    let size = parseFloat(style.fontSize) || 9;
+    // Stop at 6px: below that the words stop reading, so the plate clips instead.
+    while (size > 6 && text.scrollWidth + pad > available) {
+      size -= 0.5;
+      plate.style.fontSize = `${size}px`;
+    }
+  }
 }
 
 /**
@@ -7734,15 +7784,66 @@ function renderRotationsDetail() {
     }
 
     <section class="rot-block">
-      ${guideSectionHeader("rotations.rounds")}
+      ${guideSectionHeader(
+        "rotations.rounds",
+        `<div class="rot-scale-control">
+           <span class="rot-scale-label">${escapeHtml(t("common.size") || "Size")}:</span>
+           <input type="range" class="rot-scale-slider" id="rot-rounds-scale-slider" min="0.4" max="1.2" step="0.05" value="${rotationRoundsScale}" title="Rounds scale" />
+           <span class="rot-scale-val" id="rot-rounds-scale-val">${Math.round(rotationRoundsScale * 100)}%</span>
+           <button type="button" class="rot-scale-reset" id="rot-rounds-scale-reset" title="Reset scale">100%</button>
+         </div>`
+      )}
       ${roundsBodyHtml}
     </section>
   `;
+
+  // Apply current scale to the container
+  const roundsBlock = host.querySelector(".rot-rounds-body") || host.querySelector(".rot-rounds-column");
+  if (roundsBlock) {
+    roundsBlock.style.setProperty("--rot-scale", String(rotationRoundsScale));
+  }
+
+  const slider = host.querySelector("#rot-rounds-scale-slider");
+  const scaleVal = host.querySelector("#rot-rounds-scale-val");
+  const resetBtn = host.querySelector("#rot-rounds-scale-reset");
+
+  const updateScale = (newScale) => {
+    rotationRoundsScale = newScale;
+    try {
+      localStorage.setItem(ROTATION_SCALE_STORAGE_KEY, String(newScale));
+    } catch (e) {}
+
+    if (roundsBlock) {
+      roundsBlock.style.setProperty("--rot-scale", String(newScale));
+    }
+    if (slider) slider.value = String(newScale);
+    if (scaleVal) scaleVal.textContent = `${Math.round(newScale * 100)}%`;
+
+    requestAnimationFrame(() => {
+      fitRotationTuningNotes(host);
+      fitRotationTagPlates(host);
+      drawRotationConnectors(host);
+      drawRoundNoteRail(host);
+    });
+  };
+
+  if (slider) {
+    slider.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value);
+      if (Number.isFinite(val)) updateScale(val);
+    });
+  }
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      updateScale(1.0);
+    });
+  }
 
   // The tuning notes only have a size once they are in the document, and the
   // callout connectors need the final card widths.
   requestAnimationFrame(() => {
     fitRotationTuningNotes(host);
+    fitRotationTagPlates(host);
     drawRotationConnectors(host);
     drawRoundNoteRail(host);
   });
@@ -7752,6 +7853,7 @@ function renderRotationsDetail() {
 window.addEventListener("resize", () => {
   const modal = document.getElementById("rotations-modal");
   if (modal && modal.style.display === "flex") {
+    fitRotationTagPlates();
     drawRotationConnectors();
     drawRoundNoteRail();
   }

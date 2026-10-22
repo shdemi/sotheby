@@ -1,4 +1,4 @@
-/* Sotheby's Mansion — Data Editor
+﻿/* Sotheby's Mansion â€” Data Editor
    Reuses the app's palette and font so it feels like the same tool. */
 
 @font-face {
@@ -746,6 +746,17 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 .guide-rounds-body.has-round-notes {
   padding-right: 150px;
 }
+
+/* On a narrow window the 150px rail would leave the cards too little room, so
+   the brackets sit closer and the labels wrap into a narrower column. */
+@media (max-width: 900px) {
+  .guide-rounds-body.has-round-notes { padding-right: 96px; }
+  .guide-round-note-label { font-size: 10px; }
+}
+@media (max-width: 560px) {
+  .guide-rounds-body.has-round-notes { padding-right: 64px; }
+  .guide-round-note-label { font-size: 9px; }
+}
 .guide-rounds-column { min-width: 0; }
 
 /* The rail overlays the whole rounds block, so the brackets can be measured
@@ -1110,6 +1121,48 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
 /* 6px top + 13px tall + 5px gap = 24px. */
 .guide-slot-card.has-badge > .guide-tag-plate.is-plaque { top: 24px; }
 
+/* The tag plate: the blank ribbon with the tag's words on it, so the same art
+   carries "AP Free", "Precast" or whatever the author types. It never leaves the
+   card: the plate is capped at the card's width and the words shrink to fit. */
+.guide-slot-card > .guide-tag-plate.is-text {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  /* The plate never leaves the card: it is capped at the card's width, and the
+     words shrink to fit rather than spilling onto the next card. An empty tag
+     still shows a short stretch of ribbon, so the tag is visible. */
+  min-width: min(24px, 100%);
+  max-width: 100%;
+  height: 13px;
+  padding: 0 6px 0 5px;
+  box-sizing: border-box;
+  font-family: var(--serif);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .01em;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .45);
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* The art is the plate: it stretches behind the text at whatever width that
+   text needs, instead of keeping the blank PNG's 66px. */
+.guide-slot-card > .guide-tag-plate.is-text > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  filter: none;
+}
+.guide-slot-card > .guide-tag-plate.is-text > .guide-tag-plate-text {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* An Ultimate card is an arch, so its top corner is empty: the plate drops to
    where the art begins, matching the published plan. */
 .guide-slot-card.is-ultimate > .guide-tag-plate { top: 30px; }
@@ -1117,6 +1170,16 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
 .guide-slot-card.is-ultimate.has-badge > .guide-tag-plate.is-plaque { top: 48px; }
 
 .guide-slot-note-input { width: 100%; font-size: 11px; }
+/* The free-text tag's words, typed under the slot so the plate on the card stays
+   the preview. */
+.guide-tag-text-input {
+  width: 100%;
+  min-width: 90px;
+  margin-top: 4px;
+  font-family: var(--serif);
+  font-size: 11px;
+  padding: 2px 5px;
+}
 .guide-slot-remove-slot {
   position: absolute;
   top: 2px;
@@ -1343,6 +1406,32 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
 .guide-tag-tile:hover { border-color: var(--gold-soft); }
 .guide-tag-sample { font-size: 9px; font-weight: 700; white-space: nowrap; }
 .guide-tag-sample.is-image { height: 13px; width: auto; display: block; }
+/* The free-text tile: the blank plate with sample words on it, so the tile does
+   not read as a missing image. */
+.guide-tag-sample.is-text {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 13px;
+  min-width: 45px;
+  padding: 0 7px 0 9px;
+  box-sizing: border-box;
+  font-family: var(--serif);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .45);
+}
+.guide-tag-sample.is-text > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.guide-tag-sample.is-text > span { position: relative; }
 .guide-tag-key { font-family: var(--mono); font-size: 9px; color: var(--text-muted); }
 
 /* Surface tiles: the surface art itself is the sample, capped to a fixed height
@@ -1430,7 +1519,7 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
   flex: 1;
   min-width: 0;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--gold);
@@ -1452,6 +1541,7 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
 }
 .float-hand-close:hover { color: var(--bad); }
 .float-hand-body { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
+
 /* Edge and corner grips: every side can be dragged to resize the panel. */
 .fh-grip { position: absolute; z-index: 2; touch-action: none; }
 .fh-n, .fh-s { left: 10px; right: 10px; height: 8px; cursor: ns-resize; }
@@ -1484,7 +1574,7 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
   gap: 6px;
   margin: 0 0 5px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--gold);
@@ -1502,7 +1592,7 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--gol
 .hand-group-title {
   margin: 12px 0 0;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--gold);

@@ -111,8 +111,8 @@ const slotTags = (roundIndex, slotIndex) =>
       const slot = round?.querySelectorAll(".guide-slot-editor")[slotIndex];
       if (!slot) return null;
       return {
-        plates: [...slot.querySelectorAll(".guide-tag-plate")].map((n) => n.getAttribute("alt")),
-        plaques: [...slot.querySelectorAll(".guide-tag-plaque")].map((n) => n.textContent),
+        // Every plate draws its words on the blank ribbon, so the text is the label.
+        plates: [...slot.querySelectorAll(".guide-tag-plate .guide-tag-plate-text")].map((n) => n.textContent),
         hasTags: slot.className.includes("has-tags"),
       };
     },
@@ -199,7 +199,7 @@ check(
   `${JSON.stringify(tagged)} -> ${JSON.stringify(untagged)}`
 );
 
-// Precast must draw too, and stack 5px under the AP Free badge.
+// Both tags draw on the blank ribbon, and the plaque stacks 5px under the badge.
 await dragTo(0, '#float-hand .guide-tag-tile[data-tag="ap-free"]', ".guide-slot-editor");
 await page.waitForTimeout(500);
 await dragTo(0, '#float-hand .guide-tag-tile[data-tag="precast"]', ".guide-slot-editor");
@@ -211,12 +211,22 @@ const both = await page.evaluate(() => {
   const cr = card.getBoundingClientRect();
   return [...card.querySelectorAll(":scope > .guide-tag-plate")].map((p) => {
     const r = p.getBoundingClientRect();
-    return { src: p.getAttribute("src").split("/").pop(), top: Math.round(r.top - cr.top), h: Math.round(r.height), w: Math.round(r.width) };
+    return {
+      text: p.querySelector(".guide-tag-plate-text")?.textContent || "",
+      top: Math.round(r.top - cr.top),
+      h: Math.round(r.height),
+      w: Math.round(r.width),
+    };
   });
 });
 check(
   "both plates are drawn",
   both && both.length === 2 && both.every((p) => p.w > 0 && p.h > 0),
+  JSON.stringify(both)
+);
+check(
+  "and they carry their own words on the blank ribbon",
+  both && both[0]?.text === "AP Free" && both[1]?.text === "Precast",
   JSON.stringify(both)
 );
 check(
@@ -313,11 +323,8 @@ console.log("\n=== a surface dragged from Extra decorates one card ===");
 const surfaceTiles = await page.evaluate(() =>
   [...document.querySelectorAll("#float-hand .guide-surface-tile")].map((t) => t.dataset.surface)
 );
-check(
-  "every registered surface is offered",
-  ["ramona", "ramona-ultimate"].every((k) => surfaceTiles.includes(k)),
-  JSON.stringify(surfaceTiles)
-);
+check("the Ramona surface is offered", surfaceTiles.includes("ramona"), JSON.stringify(surfaceTiles));
+check("Ramona Ultimate is no longer offered", !surfaceTiles.includes("ramona-ultimate"), JSON.stringify(surfaceTiles));
 const surfacesBefore = await page.evaluate(() =>
   [...document.querySelectorAll("#rotation-detail .guide-round-editor")[0].querySelectorAll(".guide-slot-card")]
     .map((c) => c.dataset.surface)
@@ -348,6 +355,103 @@ const surfaceImg = await page.evaluate(() =>
   !!document.querySelector("#rotation-detail .guide-round-editor .guide-card-surface")
 );
 check("the surface is drawn over the card", surfaceImg, String(surfaceImg));
+
+console.log("\n=== Conduit is offered as a second surface ===");
+check("the Conduit surface is offered", surfaceTiles.includes("conduit"), JSON.stringify(surfaceTiles));
+
+console.log("\n=== the free-text tag carries the author's words ===");
+await page.evaluate(() => {
+  const round = document.querySelectorAll("#rotation-detail .guide-round-editor")[0];
+  const tile = document.querySelector('#float-hand .guide-tag-tile[data-tag="custom"]');
+  const slot = round.querySelector(".guide-slot-editor");
+  const data = new DataTransfer();
+  const fire = (n, t) => n.dispatchEvent(new DragEvent(t, { bubbles: true, cancelable: true, dataTransfer: data }));
+  fire(tile, "dragstart");
+  fire(slot, "dragover");
+  fire(slot, "drop");
+  fire(tile, "dragend");
+});
+await page.waitForTimeout(700);
+const tagTextInput = await page.$("#rotation-detail .guide-slot-editor .guide-tag-text-input");
+check("a text box appears under the slot", !!tagTextInput);
+if (tagTextInput) {
+  await tagTextInput.fill("Repeat loop");
+  await tagTextInput.press("Enter");
+  await page.waitForTimeout(600);
+}
+/** The plate on the slot that carries the free-text input. */
+const readTextTagPlate = () =>
+  page.evaluate(() => {
+    const plate = document.querySelector('#rotation-detail .guide-slot-card > .guide-tag-plate[data-tag="custom"]');
+    if (!plate) return null;
+    const r = plate.getBoundingClientRect();
+    const card = plate.parentElement.getBoundingClientRect();
+    return {
+      text: plate.querySelector(".guide-tag-plate-text")?.textContent,
+      src: plate.querySelector("img")?.getAttribute("src").split("/").pop(),
+      h: Math.round(r.height),
+      w: Math.round(r.width),
+      cardW: Math.round(card.width),
+      size: parseFloat(getComputedStyle(plate).fontSize),
+      font: getComputedStyle(plate).fontFamily.split(",")[0],
+    };
+  });
+const customPlate = await readTextTagPlate();
+check(
+  "the plate draws the typed words on the blank tag art",
+  customPlate && customPlate.text === "Repeat loop" && customPlate.src === "Tag_Empty.png",
+  JSON.stringify(customPlate)
+);
+check(
+  "the plate stays inside the card",
+  customPlate && customPlate.w <= customPlate.cardW,
+  JSON.stringify(customPlate)
+);
+check(
+  "and it keeps the plate's height and serif",
+  customPlate && customPlate.h === 13 && /Regular/.test(customPlate.font),
+  JSON.stringify(customPlate)
+);
+// A long tag must shrink rather than spill: the plate is capped at the card and
+// the words lose a point of size until they fit.
+const longInput = await page.$("#rotation-detail .guide-slot-editor .guide-tag-text-input");
+if (longInput) {
+  await longInput.fill("asdasdasdasdasdasdasdas");
+  await longInput.press("Enter");
+  await page.waitForTimeout(700);
+}
+const longPlate = await readTextTagPlate();
+check(
+  "a long tag shrinks to stay inside the card",
+  longPlate && longPlate.w <= longPlate.cardW && longPlate.size < 9,
+  JSON.stringify(longPlate)
+);
+
+console.log("\n=== Other offers the ownerless cards ===");
+const otherCards = await page.evaluate(() =>
+  [...document.querySelectorAll("#float-hand .special-card-grid .guide-hand-card")].map((c) => c.dataset.other)
+);
+check(
+  "Any, Move, Generate, Remove and Refresh are offered",
+  ["any", "move", "generate", "remove", "refresh"].every((key) => otherCards.includes(key)),
+  JSON.stringify(otherCards)
+);
+await page.evaluate(() => {
+  const round = document.querySelectorAll("#rotation-detail .guide-round-editor")[0];
+  const tile = document.querySelector('#float-hand .guide-hand-card[data-other="move"]');
+  const slot = round.querySelector(".guide-slot-editor");
+  const data = new DataTransfer();
+  const fire = (n, t) => n.dispatchEvent(new DragEvent(t, { bubbles: true, cancelable: true, dataTransfer: data }));
+  fire(tile, "dragstart");
+  fire(slot, "dragover");
+  fire(slot, "drop");
+  fire(tile, "dragend");
+});
+await page.waitForTimeout(700);
+const otherArt = await page.evaluate(() =>
+  document.querySelector("#rotation-detail .guide-slot-editor .guide-slot-card .guide-card-art")?.getAttribute("src")
+);
+check("dropping Move fills the slot with its art", otherArt === "../images/card_modulo/Move.png", String(otherArt));
 
 console.log("\n=== no page errors ===");
 check("the page stayed clean", pageErrors.length === 0, pageErrors.join(" | "));
