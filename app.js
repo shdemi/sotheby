@@ -7787,7 +7787,7 @@ function renderRotationsDetail() {
       ${guideSectionHeader(
         "rotations.rounds",
         `<div class="rot-scale-control">
-           <span class="rot-scale-label">${escapeHtml(t("common.size") || "Size")}:</span>
+           <span class="rot-scale-label">Size:</span>
            <input type="range" class="rot-scale-slider" id="rot-rounds-scale-slider" min="0.4" max="1.2" step="0.05" value="${rotationRoundsScale}" title="Rounds scale" />
            <span class="rot-scale-val" id="rot-rounds-scale-val">${Math.round(rotationRoundsScale * 100)}%</span>
            <button type="button" class="rot-scale-reset" id="rot-rounds-scale-reset" title="Reset scale">100%</button>
