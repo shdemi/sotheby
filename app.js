@@ -90,7 +90,7 @@ function localizeText(val) {
   if (typeof val === "string") {
     if (val.startsWith("Recommended Portrait:")) {
       const p = val.replace("Recommended Portrait:", "").trim();
-      if (currentLang === "cn") return `推荐塑造：${p}`;
+      if (currentLang === "cn") return `推荐心相：${p}`;
       if (currentLang === "vi") return `Portrait đề xuất: ${p}`;
       return val;
     }
