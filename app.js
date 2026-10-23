@@ -6230,9 +6230,20 @@ try {
 
 /** Team-archetype tags a build or a rotation can carry. */
 const ROTATION_ARCHETYPES = [
+  // Raid and Focused Flashback lead the list and never appear together.
+  "Raid", "Focused Flashback",
   "Burn", "HP Sacrifice", "Poison", "Ritual", "Rank Up", "Extra Action", "Bloodtithe",
   "Dynamo", "Inspiration", "Lingering Glow", "Shift", "Conduit", "Pursuit",
 ];
+
+/** Archetypes that exclude each other: a rotation carries at most one. */
+const EXCLUSIVE_ARCHETYPES = ["Raid", "Focused Flashback"];
+
+/** Each lead archetype's chip colour. */
+const ARCHETYPE_COLORS = {
+  Raid: "#F5E1C3",
+  "Focused Flashback": "#A5B9E7",
+};
 
 /** Bar colour per rarity, taken from the game's rarity palette. */
 const RARITY_COLORS = { 6: "#CB7820", 5: "#C8AF6C", 4: "#9E6BAD", 3: "#555E7F", 2: "#496441" };
@@ -6804,6 +6815,8 @@ function renderBuildsDetail() {
 
 let rotationsSelected = null;
 const rotationArchetypeFilter = new Set();
+/** The presets modal keeps its own archetype filter, so the two lists differ. */
+const rotationPresetArchetypeFilter = new Set();
 
 /** Rotation members accept the legacy `"Name"` shorthand and `{character, psychube}`. */
 function rotationMembers(rotation) {
@@ -6862,8 +6875,14 @@ function rotationRounds(rotation) {
 }
 
 function rotationArchetypes(rotation) {
-  if (Array.isArray(rotation.archetypes)) return rotation.archetypes.filter(Boolean);
-  return rotation.archetype ? [rotation.archetype] : [];
+  const list = Array.isArray(rotation.archetypes)
+    ? rotation.archetypes.filter(Boolean)
+    : rotation.archetype
+      ? [rotation.archetype]
+      : [];
+  // Raid and Focused Flashback lead the chips; the rest keep their order.
+  const lead = EXCLUSIVE_ARCHETYPES.filter((tag) => list.includes(tag));
+  return [...lead, ...list.filter((tag) => !lead.includes(tag))];
 }
 
 function rotationsVisible() {
@@ -6973,9 +6992,32 @@ function closeRotationsModal() {
 
 /* ---- Rotation presets: the bundled rotations, copied into the user's list ---- */
 
+/** Draws the archetype filter row inside the presets modal. */
+function renderRotationPresetFilters() {
+  const host = document.getElementById("rotation-presets-filters");
+  if (!host) return;
+  host.innerHTML = ROTATION_ARCHETYPES.map(
+    (tag) =>
+      `<button type="button" class="rotation-filter${rotationPresetArchetypeFilter.has(tag) ? " is-active" : ""}" data-tag="${escapeHtml(
+        tag
+      )}">${escapeHtml(tag)}</button>`
+  ).join("");
+
+  host.querySelectorAll(".rotation-filter").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const tag = btn.dataset.tag;
+      if (rotationPresetArchetypeFilter.has(tag)) rotationPresetArchetypeFilter.delete(tag);
+      else rotationPresetArchetypeFilter.add(tag);
+      renderRotationPresetFilters();
+      renderRotationPresets();
+    });
+  });
+}
+
 function openRotationPresetsModal() {
   const search = document.getElementById("rotation-presets-search");
   if (search) search.value = "";
+  renderRotationPresetFilters();
   renderRotationPresets();
   const modal = document.getElementById("rotation-presets-modal");
   if (modal) modal.style.display = "flex";
@@ -6994,13 +7036,21 @@ function renderRotationPresets() {
   const query = (searchEl ? searchEl.value : "").trim().toLowerCase();
 
   const filtered = rotationPresets.filter((preset) => {
+    // The archetype filter narrows first, so the search only has to look inside
+    // the presets that already match.
+    const presetArchetypes = rotationArchetypes(preset);
+    if (
+      rotationPresetArchetypeFilter.size > 0 &&
+      !presetArchetypes.some((tag) => rotationPresetArchetypeFilter.has(tag))
+    ) {
+      return false;
+    }
     if (!query) return true;
     const name = String(preset.name || preset.id || "").toLowerCase();
     if (name.includes(query)) return true;
     const tuning = String(preset.tuning || "").toLowerCase();
     if (tuning.includes(query)) return true;
-    const archetypes = rotationArchetypes(preset);
-    if (archetypes.some((tag) => tag.toLowerCase().includes(query))) return true;
+    if (presetArchetypes.some((tag) => tag.toLowerCase().includes(query))) return true;
     const members = rotationMembers(preset);
     if (
       members.some((member) => {
@@ -7224,13 +7274,35 @@ function rotationCardSurface(key) {
   return ROT_CARD_SURFACES.find((surface) => surface.key === key) || null;
 }
 
+/**
+ * Characters whose ultimate is not skill 3, mirroring the editor
+ * (`ULTIMATE_SKILLS` in editor/model.js). The card panel and the modal must
+ * agree, or the same plan draws two different shapes.
+ */
+const ROT_ULTIMATE_SKILLS = { Rhiannon: 4, Brume: 4, Kassandra: 5 };
+
+/** Whether a skill card belongs to a character's ultimate. */
+function rotationSkillIsUltimate(character, skill) {
+  const name = String(character || "");
+  const key = Object.keys(ROT_ULTIMATE_SKILLS).find((entry) => entry.toLowerCase() === name.toLowerCase());
+  if (key) return Number(skill) === ROT_ULTIMATE_SKILLS[key];
+  return Number(skill) === 3;
+}
+
 /** Skill 3 is the ultimate for every character; `frame` overrides either way. */
 function rotationCardIsUltimate(card) {
   if (!card) return false;
   if (card.frame === "ultimate") return true;
   if (card.frame === "normal") return false;
   if (card.special) return false;
-  return Number(card.skill) === 3;
+  return rotationSkillIsUltimate(card.character, card.skill);
+}
+
+/** A card's art: a special card is its own image, else the pinned icon wins. */
+function rotationCardArtSrc(card) {
+  if (!card) return "";
+  if (card.special) return card.special;
+  return card.icon || guideSkillIcon(resolveCharacterName(card.character) || card.character, card.skill);
 }
 
 /** One tag's plate: the blank ribbon with the tag's words laid on it. */
@@ -7262,16 +7334,14 @@ function rotationCardHtml(card, variant, plates = "", hasBadge = false) {
   const ultimate = rotationCardIsUltimate(card);
   const cls = ["rot-card"];
   if (ultimate) cls.push("is-ultimate");
-  if (variant === "lb") cls.push("is-lb");
+  // `variant` is "lb" for a quarter-size card, or "mid" / "behind" for the cards
+  // stacked behind an OR slot's front card.
+  if (variant) cls.push(`is-${variant}`);
   if (card.preferred) cls.push("is-preferred");
   if (hasBadge) cls.push("has-badge");
   const className = cls.join(" ");
 
-  const art =
-    card.special
-      ? escapeHtml(card.special)
-      : // A pinned icon wins: it keeps the exact variant the author picked.
-        escapeHtml(card.icon || guideSkillIcon(resolveCharacterName(card.character) || card.character, card.skill));
+  const art = escapeHtml(rotationCardArtSrc(card));
   const surface = rotationCardSurface(card.surface);
   const title = card.special
     ? ""
@@ -7341,17 +7411,11 @@ function rotationSlotHtml(slot) {
   }
 
   if (type === "double_or" || type === "or3" || (type === "or" && cards.length > 2)) {
+    // Every card goes through the same renderer, so a special card (Any, Move, …)
+    // keeps its art and an ultimate keeps its plate wherever it sits in the stack.
     const front = cards[0] ? rotationCardHtml(cards[0], "", platesHtml, !!badge) : "";
-    const mid = cards[1]
-      ? `<span class="rot-card is-mid" title="${escapeHtml(displayCharName(resolveCharacterName(cards[1].character) || cards[1].character))}"><img class="rot-card-art" src="${escapeHtml(
-          cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
-        )}" alt="" /></span>`
-      : "";
-    const behind = cards[2]
-      ? `<span class="rot-card is-behind" title="${escapeHtml(displayCharName(resolveCharacterName(cards[2].character) || cards[2].character))}"><img class="rot-card-art" src="${escapeHtml(
-          cards[2].icon || guideSkillIcon(cards[2].character, cards[2].skill)
-        )}" alt="" /></span>`
-      : "";
+    const mid = cards[1] ? rotationCardHtml(cards[1], "mid") : "";
+    const behind = cards[2] ? rotationCardHtml(cards[2], "behind") : "";
     return wrap(`<span class="rot-or-stack is-double">${front}${mid}${behind}</span>`, " is-or is-double-or");
   }
 
@@ -7359,11 +7423,7 @@ function rotationSlotHtml(slot) {
     // The second card peeks out behind the first: together they take the same
     // room as one normal card.
     const front = cards[0] ? rotationCardHtml(cards[0], "", platesHtml, !!badge) : "";
-    const behind = cards[1]
-      ? `<span class="rot-card is-behind" title="${escapeHtml(displayCharName(resolveCharacterName(cards[1].character) || cards[1].character))}"><img class="rot-card-art" src="${escapeHtml(
-          cards[1].icon || guideSkillIcon(cards[1].character, cards[1].skill)
-        )}" alt="" /></span>`
-      : "";
+    const behind = cards[1] ? rotationCardHtml(cards[1], "behind") : "";
     return wrap(`<span class="rot-or-stack">${front}${behind}</span>`, " is-or");
   }
 
@@ -7763,7 +7823,7 @@ function renderRotationsDetail() {
       ${
         archetypes.length
           ? `<div class="rot-hero-tags">${archetypes
-              .map((tag) => `<span class="rot-hero-tag">${escapeHtml(tag)}</span>`)
+              .map((tag) => `<span class="rot-hero-tag" data-archetype="${escapeHtml(tag)}">${escapeHtml(tag)}</span>`)
               .join("")}</div>`
           : ""
       }
@@ -8018,6 +8078,15 @@ function setupGuideListeners() {
 
     const presetsBtn = document.getElementById("rotations-presets-btn");
     if (presetsBtn) presetsBtn.addEventListener("click", openRotationPresetsModal);
+
+    const presetsClear = document.getElementById("rotation-presets-clear-filters");
+    if (presetsClear) {
+      presetsClear.addEventListener("click", () => {
+        rotationPresetArchetypeFilter.clear();
+        renderRotationPresetFilters();
+        renderRotationPresets();
+      });
+    }
 
     const presetsModal = document.getElementById("rotation-presets-modal");
     const presetsClose = document.getElementById("rotation-presets-btn-close");

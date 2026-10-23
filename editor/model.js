@@ -49,9 +49,20 @@ export const PSYCHUBE_RARITIES = ["6", "5"];
 
 /** Team-archetype tags a rotation may carry (mirrors app.js). */
 export const ROTATION_ARCHETYPES = [
+  // Raid and Focused Flashback lead the list and never appear together.
+  "Raid", "Focused Flashback",
   "Burn", "HP Sacrifice", "Poison", "Ritual", "Rank Up", "Extra Action", "Bloodtithe",
   "Dynamo", "Inspiration", "Lingering Glow", "Shift", "Conduit", "Pursuit",
 ];
+
+/** Archetypes that exclude each other: a rotation carries at most one. */
+export const EXCLUSIVE_ARCHETYPES = ["Raid", "Focused Flashback"];
+
+/** Each lead archetype's chip colour. */
+export const ARCHETYPE_COLORS = {
+  Raid: "#F5E1C3",
+  "Focused Flashback": "#A5B9E7",
+};
 
 /**
  * Slot layouts. "free" and "precast" are legacy values: they only ever changed
@@ -1325,8 +1336,13 @@ export class Model {
     const path = ["rotations", index, field];
 
     let payload = value;
-    if (field === "archetypes") payload = (Array.isArray(value) ? value : []).filter(Boolean);
-    else if (field === "notes") {
+    if (field === "archetypes") {
+      // The list is ordered, and the lead archetypes exclude each other.
+      const list = (Array.isArray(value) ? value : []).filter(Boolean);
+      const kept = list.filter((tag) => !EXCLUSIVE_ARCHETYPES.includes(tag));
+      const lead = EXCLUSIVE_ARCHETYPES.filter((tag) => list.includes(tag)).slice(0, 1);
+      payload = ROTATION_ARCHETYPES.filter((tag) => [...lead, ...kept].includes(tag));
+    } else if (field === "notes") {
       if (value && typeof value === "object" && !Array.isArray(value)) {
         payload = value;
       } else {

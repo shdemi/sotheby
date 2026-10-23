@@ -1,245 +1,6 @@
 {
   "rotations": [
     {
-      "id": "sotheby-wheelchair",
-      "name": "Sotheby Wheelchair",
-      "archetypes": [
-        "Dynamo",
-        "Poison"
-      ],
-      "tuning": "First Melody",
-      "members": [
-  {
-    "character": "Enigma",
-    "psychube": "The Third Commitment",
-    "portrait": 1
-  },
-  {
-    "character": "Charon",
-    "psychube": "Buds Yet to Bloom"
-  },
-  {
-    "character": "Sotheby",
-    "psychube": "Her Mournful Face"
-  },
-  {
-    "character": "Rhiannon",
-    "psychube": "The Soft Rain of Yesterday"
-  }
-],
-      "notes": "Repeat the loop from Round 01 after the ultimate round.",
-      "rounds": [
-        {
-          "note": "Pulsing Field Lv.1",
-          "slots": [
-            {
-              "type": "normal",
-              "cards": [
-                {
-                  "character": "Rhiannon",
-                  "skill": 1,
-                  "icon": "images/skills/31460111.png"
-                }
-              ]
-            },
-            {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Rhiannon",
-    "skill": 2,
-    "icon": "images/skills/31460121.png"
-  }
-]
-},
-            {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Charon",
-    "skill": 2,
-    "icon": "images/skills/31280121.png"
-  }
-],
-  "tags": ["move"]
-}
-          ]
-        },
-        {
-          "slots": [
-            {
-              "type": "normal",
-              "cards": [
-  {
-    "character": "Rhiannon",
-    "skill": 4,
-    "icon": "images/skills/31460141.png"
-  }
-]
-            },
-            {
-              "type": "normal",
-              "cards": [
-  {
-    "character": "Charon",
-    "skill": 3,
-    "icon": "images/skills/31280131.png",
-    "frame": "normal"
-  }
-]
-            },
-            {
-              "type": "normal",
-              "cards": [
-  {
-    "character": "Sotheby",
-    "skill": 1,
-    "icon": "images/skills/30090111.png"
-  }
-]
-            },
-            {
-  "type": "or",
-  "cards": [
-  {
-    "character": "Enigma",
-    "skill": 2,
-    "icon": "images/skills/31430121.png"
-  }
-],
-  "tags": ["merge", "move", "ap-free", "precast"]
-}
-          ],
-          "note": "Pulsing Field Lv.1"
-        },
-        {
-          "note": "Pulsing Field Lv.3",
-          "slots": [
-            {
-              "type": "normal",
-              "cards": [
-  {
-    "character": "Enigma",
-    "skill": 2,
-    "icon": "images/skills/31430121.png"
-  }
-]
-            },
-            {
-              "type": "normal",
-              "cards": [
-  {
-    "character": "Rhiannon",
-    "skill": 1,
-    "icon": "images/skills/31460112.png"
-  }
-]
-            },
-            {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Rhiannon",
-    "skill": 2,
-    "icon": "images/skills/31460122.png"
-  }
-]
-},
-            {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Sotheby",
-    "skill": 1,
-    "icon": "images/skills/30090111.png",
-    "surface": "ramona"
-  }
-]
-}
-          ]
-        },
-        {
-  "note": "Pulsing Field Lv.3",
-  "slots": [{
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Rhiannon",
-    "skill": 1,
-    "icon": "images/skills/31460112.png"
-  }
-]
-},
-    {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Rhiannon",
-    "skill": 2,
-    "icon": "images/skills/31460122.png"
-  }
-]
-},
-    {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Sotheby",
-    "skill": 1,
-    "icon": "images/skills/30090111.png"
-  }
-]
-},
-    {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Sotheby",
-    "skill": 1,
-    "icon": "images/skills/30090111.png",
-    "frame": "normal"
-  }
-]
-},
-    {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Sotheby",
-    "skill": 1,
-    "icon": "images/skills/30090111.png",
-    "surface": "ramona"
-  }
-]
-},
-    {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Sotheby",
-    "skill": 3,
-    "icon": "images/skills/30090131.png",
-    "surface": "ramona-ultimate",
-    "frame": "ultimate"
-  }
-],
-  "tags": ["precast"]
-},
-    {
-  "type": "normal",
-  "cards": [
-  {
-    "character": "Charon",
-    "skill": 3,
-    "icon": "images/skills/31280131.png"
-  }
-],
-  "tags": ["ap-free"]
-}]
-}
-      ]
-    },
-    {
   "id": "beryl-w-drake-p0-lb",
   "name": "Beryl w/ Drake (P0 LB)",
   "archetypes": ["Lingering Glow"],
@@ -1411,6 +1172,1085 @@
     }
   }
 ]
+},
+    {
+  "id": "beryl-w-isolde-p0-r10",
+  "name": "Beryl w/ Isolde (P0 R10) (4.0)",
+  "archetypes": ["Focused Flashback", "Lingering Glow"],
+  "tuning": "First Melody",
+  "members": [
+  {
+    "character": "Beryl",
+    "psychube": "Long Night Talk"
+  },
+  {
+    "character": "Isolde",
+    "psychube": "Shadows in the Subconscious"
+  },
+  {
+    "character": "Lorentz Butterfly",
+    "psychube": "The Fluttering Moment"
+  },
+  {
+    "character": "Marsha",
+    "psychube": "Singleness of Heart"
+  }
+],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/Beryl_Purple_Crystal.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/Beryl_Purple_Crystal.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/Beryl_Blue_Crystal.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 2,
+    "icon": "images/skills/31390121.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Isolde",
+    "skill": 1,
+    "icon": "images/skills/30810111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Marsha",
+    "skill": 1,
+    "icon": "images/skills/31270111.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 3,
+    "icon": "images/skills/31390131.png"
+  }
+]
+        },
+        {
+  "type": "lb",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Isolde",
+    "skill": 2,
+    "icon": "images/skills/30810121.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+],
+          "tags": ["precast"]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+],
+          "tags": ["precast"]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+],
+          "tags": ["precast"]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Marsha",
+    "skill": 3,
+    "icon": "images/skills/31270131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Isolde",
+    "skill": 3,
+    "icon": "images/skills/30810131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 3,
+    "icon": "images/skills/31340131.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 3,
+    "icon": "images/skills/31390131.png"
+  }
+]
+        },
+        {
+  "type": "lb",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Isolde",
+    "skill": 2,
+    "icon": "images/skills/30810121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 1,
+    "icon": "images/skills/31340111.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Marsha",
+    "skill": 3,
+    "icon": "images/skills/31270131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 3,
+    "icon": "images/skills/31340131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 1,
+    "icon": "images/skills/31340111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+],
+          "tags": ["precast"]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+],
+  "tags": ["precast"]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Lorentz Butterfly",
+    "skill": 1,
+    "icon": "images/skills/31390111.png"
+  }
+],
+  "tags": ["precast"]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "special": "images/card_modulo/Move.png"
+  }
+],
+  "tags": ["custom"],
+  "tagText": "Beryl"
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 2,
+    "icon": "images/skills/31340121.png"
+  }
+]
+}
+      ],
+      "annotations": [
+  {
+    "from": 7,
+    "to": 7,
+    "style": "bracket",
+    "text": "Try to get enough Moxie on Beryl"
+  }
+]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Isolde",
+    "skill": 2,
+    "icon": "images/skills/30810121.png"
+  }
+]
+        },
+        {
+  "type": "or",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340164.png"
+  },
+  {
+    "character": "Beryl",
+    "skill": 6,
+    "icon": "images/skills/31340161.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Isolde",
+    "skill": 3,
+    "icon": "images/skills/30810131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Beryl",
+    "skill": 1,
+    "icon": "images/skills/31340111.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Beryl",
+    "skill": 3,
+    "icon": "images/skills/31340131.png"
+  }
+]
+}
+      ]
+    }
+  ]
+},
+    {
+  "id": "bloodtithe",
+  "name": "Nautika (P0 R10)",
+  "archetypes": ["Focused Flashback", "Bloodtithe"],
+  "tuning": "Unfinished Tune",
+  "members": [
+  {
+    "character": "Nautika",
+    "psychube": "Embrace the Past"
+  },
+  {
+    "character": "Sentinel",
+    "psychube": "Cracks in the Shell"
+  },
+  {
+    "character": "Semmelweis",
+    "psychube": "The Third Commitment"
+  },
+  {
+    "character": "Rubuska",
+    "psychube": "The Wandering Improviser"
+  }
+],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Semmelweis",
+    "skill": 2,
+    "icon": "images/skills/30880121.png"
+  }
+],
+          "tags": ["custom"],
+          "tagText": "Nautika"
+        },
+        {
+          "cards": [
+  {
+    "character": "Sentinel",
+    "skill": 2,
+    "icon": "images/skills/31260121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 2,
+    "icon": "images/skills/31200222.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 1,
+    "icon": "images/skills/31200211.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Semmelweis",
+    "skill": 3,
+    "icon": "images/skills/30880131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Rubuska",
+    "skill": 2,
+    "icon": "images/skills/31250121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Sentinel",
+    "skill": 2,
+    "icon": "images/skills/31260121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 2,
+    "icon": "images/skills/31200223.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Rubuska",
+    "skill": 3,
+    "icon": "images/skills/31250131.png"
+  }
+],
+          "tags": ["custom"],
+          "tagText": "Nautika"
+        },
+        {
+          "cards": [
+  {
+    "character": "Sentinel",
+    "skill": 2,
+    "icon": "images/skills/31260121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 2,
+    "icon": "images/skills/31200223.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 3,
+    "icon": "images/skills/31200231.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Semmelweis",
+    "skill": 2,
+    "icon": "images/skills/30880121.png"
+  }
+],
+          "tags": ["custom"],
+          "tagText": "Nautika"
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 2,
+    "icon": "images/skills/31200222.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Sentinel",
+    "skill": 2,
+    "icon": "images/skills/31260121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Semmelweis",
+    "skill": 3,
+    "icon": "images/skills/30880131.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Rubuska",
+    "skill": 2,
+    "icon": "images/skills/31250121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Rubuska",
+    "skill": 1,
+    "icon": "images/skills/31250111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 2,
+    "icon": "images/skills/31200223.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 1,
+    "icon": "images/skills/31200211.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Rubuska",
+    "skill": 3,
+    "icon": "images/skills/31250131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Sentinel",
+    "skill": 2,
+    "icon": "images/skills/31260121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 2,
+    "icon": "images/skills/31200223.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Nautika",
+    "skill": 3,
+    "icon": "images/skills/31200231.png"
+  }
+]
+        }
+      ]
+    }
+  ]
+},
+    {
+  "id": "brume-dynamo",
+  "name": "Brume (P0 R10)",
+  "archetypes": ["Focused Flashback", "Dynamo"],
+  "tuning": "Unfinished Tune",
+  "members": [
+  {
+    "character": "Ulrich",
+    "psychube": "The Third Commitment"
+  },
+  {
+    "character": "Enigma",
+    "psychube": "The Riddle's Limit"
+  },
+  {
+    "character": "Charon",
+    "psychube": "Buds Yet to Bloom"
+  },
+  {
+    "character": "Brume",
+    "psychube": "On the Hand of Time"
+  }
+],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 3,
+    "icon": "images/skills/31350131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Charon",
+    "skill": 2,
+    "icon": "images/skills/31280121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Ulrich",
+    "skill": 1,
+    "icon": "images/skills/31070111.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Ulrich",
+    "skill": 2,
+    "icon": "images/skills/31070121.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Enigma",
+    "skill": 3,
+    "icon": "images/skills/31430131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Charon",
+    "skill": 3,
+    "icon": "images/skills/31280131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Ulrich",
+    "skill": 3,
+    "icon": "images/skills/31070131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 4,
+    "icon": "images/skills/31350141.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Charon",
+    "skill": 1,
+    "icon": "images/skills/31280111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Brume",
+    "skill": 2,
+    "icon": "images/skills/31350121.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Ulrich",
+    "skill": 1,
+    "icon": "images/skills/31070111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Ulrich",
+    "skill": 2,
+    "icon": "images/skills/31070121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 4,
+    "icon": "images/skills/31350141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 2,
+    "icon": "images/skills/31350121.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Charon",
+    "skill": 1,
+    "icon": "images/skills/31280111.png"
+  }
+]
+},
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 4,
+    "icon": "images/skills/31350141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 3,
+    "icon": "images/skills/31350131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 2,
+    "icon": "images/skills/31350121.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Enigma",
+    "skill": 3,
+    "icon": "images/skills/31430131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Charon",
+    "skill": 3,
+    "icon": "images/skills/31280131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Ulrich",
+    "skill": 3,
+    "icon": "images/skills/31070131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 4,
+    "icon": "images/skills/31350141.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Brume",
+    "skill": 3,
+    "icon": "images/skills/31350131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Brume",
+    "skill": 2,
+    "icon": "images/skills/31350121.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 4,
+    "icon": "images/skills/31350141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 3,
+    "icon": "images/skills/31350131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Brume",
+    "skill": 2,
+    "icon": "images/skills/31350121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Enigma",
+    "skill": 2,
+    "icon": "images/skills/31430121.png"
+  }
+]
+        }
+      ]
+    }
+  ]
 }
   ]
 }

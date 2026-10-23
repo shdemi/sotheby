@@ -1,10 +1,10 @@
-/**
+﻿/**
  * Rotation PNG export.
  *
  * Draws the selected card plan onto a canvas and downloads it. The drawing is
  * done by hand rather than with html2canvas, because the plan uses
  * `aspect-ratio`, `object-fit` and percentage insets that a DOM screenshot does
- * not reproduce faithfully — and a plan sheet is the one image people will
+ * not reproduce faithfully â€” and a plan sheet is the one image people will
  * actually read.
  *
  * All sizes below are CSS pixels; the canvas is scaled up by SCALE so the PNG
@@ -30,7 +30,7 @@
     text: "#E7E0D3",
     muted: "#8f8a83",
     gold: "#E8A33D",
-    accent: "#D05126",
+    accent: "#D4B235",
     border: "rgba(255, 255, 255, 0.10)",
     panel: "rgba(0, 0, 0, 0.22)",
     note: "#F0E6D2",
@@ -109,7 +109,10 @@
     if (card.frame === "ultimate") return true;
     if (card.frame === "normal") return false;
     if (card.special) return false;
-    return Number(card.skill) === 3;
+    // The exceptions live in app.js, so the sheet and the modal agree.
+    const map = typeof ROT_ULTIMATE_SKILLS !== "undefined" ? ROT_ULTIMATE_SKILLS : {};
+    const key = Object.keys(map).find((entry) => entry.toLowerCase() === String(card.character || "").toLowerCase());
+    return key ? Number(card.skill) === map[key] : Number(card.skill) === 3;
   }
 
   const NORMAL_ASPECT = 288 / 376;
@@ -330,19 +333,23 @@
     const w = TUNING_TILE_W;
     const h = 75;
 
-    ctx.fillStyle = "rgba(208, 81, 38, 0.16)";
+    // Same surface and hairline border as a member tile.
+    ctx.fillStyle = "rgba(0, 0, 0, 0.22)";
     ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = "#ED7D31";
+    ctx.strokeStyle = "rgba(181, 181, 179, 0.3)";
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
 
     const src = `images/tuning_abilities/${encodeURIComponent(tuning)}.png`;
     const img = imageCache.get(src);
     if (img && img.__loaded) {
+      // Sized like the member portraits, so the icon carries the tile.
       const iconSize = 56;
-      const ix = Math.round(x + (w - iconSize) / 2);
+      const ratio = img.naturalWidth / img.naturalHeight || 1;
+      const iw = Math.min(w - 28, iconSize * ratio);
+      const ix = Math.round(x + (w - iw) / 2);
       const iy = Math.round(y + (h - iconSize) / 2);
-      ctx.drawImage(img, ix, iy, iconSize, iconSize);
+      ctx.drawImage(img, ix, iy, iw, iconSize);
     }
     return w;
   }
@@ -446,11 +453,12 @@
         textW = label ? ctx.measureText(label).width : 0;
       }
       if (textW > room) {
-        while (label.length > 1 && ctx.measureText(`${label}…`).width > room) label = label.slice(0, -1);
-        label = `${label}…`;
+        while (label.length > 1 && ctx.measureText(`${label}â€¦`).width > room) label = label.slice(0, -1);
+        label = `${label}â€¦`;
         textW = ctx.measureText(label).width;
       }
-      const w = Math.min(limit, Math.max(label ? 43 : 24, textW + 11));      if (img && img.__loaded) ctx.drawImage(img, x, y, w, h);
+      const w = Math.min(limit, Math.max(label ? 43 : 24, textW + 11));
+      if (img && img.__loaded) ctx.drawImage(img, x, y, w, h);
       if (label) {
         ctx.save();
         ctx.beginPath();
@@ -593,20 +601,23 @@
   }
 
   function drawRoundNotePlaque(ctx, text, x, y) {
-    setFont(ctx, ROUND_TITLE_FONT, "#F5EEDF", "1px");
-    const w = ctx.measureText(String(text).toUpperCase()).width + 26;
-    const h = 24;
+    setFont(ctx, '700 14px Amiri, Georgia, "Times New Roman", serif', "#DFDFDF");
+    const label = String(text);
+    const w = ctx.measureText(label).width + 34;
+    const h = 22;
     const gradient = ctx.createLinearGradient(x, y, x + w, y);
-    gradient.addColorStop(0, "rgba(92, 72, 44, 0.92)");
-    gradient.addColorStop(0.6, "rgba(52, 45, 36, 0.82)");
-    gradient.addColorStop(1, "rgba(34, 31, 27, 0.55)");
+    gradient.addColorStop(0, "#86783C");
+    gradient.addColorStop(0.25, "rgba(134, 120, 60, 0.75)");
+    gradient.addColorStop(0.5, "rgba(134, 120, 60, 0.5)");
+    gradient.addColorStop(0.75, "rgba(134, 120, 60, 0.25)");
+    gradient.addColorStop(1, "rgba(134, 120, 60, 0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(x, y, w, h);
-    ctx.fillStyle = COLOR.gold;
+    ctx.fillStyle = "#D4B235";
     ctx.fillRect(x, y, 3, h);
-    ctx.fillStyle = "#F5EEDF";
+    ctx.fillStyle = "#DFDFDF";
     ctx.textBaseline = "middle";
-    ctx.fillText(String(text).toUpperCase(), x + 12, y + h / 2 + 1);
+    ctx.fillText(label, x + 10, y + h / 2 + 1);
     ctx.textBaseline = "alphabetic";
     if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
     return h;
@@ -705,18 +716,18 @@
     ctx.fillText(rotation.name || rotation.id || "", x0, y + 26);
     y += 40;
 
-    // Archetype chips.
+    // Archetype chips. Raid and Focused Flashback carry their own colour.
     if (archetypes.length) {
       let cx = x0;
       for (const tag of archetypes) {
-        setFont(ctx, LABEL_FONT, "#ED7D31", "1px");
+        const color = ARCHETYPE_COLORS[tag] || "#ED7D31";
+        setFont(ctx, LABEL_FONT, color, "1px");
         const w = ctx.measureText(tag).width + 20;
-        ctx.fillStyle = "rgba(208, 81, 38, 0.16)";
-        ctx.fillRect(cx, y, w, 21);
-        ctx.strokeStyle = "#ED7D31";
+        // An outline only: no fill behind the words, matching the modal.
+        ctx.strokeStyle = color;
         ctx.lineWidth = 1;
         ctx.strokeRect(cx + 0.5, y + 0.5, w - 1, 20);
-        ctx.fillStyle = "#ED7D31";
+        ctx.fillStyle = color;
         ctx.fillText(tag, cx + 10, y + 15);
         if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
         cx += w + 6;
@@ -787,8 +798,7 @@
       // left edge, the same place the "Rounds" header does, not above the cards.
       let stripTop = y;
       if (round.note) {
-        drawRoundNotePlaque(ctx, exportLocalizeText(round.note), x0, y);
-        stripTop = y + 24 + 8;
+        stripTop = y + drawRoundNotePlaque(ctx, exportLocalizeText(round.note), x0, y) + 8;
       }
 
       // The number sits in a small bordered box level with the cards.
@@ -1051,7 +1061,7 @@
       }
 
       button.disabled = true;
-      label.textContent = "Exporting…";
+      label.textContent = "Exportingâ€¦";
       try {
         const canvas = await exportRotation(rotation);
         download(canvas, `${slugify(rotation.name || rotation.id)}-card-plan.png`);

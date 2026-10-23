@@ -8,7 +8,7 @@
  * The editor only rewrites the ranges it changes (see json-patch.js), so an
  * untouched file is never modified and a one-field edit is a one-line diff.
  */
-import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, TUNINGS, GUIDE_SLOT_TAGS, PANEL_SLOT_TAGS, GUIDE_SLOT_TAG_TEXT_KEY, PANEL_CARD_SURFACES, GUIDE_OTHER_CARDS, GUIDE_ANNOTATION_STYLES, guideSlotLayout, guideSlotTags, guideSlotTagText, guideSlotTagLabel, guideCardIsUltimate, guideSkillIsUltimate, guideCardSurface, validate, readNameTables, diffHunks } from "./model.js";
+import { Model, FILES, READ_ONLY_FILES, RARITIES, AFFLATUSES, SHAPES, PSYCHUBE_TAGS, PSYCHUBE_RARITIES, ROTATION_ARCHETYPES, EXCLUSIVE_ARCHETYPES, ARCHETYPE_COLORS, TUNINGS, GUIDE_SLOT_TAGS, PANEL_SLOT_TAGS, GUIDE_SLOT_TAG_TEXT_KEY, PANEL_CARD_SURFACES, GUIDE_OTHER_CARDS, GUIDE_ANNOTATION_STYLES, guideSlotLayout, guideSlotTags, guideSlotTagText, guideSlotTagLabel, guideCardIsUltimate, guideSkillIsUltimate, guideCardSurface, validate, readNameTables, diffHunks } from "./model.js";
 import * as files from "./files.js";
 import * as icons from "./icons.js";
 
@@ -2455,6 +2455,7 @@ function readDragPayload(e) {
 
 /** A tag's plate, drawn from the shipped art. Every tag lays its words on the
  *  blank ribbon, so the plate can shrink to fit the card. */
+/** A tag's plate, drawn from the shipped art. */
 function guideTagPlate(tag, text = "") {
   return el("span", { class: `guide-tag-plate is-${tag.kind} is-text`, title: text || tag.label, dataset: { tag: tag.key } }, [
     el("img", { src: `../${tag.image}`, alt: "" }),
@@ -3524,13 +3525,19 @@ function renderRotationDetail() {
   const archetypeRow = el("div", { class: "pick" });
   for (const tag of ROTATION_ARCHETYPES) {
     const active = archetypes.includes(tag);
+    const exclusive = EXCLUSIVE_ARCHETYPES.includes(tag);
     archetypeRow.appendChild(
       el("button", {
-        class: `chip${active ? " on" : ""}`,
+        class: `chip is-archetype${active ? " on" : ""}`,
         text: tag,
+        dataset: { archetype: tag },
+        style: ARCHETYPE_COLORS[tag] ? `--chip-color:${ARCHETYPE_COLORS[tag]}` : "",
         onclick: () => {
-          const next = active ? archetypes.filter((t) => t !== tag) : [...archetypes, tag];
-          model.setGuideRotationField(id, "archetypes", next);
+          // Raid and Focused Flashback replace each other instead of stacking.
+          const base = active
+            ? archetypes.filter((t) => t !== tag)
+            : [...archetypes.filter((t) => !(exclusive && EXCLUSIVE_ARCHETYPES.includes(t))), tag];
+          model.setGuideRotationField(id, "archetypes", base);
           afterEdit();
         },
       })

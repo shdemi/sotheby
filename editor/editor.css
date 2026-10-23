@@ -1,4 +1,4 @@
-﻿/* Sotheby's Mansion â€” Data Editor
+/* Sotheby's Mansion — Data Editor
    Reuses the app's palette and font so it feels like the same tool. */
 
 @font-face {
@@ -204,6 +204,18 @@ body {
 }
 .chip:hover { color: var(--text); }
 .chip.on { background: var(--gold-soft); border-color: var(--gold-soft); color: #1a1a1a; font-weight: 700; }
+/* Archetype chips are outlines only: no fill behind the words. */
+.chip.is-archetype { background: none; border-color: currentColor; }
+.chip.is-archetype.on {
+  background: none;
+  border-color: currentColor;
+  color: var(--chip-color, var(--gold));
+  font-weight: 700;
+}
+.chip.is-archetype[data-archetype="Raid"] { --chip-color: #F5E1C3; }
+.chip.is-archetype[data-archetype="Focused Flashback"] { --chip-color: #A5B9E7; }
+.chip.is-archetype[data-archetype="Raid"].on { border-color: #F5E1C3; }
+.chip.is-archetype[data-archetype="Focused Flashback"].on { border-color: #A5B9E7; }
 .chip.chip-xs { font-size: 9px; padding: 1px 4px; border-radius: 3px; line-height: 1.2; }
 .note-inline-langs { display: inline-flex; gap: 2px; align-items: center; flex: none; }
 .list-count { margin-top: 8px; font-size: 12px; color: var(--text-muted); font-family: var(--mono); }
@@ -867,17 +879,16 @@ input.guide-round-note-input {
   font-family: var(--serif);
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: #F5EEDF;
-  background: linear-gradient(90deg, rgba(92, 72, 44, .92), rgba(52, 45, 36, .82) 60%, rgba(34, 31, 27, .55));
+  letter-spacing: .02em;
+  color: #DFDFDF;
+  background: linear-gradient(90deg, #86783C 0%, rgba(134, 120, 60, .75) 25%, rgba(134, 120, 60, .5) 50%, rgba(134, 120, 60, .25) 75%, rgba(134, 120, 60, 0) 100%);
   border: none;
-  border-left: 3px solid #E8A33D;
+  border-left: 3px solid #D4B235;
   border-radius: 0;
-  padding: 4px 12px;
+  padding: 4px 10px;
 }
-input.guide-round-note-input::placeholder { color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
-input.guide-round-note-input:focus { outline: none; border-left-color: var(--gold); }
+input.guide-round-note-input::placeholder { color: rgba(255, 255, 255, .5); font-weight: 400; letter-spacing: 0; }
+input.guide-round-note-input:focus { outline: none; border-left-color: #F0D060; }
 .guide-round-note-input { flex: 1; min-width: 140px; }
 
 /* The track: cards sit edge to edge, and the thin gaps between them are the
