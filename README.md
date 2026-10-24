@@ -11,7 +11,7 @@ A static web app (Pure Vanilla JS + HTML5 + CSS3) that lets players:
 
 > **Live site:** [sothebymansion.com](https://sothebymansion.com)
 
-> ⚠️ **Sotheby's Mansion is not affiliated with BluePoch.** All game images and data belong to their respective owners.
+> **Disclaimer:** Sotheby's Mansion is not affiliated with BluePoch. All game images and data belong to their respective owners.
 
 ---
 
@@ -117,7 +117,7 @@ Common task → where to look:
 - `#team-modal`, opened from the **Teams** button (`#btn-team`, `images/random_icon/Team_icon.png` + label) that closes the secondary tools row on the right, beside *JSON* / *Reset*.
 - Each team is a **4-slot** card: a renameable title, four slots, and a delete button. Teams are stored under `r1999_teams_v1`.
 - **Teams per row** — a `3 / 2 / 1` selector beside the Presets button writes `--team-columns` on `#team-list`. Each option is only *offered* when the viewport can host it (`TEAM_COLUMN_MIN_VIEWPORT`, evaluated by `maxTeamColumnsForViewport()`), and the modal widens for the 3-column layout (`TEAM_MODAL_MAX_WIDTH`). The preference is persisted as `columns` and re-clamped on resize by `applyTeamColumns()`.
-- **Recommend** — when a team already fields the `is_essential` member of some preset, a 📖 button appears **to the left of the delete button** and opens the **Team Recommendation** modal (§1.8.1).
+- **Recommend** — when a team already fields the `is_essential` member of some preset, a book/guide icon button appears **to the left of the delete button** and opens the **Team Recommendation** modal (§1.8.1).
 - **Hide Warning** — a toggle beside *Show Unowned* (`#btn-team-hide-warning`, persisted as `hideWarning`) that suppresses **every** Used marker: team slots, Team Presets, Team Recommendation, the Select Character picker and the board card. Turning it on sets `teamModalDirty` so the board repaints on close.
 - **Slot anatomy** — the portrait (with the insight icon + level on a dark bottom band and the afflatus emblem in the top-left corner) and the **psychube block are separate siblings**, so hovering the character frames the character only. Unowned characters show neither insight nor level. Clicking the psychube block opens Select Psychube.
 - A **drag handle** (`#team-strip-resizer`, also keyboard-resizable) splits the modal between the team list and the bottom strip; the ratio persists.
@@ -194,7 +194,7 @@ Common task → where to look:
 - **Export PNG** — `html2canvas` captures `#showcase-board` at high quality, skipping every `.no-export` element. Handles mobile/iOS specifics (4096px canvas limit, Web Share API, preview modal for saving to Photos).
 - **Export JSON** — three modes: Theme Only, Roster Only, Export All (full backup).
 - **Import JSON** — auto-detects four formats: theme-only, roster-only, full backup v2, and legacy v1 roster map.
-- ⚠️ JSON export/import covers **characters only** — `userPsychubes` is *not* included in any payload. See [§11.8](#118-psychubes-are-absent-from-json-export).
+- **Note:** JSON export/import covers **characters only** — `userPsychubes` is *not* included in any payload. See [§11.8](#118-psychubes-are-absent-from-json-export).
 
 ### 1.13. Future Sight (CN content)
 - Toggle display of characters / Euphorias / skins / Psychubes that only exist on the Chinese server.
@@ -230,7 +230,11 @@ Architectural constraints to keep in mind:
 
 ```text
 characterBox/
+├── .github/                        # CI & PR templates for open-source contributors
+│   ├── PULL_REQUEST_TEMPLATE.md    #   Standard checklist for contributors
+│   └── workflows/ci.yml            #   GitHub Actions test workflow
 ├── .gitignore                      # Ignores Reverse-1999-CN-Asset/ and references/
+├── CONTRIBUTING.md                 # Contribution guidelines
 ├── CNAME                           # sothebymansion.com
 ├── robots.txt                      # Keeps /editor/ out of search results
 ├── serve.py                        # Dev server: no-cache for text assets
@@ -238,9 +242,23 @@ characterBox/
 ├── index.html                      # Markup, all controls and modals
 ├── styles.css                      # All CSS
 ├── app.js                          # All application logic
-├── README.md                       # This file
+├── README.md                       # Main documentation
+├── ignore/                         # Unused references, raw assets & scratch files (git-ignored)
+│   ├── references/                 #   Legacy reference project
+│   ├── references2/                #   Kornblume repository clone
+│   ├── Reverse-1999-CN-Asset/      #   Heavy raw game assets
+│   ├── temp_data.json              #   Scratch merge data
+│   └── testCodeChube/              #   Local psychube asset compositing workspace
+├── locales/                        # Modular i18n translation files (i18n Ally friendly)
+│   ├── README.md                   #   Translation guide for community members
+│   ├── en.json                     #   English primary source
+│   ├── cn.json                     #   Simplified Chinese
+│   └── vi.json                     #   Vietnamese
+├── scripts/                        # Dev & data helper scripts
+│   ├── check_merge.py
+│   └── check_model.mjs
 ├── editor/                         # Static data editor (edit data/*.json with icons)
-│   ├── index.html                  #   Five tabs: Characters, Psychubes, Team Presets, Patterns, Review
+│   ├── index.html                  #   Tabs: Characters, Psychubes, Team Presets, Patterns, Builds, Rotations, Review
 │   ├── editor.css                  #   Reuses the app's palette, fonts and icons
 │   ├── json-patch.js               #   Range-aware JSON patcher — keeps diffs minimal
 │   ├── model.js                    #   Data model, name resolution, validation
@@ -261,7 +279,7 @@ characterBox/
 │   ├── collab_character.json       # Collab characters (excluded from board chess pieces only)
 │   ├── global_name_transfer.json   # raw ArcanistMap name → canonical display name
 │   ├── future_sight.json           # CN/Future content (Character, Euphoria, Skin, Psychube)
-│   ├── i18n.json                   # UI strings for en / cn / vi (396 keys each)
+│   ├── i18n.json                   # UI strings for en / cn / vi (kept for backward compatibility)
 │   ├── psychube_id.json            # Psychube (Chube) metadata: { "6": [...], "5": [...] }
 │   ├── team_archetypes.json        # Team Presets: { name: [ [ {character, psychube} ] ] }
 │   └── name_map.json               # EN → CN name maps for characters and skins
@@ -277,9 +295,7 @@ characterBox/
     └── ...
 ```
 
-> ⚠️ `Reverse-1999-CN-Asset/` and `references/` **must not be read or scanned** (huge, git-ignored).
->
-> ⚠️ The root-level `_*.png` files (`_fixed834.png`, `_overlap.png`, `_ph360.png`, ...) are **stray debug screenshots** that were committed by accident. They are not referenced anywhere in the app and are safe to delete.
+> **Note:** `ignore/` contains external references and raw assets (`Reverse-1999-CN-Asset/`, `references/`, etc.) that are git-ignored and not needed for app execution.
 
 ---
 
@@ -364,7 +380,7 @@ exactly as described in [§9](#9-adding--updating-a-character).
     - **CN primaries fall back to a global substitute.** With Future Sight off, a member whose `character` is CN-only is replaced by its first non-CN substitute, promoted into the primary slot; the promoted entry is removed from `substitutes`. A CN primary with no global alternative drops the whole variant.
     - `substitutes` lists interchangeable alternatives for that slot: `[{ "character": "J", "psychube"?, "euphoria"? }, ...]`. A bare string (`"substitutes": ["J"]`) is accepted as shorthand. Order is preference order. An alternative with no `psychube` is filled **without** one — the player picks.
     - A variant whose **primary** members fail to resolve is dropped; a bad substitute is dropped on its own without killing the variant. A variant containing CN-only primary content is hidden while Future Sight is off, and CN-only substitutes are filtered out of the list.
-    - ⚠️ This file must be **valid JSON** — a stray `{ "character": "X", "psychube" }` (no value) makes `JSON.parse` throw and silently disables **every** preset, since `fetch(...).catch(() => null)` swallows the failure.
+    - **Note:** This file must be **valid JSON** — a stray `{ "character": "X", "psychube" }` (no value) makes `JSON.parse` throw and silently disables **every** preset, since `fetch(...).catch(() => null)` swallows the failure.
 
 ### 5.3. Key state variables in `app.js`
 
@@ -528,7 +544,7 @@ A tier looks like:
 | Numeric / select | `level` (1–60), `amplification` (A5–A1), `rarity` (✦6–✦2) |
 | Text | `tag` (e.g. `ATK`, `Critical`), `name` (matches EN / CN name) |
 
-> ⚠️ The two field sets are **not interchangeable**. A character field such as `resonance` is meaningless on a psychube tier, which is why new rule rows are seeded through `defaultTierCondition(isChubeTier)` — `level = 60` for chube tiers, `resonance >= 10` for character tiers.
+> **Warning:** The two field sets are **not interchangeable**. A character field such as `resonance` is meaningless on a psychube tier, which is why new rule rows are seeded through `defaultTierCondition(isChubeTier)` — `level = 60` for chube tiers, `resonance >= 10` for character tiers.
 
 **Special tier types** (`tier.type`):
 
@@ -632,7 +648,7 @@ Character names must match **exactly** across the JSON files (or be covered by a
 - The wedge is inset by `1px` on `top`/`right` so the portrait's 1px border keeps painting on top of it.
 - Its size is derived from the avatar size: `calc(var(--char-avatar-size, 60px) * 16 / 60)` — i.e. a 16px leg on a 60px card, scaling with the card-size slider.
 - The wedge is what makes the pale pin legible over bright portrait art; removing it makes favourited cards look like they have no marker at all on light backgrounds.
-- ⚠️ The board badge currently renders `images/random_icon/unfavourite_icon.png`, which is the favourite pin **with a slash through it** — so favourited cards display a "not favourite" glyph. `favourite_icon.png` (the unmarked pin) is only used by the modal button. This looks like a swapped asset rather than intent; fixing it is a one-line change in `createCharacterCard()` (`favouriteBadgeHtml`).
+- **Known issue:** The board badge currently renders `images/random_icon/unfavourite_icon.png`, which is the favourite pin **with a slash through it** — so favourited cards display a "not favourite" glyph. `favourite_icon.png` (the unmarked pin) is only used by the modal button. This looks like a swapped asset rather than intent; fixing it is a one-line change in `createCharacterCard()` (`favouriteBadgeHtml`).
 
 ### 11.5. `reso_shape.json` is dead data
 - `data/reso_shape.json` and `data/shape_patterns.json` are **byte-identical**.
@@ -661,10 +677,10 @@ Character names must match **exactly** across the JSON files (or be covered by a
 - A team slot is `aspect-ratio: 3 / 2` and splits `66.7%` portrait / `33.3%` psychube. The psychube block is border-less until hovered — do not "fix" it by adding a resting frame.
 - The psychube art is **never stretched**: its box carries `aspect-ratio: 180 / 214` (the native icon size) and `align-self: flex-end`, so it keeps the real proportions and sits on the slot's bottom edge. The same treatment applies to `.preset-member-chube` in Team Presets.
 - `#team-unused-grid` is a **grid with `auto-fill`**, not `flex-wrap` — every column is the same width, so no ragged dead strip is left at the right edge. That is why `.team-unused-tile` no longer sets its own `width`.
-- ⚠️ **Both team grids need `grid-auto-rows: max-content`.** With the default `auto`, a grid whose content overflows its box does not scroll: the Grid squeezes every row down to fit (a 70-tile strip collapsed to 5 rows of 27px, crushing each tile into a sliver), which reads as "icons overlapping". `grid-auto-rows: max-content` keeps rows content-sized so the `overflow-y: auto` parent actually scrolls. This applies to `#team-unused-grid` **and** `#team-list`.
+- **Note:** **Both team grids need `grid-auto-rows: max-content`.** With the default `auto`, a grid whose content overflows its box does not scroll: the Grid squeezes every row down to fit (a 70-tile strip collapsed to 5 rows of 27px, crushing each tile into a sliver), which reads as "icons overlapping". `grid-auto-rows: max-content` keeps rows content-sized so the `overflow-y: auto` parent actually scrolls. This applies to `#team-unused-grid` **and** `#team-list`.
 - Team cards must stay free of `transform`/`filter` on hover: those create stacking contexts that would trap the `.team-slot-used` badge.
 - **Teams** is a labelled `.btn` inside the drawer's data group, not a fixed-size square, so it simply follows the group's height. Its icon shrinks to 15px / 14px in the tablet and phone media queries.
-- ⚠️ **Unowned-psychube dimming needs two classes.** `.team-slot-chube img` / `.preset-member-chube img` are (0,1,1), so the dimming rule must be written as `.team-slot-chube.is-unowned img` (0,2,1) — a bare `.is-unowned img` would lose.
+- **Note:** **Unowned-psychube dimming needs two classes.** `.team-slot-chube img` / `.preset-member-chube img` are (0,1,1), so the dimming rule must be written as `.team-slot-chube.is-unowned img` (0,2,1) — a bare `.is-unowned img` would lose.
 - `filter: none` on `.chube-card .chube-avatar-img` is currently **dead**: `.char-avatar-box img.char-avatar-img` (0,2,1) outranks it (0,2,0), so board chube art still gets the character saturation filter. Pre-existing and cosmetic; leave it alone unless chube art is being reworked.
 
 ### 11.10. Duplicate ("Used") marker semantics
@@ -673,7 +689,7 @@ Character names must match **exactly** across the JSON files (or be covered by a
 - `.team-slot-used` is anchored to `.team-slot-char` (which is now exactly the portrait box), so it uses a plain `right: 2px`. It used to offset by `33.3%` because the portrait and the psychube shared one button; the two are separate siblings now.
 - `.preset-member-badges` is placed **inside** `.preset-member-portrait` (not on `.preset-member`, which also spans the psychube area) so the badge lands on the portrait corner like everywhere else, and so it stacks beside the euphoria chip instead of overlapping it.
 - **Marker scope differs per surface.** `usedMarkerSet(exceptTeamId)` returns characters fielded by any team *except* `exceptTeamId`, or an empty set when *Hide Warning* is on. Team Presets calls it with `null` (any team counts); Team Recommendation calls it with `teamRecommendTeamId` (the team you are recommending for is not a conflict). The team-slot and picker markers still use the stricter `duplicatedTeamCharacters()` (>= 2 teams), because a character sitting in the slot you are looking at is not a warning.
-- ⚠️ `.preset-sub .preset-sub-used` is deliberately **two classes deep**: a plain `.preset-sub-used` loses to `.preset-sub img` (0,1,1) and would get stretched to the chip's full 22px.
+- **Note:** `.preset-sub .preset-sub-used` is deliberately **two classes deep**: a plain `.preset-sub-used` loses to `.preset-sub img` (0,1,1) and would get stretched to the chip's full 22px.
 - Because the badge depends on `teamsConfig`, `renderShowcase()` must run after any team edit — that is what `teamModalDirty` defers until the modal closes.
 
 ---

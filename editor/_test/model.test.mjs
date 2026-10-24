@@ -190,7 +190,7 @@ function expectChanged(label, mutate, expectedFiles) {
 }
 
 expectChanged("setRarity", (m) => m.setRarity("Drake", "5"), ["characters_by_rarity.json"]);
-expectChanged("setAfflatus", (m) => m.setAfflatus("Drake", "Beast"), ["characters_by_afflatus.json"]);
+expectChanged("setAfflatus", (m) => m.setAfflatus("Drake", "Plant"), ["characters_by_afflatus.json"]);
 expectChanged("setShape", (m) => m.setShape(pickShapeLess(freshModel()), "Z shape"), ["character_reso_shape.json"]);
 expectChanged("setExcluded", (m) => m.setExcluded("Drake", true), ["exclude_character.json"]);
 expectChanged("setCollab", (m) => m.setCollab("Drake", true), ["collab_character.json"]);

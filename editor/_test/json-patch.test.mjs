@@ -11,6 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { JsonDoc, detectIndent, parseJson, toValue } from "../json-patch.js";
+import { WRITABLE, READ_ONLY } from "../files.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
@@ -44,7 +45,7 @@ const parses = (s) => {
  * ------------------------------------------------------------------ */
 
 console.log("\n=== round trip: no edits means no diff ===");
-const files = fs.readdirSync(DATA).filter((f) => f.endsWith(".json")).sort();
+const files = [...WRITABLE, ...READ_ONLY].sort();
 for (const f of files) {
   const original = read(f);
   const doc = new JsonDoc(original);

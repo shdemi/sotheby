@@ -45,7 +45,7 @@ try {
 const NO_CACHE = new Set([".html", ".js", ".mjs", ".css", ".json"]);
 // testCodeChube/ is local-only tooling and is not deployed, so the test server
 // refuses it. That is how these tests prove the editor works without it.
-const LOCAL_ONLY = /^\/testCodeChube\//;
+const LOCAL_ONLY = /^\/(?:ignore\/)?testCodeChube\//;
 
 const { createServer } = await import("node:http");
 const server = createServer((req, res) => {

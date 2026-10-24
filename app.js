@@ -151,11 +151,21 @@ function loadLanguage() {
   if (SUPPORTED_LANGS.includes(saved)) currentLang = saved;
 }
 
-function setLanguage(lang) {
+async function setLanguage(lang) {
   if (!SUPPORTED_LANGS.includes(lang)) return;
   currentLang = lang;
   localStorage.setItem(LANG_STORAGE_KEY, lang);
   document.documentElement.setAttribute("lang", lang === "cn" ? "zh-Hans" : lang);
+  if (!i18nStrings[lang]) {
+    try {
+      const res = await fetch(`locales/${lang}.json`);
+      if (res.ok) {
+        i18nStrings[lang] = await res.json();
+      }
+    } catch (e) {
+      console.warn(`Could not load locales/${lang}.json`, e);
+    }
+  }
   applyTranslations();
   refreshDynamicTranslations();
   renderShowcase();
@@ -1359,6 +1369,18 @@ async function initApp() {
         i18nStrings = await i18nRes.json();
       } catch (e) {
         console.warn("Could not parse i18n.json", e);
+      }
+    }
+    // Fallback or augment from locales/ if needed
+    if (!i18nStrings || !i18nStrings[currentLang]) {
+      try {
+        const locRes = await fetch(`locales/${currentLang}.json`);
+        if (locRes.ok) {
+          i18nStrings = i18nStrings || {};
+          i18nStrings[currentLang] = await locRes.json();
+        }
+      } catch (e) {
+        console.warn(`Could not load locales/${currentLang}.json`, e);
       }
     }
 

@@ -23,7 +23,7 @@ import * as icons from "../icons.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
-const TOOL = path.join(ROOT, "testCodeChube");
+const TOOL = path.join(ROOT, "ignore", "testCodeChube");
 const INPUT = path.join(TOOL, "needed to edit");
 const RESULTS = path.join(TOOL, "results");
 
@@ -139,7 +139,7 @@ if (!fs.existsSync(INPUT) || !fs.existsSync(RESULTS)) {
       console.log(`\n=== browser composite vs compose.py (${names.length} icons) ===`);
       const report = await page.evaluate(async (list) => {
         const mod = await import("./icons.js");
-        const frame = await mod.loadImageFromUrl("../testCodeChube/background.png");
+        const frame = await mod.loadImageFromUrl("../ignore/testCodeChube/background.png");
 
         const readPixels = (source, w, h) => {
           const c = document.createElement("canvas");
@@ -152,11 +152,11 @@ if (!fs.existsSync(INPUT) || !fs.existsSync(RESULTS)) {
 
         const out = [];
         for (const n of list) {
-          const art = await mod.loadImageFromUrl(`../testCodeChube/needed to edit/${n}.png`);
+          const art = await mod.loadImageFromUrl(`../ignore/testCodeChube/needed to edit/${n}.png`);
           const canvas = mod.compositeIcon({ art, frame });
           const mine = canvas.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, 180, 214).data;
 
-          const ref = await mod.loadImageFromUrl(`../testCodeChube/results/${n}.png`);
+          const ref = await mod.loadImageFromUrl(`../ignore/testCodeChube/results/${n}.png`);
           const theirs = readPixels(ref, 180, 214);
 
           let diffPixels = 0;
@@ -256,8 +256,8 @@ if (!fs.existsSync(INPUT) || !fs.existsSync(RESULTS)) {
       console.log("\n=== output properties ===");
       const props = await page.evaluate(async () => {
         const mod = await import("./icons.js");
-        const art = await mod.loadImageFromUrl("../testCodeChube/needed to edit/1.png");
-        const frame = await mod.loadImageFromUrl("../testCodeChube/background.png");
+        const art = await mod.loadImageFromUrl("../ignore/testCodeChube/needed to edit/1.png");
+        const frame = await mod.loadImageFromUrl("../ignore/testCodeChube/background.png");
         const canvas = mod.compositeIcon({ art, frame });
         const ctx = canvas.getContext("2d", { willReadFrequently: true });
         const blob = await mod.canvasToBlob(canvas);

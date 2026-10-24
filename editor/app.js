@@ -4406,43 +4406,77 @@ function renderI18nDetail() {
     ]),
   ]);
 
-  const makeLangField = (langCode, langLabel, value) => {
-    const isMultiLine = String(value).includes("\n") || String(value).length > 60;
-    const input = isMultiLine
-      ? el("textarea", { rows: 3, style: "width:100%" })
-      : el("input", { type: "text", style: "width:100%" });
-    input.value = value;
-    input.addEventListener("change", () => {
-      state.model.setI18nEntry(langCode, key, input.value);
+  const makeLangField = (langCode, langLabel, value, isSource = false) => {
+    const textarea = el("textarea", {
+      class: "i18n-input-area",
+      placeholder: `Enter ${langLabel} text...`,
+      rows: 2,
+    });
+    textarea.value = value || "";
+
+    textarea.addEventListener("input", () => {
+      // Auto-grow height based on content
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    });
+
+    textarea.addEventListener("change", () => {
+      state.model.setI18nEntry(langCode, key, textarea.value);
       afterEdit({ list: true, detail: false });
     });
-    return el("div", { class: "field", style: "margin-bottom: 14px;" }, [
-      el(
-        "label",
-        {
-          class: "field-label",
-          style: "font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;",
-        },
-        [
+
+    // Initial resize
+    setTimeout(() => {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    }, 0);
+
+    const copyBtn = el("button", {
+      class: "btn btn-ghost btn-sm",
+      text: "Copy",
+      title: "Copy to clipboard",
+      onclick: () => {
+        navigator.clipboard.writeText(textarea.value || "");
+        banner(`Copied ${langLabel} text to clipboard`, "info");
+      },
+    });
+
+    return el("div", { class: "i18n-field-box" }, [
+      el("div", { class: "i18n-field-head" }, [
+        el("div", { class: "i18n-lang-tag" }, [
           el("span", { text: langLabel }),
-          el("span", { class: "tag", text: langCode.toUpperCase() }),
-        ]
-      ),
-      input,
+          el("span", {
+            class: `flag${isSource ? " dirty" : ""}`,
+            text: isSource ? `${langCode.toUpperCase()} (Source)` : langCode.toUpperCase(),
+          }),
+        ]),
+        el("div", { class: "i18n-field-actions" }, [
+          copyBtn,
+        ]),
+      ]),
+      textarea,
     ]);
   };
 
-  const fieldsCard = el("div", { class: "card" }, [
-    el("h2", { text: "Translations" }),
-    makeLangField("en", "English", entry.en),
+  const fieldsCard = el("div", { class: "card i18n-matrix-card" }, [
+    el("div", { class: "card-head" }, [
+      el("h2", { text: "Localization Values" }),
+      el("span", {
+        class: "hint",
+        style: "margin:0",
+        text: "Edit text inline. Keys update automatically across all language bundles.",
+      }),
+    ]),
+    makeLangField("en", "English", entry.en, true),
     makeLangField("vi", "Tiếng Việt", entry.vi),
     makeLangField("cn", "中文 (Chinese)", entry.cn),
   ]);
 
-  const actionsCard = el("div", { class: "card", style: "margin-top: 16px;" }, [
+  const actionsCard = el("div", { class: "card", style: "margin-top: 16px; display:flex; justify-content:space-between; align-items:center;" }, [
+    el("span", { class: "hint", style: "margin:0;", text: `Key identifier: ${key}` }),
     el("button", {
-      class: "btn btn-danger",
-      text: "Delete key",
+      class: "btn btn-danger btn-sm",
+      text: "Delete translation key",
       onclick: () => {
         if (confirm(`Delete key "${key}" across all languages?`)) {
           state.model.removeI18nKey(key);
