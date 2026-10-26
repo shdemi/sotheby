@@ -1,0 +1,542 @@
+{
+  "Fruit of Good and Evil": [
+    {
+      "material": "Bogeyman",
+      "quantity": 1
+    },
+    {
+      "material": "Incorrupt Monkeypaw",
+      "quantity": 1
+    },
+    {
+      "material": "Prophetic Bird",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 800
+    }
+  ],
+  "Mistilteinn": [
+    {
+      "material": "Wyrmling Skeleton",
+      "quantity": 2
+    },
+    {
+      "material": "Holy Silver",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 800
+    }
+  ],
+  "Golden Fleece": [
+    {
+      "material": "Platinum Ouija",
+      "quantity": 2
+    },
+    {
+      "material": "Bifurcated Skeleton",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 800
+    }
+  ],
+  "Bogeyman": [
+    {
+      "material": "Biting Box",
+      "quantity": 3
+    },
+    {
+      "material": "Holy Silver",
+      "quantity": 1
+    },
+    {
+      "material": "Prophetic Bird",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Incorrupt Monkeypaw": [
+    {
+      "material": "Salted Mandrake",
+      "quantity": 3
+    },
+    {
+      "material": "Bifurcated Skeleton",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Wyrmling Skeleton": [
+    {
+      "material": "Bifurcated Skeleton",
+      "quantity": 3
+    },
+    {
+      "material": "Biting Box",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Silver Bullet": [
+    {
+      "material": "Holy Silver",
+      "quantity": 3
+    },
+    {
+      "material": "Bifurcated Skeleton",
+      "quantity": 1
+    },
+    {
+      "material": "Salted Mandrake",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Murmur of Insanity": [
+    {
+      "material": "Prophetic Bird",
+      "quantity": 3
+    },
+    {
+      "material": "Salted Mandrake",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Platinum Ouija": [
+    {
+      "material": "Clawed Pendulum",
+      "quantity": 2
+    },
+    {
+      "material": "Holy Silver",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Biting Box": [
+    {
+      "material": "Liquefied Terror",
+      "quantity": 3
+    },
+    {
+      "material": "Spell of Fortune",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Salted Mandrake": [
+    {
+      "material": "Milled Magnesia",
+      "quantity": 3
+    },
+    {
+      "material": "Esoteric Bones",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Bifurcated Skeleton": [
+    {
+      "material": "Esoteric Bones",
+      "quantity": 3
+    },
+    {
+      "material": "Rough Silver Ingot",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Holy Silver": [
+    {
+      "material": "Rough Silver Ingot",
+      "quantity": 3
+    },
+    {
+      "material": "Liquefied Terror",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Prophetic Bird": [
+    {
+      "material": "Spell of Fortune",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Clawed Pendulum": [
+    {
+      "material": "Solidus",
+      "quantity": 2
+    },
+    {
+      "material": "Rough Silver Ingot",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 400
+    }
+  ],
+  "Liquefied Terror": [
+    {
+      "material": "Trembling Tooth",
+      "quantity": 3
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 150
+    }
+  ],
+  "Milled Magnesia": [
+    {
+      "material": "Magnesia Crystal",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 150
+    }
+  ],
+  "Esoteric Bones": [
+    {
+      "material": "Shattered Bones",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 150
+    }
+  ],
+  "Rough Silver Ingot": [
+    {
+      "material": "Silver Ore",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 150
+    }
+  ],
+  "Spell of Fortune": [
+    {
+      "material": "Spell of Banishing",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 150
+    }
+  ],
+  "Solidus": [
+    {
+      "material": "Silver Ore",
+      "quantity": 5
+    },
+    {
+      "material": "Spell of Banishing",
+      "quantity": 5
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 200
+    }
+  ],
+  "Spell of Banishing": [],
+  "Silver Ore": [],
+  "Shattered Bones": [],
+  "Magnesia Crystal": [],
+  "Dust": [],
+  "Sharpodonty": [],
+  "Serpent Scepter": [
+    {
+      "material": "Glowing Mothwing",
+      "quantity": 1
+    },
+    {
+      "material": "Golden Compass",
+      "quantity": 1
+    },
+    {
+      "material": "Salted Mandrake",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 800
+    }
+  ],
+  "Glowing Mothwing": [
+    {
+      "material": "Winged Key",
+      "quantity": 3
+    },
+    {
+      "material": "Salted Mandrake",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Watch Core": [
+    {
+      "material": "Goose Neck",
+      "quantity": 3
+    },
+    {
+      "material": "Holy Silver",
+      "quantity": 1
+    },
+    {
+      "material": "Biting Box",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Golden Compass": [
+    {
+      "material": "Golden Beetle",
+      "quantity": 2
+    },
+    {
+      "material": "Bifurcated Skeleton",
+      "quantity": 4
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Winged Key": [
+    {
+      "material": "Cicada Wings",
+      "quantity": 3
+    },
+    {
+      "material": "Milled Magnesia",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Goose Neck": [
+    {
+      "material": "Perpetual Cog",
+      "quantity": 3
+    },
+    {
+      "material": "Spell of Fortune",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Golden Beetle": [
+    {
+      "material": "Solidus",
+      "quantity": 2
+    },
+    {
+      "material": "Esoteric Bones",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 400
+    }
+  ],
+  "Cicada Wings": [],
+  "Perpetual Cog": [],
+  "Trembling Tooth": [],
+  "Rhine Gold": [
+    {
+      "material": "Watch Core",
+      "quantity": 1
+    },
+    {
+      "material": "Golden Bell Essence Bottle",
+      "quantity": 1
+    },
+    {
+      "material": "Biting Box",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 800
+    }
+  ],
+  "Golden Bell Essence Bottle": [
+    {
+      "material": "Golden Herb Incense",
+      "quantity": 3
+    },
+    {
+      "material": "Clawed Pendulum",
+      "quantity": 1
+    },
+    {
+      "material": "Bifurcated Skeleton",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Golden Herb Incense": [
+    {
+      "material": "Alopecurus Pratensis",
+      "quantity": 3
+    },
+    {
+      "material": "Cicada Wings",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Alopecurus Pratensis": [],
+  "Brief Cacophony": [
+    {
+      "material": "Moment of Dissonance",
+      "quantity": 4
+    }
+  ],
+  "Sonorous Knell": [
+    {
+      "material": "Brief Cacophony",
+      "quantity": 3
+    }
+  ],
+  "Jadeite Tablet": [
+    {
+      "material": "Red Lacquer Tablet",
+      "quantity": 3
+    },
+    {
+      "material": "Winged Key",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Red Lacquer Tablet": [
+    {
+      "material": "Pyroxene Ore",
+      "quantity": 3
+    },
+    {
+      "material": "Perpetual Cog",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Pyroxene Ore": [],
+  "Sharp Needle": [],
+  "Heartfelt Easter Egg": [
+    {
+      "material": "Sharp Needle",
+      "quantity": 3
+    },
+    {
+      "material": "Alopecurus Pratensis",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 300
+    }
+  ],
+  "Rootbox Rabbit": [
+    {
+      "material": "Heartfelt Easter Egg",
+      "quantity": 3
+    },
+    {
+      "material": "Golden Beetle",
+      "quantity": 1
+    },
+    {
+      "material": "Holy Silver",
+      "quantity": 1
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 500
+    }
+  ],
+  "Roaming Terror Hut": [
+    {
+      "material": "Rootbox Rabbit",
+      "quantity": 1
+    },
+    {
+      "material": "Jadeite Tablet",
+      "quantity": 1
+    },
+    {
+      "material": "Clawed Pendulum",
+      "quantity": 2
+    },
+    {
+      "material": "Sharpodonty",
+      "quantity": 800
+    }
+  ]
+}

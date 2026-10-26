@@ -244,11 +244,12 @@ characterBox/
 ├── app.js                          # All application logic
 ├── README.md                       # Main documentation
 ├── ignore/                         # Unused references, raw assets & scratch files (git-ignored)
+│   ├── kornblume-main/             #   Kornblume repository clone
 │   ├── references/                 #   Legacy reference project
-│   ├── references2/                #   Kornblume repository clone
 │   ├── Reverse-1999-CN-Asset/      #   Heavy raw game assets
 │   ├── temp_data.json              #   Scratch merge data
-│   └── testCodeChube/              #   Local psychube asset compositing workspace
+│   ├── testCodeChube/              #   Local psychube asset compositing workspace
+│   └── update_from_kornblume.mjs   #   One-command update script from kornblume
 ├── locales/                        # Modular i18n translation files (i18n Ally friendly)
 │   ├── README.md                   #   Translation guide for community members
 │   ├── en.json                     #   English primary source
@@ -256,7 +257,9 @@ characterBox/
 │   └── vi.json                     #   Vietnamese
 ├── scripts/                        # Dev & data helper scripts
 │   ├── check_merge.py
-│   └── check_model.mjs
+│   ├── check_model.mjs
+│   ├── levelup_constants.mjs       #   Level-up EXP/materials tables
+│   └── sync_kornblume_data.mjs     #   Core data extractor from kornblume
 ├── editor/                         # Static data editor (edit data/*.json with icons)
 │   ├── index.html                  #   Tabs: Characters, Psychubes, Team Presets, Patterns, Builds, Rotations, Review
 │   ├── editor.css                  #   Reuses the app's palette, fonts and icons
@@ -280,10 +283,15 @@ characterBox/
 │   ├── global_name_transfer.json   # raw ArcanistMap name → canonical display name
 │   ├── future_sight.json           # CN/Future content (Character, Euphoria, Skin, Psychube)
 │   ├── i18n.json                   # UI strings for en / cn / vi (kept for backward compatibility)
+│   ├── items.json                  # Material item definitions, icons, borders, rarities
+│   ├── item_formulas.json          # Wishing spring crafting formulas
+│   ├── characters_mats_required.json # Materials required for Insight, Resonance, Euphoria
 │   ├── psychube_id.json            # Psychube (Chube) metadata: { "6": [...], "5": [...] }
 │   ├── team_archetypes.json        # Team Presets: { name: [ [ {character, psychube} ] ] }
 │   └── name_map.json               # EN → CN name maps for characters and skins
 └── images/                         # Icons, avatars, UI art
+    ├── items/                      # Material and item icons & borders
+    ├── arcanists/                  # Euphoria & frequency icons
     ├── headicon_small/             # Character & skin avatars
     ├── afflatus_icon/              # Afflatus icons
     ├── insight_icon/               # I0 – I3 icons

@@ -1,0 +1,2262 @@
+{
+  "6": {
+    "id": 3079,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "DPS",
+      "Remove Debuffs",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "输出",
+      "净化",
+      "灵光"
+    ],
+    "nameZh": "6"
+  },
+  "37": {
+    "id": 3066,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Support",
+      "Follow-Up",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "辅助",
+      "追击",
+      "灵光"
+    ],
+    "nameZh": "37"
+  },
+  "Druvis III": {
+    "id": 3003,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Support",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助",
+      "控制"
+    ],
+    "nameZh": "槲寄生"
+  },
+  "Lilya": {
+    "id": 3004,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Follow-Up"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "追击"
+    ],
+    "nameZh": "红弩箭"
+  },
+  "Nick Bottom": {
+    "id": 3005,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support"
+    ],
+    "roleTagsZh": [
+      "辅助"
+    ],
+    "nameZh": "尼克·波顿"
+  },
+  "Eagle": {
+    "id": 3006,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "小春雀儿"
+  },
+  "A Knight": {
+    "id": 3007,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "未锈铠"
+  },
+  "Sotheby": {
+    "id": 3009,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Heal",
+      "Poison"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "中毒"
+    ],
+    "nameZh": "苏芙比"
+  },
+  "X": {
+    "id": 3010,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Remove Buffs",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "驱散",
+      "控制"
+    ],
+    "nameZh": "X"
+  },
+  "Sweetheart": {
+    "id": 3011,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "玛丽莲"
+  },
+  "The Fool": {
+    "id": 3012,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "弄臣"
+  },
+  "Зима": {
+    "id": 3013,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "控制"
+    ],
+    "nameZh": "冬"
+  },
+  "Bunny Bunny": {
+    "id": 3014,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Heal",
+      "Remove Debuffs"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "净化"
+    ],
+    "nameZh": "芭妮芭妮"
+  },
+  "Pavia": {
+    "id": 3015,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "狼群"
+  },
+  "Baby Blue": {
+    "id": 3016,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Support",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助",
+      "控制"
+    ],
+    "nameZh": "婴儿蓝"
+  },
+  "Charlie": {
+    "id": 3017,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "驱散"
+    ],
+    "nameZh": "夏利"
+  },
+  "Oliver Fog": {
+    "id": 3018,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助"
+    ],
+    "nameZh": "雾行者"
+  },
+  "Bkornblume": {
+    "id": 3020,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Support",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助",
+      "控制"
+    ],
+    "nameZh": "柏林以东"
+  },
+  "Dikke": {
+    "id": 3022,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal"
+    ],
+    "roleTagsZh": [
+      "治疗"
+    ],
+    "nameZh": "帕米埃"
+  },
+  "Sonetto": {
+    "id": 3023,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Support",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助",
+      "控制"
+    ],
+    "nameZh": "十四行诗"
+  },
+  "Balloon Party": {
+    "id": 3024,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Heal"
+    ],
+    "roleTagsZh": [
+      "治疗"
+    ],
+    "nameZh": "气球派对"
+  },
+  "Regulus": {
+    "id": 3025,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "星锑"
+  },
+  "Mondlicht": {
+    "id": 3026,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Bullet"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "子弹"
+    ],
+    "nameZh": "红斗篷"
+  },
+  "Ms. Radio": {
+    "id": 3027,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "无线电小姐"
+  },
+  "APPLe": {
+    "id": 3999,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal"
+    ],
+    "roleTagsZh": [
+      "治疗"
+    ],
+    "nameZh": "残留影像"
+  },
+  "Schneider": {
+    "id": 3029,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [],
+    "roleTagsZh": [],
+    "nameZh": "斯奈德"
+  },
+  "La Source": {
+    "id": 3030,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal"
+    ],
+    "roleTagsZh": [
+      "治疗"
+    ],
+    "nameZh": "拉拉泉"
+  },
+  "Cristallo": {
+    "id": 3031,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support"
+    ],
+    "roleTagsZh": [
+      "辅助"
+    ],
+    "nameZh": "铅玻璃"
+  },
+  "Centurion": {
+    "id": 3032,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "百夫长"
+  },
+  "TTT": {
+    "id": 3033,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Control",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制",
+      "驱散"
+    ],
+    "nameZh": "TTT"
+  },
+  "aliEn T": {
+    "id": 3034,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "星之眼"
+  },
+  "Leilani": {
+    "id": 3035,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助"
+    ],
+    "nameZh": "莉拉妮"
+  },
+  "John Titor": {
+    "id": 3036,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Remove Debuffs",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "净化",
+      "驱散"
+    ],
+    "nameZh": "约翰·提托"
+  },
+  "Necrologist": {
+    "id": 3037,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "驱散"
+    ],
+    "nameZh": "讣告人"
+  },
+  "Satsuki": {
+    "id": 3038,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "五色月"
+  },
+  "An-an Lee": {
+    "id": 3039,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "输出",
+      "控制"
+    ],
+    "nameZh": "泥鯭的士"
+  },
+  "Twins Sleep": {
+    "id": 3040,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "控制"
+    ],
+    "nameZh": "丽莎&路易斯"
+  },
+  "Matilda Bouanich": {
+    "id": 3041,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助"
+    ],
+    "nameZh": "玛蒂尔达"
+  },
+  "Matilda": {
+    "id": 3041,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助"
+    ],
+    "nameZh": "玛蒂尔达"
+  },
+  "Rabies": {
+    "id": 3042,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Poison"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "中毒"
+    ],
+    "nameZh": "爱宠"
+  },
+  "Tennant": {
+    "id": 3043,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Support",
+      "Bullet"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "辅助",
+      "子弹"
+    ],
+    "nameZh": "坦南特"
+  },
+  "Ms. Moissan": {
+    "id": 3044,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "控制"
+    ],
+    "nameZh": "莫桑女士"
+  },
+  "Bette": {
+    "id": 3045,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "辅助"
+    ],
+    "nameZh": "贝蒂"
+  },
+  "Poltergeist": {
+    "id": 3046,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support"
+    ],
+    "roleTagsZh": [
+      "辅助"
+    ],
+    "nameZh": "吵闹鬼"
+  },
+  "Medicine Pocket": {
+    "id": 3047,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Support",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "辅助",
+      "控制"
+    ],
+    "nameZh": "兔毛手袋"
+  },
+  "Voyager": {
+    "id": 3048,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "输出",
+      "控制"
+    ],
+    "nameZh": "远旅"
+  },
+  "Click": {
+    "id": 3049,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "喀嚓喀嚓"
+  },
+  "Darley Clatter": {
+    "id": 3050,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support"
+    ],
+    "roleTagsZh": [
+      "辅助"
+    ],
+    "nameZh": "哒哒达利"
+  },
+  "Eternity": {
+    "id": 3051,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "温妮弗雷德"
+  },
+  "Ms. NewBabel": {
+    "id": 3052,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Riposte"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "反击"
+    ],
+    "nameZh": "新巴别塔"
+  },
+  "Tooth Fairy": {
+    "id": 3053,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Support",
+      "Remove Debuffs"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "辅助",
+      "净化"
+    ],
+    "nameZh": "牙仙"
+  },
+  "ONiON": {
+    "id": 3054,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "洋葱头"
+  },
+  "Sputnik": {
+    "id": 3055,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "斯普特尼克"
+  },
+  "Jessica": {
+    "id": 3056,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Poison"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "中毒"
+    ],
+    "nameZh": "洁西卡"
+  },
+  "Mesmer Jr.": {
+    "id": 3057,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "小梅斯梅尔"
+  },
+  "Erick": {
+    "id": 3058,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "驱散"
+    ],
+    "nameZh": "埃里克"
+  },
+  "Door": {
+    "id": 3059,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助"
+    ],
+    "nameZh": "门"
+  },
+  "Blonney": {
+    "id": 3060,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助"
+    ],
+    "nameZh": "金蜜儿"
+  },
+  "Horropedia": {
+    "id": 3061,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Support",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助",
+      "驱散"
+    ],
+    "nameZh": "恐怖通"
+  },
+  "Melania": {
+    "id": 3062,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "输出"
+    ],
+    "nameZh": "梅兰妮"
+  },
+  "Pickles": {
+    "id": 3063,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "驱散"
+    ],
+    "nameZh": "皮克勒斯"
+  },
+  "Diggers": {
+    "id": 3064,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "挖掘艺术"
+  },
+  "Machine D III": {
+    "id": 9998,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [],
+    "roleTagsZh": [],
+    "nameZh": "???"
+  },
+  "Kaalaa Baunaa": {
+    "id": 3070,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Follow-Up"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "追击"
+    ],
+    "nameZh": "伽菈波那"
+  },
+  "Kanjira": {
+    "id": 3071,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Poison",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "中毒",
+      "辅助"
+    ],
+    "nameZh": "坎吉拉"
+  },
+  "Shamane": {
+    "id": 3072,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式",
+      "辅助"
+    ],
+    "nameZh": "鬃毛沙砾"
+  },
+  "Thirty-seven": {
+    "id": 3066,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Support",
+      "Follow-Up",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "辅助",
+      "追击",
+      "灵光"
+    ],
+    "nameZh": "37"
+  },
+  "Six": {
+    "id": 3079,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "DPS",
+      "Remove Debuffs",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "输出",
+      "净化",
+      "灵光"
+    ],
+    "nameZh": "6"
+  },
+  "Spathodea": {
+    "id": 3073,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Burn"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "燃烧"
+    ],
+    "nameZh": "可燃点"
+  },
+  "Ezra Theodore": {
+    "id": 3074,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Shield",
+      "Support",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "辅助",
+      "灵光"
+    ],
+    "nameZh": "爱兹拉"
+  },
+  "Ezra": {
+    "id": 3074,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Shield",
+      "Support",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "辅助",
+      "灵光"
+    ],
+    "nameZh": "爱兹拉"
+  },
+  "Desert Flannel": {
+    "id": 3075,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "输出"
+    ],
+    "nameZh": "沙丝绒"
+  },
+  "Ulu": {
+    "id": 3076,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Burn",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "燃烧",
+      "辅助"
+    ],
+    "nameZh": "和平乌鲁"
+  },
+  "Енисей": {
+    "id": 3082,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Immunity"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "免疫"
+    ],
+    "nameZh": "小叶尼塞"
+  },
+  "Yenisei": {
+    "id": 3082,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Immunity"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "免疫"
+    ],
+    "nameZh": "小叶尼塞"
+  },
+  "Jiu Niangzi": {
+    "id": 3083,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Channel"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "吟诵"
+    ],
+    "nameZh": "曲娘"
+  },
+  "Getian": {
+    "id": 3084,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "Channel",
+      "Eureka",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "吟诵",
+      "灵光",
+      "术阵"
+    ],
+    "nameZh": "葛天"
+  },
+  "Marcus": {
+    "id": 3065,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Rank Up",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "升阶",
+      "灵光"
+    ],
+    "nameZh": "马库斯"
+  },
+  "Isolde": {
+    "id": 3081,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Burn",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "燃烧",
+      "辅助"
+    ],
+    "nameZh": "伊索尔德"
+  },
+  "Windsong": {
+    "id": 3077,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "灵光"
+    ],
+    "nameZh": "北方哨歌"
+  },
+  "Авксивий": {
+    "id": 3078,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Support",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "辅助",
+      "驱散"
+    ],
+    "nameZh": "阿夫西维"
+  },
+  "Avgust": {
+    "id": 3078,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Support",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "辅助",
+      "驱散"
+    ],
+    "nameZh": "阿夫西维"
+  },
+  "Вила": {
+    "id": 3087,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Rank Up",
+      "Support",
+      "Remove Debuffs"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "升阶",
+      "辅助",
+      "净化"
+    ],
+    "nameZh": "维拉"
+  },
+  "Vila": {
+    "id": 3087,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Rank Up",
+      "Support",
+      "Remove Debuffs"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "升阶",
+      "辅助",
+      "净化"
+    ],
+    "nameZh": "维拉"
+  },
+  "Lucy": {
+    "id": 3086,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Dynamo"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "电能"
+    ],
+    "nameZh": "露西"
+  },
+  "Semmelweis": {
+    "id": 3088,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "HP Sacrifice",
+      "Support",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "燃血",
+      "辅助",
+      "术阵"
+    ],
+    "nameZh": "塞梅尔维斯"
+  },
+  "Kakania": {
+    "id": 3080,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "辅助"
+    ],
+    "nameZh": "卡卡尼亚"
+  },
+  "Lorelei": {
+    "id": 3091,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "输出"
+    ],
+    "nameZh": "罗蕾莱"
+  },
+  "Joe": {
+    "id": 3094,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Burn",
+      "Support",
+      "Riposte"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "燃烧",
+      "辅助",
+      "反击"
+    ],
+    "nameZh": "J"
+  },
+  "Mercuria": {
+    "id": 3095,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Rank Up",
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "升阶",
+      "输出"
+    ],
+    "nameZh": "环状水星"
+  },
+  "Pioneer": {
+    "id": 3096,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Shield",
+      "Shift",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "位移",
+      "辅助"
+    ],
+    "nameZh": "先驱者"
+  },
+  "Argus": {
+    "id": 3097,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Rank Up",
+      "Support",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "升阶",
+      "辅助",
+      "驱散"
+    ],
+    "nameZh": "阿尔古斯"
+  },
+  "Tuesday": {
+    "id": 3098,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Poison",
+      "Support",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "中毒",
+      "辅助",
+      "术阵"
+    ],
+    "nameZh": "蓝手帕"
+  },
+  "Barbara": {
+    "id": 3099,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Shield",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "辅助"
+    ],
+    "nameZh": "数羊羔"
+  },
+  "Anjo Nala": {
+    "id": 3100,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Ritual",
+      "Control",
+      "Channel"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "仪式",
+      "控制",
+      "吟诵"
+    ],
+    "nameZh": "天使娜娜"
+  },
+  "White Rum": {
+    "id": 3101,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Shift",
+      "Control",
+      "Channel"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "位移",
+      "控制",
+      "吟诵"
+    ],
+    "nameZh": "白朗姆"
+  },
+  "Lopera": {
+    "id": 3102,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "Burn",
+      "Channel",
+      "Bullet",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "燃烧",
+      "吟诵",
+      "子弹",
+      "术阵"
+    ],
+    "nameZh": "洛佩拉"
+  },
+  "Mr. Duncan": {
+    "id": 3103,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Riposte",
+      "Bullet"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "反击",
+      "子弹"
+    ],
+    "nameZh": "邓肯先生"
+  },
+  "Willow": {
+    "id": 3104,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Poison",
+      "Channel"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "中毒",
+      "吟诵"
+    ],
+    "nameZh": "笃笃骨"
+  },
+  "Flutterpage": {
+    "id": 3105,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "Extra Action",
+      "DPS",
+      "Channel",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "额外行动",
+      "输出",
+      "吟诵",
+      "灵光"
+    ],
+    "nameZh": "纸信圈儿"
+  },
+  "Brimley": {
+    "id": 3106,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Extra Action",
+      "Remove Debuffs"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "额外行动",
+      "净化"
+    ],
+    "nameZh": "宽檐帽"
+  },
+  "Barcarola": {
+    "id": 3108,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Inspiration",
+      "Support",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "启示",
+      "辅助",
+      "灵光"
+    ],
+    "nameZh": "芭卡洛儿"
+  },
+  "Fatutu": {
+    "id": 3109,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Extra Action",
+      "Remove Debuffs"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "额外行动",
+      "净化"
+    ],
+    "nameZh": "图图石子"
+  },
+  "Liang Yue": {
+    "id": 3110,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Immunity"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "免疫"
+    ],
+    "nameZh": "梁月"
+  },
+  "Noire": {
+    "id": 3111,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式",
+      "控制"
+    ],
+    "nameZh": "菲林士多"
+  },
+  "Loggerhead": {
+    "id": 3112,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal"
+    ],
+    "roleTagsZh": [
+      "治疗"
+    ],
+    "nameZh": "空脑袋"
+  },
+  "Recoleta": {
+    "id": 3114,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式",
+      "辅助"
+    ],
+    "nameZh": "虚构集"
+  },
+  "Aleph": {
+    "id": 3113,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Inspiration",
+      "Channel",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "启示",
+      "吟诵",
+      "灵光"
+    ],
+    "nameZh": "阿莱夫"
+  },
+  "Hissabeth": {
+    "id": 3116,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式",
+      "控制"
+    ],
+    "nameZh": "冷周六"
+  },
+  "Kiperina": {
+    "id": 3117,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Shield",
+      "Inspiration",
+      "Support",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "启示",
+      "辅助",
+      "灵光"
+    ],
+    "nameZh": "库珀花环"
+  },
+  "Name Day": {
+    "id": 3118,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Ritual",
+      "Remove Buffs"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "仪式",
+      "驱散"
+    ],
+    "nameZh": "命名日"
+  },
+  "Ulrich": {
+    "id": 3107,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Dynamo",
+      "Support",
+      "Channel",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "电能",
+      "辅助",
+      "吟诵",
+      "术阵"
+    ],
+    "nameZh": "乌尔里希"
+  },
+  "Buddy Fairchild": {
+    "id": 3115,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式"
+    ],
+    "nameZh": "嚼嚼松果"
+  },
+  "Nautika": {
+    "id": 3120,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Bloodtithe",
+      "Channel"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "薪血",
+      "吟诵"
+    ],
+    "nameZh": "诺谛卡"
+  },
+  "Moldir": {
+    "id": 3121,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "Ritual",
+      "DPS",
+      "Riposte"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "仪式",
+      "输出",
+      "反击"
+    ],
+    "nameZh": "莫莉德尔"
+  },
+  "Sentinel": {
+    "id": 3126,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "Bloodtithe",
+      "DPS",
+      "Bullet"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "薪血",
+      "输出",
+      "子弹"
+    ],
+    "nameZh": "玛丽安娜"
+  },
+  "Charon": {
+    "id": 3128,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Dynamo",
+      "DPS",
+      "Channel",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "电能",
+      "输出",
+      "吟诵",
+      "术阵"
+    ],
+    "nameZh": "卡戎"
+  },
+  "Alexios": {
+    "id": 3122,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual",
+      "Assassination"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式",
+      "刺杀"
+    ],
+    "nameZh": "阿利克西欧斯"
+  },
+  "Ezio Auditore": {
+    "id": 3123,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Poison",
+      "Ritual",
+      "Extra Action",
+      "Assassination"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "中毒",
+      "仪式",
+      "额外行动",
+      "刺杀"
+    ],
+    "nameZh": "艾吉奥·奥迪托雷"
+  },
+  "Kassandra": {
+    "id": 3124,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Ritual",
+      "Support",
+      "Assassination"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "仪式",
+      "辅助",
+      "刺杀"
+    ],
+    "nameZh": "卡珊德拉"
+  },
+  "Rubuska": {
+    "id": 3125,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Heal",
+      "Bloodtithe",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "薪血",
+      "辅助"
+    ],
+    "nameZh": "野树莓"
+  },
+  "Corvus": {
+    "id": 3132,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Dynamo",
+      "Channel",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "电能",
+      "吟诵",
+      "术阵"
+    ],
+    "nameZh": "告死鸟"
+  },
+  "Beryl": {
+    "id": 3134,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Lingering Glow",
+      "Extra Action",
+      "Rank Up"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "余辉",
+      "额外行动",
+      "升阶"
+    ],
+    "nameZh": "贝丽尔"
+  },
+  "Brume": {
+    "id": 3135,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Dynamo",
+      "Support",
+      "Channel",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "电能",
+      "辅助",
+      "吟诵",
+      "术阵"
+    ],
+    "nameZh": "灰调蓝"
+  },
+  "Marsha": {
+    "id": 3127,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Lingering Glow",
+      "Support",
+      "Remove Debuffs"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "余辉",
+      "辅助",
+      "净化"
+    ],
+    "nameZh": "玛尔纱"
+  },
+  "Igor": {
+    "id": 3092,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Extra Action",
+      "Ritual",
+      "Bullet"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "额外行动",
+      "仪式",
+      "子弹"
+    ],
+    "nameZh": "伊戈尔"
+  },
+  "Paper Heron": {
+    "id": 3141,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Inspiration",
+      "Support",
+      "Array",
+      "Eureka"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "启示",
+      "辅助",
+      "术阵",
+      "灵光"
+    ],
+    "nameZh": "鹭鸶剪"
+  },
+  "Cheng Heguang": {
+    "id": 3137,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "Extra Action",
+      "DPS",
+      "Follow-Up"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "额外行动",
+      "输出",
+      "追击"
+    ],
+    "nameZh": "程和光"
+  },
+  "Reed": {
+    "id": 3138,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support"
+    ],
+    "roleTagsZh": [
+      "辅助"
+    ],
+    "nameZh": "芦草结"
+  },
+  "Lorentz Butterfly": {
+    "id": 3139,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Lingering Glow",
+      "DPS",
+      "Rewrite"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "余辉",
+      "输出",
+      "改写"
+    ],
+    "nameZh": "洛伦兹蝴蝶"
+  },
+  "Ramona": {
+    "id": 3142,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Poison",
+      "Rewrite"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "中毒",
+      "改写"
+    ],
+    "nameZh": "拉莫纳"
+  },
+  "Lady by the Lake": {
+    "id": 3136,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助"
+    ],
+    "nameZh": "《湖边的女人》"
+  },
+  "Enigma": {
+    "id": 3143,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Shield",
+      "Dynamo",
+      "Support",
+      "Array"
+    ],
+    "roleTagsZh": [
+      "护盾",
+      "电能",
+      "辅助",
+      "术阵"
+    ],
+    "nameZh": "哑谜"
+  },
+  "Rhiannon": {
+    "id": 3146,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "All-Rounder"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "百灵百验"
+    ],
+    "nameZh": "小瑞安侬"
+  },
+  "Ms. Stranger": {
+    "id": 3147,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式"
+    ],
+    "nameZh": "无名者"
+  },
+  "Coppélia": {
+    "id": 3144,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Conduit",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "术具",
+      "辅助"
+    ],
+    "nameZh": "珐琅眼"
+  },
+  "Everecho": {
+    "id": 3145,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Heal",
+      "Conduit",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "术具",
+      "辅助"
+    ],
+    "nameZh": "回声谣"
+  },
+  "Cornerstone": {
+    "id": 3140,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Riposte"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "反击"
+    ],
+    "nameZh": "奠基石"
+  },
+  "The Twins": {
+    "id": 3149,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Conduit"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "术具"
+    ],
+    "nameZh": "双生舞伶"
+  },
+  "NORA": {
+    "id": 3151,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "输出"
+    ],
+    "nameZh": "诺拉"
+  },
+  "Silverwing Eagle": {
+    "id": 3154,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Ritual",
+      "Support",
+      "Follow-Up"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "仪式",
+      "辅助",
+      "追击"
+    ],
+    "nameZh": "银装小春雀儿"
+  },
+  "Hedone": {
+    "id": 3156,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "Support",
+      "Conduit",
+      "DPS"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "术具",
+      "输出"
+    ],
+    "nameZh": "赫多涅"
+  },
+  "Narcissus": {
+    "id": 3157,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Heal",
+      "Ritual",
+      "Support"
+    ],
+    "roleTagsZh": [
+      "治疗",
+      "仪式",
+      "辅助"
+    ],
+    "nameZh": "纳西索斯"
+  },
+  "Huntsworn Lilya": {
+    "id": 3155,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "洞知",
+      "Channel"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "洞知",
+      "吟诵"
+    ],
+    "nameZh": "狩勋女巫红弩箭"
+  },
+  "Drake": {
+    "id": 3158,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": [
+      "Support",
+      "Lingering Glow",
+      "DPS",
+      "Channel"
+    ],
+    "roleTagsZh": [
+      "辅助",
+      "余辉",
+      "输出",
+      "吟诵"
+    ],
+    "nameZh": "德雷克"
+  },
+  "Glyndŵr": {
+    "id": 3163,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Support",
+      "Extra Action",
+      "Follow-Up"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "辅助",
+      "额外行动",
+      "追击"
+    ],
+    "nameZh": "格林杜尔"
+  },
+  "AliEn T": {
+    "id": 3034,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": [
+      "DPS",
+      "Control"
+    ],
+    "roleTagsZh": [
+      "输出",
+      "控制"
+    ],
+    "nameZh": "星之眼"
+  }
+}

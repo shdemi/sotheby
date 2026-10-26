@@ -186,6 +186,9 @@ async function setLanguage(lang) {
   // The credits modal's empty state is translated too.
   renderCredits();
 
+  const buildsModalEl = document.getElementById("builds-modal");
+  if (buildsModalEl && buildsModalEl.style.display === "flex") renderBuilds();
+
   // Slide the highlight to the language that was just picked.
   syncSlidingThumbs({ animate: true });
 }
@@ -1258,7 +1261,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -1278,6 +1281,15 @@ async function initApp() {
       fetch("data/guide_skills.json").catch(() => null),
       fetch("data/characters_progressions.json").catch(() => null),
       fetch("data/credits.json").catch(() => null),
+      fetch("data/items.json").catch(() => null),
+      fetch("data/characters_mats_required.json").catch(() => null),
+      fetch("data/item_formulas.json").catch(() => null),
+      fetch("data/character_profiles.json").catch(() => null),
+      fetch("data/pattern_costs.json").catch(() => null),
+      fetch("data/character_skills.json").catch(() => null),
+      fetch("data/character_euphorias.json").catch(() => null),
+      fetch("data/skill_glossary.json").catch(() => null),
+      fetch("data/psychubes_data.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1429,6 +1441,17 @@ async function initApp() {
       rotations: (await readJson(guideRotationsRes))?.rotations,
       skills: await readJson(guideSkillsRes),
       progressions: await readJson(guideProgRes),
+    });
+    buildInfoBookData({
+      items: await readJson(itemsRes),
+      formulas: await readJson(itemFormulasRes),
+      matsRequired: await readJson(matsReqRes),
+      profiles: await readJson(charProfilesRes),
+      patternCosts: await readJson(patternCostsRes),
+      skillsData: await readJson(charSkillsRes),
+      euphoriasData: await readJson(charEuphoriasRes),
+      glossaryData: await readJson(skillGlossaryRes),
+      psychubesDetail: await readJson(psychubesDataRes),
     });
     loadRotationList();
     buildCredits(await readJson(creditsRes));
@@ -1771,6 +1794,11 @@ function normalizeCharacterKey(name) {
 function resolveCharacterName(name) {
   const raw = normalizeCharacterKey(name);
   if (!raw) return "";
+
+  if (globalNameTransfer[raw]) return globalNameTransfer[raw];
+  for (const [from, to] of Object.entries(globalNameTransfer)) {
+    if (to === raw) return raw;
+  }
 
   if (characterDb[raw] !== undefined) return raw;
 
@@ -6364,7 +6392,1299 @@ function removeRotationEntry(uid) {
   return true;
 }
 
-/* ---------------- Credits ---------------- */
+/* ---------------- InfoBook Data Stores ---------------- */
+let itemsData = [];
+let itemFormulasData = {};
+let charactersMatsData = {};
+let characterProfilesData = {};
+let patternCostsData = {};
+let characterSkillsData = {};
+let characterEuphoriasData = {};
+let skillGlossaryData = {};
+let psychubesDetailedData = {};
+let infoBookActiveTab = "characters"; // "characters" | "items" | "glossary"
+let infoBookItemSubTab = "items"; // "items" | "psychubes"
+let selectedItemId = null;
+let selectedPsychubeKey = null;
+let selectedGlossaryKey = null;
+let psychubeDetailLevel = 60;
+let psychubeDetailAmp = 1;
+let itemSearchQuery = "";
+let itemCategoryFilter = "all";
+
+function buildInfoBookData({ items, formulas, matsRequired, profiles, patternCosts, skillsData, euphoriasData, glossaryData, psychubesDetail }) {
+  if (Array.isArray(items)) itemsData = items;
+  if (formulas && typeof formulas === "object") itemFormulasData = formulas;
+  if (matsRequired && typeof matsRequired === "object") charactersMatsData = matsRequired;
+  if (profiles && typeof profiles === "object") characterProfilesData = profiles;
+  if (patternCosts && typeof patternCosts === "object") patternCostsData = patternCosts;
+  if (skillsData && typeof skillsData === "object") characterSkillsData = skillsData;
+  if (euphoriasData && typeof euphoriasData === "object") characterEuphoriasData = euphoriasData;
+  if (glossaryData && typeof glossaryData === "object") skillGlossaryData = glossaryData;
+  if (psychubesDetail && typeof psychubesDetail === "object") psychubesDetailedData = psychubesDetail;
+}
+
+function getItemByName(name) {
+  if (!name) return null;
+  const n = String(name).trim().toLowerCase();
+  return itemsData.find((it) => it.name.toLowerCase() === n) || null;
+}
+
+function formatMaterialQuantity(quantity) {
+  const q = Number(quantity) || 0;
+  if (q >= 1000000) return `${(q / 1000000).toFixed(1)}m`;
+  if (q >= 10000) return `${(q / 1000).toFixed(0)}k`;
+  return String(q);
+}
+
+function renderItemStickerHtml(itemOrName, qty = null, extraClass = "") {
+  const item = typeof itemOrName === "object" && itemOrName !== null ? itemOrName : getItemByName(itemOrName);
+  if (!item) {
+    const fallbackTitle = typeof itemOrName === "string" ? escapeHtml(itemOrName) : "";
+    const qtyHtml = qty !== null && qty !== undefined ? `<span class="item-sticker-qty">${formatMaterialQuantity(qty)}</span>` : "";
+    return `<div class="item-sticker ${extraClass}" title="${fallbackTitle}"><div style="padding:4px;font-size:9px;color:#8f8a83;text-align:center;word-break:break-all;">${fallbackTitle}</div>${qtyHtml}</div>`;
+  }
+  const qtyHtml = qty !== null && qty !== undefined ? `<span class="item-sticker-qty">${formatMaterialQuantity(qty)}</span>` : "";
+  const title = escapeHtml(item.name || "");
+  const iconSrc = item.id ? `images/items/icon/${item.id}.webp` : item.icon;
+  const borderSrc = item.rarity ? `images/items/border/${item.rarity}.webp` : item.border;
+  return `
+    <div class="item-sticker ${extraClass}" data-item-id="${item.id}" data-item-name="${escapeHtml(item.name)}" title="${title}">
+      <img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" loading="lazy" />
+      <img src="${escapeHtml(iconSrc)}" alt="${title}" class="item-sticker-img" loading="lazy" />
+      ${qtyHtml}
+    </div>
+  `;
+}
+
+/* State for character materials (all combined in one panel) */
+let charProgInsight = 3;
+let charProgLevel = 60;
+let charProgResonanceStart = 1;
+let charProgResonanceEnd = 10;
+let charProgPattern = null;
+let charEuphoriaSelectedTiers = new Set();
+let charMasteryLevel = 0;
+
+const KORNBLUME_CATEGORY_PRIORITY = {
+  "Base Item": 0,
+  "Resonate Material": 1,
+  "Insight Material": 2,
+  "Build Material": 2,
+};
+
+function sortMaterialsKornblume(array) {
+  return array.slice().sort((matA, matB) => {
+    const itemA = getItemByName(matA.material);
+    const itemB = getItemByName(matB.material);
+
+    if (itemA && itemB) {
+      const catA = KORNBLUME_CATEGORY_PRIORITY[itemA.category] !== undefined ? KORNBLUME_CATEGORY_PRIORITY[itemA.category] : 99;
+      const catB = KORNBLUME_CATEGORY_PRIORITY[itemB.category] !== undefined ? KORNBLUME_CATEGORY_PRIORITY[itemB.category] : 99;
+      if (catA !== catB) return catA - catB;
+      if (itemB.rarity !== itemA.rarity) return (itemB.rarity || 0) - (itemA.rarity || 0);
+      return (itemA.id || 0) - (itemB.id || 0);
+    }
+    if (itemA) return -1;
+    if (itemB) return 1;
+    return String(matA.material).localeCompare(String(matB.material));
+  });
+}
+
+function getCharacterMats(name) {
+  const canonical = resolveCharacterName(name);
+  return charactersMatsData[canonical] || charactersMatsData[name] || null;
+}
+
+
+function getCharacterStatsAt(name, insight, level) {
+  const mats = getCharacterMats(name);
+  if (!mats || !mats.stats) return null;
+  const s = mats.stats;
+  const rarity = Number(mats.rarity || getCharacterRarity(name) || 5);
+  const maxInsight = getMaxInsightForRarity(rarity);
+  const ins = Math.min(maxInsight, Math.max(0, insight));
+  const maxLvl = getMaxLevelForInsight(ins);
+  const lvl = Math.min(maxLvl, Math.max(1, level));
+
+  const milestoneKeys = [
+    { start: "0-1", end: "0-30", max: 30 },
+    { start: "0-30", end: "1-40", max: 40 },
+    { start: "1-40", end: "2-50", max: 50 },
+    { start: "2-50", end: "3-60", max: 60 }
+  ];
+  const m = milestoneKeys[ins] || milestoneKeys[0];
+  const startStats = s[m.start] || s["0-1"];
+  const endStats = s[m.end] || startStats;
+  if (!startStats) return null;
+
+  const frac = m.max > 1 ? (lvl - 1) / (m.max - 1) : 0;
+  const result = [];
+  for (let i = 0; i < 7; i++) {
+    const v1 = startStats[i] || 0;
+    const v2 = endStats[i] !== undefined ? endStats[i] : v1;
+    const val = v1 + (v2 - v1) * frac;
+    result.push(i >= 5 ? val.toFixed(1) + "%" : Math.round(val));
+  }
+  return {
+    atk: result[0],
+    hp: result[1],
+    def: result[2],
+    mdef: result[3],
+    technic: result[4],
+    critRate: result[5],
+    critDmg: result[6]
+  };
+}
+
+let charSelectedSkinId = null;
+
+function calculateCombinedCharacterMaterials(name) {
+  const mats = getCharacterMats(name);
+  if (!mats) return [];
+  const rarity = Number(mats.rarity || getCharacterRarity(name) || 5);
+  const result = {};
+
+  // 1. Insight & Level materials
+  // Insight materials up to target insight
+  for (let ins = 1; ins <= charProgInsight; ins++) {
+    const insObj = (mats.insight || []).find((i) => i.insight === ins);
+    if (insObj && Array.isArray(insObj.materials)) {
+      insObj.materials.forEach((m) => {
+        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
+      });
+    }
+  }
+
+  // Cumulative Dust & Sharpodonty for leveling
+  let totalDust = 0;
+  let totalSharp = 0;
+  const lookup = [
+    { rarity: [5, 6], insight: 0, maxLvl: 30, dust: 27700, sharp: 15080 },
+    { rarity: [5, 6], insight: 1, maxLvl: 40, dust: 100200, sharp: 53100 },
+    { rarity: [5, 6], insight: 2, maxLvl: 50, dust: 406700, sharp: 137200 },
+    { rarity: [5, 6], insight: 3, maxLvl: 60, dust: 810880, sharp: 400600 },
+    { rarity: [4], insight: 0, maxLvl: 30, dust: 20680, sharp: 11200 },
+    { rarity: [4], insight: 1, maxLvl: 40, dust: 75040, sharp: 39720 },
+    { rarity: [4], insight: 2, maxLvl: 50, dust: 304900, sharp: 102790 },
+    { rarity: [2, 3], insight: 0, maxLvl: 30, dust: 15510, sharp: 8400 },
+    { rarity: [2, 3], insight: 1, maxLvl: 40, dust: 56280, sharp: 29790 },
+  ];
+
+  // Full tiers completed before current insight
+  for (let ins = 0; ins < charProgInsight; ins++) {
+    const hit = lookup.find((l) => l.rarity.includes(rarity) && l.insight === ins);
+    if (hit) {
+      totalDust += hit.dust;
+      totalSharp += hit.sharp;
+    }
+  }
+  // Current insight partial/full level ratio
+  const currHit = lookup.find((l) => l.rarity.includes(rarity) && l.insight === charProgInsight);
+  if (currHit && currHit.maxLvl > 1 && charProgLevel > 1) {
+    const fraction = (charProgLevel - 1) / (currHit.maxLvl - 1);
+    totalDust += Math.round(currHit.dust * fraction);
+    totalSharp += Math.round(currHit.sharp * fraction);
+  }
+
+  if (totalDust > 0) result["Dust"] = totalDust;
+  if (totalSharp > 0) result["Sharpodonty"] = (result["Sharpodonty"] || 0) + totalSharp;
+
+  // 2. Resonance materials (from charProgResonanceStart + 1 up to charProgResonanceEnd)
+  const startR = Math.min(charProgResonanceStart, charProgResonanceEnd);
+  const endR = Math.max(charProgResonanceStart, charProgResonanceEnd);
+  for (let r = startR + 1; r <= endR; r++) {
+    const resObj = (mats.resonance || []).find((x) => x.resonance === r);
+    if (resObj && Array.isArray(resObj.materials)) {
+      resObj.materials.forEach((m) => {
+        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
+      });
+    }
+  }
+
+  // 3. Pattern / Frequency Modulation materials (always allowed, independent of insight/resonance)
+  if (charProgPattern && charProgPattern !== DEFAULT_PATTERN) {
+    const canonical = resolveCharacterName(name);
+    const heroPatterns = patternCostsData[canonical] || patternCostsData[name] || {};
+    const patternCostList = heroPatterns[charProgPattern] || [];
+    patternCostList.forEach((m) => {
+      result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
+    });
+  }
+
+  // 4. Euphoria materials
+  (mats.euphoria || []).forEach((e) => {
+    if (charEuphoriaSelectedTiers.has(e.id) && Array.isArray(e.materials)) {
+      e.materials.forEach((m) => {
+        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
+      });
+    }
+  });
+
+  // 5. Mastery materials (from 1 up to charMasteryLevel)
+  for (let lvl = 1; lvl <= charMasteryLevel; lvl++) {
+    const masObj = (mats.mastery || []).find((m) => m.level === lvl);
+    if (masObj && Array.isArray(masObj.materials)) {
+      masObj.materials.forEach((m) => {
+        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
+      });
+    }
+  }
+
+  const rawList = Object.entries(result).map(([material, quantity]) => ({ material, quantity }));
+  return sortMaterialsKornblume(rawList);
+}
+
+function updateCharacterMatsOnly(name) {
+  const panel = document.getElementById("char-mats-panel-section");
+  if (!panel) {
+    renderBuildsDetail();
+    return;
+  }
+  panel.outerHTML = renderCharacterMatsSection(name);
+  const newPanel = document.getElementById("char-mats-panel-section");
+  if (newPanel) {
+    setupCharacterMatsListeners(newPanel);
+  }
+}
+
+
+function renderCharacterMatsSection(name) {
+  const mats = getCharacterMats(name);
+  if (!mats) return "";
+  const rarity = Number(mats.rarity || getCharacterRarity(name) || 5);
+  const maxInsight = getMaxInsightForRarity(rarity);
+  if (charProgInsight > maxInsight) charProgInsight = maxInsight;
+  const maxLvl = getMaxLevelForInsight(charProgInsight);
+  if (charProgLevel > maxLvl) charProgLevel = maxLvl;
+
+  // Highest resonance in data for this character/rarity (usually 10 for R2-R4, 15 for R5-R6)
+  const maxRes = Math.max(10, ...(mats.resonance || []).map((r) => r.resonance || 0));
+  if (charProgResonanceStart > maxRes) charProgResonanceStart = maxRes;
+  if (charProgResonanceEnd > maxRes) charProgResonanceEnd = maxRes;
+
+  const euphoriaList = mats.euphoria || [];
+  const hasEuphoria = euphoriaList.length > 0;
+  const charId = mats.id;
+  const availablePatterns = getPatternsForCharacter(name);
+
+  const reqMaterials = calculateCombinedCharacterMaterials(name);
+  const matsHtml = reqMaterials.length
+    ? reqMaterials.map((m) => renderItemStickerHtml(m.material, m.quantity)).join("")
+    : `<p class="hint">No materials required.</p>`;
+
+  // Insight quick-picks (I0 up to maxInsight)
+  const insightPicks = Array.from({ length: maxInsight + 1 }, (_, i) => i)
+    .map(
+      (ins) => `
+        <button type="button" class="btn-pill-i ${charProgInsight === ins ? "active" : ""}" data-mats-ins="${ins}">
+          <img src="images/insight_icon/I${ins}.png" alt="I${ins}" class="insight-btn-img" />
+        </button>`
+    )
+    .join("");
+
+  // Euphoria picker HTML (if character has euphoria)
+  let euphoriaSectionHtml = "";
+  if (hasEuphoria) {
+    const kornId = mats.kornId || charId;
+    const euphoriaButtons = euphoriaList
+      .map((e) => {
+        const isSelected = charEuphoriaSelectedTiers.has(e.id);
+        const imgPath = kornId ? `images/arcanists/euphoria/${kornId}_${e.id}.webp` : "";
+        return `
+          <button type="button" class="euphoria-pick-btn ${isSelected ? "is-active" : ""}" data-eup-id="${e.id}" title="Tier ${e.id}">
+            ${imgPath ? `<img src="${escapeHtml(imgPath)}" alt="" class="euphoria-pick-img" onerror="this.style.display='none'" />` : ""}
+            <span class="euphoria-pick-tier">E${e.id}</span>
+            ${isSelected ? `<span class="euphoria-pick-check">✓</span>` : ""}
+          </button>
+        `;
+      })
+      .join("");
+
+    euphoriaSectionHtml = `
+      <div class="setting-group" id="group-mats-euphoria">
+        <div class="setting-label-row">
+          <label class="setting-label"><span>${escapeHtml(t("builds.euphoria"))}</span></label>
+          <span class="setting-val-display" style="font-size: 0.72rem; color: #B5B5B3;">${charEuphoriaSelectedTiers.size ? escapeHtml(t("builds.selected", { n: charEuphoriaSelectedTiers.size })) : escapeHtml(t("builds.none"))}</span>
+        </div>
+        <div class="euphoria-picker-grid">${euphoriaButtons}</div>
+      </div>
+
+      <div class="setting-group" id="group-mats-mastery">
+        <div class="setting-label-row">
+          <label class="setting-label"><span>${escapeHtml(t("builds.mastery"))}</span></label>
+          <span class="setting-val-display" id="display-mats-mastery">Lv.${charMasteryLevel}</span>
+        </div>
+        <input type="range" id="input-mats-mastery" min="0" max="4" value="${charMasteryLevel}" class="custom-slider" style="margin-top: 8px;" />
+      </div>
+    `;
+  }
+
+  return `
+    <section class="build-section char-mats-panel" id="char-mats-panel-section">
+      <h4 class="build-section-title">${escapeHtml(t("builds.matsProgression"))}</h4>
+      <div class="char-mats-content">
+        <div class="char-mats-controls-box">
+          <!-- Compact Level and Insight Row like Psychube -->
+          <div class="char-mats-compact-row">
+            <div class="char-mats-compact-level">
+              <span class="char-mats-sublabel">${escapeHtml(t("builds.level"))}:</span>
+              <input type="range" id="input-mats-level" min="1" max="${maxLvl}" value="${charProgLevel}" class="custom-slider psychube-level-slider" />
+              <span class="psychube-level-number" id="display-mats-level">Lv.${charProgLevel}</span>
+            </div>
+
+            <div class="char-mats-compact-insight">
+              <span class="char-mats-sublabel">${escapeHtml(t("builds.insight"))}:</span>
+              <div class="char-mats-ins-boxes">
+                ${Array.from({ length: maxInsight + 1 }, (_, i) => i)
+                  .map(
+                    (ins) => `
+                      <button type="button" class="char-mats-ins-btn ${charProgInsight === ins ? "is-active" : ""}" data-mats-ins="${ins}" title="Insight ${ins}">
+                        <img src="images/insight_icon/I${ins}.png" alt="I${ins}" />
+                      </button>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+          </div>
+
+          <!-- Resonance (Start to End) -->
+          <div class="setting-group" id="group-mats-resonance">
+            <div class="setting-label-row">
+              <label class="setting-label"><span>${escapeHtml(t("builds.resReasoning"))}</span></label>
+              <span class="setting-val-display" id="display-mats-resonance">R${charProgResonanceStart} → R${charProgResonanceEnd}</span>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; margin-top: 8px;">
+              <div style="flex: 1; display: flex; align-items: center; gap: 6px;">
+                <span class="char-mats-sublabel" style="min-width: 32px;">${escapeHtml(t("builds.from"))}</span>
+                <input type="number" id="input-mats-resonance-start" min="1" max="${maxRes}" value="${charProgResonanceStart}" class="char-mats-number-input" />
+              </div>
+              <div style="flex: 1; display: flex; align-items: center; gap: 6px;">
+                <span class="char-mats-sublabel" style="min-width: 20px;">${escapeHtml(t("builds.to"))}</span>
+                <input type="number" id="input-mats-resonance-end" min="1" max="${maxRes}" value="${charProgResonanceEnd}" class="char-mats-number-input" />
+              </div>
+            </div>
+          </div>
+
+          ${
+            availablePatterns.length > 0
+              ? `
+              <div class="setting-group" id="group-mats-pattern">
+                <div class="setting-label-row">
+                  <label class="setting-label"><span>${escapeHtml(t("builds.pattern"))}</span></label>
+                  <span class="setting-val-display" id="display-mats-pattern" style="font-size: 0.76rem; color: #B5B5B3;">${charProgPattern ? escapeHtml(patternLabel(charProgPattern)) : escapeHtml(t("builds.none"))}</span>
+                </div>
+                <div class="shape-pattern-grid">
+                  ${availablePatterns
+                    .map((pat) => {
+                      const icon = getPatternIconPath(name, pat);
+                      const isSel = charProgPattern === pat;
+                      return `
+                        <button type="button" class="shape-pattern-btn ${isSel ? "is-active" : ""}" data-mats-pattern="${escapeHtml(pat)}" title="${escapeHtml(patternLabel(pat))}">
+                          ${icon ? `<img src="${escapeHtml(icon)}" alt="${escapeHtml(patternLabel(pat))}" />` : `<span class="shape-pattern-fallback"></span>`}
+                        </button>
+                      `;
+                    })
+                    .join("")}
+                </div>
+              </div>`
+              : ""
+          }
+
+          ${euphoriaSectionHtml}
+        </div>
+
+        <h4 class="build-section-title" style="margin-top: 8px;">${escapeHtml(t("builds.totalReqMaterials"))}</h4>
+        <div class="mats-result-grid">${matsHtml}</div>
+      </div>
+    </section>
+  `;
+}
+
+function setupCharacterMatsListeners(host) {
+  const currentName = buildsSelected;
+
+  // Insight clicks
+  host.querySelectorAll("[data-mats-ins]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      charProgInsight = Number(btn.dataset.matsIns);
+      const maxL = getMaxLevelForInsight(charProgInsight);
+      if (charProgLevel > maxL) charProgLevel = maxL;
+      updateCharacterMatsOnly(currentName);
+    });
+  });
+
+  // Level slider
+  const levelSlider = host.querySelector("#input-mats-level");
+  if (levelSlider) {
+    levelSlider.addEventListener("input", (e) => {
+      charProgLevel = Number(e.target.value);
+      const disp = host.querySelector("#display-mats-level");
+      if (disp) disp.textContent = `Lv.${charProgLevel}`;
+      updateCharacterMatsOnly(currentName);
+    });
+  }
+
+  // Resonance start input
+  const resStartSlider = host.querySelector("#input-mats-resonance-start");
+  if (resStartSlider) {
+    const handleStartChange = (e) => {
+      let val = Number(e.target.value);
+      if (Number.isNaN(val) || val < 1) val = 1;
+      charProgResonanceStart = val;
+      const disp = host.querySelector("#display-mats-resonance");
+      if (disp) disp.textContent = `R${charProgResonanceStart} → R${charProgResonanceEnd}`;
+      updateCharacterMatsOnly(currentName);
+    };
+    resStartSlider.addEventListener("change", handleStartChange);
+  }
+
+  // Resonance end input
+  const resEndSlider = host.querySelector("#input-mats-resonance-end");
+  if (resEndSlider) {
+    const handleEndChange = (e) => {
+      let val = Number(e.target.value);
+      if (Number.isNaN(val) || val < 1) val = 1;
+      charProgResonanceEnd = val;
+      const disp = host.querySelector("#display-mats-resonance");
+      if (disp) disp.textContent = `R${charProgResonanceStart} → R${charProgResonanceEnd}`;
+      updateCharacterMatsOnly(currentName);
+    };
+    resEndSlider.addEventListener("change", handleEndChange);
+  }
+
+  // Pattern buttons
+  host.querySelectorAll("[data-mats-pattern]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const pat = btn.dataset.matsPattern;
+      if (charProgPattern === pat) charProgPattern = null;
+      else charProgPattern = pat;
+      updateCharacterMatsOnly(currentName);
+    });
+  });
+
+  // Euphoria picker buttons
+  host.querySelectorAll("[data-eup-id]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = Number(btn.dataset.eupId);
+      if (charEuphoriaSelectedTiers.has(id)) charEuphoriaSelectedTiers.delete(id);
+      else charEuphoriaSelectedTiers.add(id);
+      updateCharacterMatsOnly(currentName);
+    });
+  });
+
+  // Mastery slider
+  const masSlider = host.querySelector("#input-mats-mastery");
+  if (masSlider) {
+    masSlider.addEventListener("input", (e) => {
+      charMasteryLevel = Number(e.target.value);
+      const disp = host.querySelector("#display-mats-mastery");
+      if (disp) disp.textContent = `Lv.${charMasteryLevel}`;
+      updateCharacterMatsOnly(currentName);
+    });
+  }
+}
+
+/* State for character skills tabs (Skills / Weapons / Insights / Portrays / Euphoria) */
+let charSkillsActiveTab = "skills"; // "skills" | "weapons" | "insights" | "portrays" | "euphoria"
+let charSkillSelectedIdx = 0; // Index of selected skill card
+let charSkillSelectedRank = 3; // Selected rank for active skill (1, 2, or 3)
+let charSkillsActiveStance = null; // Active stance for multi-form characters (e.g. "Base", "Bendith", "Set A")
+let charWeaponsSelectedIdx = 0; // Index of selected weapon for Collab chars (Ezio / Kassandra)
+
+function getCharacterSkillsInfo(name) {
+  const canonical = resolveCharacterName(name);
+  return characterSkillsData[canonical] || characterSkillsData[name] || null;
+}
+
+function getCharacterStances(skills) {
+  if (!Array.isArray(skills)) return [];
+  const incantations = skills.filter((s) => s.type === "Incantation" && (s.nameEn || s.nameZh));
+
+  const slotGroups = new Map();
+  incantations.forEach((s) => {
+    if (!slotGroups.has(s.slot)) slotGroups.set(s.slot, []);
+    slotGroups.get(s.slot).push(s);
+  });
+
+  const namedSubSlots = [];
+  let hasEmptySubSlot = false;
+
+  for (const [, skList] of slotGroups.entries()) {
+    if (skList.length > 1) {
+      skList.forEach((s) => {
+        const sub = (s.subSlot || "").trim();
+        if (sub && !namedSubSlots.includes(sub)) namedSubSlots.push(sub);
+        else if (!sub) hasEmptySubSlot = true;
+      });
+    }
+  }
+
+  if (namedSubSlots.length === 0) return [];
+
+  const stances = [];
+  if (hasEmptySubSlot) stances.push("Base");
+  namedSubSlots.forEach((sub) => stances.push(sub));
+  return stances;
+}
+
+function getSkillsForStance(skills, activeStance) {
+  if (!activeStance) return skills;
+
+  return skills.filter((s) => {
+    if (s.type === "Ultimate") return true;
+    if (!s.nameEn && !s.nameZh) return false;
+
+    const sub = (s.subSlot || "").trim();
+    const effectiveSub = sub === "" ? "Base" : sub;
+
+    if (s.type === "Special") {
+      if (effectiveSub === activeStance) return true;
+      const isStanceTag = ["Base", "Bendith", "Set A", "Set B", "Set C", "Set D"].includes(effectiveSub);
+      if (!isStanceTag) return true;
+      return false;
+    }
+
+    if (effectiveSub === activeStance) return true;
+
+    // Check if another skill with matching slot has activeStance
+    const slotHasActiveStanceSkill = skills.some((other) => {
+      if (other === s || other.type !== "Incantation") return false;
+      if (other.slot !== s.slot) return false;
+      const otherSub = (other.subSlot || "").trim();
+      const otherEff = otherSub === "" ? "Base" : otherSub;
+      return otherEff === activeStance;
+    });
+
+    if (!slotHasActiveStanceSkill && sub === "") return true;
+
+    return false;
+  });
+}
+
+function getSkillBadgeText(sk, isCn = false, rank = 1) {
+  if (sk.type === "Ultimate") {
+    return isCn ? "至终" : "Ultimate";
+  }
+
+  // Explicit attribute override if specified
+  if (sk.attribute) return sk.attribute;
+
+  const nameEn = (sk.nameEn || "").toLowerCase();
+  const nameZh = sk.nameZh || "";
+
+  // Specific name-based attribute recognition
+  if (
+    nameEn.includes("energy") ||
+    nameEn.includes("conversion") ||
+    nameEn.includes("pulse") ||
+    nameEn.includes("flame undying") ||
+    nameZh.includes("复燃再燃") ||
+    nameZh.includes("交感")
+  ) {
+    return isCn ? "交感" : "Energy";
+  }
+  if (nameEn.includes("versatile") || nameEn.includes("omni card") || nameZh.includes("万能")) {
+    return isCn ? "万能" : "Versatile";
+  }
+
+  // Inspect specific rank description (or fallback to rank 1 or main skill)
+  const rankObj = sk.ranks ? (sk.ranks[rank] || sk.ranks["1"] || Object.values(sk.ranks)[0] || {}) : sk;
+  const descEn = (rankObj.descEn || sk.descEn || "").toLowerCase();
+  const descZh = rankObj.descZh || sk.descZh || "";
+
+  if (descEn.includes("channel") || descZh.includes("吟诵")) {
+    return isCn ? "吟诵" : "Channel";
+  }
+  if (descEn.includes("counter") || descEn.includes("riposte") || descZh.includes("反击") || descZh.includes("反制")) {
+    return isCn ? "反制" : "Counter";
+  }
+  if (
+    descEn.includes("healing") ||
+    descEn.includes("heal") ||
+    descEn.includes("recovers") ||
+    descEn.includes("cure") ||
+    descZh.includes("治疗") ||
+    descZh.includes("回复")
+  ) {
+    if (!descEn.includes("deals") && !descEn.includes("attack") && !descZh.includes("攻击") && !descZh.includes("创伤")) {
+      return isCn ? "治疗" : "Heal";
+    }
+  }
+
+  // Pure control / debuff (inflicts Daze, Disarm, Silence, Petrify, Freeze, Stun, Corrode, Poison, etc. without primary attack label or with explicit control)
+  if (
+    descEn.includes("1-target control") ||
+    descEn.includes("mass control") ||
+    descEn.includes("1-target debuff") ||
+    descEn.includes("mass debuff") ||
+    descZh.includes("单体控制") ||
+    descZh.includes("群体控制") ||
+    descZh.includes("单体削弱") ||
+    descZh.includes("群体削弱")
+  ) {
+    return isCn ? "减益" : "Debuff";
+  }
+
+  if (
+    descEn.includes("debuff") ||
+    descZh.includes("减益") ||
+    descZh.includes("削弱") ||
+    (descEn.includes("inflicts") && !descEn.includes("deals") && !descEn.includes("attack") && !descZh.includes("攻击") && !descZh.includes("创伤"))
+  ) {
+    return isCn ? "减益" : "Debuff";
+  }
+
+  // Skills like An-an Lee S1 Rank 3: "Inflicts [Daze] for 1 round" or control states that classify as Debuff in game
+  if (
+    descEn.includes("inflicts [daze]") ||
+    descEn.includes("inflicts [petrify]") ||
+    descEn.includes("inflicts [freeze]") ||
+    descEn.includes("inflicts [disarm]") ||
+    descEn.includes("inflicts [silence]") ||
+    descZh.includes("【眩晕】") ||
+    descZh.includes("【石化】") ||
+    descZh.includes("【冰冻】") ||
+    descZh.includes("【缴械】") ||
+    descZh.includes("【缄默】")
+  ) {
+    return isCn ? "减益" : "Debuff";
+  }
+
+  if (descEn.includes("buff") || descZh.includes("增强") || descZh.includes("增益")) {
+    return isCn ? "增益" : "Buff";
+  }
+  if (descEn.includes("attack") || descEn.includes("deals") || descZh.includes("攻击") || descZh.includes("造成")) {
+    return isCn ? "攻击" : "Attack";
+  }
+  if (descEn.includes("grants") || descEn.includes("gains") || descZh.includes("获得") || descZh.includes("赋予")) {
+    return isCn ? "增益" : "Buff";
+  }
+
+  if (sk.type === "Special") {
+    return isCn ? "特殊" : "Special";
+  }
+
+  return isCn ? `术${sk.slot}` : `S${sk.slot}`;
+}
+
+
+function pickLocalizedDesc(obj) {
+  if (!obj) return "";
+  if (currentLang === "vi" && (obj.descVi || obj.descVI)) return obj.descVi || obj.descVI;
+  if (currentLang === "cn" && (obj.descZh || obj.descZH || obj.descCn)) return obj.descZh || obj.descZH || obj.descCn;
+  return obj.descEn || obj.descEN || obj.descZh || obj.descVi || "";
+}
+
+function formatSkillKeywords(text) {
+  if (!text) return "";
+  let s = String(text)
+    .replace(/<id:[^>]+>/g, "")
+    .replace(/<\/?nobr>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n");
+
+  const tokens = [];
+  const addToken = (html) => {
+    const placeholder = `___SKILL_KW_TOKEN_${tokens.length}___`;
+    tokens.push(html);
+    return placeholder;
+  };
+
+  // 1. Extract bracketed terms: [keyword] and 【keyword】
+  s = s.replace(/\[(.*?)\]/g, (match, p1) => {
+    const cleanTerm = p1.replace(/<id:[^>]+>/g, "").trim();
+    return addToken(`<span class="skill-kw-bracket" data-term="${escapeHtml(cleanTerm)}">[${escapeHtml(cleanTerm)}]</span>`);
+  });
+  s = s.replace(/【(.*?)】/g, (match, p1) => {
+    const cleanTerm = p1.replace(/<id:[^>]+>/g, "").trim();
+    return addToken(`<span class="skill-kw-bracket" data-term="${escapeHtml(cleanTerm)}">【${escapeHtml(cleanTerm)}】</span>`);
+  });
+
+  // 2. Escape HTML on surrounding text
+  s = escapeHtml(s);
+
+  // 3. Highlight stats in text outside brackets
+  s = s.replace(/\b(Critical Rate|Critical DMG|Crit Rate|Crit DMG|ATK|HP|Reality DMG|Mental DMG|Genesis DMG|Moxie|Eureka|Ultimate Might)\b/gi, (match) => {
+    return addToken(`<span class="skill-kw-stat" data-term="${escapeHtml(match)}">${escapeHtml(match)}</span>`);
+  });
+  s = s.replace(/(暴击率|暴击创伤|攻击|生命|现实创伤|精神创伤|本源创伤|激情|尤里卡|仪式威力)/g, (match) => {
+    return addToken(`<span class="skill-kw-stat" data-term="${escapeHtml(match)}">${escapeHtml(match)}</span>`);
+  });
+
+  // 4. Highlight numbers & durations
+  s = s.replace(/(\b\d+(?:\.\d+)?%|\b\d+\s*(?:rounds|round|stacks|stack)\b|\b\d+\s*(?:回合|层))/gi, (match) => {
+    return addToken(`<span class="skill-kw-number">${escapeHtml(match)}</span>`);
+  });
+
+  // 5. Restore tokens
+  s = s.replace(/___SKILL_KW_TOKEN_(\d+)___/g, (match, idx) => tokens[Number(idx)] || "");
+  return s;
+}
+
+let activeTermPopovers = [];
+
+function closeAllTermPopovers() {
+  activeTermPopovers.forEach((pop) => pop.remove());
+  activeTermPopovers = [];
+}
+
+function closeTermPopover(targetPopover) {
+  if (targetPopover) {
+    targetPopover.remove();
+    activeTermPopovers = activeTermPopovers.filter((p) => p !== targetPopover);
+  } else {
+    closeAllTermPopovers();
+  }
+}
+
+// Close all popovers when scrolling on window or outside containers, but allow scrolling inside the tooltip itself
+window.addEventListener("scroll", (e) => {
+  if (activeTermPopovers.length === 0) return;
+  // If the scroll target is inside any active popover, do not close
+  if (e.target && e.target.closest && e.target.closest(".uttu-term-popover")) {
+    return;
+  }
+  closeAllTermPopovers();
+}, { capture: true, passive: true });
+
+// Close all popovers when clicking anywhere on the screen outside active popovers and outside keyword buttons
+document.addEventListener("click", (e) => {
+  if (activeTermPopovers.length === 0) return;
+  // If clicked inside any term popover or clicked on a keyword element, do not dismiss all
+  if (e.target.closest(".uttu-term-popover") || e.target.closest(".skill-kw-bracket") || e.target.closest(".skill-kw-stat")) {
+    return;
+  }
+  closeAllTermPopovers();
+});
+
+function showTermPopover(targetEl, termText, charName) {
+  if (!termText || !targetEl) return;
+
+  const isCn = currentLang === "cn";
+  const cleanTerm = termText.trim().toLowerCase();
+
+  let found = null;
+  // 1. Look in skillGlossaryData
+  if (skillGlossaryData && skillGlossaryData[cleanTerm]) {
+    found = skillGlossaryData[cleanTerm];
+  }
+
+  // 2. Look in character's own skills / insights
+  if (!found && charName && characterSkillsData && characterSkillsData[charName]) {
+    const c = characterSkillsData[charName];
+    for (const s of (c.skills || [])) {
+      if ((s.nameEn && s.nameEn.toLowerCase() === cleanTerm) || (s.nameZh && s.nameZh.toLowerCase() === cleanTerm)) {
+        const r1 = s.ranks ? (s.ranks["1"] || Object.values(s.ranks)[0] || {}) : s;
+        found = {
+          nameEn: s.nameEn,
+          nameZh: s.nameZh || s.nameEn,
+          descEn: r1.descEn || s.descEn,
+          descZh: r1.descZh || s.descZh || r1.descEn || s.descEn,
+          tagEn: s.type || "Skill",
+          tagZh: s.type === "Ultimate" ? "至终仪式" : (s.type === "Special" ? "特殊术式" : "神秘术"),
+        };
+        break;
+      }
+    }
+    if (!found) {
+      for (const ins of (c.insights || [])) {
+        if ((ins.nameEn && ins.nameEn.toLowerCase() === cleanTerm) || (ins.nameZh && ins.nameZh.toLowerCase() === cleanTerm)) {
+          found = {
+            nameEn: ins.nameEn,
+            nameZh: ins.nameZh || ins.nameEn,
+            descEn: ins.descEn,
+            descZh: ins.descZh || ins.descEn,
+            tagEn: "Insight",
+            tagZh: "传承",
+          };
+          break;
+        }
+      }
+    }
+  }
+
+  if (!found) return;
+
+  // Measure target coordinates before creating popover
+  const rect = targetEl.getBoundingClientRect();
+
+  // If clicked term is NOT inside an existing popover, close previous popovers
+  const parentPopover = targetEl.closest(".uttu-term-popover");
+  if (!parentPopover) {
+    closeAllTermPopovers();
+  }
+
+  const title = isCn ? (found.nameZh || found.nameEn) : (found.nameEn || found.nameZh);
+  const desc = pickLocalizedDesc(found);
+  const tag = isCn ? (found.tagZh || found.tagEn) : (found.tagEn || found.tagZh);
+
+  const popover = document.createElement("div");
+  popover.className = "uttu-term-popover";
+  popover.innerHTML = `
+    <div class="uttu-term-popover-head">
+      <div class="uttu-term-popover-head-left">
+        <h5 class="uttu-term-popover-title">${escapeHtml(title)}</h5>
+        ${tag ? `<span class="uttu-term-popover-tag">${escapeHtml(tag)}</span>` : ""}
+      </div>
+      <button type="button" class="uttu-term-popover-close" aria-label="Close">✕</button>
+    </div>
+    <div class="uttu-term-popover-body">${formatSkillKeywords(desc)}</div>
+  `;
+
+  popover.querySelector(".uttu-term-popover-close").addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeTermPopover(popover);
+  });
+
+  // Allow clicking inside terms within this popover body to stack/open nested term popover
+  popover.querySelectorAll(".skill-kw-bracket, .skill-kw-stat").forEach((innerKw) => {
+    innerKw.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showTermPopover(innerKw, innerKw.dataset.term, charName);
+    });
+  });
+
+  document.body.appendChild(popover);
+  activeTermPopovers.push(popover);
+
+  // Position popover ABOVE the target element by default
+  const popRect = popover.getBoundingClientRect();
+
+  let left = rect.left;
+  let top = rect.top - popRect.height - 8;
+
+  // If overflows top, flip and position below the target
+  if (top < 16) {
+    top = rect.bottom + 8;
+  }
+
+  // Clamp right edge within viewport
+  if (left + popRect.width > window.innerWidth - 16) {
+    left = window.innerWidth - popRect.width - 16;
+  }
+  if (left < 16) left = 16;
+
+  popover.style.left = `${Math.round(left)}px`;
+  popover.style.top = `${Math.round(top)}px`;
+  // Ensure newer stacked popover appears on top of earlier ones
+  popover.style.zIndex = `${10005 + activeTermPopovers.length}`;
+}
+
+function renderCharacterSkillsSection(name) {
+  const skillInfo = getCharacterSkillsInfo(name);
+  if (!skillInfo) return "";
+
+  const isCn = currentLang === "cn";
+
+  // Top mode buttons: Skills / Weapons / Insight / Portrait / Euphoria
+  const canonicalName = resolveCharacterName(name);
+  const heroEuphoriaList = characterEuphoriasData[name] || characterEuphoriasData[canonicalName] || null;
+  const hasCharEuphoria = Array.isArray(heroEuphoriaList) && heroEuphoriaList.length > 0;
+  const hasWeapons = Array.isArray(skillInfo.weapons) && skillInfo.weapons.length > 0;
+
+  const tabsHtml = `
+    <div class="uttu-mode-bar">
+      <button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "skills" ? "is-active" : ""}" data-skill-tab="skills">
+        ${isCn ? "神秘术" : "Skills"}
+      </button>
+      ${
+        hasWeapons
+          ? `<button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "weapons" ? "is-active" : ""}" data-skill-tab="weapons">
+              ${isCn ? "武器" : "Weapons"}
+            </button>`
+          : ""
+      }
+      <button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "insights" ? "is-active" : ""}" data-skill-tab="insights">
+        ${isCn ? "传承洞悉" : "Insight"}
+      </button>
+      <button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "portrays" ? "is-active" : ""}" data-skill-tab="portrays">
+        ${isCn ? "塑造" : "Portrait"}
+      </button>
+      ${
+        hasCharEuphoria
+          ? `<button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "euphoria" ? "is-active" : ""}" data-skill-tab="euphoria">
+              ${isCn ? "狂想" : "Euphoria"}
+            </button>`
+          : ""
+      }
+    </div>
+  `;
+
+  let mainBodyHtml = "";
+
+  if (charSkillsActiveTab === "skills") {
+    const rawList = skillInfo.skills || [];
+    const availableStances = getCharacterStances(rawList);
+
+    if (availableStances.length > 0) {
+      if (!charSkillsActiveStance || !availableStances.includes(charSkillsActiveStance)) {
+        charSkillsActiveStance = availableStances[0];
+      }
+    } else {
+      charSkillsActiveStance = null;
+    }
+
+    const list = availableStances.length > 0 ? getSkillsForStance(rawList, charSkillsActiveStance) : rawList;
+
+    if (!list.length) {
+      mainBodyHtml = `<p class="hint">No skill details available.</p>`;
+    } else {
+      if (charSkillSelectedIdx >= list.length) charSkillSelectedIdx = 0;
+      const currentSkill = list[charSkillSelectedIdx];
+      const isUlt = currentSkill.type === "Ultimate";
+
+      // Stance switcher bar if character has multiple skill stances (e.g. Rhiannon, The Twins, Nautika)
+      let stanceBarHtml = "";
+      if (availableStances.length > 0) {
+        stanceBarHtml = `
+          <div class="uttu-stance-bar">
+            ${availableStances
+              .map(
+                (st) => `
+              <button type="button" class="uttu-stance-btn ${st === charSkillsActiveStance ? "is-active" : ""}" data-skill-stance="${escapeHtml(st)}">
+                ${escapeHtml(st)}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+        `;
+      }
+
+      // Selector card strip at top
+      const cardsStripHtml = list
+        .map((sk, idx) => {
+          const isSelected = idx === charSkillSelectedIdx;
+          const isSkUlt = sk.type === "Ultimate";
+          const badgeText = getSkillBadgeText(sk, isCn);
+
+          const ultFrameHtml = isSkUlt ? `<img class="rot-card-frame" src="${ROT_ULTIMATE_FRAME.image}" alt="" />` : "";
+
+          return `
+            <div class="uttu-skill-card-item ${isSelected ? "is-selected" : ""} ${isSkUlt ? "is-ult" : ""}" data-skill-idx="${idx}">
+              <div class="rot-card ${isSkUlt ? "is-ultimate" : ""}">
+                <img class="rot-card-art" src="${escapeHtml(sk.icon || "")}" alt="" />
+                ${ultFrameHtml}
+              </div>
+              <span class="uttu-skill-card-badge">${escapeHtml(badgeText)}</span>
+            </div>
+          `;
+        })
+        .join("");
+
+      // Rank selector for non-ultimate skills (★1, ★2, ★3)
+      let rankSelectorHtml = "";
+      let activeDesc = "";
+      let activeArt = "";
+
+      if (isUlt) {
+        activeDesc = pickLocalizedDesc(currentSkill);
+        activeArt = isCn ? currentSkill.artZh || currentSkill.artEn : currentSkill.artEn || currentSkill.artZh;
+      } else if (currentSkill.ranks) {
+        const availableRanks = Object.keys(currentSkill.ranks).map(Number).sort((a, b) => a - b);
+        if (!availableRanks.includes(charSkillSelectedRank)) {
+          charSkillSelectedRank = availableRanks[availableRanks.length - 1] || 1;
+        }
+
+        if (availableRanks.length > 1) {
+          rankSelectorHtml = `
+            <div class="uttu-rank-selector">
+              ${availableRanks
+                .map((rk) => {
+                  const rkObj = currentSkill.ranks[rk];
+                  const isRkActive = rk === charSkillSelectedRank;
+                  return `
+                    <div class="uttu-rank-card-col ${isRkActive ? "is-active" : ""}" data-rank-num="${rk}">
+                      <div class="rot-card">
+                        <img class="rot-card-art" src="${escapeHtml(currentSkill.icon || "")}" alt="" />
+                      </div>
+                      <span class="uttu-rank-pill">${"★".repeat(rk)}</span>
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          `;
+        }
+
+        const chosenRank = currentSkill.ranks[charSkillSelectedRank] || currentSkill.ranks[1] || {};
+        activeDesc = pickLocalizedDesc(chosenRank);
+        activeArt = isCn ? chosenRank.artZh || chosenRank.artEn : chosenRank.artEn || chosenRank.artZh;
+      }
+
+      const skillNameText = isCn ? currentSkill.nameZh || currentSkill.nameEn : currentSkill.nameEn || currentSkill.nameZh;
+      const subSlotTag = currentSkill.subSlot ? ` · ${currentSkill.subSlot}` : "";
+      const currentRankNum = isUlt ? 1 : charSkillSelectedRank;
+      const attrBadge = getSkillBadgeText(currentSkill, isCn, currentRankNum);
+      const typeTag = isUlt
+        ? (isCn ? "至终仪式" : "Ultimate")
+        : `${attrBadge}${subSlotTag}`;
+
+      mainBodyHtml = `
+        <div class="uttu-skills-showcase">
+          ${stanceBarHtml}
+          <!-- Top Card Selection Strip -->
+          <div class="uttu-cards-strip">${cardsStripHtml}</div>
+
+          <!-- Bottom Card Detail Panel -->
+          <div class="uttu-detail-board">
+            ${rankSelectorHtml}
+            <div class="uttu-skill-info-head">
+              <h3 class="uttu-skill-title">${escapeHtml(skillNameText)}</h3>
+              <span class="uttu-skill-type-tag">${escapeHtml(typeTag)}</span>
+            </div>
+            ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}
+            <div class="uttu-skill-body-desc">${formatSkillKeywords(activeDesc)}</div>
+          </div>
+        </div>
+      `;
+    }
+  } else if (charSkillsActiveTab === "weapons") {
+    const list = skillInfo.weapons || [];
+    if (!list.length) {
+      mainBodyHtml = `<p class="hint">No weapon details available.</p>`;
+    } else {
+      if (charWeaponsSelectedIdx >= list.length) charWeaponsSelectedIdx = 0;
+      const currentWeapon = list[charWeaponsSelectedIdx];
+
+      const weaponButtonsHtml = list
+        .map((w, idx) => {
+          const isSelected = idx === charWeaponsSelectedIdx;
+          const wName = isCn ? w.nameZh || w.nameEn : w.nameEn || w.nameZh;
+          return `
+            <button type="button" class="uttu-weapon-btn ${isSelected ? "is-active" : ""}" data-weapon-idx="${idx}">
+              ${escapeHtml(wName)}
+            </button>
+          `;
+        })
+        .join("");
+
+      const wTitle = isCn ? currentWeapon.nameZh || currentWeapon.nameEn : currentWeapon.nameEn || currentWeapon.nameZh;
+      const wMainDesc = isCn ? currentWeapon.mainDescZh || currentWeapon.mainDescEn : currentWeapon.mainDescEn || currentWeapon.mainDescZh;
+
+      const combosHtml = (currentWeapon.combos || [])
+        .map((c) => {
+          const cName = isCn ? c.daggerZh || c.daggerEn : c.daggerEn || c.daggerZh;
+          const cDesc = isCn ? c.descZh || c.descEn : c.descEn || c.descZh;
+          return `
+            <div class="uttu-weapon-combo-card">
+              <span class="uttu-weapon-combo-name">${escapeHtml(cName)}</span>
+              <div class="uttu-weapon-combo-desc">${formatSkillKeywords(cDesc)}</div>
+            </div>
+          `;
+        })
+        .join("");
+
+      mainBodyHtml = `
+        <div class="uttu-weapons-board">
+          <div class="uttu-weapons-strip">${weaponButtonsHtml}</div>
+          <div class="uttu-weapon-detail">
+            <h4 class="uttu-weapon-title">${escapeHtml(wTitle)}</h4>
+            <div class="uttu-weapon-main-desc">${formatSkillKeywords(wMainDesc)}</div>
+            ${combosHtml ? `<div class="uttu-weapon-combos">${combosHtml}</div>` : ""}
+          </div>
+        </div>
+      `;
+    }
+  } else if (charSkillsActiveTab === "insights") {
+    const list = skillInfo.insights || [];
+    const listHtml = list.length
+      ? list
+          .map((ins) => {
+            const insLabel = ins.insight === 0 ? (isCn ? "先觉" : "Precognition") : `Insight ${ins.insight}`;
+            const nameText = isCn ? ins.nameZh || ins.nameEn : ins.nameEn || ins.nameZh;
+            const desc = pickLocalizedDesc(ins);
+            const iconSrc = `images/insight_icon_dark/I${Math.min(3, Math.max(0, ins.insight))}.png`;
+
+            return `
+              <div class="uttu-insight-row">
+                <div class="uttu-insight-badge-col">
+                  <img src="${iconSrc}" alt="${insLabel}" class="uttu-insight-icon" />
+                </div>
+                <div class="uttu-insight-content">
+                  <span class="uttu-insight-name">${escapeHtml(nameText)}</span>
+                  <div class="uttu-insight-desc">${formatSkillKeywords(desc)}</div>
+                </div>
+              </div>
+            `;
+          })
+          .join("")
+      : `<p class="hint">No insight details available.</p>`;
+
+    mainBodyHtml = `
+      <div class="uttu-insights-board">
+        ${listHtml}
+      </div>
+    `;
+  } else if (charSkillsActiveTab === "portrays") {
+    const list = skillInfo.portrays || [];
+    const listHtml = list.length
+      ? list
+          .map((port) => {
+            const desc = pickLocalizedDesc(port);
+            return `
+              <div class="uttu-portray-row">
+                <span class="uttu-portray-lvl">Lv. <span class="uttu-portray-num">${port.level}</span></span>
+                <div class="uttu-portray-desc">${formatSkillKeywords(desc)}</div>
+              </div>
+            `;
+          })
+          .join("")
+      : `<p class="hint">No portrait details available.</p>`;
+
+    mainBodyHtml = `
+      <div class="uttu-portrays-board">
+        <div class="uttu-portrays-list">
+          ${listHtml}
+        </div>
+      </div>
+    `;
+  } else if (charSkillsActiveTab === "euphoria") {
+    const list = heroEuphoriaList || [];
+    if (!list.length) {
+      mainBodyHtml = `<div class="uttu-insights-board"><p class="hint">No euphoria details available.</p></div>`;
+    } else {
+      const charMats = getCharacterMats(name);
+      const kornId = charMats?.kornId || charMats?.id || skillInfo.id;
+      const eupCardsHtml = list
+        .map((eup, eupIdx) => {
+          const title = isCn ? eup.name?.zh || eup.name?.en : eup.name?.en || eup.name?.zh;
+          const tags = eup.tags || [];
+          const ranks = eup.ranks || [];
+          const imgTier = eupIdx + 1;
+          const imgPath = kornId ? `images/arcanists/euphoria/${kornId}_${imgTier}.webp` : "";
+
+          const ranksHtml = ranks
+            .map((rk) => {
+              const rkDesc = currentLang === "vi" && rk.description?.vi
+                ? rk.description.vi
+                : (isCn ? rk.description?.zh || rk.description?.en : rk.description?.en || rk.description?.zh);
+              return `
+                <div class="uttu-euphoria-rank-card">
+                  <div class="uttu-euphoria-rank-title">Rank ${rk.rank}</div>
+                  <div class="uttu-euphoria-rank-desc">${formatSkillKeywords(rkDesc)}</div>
+                </div>
+              `;
+            })
+            .join("");
+
+          return `
+            <div class="uttu-euphoria-tree-card">
+              <div class="uttu-euphoria-tree-header">
+                <div class="uttu-euphoria-tree-title-row">
+                  <h3 class="uttu-euphoria-tree-title">${escapeHtml(title || "Euphoria")}</h3>
+                  <div class="uttu-euphoria-tags">
+                    ${tags.map((t) => `<span class="uttu-euphoria-tag">${escapeHtml(t)}</span>`).join("")}
+                  </div>
+                </div>
+              </div>
+
+              <div class="uttu-euphoria-layout">
+                ${
+                  imgPath
+                    ? `<div class="uttu-euphoria-visual-center">
+                        <img src="${escapeHtml(imgPath)}" alt="" class="uttu-euphoria-art-img" onerror="this.parentElement.style.display='none'" />
+                      </div>`
+                    : ""
+                }
+                <div class="uttu-euphoria-ranks-grid">
+                  ${ranksHtml}
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      mainBodyHtml = `
+        <div class="uttu-euphoria-board">
+          ${eupCardsHtml}
+        </div>
+      `;
+    }
+  }
+
+  return `
+    <section class="build-section char-skills-section" id="char-skills-section-panel">
+      <h4 class="build-section-title">${isCn ? "技能与洞悉详情" : "Skills & Insight Details"}</h4>
+      ${tabsHtml}
+      <div class="uttu-skills-container">${mainBodyHtml}</div>
+    </section>
+  `;
+}
+
+function setupCharacterSkillsListeners(host) {
+  // Mode tabs (Skills, Insight, Portrait)
+  host.querySelectorAll("[data-skill-tab]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      charSkillsActiveTab = btn.dataset.skillTab;
+      refreshSkillsPanel();
+    });
+  });
+
+  // Stance switcher buttons (e.g. Base vs Bendith, Set A vs Set B)
+  host.querySelectorAll("[data-skill-stance]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      charSkillsActiveStance = btn.dataset.skillStance;
+      charSkillSelectedIdx = 0;
+      charSkillSelectedRank = 3;
+      refreshSkillsPanel();
+    });
+  });
+
+  // Card selector in strip
+  host.querySelectorAll(".uttu-skill-card-item").forEach((cardEl) => {
+    cardEl.addEventListener("click", () => {
+      const idx = Number(cardEl.dataset.skillIdx);
+      if (!Number.isNaN(idx)) {
+        charSkillSelectedIdx = idx;
+        charSkillSelectedRank = 3;
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  // Rank selector in detail
+  host.querySelectorAll(".uttu-rank-card-col").forEach((colEl) => {
+    colEl.addEventListener("click", () => {
+      const rk = Number(colEl.dataset.rankNum);
+      if (!Number.isNaN(rk)) {
+        charSkillSelectedRank = rk;
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  // Weapon selector buttons
+  host.querySelectorAll(".uttu-weapon-btn").forEach((wBtn) => {
+    wBtn.addEventListener("click", () => {
+      const idx = Number(wBtn.dataset.weaponIdx);
+      if (!Number.isNaN(idx)) {
+        charWeaponsSelectedIdx = idx;
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  // Keyword term popover click listeners
+  host.querySelectorAll(".skill-kw-bracket, .skill-kw-stat").forEach((kwEl) => {
+    kwEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const term = kwEl.dataset.term;
+      showTermPopover(kwEl, term, buildsSelected);
+    });
+  });
+
+  function refreshSkillsPanel() {
+    const currentName = buildsSelected;
+    const panel = document.getElementById("char-skills-section-panel");
+    if (panel) {
+      panel.outerHTML = renderCharacterSkillsSection(currentName);
+      const newPanel = document.getElementById("char-skills-section-panel");
+      if (newPanel) setupCharacterSkillsListeners(newPanel);
+    }
+  }
+}
 
 let creditEntries = [];   // [{ name, url, description }]
 
@@ -6496,7 +7816,6 @@ function psychubeNameFromName(name) {
 /** Characters sorted the way the editor lists them: ArcanistMap id descending. */
 function guideCharacterNames() {
   return Object.keys(characterDb)
-    .filter((name) => futureSightEnabled || !futureSightChars.has(name))
     .sort((a, b) => {
       // Rarity first, then release order (ArcanistMap id descending).
       const rarity = getCharacterRarity(b) - getCharacterRarity(a);
@@ -6622,6 +7941,41 @@ function characterHasBuild(name) {
 }
 
 function renderBuilds() {
+  const rarityGroup = document.getElementById("builds-rarity-group");
+  const afflatusGroup = document.getElementById("builds-afflatus-group");
+  const subtabs = document.getElementById("builds-item-subtabs");
+  const searchInput = document.getElementById("builds-search");
+
+  if (infoBookActiveTab === "glossary") {
+    if (rarityGroup) rarityGroup.style.display = "none";
+    if (afflatusGroup) afflatusGroup.style.display = "none";
+    if (subtabs) subtabs.style.display = "none";
+    if (searchInput) {
+      searchInput.placeholder = t("builds.searchGlossary") || "Search Glossary";
+    }
+    renderGlossaryRail();
+    return;
+  }
+
+  if (infoBookActiveTab === "items") {
+    if (rarityGroup) rarityGroup.style.display = "none";
+    if (afflatusGroup) afflatusGroup.style.display = "none";
+    if (subtabs) subtabs.style.display = "flex";
+    if (infoBookItemSubTab === "psychubes") {
+      if (searchInput) searchInput.placeholder = t("builds.searchPsychubes") || "Search Psychubes";
+      renderPsychubesRail();
+    } else {
+      if (searchInput) searchInput.placeholder = t("builds.searchItems") || "Search Items";
+      renderItemsRail();
+    }
+    return;
+  }
+
+  if (subtabs) subtabs.style.display = "none";
+  if (rarityGroup) rarityGroup.style.display = "";
+  if (afflatusGroup) afflatusGroup.style.display = "";
+  if (searchInput) searchInput.placeholder = t("toolbar.search") || "Search Characters";
+
   const names = buildsVisibleNames();
   const list = document.getElementById("builds-list");
   const count = document.getElementById("builds-count");
@@ -6667,6 +8021,520 @@ function renderBuilds() {
   }
 
   renderBuildsDetail();
+}
+
+function renderItemsRail() {
+  const list = document.getElementById("builds-list");
+  const count = document.getElementById("builds-count");
+  if (!list) return;
+
+  const searchInput = document.getElementById("builds-search");
+  const query = (searchInput ? searchInput.value : "").trim().toLowerCase();
+
+  const filtered = itemsData.filter((it) => {
+    if (!query) return true;
+    return (
+      it.name.toLowerCase().includes(query) ||
+      (it.nameZh && it.nameZh.includes(query)) ||
+      (it.nameVi && it.nameVi.toLowerCase().includes(query))
+    );
+  });
+
+  if (count) count.textContent = `${filtered.length} items`;
+
+  if (!selectedItemId || !filtered.some((it) => it.id === selectedItemId)) {
+    selectedItemId = filtered[0] ? filtered[0].id : null;
+  }
+
+  list.innerHTML = filtered.length
+    ? `<div class="items-grid-container">
+        ${filtered.map((item) => renderItemStickerHtml(item, null, item.id === selectedItemId ? "is-active" : "")).join("")}
+       </div>`
+    : guideEmptyState("builds.noData");
+
+  list.querySelectorAll(".item-sticker").forEach((el) => {
+    el.addEventListener("click", () => {
+      selectedItemId = Number(el.dataset.itemId);
+      renderItemsRail();
+    });
+  });
+
+  renderItemDetail();
+}
+
+function renderItemDetail() {
+  const host = document.getElementById("builds-detail");
+  if (!host) return;
+
+  const item = itemsData.find((it) => it.id === selectedItemId);
+  if (!item) {
+    host.innerHTML = guideEmptyState("builds.select");
+    return;
+  }
+
+  const isCn = currentLang === "cn";
+  const isVi = currentLang === "vi";
+  const displayName = isVi && item.nameVi ? item.nameVi : (isCn && item.nameZh ? item.nameZh : item.name);
+  const displayCategory = isVi && item.categoryVi ? item.categoryVi : item.category;
+  const displayDesc = isVi && item.descriptionVi ? item.descriptionVi : item.description;
+  const displayUsage = isVi && item.usageVi ? item.usageVi : item.usage;
+  const displaySource = isVi && item.sourceVi ? item.sourceVi : item.source;
+
+  // Formula craft items (Wishing Spring)
+  const formula = itemFormulasData[item.name];
+  const formulaHtml = formula && formula.length
+    ? `<div class="build-section" style="margin-top: 16px;">
+        <h4 class="build-section-title">${isVi ? "Công thức Chế tạo (Suối Ước)" : (isCn ? "不绝瀑流配方" : "Wishing Spring Formula")}</h4>
+        <div class="mats-result-grid">
+          ${formula.map((m) => renderItemStickerHtml(m.material, m.quantity)).join("")}
+        </div>
+       </div>`
+    : "";
+
+  const iconSrc = item.id ? `images/items/icon/${item.id}.webp` : item.icon;
+  const borderSrc = item.rarity ? `images/items/border/${item.rarity}.webp` : item.border;
+
+  host.innerHTML = `
+    <div class="material-detail-card">
+      <div class="material-detail-hero">
+        <div class="material-detail-icon-wrap">
+          <img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" />
+          <img src="${escapeHtml(iconSrc)}" alt="" class="item-sticker-img" />
+        </div>
+        <div class="material-detail-info">
+          <h3 class="material-detail-name">${escapeHtml(displayName)}</h3>
+          <span style="font-size: 0.72rem; color: #ED7D31; font-weight: 700;">${"✦".repeat(item.rarity || 1)}</span>
+          ${displayCategory ? `<span class="flag" style="width: max-content;">${escapeHtml(displayCategory)}</span>` : ""}
+          ${displayDesc ? `<p class="material-detail-desc">${escapeHtml(displayDesc)}</p>` : ""}
+          ${displayUsage ? `<p class="material-detail-usage"><strong>${isVi ? "Công dụng:" : (isCn ? "用途:" : "Usage:")}</strong> ${escapeHtml(displayUsage)}</p>` : ""}
+          ${displaySource ? `<span class="material-detail-source"><strong>${isVi ? "Nguồn thu thập:" : (isCn ? "来源:" : "Source:")}</strong> ${escapeHtml(displaySource)}</span>` : ""}
+        </div>
+      </div>
+      ${formulaHtml}
+    </div>
+  `;
+}
+
+// ----------------- PSYCHUBES IN INFOBOOK -----------------
+const PSYCHUBE_ATTR_RATES = {
+  1: 150, 2: 159, 3: 168, 4: 177, 5: 186, 6: 195, 7: 204, 8: 213, 9: 222, 10: 230,
+  11: 239, 12: 248, 13: 257, 14: 266, 15: 275, 16: 284, 17: 293, 18: 302, 19: 311, 20: 320,
+  21: 333, 22: 346, 23: 359, 24: 372, 25: 385, 26: 398, 27: 411, 28: 424, 29: 437, 30: 450,
+  31: 463, 32: 476, 33: 489, 34: 502, 35: 515, 36: 528, 37: 541, 38: 554, 39: 567, 40: 580,
+  41: 601, 42: 622, 43: 643, 44: 664, 45: 685, 46: 706, 47: 727, 48: 748, 49: 769, 50: 790,
+  51: 811, 52: 832, 53: 853, 54: 874, 55: 895, 56: 916, 57: 937, 58: 958, 59: 979, 60: 1000,
+};
+
+function getSortedPsychubeKeys() {
+  const keys = Object.keys(psychubesDetailedData);
+  return keys.sort((a, b) => {
+    const pa = psychubesDetailedData[a];
+    const pb = psychubesDetailedData[b];
+    if (pa.rarity !== pb.rarity) return pb.rarity - pa.rarity;
+    return Number(pb.id) - Number(pa.id);
+  });
+}
+
+function renderPsychubesRail() {
+  const list = document.getElementById("builds-list");
+  const count = document.getElementById("builds-count");
+  if (!list) return;
+
+  const searchInput = document.getElementById("builds-search");
+  const query = (searchInput ? searchInput.value : "").trim().toLowerCase();
+
+  const allKeys = getSortedPsychubeKeys();
+  const filtered = allKeys.filter((key) => {
+    const p = psychubesDetailedData[key];
+    if (!query) return true;
+    return (
+      (p.name && p.name.toLowerCase().includes(query)) ||
+      (p.nameCN && p.nameCN.toLowerCase().includes(query)) ||
+      String(p.id).includes(query)
+    );
+  });
+
+  if (count) count.textContent = `${filtered.length} psychubes`;
+
+  if (!selectedPsychubeKey || !filtered.includes(selectedPsychubeKey)) {
+    selectedPsychubeKey = filtered[0] || null;
+  }
+
+  list.innerHTML = filtered.length
+    ? filtered
+        .map((key) => {
+          const p = psychubesDetailedData[key];
+          const isCn = currentLang === "cn";
+          const title = isCn && p.nameCN ? p.nameCN : p.name;
+          const stars = p.rarity;
+          const iconUrl = p.icon;
+          return `
+            <button type="button" class="builds-row${key === selectedPsychubeKey ? " is-active" : ""}" data-chube-key="${escapeHtml(key)}">
+              <span class="builds-row-portrait"><img src="${escapeHtml(iconUrl)}" alt="" loading="lazy" /></span>
+              <span class="builds-row-text">
+                <span class="builds-row-name">${escapeHtml(title)}</span>
+                <span class="builds-row-stars" style="color:${rarityColor(stars)}">${"✦".repeat(stars)}</span>
+              </span>
+            </button>`;
+        })
+        .join("")
+    : guideEmptyState("builds.noData");
+
+  list.querySelectorAll(".builds-row").forEach((row) => {
+    row.addEventListener("click", () => {
+      selectedPsychubeKey = row.dataset.chubeKey;
+      renderPsychubesRail();
+    });
+  });
+
+  renderPsychubeDetail();
+}
+
+function getBreakLevelForLvl(lvl) {
+  if (lvl <= 20) return 0;
+  if (lvl <= 40) return 1;
+  if (lvl <= 50) return 2;
+  return 3;
+}
+
+function calculatePsychubeStats(p, lvl) {
+  const rate = (PSYCHUBE_ATTR_RATES[lvl] || 1000) / 1000;
+  const base = p.baseStats || { atk: 380, hp: 2800, def: 160, mdef: 160 };
+  const breakLevel = getBreakLevelForLvl(lvl);
+
+  const curAtk = Math.round(base.atk * rate);
+  const curHp = Math.round(base.hp * rate);
+  const curDef = Math.round(base.def * rate);
+  const curMdef = Math.round(base.mdef * rate);
+
+  // Special stat from breakAttrs
+  const bAttrs = p.breakAttrs || [];
+  const bAttr = bAttrs.find((b) => b.breakLevel === breakLevel) || bAttrs[bAttrs.length - 1] || {};
+
+  const specialStats = [];
+  const isCn = currentLang === "cn";
+  if (bAttr.attack) specialStats.push({ name: isCn ? "攻击" : "ATK", val: `${(bAttr.attack / 10).toFixed(0)}%` });
+  if (bAttr.cri) specialStats.push({ name: isCn ? "暴击率" : "Crit Rate", val: `${(bAttr.cri / 10).toFixed(0)}%` });
+  if (bAttr.criDmg) specialStats.push({ name: isCn ? "暴击创伤" : "Crit DMG", val: `${(bAttr.criDmg / 10).toFixed(0)}%` });
+  if (bAttr.heal) specialStats.push({ name: isCn ? "治疗率" : "Healing Done", val: `${(bAttr.heal / 10).toFixed(0)}%` });
+  if (bAttr.clutch) specialStats.push({ name: isCn ? "仪式威力" : "Ultimate Might", val: `${(bAttr.clutch / 10).toFixed(0)}%` });
+  if (bAttr.normalSkillRate) specialStats.push({ name: isCn ? "术法威力" : "Incantation Might", val: `${(bAttr.normalSkillRate / 10).toFixed(0)}%` });
+  if (bAttr.addDmg) specialStats.push({ name: isCn ? "创伤加成" : "DMG Dealt", val: `${(bAttr.addDmg / 10).toFixed(0)}%` });
+  if (bAttr.dropDmg) specialStats.push({ name: isCn ? "受创减免" : "DMG Taken Reduction", val: `${(bAttr.dropDmg / 10).toFixed(0)}%` });
+
+  return {
+    atk: curAtk,
+    hp: curHp,
+    def: curDef,
+    mdef: curMdef,
+    specialStats,
+  };
+}
+
+function renderPsychubeDetail() {
+  const host = document.getElementById("builds-detail");
+  if (!host) return;
+
+  const key = selectedPsychubeKey;
+  const p = psychubesDetailedData[key];
+  if (!p) {
+    host.innerHTML = guideEmptyState("builds.select");
+    return;
+  }
+
+  const isCn = currentLang === "cn";
+  const displayName = isCn && p.nameCN ? p.nameCN : p.name;
+  const desc = pickLocalizedDesc(p);
+
+  const stats = calculatePsychubeStats(p, psychubeDetailLevel);
+
+  // Amplification description
+  const amps = p.amplifications || [];
+  const ampObj = amps.find((a) => a.level === psychubeDetailAmp) || amps[0] || {};
+  let ampDesc = pickLocalizedDesc(ampObj) || "No description";
+  ampDesc = formatSkillKeywords(ampDesc.replace(/\{(\d+(?:\.\d+)?%?)\}/g, "$1"));
+
+  // Level upgrade materials breakdown (Lv20, Lv40, Lv50)
+  const is6Star = p.rarity === 6;
+  const matsBreakdownHtml = `
+    <div class="psychube-mats-breakdown">
+      <h4 class="build-section-title">${isCn ? "升维素材" : "Breakthrough Materials"}</h4>
+      <div class="psychube-break-tiers-grid">
+        <div class="psychube-break-tier">
+          <span class="psychube-break-title">Lv. 20</span>
+          <div class="psychube-break-mats">
+            ${renderItemStickerHtml("LF Polarization", is6Star ? 5 : 4)}
+            ${renderItemStickerHtml("Sharpodonty", is6Star ? 10000 : 7500)}
+          </div>
+        </div>
+        <div class="psychube-break-tier">
+          <span class="psychube-break-title">Lv. 40</span>
+          <div class="psychube-break-mats">
+            ${renderItemStickerHtml("MF Polarization", is6Star ? 5 : 4)}
+            ${renderItemStickerHtml("Sharpodonty", is6Star ? 15000 : 11250)}
+          </div>
+        </div>
+        <div class="psychube-break-tier">
+          <span class="psychube-break-title">Lv. 50</span>
+          <div class="psychube-break-mats">
+            ${renderItemStickerHtml("HF Polarization", is6Star ? 5 : 4)}
+            ${renderItemStickerHtml("Sharpodonty", is6Star ? 25000 : 18750)}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  host.innerHTML = `
+    <div class="psychube-detail-card">
+      <div class="psychube-detail-hero">
+        <div class="psychube-detail-icon-wrap">
+          <img src="${escapeHtml(p.icon)}" alt="${escapeHtml(displayName)}" class="psychube-detail-img" />
+        </div>
+        <div class="psychube-detail-info">
+          <h3 class="psychube-detail-name">${escapeHtml(displayName)}</h3>
+          <span style="font-size: 0.76rem; color: ${rarityColor(p.rarity)}; font-weight: 700;">${"✦".repeat(p.rarity)}</span>
+          <div class="psychube-detail-tags">
+            ${(p.tags || []).map((t) => `<span class="flag">${escapeHtml(t)}</span>`).join(" ")}
+            ${p.releasePatch ? `<span class="flag" style="opacity: 0.8;">v${escapeHtml(p.releasePatch)}</span>` : ""}
+          </div>
+          ${desc ? `<p class="psychube-detail-desc">${escapeHtml(desc)}</p>` : ""}
+        </div>
+      </div>
+
+      <!-- Level & Amplification Interactive Controls -->
+      <div class="psychube-interactive-box">
+        <div class="psychube-interactive-row">
+          <div class="psychube-level-input-wrap">
+            <span class="char-mats-sublabel">${isCn ? "等级" : "Level"}:</span>
+            <input type="range" min="1" max="60" value="${psychubeDetailLevel}" class="custom-slider psychube-level-slider" id="chube-detail-lvl-slider" />
+            <span class="psychube-level-number" id="chube-detail-lvl-text">Lv.${psychubeDetailLevel}</span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+            <span class="char-mats-sublabel">${isCn ? "增幅" : "Amplify"}:</span>
+            <div class="psychube-amp-boxes">
+              ${[1, 2, 3, 4, 5]
+                .map(
+                  (a) =>
+                    `<button type="button" class="psychube-amp-btn ${psychubeDetailAmp === a ? "is-active" : ""}" data-amp-val="${a}">${a}</button>`
+                )
+                .join("")}
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic stats -->
+        <div class="psychube-stats-grid" id="chube-detail-stats-grid">
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "攻击" : "ATK"}</span>
+            <span class="psychube-stat-val">${stats.atk}</span>
+          </div>
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "生命" : "HP"}</span>
+            <span class="psychube-stat-val">${stats.hp}</span>
+          </div>
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "现实防御" : "Reality DEF"}</span>
+            <span class="psychube-stat-val">${stats.def}</span>
+          </div>
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "精神防御" : "Mental DEF"}</span>
+            <span class="psychube-stat-val">${stats.mdef}</span>
+          </div>
+          ${stats.specialStats
+            .map(
+              (sp) => `
+            <div class="psychube-stat-item">
+              <span class="psychube-stat-name">${escapeHtml(sp.name)}</span>
+              <span class="psychube-stat-val" style="color: #ED7D31;">${escapeHtml(sp.val)}</span>
+            </div>`
+            )
+            .join("")}
+        </div>
+
+        <!-- Dynamic amplification text -->
+        <div class="psychube-amp-desc-box" id="chube-detail-amp-box">
+          ${ampDesc}
+        </div>
+      </div>
+
+      ${matsBreakdownHtml}
+    </div>
+  `;
+
+  // Attach event listeners for interactive slider and amplify buttons
+  const lvlSlider = host.querySelector("#chube-detail-lvl-slider");
+  if (lvlSlider) {
+    lvlSlider.addEventListener("input", (e) => {
+      psychubeDetailLevel = Number(e.target.value);
+      const lvlText = host.querySelector("#chube-detail-lvl-text");
+      if (lvlText) lvlText.textContent = `Lv.${psychubeDetailLevel}`;
+
+      const newStats = calculatePsychubeStats(p, psychubeDetailLevel);
+      const grid = host.querySelector("#chube-detail-stats-grid");
+      if (grid) {
+        grid.innerHTML = `
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "攻击" : "ATK"}</span>
+            <span class="psychube-stat-val">${newStats.atk}</span>
+          </div>
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "生命" : "HP"}</span>
+            <span class="psychube-stat-val">${newStats.hp}</span>
+          </div>
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "现实防御" : "Reality DEF"}</span>
+            <span class="psychube-stat-val">${newStats.def}</span>
+          </div>
+          <div class="psychube-stat-item">
+            <span class="psychube-stat-name">${isCn ? "精神防御" : "Mental DEF"}</span>
+            <span class="psychube-stat-val">${newStats.mdef}</span>
+          </div>
+          ${newStats.specialStats
+            .map(
+              (sp) => `
+            <div class="psychube-stat-item">
+              <span class="psychube-stat-name">${escapeHtml(sp.name)}</span>
+              <span class="psychube-stat-val" style="color: #ED7D31;">${escapeHtml(sp.val)}</span>
+            </div>`
+            )
+            .join("")}
+        `;
+      }
+    });
+  }
+
+  host.querySelectorAll(".psychube-amp-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      psychubeDetailAmp = Number(btn.dataset.ampVal);
+      host.querySelectorAll(".psychube-amp-btn").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+
+      const amps = p.amplifications || [];
+      const curAmp = amps.find((a) => a.level === psychubeDetailAmp) || amps[0] || {};
+      let curDesc = isCn && curAmp.descZh ? curAmp.descZh : (curAmp.descEn || curAmp.descZh || "No description");
+      curDesc = formatSkillKeywords(curDesc.replace(/\{(\d+(?:\.\d+)?%?)\}/g, "$1"));
+
+      const ampBox = host.querySelector("#chube-detail-amp-box");
+      if (ampBox) {
+        ampBox.innerHTML = curDesc;
+        bindPsychubeTerms();
+      }
+    });
+  });
+
+  function bindPsychubeTerms() {
+    host.querySelectorAll(".skill-kw-bracket, .skill-kw-stat").forEach((kwEl) => {
+      kwEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        showTermPopover(kwEl, kwEl.dataset.term, null);
+      });
+    });
+  }
+
+  bindPsychubeTerms();
+}
+
+// ----------------- GLOSSARY IN INFOBOOK -----------------
+function getSortedGlossaryList() {
+  const map = new Map();
+  for (const [k, v] of Object.entries(skillGlossaryData || {})) {
+    const key = (v.nameEn || k).trim();
+    const lower = key.toLowerCase();
+    if (!map.has(lower)) {
+      map.set(lower, { ...v, _key: lower });
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => (a.nameEn || "").localeCompare(b.nameEn || ""));
+}
+
+function renderGlossaryRail() {
+  const list = document.getElementById("builds-list");
+  const count = document.getElementById("builds-count");
+  if (!list) return;
+
+  const searchInput = document.getElementById("builds-search");
+  const query = (searchInput ? searchInput.value : "").trim().toLowerCase();
+
+  const allTerms = getSortedGlossaryList();
+  const filtered = allTerms.filter((item) => {
+    if (!query) return true;
+    return (
+      (item.nameEn && item.nameEn.toLowerCase().includes(query)) ||
+      (item.nameZh && item.nameZh.toLowerCase().includes(query)) ||
+      (item.descEn && item.descEn.toLowerCase().includes(query)) ||
+      (item.descZh && item.descZh.toLowerCase().includes(query))
+    );
+  });
+
+  if (count) count.textContent = `${filtered.length} terms`;
+
+  if (!selectedGlossaryKey || !filtered.some((t) => t._key === selectedGlossaryKey)) {
+    selectedGlossaryKey = filtered[0] ? filtered[0]._key : null;
+  }
+
+  list.innerHTML = filtered.length
+    ? filtered
+        .map((term) => {
+          const isCn = currentLang === "cn";
+          const title = isCn && term.nameZh ? term.nameZh : term.nameEn;
+          const tag = isCn && term.tagZh ? term.tagZh : term.tagEn;
+          return `
+            <button type="button" class="glossary-row${term._key === selectedGlossaryKey ? " is-active" : ""}" data-glossary-key="${escapeHtml(term._key)}">
+              <span class="glossary-row-title">${escapeHtml(title)}</span>
+              ${tag ? `<span class="glossary-row-tag">${escapeHtml(tag)}</span>` : ""}
+            </button>`;
+        })
+        .join("")
+    : guideEmptyState("builds.noData");
+
+  list.querySelectorAll(".glossary-row").forEach((row) => {
+    row.addEventListener("click", () => {
+      selectedGlossaryKey = row.dataset.glossaryKey;
+      renderGlossaryRail();
+    });
+  });
+
+  renderGlossaryDetail();
+}
+
+function renderGlossaryDetail() {
+  const host = document.getElementById("builds-detail");
+  if (!host) return;
+
+  const allTerms = getSortedGlossaryList();
+  const term = allTerms.find((t) => t._key === selectedGlossaryKey);
+  if (!term) {
+    host.innerHTML = guideEmptyState("builds.select");
+    return;
+  }
+
+  const isCn = currentLang === "cn";
+  const title = isCn && term.nameZh ? term.nameZh : term.nameEn;
+  const tag = isCn && term.tagZh ? term.tagZh : term.tagEn;
+  const desc = pickLocalizedDesc(term);
+
+  host.innerHTML = `
+    <div class="glossary-detail-card">
+      <div class="glossary-detail-head">
+        <div>
+          <h3 class="glossary-detail-title">${escapeHtml(title)}</h3>
+          ${!isCn && term.nameZh ? `<span style="font-size: 0.82rem; color: #8f8a83; margin-top: 4px; display: block;">${escapeHtml(term.nameZh)}</span>` : ""}
+          ${isCn && term.nameEn ? `<span style="font-size: 0.82rem; color: #8f8a83; margin-top: 4px; display: block;">${escapeHtml(term.nameEn)}</span>` : ""}
+        </div>
+        ${tag ? `<span class="glossary-detail-tag">${escapeHtml(tag)}</span>` : ""}
+      </div>
+      <div class="glossary-detail-body">${formatSkillKeywords(desc)}</div>
+    </div>
+  `;
+
+  host.querySelectorAll(".skill-kw-bracket, .skill-kw-stat").forEach((kwEl) => {
+    kwEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showTermPopover(kwEl, kwEl.dataset.term, null);
+    });
+  });
 }
 
 function renderBuildsDetail() {
@@ -6792,6 +8660,41 @@ function renderBuildsDetail() {
   const stacked = charts.length > 2;
   const singleColumn = !chartSection || !sideSections;
 
+  const notesHtml = build.notes
+    ? `<div class="build-notes-box">
+         <span class="build-notes-label">${escapeHtml(t("builds.notes"))}</span>
+         <p class="build-notes">${escapeHtml(localizeText(build.notes))}</p>
+       </div>`
+    : "";
+
+  const canonicalName = resolveCharacterName(name);
+  let profile = characterProfilesData[name] || characterProfilesData[canonicalName] || null;
+  if (!profile) {
+    for (const [k, v] of Object.entries(characterProfilesData)) {
+      if (resolveCharacterName(k) === canonicalName || resolveCharacterName(k) === name) {
+        profile = v;
+        break;
+      }
+    }
+  }
+  let profileMetaHtml = "";
+  if (profile) {
+    const isCn = currentLang === "cn";
+    const dmgLabel = isCn ? (profile.dmgTypeZh || (profile.dmgType === "Reality" ? "现实创伤" : "精神创伤")) : profile.dmgType;
+    const roleTagsList = isCn && profile.roleTagsZh && profile.roleTagsZh.length ? profile.roleTagsZh : (profile.roleTags || []);
+    const dmgIcon = profile.dmgType === "Reality" ? "images/dmg_type_icon/reality_dmg.png" : "images/dmg_type_icon/mental_dmg.png";
+    const tagsHtml = roleTagsList.map((tg) => `<span class="flag" style="font-size: 0.6rem; padding: 2px 6px;">${escapeHtml(tg)}</span>`).join(" ");
+    profileMetaHtml = `
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+        <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.7rem; color: #ECE5D9;">
+          <img src="${escapeHtml(dmgIcon)}" alt="${escapeHtml(dmgLabel)}" style="width: 14px; height: 14px; object-fit: contain;" />
+          ${escapeHtml(dmgLabel)}
+        </span>
+        ${tagsHtml}
+      </div>
+    `;
+  }
+
   host.innerHTML = `
     <div class="builds-hero" style="--build-accent:${accent}">
       <span class="builds-hero-portrait"><img src="${escapeHtml(characterDb[name] || "")}" alt="" /></span>
@@ -6800,23 +8703,23 @@ function renderBuildsDetail() {
           <h3 class="builds-hero-name">${escapeHtml(displayCharName(name))}</h3>
           <span class="builds-hero-stars" style="color:${accent}">${"✦".repeat(rarity)}</span>
         </div>
+        ${profileMetaHtml}
       </div>
     </div>
+
+    ${renderCharacterSkillsSection(name)}
+
+    ${notesHtml}
 
     <div class="builds-grid${singleColumn ? " is-single" : ""}${stacked ? " is-stacked" : ""}">
       ${chartSection}
       ${sideSections ? `<div class="builds-column">${sideSections}</div>` : ""}
     </div>
 
-    ${
-      build.notes
-        ? `<div class="build-notes-box">
-             <span class="build-notes-label">${escapeHtml(t("builds.notes"))}</span>
-             <p class="build-notes">${escapeHtml(localizeText(build.notes))}</p>
-           </div>`
-        : ""
-    }
+    ${renderCharacterMatsSection(name)}
   `;
+  setupCharacterMatsListeners(host);
+  setupCharacterSkillsListeners(host);
 
   // The label is the copy button for its code.
   host.querySelectorAll(".build-resonance-btn").forEach((btn) => {
@@ -8042,6 +9945,62 @@ function setupGuideListeners() {
       storageKey: "r1999_builds_rail_height_v1",
     });
 
+    // InfoBook mode switcher (Characters vs Items vs Glossary)
+    const btnTabChars = document.getElementById("builds-tab-characters");
+    const btnTabItems = document.getElementById("builds-tab-items");
+    const btnTabGlossary = document.getElementById("builds-tab-glossary");
+    const subtabItems = document.getElementById("builds-subtab-items");
+    const subtabPsychubes = document.getElementById("builds-subtab-psychubes");
+    const buildsSearchInput = document.getElementById("builds-search");
+
+    const updateModeTabsUI = () => {
+      [btnTabChars, btnTabItems, btnTabGlossary].forEach((b) => {
+        if (b) b.classList.remove("is-active");
+      });
+      if (infoBookActiveTab === "characters" && btnTabChars) btnTabChars.classList.add("is-active");
+      if (infoBookActiveTab === "items" && btnTabItems) btnTabItems.classList.add("is-active");
+      if (infoBookActiveTab === "glossary" && btnTabGlossary) btnTabGlossary.classList.add("is-active");
+    };
+
+    if (btnTabChars) {
+      btnTabChars.addEventListener("click", () => {
+        infoBookActiveTab = "characters";
+        updateModeTabsUI();
+        renderBuilds();
+      });
+    }
+
+    if (btnTabItems) {
+      btnTabItems.addEventListener("click", () => {
+        infoBookActiveTab = "items";
+        updateModeTabsUI();
+        renderBuilds();
+      });
+    }
+
+    if (btnTabGlossary) {
+      btnTabGlossary.addEventListener("click", () => {
+        infoBookActiveTab = "glossary";
+        updateModeTabsUI();
+        renderBuilds();
+      });
+    }
+
+    if (subtabItems && subtabPsychubes) {
+      subtabItems.addEventListener("click", () => {
+        infoBookItemSubTab = "items";
+        subtabItems.classList.add("is-active");
+        subtabPsychubes.classList.remove("is-active");
+        renderBuilds();
+      });
+      subtabPsychubes.addEventListener("click", () => {
+        infoBookItemSubTab = "psychubes";
+        subtabPsychubes.classList.add("is-active");
+        subtabItems.classList.remove("is-active");
+        renderBuilds();
+      });
+    }
+
     document.querySelectorAll("#builds-rarity-group .filter-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const rarity = Number(btn.dataset.rarity);
@@ -8130,6 +10089,13 @@ function setupEventListeners() {
   setupTierCountTooltip();
   setupGuideListeners();
   setupCreditsListeners();
+
+  // Close term popover on document click
+  document.addEventListener("click", (e) => {
+    if (activeTermPopoverEl && !activeTermPopoverEl.contains(e.target)) {
+      closeTermPopover();
+    }
+  });
 
   // Language switcher
   document.querySelectorAll(".lang-btn").forEach((btn) => {

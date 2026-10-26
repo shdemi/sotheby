@@ -1,1098 +1,1223 @@
 {
-  "6": [
-    {
-      "id": "73",
-      "name": "Flows in All Things Alike",
-      "nameCN": "灵知当齐一",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "4.0"
-    },
-    {
-      "id": "72",
-      "name": "To Choose Against Fate",
-      "nameCN": "宿命之向背",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "4.0"
-    },
-    {
-      "id": "71",
-      "name": "Atop the Tempest",
-      "nameCN": "立于风暴脊",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "4.0"
-    },
-    {
-      "id": "70",
-      "name": "Tides Held Within",
-      "nameCN": "拢于心潮间",
-      "tags": ["Heal"],
-      "release_patch": "3.9"
-    },
-    {
-      "id": "69",
-      "name": "Arrow of Verdict",
-      "nameCN": "宣告以弦鸣",
-      "tags": ["ATK"],
-      "release_patch": "3.9"
-    },
-    {
-      "id": "68",
-      "name": "Where Light and Shadows Rest",
-      "nameCN": "光影的栖所",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "3.8"
-    },
-    {
-      "id": "67",
-      "name": "A Dream Beyond Light",
-      "nameCN": "光之外的梦",
-      "tags": ["Survival"],
-      "release_patch": "3.8"
-    },
-    {
-      "id": "66",
-      "name": "The Dance of Science",
-      "nameCN": "科学编舞法",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "C2"
-    },
-    {
-      "id": "65",
-      "name": "The Art of Atoms",
-      "nameCN": "艺术原子能",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "C2"
-    },
-    {
-      "id": "64",
-      "name": "The Silent Anthem",
-      "nameCN": "圣歌应缄默",
-      "tags": ["ATK", "Support"],
-      "release_patch": "3.7"
-    },
-    {
-      "id": "63",
-      "name": "Until I Am Me",
-      "nameCN": "蜕至我为我",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "3.7"
-    },
-    {
-      "id": "62",
-      "name": "The Soft Rain of Yesterday",
-      "nameCN": "昨日雨声轻",
-      "tags": ["ATK", "Support"],
-      "release_patch": "3.7"
-    },
-    {
-      "id": "61",
-      "name": "The Riddle's Limit",
-      "nameCN": "解答的边界",
-      "tags": ["ATK", "Support"],
-      "release_patch": "3.6"
-    },
-    {
-      "id": "60",
-      "name": "Drown Out The Hustle",
-      "nameCN": "世界多喧闹",
-      "tags": ["ATK"],
-      "release_patch": "3.5"
-    },
-    {
-      "id": "59",
-      "name": "The Fluttering Moment",
-      "nameCN": "振翅一瞬间",
-      "tags": ["Critical", "Support"],
-      "release_patch": "3.5"
-    },
-    {
-      "id": "58",
-      "name": "All Honor is but Dust",
-      "nameCN": "功名尘与土",
-      "tags": ["ATK", "Support"],
-      "release_patch": "3.4"
-    },
-    {
-      "id": "57",
-      "name": "Wayfarer of the Tao",
-      "nameCN": "天地一悠游",
-      "tags": ["Support"],
-      "release_patch": "3.4"
-    },
-    {
-      "id": "56",
-      "name": "Across the Acheron",
-      "nameCN": "行至阿刻戎",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "3.3"
-    },
-    {
-      "id": "55",
-      "name": "Singleness of Heart",
-      "nameCN": "我心如赤焰",
-      "tags": ["Support", "Survival"],
-      "release_patch": "3.3"
-    },
-    {
-      "id": "54",
-      "name": "Shadows in the Subconscious",
-      "nameCN": "无意识梦魇",
-      "tags": ["ATK", "Support"],
-      "release_patch": "3.2"
-    },
-    {
-      "id": "53",
-      "name": "Her Willful Leap",
-      "nameCN": "跃过命运线",
-      "tags": ["ATK", "Support"],
-      "release_patch": "3.2"
-    },
-    {
-      "id": "52",
-      "name": "The Thousandfold Fate",
-      "nameCN": "千万次应验",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "3.2"
-    },
-    {
-      "id": "51",
-      "name": "Bitter March of the Living",
-      "nameCN": "生者的苦旅",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "3.1"
-    },
-    {
-      "id": "50",
-      "name": "The Wandering Improviser",
-      "nameCN": "流浪即兴曲",
-      "tags": ["Heal", "Support", "Survival"],
-      "release_patch": "3.1"
-    },
-    {
-      "id": "49",
-      "name": "Into the Gentle Current",
-      "nameCN": "汇入涓流中",
-      "tags": ["Critical", "Survival"],
-      "release_patch": "3.0"
-    },
-    {
-      "id": "48",
-      "name": "Buds Yet to Bloom",
-      "nameCN": "向种子呢喃",
-      "tags": ["ATK", "Support"],
-      "release_patch": "3.0"
-    },
-    {
-      "id": "47",
-      "name": "Homecoming Lament",
-      "nameCN": "归乡哀悼词",
-      "tags": ["Critical", "Survival"],
-      "release_patch": "3.0"
-    },
-    {
-      "id": "46",
-      "name": "An Epic's End",
-      "nameCN": "史诗的终点",
-      "tags": ["ATK", "Support"],
-      "release_patch": "C1"
-    },
-    {
-      "id": "45",
-      "name": "As the Bell Tolls",
-      "nameCN": "钟响于暮色",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "C1"
-    },
-    {
-      "id": "44",
-      "name": "A Tingle of a Thought",
-      "nameCN": "思维一激灵",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.8"
-    },
-    {
-      "id": "43",
-      "name": "Family Mentor",
-      "nameCN": "家庭指导员",
-      "tags": ["ATK", "Support"],
-      "release_patch": "2.8"
-    },
-    {
-      "id": "42",
-      "name": "Embrace the Past",
-      "nameCN": "心音墓志铭",
-      "tags": ["Critical", "Survival"],
-      "release_patch": "2.8"
-    },
-    {
-      "id": "41",
-      "name": "Aurora After Winter",
-      "nameCN": "春日轻步至",
-      "tags": ["Support", "Survival"],
-      "release_patch": "2.7"
-    },
-    {
-      "id": "40",
-      "name": "Never-Ending Q&A",
-      "nameCN": "双焦点问答",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.7"
-    },
-    {
-      "id": "39",
-      "name": "Mental Cage",
-      "nameCN": "脑室即囚室",
-      "tags": ["ATK", "Support"],
-      "release_patch": "2.6"
-    },
-    {
-      "id": "38",
-      "name": "The Final Roll",
-      "nameCN": "最后的投掷",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.6"
-    },
-    {
-      "id": "37",
-      "name": "Rehearsal of Dreams",
-      "nameCN": "造梦的预演",
-      "tags": ["ATK"],
-      "release_patch": "2.5"
-    },
-    {
-      "id": "36",
-      "name": "Ready on Call",
-      "nameCN": "收到请回答",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.5"
-    },
-    {
-      "id": "35",
-      "name": "Cracks in the Shell",
-      "nameCN": "惶然的贝壳",
-      "tags": ["Heal", "Support"],
-      "release_patch": "2.4"
-    },
-    {
-      "id": "34",
-      "name": "Addio Coda",
-      "nameCN": "离别变奏曲",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.4"
-    },
-    {
-      "id": "33",
-      "name": "On the Hand of Time",
-      "nameCN": "秒针栖息地",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.3"
-    },
-    {
-      "id": "32",
-      "name": "Offbeat Strides",
-      "nameCN": "无韵律跳步",
-      "tags": ["ATK", "Survival"],
-      "release_patch": "2.3"
-    },
-    {
-      "id": "31",
-      "name": "The Third Commitment",
-      "nameCN": "第三次信任",
-      "tags": ["Critical", "Support"],
-      "release_patch": "2.2"
-    },
-    {
-      "id": "30",
-      "name": "Transcendent Love",
-      "nameCN": "非物质真情",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.2"
-    },
-    {
-      "id": "29",
-      "name": "Tiny Wish",
-      "nameCN": "微渺的愿景",
-      "tags": ["Support", "Survival"],
-      "release_patch": "2.3"
-    },
-    {
-      "id": "28",
-      "name": "From The Depths",
-      "nameCN": "寻入夜深处",
-      "tags": ["ATK", "Survival"],
-      "release_patch": "2.0"
-    },
-    {
-      "id": "27",
-      "name": "And the Maid Says",
-      "nameCN": "女佣看见了",
-      "tags": ["Critical", "Support"],
-      "release_patch": "2.1"
-    },
-    {
-      "id": "26",
-      "name": "Stray Off the Path",
-      "nameCN": "漫行如泉流",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.1"
-    },
-    {
-      "id": "25",
-      "name": "The Unbearable Lightness",
-      "nameCN": "不可诉之轻",
-      "tags": ["ATK"],
-      "release_patch": "2.0"
-    },
-    {
-      "id": "24",
-      "name": "Starlight Wellspring",
-      "nameCN": "来自最深处",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.0"
-    },
-    {
-      "id": "23",
-      "name": "Approaching Rain",
-      "nameCN": "渐近的雨声",
-      "tags": ["Survival"],
-      "release_patch": "1.9"
-    },
-    {
-      "id": "22",
-      "name": "The Fighter's Best Wishes",
-      "nameCN": "勇敢者赠言",
-      "tags": ["Survival"],
-      "release_patch": "1.9"
-    },
-    {
-      "id": "21",
-      "name": "Steps Forward",
-      "nameCN": "行进的步音",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.9"
-    },
-    {
-      "id": "20",
-      "name": "And Thus Proved",
-      "nameCN": "故尝试证明",
-      "tags": [],
-      "release_patch": ""
-    },
-    {
-      "id": "19",
-      "name": "Dawn is Coming",
-      "nameCN": "黎明将到来",
-      "tags": ["Heal"],
-      "release_patch": "1.8"
-    },
-    {
-      "id": "18",
-      "name": "Another Story",
-      "nameCN": "另一个故事",
-      "tags": ["ATK"],
-      "release_patch": "1.7"
-    },
-    {
-      "id": "17",
-      "name": "Knock on the Door",
-      "nameCN": "敲响这窄门",
-      "tags": ["Critical"],
-      "release_patch": "1.7"
-    },
-    {
-      "id": "16",
-      "name": "Same Old Story",
-      "nameCN": "此刻无新事",
-      "tags": ["ATK"],
-      "release_patch": "1.6"
-    },
-    {
-      "id": "15",
-      "name": "Outside the City",
-      "nameCN": "在四方城外",
-      "tags": ["Critical"],
-      "release_patch": "1.6"
-    },
-    {
-      "id": "14",
-      "name": "Long Night Talk",
-      "nameCN": "漫长悄悄话",
-      "tags": ["ATK"],
-      "release_patch": "1.5"
-    },
-    {
-      "id": "13",
-      "name": "Balance, Please",
-      "nameCN": "请保持平衡",
-      "tags": ["ATK"],
-      "release_patch": "1.4"
-    },
-    {
-      "id": "12",
-      "name": "Silent and Adoring",
-      "nameCN": "沉默与向往",
-      "tags": ["ATK"],
-      "release_patch": "1.4"
-    },
-    {
-      "id": "11",
-      "name": "The Carat of a Heart",
-      "nameCN": "可度量之心",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.3"
-    },
-    {
-      "id": "10",
-      "name": "Beyond Wonderland",
-      "nameCN": "在仙境之外",
-      "tags": ["ATK", "Critical", "Heal"],
-      "release_patch": "1.2"
-    },
-    {
-      "id": "9",
-      "name": "His Bounden Duty",
-      "nameCN": "必要的记录",
-      "tags": ["ATK", "Heal"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "8",
-      "name": "Luxurious Leisure",
-      "nameCN": "大娱乐至上",
-      "tags": ["ATK"],
-      "release_patch": "1.1"
-    },
-    {
-      "id": "7",
-      "name": "That Inquisitive Dear",
-      "nameCN": "好奇心宝贝",
-      "tags": ["Heal"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "6",
-      "name": "Thunderous Applause",
-      "nameCN": "掌声如雷鸣",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "5",
-      "name": "Blasphemer of Night",
-      "nameCN": "夜色亵渎者",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "4",
-      "name": "Her Second Life",
-      "nameCN": "第二次生命",
-      "tags": ["Heal"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "3",
-      "name": "Hopscotch",
-      "nameCN": "跳房子游戏",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "2",
-      "name": "Brave New World",
-      "nameCN": "美丽新世界",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "1",
-      "name": "Gluttony",
-      "nameCN": "饕餮",
-      "tags": [],
-      "release_patch": "1.0"
-    }
-  ],
-  "5": [
-    {
-      "id": "",
-      "name": "Dressing Up the Truth",
-      "nameCN": "以饰真相",
-      "tags": ["ATK"],
-      "release_patch": "3.9"
-    },
-    {
-      "id": "",
-      "name": "Farewell to the Old Night",
-      "nameCN": "暂别旧夜",
-      "tags": ["ATK"],
-      "release_patch": "3.8"
-    },
-    {
-      "id": "",
-      "name": "Luck Be A Lady",
-      "nameCN": "天助自助",
-      "tags": ["ATK"],
-      "release_patch": "3.5"
-    },
-    {
-      "id": "",
-      "name": "The Wind’s Listener",
-      "nameCN": "无事听风",
-      "tags": ["Support"],
-      "release_patch": "3.4"
-    },
-    {
-      "id": "",
-      "name": "Parting's Quiet Lament",
-      "nameCN": "世多别离",
-      "tags": ["Support"],
-      "release_patch": "3.3"
-    },
-    {
-      "id": "",
-      "name": "In Their Figures",
-      "nameCN": "“倒影”所指",
-      "tags": ["Support"],
-      "release_patch": "3.2"
-    },
-    {
-      "id": "",
-      "name": "Faded Epitaphs",
-      "nameCN": "碑文已逝",
-      "tags": ["Support", "Survival"],
-      "release_patch": "3.1"
-    },
-    {
-      "id": "",
-      "name": "Substitutes and Simulacra",
-      "nameCN": "偷天换日",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "3.0"
-    },
-    {
-      "id": "",
-      "name": "Dust on the Roadside",
-      "nameCN": "路边尘埃",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.8"
-    },
-    {
-      "id": "",
-      "name": "Melodies Old and New",
-      "nameCN": "新旧歌谣",
-      "tags": ["Heal", "Support"],
-      "release_patch": "2.7"
-    },
-    {
-      "id": "",
-      "name": "Off the Scene",
-      "nameCN": "镜头注脚",
-      "tags": ["Support", "Survival"],
-      "release_patch": "2.6"
-    },
-    {
-      "id": "",
-      "name": "Your Friendly Exorcist",
-      "nameCN": "惊魂拍档",
-      "tags": ["Support"],
-      "release_patch": "2.5"
-    },
-    {
-      "id": "",
-      "name": "Belt It Out",
-      "nameCN": "纵情一曲",
-      "tags": ["Support"],
-      "release_patch": "2.4"
-    },
-    {
-      "id": "",
-      "name": "One with the Flow",
-      "nameCN": "迷途以外",
-      "tags": ["Support", "Survival"],
-      "release_patch": "2.3"
-    },
-    {
-      "id": "",
-      "name": "Falling for a Sweet Phenomenon",
-      "nameCN": "落于现象",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.2"
-    },
-    {
-      "id": "",
-      "name": "The Severed and the Rest",
-      "nameCN": "留置心底",
-      "tags": ["ATK"],
-      "release_patch": "2.2"
-    },
-    {
-      "id": "",
-      "name": "Spinning Yarns",
-      "nameCN": "绘声绘色",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.1"
-    },
-    {
-      "id": "",
-      "name": "The Unknown Artist",
-      "nameCN": "无人问津",
-      "tags": ["ATK"],
-      "release_patch": "2.1"
-    },
-    {
-      "id": "",
-      "name": "Her Mournful Face",
-      "nameCN": "黯然失色",
-      "tags": ["ATK", "Heal"],
-      "release_patch": "2.0"
-    },
-    {
-      "id": "",
-      "name": "You Deserve It",
-      "nameCN": "自食苦果",
-      "tags": ["ATK", "Heal"],
-      "release_patch": "2.0"
-    },
-    {
-      "id": "",
-      "name": "The Loner",
-      "nameCN": "踽踽独行",
-      "tags": ["Critical"],
-      "release_patch": "1.9"
-    },
-    {
-      "id": "",
-      "name": "In the Shadow",
-      "nameCN": "形影相随",
-      "tags": ["ATK"],
-      "release_patch": "1.9"
-    },
-    {
-      "id": "",
-      "name": "Night After Night",
-      "nameCN": "夜夜亦然",
-      "tags": ["ATK"],
-      "release_patch": "1.8"
-    },
-    {
-      "id": "",
-      "name": "Silent Gaze",
-      "nameCN": "无声注视",
-      "tags": ["ATK"],
-      "release_patch": "1.8"
-    },
-    {
-      "id": "",
-      "name": "Beyond the Gears",
-      "nameCN": "齿轮之外",
-      "tags": ["Critical"],
-      "release_patch": "1.7"
-    },
-    {
-      "id": "",
-      "name": "His Tail",
-      "nameCN": "昨日往事",
-      "tags": ["ATK"],
-      "release_patch": "1.7"
-    },
-    {
-      "id": "",
-      "name": "A New Leaf",
-      "nameCN": "崭新一页",
-      "tags": ["Survival"],
-      "release_patch": "1.6"
-    },
-    {
-      "id": "",
-      "name": "Tea Break",
-      "nameCN": "茶歇时间",
-      "tags": ["ATK"],
-      "release_patch": "1.6"
-    },
-    {
-      "id": "",
-      "name": "Let's Set Sail",
-      "nameCN": "勇往直前",
-      "tags": ["ATK"],
-      "release_patch": "1.5"
-    },
-    {
-      "id": "",
-      "name": "Take the Hard Journey",
-      "nameCN": "步此苦旅",
-      "tags": ["Heal"],
-      "release_patch": "1.5"
-    },
-    {
-      "id": "",
-      "name": "A Satisfied Eater",
-      "nameCN": "食足餮满",
-      "tags": ["ATK"],
-      "release_patch": "1.4"
-    },
-    {
-      "id": "",
-      "name": "Remaining Absurdity",
-      "nameCN": "荒唐余生",
-      "tags": ["ATK"],
-      "release_patch": "1.4"
-    },
-    {
-      "id": "",
-      "name": "A Free Heart",
-      "nameCN": "自由的心",
-      "tags": ["Survival"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "",
-      "name": "An Afternoon Nap",
-      "nameCN": "午后小憩",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "",
-      "name": "Decode",
-      "nameCN": "示我以真",
-      "tags": ["Heal", "Survival"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "",
-      "name": "Her Bright Future",
-      "nameCN": "远大前程",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "",
-      "name": "Laughter and Laughter",
-      "nameCN": "笑语欢声",
-      "tags": ["Heal", "Survival"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "",
-      "name": "The Footloose",
-      "nameCN": "无束无拘",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "1",
-      "name": "Tomorrow Also",
-      "nameCN": "明日亦然",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.0"
-    },
-    {
-      "id": "",
-      "name": "Yearning Desire",
-      "nameCN": "心驰神往",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
-    }
-  ],
   "5": [
     {
       "id": "43",
       "name": "Laughter and Laughter",
       "nameCN": "笑语欢声",
-      "tags": ["Heal", "Survival"],
-      "release_patch": "1.0"
+      "tags": [
+        "Heal",
+        "Survival"
+      ],
+      "release_patch": "1.0",
+      "gameId": 4104
     },
     {
       "id": "42",
       "name": "A Free Heart",
       "nameCN": "自由的心",
-      "tags": ["Survival"],
-      "release_patch": "1.0"
+      "tags": [
+        "Survival"
+      ],
+      "release_patch": "1.0",
+      "gameId": 4103
     },
     {
       "id": "41",
       "name": "Joy of the Present",
       "nameCN": "当下之喜",
       "tags": [],
-      "release_patch": ""
+      "release_patch": "",
+      "gameId": 1451
     },
     {
       "id": "40",
       "name": "Dressing Up the Truth",
       "nameCN": "以饰真相",
-      "tags": ["ATK"],
-      "release_patch": "3.9"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "3.9",
+      "gameId": 1450
     },
     {
       "id": "39",
       "name": "Farewell to the Old Night",
       "nameCN": "暂别旧夜",
-      "tags": ["ATK"],
-      "release_patch": "3.8"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "3.8",
+      "gameId": 1449
     },
     {
       "id": "38",
       "name": "For Rehabilitation",
       "nameCN": "成长阵痛",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.8"
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "1.8",
+      "gameId": 1526
     },
     {
       "id": "37",
       "name": "Luck Be A Lady",
       "nameCN": "天助自助",
-      "tags": ["ATK"],
-      "release_patch": "3.5"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "3.5",
+      "gameId": 1447
     },
     {
       "id": "36",
       "name": "The Wind’s Listener",
       "nameCN": "无事听风",
-      "tags": ["Support"],
-      "release_patch": "3.4"
+      "tags": [
+        "Support"
+      ],
+      "release_patch": "3.4",
+      "gameId": 1446
     },
     {
       "id": "35",
       "name": "Parting's Quiet Lament",
       "nameCN": "世多别离",
-      "tags": ["Support"],
-      "release_patch": "3.3"
+      "tags": [
+        "Support"
+      ],
+      "release_patch": "3.3",
+      "gameId": 1445
     },
     {
       "id": "34",
       "name": "In Their Figures",
       "nameCN": "“倒影”所指",
-      "tags": ["Support"],
-      "release_patch": "3.2"
+      "tags": [
+        "Support"
+      ],
+      "release_patch": "3.2",
+      "gameId": 1444
     },
     {
       "id": "33",
       "name": "Faded Epitaphs",
       "nameCN": "碑文已逝",
-      "tags": ["Support", "Survival"],
-      "release_patch": "3.1"
+      "tags": [
+        "Support",
+        "Survival"
+      ],
+      "release_patch": "3.1",
+      "gameId": 1443
     },
     {
       "id": "32",
       "name": "Substitutes and Simulacra",
       "nameCN": "偷天换日",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "3.0"
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "3.0",
+      "gameId": 1442
     },
     {
       "id": "31",
       "name": "Dust on the Roadside",
       "nameCN": "路边尘埃",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.8"
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.8",
+      "gameId": 1441
     },
     {
       "id": "30",
       "name": "Melodies Old and New",
       "nameCN": "新旧歌谣",
-      "tags": ["Heal", "Support"],
-      "release_patch": "2.7"
+      "tags": [
+        "Heal",
+        "Support"
+      ],
+      "release_patch": "2.7",
+      "gameId": 1440
     },
     {
       "id": "29",
       "name": "Off the Scene",
       "nameCN": "镜头注脚",
-      "tags": ["Support", "Survival"],
-      "release_patch": "2.6"
+      "tags": [
+        "Support",
+        "Survival"
+      ],
+      "release_patch": "2.6",
+      "gameId": 1439
     },
     {
       "id": "28",
       "name": "Your Friendly Exorcist",
       "nameCN": "惊魂拍档",
-      "tags": ["Support"],
-      "release_patch": "2.5"
+      "tags": [
+        "Support"
+      ],
+      "release_patch": "2.5",
+      "gameId": 1438
     },
     {
       "id": "27",
       "name": "Belt It Out",
       "nameCN": "纵情一曲",
-      "tags": ["Support"],
-      "release_patch": "2.4"
+      "tags": [
+        "Support"
+      ],
+      "release_patch": "2.4",
+      "gameId": 1437
     },
     {
       "id": "26",
       "name": "One with the Flow",
       "nameCN": "迷途以外",
-      "tags": ["Support", "Survival"],
-      "release_patch": "2.3"
+      "tags": [
+        "Support",
+        "Survival"
+      ],
+      "release_patch": "2.3",
+      "gameId": 1436
     },
     {
       "id": "25",
       "name": "The Severed and the Rest",
       "nameCN": "留置心底",
-      "tags": ["ATK"],
-      "release_patch": "2.2"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "2.2",
+      "gameId": 1435
     },
     {
       "id": "24",
       "name": "Falling for a Sweet Phenomenon",
       "nameCN": "落于现象",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.2"
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.2",
+      "gameId": 1434
     },
     {
       "id": "23",
       "name": "The Unknown Artist",
       "nameCN": "无人问津",
-      "tags": ["ATK"],
-      "release_patch": "2.1"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "2.1",
+      "gameId": 1433
     },
     {
       "id": "22",
       "name": "Spinning Yarns",
       "nameCN": "绘声绘色",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "2.1"
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.1",
+      "gameId": 1432
     },
     {
       "id": "21",
       "name": "You Deserve It",
       "nameCN": "自食苦果",
-      "tags": ["ATK", "Heal"],
-      "release_patch": "2.0"
+      "tags": [
+        "ATK",
+        "Heal"
+      ],
+      "release_patch": "2.0",
+      "gameId": 1431
     },
     {
       "id": "20",
-      "name": "Her Mournful Face", "nameCN": "黯然失色",
-      "tags": ["ATK", "Heal"],
-      "release_patch": "2.0"
+      "name": "Her Mournful Face",
+      "nameCN": "黯然失色",
+      "tags": [
+        "ATK",
+        "Heal"
+      ],
+      "release_patch": "2.0",
+      "gameId": 1430
     },
     {
       "id": "19",
       "name": "Going Along Alone",
       "nameCN": "踽踽独行",
-      "tags": ["Critical"],
-      "release_patch": "1.9"
+      "tags": [
+        "Critical"
+      ],
+      "release_patch": "1.9",
+      "gameId": 1429
     },
     {
       "id": "18",
       "name": "In the Shadow",
       "nameCN": "形影相随",
-      "tags": ["ATK"],
-      "release_patch": "1.9"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.9",
+      "gameId": 1428
     },
     {
       "id": "17",
       "name": "Silent Gaze",
       "nameCN": "无声注视",
-      "tags": ["ATK"],
-      "release_patch": "1.8"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.8",
+      "gameId": 1427
     },
     {
       "id": "16",
       "name": "Night After Night",
       "nameCN": "夜夜亦然",
-      "tags": ["ATK"],
-      "release_patch": "1.8"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.8",
+      "gameId": 1426
     },
     {
       "id": "15",
       "name": "Beyond the Gears",
       "nameCN": "齿轮之外",
-      "tags": ["Critical"],
-      "release_patch": "1.7"
+      "tags": [
+        "Critical"
+      ],
+      "release_patch": "1.7",
+      "gameId": 1425
     },
     {
       "id": "14",
       "name": "His Tail",
       "nameCN": "昨日往事",
-      "tags": ["ATK"],
-      "release_patch": "1.7"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.7",
+      "gameId": 1424
     },
     {
       "id": "13",
       "name": "A New Leaf",
       "nameCN": "崭新一页",
-      "tags": ["Survival"],
-      "release_patch": "1.6"
+      "tags": [
+        "Survival"
+      ],
+      "release_patch": "1.6",
+      "gameId": 1423
     },
     {
       "id": "12",
       "name": "Tea Break",
       "nameCN": "茶歇时间",
-      "tags": ["ATK"],
-      "release_patch": "1.6"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.6",
+      "gameId": 1422
     },
     {
       "id": "11",
       "name": "Let's Set Sail",
       "nameCN": "勇往直前",
-      "tags": ["ATK"],
-      "release_patch": "1.5"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.5",
+      "gameId": 1421
     },
     {
       "id": "10",
       "name": "Take the Hard Journey",
       "nameCN": "步此苦旅",
-      "tags": ["Heal"],
-      "release_patch": "1.5"
+      "tags": [
+        "Heal"
+      ],
+      "release_patch": "1.5",
+      "gameId": 1420
     },
     {
       "id": "9",
       "name": "Remaining Absurdity",
       "nameCN": "荒唐余生",
-      "tags": ["ATK"],
-      "release_patch": "1.4"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.4",
+      "gameId": 1414
     },
     {
       "id": "8",
       "name": "A Satisfied Eater",
       "nameCN": "食足餮满",
-      "tags": ["ATK"],
-      "release_patch": "1.4"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.4",
+      "gameId": 1413
     },
     {
       "id": "7",
       "name": "Her Bright Future",
       "nameCN": "远大前程",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1411
     },
     {
       "id": "6",
       "name": "An Afternoon Nap",
       "nameCN": "午后小憩",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.0"
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1407
     },
     {
       "id": "5",
       "name": "Decode",
       "nameCN": "示我以真",
-      "tags": ["Heal", "Survival"],
-      "release_patch": "1.0"
+      "tags": [
+        "Heal",
+        "Survival"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1405
     },
     {
       "id": "4",
       "name": "The Footloose",
       "nameCN": "无束无拘",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1404
     },
     {
       "id": "3",
       "name": "Tomorrow Also",
       "nameCN": "明日亦然",
-      "tags": ["ATK", "Critical"],
-      "release_patch": "1.0"
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1402
     },
     {
       "id": "2",
-      "name": "Yearning Desire", "nameCN": "心驰神往",
-      "tags": ["ATK"],
-      "release_patch": "1.0"
+      "name": "Yearning Desire",
+      "nameCN": "心驰神往",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1401
     },
     {
       "id": "1",
       "name": "Greed",
       "nameCN": "贪欲",
       "tags": [],
-      "release_patch": ""
+      "release_patch": "",
+      "gameId": 1001
+    }
+  ],
+  "6": [
+    {
+      "id": "73",
+      "name": "Flows in All Things Alike",
+      "nameCN": "灵知当齐一",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "4.0",
+      "gameId": 1579
+    },
+    {
+      "id": "72",
+      "name": "To Choose Against Fate",
+      "nameCN": "宿命之向背",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "4.0",
+      "gameId": 1578
+    },
+    {
+      "id": "71",
+      "name": "Atop the Tempest",
+      "nameCN": "立于风暴脊",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "4.0",
+      "gameId": 1577
+    },
+    {
+      "id": "70",
+      "name": "Tides Held Within",
+      "nameCN": "拢于心潮间",
+      "tags": [
+        "Heal"
+      ],
+      "release_patch": "3.9",
+      "gameId": 1576
+    },
+    {
+      "id": "69",
+      "name": "Arrow of Verdict",
+      "nameCN": "宣告以弦鸣",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "3.9",
+      "gameId": 1575
+    },
+    {
+      "id": "68",
+      "name": "Where Light and Shadows Rest",
+      "nameCN": "光影的栖所",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "3.8",
+      "gameId": 1574
+    },
+    {
+      "id": "67",
+      "name": "A Dream Beyond Light",
+      "nameCN": "光之外的梦",
+      "tags": [
+        "Survival"
+      ],
+      "release_patch": "3.8",
+      "gameId": 1573
+    },
+    {
+      "id": "66",
+      "name": "The Dance of Science",
+      "nameCN": "科学编舞法",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "C2",
+      "gameId": 1572
+    },
+    {
+      "id": "65",
+      "name": "The Art of Atoms",
+      "nameCN": "艺术原子能",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "C2",
+      "gameId": 1571
+    },
+    {
+      "id": "64",
+      "name": "The Silent Anthem",
+      "nameCN": "圣歌应缄默",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "3.7",
+      "gameId": 1570
+    },
+    {
+      "id": "63",
+      "name": "Until I Am Me",
+      "nameCN": "蜕至我为我",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "3.7",
+      "gameId": 1569
+    },
+    {
+      "id": "62",
+      "name": "The Soft Rain of Yesterday",
+      "nameCN": "昨日雨声轻",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "3.7",
+      "gameId": 1568
+    },
+    {
+      "id": "61",
+      "name": "The Riddle's Limit",
+      "nameCN": "解答的边界",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "3.6",
+      "gameId": 1567
+    },
+    {
+      "id": "60",
+      "name": "Drown Out The Hustle",
+      "nameCN": "世界多喧闹",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "3.5",
+      "gameId": 1566
+    },
+    {
+      "id": "59",
+      "name": "The Fluttering Moment",
+      "nameCN": "振翅一瞬间",
+      "tags": [
+        "Critical",
+        "Support"
+      ],
+      "release_patch": "3.5",
+      "gameId": 1565
+    },
+    {
+      "id": "58",
+      "name": "All Honor is but Dust",
+      "nameCN": "功名尘与土",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "3.4",
+      "gameId": 1564
+    },
+    {
+      "id": "57",
+      "name": "Wayfarer of the Tao",
+      "nameCN": "天地一悠游",
+      "tags": [
+        "Support"
+      ],
+      "release_patch": "3.4",
+      "gameId": 1563
+    },
+    {
+      "id": "56",
+      "name": "Across the Acheron",
+      "nameCN": "行至阿刻戎",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "3.3",
+      "gameId": 1562
+    },
+    {
+      "id": "55",
+      "name": "Singleness of Heart",
+      "nameCN": "我心如赤焰",
+      "tags": [
+        "Support",
+        "Survival"
+      ],
+      "release_patch": "3.3",
+      "gameId": 1561
+    },
+    {
+      "id": "54",
+      "name": "Shadows in the Subconscious",
+      "nameCN": "无意识梦魇",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "3.2",
+      "gameId": 1560
+    },
+    {
+      "id": "53",
+      "name": "Her Willful Leap",
+      "nameCN": "跃过命运线",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "3.2",
+      "gameId": 1559
+    },
+    {
+      "id": "52",
+      "name": "The Thousandfold Fate",
+      "nameCN": "千万次应验",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "3.2",
+      "gameId": 1558
+    },
+    {
+      "id": "51",
+      "name": "Bitter March of the Living",
+      "nameCN": "生者的苦旅",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "3.1",
+      "gameId": 1557
+    },
+    {
+      "id": "50",
+      "name": "The Wandering Improviser",
+      "nameCN": "流浪即兴曲",
+      "tags": [
+        "Heal",
+        "Support",
+        "Survival"
+      ],
+      "release_patch": "3.1",
+      "gameId": 1556
+    },
+    {
+      "id": "49",
+      "name": "Into the Gentle Current",
+      "nameCN": "汇入涓流中",
+      "tags": [
+        "Critical",
+        "Survival"
+      ],
+      "release_patch": "3.0",
+      "gameId": 1555
+    },
+    {
+      "id": "48",
+      "name": "Buds Yet to Bloom",
+      "nameCN": "向种子呢喃",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "3.0",
+      "gameId": 1554
+    },
+    {
+      "id": "47",
+      "name": "Homecoming Lament",
+      "nameCN": "归乡哀悼词",
+      "tags": [
+        "Critical",
+        "Survival"
+      ],
+      "release_patch": "3.0",
+      "gameId": 1553
+    },
+    {
+      "id": "46",
+      "name": "An Epic's End",
+      "nameCN": "史诗的终点",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "C1",
+      "gameId": 1552
+    },
+    {
+      "id": "45",
+      "name": "As the Bell Tolls",
+      "nameCN": "钟响于暮色",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "C1",
+      "gameId": 1551
+    },
+    {
+      "id": "44",
+      "name": "A Tingle of a Thought",
+      "nameCN": "思维一激灵",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.8",
+      "gameId": 1550
+    },
+    {
+      "id": "43",
+      "name": "Family Mentor",
+      "nameCN": "家庭指导员",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "2.8",
+      "gameId": 1549
+    },
+    {
+      "id": "42",
+      "name": "Embrace the Past",
+      "nameCN": "心音墓志铭",
+      "tags": [
+        "Critical",
+        "Survival"
+      ],
+      "release_patch": "2.8",
+      "gameId": 1548
+    },
+    {
+      "id": "41",
+      "name": "Aurora After Winter",
+      "nameCN": "春日轻步至",
+      "tags": [
+        "Support",
+        "Survival"
+      ],
+      "release_patch": "2.7",
+      "gameId": 1547
+    },
+    {
+      "id": "40",
+      "name": "Never-Ending Q&A",
+      "nameCN": "双焦点问答",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.7",
+      "gameId": 1546
+    },
+    {
+      "id": "39",
+      "name": "Mental Cage",
+      "nameCN": "脑室即囚室",
+      "tags": [
+        "ATK",
+        "Support"
+      ],
+      "release_patch": "2.6",
+      "gameId": 1545
+    },
+    {
+      "id": "38",
+      "name": "The Final Roll",
+      "nameCN": "最后的投掷",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.6",
+      "gameId": 1544
+    },
+    {
+      "id": "37",
+      "name": "Rehearsal of Dreams",
+      "nameCN": "造梦的预演",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "2.5",
+      "gameId": 1543
+    },
+    {
+      "id": "36",
+      "name": "Ready on Call",
+      "nameCN": "收到请回答",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.5",
+      "gameId": 1542
+    },
+    {
+      "id": "35",
+      "name": "Cracks in the Shell",
+      "nameCN": "惶然的贝壳",
+      "tags": [
+        "Heal",
+        "Support"
+      ],
+      "release_patch": "2.4",
+      "gameId": 1541
+    },
+    {
+      "id": "34",
+      "name": "Addio Coda",
+      "nameCN": "离别变奏曲",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.4",
+      "gameId": 1540
+    },
+    {
+      "id": "33",
+      "name": "On the Hand of Time",
+      "nameCN": "秒针栖息地",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.3",
+      "gameId": 1539
+    },
+    {
+      "id": "32",
+      "name": "Offbeat Strides",
+      "nameCN": "无韵律跳步",
+      "tags": [
+        "ATK",
+        "Survival"
+      ],
+      "release_patch": "2.3",
+      "gameId": 1538
+    },
+    {
+      "id": "31",
+      "name": "The Third Commitment",
+      "nameCN": "第三次信任",
+      "tags": [
+        "Critical",
+        "Support"
+      ],
+      "release_patch": "2.2",
+      "gameId": 1537
+    },
+    {
+      "id": "30",
+      "name": "Transcendent Love",
+      "nameCN": "非物质真情",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.2",
+      "gameId": 1536
+    },
+    {
+      "id": "29",
+      "name": "Tiny Wish",
+      "nameCN": "微渺的愿景",
+      "tags": [
+        "Support",
+        "Survival"
+      ],
+      "release_patch": "2.3",
+      "gameId": 1535
+    },
+    {
+      "id": "28",
+      "name": "From The Depths",
+      "nameCN": "寻入夜深处",
+      "tags": [
+        "ATK",
+        "Survival"
+      ],
+      "release_patch": "2.0",
+      "gameId": 1530
+    },
+    {
+      "id": "27",
+      "name": "And the Maid Says",
+      "nameCN": "女佣看见了",
+      "tags": [
+        "Critical",
+        "Support"
+      ],
+      "release_patch": "2.1",
+      "gameId": 1533
+    },
+    {
+      "id": "26",
+      "name": "Stray Off the Path",
+      "nameCN": "漫行如泉流",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.1",
+      "gameId": 1532
+    },
+    {
+      "id": "25",
+      "name": "The Unbearable Lightness",
+      "nameCN": "不可诉之轻",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "2.0",
+      "gameId": 1531
+    },
+    {
+      "id": "24",
+      "name": "Starlight Wellspring",
+      "nameCN": "来自最深处",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "2.0",
+      "gameId": 1530
+    },
+    {
+      "id": "23",
+      "name": "Approaching Rain",
+      "nameCN": "渐近的雨声",
+      "tags": [
+        "Survival"
+      ],
+      "release_patch": "1.9",
+      "gameId": 1529
+    },
+    {
+      "id": "22",
+      "name": "The Fighter's Best Wishes",
+      "nameCN": "勇敢者赠言",
+      "tags": [
+        "Survival"
+      ],
+      "release_patch": "1.9",
+      "gameId": 1528
+    },
+    {
+      "id": "21",
+      "name": "Steps Forward",
+      "nameCN": "行进的步音",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "1.9",
+      "gameId": 1527
+    },
+    {
+      "id": "20",
+      "name": "And Thus Proved",
+      "nameCN": "故尝试证明",
+      "tags": [],
+      "release_patch": "",
+      "gameId": 1526
+    },
+    {
+      "id": "19",
+      "name": "Dawn is Coming",
+      "nameCN": "黎明将到来",
+      "tags": [
+        "Heal"
+      ],
+      "release_patch": "1.8",
+      "gameId": 1525
+    },
+    {
+      "id": "18",
+      "name": "Another Story",
+      "nameCN": "另一个故事",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.7",
+      "gameId": 1524
+    },
+    {
+      "id": "17",
+      "name": "Knock on the Door",
+      "nameCN": "敲响这窄门",
+      "tags": [
+        "Critical"
+      ],
+      "release_patch": "1.7",
+      "gameId": 1523
+    },
+    {
+      "id": "16",
+      "name": "Same Old Story",
+      "nameCN": "此刻无新事",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.6",
+      "gameId": 1522
+    },
+    {
+      "id": "15",
+      "name": "Outside the City",
+      "nameCN": "在四方城外",
+      "tags": [
+        "Critical"
+      ],
+      "release_patch": "1.6",
+      "gameId": 1521
+    },
+    {
+      "id": "14",
+      "name": "Long Night Talk",
+      "nameCN": "漫长悄悄话",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.5",
+      "gameId": 1515
+    },
+    {
+      "id": "13",
+      "name": "Balance, Please",
+      "nameCN": "请保持平衡",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.4",
+      "gameId": 1514
+    },
+    {
+      "id": "12",
+      "name": "Silent and Adoring",
+      "nameCN": "沉默与向往",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.4",
+      "gameId": 1513
+    },
+    {
+      "id": "11",
+      "name": "The Carat of a Heart",
+      "nameCN": "可度量之心",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "1.3",
+      "gameId": 1512
+    },
+    {
+      "id": "10",
+      "name": "Beyond Wonderland",
+      "nameCN": "在仙境之外",
+      "tags": [
+        "ATK",
+        "Critical",
+        "Heal"
+      ],
+      "release_patch": "1.2",
+      "gameId": 1511
+    },
+    {
+      "id": "9",
+      "name": "His Bounden Duty",
+      "nameCN": "必要的记录",
+      "tags": [
+        "ATK",
+        "Heal"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1510
+    },
+    {
+      "id": "8",
+      "name": "Luxurious Leisure",
+      "nameCN": "大娱乐至上",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.1",
+      "gameId": 1509
+    },
+    {
+      "id": "7",
+      "name": "That Inquisitive Dear",
+      "nameCN": "好奇心宝贝",
+      "tags": [
+        "Heal"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1508
+    },
+    {
+      "id": "6",
+      "name": "Thunderous Applause",
+      "nameCN": "掌声如雷鸣",
+      "tags": [
+        "ATK",
+        "Critical"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1507
+    },
+    {
+      "id": "5",
+      "name": "Blasphemer of Night",
+      "nameCN": "夜色亵渎者",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1504
+    },
+    {
+      "id": "4",
+      "name": "Her Second Life",
+      "nameCN": "第二次生命",
+      "tags": [
+        "Heal"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1503
+    },
+    {
+      "id": "3",
+      "name": "Hopscotch",
+      "nameCN": "跳房子游戏",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1502
+    },
+    {
+      "id": "2",
+      "name": "Brave New World",
+      "nameCN": "美丽新世界",
+      "tags": [
+        "ATK"
+      ],
+      "release_patch": "1.0",
+      "gameId": 1501
+    },
+    {
+      "id": "1",
+      "name": "Gluttony",
+      "nameCN": "饕餮",
+      "tags": [],
+      "release_patch": "1.0",
+      "gameId": 1000
     }
   ]
 }

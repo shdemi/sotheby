@@ -1240,6 +1240,11 @@
       <div class="archetype-modal-header">
         <h2 class="archetype-modal-title"><span data-i18n="builds.title">InfoBook</span></h2>
         <div class="builds-header-actions">
+          <div class="builds-mode-group" role="tablist">
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn is-active" id="builds-tab-characters" data-mode="characters" data-i18n="builds.tabCharacters">Characters</button>
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-items" data-mode="items" data-i18n="builds.tabItems">Items &amp; Psychubes</button>
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-glossary" data-mode="glossary" data-i18n="builds.tabGlossary">Glossary</button>
+          </div>
           <button type="button" class="btn btn-secondary btn-sm builds-rail-toggle" id="builds-rail-toggle" aria-pressed="true">
             <img src="images/random_icon/hide_tier.png" alt="" class="builds-rail-toggle-icon" />
             <span data-i18n="builds.toggleList">Hide list</span>
@@ -1251,6 +1256,10 @@
       <div class="builds-body">
         <aside class="builds-rail">
           <div class="builds-rail-tools">
+            <div class="builds-item-subtabs" id="builds-item-subtabs" style="display: none; width: 100%; gap: 6px; margin-bottom: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm builds-subtab-btn is-active" id="builds-subtab-items" data-subtab="items" style="flex: 1;" data-i18n="builds.subTabItems">Items</button>
+              <button type="button" class="btn btn-secondary btn-sm builds-subtab-btn" id="builds-subtab-psychubes" data-subtab="psychubes" style="flex: 1;" data-i18n="builds.subTabPsychubes">Psychubes</button>
+            </div>
             <input type="text" id="builds-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
             <div class="filter-btn-group builds-rarity-group" id="builds-rarity-group" role="group" aria-label="Rarity">
               <button type="button" class="filter-btn" data-rarity="6">✦6</button>
