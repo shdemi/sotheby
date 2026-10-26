@@ -6449,6 +6449,76 @@ a.credit-name:hover {
   text-align: center;
 }
 
+/* ---- Team Building PNG export ----
+   An offscreen copy of the team grid, always three cards wide so the exported
+   image matches the desktop layout even when captured on a phone. The desktop
+   values are restated here because the mobile media queries below cannot win
+   against this two-class specificity. The width is set by exportTeamsPng()
+   from TEAM_MODAL_MAX_WIDTH[3]. */
+.team-export-sheet {
+  position: fixed;
+  top: 0;
+  left: -20000px;
+  background: #1b1613 url("images/background.png") center / cover no-repeat;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.team-export-sheet .team-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 16px 18px;
+}
+
+.team-export-sheet .team-card { padding: 10px 12px 12px; }
+.team-export-sheet .team-card-head { margin-bottom: 8px; }
+.team-export-sheet .team-name-input,
+.team-export-sheet .team-name-text {
+  font-family: var(--mono-font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #323C34;
+  line-height: 1.4;
+  padding: 3px 6px;
+  display: inline-block;
+  overflow: visible;
+  white-space: nowrap;
+}
+.team-export-sheet .team-drag-handle,
+.team-export-sheet .btn-team-del,
+.team-export-sheet .btn-team-recommend {
+  display: none !important;
+}
+.team-export-sheet .team-slots { gap: 18px; }
+.team-export-sheet .team-slot-meta { gap: 4px; padding: 3px 4px 5px; }
+.team-export-sheet .team-slot-insight { width: 15px; height: 15px; }
+.team-export-sheet .team-slot-level { font-size: 0.82rem; }
+.team-export-sheet .team-slot-afflatus { height: 38%; }
+.team-export-sheet .team-slot-chube-plus { font-size: 1.05rem; }
+.team-export-sheet .team-slot-plus { font-size: 1.5rem; }
+.team-export-sheet .team-slot-used { top: 2px; right: 2px; width: 17px; height: 17px; }
+
+.team-export-unused {
+  padding: 12px 18px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.team-export-unused-head {
+  margin-bottom: 10px;
+}
+
+.team-export-unused-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  gap: 8px;
+}
+
+.team-export-item:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: -2px;
+}
+
 /* ---- Drag handle between the list and the unused strip ---- */
 .team-strip-resizer {
   flex: 0 0 auto;
@@ -7092,18 +7162,6 @@ body.team-resizing * {
     width: 72px;
     height: 48px;
   }
-
-  .preset-slot { gap: 3px; }
-  .preset-subs { gap: 3px; }
-  .preset-subs-label { font-size: 0.44rem; }
-  .preset-sub { width: 18px; height: 18px; }
-  .preset-sub .preset-sub-used { width: 9px; height: 9px; }
-
-  .preset-add-btn {
-    flex: 1 1 100%;
-    height: 30px;
-    font-size: 0.6rem;
-  }
 }
 
 /* Phones keep all four slots on ONE row (4x1) instead of wrapping to 2x2.
@@ -7172,9 +7230,36 @@ body.team-resizing * {
     height: min(92vh, 900px);
   }
 
-  .team-header-actions {
+  /* Row 1: the title, on a line of its own. Row 2: the controls, which wrap
+     instead of squeezing the title — the same header pattern as InfoBook and
+     Rotations. The close button floats in the corner rather than taking a
+     cell in the wrapped row. */
+  #team-modal .archetype-modal-header {
+    position: relative;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 44px 10px 12px;
+  }
+
+  #team-modal .archetype-modal-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 19px;
+    line-height: 1.2;
+  }
+
+  .team-header-actions {
+    flex: 1 1 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: 0;
+  }
+
+  .team-header-actions .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
 
   /* The team list column count comes from applyTeamColumns(), not a media query */
@@ -7393,15 +7478,9 @@ body.guide-rail-resizing * {
   gap: 10px;
 }
 
-.builds-rail-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 10px;
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
+.builds-rail-toggle,
+.rotations-rail-toggle {
+  display: none !important;
 }
 
 .builds-rail-toggle-icon {
@@ -9612,16 +9691,78 @@ body.guide-rail-resizing * {
     max-height: 92dvh;
   }
 
+  /* Row 1: Back + title. Row 2: the mode tabs, which wrap instead of
+     overflowing the modal's header on a phone. */
+  #builds-modal .archetype-modal-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 44px 10px 12px;
+  }
+
+  #builds-modal .archetype-modal-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 19px;
+    line-height: 1.2;
+  }
+
+  .builds-back { order: -1; padding-right: 6px; }
+
+  .builds-header-actions {
+    flex: 1 1 100%;
+    margin-left: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .builds-mode-group {
+    flex: 1 1 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .builds-mode-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 7px;
+    font-size: 0.56rem;
+    letter-spacing: 0.03em;
+  }
+
+  .builds-header-actions .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  /* The list/detail split is replaced by a master-detail flow on phones. */
+  .builds-rail-toggle { display: none; }
+
   .builds-body { flex-direction: column; }
 
   .builds-rail {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     width: 100%;
-    height: var(--builds-rail-h, 40%);
+    height: auto;
+    min-height: 0;
     max-height: none;
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  /* List view: the rail fills the body and the detail is not shown. */
+  .builds-body .builds-detail { display: none; }
+  .builds-body.is-list-hidden .builds-rail { display: flex; }
+
+  /* Detail view: the picked entry takes the whole body. */
+  .builds-body.is-detail .builds-rail { display: none; }
+  .builds-body.is-detail .builds-detail { display: flex; flex: 1 1 auto; }
+
+  /* No draggable separator on phones: each pane is shown on its own. */
+  .builds-body .guide-rail-resizer { display: none; }
 
   .builds-rail-tools { padding: 10px 12px 8px; gap: 6px; }
   .builds-rail-tools .search-input { height: 32px; font-size: 0.7rem; }
@@ -10990,15 +11131,16 @@ body.guide-rail-resizing * {
     right: 10px;
   }
 
-  /* Phones stack the rail above the plan instead of side by side. */
+  /* Phones use a master-detail flow: the list fills the body first, then the
+     picked plan replaces it. No draggable split and no list toggle needed. */
   .rotations-body {
     flex-direction: column;
   }
 
   .rotations-browse {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     width: 100%;
-    height: var(--rotations-rail-h, 40%);
+    height: auto;
     max-height: none;
     padding: 12px 12px 14px;
     gap: 10px;
@@ -11006,11 +11148,17 @@ body.guide-rail-resizing * {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .rotations-rail-toggle {
-    height: 30px;
-    padding: 0 9px;
-    font-size: 0.56rem;
-  }
+  /* List view: the rail fills the body and the plan is not shown. */
+  .rotations-body .rotations-detail { display: none; }
+  .rotations-body.is-list-hidden .rotations-browse { display: flex; }
+
+  /* Detail view: the picked plan takes the whole body. */
+  #rotations-card.is-detail .rotations-browse { display: none; }
+  #rotations-card.is-detail .rotations-detail { display: flex; flex: 1 1 auto; }
+
+  .rotations-body .guide-rail-resizer { display: none; }
+  .rotations-rail-toggle { display: none; }
+
   .rotations-presets-btn {
     height: 30px;
     padding: 0 9px;

@@ -19146,7 +19146,7 @@
         "nameZh": "列奥尼达之矛（阿瑞斯之道）",
         "nameVi": "Spear of Leonidas (Way of Ares)",
         "mainDescEn": "[Way of Ares] Force Field: All allies gain DMG Bonus +14%. When an allied [Assassination] is triggered, deal an additional 50% DMG of the attacker's type.",
-        "mainDescZh": "【阿瑞斯之道】术阵：己方全体创伤加成+14%。触发友方【刺杀】时，额外造成攻击者类型50%的创伤。",
+        "mainDescZh": "【阿瑞斯之道】力場：己方全体创伤加成+14%。触发友方【刺杀】时，额外造成攻击者类型50%的创伤。",
         "mainDescVi": "[Way of Ares] Force Field: Toàn bộ phe ta nhận DMG Bonus +14%. Khi [Assassination] của phe ta được kích hoạt, gây thêm 50% DMG cùng loại với người tấn công.",
         "combos": [
           {
@@ -19172,7 +19172,7 @@
         "nameZh": "阿尔忒弥斯之弓（阿尔忒弥斯之道）",
         "nameVi": "Bow of Artemis (Way of Artemis)",
         "mainDescEn": "[Way of Artemis] Force Field: All allies gain Critical DMG +27%. Inflicts [Lethal Injury] on targets hit.",
-        "mainDescZh": "【阿尔忒弥斯之道】术阵：己方全体暴击创伤+27%。命中目标时附加【致命伤】。",
+        "mainDescZh": "【阿尔忒弥斯之道】力場：己方全体暴击创伤+27%。命中目标时附加【致命伤】。",
         "mainDescVi": "[Way of Artemis] Force Field: Toàn bộ phe ta nhận Critical DMG +27%. Thi triển [Lethal Injury] lên mục tiêu trúng đòn.",
         "combos": [
           {
@@ -19198,7 +19198,7 @@
         "nameZh": "倪克斯短剑（倪克斯之道）",
         "nameVi": "Dagger of Nyx (Way of Nyx)",
         "mainDescEn": "[Way of Nyx] Force Field: All allies gain ATK +7%. When Kassandra performs an [Assassination], for every 100 points of Critical Technique the attacker has more than the target, the attack gains an additional Final DMG Dealt +1%.",
-        "mainDescZh": "【倪克斯之道】术阵：己方全体攻击+7%。卡珊德拉执行【刺杀】时，攻击者暴击技巧每比目标高100点，攻击造成的最终创伤额外+1%。",
+        "mainDescZh": "【倪克斯之道】力場：己方全体攻击+7%。卡珊德拉执行【刺杀】时，攻击者暴击技巧每比目标高100点，攻击造成的最终创伤额外+1%。",
         "mainDescVi": "[Way of Nyx] Force Field: Toàn bộ phe ta nhận ATK +7%. Khi Kassandra phát động [Assassination], với mỗi 100 điểm Critical Technique mà người tấn công có nhiều hơn mục tiêu, đòn tấn công này nhận thêm Final DMG Dealt +1%.",
         "combos": [
           {
@@ -23150,7 +23150,7 @@
           "1": {
             "id": 31560141,
             "descEn": "At the end of each round, smelts up to 2 unused basic Energy cards in the Spelldock, prioritizing lower-value basic Energy first; each 1 point of Energy smelted accumulates 1 point of [Flame Undying] Energy, up to 4 accumulated points, after which it stops smelting; stores up to 7 points; upon use, gains the accumulated amount of Mineral Energy.\nStarts in a locked state and cannot be used; once at least 1 point has accumulated, it unlocks and becomes usable; does not count against the team's Incantation Draw Limit, and does not consume AP.",
-            "descZh": "特殊咒语。每回合结束时熔炼咒语区未使用的交感能量，累积能量以强化术具。",
+            "descZh": "每回合结束时，熔炼至多2张咒语区未使用的普通交感能量，优先熔炼能量较低的普通交感能量，每熔炼1点交感能量可累积1点【复燃再燃】的能量，累积熔炼4点能量后不再熔炼，至多保存7点能量，使用后获得累积数量的岩交感能量；\n初始处于未解锁状态，不可使用，当累积熔炼1点能量及以上时，解锁变为可使用，不占己方咒语获取数量上限，不消耗行动点",
             "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 2 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 1 điểm Energy [Flame Undying], tối đa tích lũy 4 điểm, sau đó dừng nung chảy; lưu trữ tối đa 7 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
             "artEn": "",
             "artZh": ""
@@ -23505,8 +23505,8 @@
           "1": {
             "id": 790002,
             "descEn": "Pursuit Skill:\nConsumes 1 [Star Pursuit Point]. 1-target attack. Deals 900% Reality DMG, Critical DMG +60% when attacking.\nPursuit Ability:\nDuring [Full Pursuit], every 2 actions self takes, the 3rd action becomes a Mass attack, dealing 2000% Reality DMG to all enemies, Critical DMG +80% when attacking;\nBefore exiting the [Full Pursuit] phase, self can perform an additional finishing attack, dealing 3000% Reality DMG to all enemies, Critical DMG +100% when attacking; for every action taken by all allies during this phase, this attack deals an additional 150% Reality DMG;\nExits the [Full Pursuit] phase after this attack.",
-            "descZh": "弱点洞穿期间触发的洞知技能组，造成巨额现实创伤。",
-            "descVi": "Kỹ năng Truy kích:\nTiêu hao 1 [Star Pursuit Point]. Tấn công đơn mục tiêu. Gây 900% Reality DMG, Critical DMG +60% khi tấn công.\nNăng lực Truy kích:\nTrong [Full Pursuit], cứ mỗi 2 hành động của bản thân, hành động thứ 3 sẽ trở thành tấn công diện rộng, gây 2000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +80% khi tấn công;\nTrước khi rời khỏi giai đoạn [Full Pursuit], bản thân có thể thực hiện thêm 1 đòn kết liễu, gây 3000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +100% khi tấn công; với mỗi hành động mà toàn bộ phe ta thực hiện trong giai đoạn này, đòn tấn công này gây thêm 150% Reality DMG;\nSau đòn tấn công này, rời khỏi giai đoạn [Full Pursuit].",
+            "descZh": "单体攻击，造成900%现实创伤，攻击时暴击创伤提升60%\n【弱点洞穿】阶段内，自身每行动2次，第3次行动变为群体攻击，对敌方全体造成2000%现实创伤，攻击时暴击创伤提升80%；\n在退出【弱点洞穿】阶段前，自身能够额外发动一次终结攻击，对敌方全体造成3000%现实创伤，攻击时暴击创伤提升100%，本次阶段内己方全体每行动1次，额外造成150%现实创伤；\n攻击后退出【弱点洞穿】阶段",
+            "descVi": "Pursuit Skill:\nTiêu hao 1 [Star Pursuit Point]. Tấn công đơn mục tiêu. Gây 900% Reality DMG, Critical DMG +60% khi tấn công.\nPursuit Ability:\nTrong [Full Pursuit], cứ mỗi 2 hành động của bản thân, hành động thứ 3 sẽ trở thành tấn công diện rộng, gây 2000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +80% khi tấn công;\nTrước khi rời khỏi giai đoạn [Full Pursuit], bản thân có thể thực hiện thêm 1 đòn kết liễu, gây 3000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +100% khi tấn công; với mỗi hành động mà toàn bộ phe ta thực hiện trong giai đoạn này, đòn tấn công này gây thêm 150% Reality DMG;\nSau đòn tấn công này, rời khỏi giai đoạn [Full Pursuit].",
             "artEn": "",
             "artZh": ""
           }

@@ -1046,34 +1046,40 @@
     const button = document.getElementById("rotations-export-btn");
     if (!button) return;
     const label = button.querySelector("span") || button;
-    const idle = label.textContent;
+
+    // The label follows the active language. Reading the text once at startup
+    // would restore the English label after an export, even in another language.
+    const tr = (key, fallback) => (typeof window.t === "function" ? window.t(key) : fallback);
+    const setIdle = () => {
+      label.textContent = tr("rotations.exportPng", "Export PNG");
+    };
 
     button.addEventListener("click", async () => {
       const rotation = typeof rotationsSelected === "string" ? rotationEntry(rotationsSelected) : null;
       if (!rotation) {
         button.classList.add("is-error");
-        label.textContent = "Select a rotation first";
+        label.textContent = tr("rotations.exportSelect", "Select a rotation first");
         setTimeout(() => {
-          label.textContent = idle;
+          setIdle();
           button.classList.remove("is-error");
         }, 2200);
         return;
       }
 
       button.disabled = true;
-      label.textContent = "Exportingâ€¦";
+      label.textContent = tr("rotations.exporting", "Exporting...");
       try {
         const canvas = await exportRotation(rotation);
         download(canvas, `${slugify(rotation.name || rotation.id)}-card-plan.png`);
-        label.textContent = "Saved";
+        label.textContent = tr("rotations.exportSaved", "Saved");
         setTimeout(() => {
-          label.textContent = idle;
+          setIdle();
         }, 1800);
       } catch (error) {
         console.error("Rotation export failed", error);
-        label.textContent = "Export failed";
+        label.textContent = tr("rotations.exportFailed", "Export failed");
         setTimeout(() => {
-          label.textContent = idle;
+          setIdle();
         }, 2400);
       } finally {
         button.disabled = false;

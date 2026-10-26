@@ -90,7 +90,7 @@ function localizeText(val) {
   if (typeof val === "string") {
     if (val.startsWith("Recommended Portrait:")) {
       const p = val.replace("Recommended Portrait:", "").trim();
-      if (currentLang === "cn") return `推荐心相：${p}`;
+      if (currentLang === "cn") return `推荐塑造：${p}`;
       if (currentLang === "vi") return `Portrait đề xuất: ${p}`;
       return val;
     }
@@ -4501,6 +4501,219 @@ function visibleTeams() {
   return teamsConfig.teams.filter((team) => futureSightEnabled || !teamHasFutureSightContent(team));
 }
 
+/* ---------------- PNG export ---------------- */
+
+/* Shared by the showcase and Team Building exports: the preview modal's
+   Share / Download buttons work off the latest blob. */
+let currentExportBlob = null;
+let currentExportBlobUrl = null;
+let currentExportFileName = "";
+
+function triggerDownload(url, fileName) {
+  const link = document.createElement("a");
+  link.download = fileName;
+  link.href = url;
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(() => {
+    if (link.parentNode) link.parentNode.removeChild(link);
+  }, 1000);
+}
+
+/**
+ * Hands a finished PNG to the user. Desktop downloads straight away; phones get
+ * the preview sheet so the image can be saved to Photos or shared.
+ */
+function deliverExportBlob(blob, fileName) {
+  currentExportBlob = blob;
+  const oldBlobUrl = currentExportBlobUrl;
+  currentExportBlobUrl = URL.createObjectURL(blob);
+  if (oldBlobUrl) {
+    setTimeout(() => URL.revokeObjectURL(oldBlobUrl), 10000);
+  }
+  currentExportFileName = fileName;
+
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isMobileDevice = /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isMobile = isIOS || isMobileDevice || window.innerWidth <= 768;
+
+  // Native Web Share API capability
+  let canShareFile = false;
+  if (typeof File !== "undefined" && navigator.canShare) {
+    try {
+      const file = new File([blob], fileName, { type: "image/png" });
+      canShareFile = navigator.canShare({ files: [file] });
+    } catch (e) {
+      canShareFile = false;
+    }
+  }
+
+  if (!isMobile) {
+    triggerDownload(currentExportBlobUrl, fileName);
+    return;
+  }
+
+  // On Android / Mobile: try the direct download first, so the image lands in
+  // Downloads / Gallery, then always show the preview sheet as a fallback.
+  if (!isIOS) {
+    try {
+      triggerDownload(currentExportBlobUrl, fileName);
+    } catch (dlErr) {
+      console.warn("Auto download failed:", dlErr);
+    }
+  }
+
+  const exportModal = document.getElementById("export-modal");
+  const exportPreviewImg = document.getElementById("export-preview-img");
+  const exportModalBtnShare = document.getElementById("export-modal-btn-share");
+  const exportHelpTip = document.getElementById("export-help-tip");
+
+  if (exportPreviewImg) exportPreviewImg.src = currentExportBlobUrl;
+  if (exportModalBtnShare) {
+    exportModalBtnShare.style.display = canShareFile ? "inline-flex" : "none";
+  }
+  if (exportHelpTip) {
+    if (isIOS) {
+      exportHelpTip.innerHTML = "💡 <strong>On iPhone / iPad:</strong> Tap and hold the image below and select <strong>Save to Photos</strong>, or tap <strong>Share / Save Image</strong>.";
+    } else {
+      exportHelpTip.innerHTML = "💡 <strong>Tip for Android:</strong> Tap <strong>Download</strong> below, or <strong>tap & hold (long press)</strong> on the image to select <strong>Download image / Save image</strong>.";
+    }
+  }
+  if (exportModal) exportModal.style.display = "flex";
+}
+
+/* ---------------- Team: Export PNG ---------------- */
+
+/** Teams worth drawing: visible ones that field at least one character. */
+function exportableTeams() {
+  return visibleTeams().filter((team) => team.slots.some((slot) => slot.character));
+}
+
+/** Resolves once every image inside `root` has loaded (failures count as done). */
+function waitForExportImages(root) {
+  const imgs = Array.from(root.querySelectorAll("img"));
+  imgs.forEach((img) => { img.loading = "eager"; });
+  return Promise.all(imgs.map((img) => {
+    if (img.complete) return Promise.resolve();
+    return new Promise((resolve) => {
+      img.addEventListener("load", resolve, { once: true });
+      img.addEventListener("error", resolve, { once: true });
+    });
+  }));
+}
+
+/**
+ * Exports the teams as a PNG, always three cards per row — 3x3 for up to nine
+ * teams, 3xN beyond that. The sheet is built offscreen at the desktop 3-column
+ * width so a phone gets the same picture a wide screen shows. Teams without
+ * characters and the "create your own team" tile are left out.
+ *
+ * If `includeUnused` is true, an unused characters section is added beneath the
+ * teams list, reflecting the currently active team unused filter (e.g. 6* only).
+ *
+ * Resolves to false when there is nothing to export; throws when the capture
+ * itself fails.
+ */
+async function exportTeamsPng(includeUnused = false) {
+  const teams = exportableTeams();
+  if (teams.length === 0) return false;
+  if (typeof html2canvas !== "function") {
+    throw new Error("html2canvas is not available");
+  }
+
+  // Offscreen sheet: same markup as the modal, pinned to the desktop width.
+  const sheet = document.createElement("div");
+  sheet.className = "team-export-sheet";
+  sheet.style.width = `${TEAM_MODAL_MAX_WIDTH[TEAM_MAX_COLUMNS]}px`;
+  sheet.setAttribute("aria-hidden", "true");
+  sheet.inert = true; // keep focus out of the temporary copy
+  const list = document.createElement("div");
+  list.className = "team-list";
+  teams.forEach((team) => {
+    const card = renderTeamCard(team);
+    // Replace <input class="team-name-input"> with clean static text span for high quality rendering in canvas
+    const nameInput = card.querySelector(".team-name-input");
+    if (nameInput) {
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "team-name-text";
+      const rawName = (nameInput.value || team.name || "").trim();
+      nameSpan.textContent = rawName ? `✦ ${rawName}` : "✦";
+      nameInput.parentNode.replaceChild(nameSpan, nameInput);
+    }
+    // Remove drag handle, delete button, and recommend button from the export capture
+    card.querySelectorAll(".team-drag-handle, .btn-team-del, .btn-team-recommend").forEach((el) => el.remove());
+    list.appendChild(card);
+  });
+  sheet.appendChild(list);
+
+  if (includeUnused) {
+    const unusedNames = teamUnusedCharacters();
+    if (unusedNames.length > 0) {
+      const unusedWrap = document.createElement("div");
+      unusedWrap.className = "team-export-unused";
+      const head = document.createElement("div");
+      head.className = "team-export-unused-head";
+      head.innerHTML = `<span class="team-unused-title">${escapeHtml(t("team.unusedCharacters"))}</span>`;
+      const grid = document.createElement("div");
+      grid.className = "team-export-unused-grid";
+      unusedNames.forEach((name) => {
+        const char = userRoster[name] || {};
+        const tile = document.createElement("div");
+        tile.className = "team-unused-tile" + (char.owned ? "" : " is-unowned");
+        tile.innerHTML = `
+          <img src="${escapeHtml(characterDb[name])}" alt="${escapeHtml(displayCharName(name))}" />
+          <span class="team-unused-name${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</span>
+        `;
+        grid.appendChild(tile);
+      });
+      unusedWrap.appendChild(head);
+      unusedWrap.appendChild(grid);
+      sheet.appendChild(unusedWrap);
+    }
+  }
+
+  document.body.appendChild(sheet);
+
+  try {
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    await waitForExportImages(sheet);
+
+    // Keep the canvas inside the 4096px WebKit limit. Unlike a board, the sheet
+    // grows one row per three teams, so very long lists may need scale < 1.
+    const maxDim = Math.max(sheet.offsetWidth, sheet.offsetHeight);
+    let scale = 2;
+    if (maxDim * scale > 4096) {
+      scale = Math.max(0.5, Math.floor((4096 / maxDim) * 100) / 100);
+    }
+
+    const canvas = await html2canvas(sheet, {
+      backgroundColor: "#1b1613",
+      scale,
+      useCORS: true,
+      logging: false,
+      scrollX: 0,
+      scrollY: 0,
+      onclone: (clonedDoc) => {
+        clonedDoc.querySelectorAll(".team-export-sheet img").forEach((img) => img.removeAttribute("loading"));
+      },
+    });
+
+    let blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    if (!blob) {
+      const dataUrl = canvas.toDataURL("image/png");
+      blob = await (await fetch(dataUrl)).blob();
+    }
+
+    const fileName = `Sothebys_Mansion_Teams_${new Date().toISOString().slice(0, 10)}.png`;
+    deliverExportBlob(blob, fileName);
+    return true;
+  } finally {
+    sheet.remove();
+  }
+}
+
 /* ---------------- Team Recommendation ---------------- */
 
 /** Every preset variant that has an is_essential member, resolved and FS-filtered. */
@@ -4650,7 +4863,7 @@ function recommendedVariantsForTeam(team) {
 }
 
 /** Fills a team's empty slots with a recommended variant, preserving the essentials. */
-function applyRecommendedVariant(team, variant) {
+function applyRecommendedVariant(team, variant, isManual) {
   if (!team || !variant) return;
   const members = variant.members.slice();
   const essentials = members.filter((m) => m.isEssential);
@@ -4659,7 +4872,9 @@ function applyRecommendedVariant(team, variant) {
 
   const slots = createEmptyTeamSlots();
   ordered.forEach((member, i) => {
-    slots[i] = preferredVariantChoice(member);
+    slots[i] = isManual
+      ? { character: member.character, psychube: member.psychube }
+      : preferredVariantChoice(member);
   });
 
   // An existing slot keeps its occupant unless the variant wants that slot for an essential
@@ -4682,6 +4897,7 @@ function applyRecommendedVariant(team, variant) {
 
 function openTeamRecommend(teamId) {
   teamRecommendTeamId = teamId;
+  presetManualChoices.clear();
   if (teamRecommendSearch) teamRecommendSearch.value = "";
   renderTeamRecommend();
   document.getElementById("team-recommend-modal").style.display = "flex";
@@ -5460,7 +5676,7 @@ function renderArchetypeBlocks(body, groups, opts) {
 
       const btnAction = document.createElement("button");
       btnAction.type = "button";
-      btnAction.className = "btn preset-add-btn";
+      btnAction.className = "preset-add-btn";
       btnAction.textContent = opts.actionLabel;
       btnAction.addEventListener("click", () => opts.onAction(presetName, members));
 
@@ -5489,6 +5705,16 @@ function renderTeamRecommend() {
     btnFormable.setAttribute("aria-pressed", String(teamsFormableOnly));
   }
 
+  // Same Automatic/Manual switch as Team Presets: Automatic lets the app pick
+  // owned substitutes, Manual fields exactly the row the player configured.
+  const btnMode = document.getElementById("btn-recommend-mode");
+  if (btnMode) {
+    btnMode.classList.toggle("active", teamsManualPick);
+    btnMode.setAttribute("aria-pressed", String(teamsManualPick));
+    const label = btnMode.querySelector(".preset-mode-label");
+    if (label) label.textContent = t(teamsManualPick ? "team.modeManual" : "team.modeAutomatic");
+  }
+
   const variants = recommendedVariantsForTeam(team);
 
   // Regroup the flat list by archetype so several variants share one block
@@ -5496,13 +5722,22 @@ function renderTeamRecommend() {
   variants.forEach((v) => {
     let g = groups.find((x) => x.presetName === v.presetName);
     if (!g) { g = { presetName: v.presetName, variants: [] }; groups.push(g); }
-    g.variants.push(v.members);
+    g.variants.push(v);
   });
 
   renderArchetypeBlocks(body, groups, {
     emptyText: t("team.noRecommendations"),
     // The team being recommended for is not a conflict — only OTHER teams count
     usedSet: usedMarkerSet(teamRecommendTeamId),
+    keyOf: (presetName, entry) => `${presetName}#${entry.index}`,
+    membersOf: (presetName, entry) =>
+      teamsManualPick ? manualVariantMembers(presetName, entry.index, entry.members) : entry.members,
+    onSubstitutePick: teamsManualPick
+      ? (key, slotIndex, character) => {
+          presetManualChoices.set(`${key}#${slotIndex}`, character);
+          renderTeamRecommend();
+        }
+      : null,
     onToggle: (presetName) => {
       if (teamCollapsedGroups.has(presetName)) teamCollapsedGroups.delete(presetName);
       else teamCollapsedGroups.add(presetName);
@@ -5510,7 +5745,7 @@ function renderTeamRecommend() {
     },
     actionLabel: t("team.use"),
     onAction: (presetName, members) => {
-      applyRecommendedVariant(team, { presetName, members });
+      applyRecommendedVariant(team, { presetName, members }, teamsManualPick);
       closeTeamRecommend();
     },
   });
@@ -5621,6 +5856,56 @@ function setupTeamBuildingListeners() {
   btnTeam.addEventListener("click", openTeamModal);
   document.getElementById("team-btn-close").addEventListener("click", closeTeamModal);
   teamModal.addEventListener("click", (e) => { if (e.target === teamModal) closeTeamModal(); });
+
+  // Export PNG modal & action handlers
+  const btnTeamExport = document.getElementById("btn-team-export");
+  const teamExportModal = document.getElementById("team-export-modal");
+  const teamExportBtnClose = document.getElementById("team-export-btn-close");
+  const teamExportBtnCancel = document.getElementById("team-export-btn-cancel");
+  const btnExportTeams = document.getElementById("btn-team-export-teams");
+  const btnExportWithUnused = document.getElementById("btn-team-export-with-unused");
+
+  function openTeamExportModal() {
+    if (teamExportModal) teamExportModal.style.display = "flex";
+  }
+
+  function closeTeamExportModal() {
+    if (teamExportModal) teamExportModal.style.display = "none";
+  }
+
+  if (btnTeamExport) {
+    btnTeamExport.addEventListener("click", openTeamExportModal);
+  }
+  if (teamExportBtnClose) teamExportBtnClose.addEventListener("click", closeTeamExportModal);
+  if (teamExportBtnCancel) teamExportBtnCancel.addEventListener("click", closeTeamExportModal);
+  if (teamExportModal) {
+    teamExportModal.addEventListener("click", (e) => {
+      if (e.target === teamExportModal) closeTeamExportModal();
+    });
+  }
+
+  async function handleTeamExport(withUnused) {
+    closeTeamExportModal();
+    if (!btnTeamExport) return;
+    btnTeamExport.disabled = true;
+    setButtonLabel(btnTeamExport, t("action.rendering"), "action.rendering");
+    try {
+      if (!(await exportTeamsPng(withUnused))) alert(t("team.nothingToExport"));
+    } catch (err) {
+      console.error("Team export failed:", err);
+      alert(t("team.exportFailed"));
+    } finally {
+      btnTeamExport.disabled = false;
+      setButtonLabel(btnTeamExport, t("team.exportPng"), "team.exportPng");
+    }
+  }
+
+  if (btnExportTeams) {
+    btnExportTeams.addEventListener("click", () => handleTeamExport(false));
+  }
+  if (btnExportWithUnused) {
+    btnExportWithUnused.addEventListener("click", () => handleTeamExport(true));
+  }
 
   // Hide Warning: suppresses every Used marker in the team surfaces
   const btnHideWarning = document.getElementById("btn-team-hide-warning");
@@ -5772,6 +6057,15 @@ function setupTeamBuildingListeners() {
   if (btnRecFormable) {
     btnRecFormable.addEventListener("click", () => {
       teamsFormableOnly = !teamsFormableOnly;
+      saveTeams();
+      renderTeamRecommend();
+    });
+  }
+  const btnRecMode = document.getElementById("btn-recommend-mode");
+  if (btnRecMode) {
+    btnRecMode.addEventListener("click", () => {
+      teamsManualPick = !teamsManualPick;
+      presetManualChoices.clear();
       saveTeams();
       renderTeamRecommend();
     });
@@ -7103,20 +7397,16 @@ function formatSkillKeywords(text) {
   // 2. Escape HTML on surrounding text
   s = escapeHtml(s);
 
-  // 3. Highlight stats in text outside brackets
-  s = s.replace(/\b(Critical Rate|Critical DMG|Crit Rate|Crit DMG|ATK|HP|Reality DMG|Mental DMG|Genesis DMG|Moxie|Eureka|Ultimate Might)\b/gi, (match) => {
-    return addToken(`<span class="skill-kw-stat" data-term="${escapeHtml(match)}">${escapeHtml(match)}</span>`);
-  });
-  s = s.replace(/(暴击率|暴击创伤|攻击|生命|现实创伤|精神创伤|本源创伤|激情|尤里卡|仪式威力)/g, (match) => {
-    return addToken(`<span class="skill-kw-stat" data-term="${escapeHtml(match)}">${escapeHtml(match)}</span>`);
-  });
-
-  // 4. Highlight numbers & durations
-  s = s.replace(/(\b\d+(?:\.\d+)?%|\b\d+\s*(?:rounds|round|stacks|stack)\b|\b\d+\s*(?:回合|层))/gi, (match) => {
+  // 3. Highlight numbers & percentages (e.g. 350%, 40%, -35%, 1-star, 0-10, standalone digits like "by 2, to 2 enemies", "x40%", etc.)
+  // Excludes hyphenated target prefixes like 1-target, 2-target, etc., and excludes HTML entity numbers like &#039;
+  s = s.replace(/(?<!&[#\w]{1,10})(?<=[x×*+\-–—±/]|\b)(?:\d+(?:\.\d+)?%|\d+(?:\.\d+)?\b)(?!-target\b)(?![;\w]*;)/gi, (match, offset, str) => {
+    // Safety check: verify not inside an HTML entity like &#039; or &amp;
+    const prev = str.slice(Math.max(0, offset - 10), offset);
+    if (/&#?\w*$/.test(prev)) return match;
     return addToken(`<span class="skill-kw-number">${escapeHtml(match)}</span>`);
   });
 
-  // 5. Restore tokens
+  // 4. Restore tokens
   s = s.replace(/___SKILL_KW_TOKEN_(\d+)___/g, (match, idx) => tokens[Number(idx)] || "");
   return s;
 }
@@ -7164,16 +7454,28 @@ function showTermPopover(targetEl, termText, charName) {
   const cleanTerm = termText.trim().toLowerCase();
 
   let found = null;
-  // 1. Look in skillGlossaryData
-  if (skillGlossaryData && skillGlossaryData[cleanTerm]) {
-    found = skillGlossaryData[cleanTerm];
+  // 1. Look in skillGlossaryData (exact key, lowercase, or by nameZh/nameEn matching)
+  if (skillGlossaryData) {
+    if (skillGlossaryData[termText]) {
+      found = skillGlossaryData[termText];
+    } else if (skillGlossaryData[cleanTerm]) {
+      found = skillGlossaryData[cleanTerm];
+    } else {
+      for (const [k, v] of Object.entries(skillGlossaryData)) {
+        if (!v) continue;
+        if ((v.nameZh && v.nameZh === termText) || (v.nameEn && v.nameEn.toLowerCase() === cleanTerm)) {
+          found = v;
+          break;
+        }
+      }
+    }
   }
 
-  // 2. Look in character's own skills / insights
+  // 2. Look in character's own skills / insights / weapons
   if (!found && charName && characterSkillsData && characterSkillsData[charName]) {
     const c = characterSkillsData[charName];
     for (const s of (c.skills || [])) {
-      if ((s.nameEn && s.nameEn.toLowerCase() === cleanTerm) || (s.nameZh && s.nameZh.toLowerCase() === cleanTerm)) {
+      if ((s.nameEn && s.nameEn.toLowerCase() === cleanTerm) || (s.nameZh && (s.nameZh === termText || s.nameZh.toLowerCase() === cleanTerm))) {
         const r1 = s.ranks ? (s.ranks["1"] || Object.values(s.ranks)[0] || {}) : s;
         found = {
           nameEn: s.nameEn,
@@ -7188,7 +7490,7 @@ function showTermPopover(targetEl, termText, charName) {
     }
     if (!found) {
       for (const ins of (c.insights || [])) {
-        if ((ins.nameEn && ins.nameEn.toLowerCase() === cleanTerm) || (ins.nameZh && ins.nameZh.toLowerCase() === cleanTerm)) {
+        if ((ins.nameEn && ins.nameEn.toLowerCase() === cleanTerm) || (ins.nameZh && (ins.nameZh === termText || ins.nameZh.toLowerCase() === cleanTerm))) {
           found = {
             nameEn: ins.nameEn,
             nameZh: ins.nameZh || ins.nameEn,
@@ -7199,6 +7501,35 @@ function showTermPopover(targetEl, termText, charName) {
           };
           break;
         }
+      }
+    }
+    if (!found && Array.isArray(c.weapons)) {
+      for (const w of c.weapons) {
+        if ((w.nameEn && w.nameEn.toLowerCase() === cleanTerm) || (w.nameZh && (w.nameZh === termText || w.nameZh.toLowerCase() === cleanTerm))) {
+          found = {
+            nameEn: w.nameEn,
+            nameZh: w.nameZh || w.nameEn,
+            descEn: w.mainDescEn,
+            descZh: w.mainDescZh || w.mainDescEn,
+            tagEn: "Weapon",
+            tagZh: "武器",
+          };
+          break;
+        }
+        for (const cb of (w.combos || [])) {
+          if ((cb.daggerEn && cb.daggerEn.toLowerCase() === cleanTerm) || (cb.daggerZh && (cb.daggerZh === termText || cb.daggerZh.toLowerCase() === cleanTerm))) {
+            found = {
+              nameEn: cb.daggerEn,
+              nameZh: cb.daggerZh || cb.daggerEn,
+              descEn: cb.descEn,
+              descZh: cb.descZh || cb.descEn,
+              tagEn: "Combo",
+              tagZh: "组合",
+            };
+            break;
+          }
+        }
+        if (found) break;
       }
     }
   }
@@ -7285,12 +7616,12 @@ function renderCharacterSkillsSection(name) {
   const tabsHtml = `
     <div class="uttu-mode-bar">
       <button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "skills" ? "is-active" : ""}" data-skill-tab="skills">
-        ${isCn ? "神秘术" : "Skills"}
+        ${isCn ? "神秘术" : "Arcane Skills"}
       </button>
       ${
         hasWeapons
           ? `<button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "weapons" ? "is-active" : ""}" data-skill-tab="weapons">
-              ${isCn ? "武器" : "Weapons"}
+              ${isCn ? (canonicalName === "Kassandra" ? "能力" : "武器") : (canonicalName === "Kassandra" ? "Ability" : "Weapon")}
             </button>`
           : ""
       }
@@ -7881,26 +8212,57 @@ const buildsRarityFilter = new Set();
 const buildsAfflatusFilter = new Set();
 
 /**
+ * Phones use a master-detail flow: the modal opens on the list and a pick
+ * replaces it with the full detail. Wider layouts keep both panes visible.
+ */
+const guideStackedMedia = window.matchMedia("(max-width: 768px)");
+function guideIsStacked() {
+  return guideStackedMedia.matches;
+}
+
+/**
  * Shows or hides the character list, so the build can use the full modal.
  * Works at every resolution; the choice is kept while the page is open.
  */
 let buildsListVisible = true;
+
+/** Which pane the stacked InfoBook layout shows: "list" or "detail". */
+let buildsView = "list";
 
 function openBuildsModal() {
   renderBuilds();
   document.getElementById("builds-modal").style.display = "flex";
   // Remember the list visibility across openings.
   setBuildsListVisible(buildsListVisible);
+  // Phones start on the list; a pick opens the detail.
+  setBuildsView("list");
 }
 
 function closeBuildsModal() {
   document.getElementById("builds-modal").style.display = "none";
 }
 
+/** Switches the stacked layout between the list and one detail pane. */
+function setBuildsView(view) {
+  const detail = view === "detail";
+  buildsView = detail ? "detail" : "list";
+  const body = document.querySelector("#builds-modal .builds-body");
+  if (body) body.classList.toggle("is-detail", detail);
+
+  const back = document.getElementById("builds-back");
+  if (back) back.hidden = !(detail && guideIsStacked());
+}
+
+/** Opens the picked entry's detail on phones; wide layouts already show it. */
+function showBuildsDetail() {
+  if (guideIsStacked()) setBuildsView("detail");
+}
+
 function setBuildsListVisible(visible) {
   buildsListVisible = !!visible;
   const body = document.querySelector("#builds-modal .builds-body");
-  if (body) body.classList.toggle("is-list-hidden", !buildsListVisible);
+  // The stacked layout drives its own panes, so the desktop toggle is ignored there.
+  if (body) body.classList.toggle("is-list-hidden", !buildsListVisible && !guideIsStacked());
 
   const toggle = document.getElementById("builds-rail-toggle");
   if (toggle) toggle.setAttribute("aria-pressed", String(buildsListVisible));
@@ -8009,6 +8371,7 @@ function renderBuilds() {
     row.addEventListener("click", () => {
       buildsSelected = row.dataset.name;
       renderBuilds();
+      showBuildsDetail();
     });
   });
 
@@ -8056,6 +8419,7 @@ function renderItemsRail() {
     el.addEventListener("click", () => {
       selectedItemId = Number(el.dataset.itemId);
       renderItemsRail();
+      showBuildsDetail();
     });
   });
 
@@ -8184,6 +8548,7 @@ function renderPsychubesRail() {
     row.addEventListener("click", () => {
       selectedPsychubeKey = row.dataset.chubeKey;
       renderPsychubesRail();
+      showBuildsDetail();
     });
   });
 
@@ -8493,6 +8858,7 @@ function renderGlossaryRail() {
     row.addEventListener("click", () => {
       selectedGlossaryKey = row.dataset.glossaryKey;
       renderGlossaryRail();
+      showBuildsDetail();
     });
   });
 
@@ -8859,9 +9225,9 @@ function setRotationsView(view) {
   const card = document.getElementById("rotations-card");
   if (card) card.classList.toggle("is-detail", view === "detail");
 
-  // The list is always visible now, so the back button is not needed.
+  // Phones replace the list with the plan; the back button returns to it.
   const back = document.getElementById("rotations-back");
-  if (back) back.hidden = true;
+  if (back) back.hidden = !(view === "detail" && guideIsStacked());
 }
 
 /** Shows or hides the rotation list, so the plan can use the full modal. */
@@ -8870,7 +9236,8 @@ let rotationsListVisible = true;
 function setRotationsListVisible(visible) {
   rotationsListVisible = !!visible;
   const body = document.querySelector("#rotations-modal .rotations-body");
-  if (body) body.classList.toggle("is-list-hidden", !rotationsListVisible);
+  // The stacked layout drives its own panes, so the desktop toggle is ignored there.
+  if (body) body.classList.toggle("is-list-hidden", !rotationsListVisible && !guideIsStacked());
 
   const toggle = document.getElementById("rotations-rail-toggle");
   if (toggle) toggle.setAttribute("aria-pressed", String(rotationsListVisible));
@@ -8897,9 +9264,14 @@ function openRotationDetail(id) {
 
 /** Back to the empty plan pane, keeping the filters and search as they were. */
 function showRotationsList() {
+  // Re-rendering the list would jump it back to the top, so remember where
+  // the reader was before restoring it.
+  const browse = document.querySelector("#rotations-modal .rotations-browse");
+  const scrollTop = browse ? browse.scrollTop : 0;
   rotationsSelected = null;
   setRotationsView("browse");
   renderRotations();
+  if (browse) browse.scrollTop = scrollTop;
 }
 
 function openRotationsModal() {
@@ -9631,18 +10003,13 @@ function renderRotationsDetail() {
           const chubeKey = psychubeKeyFromName(member.psychube);
           const chube = chubeKey ? psychubeDb[chubeKey] : null;
           const rarity = getCharacterRarity(member.character);
-          const showPortraitBar = !displayOptions.hidePortrait;
           return `
             <span class="rot-member">
               <span class="rot-member-avatar">
                 <span class="rot-member-portrait">
                   <img src="${escapeHtml(characterDb[member.character] || "")}" alt="" />
                 </span>
-                ${
-                  showPortraitBar
-                    ? `<span class="rot-member-portrait-bar">${rotationPortraitDashesHtml(member.portrait, rarity)}</span>`
-                    : ""
-                }
+                <span class="rot-member-portrait-bar">${rotationPortraitDashesHtml(member.portrait, rarity)}</span>
               </span>
               <span class="rot-member-text">
                 <span class="rot-member-name">${escapeHtml(displayCharName(member.character))}</span>
@@ -9920,6 +10287,24 @@ function setupGuideRailResizer({ bodySelector, handleId, cssVar, storageKey }) {
   });
 }
 
+/**
+ * Keeps the stacked master-detail panes in sync when the viewport crosses the
+ * phone breakpoint (for example when a tablet is rotated).
+ */
+function syncGuideResponsiveLayout() {
+  const stacked = guideIsStacked();
+
+  const buildsBody = document.querySelector("#builds-modal .builds-body");
+  if (buildsBody) buildsBody.classList.toggle("is-list-hidden", !buildsListVisible && !stacked);
+  const buildsBack = document.getElementById("builds-back");
+  if (buildsBack) buildsBack.hidden = !(stacked && buildsView === "detail");
+
+  const rotationsBody = document.querySelector("#rotations-modal .rotations-body");
+  if (rotationsBody) rotationsBody.classList.toggle("is-list-hidden", !rotationsListVisible && !stacked);
+  const rotationsBack = document.getElementById("rotations-back");
+  if (rotationsBack) rotationsBack.hidden = !(stacked && !!rotationsSelected);
+}
+
 function setupGuideListeners() {
   const buildsBtn = document.getElementById("btn-builds");
   const buildsModal = document.getElementById("builds-modal");
@@ -9929,6 +10314,9 @@ function setupGuideListeners() {
     buildsModal.addEventListener("click", (e) => {
       if (e.target === buildsModal) closeBuildsModal();
     });
+
+    const back = document.getElementById("builds-back");
+    if (back) back.addEventListener("click", () => setBuildsView("list"));
 
     const railToggle = document.getElementById("builds-rail-toggle");
     if (railToggle) {
@@ -9967,6 +10355,7 @@ function setupGuideListeners() {
         infoBookActiveTab = "characters";
         updateModeTabsUI();
         renderBuilds();
+        setBuildsView("list");
       });
     }
 
@@ -9975,6 +10364,7 @@ function setupGuideListeners() {
         infoBookActiveTab = "items";
         updateModeTabsUI();
         renderBuilds();
+        setBuildsView("list");
       });
     }
 
@@ -9983,6 +10373,7 @@ function setupGuideListeners() {
         infoBookActiveTab = "glossary";
         updateModeTabsUI();
         renderBuilds();
+        setBuildsView("list");
       });
     }
 
@@ -9992,12 +10383,14 @@ function setupGuideListeners() {
         subtabItems.classList.add("is-active");
         subtabPsychubes.classList.remove("is-active");
         renderBuilds();
+        setBuildsView("list");
       });
       subtabPsychubes.addEventListener("click", () => {
         infoBookItemSubTab = "psychubes";
         subtabPsychubes.classList.add("is-active");
         subtabItems.classList.remove("is-active");
         renderBuilds();
+        setBuildsView("list");
       });
     }
 
@@ -10080,6 +10473,11 @@ function setupGuideListeners() {
 
     const presetsSearch = document.getElementById("rotation-presets-search");
     if (presetsSearch) presetsSearch.addEventListener("input", renderRotationPresets);
+  }
+
+  // Crossing the phone breakpoint changes which pane is visible, so re-sync.
+  if (typeof guideStackedMedia.addEventListener === "function") {
+    guideStackedMedia.addEventListener("change", syncGuideResponsiveLayout);
   }
 }
 
@@ -12581,26 +12979,9 @@ function setupEventListeners() {
   const exportModalBtnShare = document.getElementById("export-modal-btn-share");
   const exportModalBtnDownload = document.getElementById("export-modal-btn-download");
   const exportPreviewImg = document.getElementById("export-preview-img");
-  const exportHelpTip = document.getElementById("export-help-tip");
-
-  let currentExportBlob = null;
-  let currentExportBlobUrl = null;
-  let currentExportFileName = "";
 
   function closeExportModal() {
     if (exportModal) exportModal.style.display = "none";
-  }
-
-  function triggerDownload(url, fileName) {
-    const link = document.createElement("a");
-    link.download = fileName;
-    link.href = url;
-    link.rel = "noopener";
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(() => {
-      if (link.parentNode) link.parentNode.removeChild(link);
-    }, 1000);
   }
 
   if (exportModalBtnClose) exportModalBtnClose.addEventListener("click", closeExportModal);
@@ -12721,64 +13102,7 @@ function setupEventListeners() {
         blob = await res.blob();
       }
 
-      const fileName = `Sothebys_Mansion_${new Date().toISOString().slice(0, 10)}.png`;
-      currentExportBlob = blob;
-      const oldBlobUrl = currentExportBlobUrl;
-      currentExportBlobUrl = URL.createObjectURL(blob);
-      if (oldBlobUrl) {
-        setTimeout(() => URL.revokeObjectURL(oldBlobUrl), 10000);
-      }
-      currentExportFileName = fileName;
-
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      const isMobileDevice = /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const isSmallScreen = window.innerWidth <= 768;
-      const isMobile = isIOS || isMobileDevice || isSmallScreen;
-
-      // 4. Try native Web Share API capability
-      let canShareFile = false;
-      let shareFile = null;
-      if (typeof File !== "undefined" && navigator.canShare) {
-        try {
-          shareFile = new File([blob], fileName, { type: "image/png" });
-          canShareFile = navigator.canShare({ files: [shareFile] });
-        } catch (e) {
-          canShareFile = false;
-        }
-      }
-
-      // If desktop, trigger download directly
-      if (!isMobile) {
-        triggerDownload(currentExportBlobUrl, fileName);
-        return;
-      }
-
-      // On Android / Mobile:
-      // Try auto-downloading directly first (so the image is immediately saved into Downloads / Gallery)
-      if (!isIOS) {
-        try {
-          triggerDownload(currentExportBlobUrl, fileName);
-        } catch (dlErr) {
-          console.warn("Auto download failed:", dlErr);
-        }
-      }
-
-      // Always display preview modal on mobile with buttons: Download, Share (if supported), Close
-      if (exportPreviewImg) exportPreviewImg.src = currentExportBlobUrl;
-      if (exportModalBtnShare) {
-        exportModalBtnShare.style.display = canShareFile ? "inline-flex" : "none";
-      }
-
-      if (exportHelpTip) {
-        if (isIOS) {
-          exportHelpTip.innerHTML = "💡 <strong>On iPhone / iPad:</strong> Tap and hold the image below and select <strong>Save to Photos</strong>, or tap <strong>Share / Save Image</strong>.";
-        } else {
-          exportHelpTip.innerHTML = "💡 <strong>Tip for Android:</strong> Tap <strong>Download</strong> below, or <strong>tap & hold (long press)</strong> on the image to select <strong>Download image / Save image</strong>.";
-        }
-      }
-
-      if (exportModal) exportModal.style.display = "flex";
+      deliverExportBlob(blob, `Sothebys_Mansion_${new Date().toISOString().slice(0, 10)}.png`);
     } catch (err) {
       console.error("Export failed:", err);
       alert("Failed to export image. Please try again.");

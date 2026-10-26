@@ -109,11 +109,11 @@
           <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
             <span data-i18n="toolbar.teams">Teams</span><img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
           </button>
-          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
-            <span data-i18n="toolbar.builds">InfoBook</span><img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
-          </button>
           <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-rotations" title="Skill Rotations" data-i18n-title="rotations.title" aria-label="Skill Rotations" data-i18n-aria-label="rotations.title">
             <span data-i18n="toolbar.rotations">Rotations</span><img src="images/random_icon/Rotation_icon.png" alt="" class="btn-team-icon" />
+          </button>
+          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
+            <span data-i18n="toolbar.builds">InfoBook</span><img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
           </button>
         </div>
 
@@ -1238,6 +1238,10 @@
   <div id="builds-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card builds-modal-card">
       <div class="archetype-modal-header">
+        <button type="button" class="rotations-back builds-back" id="builds-back" hidden>
+          <img src="images/random_icon/back_button.png" alt="" />
+          <span data-i18n="builds.back">Back</span>
+        </button>
         <h2 class="archetype-modal-title"><span data-i18n="builds.title">InfoBook</span></h2>
         <div class="builds-header-actions">
           <div class="builds-mode-group" role="tablist">
@@ -1245,10 +1249,6 @@
             <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-items" data-mode="items" data-i18n="builds.tabItems">Items &amp; Psychubes</button>
             <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-glossary" data-mode="glossary" data-i18n="builds.tabGlossary">Glossary</button>
           </div>
-          <button type="button" class="btn btn-secondary btn-sm builds-rail-toggle" id="builds-rail-toggle" aria-pressed="true">
-            <img src="images/random_icon/hide_tier.png" alt="" class="builds-rail-toggle-icon" />
-            <span data-i18n="builds.toggleList">Hide list</span>
-          </button>
           <button class="modal-close" id="builds-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
         </div>
       </div>
@@ -1311,10 +1311,6 @@
           <button type="button" class="btn btn-secondary btn-sm rotations-export-btn" id="rotations-export-btn">
             <span data-i18n="rotations.exportPng">Export PNG</span>
           </button>
-          <button type="button" class="btn btn-secondary btn-sm rotations-rail-toggle" id="rotations-rail-toggle" aria-pressed="true">
-            <img src="images/random_icon/hide_tier.png" alt="" class="rotations-rail-toggle-icon" />
-            <span data-i18n="rotations.toggleList">Hide list</span>
-          </button>
           <button class="modal-close" id="rotations-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
         </div>
       </div>
@@ -1376,6 +1372,7 @@
         <h2 class="archetype-modal-title"><span data-i18n="team.title">Team Building</span></h2>
         <div class="team-header-actions">
           <button type="button" class="btn btn-secondary btn-sm" id="btn-team-presets"><span data-i18n="team.presets">Presets</span></button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-team-export"><span data-i18n="team.exportPng">Export PNG</span></button>
           <div class="filter-btn-group team-columns-group" id="team-columns-group" role="group" aria-label="Teams per row" data-i18n-aria-label="team.columnsPerRow">
             <button type="button" class="filter-btn team-cols-btn" data-cols="3" title="3 teams per row" data-i18n-title="team.cols3">3</button>
             <button type="button" class="filter-btn team-cols-btn" data-cols="2" title="2 teams per row" data-i18n-title="team.cols2">2</button>
@@ -1414,6 +1411,33 @@
             <!-- Unused characters are populated dynamically -->
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Export PNG Modal -->
+  <div id="team-export-modal" class="modal-backdrop team-nested-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card" style="max-width: 400px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="team.exportPng">Export PNG</span></h2>
+        <button class="modal-close" id="team-export-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="modal-body archetype-modal-body" style="gap: 14px;">
+        <div class="json-section">
+          <div class="json-section-label" data-i18n="json.export">Export Options</div>
+          <div class="json-export-list">
+            <button type="button" class="btn btn-secondary btn-block" id="btn-team-export-teams">
+              <span data-i18n="team.exportTeamsOnly">Teams Only</span>
+            </button>
+            <button type="button" class="btn btn-primary btn-block" id="btn-team-export-with-unused">
+              <span data-i18n="team.exportWithUnused">Teams with Unused Characters</span>
+            </button>
+          </div>
+          <p class="json-hint" data-i18n="team.exportUnusedHint">Unused characters follow your current filters (such as rarity and search).</p>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" id="team-export-btn-cancel"><span data-i18n="action.cancel">Cancel</span></button>
       </div>
     </div>
   </div>
@@ -1492,6 +1516,7 @@
       <div class="archetype-modal-header">
         <h2 class="archetype-modal-title"><span data-i18n="team.recommendTitle">Team Recommendation</span> <span class="team-recommend-for" id="team-recommend-title-name"></span></h2>
         <div class="team-header-actions">
+          <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-recommend-mode" aria-pressed="false"><span class="preset-mode-label">Mode: Automatic</span></button>
           <button type="button" class="btn btn-secondary btn-sm team-unowned-toggle" id="btn-recommend-formable-only" aria-pressed="false"><span data-i18n="team.formableOnly">Formable Only</span></button>
           <input type="text" id="team-recommend-search" class="search-input" data-i18n-placeholder="team.searchPresets" placeholder="Search Characters" />
           <button class="modal-close" id="team-recommend-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
