@@ -7397,12 +7397,15 @@ function formatSkillKeywords(text) {
   // 2. Escape HTML on surrounding text
   s = escapeHtml(s);
 
-  // 3. Highlight numbers & percentages (e.g. 350%, 40%, -35%, 1-star, 0-10, standalone digits like "by 2, to 2 enemies", "x40%", etc.)
+  // 3. Highlight numbers & percentages (e.g. 350%, 40%, -35%, 1-star, 0-10, 6;, standalone digits like "by 2, to 2 enemies", "x40%", etc.)
   // Excludes hyphenated target prefixes like 1-target, 2-target, etc., and excludes HTML entity numbers like &#039;
-  s = s.replace(/(?<!&[#\w]{1,10})(?<=[x×*+\-–—±/]|\b)(?:\d+(?:\.\d+)?%|\d+(?:\.\d+)?\b)(?!-target\b)(?![;\w]*;)/gi, (match, offset, str) => {
-    // Safety check: verify not inside an HTML entity like &#039; or &amp;
-    const prev = str.slice(Math.max(0, offset - 10), offset);
-    if (/&#?\w*$/.test(prev)) return match;
+  s = s.replace(/(?:(?<=[x×*+\-–—±/])|\b)(\d+(?:\.\d+)?%|\d+(?:\.\d+)?\b)(?!-target\b)/gi, (match, p1, offset, str) => {
+    // Safety check: verify not inside an HTML entity like &#039;, &amp;, &quot;, etc.
+    const before = str.slice(0, offset);
+    const after = str.slice(offset + match.length);
+    if (/(?:&|&amp;)[#\w]*$/.test(before) && /^[\w]*;/.test(after)) {
+      return match;
+    }
     return addToken(`<span class="skill-kw-number">${escapeHtml(match)}</span>`);
   });
 
