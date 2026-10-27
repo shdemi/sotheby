@@ -7385,6 +7385,60 @@ body.team-resizing * {
   width: 100%;
   height: min(88vh, 820px);
   border-radius: 0 !important;
+  transition: background-image 0.25s ease, background-color 0.25s ease;
+}
+
+/* Easter egg: Sotheby's special theme when viewing Sotheby in InfoBook */
+.builds-modal-card.is-sotheby-theme {
+  background-image: url("images/sotheby_character_bg.png") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.builds-modal-card.is-sotheby-theme .archetype-modal-header {
+  background: #000000 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Biến toàn bộ nền các khối thông tin thành màu đen tuyền (#111111 hoặc #000000), không transparent */
+.builds-modal-card.is-sotheby-theme .builds-rail {
+  background: #111111 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.builds-modal-card.is-sotheby-theme .builds-rail-tools,
+.builds-modal-card.is-sotheby-theme .builds-rail-footer {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.builds-modal-card.is-sotheby-theme .builds-detail {
+  background: rgba(0, 0, 0, 0.45); /* Phủ nhẹ một lớp mờ để các khối thông tin nổi bật */
+}
+
+.builds-modal-card.is-sotheby-theme .build-section {
+  background: #121212 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important;
+}
+
+.builds-modal-card.is-sotheby-theme .uttu-cards-strip {
+  background: #181818 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.builds-modal-card.is-sotheby-theme .build-charts,
+.builds-modal-card.is-sotheby-theme .build-psychubes,
+.builds-modal-card.is-sotheby-theme .build-resonance-block,
+.builds-modal-card.is-sotheby-theme .char-mats-controls-box {
+  background: #181818 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.builds-modal-card.is-sotheby-theme .builds-note {
+  background: #1c1c1c !important;
+  border-left: 3px solid #ED7D31 !important;
+  color: #ECE5D9 !important;
 }
 
 #builds-modal .btn,
@@ -8729,6 +8783,19 @@ body.guide-rail-resizing * {
   box-shadow: 0 4px 14px rgba(237, 125, 49, 0.35);
 }
 
+.rot-card-unique-text {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  transform: translateX(-50%);
+  width: 122%;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  z-index: 5;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.85));
+}
+
 .uttu-skill-card-badge {
   font-family: var(--mono-font);
   font-size: 0.58rem;
@@ -8766,6 +8833,60 @@ body.guide-rail-resizing * {
   align-items: center;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(50, 60, 52, 0.2);
+}
+
+/* Conduit Metrics (Cost & Harmonization) */
+.uttu-conduit-metrics {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.uttu-conduit-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  border: 1px solid rgba(50, 60, 52, 0.35);
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 2px;
+  min-width: 140px;
+  justify-content: space-between;
+}
+
+.uttu-metric-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3b3630;
+  letter-spacing: 0.02em;
+}
+
+.uttu-metric-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.uttu-conduit-metric.u-cost .uttu-metric-value {
+  color: #a84e2a;
+}
+
+.uttu-cost-diamond {
+  color: #9b6b3e;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.uttu-conduit-metric.u-harm.is-positive .uttu-metric-value {
+  color: #1f7b58;
+}
+
+.uttu-conduit-metric.u-harm.is-negative .uttu-metric-value {
+  color: #c0392b;
 }
 
 .uttu-rank-card-col {
@@ -9057,6 +9178,627 @@ body.guide-rail-resizing * {
   line-height: 1.55;
   color: #383430;
   white-space: pre-line;
+}
+
+/* ================= EZIO WEAPONS BOARD (Gnomon Style) ================= */
+.ezio-weapon-board {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Portray Switcher Bar */
+.ezio-portray-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+
+.ezio-switcher-label {
+  font-family: var(--mono-font);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #B5B5B3;
+}
+
+.ezio-portray-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.ezio-portray-btn {
+  height: 24px;
+  padding: 0 10px;
+  font-family: var(--mono-font);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #B5B5B3;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ezio-portray-btn:hover {
+  color: #ECE5D9;
+  border-color: #ECE5D9;
+}
+
+.ezio-portray-btn.is-active {
+  color: #111111;
+  background: #ED7D31;
+  border-color: #ED7D31;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(237, 125, 49, 0.35);
+}
+
+.ezio-weapon-stage {
+  display: grid;
+  grid-template-columns: minmax(130px, 1.2fr) minmax(220px, 1.6fr) minmax(130px, 1.2fr);
+  align-items: center;
+  gap: 14px;
+  padding: 18px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  position: relative;
+}
+
+.ezio-weapon-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ezio-weapon-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.ezio-weapon-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  pointer-events: none;
+}
+
+/* Skew angles matching the official AC aesthetic in Gnomon */
+.ezio-weapon-card.is-primary::before {
+  transform: skewY(4deg);
+}
+
+.ezio-weapon-card.is-secondary::before {
+  transform: skewY(-4deg);
+}
+
+.ezio-weapon-card:hover {
+  transform: translateY(-2px);
+}
+
+.ezio-weapon-card:hover::before {
+  border-color: rgba(237, 125, 49, 0.5);
+  background: rgba(237, 125, 49, 0.06);
+}
+
+.ezio-weapon-card.is-active::before {
+  border-color: #ED7D31 !important;
+  background: rgba(237, 125, 49, 0.14) !important;
+  box-shadow: 0 0 14px rgba(237, 125, 49, 0.35);
+}
+
+.ezio-weapon-box {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.ezio-weapon-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+  transition: transform 0.15s ease;
+}
+
+.ezio-weapon-card:hover .ezio-weapon-img {
+  transform: scale(1.08);
+}
+
+.ezio-weapon-label {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  text-align: center;
+  margin-top: 4px;
+  position: relative;
+  z-index: 2;
+  line-height: 1.25;
+}
+
+.ezio-weapon-card.is-active .ezio-weapon-label {
+  color: #ED7D31;
+}
+
+/* Center combo box: [Primary] × [Secondary] (Cố định size tuyệt đối, không co giãn khi đổi vũ khí) */
+.ezio-weapon-center-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 4px;
+}
+
+.ezio-center-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 8px;
+  width: 105px;
+  min-width: 105px;
+  max-width: 105px;
+  height: 125px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+.ezio-center-box {
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ezio-center-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+}
+
+.ezio-center-name {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  text-align: center;
+  width: 100%;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ezio-center-cross {
+  font-size: 1.4rem;
+  color: #ED7D31;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* Parchment detail paper below */
+.ezio-weapon-detail-paper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--team-card-bg);
+  border: 1.1px solid rgba(50, 60, 52, 0.45);
+  padding: 18px 22px;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  color: #272525;
+}
+
+.ezio-effect-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ezio-effect-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px 10px;
+  background: #313B33;
+  color: #ECE5D9;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+}
+
+.ezio-effect-badge.is-combo {
+  background: #a84e2a;
+  color: #fff;
+}
+
+.ezio-effect-desc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #272525;
+  white-space: pre-line;
+}
+
+.ezio-effect-divider {
+  height: 1px;
+  background: rgba(50, 60, 52, 0.2);
+  margin: 2px 0;
+}
+
+/* ================= KASSANDRA ABILITY BOARD ================= */
+.kassandra-ability-board {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.kassandra-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kassandra-points-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.kassandra-points-badge.is-error {
+  border-color: #f26454;
+  background: rgba(242, 100, 84, 0.2);
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.kassandra-pts-num {
+  font-family: var(--mono-font);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ED7D31;
+}
+
+.kassandra-pts-label {
+  font-family: var(--mono-font);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #B5B5B3;
+  text-transform: uppercase;
+}
+
+.kassandra-portray-btn {
+  height: 24px;
+  padding: 0 8px;
+  font-family: var(--mono-font);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #B5B5B3;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.kassandra-portray-btn:hover {
+  color: #ECE5D9;
+  border-color: #ECE5D9;
+}
+
+.kassandra-portray-btn.is-active {
+  color: #111111;
+  background: #ED7D31;
+  border-color: #ED7D31;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(237, 125, 49, 0.35);
+}
+
+.kassandra-reset-btn {
+  height: 26px;
+  padding: 0 12px;
+  font-family: var(--mono-font);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: auto;
+}
+
+.kassandra-reset-btn:hover {
+  background: rgba(208, 81, 38, 0.25);
+  border-color: #ED7D31;
+  color: #ED7D31;
+}
+
+/* 3 Columns Grid for Trees (Đồng bộ phong cách Sotheby / Ezio và ảnh gốc trong game) */
+.kassandra-trees-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 24px 16px 20px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.ability-tree {
+  min-width: 0;
+  text-align: center;
+  position: relative;
+}
+
+.ability-tree-path {
+  position: relative;
+  height: 295px;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.ability-tree-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0; /* Nằm dưới hoàn toàn */
+}
+
+.ability-tree-lines path.tree-line-base {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.ability-tree-lines path.tree-line-active {
+  fill: none;
+  stroke: #8F8C86;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.7;
+}
+
+.ability-node {
+  position: absolute;
+  left: 50%;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: #151413;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition: all 0.15s ease;
+  opacity: 0.65;
+  z-index: 2; /* Nằm đè lên trên đường kẻ */
+}
+
+.ability-node-1 { top: 8px; }
+.ability-node-2 { top: 90px; }
+.ability-node-3 { top: 172px; }
+
+.ability-tree-hunter .ability-node-2 { left: 28%; }
+.ability-tree-assassin .ability-node-2 { left: 72%; }
+
+.ability-node:hover {
+  opacity: 0.95;
+  border-color: #ED7D31;
+}
+
+/* Khi active/selected: nền đen đặc #151413 (không transparent), chỉ 1 viền tròn đơn giản gọn gàng */
+.ability-node.active {
+  opacity: 1;
+  border: 2px solid #ED7D31;
+  background: #151413;
+  box-shadow: 0 0 10px rgba(237, 125, 49, 0.4);
+  transform: translateX(-50%);
+}
+
+.ability-node.active.is-target {
+  border: 2px solid #ED7D31;
+  background: #151413;
+  box-shadow: 0 0 12px rgba(237, 125, 49, 0.5);
+  transform: translateX(-50%);
+}
+
+/* Bỏ vòng dashed bên trong, chỉ giữ 1 viền tròn duy nhất */
+.ability-node-ring {
+  display: none;
+}
+
+.ability-node-media {
+  position: absolute;
+  inset: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.ability-node-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(0.6) brightness(0.7);
+  transition: filter 0.15s ease;
+}
+
+.ability-node.active .ability-node-media img {
+  filter: none;
+}
+
+.ability-node-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.ability-lock-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  opacity: 0.8;
+}
+
+.ability-tree-emblem {
+  position: absolute;
+  left: 50%;
+  top: 240px;
+  width: 48px;
+  height: 48px;
+  padding: 6px;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: #151413;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.ability-tree-emblem img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.ability-tree-emblem.is-active {
+  border-color: #ED7D31;
+  background: #151413;
+  box-shadow: 0 0 10px rgba(237, 125, 49, 0.4);
+}
+
+.ability-tree-emblem.is-active img {
+  opacity: 1;
+}
+
+/* Badge nhãn tên nhánh chuẩn như ảnh 1 (loại bỏ kim cương) */
+.ability-tree-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  margin-top: 10px;
+  padding: 4px 16px;
+  border-radius: 2px;
+  color: #8C8A87;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.tree-label-text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  color: inherit;
+}
+
+.ability-tree.has-unlocked .ability-tree-label {
+  color: #D5D3CF;
+}
+
+/* Detail Paper / Effects List */
+.kassandra-effects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kassandra-effect-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kassandra-effect-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kassandra-effect-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.kassandra-effect-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #313B33;
+}
+
+.kassandra-effect-body {
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: #383430;
+  white-space: pre-line;
+  padding-left: 28px;
 }
 
 /* Euphoria Board & Tree Card (UTTU style matching Pasted Image 2) */

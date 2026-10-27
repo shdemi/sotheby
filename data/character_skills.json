@@ -22003,7 +22003,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 480% Reality DMG. Với mỗi cấp [Energy Accumulation], gây thêm 120% Reality DMG (tối đa tính 20 cấp).",
             "artEn": "An order—understand it and follow it, or break it, tear it, smash it!",
             "artZh": "一个命令，听懂它，执行它，或者戳破它，撕咬它，砸碎它！",
-            "artVi": "Một mệnh lệnh—hiểu nó và tuân theo, hoặc phá nó, xé nó, đập nát nó!"
+            "artVi": "Một mệnh lệnh—hiểu nó và tuân theo, hoặc phá nó, xé nó, đập nát nó!",
+            "cost": 2,
+            "harmonization": 10
           }
         }
       },
@@ -22023,7 +22025,9 @@
             "descVi": "[Interval]\nBuff diện rộng. Cấp [Symphonic Unity] cho toàn bộ phe ta, duy trì 3 round.",
             "artEn": "Unfamiliar scores, strings, and requests; unfamiliar heartbeats, thoughts, and places.",
             "artZh": "陌生的曲谱、丝弦与要求；陌生的心跳、想法和一片新天地。",
-            "artVi": "Những bản nhạc, dây đàn và lời thỉnh cầu xa lạ; những nhịp tim, ý nghĩ và miền đất xa lạ."
+            "artVi": "Những bản nhạc, dây đàn và lời thỉnh cầu xa lạ; những nhịp tim, ý nghĩ và miền đất xa lạ.",
+            "cost": 0,
+            "harmonization": 15
           }
         }
       },
@@ -22039,7 +22043,8 @@
         "descVi": "[Switch: Tuning Technique]\nTấn công diện rộng. Gây 960% Reality DMG lên toàn bộ kẻ địch. Với mỗi cộng dồn [Chromatic Progression], gây thêm 64% Reality DMG lên mục tiêu chính.\nSau khi tấn công, xóa toàn bộ [Chromatic Progression], tăng [Energy Accumulation] thêm 4 cấp trong round này, và cấp 3 cộng dồn [Conduit Calibration I] cho bản thân cùng đồng minh ở vị trí phía sau liền kề.",
         "artEn": "From the ulna, whispers of dark curses; from the radius, ecstatic shouts and cheers.",
         "artZh": "在尺侧，诅咒如夜色般呢喃；在桡侧，狂喜正嘶鸣呐喊。",
-        "artVi": "Từ xương trụ, những lời nguyền rủa đen tối thì thầm; từ xương quay, những tiếng reo hò cuồng nhiệt."
+        "artVi": "Từ xương trụ, những lời nguyền rủa đen tối thì thầm; từ xương quay, những tiếng reo hò cuồng nhiệt.",
+        "harmonization": -100
       },
       {
         "slot": 4,
@@ -22154,7 +22159,9 @@
             "descVi": "[Interval]\nTấn công diện rộng. Gây 200% Reality DMG lên toàn bộ kẻ địch. Cấp 1 cộng dồn [Past Shadows] cho toàn bộ phe ta, duy trì 2 round.",
             "artEn": "Pasts long gone and songs unheard linger here in this place.",
             "artZh": "弥远的往昔，以及无人聆听的歌声，驻足此地。",
-            "artVi": "Những quá khứ đã xa và những khúc ca chưa từng được nghe vẫn nán lại nơi đây."
+            "artVi": "Những quá khứ đã xa và những khúc ca chưa từng được nghe vẫn nán lại nơi đây.",
+            "cost": 0,
+            "harmonization": 5
           }
         }
       },
@@ -22174,7 +22181,9 @@
             "descVi": "Hồi máu diện rộng. Hồi phục (ATK của Everecho ×180%) HP cho toàn bộ phe ta. Xua tan 2 loại hiệu ứng [Stats Down], [Neg Status] hoặc [Control] khỏi toàn bộ phe ta.\nKhi thi triển, Incantation này buộc phải tiêu hao 1 cộng dồn [Long-Lost Light]; nếu không còn cộng dồn [Long-Lost Light], sẽ chuyển thành [Yesterday's Yearning].",
             "artEn": "She hopes to see tomorrow, to witness daisies laden with the dew of a new dawn.",
             "artZh": "寻见明日，露珠坠于雏菊上，她亦有所盼。",
-            "artVi": "Cô hy vọng được thấy ngày mai, được chứng kiến những đóa cúc nặng trĩu sương của buổi bình minh mới."
+            "artVi": "Cô hy vọng được thấy ngày mai, được chứng kiến những đóa cúc nặng trĩu sương của buổi bình minh mới.",
+            "cost": 0,
+            "harmonization": 10
           }
         }
       },
@@ -22190,7 +22199,8 @@
         "descVi": "Tấn công diện rộng. Gây 500% Reality DMG lên toàn bộ kẻ địch. Sau khi tấn công, thi triển [Hollow Shell] lên toàn bộ kẻ địch, duy trì 3 round. Cấp 5 cộng dồn [Past Shadows] cho toàn bộ phe ta, duy trì 2 round. Cấp [Rekindled Memory] cho toàn bộ đồng minh [Conduit], duy trì 3 round.\nSau khi tấn công, nếu đang ở [Long-Lost Light], chuyển sang [Tomorrow's Hope]; nếu không, chuyển sang [Yesterday's Yearning].",
         "artEn": "Meandering through the darkness, you found her, found the light, found this song.",
         "artZh": "漫行于黑暗中时，你寻到她，寻到光，寻到这歌谣。",
-        "artVi": "Men theo bóng tối, ngươi đã tìm thấy nàng, tìm thấy ánh sáng, tìm thấy khúc ca này."
+        "artVi": "Men theo bóng tối, ngươi đã tìm thấy nàng, tìm thấy ánh sáng, tìm thấy khúc ca này.",
+        "harmonization": -100
       },
       {
         "slot": 4,
@@ -22473,7 +22483,9 @@
             "descVi": "[Interval]\nTự cường hóa. Mineral Energy +4.",
             "artEn": "In a beautiful, faraway place, dewdrops glitter in the morning light, leaving you with a sense of longing.",
             "artZh": "有声音来自美好远方，黎明时刻含晨露，绚烂前景令人心驰神往。",
-            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung."
+            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung.",
+            "cost": 0,
+            "harmonization": 8
           },
           "2": {
             "id": 31492111,
@@ -22482,7 +22494,9 @@
             "descVi": "[Interval]\nTự cường hóa. Mineral Energy +4.",
             "artEn": "In a beautiful, faraway place, dewdrops glitter in the morning light, leaving you with a sense of longing.",
             "artZh": "有声音来自美好远方，黎明时刻含晨露，绚烂前景令人心驰神往。",
-            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung."
+            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung.",
+            "cost": 0,
+            "harmonization": 20
           },
           "3": {
             "id": 31494111,
@@ -22491,7 +22505,9 @@
             "descVi": "[Interval]\nTự cường hóa. Mineral Energy +6.",
             "artEn": "In a beautiful, faraway place, dewdrops glitter in the morning light, leaving you with a sense of longing.",
             "artZh": "有声音来自美好远方，黎明时刻含晨露，绚烂前景令人心驰神往。",
-            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung."
+            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung.",
+            "cost": 0,
+            "harmonization": 20
           }
         }
       },
@@ -22511,7 +22527,9 @@
             "descVi": "Tấn công diện rộng. Gây 540% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 90% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 180% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
             "artEn": "Like children taking their first steps, we stumble forth toward a beautiful future.",
             "artZh": "从零开始蹒跚起步，向着美好的未来前进，像儿时一样雀跃欢呼。",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp."
+            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
+            "cost": 3,
+            "harmonization": 8
           },
           "2": {
             "id": 31492121,
@@ -22520,7 +22538,9 @@
             "descVi": "Tấn công diện rộng. Gây 702% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 117% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 234% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
             "artEn": "Like children taking their first steps, we stumble forth toward a beautiful future.",
             "artZh": "从零开始蹒跚起步，向着美好的未来前进，像儿时一样雀跃欢呼。",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp."
+            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
+            "cost": 3,
+            "harmonization": 10
           },
           "3": {
             "id": 31493121,
@@ -22529,7 +22549,9 @@
             "descVi": "Tấn công diện rộng. Gây 864% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 144% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 288% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
             "artEn": "Like children taking their first steps, we stumble forth toward a beautiful future.",
             "artZh": "从零开始蹒跚起步，向着美好的未来前进，像儿时一样雀跃欢呼。",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp."
+            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
+            "cost": 3,
+            "harmonization": 10
           }
         }
       },
@@ -22549,7 +22571,9 @@
             "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +20% và Critical DMG +40%, duy trì 1 round.",
             "artEn": "The Earth floats outside the cabin window, and the stars lie within our reach, but has our homeland already changed?",
             "artZh": "舷窗外的地球清晰可见，星星是触手可及的冰冷，故乡是否早已改变？",
-            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?"
+            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?",
+            "cost": 0,
+            "harmonization": 8
           },
           "2": {
             "id": 31492131,
@@ -22558,7 +22582,9 @@
             "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +20% và Critical DMG +40%, duy trì 1 round.",
             "artEn": "The Earth floats outside the cabin window, and the stars lie within our reach, but has our homeland already changed?",
             "artZh": "舷窗外的地球清晰可见，星星是触手可及的冰冷，故乡是否早已改变？",
-            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?"
+            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?",
+            "cost": 0,
+            "harmonization": 20
           },
           "3": {
             "id": 31494131,
@@ -22567,7 +22593,9 @@
             "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +30% và Critical DMG +60%, duy trì 1 round.",
             "artEn": "The Earth floats outside the cabin window, and the stars lie within our reach, but has our homeland already changed?",
             "artZh": "舷窗外的地球清晰可见，星星是触手可及的冰冷，故乡是否早已改变？",
-            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?"
+            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?",
+            "cost": 0,
+            "harmonization": 20
           }
         }
       },
@@ -22587,7 +22615,9 @@
             "descVi": "Tấn công diện rộng. Gây 270% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 45% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 90% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
             "artEn": "A dream devoid of rockets, a dream outside our cold universe, a simple dream of lush grass beyond the door.",
             "artZh": "梦里没有火箭轰鸣，梦不到这冷冽宇宙，只有门旁青草盎然。",
-            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa."
+            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa.",
+            "cost": 1,
+            "harmonization": 5
           },
           "2": {
             "id": 31492141,
@@ -22596,7 +22626,9 @@
             "descVi": "Tấn công diện rộng. Gây 351% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 58.5% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 117% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
             "artEn": "A dream devoid of rockets, a dream outside our cold universe, a simple dream of lush grass beyond the door.",
             "artZh": "梦里没有火箭轰鸣，梦不到这冷冽宇宙，只有门旁青草盎然。",
-            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa."
+            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa.",
+            "cost": 1,
+            "harmonization": 6
           },
           "3": {
             "id": 31493141,
@@ -22605,7 +22637,9 @@
             "descVi": "Tấn công diện rộng. Gây 432% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 72% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 144% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
             "artEn": "A dream devoid of rockets, a dream outside our cold universe, a simple dream of lush grass beyond the door.",
             "artZh": "梦里没有火箭轰鸣，梦不到这冷冽宇宙，只有门旁青草盎然。",
-            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa."
+            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa.",
+            "cost": 1,
+            "harmonization": 6
           }
         }
       },
@@ -22621,7 +22655,8 @@
         "descVi": "Tấn công diện rộng. Gây 2600% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này được tính đồng thời là đòn tấn công thuộc Afflatus Mineral và Star.\nKhi thi triển, tiêu hao toàn bộ Mineral Energy và Star Energy. Với mỗi Energy tiêu hao, đòn tấn công này gây thêm 260% Reality DMG; nếu tiêu hao ít nhất 6/9/12 Energy, đòn tấn công này nhận các cường hóa sau:\nKhi tiêu hao ít nhất 6 Energy: Đòn tấn công này gây thêm 1300% Reality DMG và nhận Critical Rate +100%.\nKhi tiêu hao ít nhất 9 Energy: Đòn tấn công này gây thêm 1300% Reality DMG và nhận Penetration Rate +70%.\nKhi tiêu hao ít nhất 12 Energy: Đòn tấn công này gây thêm 1300% Reality DMG và chuyển Critical Rate vượt mức thành Critical DMG với tỷ lệ 100%.",
         "artEn": "Never cross a Nechaeva—no matter who she is, where she is, or what she looks like.",
         "artZh": "别惹涅恰耶夫家的人，无论她是谁，她在哪儿，她是什么样子。",
-        "artVi": "Đừng bao giờ chọc giận một Nechaeva—bất kể cô ta là ai, ở đâu, hay trông thế nào."
+        "artVi": "Đừng bao giờ chọc giận một Nechaeva—bất kể cô ta là ai, ở đâu, hay trông thế nào.",
+        "harmonization": -100
       },
       {
         "slot": 4,
@@ -23064,7 +23099,9 @@
             "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
             "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
             "artZh": "需在烈火中与黄金较量，以获得品质纯正的胜利。",
-            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính."
+            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính.",
+            "cost": 0,
+            "harmonization": 20
           },
           "2": {
             "id": 31560112,
@@ -23073,7 +23110,9 @@
             "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
             "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
             "artZh": "需在烈火中与黄金较量，以获得品质纯正的胜利。",
-            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính."
+            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính.",
+            "cost": 0,
+            "harmonization": 30
           },
           "3": {
             "id": 31560113,
@@ -23082,7 +23121,9 @@
             "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
             "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
             "artZh": "需在烈火中与黄金较量，以获得品质纯正的胜利。",
-            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính."
+            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính.",
+            "cost": 0,
+            "harmonization": 30
           }
         }
       },
@@ -23102,7 +23143,9 @@
             "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
             "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
             "artZh": "穿透神谕与命运，她的箭镞足够骄傲。",
-            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn."
+            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn.",
+            "cost": 2,
+            "harmonization": 20
           },
           "2": {
             "id": 31560122,
@@ -23111,7 +23154,9 @@
             "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
             "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
             "artZh": "穿透神谕与命运，她的箭镞足够骄傲。",
-            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn."
+            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn.",
+            "cost": 2,
+            "harmonization": 30
           },
           "3": {
             "id": 31560123,
@@ -23120,7 +23165,9 @@
             "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
             "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
             "artZh": "穿透神谕与命运，她的箭镞足够骄傲。",
-            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn."
+            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn.",
+            "cost": 2,
+            "harmonization": 30
           }
         }
       },
@@ -23136,7 +23183,8 @@
         "descVi": "[Cyclic Incantation: At Full Draw]\nTấn công diện rộng, gây 800% Reality DMG lên toàn bộ kẻ địch, đồng thời gây thêm [Static Genesis DMG] lên mục tiêu chính bằng 100% [Aesthetic of Might], trong khi gây 50% [Static Genesis DMG] lên các mục tiêu không phải mục tiêu chính. Nếu lúc tấn công không có [Flame Undying] trong Spelldock, tạo 1 [Flame Undying] trong Spelldock; nếu không, đòn tấn công này gây thêm 800% Reality DMG. Sau khi tấn công, cấp cho bản thân 1 cộng dồn [Conduit Calibration II], và xóa giá trị đã ghi nhận của [Aesthetic of Might].",
         "artEn": "For the next celebration, the sun should rise once again.",
         "artZh": "为了下一场庆贺，太阳理应再升起一次。",
-        "artVi": "Cho lễ hội kế tiếp, mặt trời nên mọc lên một lần nữa."
+        "artVi": "Cho lễ hội kế tiếp, mặt trời nên mọc lên một lần nữa.",
+        "harmonization": -100
       },
       {
         "slot": 4,

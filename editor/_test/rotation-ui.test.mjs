@@ -310,7 +310,7 @@ check(
   removeBtn && removeBtn.visible && removeBtn.opacity === "1" && removeBtn.title === "Remove this note",
   JSON.stringify(removeBtn)
 );
-await page.locator("#rotation-detail .guide-annotation-remove").last().click();
+await page.locator("#rotation-detail .guide-round-editor").first().locator(".guide-annotation-remove").last().click();
 await page.waitForTimeout(600);
 const notesAfterDelete = await roundInfo(0);
 check(

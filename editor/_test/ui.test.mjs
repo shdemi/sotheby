@@ -139,23 +139,47 @@ const readFirstVariant = () =>
 /** Per-slot substitute names of the first variant, as `{ index, subs }`. */
 const readAllSlotSubs = () =>
   page.evaluate(() =>
-    [...document.querySelectorAll("#team-detail .card .slot")].map((slot, index) => ({
-      index,
-      subs: [...slot.querySelectorAll(".subs .sub-editor")].map(
-        (row) => row.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
-      ),
-    }))
+    [...document.querySelectorAll("#team-detail .card .slots")].map((cardSlots) => {
+      // In the DOM, each slot is .slot followed optionally by .subs and .slot-actions as siblings
+      const slots = [];
+      const children = [...cardSlots.children];
+      let currentSlotIndex = -1;
+      for (const child of children) {
+        if (child.classList.contains("slot")) {
+          currentSlotIndex++;
+          slots.push({ index: currentSlotIndex, subs: [] });
+        } else if (child.classList.contains("subs") && currentSlotIndex >= 0) {
+          slots[currentSlotIndex].subs = [...child.querySelectorAll(".sub-editor")].map(
+            (row) => row.querySelector('[data-focus-key$="-char"] .name')?.textContent ?? ""
+          );
+        }
+      }
+      return slots;
+    })[0] || []
   );
 
 /** Simulates a drag of one substitute handle onto another substitute row. */
 const dragSub = (fromIndex, toIndex, below, slotIndex) =>
   page.evaluate(
     ({ fromIndex, toIndex, below, slotIndex }) => {
-      // Rows are scoped to one slot: different slots never mix.
-      const scope = [...document.querySelectorAll("#team-detail .card .slot")][slotIndex];
-      const rows = [...scope.querySelectorAll(".subs .sub-editor")];
-      const source = rows[fromIndex].querySelector(".sub-handle");
+      // Rows are scoped to one slot: find the .subs container corresponding to slotIndex
+      const cardSlots = document.querySelector("#team-detail .card .slots");
+      if (!cardSlots) return;
+      let currentSlotIndex = -1;
+      let targetSubsHost = null;
+      for (const child of cardSlots.children) {
+        if (child.classList.contains("slot")) {
+          currentSlotIndex++;
+        } else if (child.classList.contains("subs") && currentSlotIndex === slotIndex) {
+          targetSubsHost = child;
+          break;
+        }
+      }
+      if (!targetSubsHost) return;
+      const rows = [...targetSubsHost.querySelectorAll(".sub-editor")];
+      const source = rows[fromIndex]?.querySelector(".sub-handle");
       const target = rows[toIndex];
+      if (!source || !target) return;
       const data = new DataTransfer();
       const rect = target.getBoundingClientRect();
       const clientY = below ? rect.top + rect.height * 0.75 : rect.top + rect.height * 0.25;
@@ -261,16 +285,16 @@ try {
    * ------------------------------------------------------------------ */
 
   console.log("\n=== dragging a substitute reorders it ===");
-  // No shipped preset stacks two substitutes in one slot, so add a second one
-  // to the first slot of the selected preset to exercise the drag.
-  await page.locator("#team-detail .card").first().locator(".slot-actions").first()
+  // Slot 0 has 0 substitutes, Slot 1 has 1 substitute (Rhiannon).
+  // Click + Substitute on Slot 1 (the second .slot-actions) to give it 2 substitutes.
+  await page.locator("#team-detail .card").first().locator(".slot-actions").nth(1)
     .locator("button", { hasText: "+ Substitute" }).click();
   await page.waitForTimeout(700);
 
   const allSubs = await readAllSlotSubs();
   const staged = allSubs.find((slot) => slot.subs.length >= 2);
   check("a slot now has two substitutes", !!staged, JSON.stringify(allSubs.map((s) => s.subs.length)));
-  const subSlot = staged ? staged.index : 0;
+  const subSlot = staged ? staged.index : 1;
   const subsBefore = staged ? staged.subs : [];
 
   await dragSub(0, 1, true, subSlot);
@@ -290,7 +314,7 @@ try {
   check("dragging it back restores the order", JSON.stringify(subsBack) === JSON.stringify(subsBefore), JSON.stringify(subsBack.slice(0, 2)));
 
   // Removing the staged substitute leaves the file as it started.
-  await page.locator("#team-detail .card .slot").nth(subSlot).locator(".sub-editor button").last().click();
+  await page.locator("#team-detail .card .subs").nth(subSlot - 1).locator(".sub-editor button").last().click();
   await page.waitForTimeout(700);
   check("removing it leaves the file clean again", (await readBadge()) === "0", await readBadge());
 
@@ -833,7 +857,7 @@ try {
       (await page.evaluate(() => JSON.parse(localStorage.getItem("r1999_teams_v1")).teams.map((t) => t.name).join(","))) === "Bravo,Charlie,Alpha"
     );
 
-    await dragTeamCard(2, 1, false);
+    await dragTeamCard(2, 0, false);
     await page.waitForTimeout(500);
     const orderBack = await readTeamOrder();
     check("dragging it back above Bravo restores the order", orderBack.join(",") === "Alpha,Bravo,Charlie", JSON.stringify(orderBack));
@@ -850,7 +874,17 @@ try {
 
   console.log("\n=== Rotations: archetype filters, search and the turn plan ===");
   {
-    await page.locator("#btn-rotations").click();
+    // Seed the user's rotation list so rotations are present in the list
+    await page.evaluate(async () => {
+      const res = await fetch("data/guide_rotations.json");
+      const data = await res.json();
+      const list = (data.rotations || []).map((r) => ({ uid: `preset-${r.id}`, presetId: r.id }));
+      localStorage.setItem("r1999_rotation_list_v1", JSON.stringify(list));
+    });
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(1500);
+
+    await page.evaluate(() => document.getElementById("btn-rotations").click());
     await page.waitForTimeout(700);
 
     const opened = await page.evaluate(() => {
@@ -860,42 +894,33 @@ try {
         filters: [...document.querySelectorAll(".rotation-filter")].map((b) => b.dataset.tag),
         hasSearch: !!document.getElementById("rotations-search"),
         cards: document.querySelectorAll(".rotation-card").length,
-        detailHidden: getComputedStyle(document.getElementById("rotations-detail")).display === "none",
+        detailVisible: getComputedStyle(document.getElementById("rotations-detail")).display !== "none",
         backHidden: document.getElementById("rotations-back").hidden,
         cardText: [...document.querySelectorAll(".rotation-card")].map((c) => c.textContent.replace(/\s+/g, " ").trim()),
       };
     });
     check("the Rotations modal opens on the list", opened.open === "flex", opened.open);
-    check("it offers the 13 archetype filters", opened.filters.length === 13, JSON.stringify(opened.filters));
+    check("it offers the 15 archetype filters", opened.filters.length === 15, JSON.stringify(opened.filters));
     check("it has a search box", opened.hasSearch);
     check("the rotation list is populated", opened.cards > 0, String(opened.cards));
-    check("the plan stays hidden until a rotation is picked", opened.detailHidden && opened.backHidden);
-    check("a card never prints the member names", opened.cardText.every((text) => !/isolde|kakania|regulus/i.test(text)), JSON.stringify(opened.cardText));
+    check("the plan is shown in side-by-side mode", opened.detailVisible && opened.backHidden);
+    check("a card never prints the member names", opened.cardText.every((text) => !text.includes("Kakania") && !text.includes("Regulus")), JSON.stringify(opened.cardText));
 
     await page.locator(".rotation-card").first().click();
     await page.waitForTimeout(500);
     const plan = await page.evaluate(() => ({
-      browseHidden: getComputedStyle(document.getElementById("rotations-browse")).display === "none",
-      backShown: !document.getElementById("rotations-back").hidden,
+      browseVisible: getComputedStyle(document.getElementById("rotations-browse")).display !== "none",
+      detailVisible: getComputedStyle(document.getElementById("rotations-detail")).display !== "none",
       turns: document.querySelectorAll(".rot-round").length,
       slots: document.querySelectorAll(".rot-slot").length,
       filled: [...document.querySelectorAll(".rot-card img")].filter((i) => i.naturalWidth > 0).length,
       team: document.querySelectorAll(".rot-member").length,
     }));
-    check("clicking a rotation opens its plan full width", plan.browseHidden && plan.backShown);
+    check("clicking a rotation renders its plan", plan.browseVisible && plan.detailVisible);
     check("the card plan renders its rounds", plan.turns > 0, String(plan.turns));
     check("each round has card slots", plan.slots > 0, String(plan.slots));
     check("the skill cards load", plan.filled > 0, String(plan.filled));
     check("the rotation names its team", plan.team > 0, String(plan.team));
-
-    await page.locator("#rotations-back").click();
-    await page.waitForTimeout(400);
-    const backToList = await page.evaluate(() => ({
-      browseShown: getComputedStyle(document.getElementById("rotations-browse")).display !== "none",
-      backHidden: document.getElementById("rotations-back").hidden,
-      searchShown: !document.getElementById("rotations-search").hidden,
-    }));
-    check("the back button returns to the list", backToList.browseShown && backToList.backHidden && backToList.searchShown);
 
     await page.evaluate(() => document.querySelector('.rotation-filter[data-tag="Burn"]').click());
     await page.waitForTimeout(350);

@@ -7185,6 +7185,16 @@ let charSkillSelectedIdx = 0; // Index of selected skill card
 let charSkillSelectedRank = 3; // Selected rank for active skill (1, 2, or 3)
 let charSkillsActiveStance = null; // Active stance for multi-form characters (e.g. "Base", "Bendith", "Set A")
 let charWeaponsSelectedIdx = 0; // Index of selected weapon for Collab chars (Ezio / Kassandra)
+let charEzioPrimary = "venetian-falchion"; // "venetian-falchion" | "condottiero-war-hammer" | "captain-s-sword"
+let charEzioSecondary = "channeled-cinquedea"; // "channeled-cinquedea" | "butcher-knife" | "sultan-s-knife"
+let charEzioPortrayLevel = 0; // 0 (Base / P0-P1), 2 (P2-P4: Weapon Enhancements), 5 (P5: Combo Enhancements)
+let charKassandraPortrayLevel = 0; // 0 (P0-P1), 2 (P2-P4), 5 (P5)
+let charKassandraSelections = {
+  hunter: null,
+  warrior: null,
+  assassin: null
+};
+let charKassandraActiveTooltip = null; // Node to show detail info for
 
 function getCharacterSkillsInfo(name) {
   const canonical = resolveCharacterName(name);
@@ -7629,10 +7639,10 @@ function renderCharacterSkillsSection(name) {
           : ""
       }
       <button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "insights" ? "is-active" : ""}" data-skill-tab="insights">
-        ${isCn ? "传承洞悉" : "Insight"}
+        ${isCn ? "传承洞悉" : "Inheritance"}
       </button>
       <button type="button" class="uttu-mode-btn ${charSkillsActiveTab === "portrays" ? "is-active" : ""}" data-skill-tab="portrays">
-        ${isCn ? "塑造" : "Portrait"}
+        ${isCn ? "塑造" : "Portray"}
       </button>
       ${
         hasCharEuphoria
@@ -7692,7 +7702,9 @@ function renderCharacterSkillsSection(name) {
           const isSkUlt = sk.type === "Ultimate";
           const badgeText = getSkillBadgeText(sk, isCn);
 
-          const ultFrameHtml = isSkUlt ? `<img class="rot-card-frame" src="${ROT_ULTIMATE_FRAME.image}" alt="" />` : "";
+          const ultFrameHtml = isSkUlt
+            ? `<img class="rot-card-frame" src="${ROT_ULTIMATE_FRAME.image}" alt="" /><img class="rot-card-unique-text" src="images/card_modulo/unique-card-text.png" alt="" />`
+            : "";
 
           return `
             <div class="uttu-skill-card-item ${isSelected ? "is-selected" : ""} ${isSkUlt ? "is-ult" : ""}" data-skill-idx="${idx}">
@@ -7746,6 +7758,37 @@ function renderCharacterSkillsSection(name) {
         activeArt = isCn ? chosenRank.artZh || chosenRank.artEn : chosenRank.artEn || chosenRank.artZh;
       }
 
+      const chosenRankObj = isUlt
+        ? currentSkill
+        : (currentSkill.ranks ? (currentSkill.ranks[charSkillSelectedRank] || currentSkill.ranks[1] || {}) : currentSkill);
+
+      let conduitStatsHtml = "";
+      const hasCost = chosenRankObj.cost !== undefined;
+      const hasHarm = chosenRankObj.harmonization !== undefined;
+      if (hasCost || hasHarm) {
+        const costLabel = isCn ? "消耗" : "Cost";
+        const harmLabel = isCn ? "同调" : "Harmonization";
+        const harmVal = chosenRankObj.harmonization;
+        const harmSign = typeof harmVal === "number" && harmVal > 0 ? `+${harmVal}` : `${harmVal}`;
+        const harmClass = typeof harmVal === "number" && harmVal < 0 ? "is-negative" : "is-positive";
+        conduitStatsHtml = `
+          <div class="uttu-conduit-metrics">
+            ${hasCost ? `
+              <div class="uttu-conduit-metric u-cost">
+                <span class="uttu-metric-label">${costLabel}:</span>
+                <span class="uttu-metric-value">${chosenRankObj.cost} <span class="uttu-cost-diamond">◆</span></span>
+              </div>
+            ` : ""}
+            ${hasHarm ? `
+              <div class="uttu-conduit-metric u-harm ${harmClass}">
+                <span class="uttu-metric-label">${harmLabel}:</span>
+                <span class="uttu-metric-value">${harmSign}</span>
+              </div>
+            ` : ""}
+          </div>
+        `;
+      }
+
       const skillNameText = isCn ? currentSkill.nameZh || currentSkill.nameEn : currentSkill.nameEn || currentSkill.nameZh;
       const subSlotTag = currentSkill.subSlot ? ` · ${currentSkill.subSlot}` : "";
       const currentRankNum = isUlt ? 1 : charSkillSelectedRank;
@@ -7763,6 +7806,7 @@ function renderCharacterSkillsSection(name) {
           <!-- Bottom Card Detail Panel -->
           <div class="uttu-detail-board">
             ${rankSelectorHtml}
+            ${conduitStatsHtml}
             <div class="uttu-skill-info-head">
               <h3 class="uttu-skill-title">${escapeHtml(skillNameText)}</h3>
               <span class="uttu-skill-type-tag">${escapeHtml(typeTag)}</span>
@@ -7774,51 +7818,592 @@ function renderCharacterSkillsSection(name) {
       `;
     }
   } else if (charSkillsActiveTab === "weapons") {
-    const list = skillInfo.weapons || [];
-    if (!list.length) {
-      mainBodyHtml = `<p class="hint">No weapon details available.</p>`;
-    } else {
-      if (charWeaponsSelectedIdx >= list.length) charWeaponsSelectedIdx = 0;
-      const currentWeapon = list[charWeaponsSelectedIdx];
+    if (canonicalName === "Ezio Auditore") {
+      const primaryWeapons = [
+        { code: "venetian-falchion", nameEn: "Venetian Falchion", nameZh: "威尼斯弯刀", nameVi: "Venetian Falchion", file: "venetian-falchion.png" },
+        { code: "condottiero-war-hammer", nameEn: "Condottiero War Hammer", nameZh: "佣兵战锤", nameVi: "Condottiero War Hammer", file: "condottiero-war-hammer.png" },
+        { code: "captain-s-sword", nameEn: "Captain's Sword", nameZh: "队长之剑", nameVi: "Captain's Sword", file: "captain-s-sword.png" }
+      ];
+      const secondaryWeapons = [
+        { code: "channeled-cinquedea", nameEn: "Channeled Cinquedea", nameZh: "多槽五指剑", nameVi: "Channeled Cinquedea", file: "channeled-cinquedea.png" },
+        { code: "butcher-knife", nameEn: "Butcher Knife", nameZh: "屠刀", nameVi: "Butcher Knife", file: "butcher-knife.png" },
+        { code: "sultan-s-knife", nameEn: "Sultan's Knife", nameZh: "苏丹短刀", nameVi: "Sultan's Knife", file: "sultan-s-knife.png" }
+      ];
 
-      const weaponButtonsHtml = list
-        .map((w, idx) => {
-          const isSelected = idx === charWeaponsSelectedIdx;
-          const wName = isCn ? w.nameZh || w.nameEn : w.nameEn || w.nameZh;
+      const activePriObj = primaryWeapons.find((w) => w.code === charEzioPrimary) || primaryWeapons[0];
+      const activeSecObj = secondaryWeapons.find((w) => w.code === charEzioSecondary) || secondaryWeapons[0];
+
+      const priHtml = primaryWeapons
+        .map((w) => {
+          const isAct = w.code === charEzioPrimary;
+          const wName = currentLang === "vi" ? w.nameVi : (isCn ? w.nameZh : w.nameEn);
           return `
-            <button type="button" class="uttu-weapon-btn ${isSelected ? "is-active" : ""}" data-weapon-idx="${idx}">
-              ${escapeHtml(wName)}
-            </button>
-          `;
-        })
-        .join("");
-
-      const wTitle = isCn ? currentWeapon.nameZh || currentWeapon.nameEn : currentWeapon.nameEn || currentWeapon.nameZh;
-      const wMainDesc = isCn ? currentWeapon.mainDescZh || currentWeapon.mainDescEn : currentWeapon.mainDescEn || currentWeapon.mainDescZh;
-
-      const combosHtml = (currentWeapon.combos || [])
-        .map((c) => {
-          const cName = isCn ? c.daggerZh || c.daggerEn : c.daggerEn || c.daggerZh;
-          const cDesc = isCn ? c.descZh || c.descEn : c.descEn || c.descZh;
-          return `
-            <div class="uttu-weapon-combo-card">
-              <span class="uttu-weapon-combo-name">${escapeHtml(cName)}</span>
-              <div class="uttu-weapon-combo-desc">${formatSkillKeywords(cDesc)}</div>
+            <div class="ezio-weapon-card is-primary ${isAct ? "is-active" : ""}" data-ezio-primary="${w.code}">
+              <div class="ezio-weapon-box">
+                <img src="images/ezio_weapon/${w.file}" alt="${escapeHtml(wName)}" class="ezio-weapon-img" />
+              </div>
+              <span class="ezio-weapon-label">${escapeHtml(wName)}</span>
             </div>
           `;
         })
         .join("");
 
+      const secHtml = secondaryWeapons
+        .map((w) => {
+          const isAct = w.code === charEzioSecondary;
+          const wName = currentLang === "vi" ? w.nameVi : (isCn ? w.nameZh : w.nameEn);
+          return `
+            <div class="ezio-weapon-card is-secondary ${isAct ? "is-active" : ""}" data-ezio-secondary="${w.code}">
+              <div class="ezio-weapon-box">
+                <img src="images/ezio_weapon/${w.file}" alt="${escapeHtml(wName)}" class="ezio-weapon-img" />
+              </div>
+              <span class="ezio-weapon-label">${escapeHtml(wName)}</span>
+            </div>
+          `;
+        })
+        .join("");
+
+      // Primary desc and combo desc from skillsData
+      const weaponsList = skillInfo.weapons || [];
+      const currentPriData = weaponsList.find((w) => (w.nameEn || "").toLowerCase().replace(/[^a-z0-9]+/g, "-") === charEzioPrimary) || weaponsList[0] || {};
+      let priMainDesc = isCn ? currentPriData.mainDescZh || currentPriData.mainDescEn : (currentLang === "vi" ? currentPriData.mainDescVi || currentPriData.mainDescEn : currentPriData.mainDescEn);
+
+      const currentComboData = (currentPriData.combos || []).find((c) => (c.daggerEn || "").toLowerCase().replace(/[^a-z0-9]+/g, "-") === charEzioSecondary) || {};
+      let comboDesc = isCn ? currentComboData.descZh || currentComboData.descEn : (currentLang === "vi" ? currentComboData.descVi || currentComboData.descEn : currentComboData.descEn);
+
+      // Portray P2+ enhancement on Primary Weapon
+      if (charEzioPortrayLevel >= 2) {
+        if (charEzioPrimary === "venetian-falchion") {
+          priMainDesc = isCn
+            ? "【威尼斯弯刀强化】至终的仪式视为额外行动；【黑夜行动】命中时对目标施加2层【刺客印记】。"
+            : (currentLang === "vi"
+              ? "[Enhanced Venetian Falchion] Ultimate được tính là Extra Action; [Work in the Dark] gây 2 cộng dồn [Assassin Mark] lên mục tiêu."
+              : "[Enhanced Venetian Falchion] Ultimate counts as an Extra Action; [Work in the Dark] inflicts 2 stacks of [Assassin Mark] on the target.");
+        } else if (charEzioPrimary === "condottiero-war-hammer") {
+          priMainDesc = isCn
+            ? "【佣兵战锤强化】其他友方释放至终仪式后，艾吉奥获得2层【鹰之指引】。释放至终仪式时，每次释放【信仰之矢】、【信仰之刃】或【死神亦不仁慈】，本次攻击造成的最终创伤+2.5%。"
+            : (currentLang === "vi"
+              ? "[Enhanced Condottiero War Hammer] Sau khi đồng minh khác thi triển Ultimate, Ezio nhận 2 cộng dồn [Eagle's Guidance]. Khi thi triển Ultimate, mỗi lần [Arrow of Faith], [Edge of Faith] hoặc [Death Be Not Unkind] được thi triển, đòn tấn công này nhận Final DMG Dealt +2.5%."
+              : "[Enhanced Condottiero War Hammer] After other allies cast Ultimate, Ezio gains 2 stacks of [Eagle's Guidance]. When casting Ultimate, every time [Arrow of Faith], [Edge of Faith], or [Death Be Not Unkind] is cast, this attack gains Final DMG Dealt +2.5%.");
+        } else if (charEzioPrimary === "captain-s-sword") {
+          priMainDesc = isCn
+            ? "【队长之剑强化】使用普通咒语/至终仪式攻击时，造成额外本源创伤（1阶【行于黑暗】/【死亡并非残酷】的现实创伤×80%/80%）。目标每有1层【中毒】，额外造成本源创伤（1.5%/1.5%）；目标处于10层及以上【中毒】时，本源创伤比例提升至2.5%/2.5%。"
+            : (currentLang === "vi"
+              ? "[Enhanced Captain's Sword] Khi tấn công bằng Incantation cơ bản/Ultimate, gây thêm Genesis DMG (bằng Reality DMG của [Work in the Dark]/[Death Be Not Unkind] hạng 1 ×80%/80%). Với mỗi 1 [Poison] trên mục tiêu, gây thêm Genesis DMG (1.5%/1.5%); khi mục tiêu có từ 10 [Poison] trở lên: tỷ lệ Genesis DMG tăng thành 2.5%/2.5%."
+              : "[Enhanced Captain's Sword] When attacking with basic incantation/Ultimate, deal an additional (rank 1 [Work in the Dark]/[Death Be Not Unkind]'s Reality DMG x80%/80%) Genesis DMG. For every 1 instance of [Poison] on the target, deal an additional (1.5%/1.5%) Genesis DMG. When there are 10 or more instances of [Poison] on the target: increase the Genesis DMG ratio to 2.5%/2.5%.");
+        }
+      }
+
+      // Portray P5 enhancement on Combo
+      if (charEzioPortrayLevel >= 5) {
+        if (charEzioPrimary === "venetian-falchion") {
+          if (charEzioSecondary === "channeled-cinquedea") {
+            comboDesc = isCn
+              ? "【组合强化】自身额外行动造成伤害提升100%。溢出的暴击率以150%比例转化为暴击创伤。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Extra Action của bản thân nhận DMG Bonus +100%. Critical Rate vượt mức được chuyển thành Critical DMG theo tỷ lệ 150%."
+                : "[Enhanced Combo] Own extra actions gain DMG Bonus +100%. Excess Critical Rate is converted to Critical DMG at a ratio of 150%.");
+          } else if (charEzioSecondary === "butcher-knife") {
+            comboDesc = isCn
+              ? "【组合强化】自身额外行动造成伤害提升100%。任意友方行动后，若有敌方阵亡，对生命百分比最低的敌方释放【黑夜行动】（每回合上限提升至4次）。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Extra Action của bản thân nhận DMG Bonus +100%. Giới hạn kích hoạt [Work in the Dark] khi có kẻ địch tử vong tăng lên 4 lần mỗi round."
+                : "[Enhanced Combo] Own extra actions gain DMG Bonus +100%. The upper limit of [Work in the Dark] triggered by enemy's death is increased to 4.");
+          } else if (charEzioSecondary === "sultan-s-knife") {
+            comboDesc = isCn
+              ? "【组合强化】自身额外行动造成伤害提升100%。【实战经验】和【瞩目】持续2回合。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Extra Action của bản thân nhận DMG Bonus +100%. [Fighting Experience] và [Eyes Caught] duy trì 2 round."
+                : "[Enhanced Combo] Own extra actions gain DMG Bonus +100%. [Fighting Experience] and [Eyes Caught] last 2 rounds.");
+          }
+        } else if (charEzioPrimary === "condottiero-war-hammer") {
+          if (charEzioSecondary === "channeled-cinquedea") {
+            comboDesc = isCn
+              ? "【组合强化】仪式威力+40%。回合开始时，获得同步率+20%。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Ultimate Might +40%. Khi bắt đầu round, nhận Synchronization +20%."
+                : "[Enhanced Combo] Ultimate Might +40%. At the start of the round, gain Synchronization +20%.");
+          } else if (charEzioSecondary === "butcher-knife") {
+            comboDesc = isCn
+              ? "【组合强化】仪式威力+40%。释放至终仪式后，获得同步率+20%。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Ultimate Might +40%. Sau khi thi triển Ultimate, nhận Synchronization +20%."
+                : "[Enhanced Combo] Ultimate Might +40%. After casting Ultimate, gain Synchronization +20%.");
+          } else if (charEzioSecondary === "sultan-s-knife") {
+            comboDesc = isCn
+              ? "【组合强化】仪式威力+40%。友方行动后若击败敌方，获得同步率+20%。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Ultimate Might +40%. Sau khi đồng minh hành động, nếu có kẻ địch bị đánh bại, nhận Synchronization +20%."
+                : "[Enhanced Combo] Ultimate Might +40%. After an allied action, if any enemy dies, gain Synchronization +20%.");
+          }
+        } else if (charEzioPrimary === "captain-s-sword") {
+          if (charEzioSecondary === "channeled-cinquedea") {
+            comboDesc = isCn
+              ? "【组合强化】本源创伤+20%。额外附加2层【中毒】。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Genesis DMG +20%. Gây thêm 2 cộng dồn [Poison]."
+                : "[Enhanced Combo] Genesis DMG +20%. Inflict 2 additional instances of [Poison].");
+          } else if (charEzioSecondary === "butcher-knife") {
+            comboDesc = isCn
+              ? "【组合强化】本源创伤+20%。额外附加3层【中毒】。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Genesis DMG +20%. Gây thêm 3 cộng dồn [Poison]."
+                : "[Enhanced Combo] Genesis DMG +20%. Inflict 3 additional instances of [Poison].");
+          } else if (charEzioSecondary === "sultan-s-knife") {
+            comboDesc = isCn
+              ? "【组合强化】本源创伤+20%。敌方被击败时，其同伴可继承该敌方最多20层【中毒】。"
+              : (currentLang === "vi"
+                ? "[Enhanced Combo] Genesis DMG +20%. Sau khi kẻ địch tử trận, các đồng minh còn lại có thể thừa hưởng tối đa 20 cộng dồn [Poison] từ kẻ địch đó."
+                : "[Enhanced Combo] Genesis DMG +20%. After an enemy dies, that enemy's allies can inherit up to 20 instances of [Poison] from that enemy.");
+          }
+        }
+      }
+
+      const priTitleText = currentLang === "vi" ? activePriObj.nameVi : (isCn ? activePriObj.nameZh : activePriObj.nameEn);
+      const secTitleText = currentLang === "vi" ? activeSecObj.nameVi : (isCn ? activeSecObj.nameZh : activeSecObj.nameEn);
+
       mainBodyHtml = `
-        <div class="uttu-weapons-board">
-          <div class="uttu-weapons-strip">${weaponButtonsHtml}</div>
-          <div class="uttu-weapon-detail">
-            <h4 class="uttu-weapon-title">${escapeHtml(wTitle)}</h4>
-            <div class="uttu-weapon-main-desc">${formatSkillKeywords(wMainDesc)}</div>
-            ${combosHtml ? `<div class="uttu-weapon-combos">${combosHtml}</div>` : ""}
+        <div class="ezio-weapon-board">
+          <div class="ezio-portray-switcher">
+            <span class="ezio-switcher-label">${isCn ? "塑造强化:" : (currentLang === "vi" ? "Mức độ Portray:" : "Portray Level:")}</span>
+            <div class="ezio-portray-btns">
+              <button type="button" class="ezio-portray-btn ${charEzioPortrayLevel === 0 ? "is-active" : ""}" data-ezio-portray="0">P0-P1</button>
+              <button type="button" class="ezio-portray-btn ${charEzioPortrayLevel === 2 ? "is-active" : ""}" data-ezio-portray="2">P2-P4</button>
+              <button type="button" class="ezio-portray-btn ${charEzioPortrayLevel === 5 ? "is-active" : ""}" data-ezio-portray="5">P5</button>
+            </div>
+          </div>
+
+          <div class="ezio-weapon-stage">
+            <div class="ezio-weapon-col is-left">
+              ${priHtml}
+            </div>
+
+            <div class="ezio-weapon-center-preview">
+              <div class="ezio-center-slot">
+                <div class="ezio-center-box">
+                  <img src="images/ezio_weapon/${activePriObj.file}" alt="" class="ezio-center-img" />
+                </div>
+                <span class="ezio-center-name">${escapeHtml(priTitleText)}</span>
+              </div>
+              <span class="ezio-center-cross">×</span>
+              <div class="ezio-center-slot">
+                <div class="ezio-center-box">
+                  <img src="images/ezio_weapon/${activeSecObj.file}" alt="" class="ezio-center-img" />
+                </div>
+                <span class="ezio-center-name">${escapeHtml(secTitleText)}</span>
+              </div>
+            </div>
+
+            <div class="ezio-weapon-col is-right">
+              ${secHtml}
+            </div>
+          </div>
+
+          <div class="ezio-weapon-detail-paper">
+            <div class="ezio-effect-section">
+              <div class="ezio-effect-badge">${escapeHtml(priTitleText)}</div>
+              <div class="ezio-effect-desc">${formatSkillKeywords(priMainDesc || "")}</div>
+            </div>
+
+            <div class="ezio-effect-divider"></div>
+
+            <div class="ezio-effect-section">
+              <div class="ezio-effect-badge is-combo">${escapeHtml(priTitleText)} × ${escapeHtml(secTitleText)}</div>
+              <div class="ezio-effect-desc">${formatSkillKeywords(comboDesc || "")}</div>
+            </div>
           </div>
         </div>
       `;
+    } else if (canonicalName === "Kassandra") {
+      // Kassandra Ability Tree
+      const abilityTrees = [
+        {
+          key: "hunter",
+          nameEn: "Hunter",
+          nameZh: "猎人",
+          nameVi: "Hunter",
+          icon: "images/kassandra_ability/Hunter.png",
+          color: "#4FA89B",
+          skills: [
+            {
+              index: 0,
+              cost: 3,
+              nameEn: "Archery Master",
+              nameZh: "射术大师",
+              nameVi: "Archery Master",
+              icon: "images/kassandra_ability/archery_master.png",
+              descVi: "[Sparta Kick], [Rain of Destruction] và [Rush Assassination] kích hoạt thêm 1 stack [Lethal Injury].\nThêm hiệu ứng mới cho [Force Field] hiện tại: Khi [Assassination] của một đồng minh được kích hoạt, gây thêm 75% DMG cùng loại với người tấn công.\nHiệu ứng [Way of Artemis] được cường hóa: Tất cả đồng minh nhận Critical Rate +15%. Đồng minh [Assassination] nhận thêm Critical Rate +10%.",
+              descEn: "[Sparta Kick], [Rain of Destruction], and [Rush Assassination] trigger 1 additional stack of [Lethal Injury].\nAdd new effect to current [Force Field]: When an allied [Assassination] is triggered, deal an additional 75% DMG of the attacker's type.\nEnhanced [Way of Artemis]: All allies gain Critical Rate +15%. [Assassination] allies gain an extra Critical Rate +10%.",
+              descZh: "【斯巴达踢击】、【毁灭之雨】与【急速刺杀】额外附加1层【致命伤】。\n当前【术阵】新增效果：友方【刺杀】触发时，额外造成攻击者类型75%的创伤。\n【阿尔忒弥斯之路】强化：己方全体暴击率+15%，【刺杀】角色额外暴击率+10%。"
+            },
+            {
+              index: 1,
+              cost: 2,
+              nameEn: "Sixth Sense",
+              nameZh: "第六感",
+              nameVi: "Sixth Sense",
+              icon: "images/kassandra_ability/sixth_sense.png",
+              descVi: "Khi [Fury of Ares], [Advent of Artemis] hoặc [Rain of Destruction] đánh trúng mục tiêu, gây thêm 1 stack [Lethal Injury] lên chúng.\n\nThêm hiệu ứng mới cho [Force Field] hiện tại: Khi [Assassination] của một đồng minh được kích hoạt, gây thêm 50% DMG cùng loại với người tấn công.",
+              descEn: "When [Fury of Ares], [Advent of Artemis], or [Rain of Destruction] hits a target, inflict 1 additional stack of [Lethal Injury] on them.\n\nAdd new effect to current [Force Field]: When an allied [Assassination] is triggered, deal an additional 50% DMG of the attacker's type.",
+              descZh: "【阿瑞斯的忿怒】、【阿尔忒弥斯之临】或【毁灭之雨】命中目标时，对其额外施加1层【致命伤】。\n\n当前【术阵】新增效果：友方【刺杀】触发时，额外造成攻击者类型50%的创伤。"
+            },
+            {
+              index: 2,
+              cost: 1,
+              nameEn: "Predator Shot",
+              nameZh: "掠食者之击",
+              nameVi: "Predator Shot",
+              icon: "images/kassandra_ability/predator_shot.png",
+              descVi: "[Advent of Artemis] gây thêm 1 stack [Lethal Injury].\nKhi vào trận, nhận [Way of Artemis]; nếu bản thân đã có [Way of Ares] hoặc [Way of Nyx], thay vào đó nhận Critical Rate +15%.\n[Way of Artemis]: Hiệu ứng [Force Field]: Tất cả đồng minh nhận Critical DMG +(27% + số stack [Guidance of Three Gods] ×5.4%). Đồng minh [Assassination] nhận thêm Critical DMG +(số stack [Guidance of Three Gods] ×5.4%).",
+              descEn: "[Advent of Artemis] inflicts 1 additional stack of [Lethal Injury].\nWhen entering battle, gain [Way of Artemis]; if already having [Way of Ares] or [Way of Nyx], gain Critical Rate +15% instead.\n[Way of Artemis]: [Force Field] Effect: All allies gain Critical DMG +(27% + [Guidance of Three Gods] stacks x5.4%). [Assassination] allies gain extra Critical DMG +([Guidance of Three Gods] stacks x5.4%).",
+              descZh: "【阿尔忒弥斯之临】额外施加1层【致命伤】。\n进入战斗时获得【阿尔忒弥斯之路】；若已有【阿瑞斯之路】或【倪克斯之路】，则改为获得暴击率+15%。\n【阿尔忒弥斯之路】：【术阵】效果：己方全体暴击创伤+(27% + 【三神指引】层数×5.4%)，【刺杀】角色额外暴击创伤+(【三神指引】层数×5.4%)。"
+            }
+          ]
+        },
+        {
+          key: "warrior",
+          nameEn: "Warrior",
+          nameZh: "战士",
+          nameVi: "Warrior",
+          icon: "images/kassandra_ability/Warrior.png",
+          color: "#C25D51",
+          skills: [
+            {
+              index: 0,
+              cost: 3,
+              nameEn: "Overpower Attacks",
+              nameZh: "狂袭攻击",
+              nameVi: "Overpower Attacks",
+              icon: "images/kassandra_ability/overpower_attacks.png",
+              descVi: "[Fury of Ares]: Với mỗi loại [Gash] khác nhau trên mục tiêu chính, thi triển thêm [Sparta Kick] lên mục tiêu đó.\n\nHiệu ứng [Way of Ares] được cường hóa: Tất cả đồng minh nhận Incantation Might +18%. Đồng minh [Assassination] nhận thêm Incantation Might +12%.",
+              descEn: "[Fury of Ares]: For each different type of [Gash] on the main target, cast [Sparta Kick] on that target again.\n\nEnhanced [Way of Ares]: All allies gain Incantation Might +18%. [Assassination] allies gain an extra Incantation Might +12%.",
+              descZh: "【阿瑞斯的忿怒】：主目标每有1种不同类型的【裂伤】，便对其额外施放一次【斯巴达踢击】。\n\n【阿瑞斯之路】强化：己方全体术法威力+18%，【刺杀】角色额外术法威力+12%。"
+            },
+            {
+              index: 1,
+              cost: 2,
+              nameEn: "Weapons Master",
+              nameZh: "武器大师",
+              nameVi: "Weapons Master",
+              icon: "images/kassandra_ability/weapons_master.png",
+              descVi: "[Sparta Kick] gây [Kick Gash] lên mục tiêu trúng đòn trong 3 round. [Rain of Destruction] gây [Arrow Gash] lên các mục tiêu trúng đòn trong 3 round. [Rush Assassination] và [Rush Assassination - Combo] gây [Assassination Gash] lên mục tiêu trúng đòn trong 3 round.",
+              descEn: "[Sparta Kick] inflicts [Kick Gash] on target for 3 rounds. [Rain of Destruction] inflicts [Arrow Gash] on targets for 3 rounds. [Rush Assassination] and [Rush Assassination - Combo] inflict [Assassination Gash] on target for 3 rounds.",
+              descZh: "【斯巴达踢击】对命中的目标施加【踢击裂伤】3回合；【毁灭之雨】对命中的目标施加【箭术裂伤】3回合；【急速刺杀】及【急速刺杀·连击】对命中的目标施加【刺杀裂伤】3回合。"
+            },
+            {
+              index: 2,
+              cost: 1,
+              nameEn: "Charge Attack",
+              nameZh: "蓄力重击",
+              nameVi: "Charge Attack",
+              icon: "images/kassandra_ability/charge_attack.png",
+              descVi: "Extra Action DMG +20%.\nKhi vào trận, nhận [Way of Ares]; nếu bản thân đã có [Way of Artemis] hoặc [Way of Nyx], thay vào đó nhận Incantation Might +18%.\n[Way of Ares]: Hiệu ứng [Force Field]: Tất cả đồng minh nhận DMG Bonus +(14% + số stack [Guidance of Three Gods] ×2.8%). Đồng minh [Assassination] nhận thêm DMG Bonus +(số stack [Guidance of Three Gods] ×2.8%).",
+              descEn: "Extra Action DMG +20%.\nWhen entering battle, gain [Way of Ares]; if already having [Way of Artemis] or [Way of Nyx], gain Incantation Might +18% instead.\n[Way of Ares]: [Force Field] Effect: All allies gain DMG Bonus +(14% + [Guidance of Three Gods] stacks x2.8%). [Assassination] allies gain extra DMG Bonus +([Guidance of Three Gods] stacks x2.8%).",
+              descZh: "额外行动创伤+20%。\n进入战斗时获得【阿瑞斯之路】；若已有【阿尔忒弥斯之路】或【倪克斯之路】，则改为获得术法威力+18%。\n【阿瑞斯之路】：【术阵】效果：己方全体创伤加成+(14% + 【三神指引】层数×2.8%)，【刺杀】角色额外创伤加成+(【三神指引】层数×2.8%)。"
+            }
+          ]
+        },
+        {
+          key: "assassin",
+          nameEn: "Assassin",
+          nameZh: "刺客",
+          nameVi: "Assassin",
+          icon: "images/kassandra_ability/Assassin.png",
+          color: "#9F70B8",
+          skills: [
+            {
+              index: 0,
+              cost: 3,
+              nameEn: "Shadow of Nyx",
+              nameZh: "倪克斯之影",
+              nameVi: "Shadow of Nyx",
+              icon: "images/kassandra_ability/shadow_of_nyx.png",
+              descVi: "Thêm hiệu ứng mới cho [Rush Assassination]: Sau khi gây critical hit, nhận [Preparation · Kassandra].\nKhi [Assassination] của một đồng minh được kích hoạt hoặc khi một đồng minh thi triển Ultimate, nhận Adrenaline +1.\nHiệu ứng [Way of Nyx] được cường hóa: Tất cả đồng minh nhận Penetration Rate +24%. Đồng minh [Assassination] nhận thêm Penetration Rate +16%.",
+              descEn: "New effect for [Rush Assassination]: After scoring a critical hit, gain [Preparation · Kassandra].\nWhen an allied [Assassination] is triggered or an allied Ultimate is cast, gain Adrenaline +1.\nEnhanced [Way of Nyx]: All allies gain Penetration Rate +24%. [Assassination] allies gain an extra Penetration Rate +16%.",
+              descZh: "【急速刺杀】新增效果：暴击后获得【筹备·卡珊德拉】。\n友方触发【刺杀】或释放至终仪式时，获得肾上腺素+1。\n【倪克斯之路】强化：己方全体穿透率+24%，【刺杀】角色额外穿透率+16%。"
+            },
+            {
+              index: 1,
+              cost: 2,
+              nameEn: "Critical Assassination",
+              nameZh: "致命暗杀",
+              nameVi: "Critical Assassination",
+              icon: "images/kassandra_ability/critical_assassin.png",
+              descVi: "Cấp [Assassination] thay cho [Fury of Ares], [Advent of Artemis].\n\n[Falconer's Instinct] không còn cấp [Sparta Kick] hoặc [Rain of Destruction].",
+              descEn: "Grants [Assassination] instead of [Fury of Ares] and [Advent of Artemis].\n\n[Falconer's Instinct] no longer grants [Sparta Kick] or [Rain of Destruction].",
+              descZh: "使用【刺杀】代替【阿瑞斯的忿怒】、【阿尔忒弥斯之临】。\n\n【驯鹰人的直觉】不再生成【斯巴达踢击】或【毁灭之雨】。"
+            },
+            {
+              index: 2,
+              cost: 1,
+              nameEn: "Shadow Assassin",
+              nameZh: "暗影刺客",
+              nameVi: "Shadow Assassin",
+              icon: "images/kassandra_ability/shadow_assassin.png",
+              descVi: "Khi Kassandra thực hiện một [Assassination], với mỗi 100 điểm Critical Technique mà người tấn công cao hơn mục tiêu, đòn tấn công nhận thêm Final DMG Dealt +1%.\nKhi vào trận, nhận [Way of Nyx]; nếu bản thân đã có [Way of Artemis] hoặc [Way of Ares], thay vào đó nhận Penetration Rate +24%.\n[Way of Nyx]: Hiệu ứng [Force Field]: Tất cả đồng minh nhận ATK +(7% + số stack [Guidance of Three Gods] ×1.4%). Đồng minh [Assassination] nhận thêm ATK +(số stack [Guidance of Three Gods] ×1.4%).",
+              descEn: "When Kassandra performs an [Assassination], for every 100 points of Critical Technique the attacker has more than the target, the attack gains Final DMG Dealt +1%.\nWhen entering battle, gain [Way of Nyx]; if already having [Way of Artemis] or [Way of Ares], gain Penetration Rate +24% instead.\n[Way of Nyx]: [Force Field] Effect: All allies gain ATK +(7% + [Guidance of Three Gods] stacks x1.4%). [Assassination] allies gain extra ATK +([Guidance of Three Gods] stacks x1.4%).",
+              descZh: "卡珊德拉执行【刺杀】时，攻击者暴击技巧每比目标高100点，攻击造成的最终创伤额外+1%。\n进入战斗时获得【倪克斯之路】；若已有【阿尔忒弥斯之路】或【阿瑞斯之路】，则改为获得穿透率+24%。\n【倪克斯之路】：【术阵】效果：己方全体攻击+(7% + 【三神指引】层数×1.4%)，【刺杀】角色额外攻击+(【三神指引】层数×1.4%)。"
+            }
+          ]
+        }
+      ];
+
+      // Calculate total points used
+      let usedPoints = 0;
+      Object.keys(charKassandraSelections).forEach((tKey) => {
+        const idx = charKassandraSelections[tKey];
+        if (idx !== null && idx !== undefined) {
+          usedPoints += (3 - idx);
+        }
+      });
+      const remainingPoints = Math.max(0, 5 - usedPoints);
+
+      // Determine Primary Tree (highest cost selected, or first 3pt)
+      let primaryTreeKey = null;
+      let maxCost = 0;
+      ["hunter", "warrior", "assassin"].forEach((tKey) => {
+        const idx = charKassandraSelections[tKey];
+        if (idx !== null && idx !== undefined) {
+          const c = 3 - idx;
+          if (c > maxCost) {
+            maxCost = c;
+            primaryTreeKey = tKey;
+          }
+        }
+      });
+
+      // Build 3 Tree Columns HTML
+      const treesHtml = abilityTrees
+        .map((tree) => {
+          const selIdx = charKassandraSelections[tree.key];
+          const tName = currentLang === "vi" ? tree.nameVi : (isCn ? tree.nameZh : tree.nameEn);
+
+          const nodesHtml = tree.skills
+            .map((sk) => {
+              // Trong game (như ảnh 1): sk.index = 0 là Tầng 3 (đỉnh), 1 là Tầng 2 (giữa), 2 là Tầng 1 (đáy)
+              // Khi chọn Tầng 3 (selIdx === 0): cả Tầng 1, 2, 3 đều sáng
+              // Khi chọn Tầng 2 (selIdx === 1): Tầng 1 và 2 sáng
+              // Khi chọn Tầng 1 (selIdx === 2): chỉ Tầng 1 sáng
+              const isUnlocked = selIdx !== null && selIdx !== undefined && sk.index >= selIdx;
+              const isTargetTier = selIdx === sk.index;
+              const skName = currentLang === "vi" ? sk.nameVi : (isCn ? sk.nameZh : sk.nameEn);
+              const cost = 3 - sk.index;
+
+              return `
+                <button type="button" class="ability-node ability-node-${sk.index + 1} ${isUnlocked ? "active" : ""} ${isTargetTier ? "is-target" : ""}" data-tree="${tree.key}" data-index="${sk.index}">
+                  <span class="ability-node-ring"></span>
+                  <span class="ability-node-media">
+                    <img src="${sk.icon}" alt="${escapeHtml(skName)}" />
+                  </span>
+                  ${!isUnlocked ? `<span class="ability-node-lock"><img src="images/kassandra_ability/lock_icon.png" alt="" class="ability-lock-img" /></span>` : ""}
+                </button>
+              `;
+            })
+            .join("");
+
+          // SVG branch path matching ảnh 1:
+          // Segment 1: từ Emblem (90, 264) lên Node 3 (90, 201)
+          // Segment 2: từ Node 3 lên Node 2 (hunter: 50, 119; warrior: 90, 119; assassin: 130, 119)
+          // Segment 3: từ Node 2 lên Node 1 (90, 37)
+          let midX = 90;
+          if (tree.key === "hunter") midX = 50;
+          else if (tree.key === "assassin") midX = 130;
+
+          // Đường sáng (active lines) tùy theo tầng mở khóa:
+          // selIdx === 2 (Tầng 1): sáng đoạn 90,264 -> 90,201
+          // selIdx === 1 (Tầng 2): sáng đoạn 90,264 -> 90,201 -> midX, 119
+          // selIdx === 0 (Tầng 3): sáng toàn bộ
+          let activeSvgPathD = "";
+          if (selIdx === 2) {
+            activeSvgPathD = "M90 264 L90 201";
+          } else if (selIdx === 1) {
+            activeSvgPathD = `M90 264 L90 201 L${midX} 119`;
+          } else if (selIdx === 0) {
+            activeSvgPathD = `M90 264 L90 201 L${midX} 119 L90 37`;
+          }
+
+          const fullPathD = `M90 37 L${midX} 119 L90 201 L90 264`;
+          const hasUnlocked = selIdx !== null && selIdx !== undefined;
+
+          return `
+            <div class="ability-tree ability-tree-${tree.key} ${hasUnlocked ? "has-unlocked" : ""}">
+              <div class="ability-tree-path">
+                <svg class="ability-tree-lines" viewBox="0 0 180 292" preserveAspectRatio="none" aria-hidden="true">
+                  <!-- Đường nền mờ tối -->
+                  <path class="tree-line-base" d="${fullPathD}"></path>
+                  <!-- Đường sáng khi mở khóa (nằm dưới icon node) -->
+                  ${activeSvgPathD ? `<path class="tree-line-active" d="${activeSvgPathD}"></path>` : ""}
+                </svg>
+                ${nodesHtml}
+                <div class="ability-tree-emblem ${hasUnlocked ? "is-active" : ""}">
+                  <img src="${tree.icon}" alt="" />
+                </div>
+              </div>
+              <div class="ability-tree-label">
+                <span class="tree-label-text">${escapeHtml(tName)}</span>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      // Primary Force Field Description based on primaryTreeKey & Portray
+      let forceFieldTitle = "";
+      let forceFieldDesc = "";
+
+      const pLvl = charKassandraPortrayLevel;
+      if (primaryTreeKey === "hunter") {
+        forceFieldTitle = isCn ? "【阿尔忒弥斯之路】术阵" : (currentLang === "vi" ? "[Way of Artemis] Force Field" : "[Way of Artemis] Force Field");
+        const critDmgBonus = pLvl >= 2 ? "9.3%" : "5.4%";
+        const critRateBonus = pLvl >= 4 ? "+24% (+16%)" : "+15% (+10%)";
+        forceFieldDesc = isCn
+          ? `【阿尔忒弥斯之路】力场效果：全队暴击创伤 +(27% + 【三神指引】×${critDmgBonus})，【刺杀】角色额外获得相同增益。\n全队暴击率 ${critRateBonus}。友方触发【刺杀】时，额外造成攻击者类型75%的创伤。`
+          : (currentLang === "vi"
+            ? `Hiệu ứng [Force Field]: Tất cả đồng minh nhận Critical DMG +(27% + số stack [Guidance of Three Gods] ×${critDmgBonus}). Đồng minh [Assassination] nhận thêm Critical DMG +(số stack [Guidance of Three Gods] ×${critDmgBonus}).\nToàn đội nhận Critical Rate ${critRateBonus}. Khi [Assassination] của phe ta kích hoạt, gây thêm 75% DMG cùng loại với người tấn công.`
+            : `[Force Field] Effect: All allies gain Critical DMG +(27% + [Guidance of Three Gods] stacks x${critDmgBonus}). [Assassination] allies gain an extra Critical DMG +([Guidance of Three Gods] stacks x${critDmgBonus}).\nAll allies gain Critical Rate ${critRateBonus}. When an allied [Assassination] triggers, deal 75% extra DMG of attacker's type.`);
+      } else if (primaryTreeKey === "warrior") {
+        forceFieldTitle = isCn ? "【阿瑞斯之路】术阵" : (currentLang === "vi" ? "[Way of Ares] Force Field" : "[Way of Ares] Force Field");
+        const dmgBonusVal = pLvl >= 2 ? "4.8%" : "2.8%";
+        const incantMightVal = pLvl >= 4 ? "+30% (+20%)" : "+18% (+12%)";
+        forceFieldDesc = isCn
+          ? `【阿瑞斯之路】力场效果：全队创伤加成 +(14% + 【三神指引】×${dmgBonusVal})，【刺杀】角色额外获得相同增益。\n全队术法威力 ${incantMightVal}。主目标每有1种不同【裂伤】，施放额外【斯巴达踢击】。`
+          : (currentLang === "vi"
+            ? `Hiệu ứng [Force Field]: Tất cả đồng minh nhận DMG Bonus +(14% + số stack [Guidance of Three Gods] ×${dmgBonusVal}). Đồng minh [Assassination] nhận thêm DMG Bonus +(số stack [Guidance of Three Gods] ×${dmgBonusVal}).\nToàn đội nhận Incantation Might ${incantMightVal}. Với mỗi loại [Gash] khác nhau trên mục tiêu chính, thi triển thêm [Sparta Kick].`
+            : `[Force Field] Effect: All allies gain DMG Bonus +(14% + [Guidance of Three Gods] stacks x${dmgBonusVal}). [Assassination] allies gain an extra DMG Bonus +([Guidance of Three Gods] stacks x${dmgBonusVal}).\nAll allies gain Incantation Might ${incantMightVal}. For each different [Gash] on main target, cast additional [Sparta Kick].`);
+      } else {
+        forceFieldTitle = isCn ? "【倪克斯之路】术阵" : (currentLang === "vi" ? "[Way of Nyx] Force Field" : "[Way of Nyx] Force Field");
+        const atkBonusVal = pLvl >= 2 ? "2.8%" : "1.4%";
+        const penRateVal = pLvl >= 4 ? "+42% (+28%)" : "+24% (+16%)";
+        forceFieldDesc = isCn
+          ? `【倪克斯之路】力场效果：全队攻击 +(7% + 【三神指引】×${atkBonusVal})，【刺杀】角色额外获得相同增益。\n全队穿透率 ${penRateVal}。【急速刺杀】暴击后获得【筹备·卡珊德拉】；友方触发【刺杀】或释放至终仪式时肾上腺素+1。`
+          : (currentLang === "vi"
+            ? `Hiệu ứng [Force Field]: Tất cả đồng minh nhận ATK +(7% + số stack [Guidance of Three Gods] ×${atkBonusVal}). Đồng minh [Assassination] nhận thêm ATK +(số stack [Guidance of Three Gods] ×${atkBonusVal}).\nToàn đội nhận Penetration Rate ${penRateVal}. [Rush Assassination] bạo kích nhận [Preparation · Kassandra]; đồng minh kích hoạt [Assassination] hoặc Ultimate giúp nhận Adrenaline +1.`
+            : `[Force Field] Effect: All allies gain ATK +(7% + [Guidance of Three Gods] stacks x${atkBonusVal}). [Assassination] allies gain an extra ATK +([Guidance of Three Gods] stacks x${atkBonusVal}).\nAll allies gain Penetration Rate ${penRateVal}. [Rush Assassination] crit grants [Preparation · Kassandra]; allied [Assassination] or Ultimate grants Adrenaline +1.`);
+      }
+
+      // Selected skills summary
+      const activeEffectsList = [];
+      abilityTrees.forEach((t) => {
+        const sIdx = charKassandraSelections[t.key];
+        if (sIdx !== null && sIdx !== undefined) {
+          const sk = t.skills.find((s) => s.index === sIdx);
+          if (sk) {
+            const skTitle = currentLang === "vi" ? `${t.nameVi} — ${sk.nameVi}` : (isCn ? `${t.nameZh} — ${sk.nameZh}` : `${t.nameEn} — ${sk.nameEn}`);
+            const skDesc = currentLang === "vi" ? sk.descVi : (isCn ? sk.descZh : sk.descEn);
+            const darkIcon = sk.icon.replace("images/kassandra_ability/", "images/kassandra_ability/dark/");
+            activeEffectsList.push({ title: skTitle, desc: skDesc, icon: darkIcon });
+          }
+        }
+      });
+
+      const effectsHtml = activeEffectsList
+        .map((ef) => `
+          <div class="kassandra-effect-item">
+            <div class="kassandra-effect-head">
+              <img src="${ef.icon}" alt="" class="kassandra-effect-icon" />
+              <span class="kassandra-effect-title">${escapeHtml(ef.title)}</span>
+            </div>
+            <div class="kassandra-effect-body">${formatSkillKeywords(ef.desc)}</div>
+          </div>
+        `)
+        .join("");
+
+      mainBodyHtml = `
+        <div class="kassandra-ability-board">
+          <div class="kassandra-top-bar">
+            <div class="kassandra-points-badge">
+              <span class="kassandra-pts-num">${remainingPoints}</span>
+              <span class="kassandra-pts-label">${isCn ? "技能点" : (currentLang === "vi" ? "Ability Points" : "Ability Points")}</span>
+            </div>
+
+            <div class="ezio-portray-switcher">
+              <span class="ezio-switcher-label">${isCn ? "塑造强化:" : (currentLang === "vi" ? "Portray:" : "Portray:")}</span>
+              <div class="ezio-portray-btns">
+                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 0 ? "is-active" : ""}" data-kassandra-portray="0">P0-P1</button>
+                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 2 ? "is-active" : ""}" data-kassandra-portray="2">P2-P3</button>
+                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 4 ? "is-active" : ""}" data-kassandra-portray="4">P4</button>
+                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 5 ? "is-active" : ""}" data-kassandra-portray="5">P5</button>
+              </div>
+            </div>
+
+            <button type="button" class="kassandra-reset-btn" id="btn-kassandra-reset">
+              ${isCn ? "重置点数" : (currentLang === "vi" ? "Đặt lại" : "Reset")}
+            </button>
+          </div>
+
+          <div class="kassandra-trees-container">
+            ${treesHtml}
+          </div>
+
+          ${
+            primaryTreeKey
+              ? `
+                <div class="ezio-weapon-detail-paper">
+                  <div class="ezio-effect-section">
+                    <div class="ezio-effect-badge is-combo">${escapeHtml(forceFieldTitle)}</div>
+                    <div class="ezio-effect-desc">${formatSkillKeywords(forceFieldDesc)}</div>
+                  </div>
+
+                  ${effectsHtml ? `<div class="ezio-effect-divider"></div><div class="kassandra-effects-list">${effectsHtml}</div>` : ""}
+                </div>
+              `
+              : `
+                <div class="ezio-weapon-detail-paper">
+                  <p class="hint" style="margin: 0; color: #5f574f; font-style: italic; text-align: center;">
+                    ${isCn ? "请在上方分配能力点数以查看力场与技能效果。" : (currentLang === "vi" ? "Vui lòng phân bổ Ability Points ở trên để xem hiệu ứng Force Field và kỹ năng." : "Please allocate Ability Points above to preview Force Field and ability effects.")}
+                  </p>
+                </div>
+              `
+          }
+        </div>
+      `;
+    } else {
+      const list = skillInfo.weapons || [];
+      if (!list.length) {
+        mainBodyHtml = `<p class="hint">No weapon details available.</p>`;
+      } else {
+        if (charWeaponsSelectedIdx >= list.length) charWeaponsSelectedIdx = 0;
+        const currentWeapon = list[charWeaponsSelectedIdx];
+
+        const weaponButtonsHtml = list
+          .map((w, idx) => {
+            const isSelected = idx === charWeaponsSelectedIdx;
+            const wName = isCn ? w.nameZh || w.nameEn : w.nameEn || w.nameZh;
+            return `
+              <button type="button" class="uttu-weapon-btn ${isSelected ? "is-active" : ""}" data-weapon-idx="${idx}">
+                ${escapeHtml(wName)}
+              </button>
+            `;
+          })
+          .join("");
+
+        const wTitle = isCn ? currentWeapon.nameZh || currentWeapon.nameEn : currentWeapon.nameEn || currentWeapon.nameZh;
+        const wMainDesc = isCn ? currentWeapon.mainDescZh || currentWeapon.mainDescEn : currentWeapon.mainDescEn || currentWeapon.mainDescZh;
+
+        const combosHtml = (currentWeapon.combos || [])
+          .map((c) => {
+            const cName = isCn ? c.daggerZh || c.daggerEn : c.daggerEn || c.daggerZh;
+            const cDesc = isCn ? c.descZh || c.descEn : c.descEn || c.descZh;
+            return `
+              <div class="uttu-weapon-combo-card">
+                <span class="uttu-weapon-combo-name">${escapeHtml(cName)}</span>
+                <div class="uttu-weapon-combo-desc">${formatSkillKeywords(cDesc)}</div>
+              </div>
+            `;
+          })
+          .join("");
+
+        mainBodyHtml = `
+          <div class="uttu-weapons-board">
+            <div class="uttu-weapons-strip">${weaponButtonsHtml}</div>
+            <div class="uttu-weapon-detail">
+              <h4 class="uttu-weapon-title">${escapeHtml(wTitle)}</h4>
+              <div class="uttu-weapon-main-desc">${formatSkillKeywords(wMainDesc)}</div>
+              ${combosHtml ? `<div class="uttu-weapon-combos">${combosHtml}</div>` : ""}
+            </div>
+          </div>
+        `;
+      }
     }
   } else if (charSkillsActiveTab === "insights") {
     const list = skillInfo.insights || [];
@@ -7999,6 +8584,95 @@ function setupCharacterSkillsListeners(host) {
       }
     });
   });
+
+  // Ezio weapon selector cards
+  host.querySelectorAll(".ezio-weapon-card.is-primary").forEach((card) => {
+    card.addEventListener("click", () => {
+      const code = card.dataset.ezioPrimary;
+      if (code && charEzioPrimary !== code) {
+        charEzioPrimary = code;
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  host.querySelectorAll(".ezio-weapon-card.is-secondary").forEach((card) => {
+    card.addEventListener("click", () => {
+      const code = card.dataset.ezioSecondary;
+      if (code && charEzioSecondary !== code) {
+        charEzioSecondary = code;
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  // Ezio Portray switcher buttons
+  host.querySelectorAll(".ezio-portray-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const pLvl = Number(btn.dataset.ezioPortray);
+      if (!Number.isNaN(pLvl) && charEzioPortrayLevel !== pLvl) {
+        charEzioPortrayLevel = pLvl;
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  // Kassandra Ability Node click listeners
+  host.querySelectorAll(".ability-node").forEach((card) => {
+    card.addEventListener("click", () => {
+      const tree = card.dataset.tree;
+      const idx = Number(card.dataset.index);
+      if (tree && !Number.isNaN(idx)) {
+        const currentSelected = charKassandraSelections[tree];
+        if (currentSelected === idx) {
+          // Deselect node to refund points
+          charKassandraSelections[tree] = null;
+        } else {
+          // Check points limit
+          const currentCost = currentSelected !== null && currentSelected !== undefined ? (3 - currentSelected) : 0;
+          const newCost = 3 - idx;
+          let currentUsed = 0;
+          Object.keys(charKassandraSelections).forEach((tKey) => {
+            const sIdx = charKassandraSelections[tKey];
+            if (sIdx !== null && sIdx !== undefined) currentUsed += (3 - sIdx);
+          });
+          const nextUsed = currentUsed - currentCost + newCost;
+          if (nextUsed <= 5) {
+            charKassandraSelections[tree] = idx;
+          } else {
+            // Flash points badge or warn
+            const badge = host.querySelector(".kassandra-points-badge");
+            if (badge) {
+              badge.classList.add("is-error");
+              setTimeout(() => badge.classList.remove("is-error"), 400);
+            }
+            return;
+          }
+        }
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  // Kassandra Portray buttons
+  host.querySelectorAll(".kassandra-portray-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const pLvl = Number(btn.dataset.kassandraPortray);
+      if (!Number.isNaN(pLvl) && charKassandraPortrayLevel !== pLvl) {
+        charKassandraPortrayLevel = pLvl;
+        refreshSkillsPanel();
+      }
+    });
+  });
+
+  // Kassandra Reset button
+  const kResetBtn = host.querySelector("#btn-kassandra-reset");
+  if (kResetBtn) {
+    kResetBtn.addEventListener("click", () => {
+      charKassandraSelections = { hunter: null, warrior: null, assassin: null };
+      refreshSkillsPanel();
+    });
+  }
 
   // Keyword term popover click listeners
   host.querySelectorAll(".skill-kw-bracket, .skill-kw-stat").forEach((kwEl) => {
@@ -8242,6 +8916,8 @@ function openBuildsModal() {
 }
 
 function closeBuildsModal() {
+  const buildsCard = document.querySelector("#builds-modal .builds-modal-card");
+  if (buildsCard) buildsCard.classList.remove("is-sotheby-theme");
   document.getElementById("builds-modal").style.display = "none";
 }
 
@@ -8372,7 +9048,22 @@ function renderBuilds() {
 
   list.querySelectorAll(".builds-row").forEach((row) => {
     row.addEventListener("click", () => {
-      buildsSelected = row.dataset.name;
+      if (buildsSelected !== row.dataset.name) {
+        buildsSelected = row.dataset.name;
+        // If current tab is weapons/ability or euphoria and not available for new character, reset to skills
+        const nextSkillInfo = getCharacterSkillsInfo(buildsSelected);
+        const hasNextWeapons = Array.isArray(nextSkillInfo?.weapons) && nextSkillInfo.weapons.length > 0;
+        const nextCanonical = resolveCharacterName(buildsSelected);
+        const nextEuphoriaList = characterEuphoriasData[buildsSelected] || characterEuphoriasData[nextCanonical] || null;
+        const hasNextEuphoria = Array.isArray(nextEuphoriaList) && nextEuphoriaList.length > 0;
+
+        if (charSkillsActiveTab === "weapons" && !hasNextWeapons) {
+          charSkillsActiveTab = "skills";
+        }
+        if (charSkillsActiveTab === "euphoria" && !hasNextEuphoria) {
+          charSkillsActiveTab = "skills";
+        }
+      }
       renderBuilds();
       showBuildsDetail();
     });
@@ -8910,10 +9601,21 @@ function renderBuildsDetail() {
   const host = document.getElementById("builds-detail");
   if (!host) return;
 
+  const buildsCard = document.querySelector("#builds-modal .builds-modal-card");
+
   const name = buildsSelected;
   if (!name) {
+    if (buildsCard) buildsCard.classList.remove("is-sotheby-theme");
     host.innerHTML = guideEmptyState("builds.select");
     return;
+  }
+
+  // Easter egg: check if current character is Sotheby
+  const canonicalName = resolveCharacterName(name);
+  if (canonicalName === "Sotheby" || name === "Sotheby") {
+    if (buildsCard) buildsCard.classList.add("is-sotheby-theme");
+  } else {
+    if (buildsCard) buildsCard.classList.remove("is-sotheby-theme");
   }
 
   const build = getBuild(name) || {};
@@ -9036,7 +9738,6 @@ function renderBuildsDetail() {
        </div>`
     : "";
 
-  const canonicalName = resolveCharacterName(name);
   let profile = characterProfilesData[name] || characterProfilesData[canonicalName] || null;
   if (!profile) {
     for (const [k, v] of Object.entries(characterProfilesData)) {
@@ -10493,8 +11194,8 @@ function setupEventListeners() {
 
   // Close term popover on document click
   document.addEventListener("click", (e) => {
-    if (activeTermPopoverEl && !activeTermPopoverEl.contains(e.target)) {
-      closeTermPopover();
+    if (activeTermPopovers.length > 0 && !e.target.closest(".uttu-term-popover") && !e.target.closest(".skill-kw-bracket")) {
+      closeAllTermPopovers();
     }
   });
 

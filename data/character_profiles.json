@@ -25,7 +25,7 @@
       "DPS",
       "Extra Action",
       "Support",
-      "Follow-Up",
+      "<nobr>Follow-Up</nobr>",
       "Eureka"
     ],
     "roleTagsZh": [
@@ -59,7 +59,7 @@
     "dmgTypeZh": "现实创伤",
     "roleTags": [
       "DPS",
-      "Follow-Up"
+      "<nobr>Follow-Up</nobr>"
     ],
     "roleTagsZh": [
       "输出",
@@ -875,7 +875,7 @@
     "dmgTypeZh": "精神创伤",
     "roleTags": [
       "DPS",
-      "Follow-Up"
+      "<nobr>Follow-Up</nobr>"
     ],
     "roleTagsZh": [
       "输出",
@@ -923,7 +923,7 @@
       "DPS",
       "Extra Action",
       "Support",
-      "Follow-Up",
+      "<nobr>Follow-Up</nobr>",
       "Eureka"
     ],
     "roleTagsZh": [
@@ -1953,7 +1953,7 @@
       "Support",
       "Extra Action",
       "DPS",
-      "Follow-Up"
+      "<nobr>Follow-Up</nobr>"
     ],
     "roleTagsZh": [
       "辅助",
@@ -2151,7 +2151,7 @@
       "DPS",
       "Ritual",
       "Support",
-      "Follow-Up"
+      "<nobr>Follow-Up</nobr>"
     ],
     "roleTagsZh": [
       "输出",
@@ -2235,7 +2235,7 @@
       "DPS",
       "Support",
       "Extra Action",
-      "Follow-Up"
+      "<nobr>Follow-Up</nobr>"
     ],
     "roleTagsZh": [
       "输出",
@@ -2244,19 +2244,5 @@
       "追击"
     ],
     "nameZh": "格林杜尔"
-  },
-  "AliEn T": {
-    "id": 3034,
-    "dmgType": "Reality",
-    "dmgTypeZh": "现实创伤",
-    "roleTags": [
-      "DPS",
-      "Control"
-    ],
-    "roleTagsZh": [
-      "输出",
-      "控制"
-    ],
-    "nameZh": "星之眼"
   }
 }

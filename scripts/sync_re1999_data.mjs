@@ -288,6 +288,29 @@ async function run() {
   /* ------------------------------------------------------------------
    * 2. Full Character Skills & Passives & Portrays -> data/character_skills.json
    * ------------------------------------------------------------------ */
+  const costMap = new Map();
+  for (const d of devices) {
+    for (const slot of ["skill1", "skill2"]) {
+      if (!d[slot]) continue;
+      d[slot].split("|").forEach((p) => {
+        const [sid, lvl, cost] = p.split("#");
+        if (cost !== undefined) costMap.set(Number(sid), Number(cost));
+      });
+    }
+  }
+
+  function getSkillHarmonization(seId) {
+    const se = seMap.get(seId);
+    if (!se) return null;
+    for (let i = 1; i <= 20; i++) {
+      const b = se["behavior" + i];
+      if (b && typeof b === "string" && b.startsWith("60292#")) {
+        return Number(b.split("#")[1]);
+      }
+    }
+    return null;
+  }
+
   function buildRanksObj(rankIds, nameEn = "", nameZh = "") {
     const ranks = {};
     for (let r = 0; r < rankIds.length; r++) {
@@ -299,13 +322,21 @@ async function run() {
         const descZh = seObj ? resolveSkillText(seObj.desc, false) : "";
         const artEn = sObj.desc_art ? resolveSkillText(sObj.desc_art, true) : "";
         const artZh = sObj.desc_art ? resolveSkillText(sObj.desc_art, false) : "";
-        ranks[r + 1] = {
+        const rankItem = {
           id: sid,
           descEn: cleanSkillDesc(descEn, nameEn),
           descZh: cleanSkillDesc(descZh, nameZh),
           artEn: cleanSkillDesc(artEn, nameEn),
           artZh: cleanSkillDesc(artZh, nameZh),
         };
+        if (costMap.has(sid)) {
+          rankItem.cost = costMap.get(sid);
+        }
+        const harm = getSkillHarmonization(sObj.skillEffect || sid);
+        if (harm !== null) {
+          rankItem.harmonization = harm;
+        }
+        ranks[r + 1] = rankItem;
       }
     }
     return ranks;
@@ -366,7 +397,7 @@ async function run() {
         const seObj = seMap.get(ultObj.skillEffect);
         const artEn = ultObj.desc_art ? resolveSkillText(ultObj.desc_art, true) : "";
         const artZh = ultObj.desc_art ? resolveSkillText(ultObj.desc_art, false) : "";
-        heroSkills.push({
+        const ultItem = {
           slot: 3,
           type: "Ultimate",
           nameEn: resolveSkillText(ultObj.name, true),
@@ -376,7 +407,12 @@ async function run() {
           descZh: cleanSkillDesc(seObj ? resolveSkillText(seObj.desc, false) : "", charNameZh),
           artEn: cleanSkillDesc(artEn, nameEng),
           artZh: cleanSkillDesc(artZh, charNameZh),
-        });
+        };
+        if (c.uniqueSkill_point && String(c.uniqueSkill_point).startsWith("4#")) {
+          const harmCost = Number(String(c.uniqueSkill_point).split("#")[1]) || 100;
+          ultItem.harmonization = -harmCost;
+        }
+        heroSkills.push(ultItem);
       }
 
       // Special power skill if any
@@ -436,6 +472,27 @@ async function run() {
             ranks,
           });
         }
+      }
+
+      if (ultId && sMap.has(ultId)) {
+        const ultObj = sMap.get(ultId);
+        const seObj = seMap.get(ultObj.skillEffect);
+        const ultItem = {
+          slot: 3,
+          type: "Ultimate",
+          nameEn: resolveSkillText(ultObj.name, true),
+          nameZh: resolveSkillText(ultObj.name, false),
+          icon: ultObj.icon ? `images/skills/${ultObj.icon}.png` : "",
+          descEn: cleanSkillDesc(seObj ? resolveSkillText(seObj.desc, true) : "", nameEng),
+          descZh: cleanSkillDesc(seObj ? resolveSkillText(seObj.desc, false) : "", charNameZh),
+          artEn: cleanSkillDesc(ultObj.desc_art ? resolveSkillText(ultObj.desc_art, true) : "", nameEng),
+          artZh: cleanSkillDesc(ultObj.desc_art ? resolveSkillText(ultObj.desc_art, false) : "", charNameZh),
+        };
+        if (c.uniqueSkill_point && String(c.uniqueSkill_point).startsWith("4#")) {
+          const harmCost = Number(String(c.uniqueSkill_point).split("#")[1]) || 100;
+          ultItem.harmonization = -harmCost;
+        }
+        heroSkills.push(ultItem);
       }
 
       // Special Rhiannon extra skills (Bendith & Feast Call)
