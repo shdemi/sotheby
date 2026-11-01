@@ -9187,59 +9187,6 @@ body.guide-rail-resizing * {
   gap: 16px;
 }
 
-/* Portray Switcher Bar */
-.ezio-portray-switcher {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  align-self: flex-start;
-  padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
-}
-
-.ezio-switcher-label {
-  font-family: var(--mono-font);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #B5B5B3;
-}
-
-.ezio-portray-btns {
-  display: flex;
-  gap: 4px;
-}
-
-.ezio-portray-btn {
-  height: 24px;
-  padding: 0 10px;
-  font-family: var(--mono-font);
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: #B5B5B3;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.ezio-portray-btn:hover {
-  color: #ECE5D9;
-  border-color: #ECE5D9;
-}
-
-.ezio-portray-btn.is-active {
-  color: #111111;
-  background: #ED7D31;
-  border-color: #ED7D31;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(237, 125, 49, 0.35);
-}
-
 .ezio-weapon-stage {
   display: grid;
   grid-template-columns: minmax(130px, 1.2fr) minmax(220px, 1.6fr) minmax(130px, 1.2fr);
@@ -9507,33 +9454,6 @@ body.guide-rail-resizing * {
   font-weight: 700;
   color: #B5B5B3;
   text-transform: uppercase;
-}
-
-.kassandra-portray-btn {
-  height: 24px;
-  padding: 0 8px;
-  font-family: var(--mono-font);
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: #B5B5B3;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.kassandra-portray-btn:hover {
-  color: #ECE5D9;
-  border-color: #ECE5D9;
-}
-
-.kassandra-portray-btn.is-active {
-  color: #111111;
-  background: #ED7D31;
-  border-color: #ED7D31;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(237, 125, 49, 0.35);
 }
 
 .kassandra-reset-btn {
@@ -10555,6 +10475,210 @@ body.guide-rail-resizing * {
   .build-psychube-name { font-size: 0.74rem; }
   .build-resonance-btn { font-size: 0.62rem; }
   .build-notes { font-size: 0.68rem; }
+
+  /* Skills & Insight Details responsive adjustments on mobile */
+  .uttu-mode-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .uttu-mode-btn {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 0.6rem;
+    flex: 1 1 auto;
+    text-align: center;
+  }
+  .uttu-stance-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+  }
+  .uttu-stance-btn {
+    flex: 1 1 auto;
+    padding: 0 8px;
+    height: 26px;
+    font-size: 0.6rem;
+    text-align: center;
+  }
+  .uttu-cards-strip {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+
+  /* Ezio weapon board responsive adjustments */
+  .ezio-weapon-board {
+    overflow-x: hidden;
+  }
+  .ezio-weapon-stage {
+    grid-template-columns: minmax(110px, 1fr) auto minmax(110px, 1fr);
+    gap: 8px;
+    padding: 12px 6px;
+    overflow-x: auto;
+  }
+  .ezio-weapon-card {
+    padding: 6px 4px;
+  }
+  .ezio-weapon-box {
+    width: 54px;
+    height: 54px;
+  }
+  .ezio-weapon-label {
+    font-size: 0.65rem;
+  }
+  .ezio-weapon-center-preview {
+    gap: 6px;
+    padding: 6px 2px;
+  }
+  .ezio-center-slot {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    height: 105px;
+    padding: 6px 4px;
+  }
+  .ezio-center-box {
+    width: 48px;
+    height: 48px;
+  }
+  .ezio-center-name {
+    font-size: 0.62rem;
+  }
+  .ezio-center-cross {
+    font-size: 1rem;
+  }
+  .ezio-weapon-detail-paper {
+    padding: 14px 12px;
+  }
+
+  /* Item & psychube detail: the icon shrinks and sits beside the title, so the
+     description gets the full width of the card instead of a narrow column. */
+  .material-detail-hero,
+  .psychube-detail-hero {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    column-gap: 12px;
+    row-gap: 6px;
+    padding-bottom: 12px;
+  }
+
+  .material-detail-icon-wrap {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 54px;
+    height: 54px;
+  }
+
+  .psychube-detail-icon-wrap {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 50px;
+    height: 60px;
+  }
+
+  /* Dissolving the wrapper lets its children line up on the hero's grid. */
+  .material-detail-info,
+  .psychube-detail-info {
+    display: contents;
+  }
+
+  .material-detail-name,
+  .psychube-detail-name {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    font-size: 20px;
+    line-height: 1.15;
+  }
+
+  .material-detail-stars,
+  .psychube-detail-stars {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+  }
+
+  .material-detail-info > .flag,
+  .material-detail-desc,
+  .material-detail-usage,
+  .material-detail-source,
+  .psychube-detail-tags,
+  .psychube-detail-desc {
+    grid-column: 1 / -1;
+  }
+
+  .material-detail-desc,
+  .psychube-detail-desc {
+    margin-top: 2px;
+  }
+
+  /* Psychube interactive responsive adjustments */
+  .psychube-interactive-box {
+    padding: 12px;
+  }
+
+  .psychube-interactive-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .psychube-level-input-wrap {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .psychube-level-slider {
+    flex: 1 1 100px;
+    min-width: 0;
+    width: auto;
+  }
+  .psychube-amp-boxes {
+    gap: 6px;
+  }
+  .psychube-amp-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+  }
+  .psychube-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Inheritance and Portray typography and width */
+  .uttu-insight-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 0;
+  }
+  .uttu-insight-badge-col {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding-top: 0;
+  }
+  .uttu-insight-content {
+    width: 100%;
+  }
+  .uttu-insight-desc {
+    width: 100%;
+    font-size: 0.78rem;
+  }
+  .uttu-portray-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 0;
+  }
+  .uttu-portray-lvl {
+    width: 100%;
+  }
+  .uttu-portray-desc {
+    width: 100%;
+    font-size: 0.78rem;
+  }
 }
 
 /* ================= SKILL ROTATIONS ================= */

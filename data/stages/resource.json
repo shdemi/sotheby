@@ -1,0 +1,4774 @@
+[
+  {
+    "id": 401,
+    "index": "LP",
+    "title": "The Poussiere",
+    "server": "global",
+    "episodes": [
+      {
+        "id": 40101,
+        "name": "The Poussiere",
+        "desc": "This was a paradise for humans. I remember its glory was as dazzling as a sun that drops to the ground.",
+        "cost": 12,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2014,
+            "name": "Fragile Reality",
+            "desc": "Shaking off the dust.\nReality DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4010104,
+                "name": "Kingbuncle",
+                "headIcon": "420301",
+                "career": 5,
+                "dmgType": 2,
+                "level": 12,
+                "hp": 1776,
+                "multiHp": 1,
+                "atk": 226,
+                "def": 104,
+                "mdef": 112,
+                "criRate": 0.03,
+                "criDef": 0.03,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40230111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230131,
+                    "type": "ultimate",
+                    "name": "Property and Expression",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010105,
+                "name": "Carbuncle",
+                "headIcon": "420101",
+                "career": 5,
+                "dmgType": 2,
+                "level": 12,
+                "hp": 1509,
+                "multiHp": 1,
+                "atk": 192,
+                "def": 88,
+                "mdef": 95,
+                "criRate": 0.03,
+                "criDef": 0.03,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210131,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010106,
+                "name": "Carbuncle",
+                "headIcon": "420101",
+                "career": 5,
+                "dmgType": 2,
+                "level": 12,
+                "hp": 1509,
+                "multiHp": 1,
+                "atk": 192,
+                "def": 88,
+                "mdef": 95,
+                "criRate": 0.03,
+                "criDef": 0.03,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210131,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 40102,
+        "name": "The Poussiere",
+        "desc": "A broom-making town. Brooms are made to sweep the high concentrations of Dust as well as the constant skirmishes from the critters attracted by the Dust.",
+        "cost": 15,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2014,
+            "name": "Fragile Reality",
+            "desc": "Shaking off the dust.\nReality DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4010204,
+                "name": "Kingbuncle",
+                "headIcon": "420301",
+                "career": 5,
+                "dmgType": 2,
+                "level": 25,
+                "hp": 2986,
+                "multiHp": 1,
+                "atk": 306,
+                "def": 140,
+                "mdef": 152,
+                "criRate": 0.07,
+                "criDef": 0.08,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40230111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230131,
+                    "type": "ultimate",
+                    "name": "Property and Expression",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010205,
+                "name": "Carbuncle",
+                "headIcon": "420101",
+                "career": 5,
+                "dmgType": 2,
+                "level": 25,
+                "hp": 2538,
+                "multiHp": 1,
+                "atk": 260,
+                "def": 119,
+                "mdef": 129,
+                "criRate": 0.07,
+                "criDef": 0.08,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210131,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010206,
+                "name": "Carbuncle",
+                "headIcon": "420101",
+                "career": 5,
+                "dmgType": 2,
+                "level": 25,
+                "hp": 2538,
+                "multiHp": 1,
+                "atk": 260,
+                "def": 119,
+                "mdef": 129,
+                "criRate": 0.07,
+                "criDef": 0.08,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210131,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 40103,
+        "name": "The Poussiere",
+        "desc": "Changes always arrive out of the blue. The youngest son of the broom workshop's made a flying taxi with a pile of scraps and sold it for a whole bucket of gold coins.",
+        "cost": 18,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2014,
+            "name": "Fragile Reality",
+            "desc": "Shaking off the dust.\nReality DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4010304,
+                "name": "Kingbunclew",
+                "headIcon": "420302",
+                "career": 5,
+                "dmgType": 2,
+                "level": 40,
+                "hp": 5020,
+                "multiHp": 1,
+                "atk": 502,
+                "def": 230,
+                "mdef": 249,
+                "criRate": 0.15,
+                "criDef": 0.21,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40230211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230231,
+                    "type": "ultimate",
+                    "name": "Property and Expression",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010305,
+                "name": "Carbunclew",
+                "headIcon": "420102",
+                "career": 5,
+                "dmgType": 2,
+                "level": 40,
+                "hp": 4267,
+                "multiHp": 1,
+                "atk": 427,
+                "def": 196,
+                "mdef": 211,
+                "criRate": 0.15,
+                "criDef": 0.21,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210231,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010306,
+                "name": "Carbunclew",
+                "headIcon": "420102",
+                "career": 5,
+                "dmgType": 2,
+                "level": 40,
+                "hp": 4267,
+                "multiHp": 1,
+                "atk": 427,
+                "def": 196,
+                "mdef": 211,
+                "criRate": 0.15,
+                "criDef": 0.21,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210231,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 40104,
+        "name": "The Poussiere",
+        "desc": "Over 253,000 vehicles leave this place every year for various destinations around the world without coming back.",
+        "cost": 20,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2014,
+            "name": "Fragile Reality",
+            "desc": "Shaking off the dust.\nReality DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4010404,
+                "name": "Kingbunclew",
+                "headIcon": "420302",
+                "career": 5,
+                "dmgType": 2,
+                "level": 55,
+                "hp": 6548,
+                "multiHp": 1,
+                "atk": 630,
+                "def": 252,
+                "mdef": 330,
+                "criRate": 0.24,
+                "criDef": 0.39,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40230211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230231,
+                    "type": "ultimate",
+                    "name": "Property and Expression",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010405,
+                "name": "Carbunclew",
+                "headIcon": "420102",
+                "career": 5,
+                "dmgType": 2,
+                "level": 55,
+                "hp": 5470,
+                "multiHp": 1,
+                "atk": 531,
+                "def": 211,
+                "mdef": 276,
+                "criRate": 0.24,
+                "criDef": 0.39,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210231,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010406,
+                "name": "Carbunclew",
+                "headIcon": "420102",
+                "career": 5,
+                "dmgType": 2,
+                "level": 55,
+                "hp": 5470,
+                "multiHp": 1,
+                "atk": 531,
+                "def": 211,
+                "mdef": 276,
+                "criRate": 0.24,
+                "criDef": 0.39,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210231,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 40105,
+        "name": "The Poussiere",
+        "desc": "No one cares how those little monsters stuff their bellies with stolen Dust. You can see how common they are.",
+        "cost": 22,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2014,
+            "name": "Fragile Reality",
+            "desc": "Shaking off the dust.\nReality DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4010501,
+                "name": "Cartoncles",
+                "headIcon": "420203",
+                "career": 5,
+                "dmgType": 2,
+                "level": 70,
+                "hp": 5562,
+                "multiHp": 1,
+                "atk": 649,
+                "def": 284,
+                "mdef": 307,
+                "criRate": 0.24,
+                "criDef": 0.87,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40220311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Jumpy Hops",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40220312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Jumpy Hops",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40220321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Messy Heap",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40220322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Messy Heap",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40220331,
+                    "type": "ultimate",
+                    "name": "Play in the Junkyard",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010502,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 70,
+                "hp": 5252,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 269,
+                "mdef": 290,
+                "criRate": 0.24,
+                "criDef": 0.87,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010503,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 70,
+                "hp": 5252,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 269,
+                "mdef": 290,
+                "criRate": 0.24,
+                "criDef": 0.87,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4010504,
+                "name": "Kingtoncle",
+                "headIcon": "420303",
+                "career": 5,
+                "dmgType": 2,
+                "level": 70,
+                "hp": 7724,
+                "multiHp": 1,
+                "atk": 725,
+                "def": 316,
+                "mdef": 341,
+                "criRate": 0.24,
+                "criDef": 0.87,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40230311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230331,
+                    "type": "ultimate",
+                    "name": "Property and Expression",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010505,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 70,
+                "hp": 5252,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 269,
+                "mdef": 290,
+                "criRate": 0.24,
+                "criDef": 0.87,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010506,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 70,
+                "hp": 5252,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 269,
+                "mdef": 290,
+                "criRate": 0.24,
+                "criDef": 0.87,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 40106,
+        "name": "The Poussiere",
+        "desc": "Now it belongs to them. These filthy, crazy little things dropped the fancy dresses and jewelry and put on abandoned cans and tires. They are squeaking aloud, like a king and a queen.",
+        "cost": 25,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2014,
+            "name": "Fragile Reality",
+            "desc": "Shaking off the dust.\nReality DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4010601,
+                "name": "Cartoncles",
+                "headIcon": "420203",
+                "career": 5,
+                "dmgType": 2,
+                "level": 80,
+                "hp": 6746,
+                "multiHp": 1,
+                "atk": 698,
+                "def": 315,
+                "mdef": 340,
+                "criRate": 0.27,
+                "criDef": 1.07,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40220311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Jumpy Hops",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40220312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Jumpy Hops",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40220321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Messy Heap",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40220322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Messy Heap",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40220331,
+                    "type": "ultimate",
+                    "name": "Play in the Junkyard",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010602,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 80,
+                "hp": 6372,
+                "multiHp": 1,
+                "atk": 655,
+                "def": 298,
+                "mdef": 321,
+                "criRate": 0.27,
+                "criDef": 1.07,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010603,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 80,
+                "hp": 6372,
+                "multiHp": 1,
+                "atk": 655,
+                "def": 298,
+                "mdef": 321,
+                "criRate": 0.27,
+                "criDef": 1.07,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4010604,
+                "name": "Kingtoncle",
+                "headIcon": "420303",
+                "career": 5,
+                "dmgType": 2,
+                "level": 80,
+                "hp": 9370,
+                "multiHp": 1,
+                "atk": 784,
+                "def": 350,
+                "mdef": 378,
+                "criRate": 0.27,
+                "criDef": 1.07,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40230311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Playful Mindset",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40230321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Golden Atmosphere",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40230331,
+                    "type": "ultimate",
+                    "name": "Property and Expression",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010605,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 80,
+                "hp": 6372,
+                "multiHp": 1,
+                "atk": 655,
+                "def": 298,
+                "mdef": 321,
+                "criRate": 0.27,
+                "criDef": 1.07,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4010606,
+                "name": "Cartoncle",
+                "headIcon": "420103",
+                "career": 5,
+                "dmgType": 2,
+                "level": 80,
+                "hp": 6372,
+                "multiHp": 1,
+                "atk": 655,
+                "def": 298,
+                "mdef": 321,
+                "criRate": 0.27,
+                "criDef": 1.07,
+                "skills": [
+                  {
+                    "id": 201004,
+                    "type": "passive",
+                    "name": "Dustseeker Smell",
+                    "desc": "",
+                    "icon": 101
+                  },
+                  {
+                    "id": 40210311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stammering Speech",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40210321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twinkle Twinkle",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40210331,
+                    "type": "ultimate",
+                    "name": "Bite the Dust, Then Explode",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 501,
+    "index": "MA",
+    "title": "Mintage Aesthetics",
+    "server": "global",
+    "episodes": [
+      {
+        "id": 50101,
+        "name": "Mintage Aesthetics",
+        "desc": "Every ghetto kid dreamed of having all the bread they could eat. Men love women, but they always prefer cash and gold coins.",
+        "cost": 12,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2015,
+            "name": "Weak Minded",
+            "desc": "Gun shots, paeans, too many sounds.\nMental DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4020104,
+                "name": "PigFace Jack",
+                "headIcon": "420701",
+                "career": 6,
+                "dmgType": 1,
+                "level": 20,
+                "hp": 2045,
+                "multiHp": 1,
+                "atk": 260,
+                "def": 119,
+                "mdef": 119,
+                "criRate": 0.06,
+                "criDef": 0.06,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40340111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340131,
+                    "type": "ultimate",
+                    "name": "Life is Transient",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020105,
+                "name": "Rock City Archer",
+                "headIcon": "420501",
+                "career": 6,
+                "dmgType": 1,
+                "level": 20,
+                "hp": 1752,
+                "multiHp": 1,
+                "atk": 221,
+                "def": 109,
+                "mdef": 101,
+                "criRate": 0.06,
+                "criDef": 0.06,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310131,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020106,
+                "name": "Rock City Archer",
+                "headIcon": "420501",
+                "career": 6,
+                "dmgType": 1,
+                "level": 20,
+                "hp": 1752,
+                "multiHp": 1,
+                "atk": 221,
+                "def": 109,
+                "mdef": 101,
+                "criRate": 0.06,
+                "criDef": 0.06,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310111,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310112,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310121,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310122,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310131,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 50102,
+        "name": "Mintage Aesthetics",
+        "desc": "Jack and Andrew from Little Rock City took up their rifles in the belief that they could acquire everything they wanted. They stole a car and made new friends. They went to Chicago and then Sicily.",
+        "cost": 15,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2015,
+            "name": "Weak Minded",
+            "desc": "Gun shots, paeans, too many sounds.\nMental DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4020204,
+                "name": "Bull Andrew",
+                "headIcon": "420702",
+                "career": 6,
+                "dmgType": 1,
+                "level": 30,
+                "hp": 3224,
+                "multiHp": 1,
+                "atk": 329,
+                "def": 163,
+                "mdef": 151,
+                "criRate": 0.09,
+                "criDef": 0.1,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40340211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340231,
+                    "type": "ultimate",
+                    "name": "Life is Transient",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020205,
+                "name": "Rock City Shooter",
+                "headIcon": "420502",
+                "career": 6,
+                "dmgType": 1,
+                "level": 30,
+                "hp": 2740,
+                "multiHp": 1,
+                "atk": 279,
+                "def": 138,
+                "mdef": 128,
+                "criRate": 0.09,
+                "criDef": 0.1,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310231,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020206,
+                "name": "Rock City Shooter",
+                "headIcon": "420502",
+                "career": 6,
+                "dmgType": 1,
+                "level": 30,
+                "hp": 2740,
+                "multiHp": 1,
+                "atk": 279,
+                "def": 138,
+                "mdef": 128,
+                "criRate": 0.09,
+                "criDef": 0.1,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310231,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 50103,
+        "name": "Mintage Aesthetics",
+        "desc": "They earned their \"name\" and had everything they wanted. They left poverty behind like a snake shedding its old skin.",
+        "cost": 18,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2015,
+            "name": "Weak Minded",
+            "desc": "Gun shots, paeans, too many sounds.\nMental DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4020304,
+                "name": "Bull Andrew",
+                "headIcon": "420702",
+                "career": 6,
+                "dmgType": 1,
+                "level": 45,
+                "hp": 5515,
+                "multiHp": 1,
+                "atk": 548,
+                "def": 271,
+                "mdef": 251,
+                "criRate": 0.18,
+                "criDef": 0.27,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40340211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340231,
+                    "type": "ultimate",
+                    "name": "Life is Transient",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020305,
+                "name": "Rock City Shooter",
+                "headIcon": "420502",
+                "career": 6,
+                "dmgType": 1,
+                "level": 45,
+                "hp": 4688,
+                "multiHp": 1,
+                "atk": 465,
+                "def": 231,
+                "mdef": 213,
+                "criRate": 0.18,
+                "criDef": 0.27,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310231,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020306,
+                "name": "Rock City Shooter",
+                "headIcon": "420502",
+                "career": 6,
+                "dmgType": 1,
+                "level": 45,
+                "hp": 4688,
+                "multiHp": 1,
+                "atk": 465,
+                "def": 231,
+                "mdef": 213,
+                "criRate": 0.18,
+                "criDef": 0.27,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310211,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310212,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310221,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310222,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310231,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 50104,
+        "name": "Mintage Aesthetics",
+        "desc": "Finally they realized that they could never be content with themselves. Nowadays, they have no choice but to keep plundering.",
+        "cost": 20,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2015,
+            "name": "Weak Minded",
+            "desc": "Gun shots, paeans, too many sounds.\nMental DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4020404,
+                "name": "LittleFinger Peter",
+                "headIcon": "420703",
+                "career": 6,
+                "dmgType": 1,
+                "level": 60,
+                "hp": 7600,
+                "multiHp": 1,
+                "atk": 680,
+                "def": 362,
+                "mdef": 310,
+                "criRate": 0.27,
+                "criDef": 0.45,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40340311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340331,
+                    "type": "ultimate",
+                    "name": "Life is Transient",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020405,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 60,
+                "hp": 6420,
+                "multiHp": 1,
+                "atk": 570,
+                "def": 282,
+                "mdef": 259,
+                "criRate": 0.27,
+                "criDef": 0.45,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020406,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 60,
+                "hp": 6420,
+                "multiHp": 1,
+                "atk": 570,
+                "def": 282,
+                "mdef": 259,
+                "criRate": 0.27,
+                "criDef": 0.45,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 50105,
+        "name": "Mintage Aesthetics",
+        "desc": "They hide in the church and stay there day and night. They can hear the chanting and bell ring lingering in the empty church, yet that doesn't bring peace to them at all.",
+        "cost": 22,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2015,
+            "name": "Weak Minded",
+            "desc": "Gun shots, paeans, too many sounds.\nMental DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4020501,
+                "name": "Rock City Punisher",
+                "headIcon": "420603",
+                "career": 6,
+                "dmgType": 1,
+                "level": 75,
+                "hp": 6461,
+                "multiHp": 1,
+                "atk": 648,
+                "def": 324,
+                "mdef": 300,
+                "criRate": 0.26,
+                "criDef": 0.97,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40320311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Scheme",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40320312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Scheme",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40320321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Faith",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40320322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Faith",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40320331,
+                    "type": "ultimate",
+                    "name": "Burnt to Nothing",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020502,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 75,
+                "hp": 6101,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 306,
+                "mdef": 283,
+                "criRate": 0.26,
+                "criDef": 0.97,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020503,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 75,
+                "hp": 6101,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 306,
+                "mdef": 283,
+                "criRate": 0.26,
+                "criDef": 0.97,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4020504,
+                "name": "LittleFinger Peter",
+                "headIcon": "420703",
+                "career": 6,
+                "dmgType": 1,
+                "level": 75,
+                "hp": 8156,
+                "multiHp": 1,
+                "atk": 726,
+                "def": 360,
+                "mdef": 333,
+                "criRate": 0.26,
+                "criDef": 0.97,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40340311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340331,
+                    "type": "ultimate",
+                    "name": "Life is Transient",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020505,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 75,
+                "hp": 6101,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 306,
+                "mdef": 283,
+                "criRate": 0.26,
+                "criDef": 0.97,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020506,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 75,
+                "hp": 6101,
+                "multiHp": 1,
+                "atk": 609,
+                "def": 306,
+                "mdef": 283,
+                "criRate": 0.26,
+                "criDef": 0.97,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 50106,
+        "name": "Mintage Aesthetics",
+        "desc": "Jack and Andrew from Little Rock City took up their rifles in the belief that they could acquire everything they wanted.",
+        "cost": 25,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [
+          {
+            "id": 2015,
+            "name": "Weak Minded",
+            "desc": "Gun shots, paeans, too many sounds.\nMental DMG Taken +30%.",
+            "icon": "106"
+          }
+        ],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4020601,
+                "name": "Rock City Punisher",
+                "headIcon": "420603",
+                "career": 6,
+                "dmgType": 1,
+                "level": 85,
+                "hp": 7086,
+                "multiHp": 1,
+                "atk": 735,
+                "def": 357,
+                "mdef": 331,
+                "criRate": 0.29,
+                "criDef": 1.16,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40320311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Scheme",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40320312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Scheme",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40320321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Faith",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40320322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Faith",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40320331,
+                    "type": "ultimate",
+                    "name": "Burnt to Nothing",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020602,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 85,
+                "hp": 6692,
+                "multiHp": 1,
+                "atk": 690,
+                "def": 337,
+                "mdef": 312,
+                "criRate": 0.29,
+                "criDef": 1.16,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020603,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 85,
+                "hp": 6692,
+                "multiHp": 1,
+                "atk": 690,
+                "def": 337,
+                "mdef": 312,
+                "criRate": 0.29,
+                "criDef": 1.16,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4020604,
+                "name": "LittleFinger Peter",
+                "headIcon": "420703",
+                "career": 6,
+                "dmgType": 1,
+                "level": 85,
+                "hp": 9842,
+                "multiHp": 1,
+                "atk": 826,
+                "def": 397,
+                "mdef": 367,
+                "criRate": 0.29,
+                "criDef": 1.16,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40340311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Ambush",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40340321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Performance",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40340331,
+                    "type": "ultimate",
+                    "name": "Life is Transient",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020605,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 85,
+                "hp": 6692,
+                "multiHp": 1,
+                "atk": 690,
+                "def": 337,
+                "mdef": 312,
+                "criRate": 0.29,
+                "criDef": 1.16,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4020606,
+                "name": "Rock City Sniper",
+                "headIcon": "420503",
+                "career": 6,
+                "dmgType": 1,
+                "level": 85,
+                "hp": 6692,
+                "multiHp": 1,
+                "atk": 690,
+                "def": 337,
+                "mdef": 312,
+                "criRate": 0.29,
+                "criDef": 1.16,
+                "skills": [
+                  {
+                    "id": 201007,
+                    "type": "passive",
+                    "name": "Retaliate Stance",
+                    "desc": "",
+                    "icon": 102
+                  },
+                  {
+                    "id": 40310311,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310312,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Torrent",
+                    "desc": "",
+                    "icon": 1401
+                  },
+                  {
+                    "id": 40310321,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310322,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Gale",
+                    "desc": "",
+                    "icon": 1402
+                  },
+                  {
+                    "id": 40310331,
+                    "type": "ultimate",
+                    "name": "Overcast",
+                    "desc": "",
+                    "icon": 1404,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1001,
+    "index": "HP",
+    "title": "Harvest Prime",
+    "server": "global",
+    "episodes": [
+      {
+        "id": 100101,
+        "name": "Harvest Prime",
+        "desc": "The trees in the forest grow and grow towards the sun.",
+        "cost": 15,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4040102,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 25,
+                "hp": 1514,
+                "multiHp": 1,
+                "atk": 161,
+                "def": 76,
+                "mdef": 76,
+                "criRate": 0.02,
+                "criDef": 0.24,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040103,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 25,
+                "hp": 1208,
+                "multiHp": 1,
+                "atk": 170,
+                "def": 70,
+                "mdef": 70,
+                "criRate": 0.13,
+                "criDef": 0,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4040101,
+                "name": "Hailll",
+                "headIcon": "422701",
+                "career": 3,
+                "dmgType": 1,
+                "level": 25,
+                "hp": 2963,
+                "multiHp": 1,
+                "atk": 204,
+                "def": 83,
+                "mdef": 83,
+                "criRate": 0.07,
+                "criDef": 0.16,
+                "skills": [
+                  {
+                    "id": 2339,
+                    "type": "passive",
+                    "name": "Hard Bark",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40231611,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231612,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231621,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231622,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231631,
+                    "type": "ultimate",
+                    "name": "Sacrifice Ritual",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040102,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 25,
+                "hp": 1514,
+                "multiHp": 1,
+                "atk": 161,
+                "def": 76,
+                "mdef": 76,
+                "criRate": 0.02,
+                "criDef": 0.24,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040103,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 25,
+                "hp": 1208,
+                "multiHp": 1,
+                "atk": 170,
+                "def": 70,
+                "mdef": 70,
+                "criRate": 0.13,
+                "criDef": 0,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 100102,
+        "name": "Harvest Prime",
+        "desc": "Soon they run out of nutrients, waiting for the next visitor in hunger.",
+        "cost": 18,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4040202,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 40,
+                "hp": 2529,
+                "multiHp": 1,
+                "atk": 317,
+                "def": 150,
+                "mdef": 150,
+                "criRate": 0.05,
+                "criDef": 0.58,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040203,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 40,
+                "hp": 2031,
+                "multiHp": 1,
+                "atk": 334,
+                "def": 139,
+                "mdef": 139,
+                "criRate": 0.22,
+                "criDef": 0.09,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4040201,
+                "name": "Hailll",
+                "headIcon": "422701",
+                "career": 3,
+                "dmgType": 1,
+                "level": 40,
+                "hp": 4982,
+                "multiHp": 1,
+                "atk": 402,
+                "def": 164,
+                "mdef": 164,
+                "criRate": 0.13,
+                "criDef": 0.36,
+                "skills": [
+                  {
+                    "id": 2339,
+                    "type": "passive",
+                    "name": "Hard Bark",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40231611,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231612,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231621,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231622,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231631,
+                    "type": "ultimate",
+                    "name": "Sacrifice Ritual",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040202,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 40,
+                "hp": 2529,
+                "multiHp": 1,
+                "atk": 317,
+                "def": 150,
+                "mdef": 150,
+                "criRate": 0.05,
+                "criDef": 0.58,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040203,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 40,
+                "hp": 2031,
+                "multiHp": 1,
+                "atk": 334,
+                "def": 139,
+                "mdef": 139,
+                "criRate": 0.22,
+                "criDef": 0.09,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 100103,
+        "name": "Harvest Prime",
+        "desc": "The forest is hospitable and generous. The branches pull his hem, the fallen leaves block his eyes, and the soil and moss fill his ears.",
+        "cost": 20,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4040302,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 55,
+                "hp": 3915,
+                "multiHp": 1,
+                "atk": 470,
+                "def": 223,
+                "mdef": 223,
+                "criRate": 0.09,
+                "criDef": 1.01,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040303,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 55,
+                "hp": 3158,
+                "multiHp": 1,
+                "atk": 496,
+                "def": 206,
+                "mdef": 206,
+                "criRate": 0.31,
+                "criDef": 0.23,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4040301,
+                "name": "Hailll",
+                "headIcon": "422701",
+                "career": 3,
+                "dmgType": 1,
+                "level": 55,
+                "hp": 7746,
+                "multiHp": 1,
+                "atk": 596,
+                "def": 243,
+                "mdef": 243,
+                "criRate": 0.19,
+                "criDef": 0.62,
+                "skills": [
+                  {
+                    "id": 2339,
+                    "type": "passive",
+                    "name": "Hard Bark",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40231611,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231612,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231621,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231622,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231631,
+                    "type": "ultimate",
+                    "name": "Sacrifice Ritual",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040302,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 55,
+                "hp": 3915,
+                "multiHp": 1,
+                "atk": 470,
+                "def": 223,
+                "mdef": 223,
+                "criRate": 0.09,
+                "criDef": 1.01,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040303,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 55,
+                "hp": 3158,
+                "multiHp": 1,
+                "atk": 496,
+                "def": 206,
+                "mdef": 206,
+                "criRate": 0.31,
+                "criDef": 0.23,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 100104,
+        "name": "Harvest Prime",
+        "desc": "The residents on the ground never say a word, and the visitors underground always remain silent. The forest is prosperous thanks to the gift of life. The golden branch at the treetop is close to the sun.",
+        "cost": 22,
+        "server": "global",
+        "maxRound": 20,
+        "playerMax": 3,
+        "rules": [],
+        "waves": [
+          {
+            "waveIndex": 1,
+            "monsters": [
+              {
+                "id": 4040402,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 71,
+                "hp": 6060,
+                "multiHp": 1,
+                "atk": 629,
+                "def": 313,
+                "mdef": 313,
+                "criRate": 0.13,
+                "criDef": 1.48,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040403,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 71,
+                "hp": 4903,
+                "multiHp": 1,
+                "atk": 666,
+                "def": 290,
+                "mdef": 290,
+                "criRate": 0.41,
+                "criDef": 0.38,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "waveIndex": 2,
+            "monsters": [
+              {
+                "id": 4040401,
+                "name": "Hailll",
+                "headIcon": "422701",
+                "career": 3,
+                "dmgType": 1,
+                "level": 71,
+                "hp": 12026,
+                "multiHp": 1,
+                "atk": 706,
+                "def": 341,
+                "mdef": 341,
+                "criRate": 0.24,
+                "criDef": 0.89,
+                "skills": [
+                  {
+                    "id": 2339,
+                    "type": "passive",
+                    "name": "Hard Bark",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40231611,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231612,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Stab",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40231621,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231622,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Twine",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40231631,
+                    "type": "ultimate",
+                    "name": "Sacrifice Ritual",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040402,
+                "name": "Hailll",
+                "headIcon": "422402",
+                "career": 5,
+                "dmgType": 1,
+                "level": 71,
+                "hp": 6060,
+                "multiHp": 1,
+                "atk": 629,
+                "def": 313,
+                "mdef": 313,
+                "criRate": 0.13,
+                "criDef": 1.48,
+                "skills": [
+                  {
+                    "id": 2342,
+                    "type": "passive",
+                    "name": "Regeneration Slime",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213411,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213412,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Swoop",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213421,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213422,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Honey",
+                    "desc": "",
+                    "icon": 1203
+                  },
+                  {
+                    "id": 40213431,
+                    "type": "ultimate",
+                    "name": "Immovable Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              },
+              {
+                "id": 4040403,
+                "name": "Hailll",
+                "headIcon": "422401",
+                "career": 5,
+                "dmgType": 1,
+                "level": 71,
+                "hp": 4903,
+                "multiHp": 1,
+                "atk": 666,
+                "def": 290,
+                "mdef": 290,
+                "criRate": 0.41,
+                "criDef": 0.38,
+                "skills": [
+                  {
+                    "id": 2343,
+                    "type": "passive",
+                    "name": "Leeching Beak",
+                    "desc": "",
+                    "icon": 301
+                  },
+                  {
+                    "id": 40213511,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213512,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Claw Strike",
+                    "desc": "",
+                    "icon": 1201
+                  },
+                  {
+                    "id": 40213521,
+                    "type": "active",
+                    "rank": 1,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213522,
+                    "type": "active",
+                    "rank": 2,
+                    "name": "Sting",
+                    "desc": "",
+                    "icon": 1202
+                  },
+                  {
+                    "id": 40213531,
+                    "type": "ultimate",
+                    "name": "Indestructible Honeycomb",
+                    "desc": "",
+                    "icon": 1204,
+                    "moxie": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

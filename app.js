@@ -7187,8 +7187,6 @@ let charSkillsActiveStance = null; // Active stance for multi-form characters (e
 let charWeaponsSelectedIdx = 0; // Index of selected weapon for Collab chars (Ezio / Kassandra)
 let charEzioPrimary = "venetian-falchion"; // "venetian-falchion" | "condottiero-war-hammer" | "captain-s-sword"
 let charEzioSecondary = "channeled-cinquedea"; // "channeled-cinquedea" | "butcher-knife" | "sultan-s-knife"
-let charEzioPortrayLevel = 0; // 0 (Base / P0-P1), 2 (P2-P4: Weapon Enhancements), 5 (P5: Combo Enhancements)
-let charKassandraPortrayLevel = 0; // 0 (P0-P1), 2 (P2-P4), 5 (P5)
 let charKassandraSelections = {
   hunter: null,
   warrior: null,
@@ -7871,108 +7869,11 @@ function renderCharacterSkillsSection(name) {
       const currentComboData = (currentPriData.combos || []).find((c) => (c.daggerEn || "").toLowerCase().replace(/[^a-z0-9]+/g, "-") === charEzioSecondary) || {};
       let comboDesc = isCn ? currentComboData.descZh || currentComboData.descEn : (currentLang === "vi" ? currentComboData.descVi || currentComboData.descEn : currentComboData.descEn);
 
-      // Portray P2+ enhancement on Primary Weapon
-      if (charEzioPortrayLevel >= 2) {
-        if (charEzioPrimary === "venetian-falchion") {
-          priMainDesc = isCn
-            ? "【威尼斯弯刀强化】至终的仪式视为额外行动；【黑夜行动】命中时对目标施加2层【刺客印记】。"
-            : (currentLang === "vi"
-              ? "[Enhanced Venetian Falchion] Ultimate được tính là Extra Action; [Work in the Dark] gây 2 cộng dồn [Assassin Mark] lên mục tiêu."
-              : "[Enhanced Venetian Falchion] Ultimate counts as an Extra Action; [Work in the Dark] inflicts 2 stacks of [Assassin Mark] on the target.");
-        } else if (charEzioPrimary === "condottiero-war-hammer") {
-          priMainDesc = isCn
-            ? "【佣兵战锤强化】其他友方释放至终仪式后，艾吉奥获得2层【鹰之指引】。释放至终仪式时，每次释放【信仰之矢】、【信仰之刃】或【死神亦不仁慈】，本次攻击造成的最终创伤+2.5%。"
-            : (currentLang === "vi"
-              ? "[Enhanced Condottiero War Hammer] Sau khi đồng minh khác thi triển Ultimate, Ezio nhận 2 cộng dồn [Eagle's Guidance]. Khi thi triển Ultimate, mỗi lần [Arrow of Faith], [Edge of Faith] hoặc [Death Be Not Unkind] được thi triển, đòn tấn công này nhận Final DMG Dealt +2.5%."
-              : "[Enhanced Condottiero War Hammer] After other allies cast Ultimate, Ezio gains 2 stacks of [Eagle's Guidance]. When casting Ultimate, every time [Arrow of Faith], [Edge of Faith], or [Death Be Not Unkind] is cast, this attack gains Final DMG Dealt +2.5%.");
-        } else if (charEzioPrimary === "captain-s-sword") {
-          priMainDesc = isCn
-            ? "【队长之剑强化】使用普通咒语/至终仪式攻击时，造成额外本源创伤（1阶【行于黑暗】/【死亡并非残酷】的现实创伤×80%/80%）。目标每有1层【中毒】，额外造成本源创伤（1.5%/1.5%）；目标处于10层及以上【中毒】时，本源创伤比例提升至2.5%/2.5%。"
-            : (currentLang === "vi"
-              ? "[Enhanced Captain's Sword] Khi tấn công bằng Incantation cơ bản/Ultimate, gây thêm Genesis DMG (bằng Reality DMG của [Work in the Dark]/[Death Be Not Unkind] hạng 1 ×80%/80%). Với mỗi 1 [Poison] trên mục tiêu, gây thêm Genesis DMG (1.5%/1.5%); khi mục tiêu có từ 10 [Poison] trở lên: tỷ lệ Genesis DMG tăng thành 2.5%/2.5%."
-              : "[Enhanced Captain's Sword] When attacking with basic incantation/Ultimate, deal an additional (rank 1 [Work in the Dark]/[Death Be Not Unkind]'s Reality DMG x80%/80%) Genesis DMG. For every 1 instance of [Poison] on the target, deal an additional (1.5%/1.5%) Genesis DMG. When there are 10 or more instances of [Poison] on the target: increase the Genesis DMG ratio to 2.5%/2.5%.");
-        }
-      }
-
-      // Portray P5 enhancement on Combo
-      if (charEzioPortrayLevel >= 5) {
-        if (charEzioPrimary === "venetian-falchion") {
-          if (charEzioSecondary === "channeled-cinquedea") {
-            comboDesc = isCn
-              ? "【组合强化】自身额外行动造成伤害提升100%。溢出的暴击率以150%比例转化为暴击创伤。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Extra Action của bản thân nhận DMG Bonus +100%. Critical Rate vượt mức được chuyển thành Critical DMG theo tỷ lệ 150%."
-                : "[Enhanced Combo] Own extra actions gain DMG Bonus +100%. Excess Critical Rate is converted to Critical DMG at a ratio of 150%.");
-          } else if (charEzioSecondary === "butcher-knife") {
-            comboDesc = isCn
-              ? "【组合强化】自身额外行动造成伤害提升100%。任意友方行动后，若有敌方阵亡，对生命百分比最低的敌方释放【黑夜行动】（每回合上限提升至4次）。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Extra Action của bản thân nhận DMG Bonus +100%. Giới hạn kích hoạt [Work in the Dark] khi có kẻ địch tử vong tăng lên 4 lần mỗi round."
-                : "[Enhanced Combo] Own extra actions gain DMG Bonus +100%. The upper limit of [Work in the Dark] triggered by enemy's death is increased to 4.");
-          } else if (charEzioSecondary === "sultan-s-knife") {
-            comboDesc = isCn
-              ? "【组合强化】自身额外行动造成伤害提升100%。【实战经验】和【瞩目】持续2回合。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Extra Action của bản thân nhận DMG Bonus +100%. [Fighting Experience] và [Eyes Caught] duy trì 2 round."
-                : "[Enhanced Combo] Own extra actions gain DMG Bonus +100%. [Fighting Experience] and [Eyes Caught] last 2 rounds.");
-          }
-        } else if (charEzioPrimary === "condottiero-war-hammer") {
-          if (charEzioSecondary === "channeled-cinquedea") {
-            comboDesc = isCn
-              ? "【组合强化】仪式威力+40%。回合开始时，获得同步率+20%。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Ultimate Might +40%. Khi bắt đầu round, nhận Synchronization +20%."
-                : "[Enhanced Combo] Ultimate Might +40%. At the start of the round, gain Synchronization +20%.");
-          } else if (charEzioSecondary === "butcher-knife") {
-            comboDesc = isCn
-              ? "【组合强化】仪式威力+40%。释放至终仪式后，获得同步率+20%。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Ultimate Might +40%. Sau khi thi triển Ultimate, nhận Synchronization +20%."
-                : "[Enhanced Combo] Ultimate Might +40%. After casting Ultimate, gain Synchronization +20%.");
-          } else if (charEzioSecondary === "sultan-s-knife") {
-            comboDesc = isCn
-              ? "【组合强化】仪式威力+40%。友方行动后若击败敌方，获得同步率+20%。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Ultimate Might +40%. Sau khi đồng minh hành động, nếu có kẻ địch bị đánh bại, nhận Synchronization +20%."
-                : "[Enhanced Combo] Ultimate Might +40%. After an allied action, if any enemy dies, gain Synchronization +20%.");
-          }
-        } else if (charEzioPrimary === "captain-s-sword") {
-          if (charEzioSecondary === "channeled-cinquedea") {
-            comboDesc = isCn
-              ? "【组合强化】本源创伤+20%。额外附加2层【中毒】。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Genesis DMG +20%. Gây thêm 2 cộng dồn [Poison]."
-                : "[Enhanced Combo] Genesis DMG +20%. Inflict 2 additional instances of [Poison].");
-          } else if (charEzioSecondary === "butcher-knife") {
-            comboDesc = isCn
-              ? "【组合强化】本源创伤+20%。额外附加3层【中毒】。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Genesis DMG +20%. Gây thêm 3 cộng dồn [Poison]."
-                : "[Enhanced Combo] Genesis DMG +20%. Inflict 3 additional instances of [Poison].");
-          } else if (charEzioSecondary === "sultan-s-knife") {
-            comboDesc = isCn
-              ? "【组合强化】本源创伤+20%。敌方被击败时，其同伴可继承该敌方最多20层【中毒】。"
-              : (currentLang === "vi"
-                ? "[Enhanced Combo] Genesis DMG +20%. Sau khi kẻ địch tử trận, các đồng minh còn lại có thể thừa hưởng tối đa 20 cộng dồn [Poison] từ kẻ địch đó."
-                : "[Enhanced Combo] Genesis DMG +20%. After an enemy dies, that enemy's allies can inherit up to 20 instances of [Poison] from that enemy.");
-          }
-        }
-      }
-
       const priTitleText = currentLang === "vi" ? activePriObj.nameVi : (isCn ? activePriObj.nameZh : activePriObj.nameEn);
       const secTitleText = currentLang === "vi" ? activeSecObj.nameVi : (isCn ? activeSecObj.nameZh : activeSecObj.nameEn);
 
       mainBodyHtml = `
         <div class="ezio-weapon-board">
-          <div class="ezio-portray-switcher">
-            <span class="ezio-switcher-label">${isCn ? "塑造强化:" : (currentLang === "vi" ? "Mức độ Portray:" : "Portray Level:")}</span>
-            <div class="ezio-portray-btns">
-              <button type="button" class="ezio-portray-btn ${charEzioPortrayLevel === 0 ? "is-active" : ""}" data-ezio-portray="0">P0-P1</button>
-              <button type="button" class="ezio-portray-btn ${charEzioPortrayLevel === 2 ? "is-active" : ""}" data-ezio-portray="2">P2-P4</button>
-              <button type="button" class="ezio-portray-btn ${charEzioPortrayLevel === 5 ? "is-active" : ""}" data-ezio-portray="5">P5</button>
-            </div>
-          </div>
-
           <div class="ezio-weapon-stage">
             <div class="ezio-weapon-col is-left">
               ${priHtml}
@@ -8247,15 +8148,14 @@ function renderCharacterSkillsSection(name) {
         })
         .join("");
 
-      // Primary Force Field Description based on primaryTreeKey & Portray
+      // Primary Force Field Description based on primaryTreeKey
       let forceFieldTitle = "";
       let forceFieldDesc = "";
 
-      const pLvl = charKassandraPortrayLevel;
       if (primaryTreeKey === "hunter") {
         forceFieldTitle = isCn ? "【阿尔忒弥斯之路】术阵" : (currentLang === "vi" ? "[Way of Artemis] Force Field" : "[Way of Artemis] Force Field");
-        const critDmgBonus = pLvl >= 2 ? "9.3%" : "5.4%";
-        const critRateBonus = pLvl >= 4 ? "+24% (+16%)" : "+15% (+10%)";
+        const critDmgBonus = "5.4%";
+        const critRateBonus = "+15% (+10%)";
         forceFieldDesc = isCn
           ? `【阿尔忒弥斯之路】力场效果：全队暴击创伤 +(27% + 【三神指引】×${critDmgBonus})，【刺杀】角色额外获得相同增益。\n全队暴击率 ${critRateBonus}。友方触发【刺杀】时，额外造成攻击者类型75%的创伤。`
           : (currentLang === "vi"
@@ -8263,8 +8163,8 @@ function renderCharacterSkillsSection(name) {
             : `[Force Field] Effect: All allies gain Critical DMG +(27% + [Guidance of Three Gods] stacks x${critDmgBonus}). [Assassination] allies gain an extra Critical DMG +([Guidance of Three Gods] stacks x${critDmgBonus}).\nAll allies gain Critical Rate ${critRateBonus}. When an allied [Assassination] triggers, deal 75% extra DMG of attacker's type.`);
       } else if (primaryTreeKey === "warrior") {
         forceFieldTitle = isCn ? "【阿瑞斯之路】术阵" : (currentLang === "vi" ? "[Way of Ares] Force Field" : "[Way of Ares] Force Field");
-        const dmgBonusVal = pLvl >= 2 ? "4.8%" : "2.8%";
-        const incantMightVal = pLvl >= 4 ? "+30% (+20%)" : "+18% (+12%)";
+        const dmgBonusVal = "2.8%";
+        const incantMightVal = "+18% (+12%)";
         forceFieldDesc = isCn
           ? `【阿瑞斯之路】力场效果：全队创伤加成 +(14% + 【三神指引】×${dmgBonusVal})，【刺杀】角色额外获得相同增益。\n全队术法威力 ${incantMightVal}。主目标每有1种不同【裂伤】，施放额外【斯巴达踢击】。`
           : (currentLang === "vi"
@@ -8272,8 +8172,8 @@ function renderCharacterSkillsSection(name) {
             : `[Force Field] Effect: All allies gain DMG Bonus +(14% + [Guidance of Three Gods] stacks x${dmgBonusVal}). [Assassination] allies gain an extra DMG Bonus +([Guidance of Three Gods] stacks x${dmgBonusVal}).\nAll allies gain Incantation Might ${incantMightVal}. For each different [Gash] on main target, cast additional [Sparta Kick].`);
       } else {
         forceFieldTitle = isCn ? "【倪克斯之路】术阵" : (currentLang === "vi" ? "[Way of Nyx] Force Field" : "[Way of Nyx] Force Field");
-        const atkBonusVal = pLvl >= 2 ? "2.8%" : "1.4%";
-        const penRateVal = pLvl >= 4 ? "+42% (+28%)" : "+24% (+16%)";
+        const atkBonusVal = "1.4%";
+        const penRateVal = "+24% (+16%)";
         forceFieldDesc = isCn
           ? `【倪克斯之路】力场效果：全队攻击 +(7% + 【三神指引】×${atkBonusVal})，【刺杀】角色额外获得相同增益。\n全队穿透率 ${penRateVal}。【急速刺杀】暴击后获得【筹备·卡珊德拉】；友方触发【刺杀】或释放至终仪式时肾上腺素+1。`
           : (currentLang === "vi"
@@ -8314,16 +8214,6 @@ function renderCharacterSkillsSection(name) {
             <div class="kassandra-points-badge">
               <span class="kassandra-pts-num">${remainingPoints}</span>
               <span class="kassandra-pts-label">${isCn ? "技能点" : (currentLang === "vi" ? "Ability Points" : "Ability Points")}</span>
-            </div>
-
-            <div class="ezio-portray-switcher">
-              <span class="ezio-switcher-label">${isCn ? "塑造强化:" : (currentLang === "vi" ? "Portray:" : "Portray:")}</span>
-              <div class="ezio-portray-btns">
-                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 0 ? "is-active" : ""}" data-kassandra-portray="0">P0-P1</button>
-                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 2 ? "is-active" : ""}" data-kassandra-portray="2">P2-P3</button>
-                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 4 ? "is-active" : ""}" data-kassandra-portray="4">P4</button>
-                <button type="button" class="kassandra-portray-btn ${charKassandraPortrayLevel === 5 ? "is-active" : ""}" data-kassandra-portray="5">P5</button>
-              </div>
             </div>
 
             <button type="button" class="kassandra-reset-btn" id="btn-kassandra-reset">
@@ -8606,17 +8496,6 @@ function setupCharacterSkillsListeners(host) {
     });
   });
 
-  // Ezio Portray switcher buttons
-  host.querySelectorAll(".ezio-portray-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const pLvl = Number(btn.dataset.ezioPortray);
-      if (!Number.isNaN(pLvl) && charEzioPortrayLevel !== pLvl) {
-        charEzioPortrayLevel = pLvl;
-        refreshSkillsPanel();
-      }
-    });
-  });
-
   // Kassandra Ability Node click listeners
   host.querySelectorAll(".ability-node").forEach((card) => {
     card.addEventListener("click", () => {
@@ -8649,17 +8528,6 @@ function setupCharacterSkillsListeners(host) {
             return;
           }
         }
-        refreshSkillsPanel();
-      }
-    });
-  });
-
-  // Kassandra Portray buttons
-  host.querySelectorAll(".kassandra-portray-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const pLvl = Number(btn.dataset.kassandraPortray);
-      if (!Number.isNaN(pLvl) && charKassandraPortrayLevel !== pLvl) {
-        charKassandraPortrayLevel = pLvl;
         refreshSkillsPanel();
       }
     });
@@ -9161,7 +9029,7 @@ function renderItemDetail() {
         </div>
         <div class="material-detail-info">
           <h3 class="material-detail-name">${escapeHtml(displayName)}</h3>
-          <span style="font-size: 0.72rem; color: #ED7D31; font-weight: 700;">${"✦".repeat(item.rarity || 1)}</span>
+          <span class="material-detail-stars" style="font-size: 0.72rem; color: #ED7D31; font-weight: 700;">${"✦".repeat(item.rarity || 1)}</span>
           ${displayCategory ? `<span class="flag" style="width: max-content;">${escapeHtml(displayCategory)}</span>` : ""}
           ${displayDesc ? `<p class="material-detail-desc">${escapeHtml(displayDesc)}</p>` : ""}
           ${displayUsage ? `<p class="material-detail-usage"><strong>${isVi ? "Công dụng:" : (isCn ? "用途:" : "Usage:")}</strong> ${escapeHtml(displayUsage)}</p>` : ""}
@@ -9352,7 +9220,7 @@ function renderPsychubeDetail() {
         </div>
         <div class="psychube-detail-info">
           <h3 class="psychube-detail-name">${escapeHtml(displayName)}</h3>
-          <span style="font-size: 0.76rem; color: ${rarityColor(p.rarity)}; font-weight: 700;">${"✦".repeat(p.rarity)}</span>
+          <span class="psychube-detail-stars" style="font-size: 0.76rem; color: ${rarityColor(p.rarity)}; font-weight: 700;">${"✦".repeat(p.rarity)}</span>
           <div class="psychube-detail-tags">
             ${(p.tags || []).map((t) => `<span class="flag">${escapeHtml(t)}</span>`).join(" ")}
             ${p.releasePatch ? `<span class="flag" style="opacity: 0.8;">v${escapeHtml(p.releasePatch)}</span>` : ""}
@@ -9751,7 +9619,12 @@ function renderBuildsDetail() {
   if (profile) {
     const isCn = currentLang === "cn";
     const dmgLabel = isCn ? (profile.dmgTypeZh || (profile.dmgType === "Reality" ? "现实创伤" : "精神创伤")) : profile.dmgType;
-    const roleTagsList = isCn && profile.roleTagsZh && profile.roleTagsZh.length ? profile.roleTagsZh : (profile.roleTags || []);
+    let roleTagsList = isCn && profile.roleTagsZh && profile.roleTagsZh.length ? profile.roleTagsZh : (profile.roleTags || []);
+    roleTagsList = roleTagsList.map((tg) => {
+      let clean = String(tg || "").replace(/<\/?nobr>/gi, "").trim();
+      if (!isCn && clean === "洞知") clean = "Pursuit";
+      return clean;
+    });
     const dmgIcon = profile.dmgType === "Reality" ? "images/dmg_type_icon/reality_dmg.png" : "images/dmg_type_icon/mental_dmg.png";
     const tagsHtml = roleTagsList.map((tg) => `<span class="flag" style="font-size: 0.6rem; padding: 2px 6px;">${escapeHtml(tg)}</span>`).join(" ");
     profileMetaHtml = `

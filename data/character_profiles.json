@@ -25,7 +25,7 @@
       "DPS",
       "Extra Action",
       "Support",
-      "<nobr>Follow-Up</nobr>",
+      "Follow-Up",
       "Eureka"
     ],
     "roleTagsZh": [
@@ -59,7 +59,7 @@
     "dmgTypeZh": "现实创伤",
     "roleTags": [
       "DPS",
-      "<nobr>Follow-Up</nobr>"
+      "Follow-Up"
     ],
     "roleTagsZh": [
       "输出",
@@ -875,7 +875,7 @@
     "dmgTypeZh": "精神创伤",
     "roleTags": [
       "DPS",
-      "<nobr>Follow-Up</nobr>"
+      "Follow-Up"
     ],
     "roleTagsZh": [
       "输出",
@@ -923,7 +923,7 @@
       "DPS",
       "Extra Action",
       "Support",
-      "<nobr>Follow-Up</nobr>",
+      "Follow-Up",
       "Eureka"
     ],
     "roleTagsZh": [
@@ -1953,7 +1953,7 @@
       "Support",
       "Extra Action",
       "DPS",
-      "<nobr>Follow-Up</nobr>"
+      "Follow-Up"
     ],
     "roleTagsZh": [
       "辅助",
@@ -2151,7 +2151,7 @@
       "DPS",
       "Ritual",
       "Support",
-      "<nobr>Follow-Up</nobr>"
+      "Follow-Up"
     ],
     "roleTagsZh": [
       "输出",
@@ -2199,7 +2199,7 @@
     "dmgTypeZh": "现实创伤",
     "roleTags": [
       "DPS",
-      "洞知",
+      "Pursuit",
       "Channel"
     ],
     "roleTagsZh": [
@@ -2235,7 +2235,7 @@
       "DPS",
       "Support",
       "Extra Action",
-      "<nobr>Follow-Up</nobr>"
+      "Follow-Up"
     ],
     "roleTagsZh": [
       "输出",

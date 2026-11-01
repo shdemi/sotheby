@@ -18907,33 +18907,33 @@
         "nameEn": "Condottiero War Hammer",
         "nameZh": "佣兵战锤",
         "nameVi": "Condottiero War Hammer",
-        "mainDescEn": "After other allies cast Ultimate, Ezio gains 2 stacks of [Eagle's Guidance]. When casting Ultimate, every time [Arrow of Faith], [Edge of Faith], or [Death Be Not Unkind] is cast, this attack gains Final DMG Dealt +2.5%.",
-        "mainDescZh": "其他友方释放至终仪式后，艾吉奥获得2层【鹰之指引】。释放至终仪式时，每次释放【信仰之矢】、【信仰之刃】或【死神亦不仁慈】，本次攻击造成的最终创伤+2.5%。",
-        "mainDescVi": "Sau khi đồng minh khác thi triển Ultimate, Ezio nhận 2 cộng dồn [Eagle's Guidance]. Khi thi triển Ultimate, mỗi lần [Arrow of Faith], [Edge of Faith] hoặc [Death Be Not Unkind] được thi triển, đòn tấn công này nhận Final DMG Dealt +2.5%.",
+        "mainDescEn": "When casting Ultimate, each time [Arrow of Faith], [Edge of Faith], or [Death Be Not Unkind] is cast, for every 100 points of Critical Technique Ezio has more than the target, this attack gains Final DMG Dealt +1%.\nAfter other allies cast Ultimate, Ezio gains 1 stack of [Eagle's Guidance] and Synchronization +10%.",
+        "mainDescZh": "至终的仪式期间每次释放【箭矢同心】【锋刃同心】【死亡并非残酷】后，使【刺杀】时与攻击目标每差距100点暴击技巧，本次攻击最终造成伤害额外提升1%。\n其他友方释放至终的仪式后，艾吉奥获得1层【鹰的指引】并使同步率提升10%。",
+        "mainDescVi": "Khi thi triển Ultimate, mỗi lần [Arrow of Faith], [Edge of Faith] hoặc [Death Be Not Unkind] được thi triển, với mỗi 100 điểm Critical Technique mà Ezio có nhiều hơn mục tiêu, đòn tấn công này nhận Final DMG Dealt +1%.\nSau khi đồng minh khác thi triển Ultimate, Ezio nhận 1 cộng dồn [Eagle's Guidance] và Synchronization +10%.",
         "combos": [
           {
             "daggerEn": "Channeled Cinquedea",
             "daggerZh": "多槽五指剑",
             "daggerVi": "Channeled Cinquedea",
-            "descEn": "Ultimate Might +20%. At the start of the round, gain Synchronization +10%.",
-            "descZh": "仪式威力+20%。回合开始时，获得同步率+10%。",
-            "descVi": "Ultimate Might +20%. Khi bắt đầu round, nhận Synchronization +10%."
+            "descEn": "When entering battle, Ultimate Might +15%.\nAt the start of the round, Synchronization +15%.",
+            "descZh": "进入战斗时，仪式威力提升15%。\n回合开始时，同步率提升15%。",
+            "descVi": "Khi vào trận, Ultimate Might +15%.\nKhi bắt đầu round, nhận Synchronization +15%."
           },
           {
             "daggerEn": "Butcher Knife",
             "daggerZh": "屠刀",
             "daggerVi": "Butcher Knife",
-            "descEn": "Ultimate Might +20%. After casting Ultimate, gain Synchronization +10%.",
-            "descZh": "仪式威力+20%。释放至终仪式后，获得同步率+10%。",
-            "descVi": "Ultimate Might +20%. Sau khi thi triển Ultimate, nhận Synchronization +10%."
+            "descEn": "When entering battle, Ultimate Might +15%.\nWhen casting Ultimate, if the attack target has no other allies, this attack gains DMG Dealt +30%, and gains Synchronization +15% after the Ultimate.",
+            "descZh": "进入战斗时，仪式威力提升15%。\n至终的仪式攻击目标若没有其他友方，则本次攻击造成伤害提升30%，并且至终的仪式释放后同步率提升15%。",
+            "descVi": "Khi vào trận, Ultimate Might +15%.\nKhi thi triển Ultimate, nếu mục tiêu bị tấn công không có đồng minh nào khác, đòn đánh này nhận DMG Dealt +30%, và nhận Synchronization +15% sau khi thi triển Ultimate."
           },
           {
             "daggerEn": "Sultan's Knife",
             "daggerZh": "苏丹短刀",
             "daggerVi": "Sultan's Knife",
-            "descEn": "Ultimate Might +20%. After an allied action, if an enemy is defeated, gain Synchronization +10%.",
-            "descZh": "仪式威力+20%。友方行动后若击败敌方，获得同步率+10%。",
-            "descVi": "Ultimate Might +20%. Sau khi đồng minh hành động, nếu có kẻ địch bị đánh bại, nhận Synchronization +10%."
+            "descEn": "When entering battle, Ultimate Might +15%.\nAfter an allied action, if an enemy target dies, gain Synchronization +15%.",
+            "descZh": "进入战斗时，仪式威力提升15%。\n己方队伍行动后若有任意敌方目标退场，同步率提升15%。",
+            "descVi": "Khi vào trận, Ultimate Might +15%.\nSau hành động của phe ta, nếu có bất kỳ kẻ địch nào bị tiêu diệt, nhận Synchronization +15%."
           }
         ]
       },
@@ -18941,33 +18941,33 @@
         "nameEn": "Captain's Sword",
         "nameZh": "队长之剑",
         "nameVi": "Captain's Sword",
-        "mainDescEn": "When attacking with basic incantation/Ultimate, deal an additional (rank 1 [Work in the Dark]/[Death Be Not Unkind]'s Reality DMG x50%/50%) Genesis DMG.\nFor every 1 instance of [Poison] on the target, deal an additional Genesis DMG.\nWhen there are 10 or more instances of [Poison] on the target: increase the Genesis DMG ratio to 2%/2%.\nWhen there are 20 or more instances of [Poison] on the target: the Genesis DMG can score a critical hit.",
-        "mainDescZh": "使用普通咒语/至终仪式攻击时，造成额外本源创伤。目标每有1层【中毒】，额外造成本源创伤；目标处于10层及以上【中毒】时，本源创伤比例提升；目标处于20层及以上【中毒】时，本源创伤可以暴击。",
-        "mainDescVi": "Khi tấn công bằng incantation cơ bản/Ultimate, gây thêm Genesis DMG bằng (Reality DMG của [Work in the Dark]/[Death Be Not Unkind] hạng 1 ×50%/50%).\nVới mỗi 1 cộng dồn [Poison] trên mục tiêu, gây thêm Genesis DMG.\nKhi mục tiêu có ít nhất 10 cộng dồn [Poison]: hệ số Genesis DMG tăng thành 2%/2%.\nKhi mục tiêu có ít nhất 20 cộng dồn [Poison]: Genesis DMG có thể bạo kích.",
+        "mainDescEn": "Gain Synchronization +10% at the end of the round.\nWhen attacking, inflict 1 instance of [Poison] on the target hit for 3 rounds: at the end of the round, take (the user's ATK x10%) Genesis DMG.\nWhen attacking, deal [Additional Genesis DMG] based on the number of [Poison] instances on the target; [Assassination]'s effect changes from increasing DMG to dealing Genesis DMG directly.",
+        "mainDescZh": "回合结束时，同步率提升10%。\n攻击命中时，赋予目标1个【中毒】状态，持续3回合，回合结束时受到使用者攻击*10%的本源创伤。\n攻击时，将根据【中毒】数量【附加本源创伤】，【刺杀】不再提供最终伤害提升，变为提升本次攻击造成的本源创伤。",
+        "mainDescVi": "Nhận Synchronization +10% vào cuối round.\nKhi tấn công trúng đích, gây 1 cộng dồn [Poison] lên mục tiêu trong 3 round: vào cuối round, chịu Genesis DMG bằng (ATK của người dùng ×10%).\nKhi tấn công, gây thêm [Additional Genesis DMG] dựa trên số lượng [Poison] trên mục tiêu; hiệu ứng của [Assassination] đổi từ tăng DMG thành trực tiếp tăng Genesis DMG gây ra.",
         "combos": [
           {
             "daggerEn": "Channeled Cinquedea",
             "daggerZh": "多槽五指剑",
             "daggerVi": "Channeled Cinquedea",
-            "descEn": "Genesis DMG +10%. Inflict 1 additional instance of [Poison].",
-            "descZh": "本源创伤+10%。额外附加1层【中毒】。",
-            "descVi": "Genesis DMG +10%. Gây thêm 1 cộng dồn [Poison]."
+            "descEn": "When entering battle, Genesis DMG +15%.\nWhen attacking, inflict 1 additional instance of [Poison] on the targets hit for 3 rounds.",
+            "descZh": "进入战斗时，本源创伤提升15%。\n攻击命中时，额外赋予目标1个【中毒】状态，持续3回合。",
+            "descVi": "Khi vào trận, Genesis DMG +15%.\nKhi tấn công trúng đích, gây thêm 1 cộng dồn [Poison] lên mục tiêu trong 3 round."
           },
           {
             "daggerEn": "Butcher Knife",
             "daggerZh": "屠刀",
             "daggerVi": "Butcher Knife",
-            "descEn": "Genesis DMG +10%. Inflict 2 additional instances of [Poison].",
-            "descZh": "本源创伤+10%。额外附加2层【中毒】。",
-            "descVi": "Genesis DMG +10%. Gây thêm 2 cộng dồn [Poison]."
+            "descEn": "When entering battle, Genesis DMG +15%.\nWhen an attack target has no other allies, on hitting the target, inflict 2 additional instances of [Poison] on that target for 3 rounds.",
+            "descZh": "进入战斗时，本源创伤提升15%。\n攻击命中时，若目标没有其他友方，额外赋予2个【中毒】，持续3回合。",
+            "descVi": "Khi vào trận, Genesis DMG +15%.\nKhi mục tiêu tấn công không có đồng minh nào khác, đánh trúng mục tiêu sẽ gây thêm 2 cộng dồn [Poison] lên mục tiêu đó trong 3 round."
           },
           {
             "daggerEn": "Sultan's Knife",
             "daggerZh": "苏丹短刀",
             "daggerVi": "Sultan's Knife",
-            "descEn": "Genesis DMG +10%. When an enemy is defeated, that enemy's allies can inherit up to 10 instances of [Poison] from that enemy.",
-            "descZh": "本源创伤+10%。敌方被击败时，其同伴可继承该敌方最多10层【中毒】。",
-            "descVi": "Genesis DMG +10%. Khi một kẻ địch bị đánh bại, đồng minh của kẻ địch đó có thể thừa hưởng tối đa 10 cộng dồn [Poison] từ nó."
+            "descEn": "When entering battle, Genesis DMG +15%.\nWhen an enemy is defeated, that enemy's instances of [Poison] are inherited by each of that enemy's remaining allies, with each target inheriting up to 10 instances of [Poison] this way.",
+            "descZh": "进入战斗时，本源创伤提升15%。\n任意敌方目标退场后，其友方获得其【中毒】数量（最多获得10个）。",
+            "descVi": "Khi vào trận, Genesis DMG +15%.\nSau khi một kẻ địch bị tiêu diệt, các cộng dồn [Poison] của kẻ địch đó được chia sẻ cho các đồng minh còn lại của nó, mỗi mục tiêu nhận tối đa 10 cộng dồn [Poison]."
           }
         ]
       }
