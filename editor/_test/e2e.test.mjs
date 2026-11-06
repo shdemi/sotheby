@@ -13,10 +13,11 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Model, FILES, READ_ONLY_FILES, readNameTables, validate, lineDiff } from "../model.js";
+import { dirFor } from "../files.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
-const DATA = path.join(ROOT, "data");
+const filePath = (name) => path.join(ROOT, dirFor(name), name);
 
 let checks = 0;
 let failures = 0;
@@ -30,7 +31,7 @@ function check(label, ok, detail) {
   }
 }
 
-const readData = (f) => fs.readFileSync(path.join(DATA, f), "utf8");
+const readData = (f) => fs.readFileSync(filePath(f), "utf8");
 
 function loadTextsFrom(dir) {
   const texts = {};
@@ -78,7 +79,7 @@ try {
 
   console.log("\n=== setup ===");
   for (const name of [...FILES, ...READ_ONLY_FILES]) {
-    fs.copyFileSync(path.join(DATA, name), path.join(scratch, name));
+    fs.copyFileSync(filePath(name), path.join(scratch, name));
   }
   check("scratch copy made", fs.readdirSync(scratch).length >= FILES.length);
 
@@ -187,7 +188,7 @@ try {
     "future_sight.json": 3,
     "name_map.json": 2,
     "psychube_id.json": 1,
-    "team_archetypes.json": 2,
+    "teams.json": 2,
   };
 
   for (const f of written) {

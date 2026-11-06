@@ -138,22 +138,22 @@ Owned by the project, not the game. Lives in `content/` after the rebuild.
 
 | File | What it is |
 |---|---|
-| `guide_builds.json` | community build recommendations |
-| `guide_rotations.json` | skill rotation plans |
+| `builds.json` | community build recommendations |
+| `rotations.json` | skill rotation plans |
 | `guide_skills.json` | skill icon/variant mapping |
-| `characters_progressions.json` | progression charts |
-| `progression.json` | the hand-authored half of `characters_mats_required.json`: `stats` (level bands), `euphoria`, `mastery`, `frequency` (seeded by `scripts/sync/tools/extract-progression.mjs`) |
-| `team_archetypes.json` | team presets |
+| `progressions.json` | progression charts |
+| `progression_costs.json` | the hand-authored half of `characters_mats_required.json`: `stats` (level bands), `euphoria`, `mastery`, `frequency` (seeded by `scripts/sync/tools/extract-progression.mjs`) |
+| `teams.json` | team presets |
 | `i18n.json` | UI strings + VI translations |
 | `credits.json` | acknowledgements |
-| `exclude_character.json`, `collab_character.json` | curation policy (§Class B, hand-decided) |
+| `skill_glossary.json` | InfoBook glossary terms (editorial tags + popover text) |
+| `curation.json` | exclude/collab policy; the pipeline still emits `data/exclude_character.json` and `data/collab_character.json` from it |
 | `translations/psychubes.json` | English for CN-only psychubes + every Vietnamese psychube/amplification string |
 | `translations/euphorias.json` | English for CN-only Euphoria trees + the editorial `version` of each tree |
 | `translations/skills.json` | English for CN-only skills/insights/portrays + every Vietnamese skill string + the collab weapon charts |
 
-Two current files are **orphans and can be dropped**:
-`guide_cards.json` (never fetched by the app) and `reso_shape.json`
-(byte-identical duplicate of `shape_patterns.json`).
+`guide_cards.json`, `reso_shape.json` and `pattern_costs.json` were dropped on
+2026-11-06 (never fetched, byte-identical duplicate, and unused respectively).
 
 `euphoria_list.json` was dropped on 2026-11-06: it stored stale effect tags
 (“General”, “Pursuit”) instead of the trees' real names, which
@@ -252,7 +252,8 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
     psychubes_data.json      (legacy detail; re-derive in Phase 2)
   content/                   HAND-AUTHORED (class C)
     builds.json rotations.json teams.json progressions.json
-    i18n/ exclude.json collab.json credits.json
+    guide_skills.json skill_glossary.json progression_costs.json
+    i18n.json curation.json credits.json translations/
   scripts/
     sync/
       config.mjs  util.mjs  sources.mjs
@@ -465,6 +466,16 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 - **Stale mats rows are dropped.** The legacy file also held `10081:J`, `10067:Ezra
   Theodore` and `9998:Machine D III`; J/Ezra now key on their real ids and the dummy is
   gone. Schneider and Ezra had empty costs and now get theirs from the tables.
+- **Class C lives under `content/`.** `builds.json`, `rotations.json`, `teams.json`,
+  `progressions.json`, `guide_skills.json`, `skill_glossary.json`,
+  `progression_costs.json`, `i18n.json`, `credits.json` and `curation.json` moved out of
+  `data/`; `app.js` and the editor read them from there (`editor/files.js` `dirFor()`).
+  `guide_cards.json`, `reso_shape.json` and `pattern_costs.json` were deleted.
+- **`items.json` and `item_formulas.json` wait for Phase 3.** Both are still Kornblume
+  output: the ids are Kornblume ids and the icons are `images/items/**/*.webp` files
+  named after them. Re-deriving from `item.json` changes every id to the game id, so the
+  item-icon cache has to be rebuilt from Myssal in the same step. Do not regenerate these
+  two until the asset pipeline lands.
 
 ---
 

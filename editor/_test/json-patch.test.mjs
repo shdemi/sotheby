@@ -11,11 +11,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { JsonDoc, detectIndent, parseJson, toValue } from "../json-patch.js";
-import { WRITABLE, READ_ONLY } from "../files.js";
+import { WRITABLE, READ_ONLY, dirFor } from "../files.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
-const DATA = path.join(ROOT, "data");
+const filePath = (name) => path.join(ROOT, dirFor(name), name);
 
 let checks = 0;
 let failures = 0;
@@ -29,7 +29,7 @@ function check(label, ok, detail) {
   }
 }
 
-const read = (f) => fs.readFileSync(path.join(DATA, f), "utf8");
+const read = (f) => fs.readFileSync(filePath(f), "utf8");
 const lines = (s) => s.split(/\r?\n/);
 const parses = (s) => {
   try {
@@ -271,7 +271,7 @@ console.log("\n=== inline tag arrays ===");
 
 console.log("\n=== multi-line record append ===");
 {
-  const original = read("team_archetypes.json");
+  const original = read("teams.json");
   const doc = new JsonDoc(original);
   const countBefore = doc.value.Conduit[0].length;
 
@@ -348,7 +348,7 @@ console.log("\n=== inline arrays keep their spacing (regression) ===");
 
 console.log("\n=== reorderProperty ===");
 {
-  const original = read("team_archetypes.json");
+  const original = read("teams.json");
   const doc = new JsonDoc(original);
   const keysBefore = Object.keys(doc.value);
 
@@ -401,7 +401,7 @@ console.log("\n=== reorderProperty ===");
 
 console.log("\n=== reorderAt ===");
 {
-  const original = read("team_archetypes.json");
+  const original = read("teams.json");
   const doc = new JsonDoc(original);
   const preset = Object.keys(doc.value).find((k) => Array.isArray(doc.value[k][0]) && doc.value[k][0].length >= 2);
   check("a preset with two members is available", typeof preset === "string", String(preset));

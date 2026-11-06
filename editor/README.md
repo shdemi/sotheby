@@ -111,7 +111,7 @@ they are a fixed table that does not change between game updates.
 - **Drag the ⠿ handle** on a preset row to reorder. `↑ Up` / `↓ Down` in the
   detail header do the same thing one step at a time.
 - **Drag the ⠿ handle** on a member row to move it up or down inside its
-  variant. The order is saved as the slot order in `team_archetypes.json`, and
+  variant. The order is saved as the slot order in `teams.json`, and
   the drop line shows where the member will land.
 - **Euphoria** on a member or a substitute is a `–` / `E1` / `E2` switch.
 - **+ Substitute** adds an interchangeable alternative for a slot, with its own

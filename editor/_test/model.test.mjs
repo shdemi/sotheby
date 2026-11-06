@@ -11,10 +11,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Model, FILES, READ_ONLY_FILES, validate, readNameTables, lineDiff } from "../model.js";
+import { dirFor } from "../files.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
-const DATA = path.join(ROOT, "data");
+const filePath = (name) => path.join(ROOT, dirFor(name), name);
 
 let checks = 0;
 let failures = 0;
@@ -28,7 +29,7 @@ function check(label, ok, detail) {
   }
 }
 
-const read = (f) => fs.readFileSync(path.join(DATA, f), "utf8");
+const read = (f) => fs.readFileSync(filePath(f), "utf8");
 const readRoot = (f) => fs.readFileSync(path.join(ROOT, f), "utf8");
 
 /** A preset that has at least one member, so slot-level tests have a target. */
@@ -76,7 +77,7 @@ function pickCnLess(model) {
 function loadTexts() {
   const texts = {};
   for (const name of [...FILES, ...READ_ONLY_FILES]) {
-    const p = path.join(DATA, name);
+    const p = filePath(name);
     if (fs.existsSync(p)) texts[name] = read(name);
   }
   return texts;
@@ -200,13 +201,13 @@ expectChanged("setTransfer", (m) => m.setTransfer("6", false), ["global_name_tra
 expectChanged("setFutureSkin", (m) => m.setFutureSkin("315503", false), ["future_sight.json"]);
 expectChanged("setPsychubeFutureSight", (m) => m.setPsychubeFutureSight("6", "1579", false), ["future_sight.json"]);
 expectChanged("setPsychubeField tags", (m) => m.setPsychubeField("6", "1579", "tags", ["ATK"]), ["psychube_id.json"]);
-expectChanged("setTeamSlot character", (m) => m.setTeamSlot("Conduit", 0, 0, "character", "Sotheby"), ["team_archetypes.json"]);
+expectChanged("setTeamSlot character", (m) => m.setTeamSlot("Conduit", 0, 0, "character", "Sotheby"), ["teams.json"]);
 expectChanged("setTeamSlot essential", (m) => {
   const preset = pickPresetWithNonEssential(m);
   const variant = m.team(preset).findIndex((slots) => slots.some((x) => x && x.is_essential !== true));
   const slot = m.team(preset)[variant].findIndex((x) => x && x.is_essential !== true);
   m.setTeamSlot(preset, variant, slot, "isEssential", true);
-}, ["team_archetypes.json"]);
+}, ["teams.json"]);
 
 console.log("\n=== a no-op edit changes nothing ===");
 for (const [label, mutate] of [
@@ -280,9 +281,9 @@ console.log("\n=== edit content ===");
 }
 {
   const m = freshModel();
-  const before = m.value("team_archetypes.json").Conduit[0].length;
+  const before = m.value("teams.json").Conduit[0].length;
   m.setTeamSlot("Conduit", 0, 0, "character", "Sotheby");
-  const after = m.value("team_archetypes.json").Conduit[0];
+  const after = m.value("teams.json").Conduit[0];
   check("slot character replaced", after[0].character === "Sotheby", JSON.stringify(after[0]));
   check("slot count unchanged", after.length === before, `${before} -> ${after.length}`);
   check("other slot fields preserved", after[0].is_essential === true, JSON.stringify(after[0]));
@@ -313,17 +314,10 @@ console.log("\n=== validation catches mistakes ===");
 }
 {
   const m = freshModel();
-  m.doc("team_archetypes.json").append(["Conduit", 0], { character: "Nobody At All", psychube: "Nope" });
+  m.doc("teams.json").append(["Conduit", 0], { character: "Nobody At All", psychube: "Nope" });
   const { errors } = validate(m);
   check("bad preset character is an error", errors.some((e) => e.includes("Nobody At All")), errors.join("; "));
   check("bad preset psychube is an error", errors.some((e) => e.includes("does not match any name")), errors.join("; "));
-}
-{
-  const m = freshModel();
-  // reso_shape.json and shape_patterns.json must stay identical.
-  m.doc("reso_shape.json").set(["Z shape", 1], "Changed");
-  const { errors } = validate(m);
-  check("desync between shape_patterns and reso_shape is an error", errors.some((e) => e.includes("no longer matches")), errors.join("; "));
 }
 {
   const m = freshModel();
@@ -425,7 +419,7 @@ console.log("\n=== addTeam ===");
   const before = m.teamNames.length;
 
   m.addTeam("Brand New Comp");
-  check("the preset exists", m.value("team_archetypes.json")["Brand New Comp"] !== undefined);
+  check("the preset exists", m.value("teams.json")["Brand New Comp"] !== undefined);
   check("it is appended at the end", m.teamNames[m.teamNames.length - 1] === "Brand New Comp", m.teamNames.slice(-2).join(", "));
   check("preset count grew", m.teamNames.length === before + 1, `${before} -> ${m.teamNames.length}`);
 
@@ -433,7 +427,7 @@ console.log("\n=== addTeam ===");
   check("it has one variant", variants.length === 1, String(variants.length));
   check("with one member", variants[0].length === 1, String(variants[0].length));
   check("and that member is essential, so Recommend has something to protect", variants[0][0].is_essential === true);
-  check("only team_archetypes.json changed", m.changedFiles().join(",") === "team_archetypes.json", m.changedFiles().join(","));
+  check("only teams.json changed", m.changedFiles().join(",") === "teams.json", m.changedFiles().join(","));
   check("the new preset validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
   let threw = false;
@@ -453,7 +447,7 @@ console.log("\n=== addTeam ===");
   check("a blank name is refused", threw);
 
   // Removing it again must leave the file byte-identical.
-  m.doc("team_archetypes.json").deleteProperty([], "Brand New Comp");
+  m.doc("teams.json").deleteProperty([], "Brand New Comp");
   m.reload();
   check("deleting it restores the file byte-for-byte", m.changedFiles().length === 0, m.changedFiles().join(","));
 }
@@ -461,7 +455,7 @@ console.log("\n=== addTeam ===");
 console.log("\n=== moveTeam ===");
 {
   const m = freshModel();
-  const original = m.doc("team_archetypes.json").toString();
+  const original = m.doc("teams.json").toString();
   const first = m.teamNames[0];
   const total = m.teamNames.length;
   check("the first preset is known", typeof first === "string" && first.length > 0, first);
@@ -469,17 +463,17 @@ console.log("\n=== moveTeam ===");
   m.moveTeam(first, 4);
   check("it moved to index 4", m.teamNames[4] === first, m.teamNames.slice(0, 6).join(", "));
   check("no preset was lost", m.teamNames.length === total, `${total} -> ${m.teamNames.length}`);
-  check("only team_archetypes.json changed", m.changedFiles().join(",") === "team_archetypes.json");
+  check("only teams.json changed", m.changedFiles().join(",") === "teams.json");
   check("the reordered file still validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
   m.moveTeam(first, 0);
-  check("moving it back restores the file byte-for-byte", m.doc("team_archetypes.json").toString() === original);
+  check("moving it back restores the file byte-for-byte", m.doc("teams.json").toString() === original);
 }
 
 console.log("\n=== moveTeamSlot ===");
 {
   const m = freshModel();
-  const original = m.doc("team_archetypes.json").toString();
+  const original = m.doc("teams.json").toString();
   const preset = pickPreset(m, (_n, variants) => variants.some((slots) => slots.length >= 2));
   const variant = m.team(preset).findIndex((slots) => slots.length >= 2);
   const slots = m.team(preset)[variant];
@@ -491,17 +485,17 @@ console.log("\n=== moveTeamSlot ===");
   const after = m.team(preset)[variant];
   check("the first two members swapped", after[0].character === second && after[1].character === first, JSON.stringify(after.slice(0, 2).map((s) => s.character)));
   check("no member was lost", after.length === count, `${count} -> ${after.length}`);
-  check("only team_archetypes.json changed", m.changedFiles().join(",") === "team_archetypes.json");
+  check("only teams.json changed", m.changedFiles().join(",") === "teams.json");
   check("the reordered file still validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
   m.moveTeamSlot(preset, variant, 1, 0);
-  check("moving it back restores the file byte-for-byte", m.doc("team_archetypes.json").toString() === original);
+  check("moving it back restores the file byte-for-byte", m.doc("teams.json").toString() === original);
 }
 
 console.log("\n=== member euphoria ===");
 {
   const m = freshModel();
-  const original = m.doc("team_archetypes.json").toString();
+  const original = m.doc("teams.json").toString();
   const preset = pickPreset(m);
 
   m.setTeamMemberEuphoria(preset, 0, 0, "1");
@@ -512,13 +506,13 @@ console.log("\n=== member euphoria ===");
 
   m.setTeamMemberEuphoria(preset, 0, 0, "");
   check("clearing removes the field", m.team(preset)[0][0].euphoria === undefined, JSON.stringify(m.team(preset)[0][0]));
-  check("and the file is byte-identical again", m.doc("team_archetypes.json").toString() === original);
+  check("and the file is byte-identical again", m.doc("teams.json").toString() === original);
 }
 
 console.log("\n=== substitutes ===");
 {
   const m = freshModel();
-  const original = m.doc("team_archetypes.json").toString();
+  const original = m.doc("teams.json").toString();
   const preset = pickPreset(m);
 
   // A member that has none yet.
@@ -541,7 +535,7 @@ console.log("\n=== substitutes ===");
   check("removing one leaves the other", m.team(preset)[0][0].substitutes.length === 1, JSON.stringify(m.team(preset)[0][0].substitutes));
   m.removeSubstitute(preset, 0, 0, 0);
   check("removing the last one drops the array", m.team(preset)[0][0].substitutes === undefined);
-  check("and the file is byte-identical again", m.doc("team_archetypes.json").toString() === original, "differs");
+  check("and the file is byte-identical again", m.doc("teams.json").toString() === original, "differs");
 
   // An existing object substitute keeps its own fields.
   const withSub = m.teamNames.find((n) =>
@@ -583,7 +577,7 @@ console.log("\n=== the bare-string substitute shorthand is promoted ===");
   // app.js accepts `"substitutes": ["J"]`; setting a field on one has to turn it
   // into an object, because the shorthand has nowhere to put the value.
   const m = freshModel();
-  const doc = m.doc("team_archetypes.json");
+  const doc = m.doc("teams.json");
   doc.setProperty(["Conduit", 0, 0], "substitutes", ["J"]);
   m.reload();
   check("the shorthand is in place", m.team("Conduit")[0][0].substitutes[0] === "J", JSON.stringify(m.team("Conduit")[0][0].substitutes));
@@ -765,7 +759,7 @@ console.log("\n=== portrait value charts ===");
 
   // The legacy flat shape still reads as one chart.
   const legacy = freshModel();
-  legacy.doc("characters_progressions.json").set([name], [{ badge: "P1", val: 1 }, { badge: "P2", val: 2 }]);
+  legacy.doc("progressions.json").set([name], [{ badge: "P1", val: 1 }, { badge: "P2", val: 2 }]);
   legacy.reload();
   const legacyCharts = legacy.progressionCharts(name);
   check("the old flat shape reads as one chart", legacyCharts.length === 1 && legacyCharts[0].label === "" && legacyCharts[0].bars.length === 2, JSON.stringify(legacyCharts));
@@ -774,7 +768,7 @@ console.log("\n=== portrait value charts ===");
 console.log("\n=== rotations ===");
 {
   const m = freshModel();
-  const original = m.doc("guide_rotations.json").toString();
+  const original = m.doc("rotations.json").toString();
   const before = m.guideRotations();
   check("the file loads with at least one rotation", before.length > 0, String(before.length));
 
@@ -1000,7 +994,7 @@ console.log("\n=== rotations ===");
   check("a round can be removed", m.guideRotation(id).rounds.length === roundCount, String(m.guideRotation(id).rounds.length));
 
   check("the rotation edits validate", validate(m).errors.length === 0, validate(m).errors.join("; "));
-  check("only guide_rotations.json changed", m.changedFiles().join(",") === "guide_rotations.json", m.changedFiles().join(","));
+  check("only rotations.json changed", m.changedFiles().join(",") === "rotations.json", m.changedFiles().join(","));
 
   /* ---- reordering ---- */
   const rotationIds = m.guideRotations().map((r) => r.id);

@@ -72,7 +72,7 @@ if (!pythonAvailable) {
 } else {
   const files = {
     "data/character_reso_shape.json": fs.readFileSync(path.join(ROOT, "data", "character_reso_shape.json"), "utf8"),
-    "data/team_archetypes.json": fs.readFileSync(path.join(ROOT, "data", "team_archetypes.json"), "utf8"),
+    "content/teams.json": fs.readFileSync(path.join(ROOT, "content", "teams.json"), "utf8"),
     "data/name_map.json": fs.readFileSync(path.join(ROOT, "data", "name_map.json"), "utf8"),
   };
 
@@ -109,7 +109,7 @@ print("NAMELIST", "|".join(z.namelist()))
   check("Python sees all three entries", entries.length === 3, String(entries.length));
   check(
     "entries keep their repository path",
-    entries.every((e) => e[1].startsWith("data/") && e[1].endsWith(".json")),
+    entries.every((e) => /^(data|content)\//.test(e[1]) && e[1].endsWith(".json")),
     entries.map((e) => e[1]).join(", ")
   );
   check(

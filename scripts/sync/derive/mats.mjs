@@ -9,7 +9,7 @@
  *
  * The other four are hand-authored — no table reproduces them:
  *   stats, euphoria, mastery, frequency
- * They live in `content/progression.json` (extracted once by
+ * They live in `content/progression_costs.json` (extracted once by
  * `scripts/sync/tools/extract-progression.mjs`) and are copied through here.
  *
  * The key is the canonical roster name (AGENTS.md §1.5), and `rarity`/`afflatus`
@@ -72,7 +72,7 @@ export function charactersMatsRequired() {
 
   const rankBy = groupByHero(mergedTiers("character_rank", "rank"));
   const talentBy = groupByHero(mergedTiers("character_talent", "talentId"));
-  const curated = tryReadJson(path.join(CONTENT, "progression.json")) || {};
+  const curated = tryReadJson(path.join(CONTENT, "progression_costs.json")) || {};
 
   // Deduplicate the roster by canonical name; the global row wins.
   const roster = new Map();

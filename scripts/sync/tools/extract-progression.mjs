@@ -1,6 +1,6 @@
 /**
  * One-time extractor: pulls the hand-authored half of
- * `data/characters_mats_required.json` into `content/progression.json`.
+ * `data/characters_mats_required.json` into `content/progression_costs.json`.
  *
  * `insight` and `resonance` are game data (`character_rank` and
  * `character_talent`), but `stats`, `euphoria`, `mastery` and `frequency` were
@@ -10,7 +10,7 @@
  *
  *   node scripts/sync/tools/extract-progression.mjs
  *
- * It is idempotent: re-running it overwrites `content/progression.json` with the
+ * It is idempotent: re-running it overwrites `content/progression_costs.json` with the
  * fields the current `data/` file still holds. Run it once, then delete the
  * legacy source once the generator is wired in.
  */
@@ -67,7 +67,7 @@ for (const name of [...roster.keys()].sort()) {
   out[name] = entry;
 }
 
-const target = path.join(CONTENT, "progression.json");
+const target = path.join(CONTENT, "progression_costs.json");
 fs.mkdirSync(path.dirname(target), { recursive: true });
 writeJson(target, out);
 
@@ -81,6 +81,6 @@ const counts = Object.fromEntries(
   ]),
 );
 
-console.log(`wrote content/progression.json (${Object.keys(out).length} characters)`);
+console.log(`wrote content/progression_costs.json (${Object.keys(out).length} characters)`);
 console.log(`non-empty: ${FIELDS.map((f) => `${f}=${counts[f]}`).join(" ")}`);
 if (missing.length) console.log(`no legacy row for: ${missing.join(", ")}`);

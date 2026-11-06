@@ -20,19 +20,17 @@ export const FILES = [
   "characters_by_afflatus.json",
   "character_reso_shape.json",
   "shape_patterns.json",
-  "reso_shape.json",
   "exclude_character.json",
   "collab_character.json",
   "future_sight.json",
   "global_name_transfer.json",
   "name_map.json",
   "psychube_id.json",
-  "team_archetypes.json",
-  "characters_progressions.json",
-  "guide_builds.json",
-  "guide_rotations.json",
+  "teams.json",
+  "progressions.json",
+  "builds.json",
+  "rotations.json",
   "guide_skills.json",
-  "guide_cards.json",
   "credits.json",
   "i18n.json",
 ];
@@ -539,7 +537,7 @@ export class Model {
       }
     }
 
-    this.teamNames = Object.keys(this.value("team_archetypes.json") || {});
+    this.teamNames = Object.keys(this.value("teams.json") || {});
     this.shapeNames = Object.keys(this.value("shape_patterns.json") || {});
   }
 
@@ -858,7 +856,7 @@ export class Model {
   /* ---- team presets ---- */
 
   team(archetype) {
-    const all = this.value("team_archetypes.json") || {};
+    const all = this.value("teams.json") || {};
     return all[archetype] || [];
   }
 
@@ -866,7 +864,7 @@ export class Model {
   addTeam(name) {
     const label = String(name || "").trim();
     if (label === "") throw new Error("A preset needs a name.");
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     if (doc.value[label] !== undefined) throw new Error(`Preset "${label}" already exists.`);
 
@@ -878,7 +876,7 @@ export class Model {
 
   /** Moves a preset up or down the display order. */
   moveTeam(name, toIndex) {
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     const changed = doc.reorderProperty([], name, toIndex);
     if (changed) this.reload();
@@ -887,7 +885,7 @@ export class Model {
 
   /** Moves a member up or down inside one variant. All indices are 0-based. */
   moveTeamSlot(archetype, variant, from, to) {
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     const changed = doc.reorderAt([archetype, variant], from, to);
     if (changed) this.reload();
@@ -905,7 +903,7 @@ export class Model {
 
   /** Sets one slot field. `variant` and `slot` are 0-based indices. */
   setTeamSlot(archetype, variant, slot, field, value) {
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     const path = [archetype, variant, slot];
     if (!doc.nodeAt(path)) return false;
@@ -928,7 +926,7 @@ export class Model {
 
   /** Appends a substitute to a slot, creating the array when it is missing. */
   addSubstitute(archetype, variant, slot, character) {
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     const path = [archetype, variant, slot];
     if (!doc.nodeAt(path)) return false;
@@ -951,7 +949,7 @@ export class Model {
    * on one rewrites it as an object, because the shorthand has nowhere to put it.
    */
   setSubstituteField(archetype, variant, slot, subIndex, field, value) {
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     const listPath = [archetype, variant, slot, "substitutes"];
     const node = doc.nodeAt([...listPath, subIndex]);
@@ -986,7 +984,7 @@ export class Model {
 
   /** Moves a substitute up or down inside its slot. All indices are 0-based. */
   moveSubstitute(archetype, variant, slot, from, to) {
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     const changed = doc.reorderAt([archetype, variant, slot, "substitutes"], from, to);
     if (changed) this.reload();
@@ -995,7 +993,7 @@ export class Model {
 
   /** Removes a substitute, dropping the array when it becomes empty. */
   removeSubstitute(archetype, variant, slot, subIndex) {
-    const doc = this.doc("team_archetypes.json");
+    const doc = this.doc("teams.json");
     if (!doc) return false;
     const memberPath = [archetype, variant, slot];
     const listPath = [...memberPath, "substitutes"];
@@ -1017,7 +1015,7 @@ export class Model {
 
   /** `{ name: { tags, psychubes, resonance, pattern, portrait, notes } }`. */
   guideBuilds() {
-    const value = this.value("guide_builds.json") || {};
+    const value = this.value("builds.json") || {};
     return value && typeof value === "object" && !Array.isArray(value) ? value : {};
   }
 
@@ -1028,7 +1026,7 @@ export class Model {
 
   /** Creates the entry for a character with an empty shape. */
   ensureGuideBuild(name) {
-    const doc = this.doc("guide_builds.json");
+    const doc = this.doc("builds.json");
     if (!doc) return false;
     const canonical = this.resolve(name);
     if (!canonical) return false;
@@ -1039,7 +1037,7 @@ export class Model {
   }
 
   removeGuideBuild(name) {
-    const doc = this.doc("guide_builds.json");
+    const doc = this.doc("builds.json");
     if (!doc) return false;
     const changed = doc.deleteProperty([], this.resolve(name));
     if (changed) this.reload();
@@ -1052,7 +1050,7 @@ export class Model {
    * A blank value removes the property.
    */
   setGuideBuildField(name, field, value) {
-    const doc = this.doc("guide_builds.json");
+    const doc = this.doc("builds.json");
     if (!doc) return false;
     const canonical = this.resolve(name);
     if (!canonical) return false;
@@ -1106,7 +1104,7 @@ export class Model {
   /* ---- guide: rotations ---- */
 
   guideRotations() {
-    const value = this.value("guide_rotations.json") || {};
+    const value = this.value("rotations.json") || {};
     return Array.isArray(value.rotations) ? value.rotations : [];
   }
 
@@ -1133,7 +1131,7 @@ export class Model {
   }
 
   addGuideRotation(name) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return null;
     const label = String(name || "New rotation").trim() || "New rotation";
     if (!doc.nodeAt(["rotations"])) doc.setProperty([], "rotations", []);
@@ -1158,7 +1156,7 @@ export class Model {
   }
 
   removeGuideRotation(id) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1169,7 +1167,7 @@ export class Model {
 
   /** Copies a rotation, places the copy right after it and returns its new id. */
   duplicateGuideRotation(id) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return null;
     const index = this.guideRotationIndex(id);
     if (index === -1) return null;
@@ -1186,7 +1184,7 @@ export class Model {
 
   /** Copies a round, places the copy right after it and returns its new index. */
   duplicateGuideRound(id, roundIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return -1;
     const index = this.guideRotationIndex(id);
     if (index === -1) return -1;
@@ -1202,7 +1200,7 @@ export class Model {
 
   /** Moves a rotation up or down the list. All indices are 0-based. */
   moveGuideRotation(from, to) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const changed = doc.reorderAt(["rotations"], from, to);
     if (changed) this.reload();
@@ -1211,7 +1209,7 @@ export class Model {
 
   /** Moves one AP slot within a round, reordering the turn's card plan. */
   moveRotationSlot(id, roundIndex, from, to) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1237,7 +1235,7 @@ export class Model {
    * index, or null when the slot it pointed at is gone.
    */
   remapAnnotations(rotationIndex, roundIndex, mapIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const round = this.guideRotations()[rotationIndex]?.rounds?.[roundIndex];
     const annotations = round?.annotations;
@@ -1264,7 +1262,7 @@ export class Model {
 
   /** Sets `name`, `notes`, `tuning` or `archetypes` on a rotation. */
   setGuideRotationField(id, field, value) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1303,7 +1301,7 @@ export class Model {
 
   /** Sets one member slot's character or psychube. */
   setGuideRotationMember(id, slotIndex, field, value) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1349,7 +1347,7 @@ export class Model {
   }
 
   removeGuideRound(id, roundIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1377,7 +1375,7 @@ export class Model {
    * it points at the gaps between them.
    */
   addGuideRoundNote(id, from, to, text = "", style = "bracket") {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1402,7 +1400,7 @@ export class Model {
   }
 
   setGuideRoundNoteField(id, noteIndex, field, value) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1434,7 +1432,7 @@ export class Model {
   }
 
   removeGuideRoundNote(id, noteIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1456,7 +1454,7 @@ export class Model {
    * gone.
    */
   remapRoundNotes(rotationIndex, mapIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const rotation = this.guideRotations()[rotationIndex];
     const notes = rotation?.roundNotes;
@@ -1485,7 +1483,7 @@ export class Model {
    * A tuning slot also carries text, set through `setGuideSlotText`.
    */
   setGuideTuningIcon(id, roundIndex, slotIndex, icon) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1521,7 +1519,7 @@ export class Model {
 
   /** Inserts a slot at `at`, so a card can be dropped between two others. */
   insertRoundSlot(id, roundIndex, at, slot) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1555,7 +1553,7 @@ export class Model {
 
   /** Sets a slot's type; switching to text drops the cards and vice versa. */
   setGuideSlotType(id, roundIndex, slotIndex, type) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1576,7 +1574,7 @@ export class Model {
 
   /** Sets the free text of a text slot. */
   setGuideSlotText(id, roundIndex, slotIndex, text) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1591,7 +1589,7 @@ export class Model {
   }
 
   removeGuideSlot(id, roundIndex, slotIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1606,7 +1604,7 @@ export class Model {
   }
 
   setGuideSlotNote(id, roundIndex, slotIndex, note) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1622,7 +1620,7 @@ export class Model {
 
   /** Adds a card to a slot. A second card makes the slot an either/or choice. */
   addGuideSlotCard(id, roundIndex, slotIndex, card) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1651,7 +1649,7 @@ export class Model {
    * the old caption survives while the data moves to the current shape.
    */
   migrateGuideSlot(slotPath, slot) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc || !LEGACY_SLOT_TAGS[slot?.type]) return false;
     const tags = guideSlotTags(slot);
     let changed = doc.nodeAt([...slotPath, "type"])
@@ -1665,7 +1663,7 @@ export class Model {
 
   /** Adds or removes one tag on a slot. Returns true when something changed. */
   setGuideSlotTag(id, roundIndex, slotIndex, tag, on = true) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1693,7 +1691,7 @@ export class Model {
 
   /** Sets the text the free-text tag plate draws. */
   setGuideSlotTagText(id, roundIndex, slotIndex, text) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1711,7 +1709,7 @@ export class Model {
 
   /** Sets `frame`, `surface` or `preferred` on one card. */
   setGuideCardField(id, roundIndex, slotIndex, cardIndex, field, value) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1753,7 +1751,7 @@ export class Model {
    * `style` is one of GUIDE_ANNOTATION_STYLES.
    */
   addGuideAnnotation(id, roundIndex, from, to, text = "", style = "bracket") {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1779,7 +1777,7 @@ export class Model {
   }
 
   setGuideAnnotationField(id, roundIndex, annotationIndex, field, value) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1811,7 +1809,7 @@ export class Model {
   }
 
   removeGuideAnnotation(id, roundIndex, annotationIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1828,7 +1826,7 @@ export class Model {
   }
 
   removeGuideSlotCard(id, roundIndex, slotIndex, cardIndex) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1853,7 +1851,7 @@ export class Model {
   }
 
   setRoundField(id, roundIndex, field, value) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1867,7 +1865,7 @@ export class Model {
   }
 
   appendRoundSlot(id, roundIndex, slot) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1878,7 +1876,7 @@ export class Model {
   }
 
   appendToRotation(id, field, entry) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1889,7 +1887,7 @@ export class Model {
   }
 
   removeFromRotation(id, field, at) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const index = this.guideRotationIndex(id);
     if (index === -1) return false;
@@ -1902,7 +1900,7 @@ export class Model {
 
   /** Writes an object property, replacing or creating it as needed. */
   writeValue(parentPath, key, value) {
-    const doc = this.doc("guide_rotations.json");
+    const doc = this.doc("rotations.json");
     if (!doc) return false;
     const path = [...parentPath, key];
     const changed = doc.nodeAt(path)
@@ -1918,7 +1916,7 @@ export class Model {
    * The original flat `[{badge, val}]` shape is read as one untitled chart.
    */
   progressionCharts(name) {
-    const value = this.value("characters_progressions.json") || {};
+    const value = this.value("progressions.json") || {};
     const raw = value[this.resolve(name)];
     if (!Array.isArray(raw)) return [];
     if (raw.every((entry) => entry && typeof entry === "object" && !Array.isArray(entry.bars))) {
@@ -1938,7 +1936,7 @@ export class Model {
 
   /** Writes every chart back, dropping the key when the list is empty. */
   setProgressionCharts(name, charts) {
-    const doc = this.doc("characters_progressions.json");
+    const doc = this.doc("progressions.json");
     if (!doc) return false;
     const canonical = this.resolve(name);
     if (!canonical) return false;
@@ -2274,7 +2272,6 @@ export function validate(model) {
 
   /* shape patterns */
   const patterns = model.value("shape_patterns.json") || {};
-  const reso = model.value("reso_shape.json") || {};
   for (const shape of SHAPES) {
     const list = patterns[shape];
     if (!Array.isArray(list)) {
@@ -2285,11 +2282,6 @@ export function validate(model) {
     if (list[0] !== "Placidity") warn(`shape_patterns.json → ${shape}: first pattern is "${list[0]}", expected "Placidity"`);
     const dupes = list.filter((p, i) => list.indexOf(p) !== i);
     if (dupes.length) err(`shape_patterns.json → ${shape}: duplicate patterns ${[...new Set(dupes)].join(", ")}`);
-  }
-  for (const shape of SHAPES) {
-    const a = (patterns[shape] || []).join("|");
-    const b = (reso[shape] || []).join("|");
-    if (a !== b) err(`reso_shape.json → ${shape} no longer matches shape_patterns.json (the app only reads the latter)`);
   }
 
   /* psychubes */
@@ -2338,7 +2330,7 @@ export function validate(model) {
   }
 
   /* team presets */
-  const teams = model.value("team_archetypes.json") || {};
+  const teams = model.value("teams.json") || {};
   const psychubeByName = new Map();
   for (const [rarity, list] of Object.entries(psychubeId)) {
     for (const item of list) {
@@ -2348,11 +2340,11 @@ export function validate(model) {
 
   for (const [archetype, variants] of Object.entries(teams)) {
     if (!Array.isArray(variants)) {
-      err(`team_archetypes.json → ${archetype}: expected an array of variants`);
+      err(`teams.json → ${archetype}: expected an array of variants`);
       continue;
     }
     variants.forEach((slots, vi) => {
-      const label = `team_archetypes.json → ${archetype} #${vi + 1}`;
+      const label = `teams.json → ${archetype} #${vi + 1}`;
       if (!Array.isArray(slots)) {
         err(`${label}: expected an array of slots`);
         return;
@@ -2433,9 +2425,9 @@ export function validate(model) {
 
   /* guide: character builds */
   {
-    const builds = model.value("guide_builds.json") || {};
+    const builds = model.value("builds.json") || {};
     for (const [name, build] of Object.entries(builds)) {
-      const label = `guide_builds.json → ${name}`;
+      const label = `builds.json → ${name}`;
       if (!known.has(name)) {
         err(`${label}: "${name}" is not a known character`);
         continue;
@@ -2463,14 +2455,14 @@ export function validate(model) {
 
   /* guide: rotations */
   {
-    const value = model.value("guide_rotations.json") || {};
+    const value = model.value("rotations.json") || {};
     const rotations = value.rotations;
     if (!Array.isArray(rotations)) {
-      warn("guide_rotations.json: no rotations array, so the Guide's Rotations tab stays empty");
+      warn("rotations.json: no rotations array, so the Guide's Rotations tab stays empty");
     } else {
       const seenIds = new Set();
       rotations.forEach((rotation, i) => {
-        const label = `guide_rotations.json → rotation ${i + 1}`;
+        const label = `rotations.json → rotation ${i + 1}`;
         if (!rotation || typeof rotation !== "object") {
           err(`${label}: expected an object`);
           return;
@@ -2597,8 +2589,8 @@ export function validate(model) {
   }
 
   /* portrait progressions */
-  for (const [name, list] of Object.entries(model.value("characters_progressions.json") || {})) {
-    const label = `characters_progressions.json → ${name}`;
+  for (const [name, list] of Object.entries(model.value("progressions.json") || {})) {
+    const label = `progressions.json → ${name}`;
     if (!known.has(name)) err(`${label}: "${name}" is not a known character`);
     if (!Array.isArray(list)) {
       err(`${label}: expected an array of charts`);

@@ -599,7 +599,7 @@ function renderFileTouchCard(name) {  const model = state.model;
   for (const [raw, canonical] of Object.entries(model.value("global_name_transfer.json") || {})) {
     if (canonical === name) push("global_name_transfer.json", raw);
   }
-  for (const [archetype, variants] of Object.entries(model.value("team_archetypes.json") || {})) {
+  for (const [archetype, variants] of Object.entries(model.value("teams.json") || {})) {
     const used = variants.some((slots) =>
       slots.some(
         (m) =>
@@ -607,7 +607,7 @@ function renderFileTouchCard(name) {  const model = state.model;
           (m.substitutes || []).some((s) => (typeof s === "string" ? s : s.character) === name)
       )
     );
-    if (used) push("team_archetypes.json", archetype);
+    if (used) push("teams.json", archetype);
   }
 
   const card = el("div", { class: "card" }, [el("h2", { text: "Present in" })]);
@@ -1286,7 +1286,7 @@ function renderTeamDetail() {
         el("div", { class: "detail-title", text: archetype }),
         el("div", {
           class: "detail-sub",
-          text: `preset ${position + 1} of ${model.teamNames.length} · ${variants.length} variant(s) → team_archetypes.json`,
+          text: `preset ${position + 1} of ${model.teamNames.length} · ${variants.length} variant(s) → teams.json`,
         }),
       ]),
       el("button", {
@@ -1312,7 +1312,7 @@ function renderTeamDetail() {
         text: "Delete preset",
         onclick: () => {
           if (!window.confirm(`Delete the preset "${archetype}"?`)) return;
-          model.doc("team_archetypes.json").deleteProperty([], archetype);
+          model.doc("teams.json").deleteProperty([], archetype);
           model.reload();
           state.selected.teams = null;
           afterEdit();
@@ -1563,7 +1563,7 @@ function renderTeamDetail() {
             class: "btn btn-sm btn-danger",
             text: "Remove slot",
             onclick: () => {
-              model.doc("team_archetypes.json").removeAt([archetype, vi], si);
+              model.doc("teams.json").removeAt([archetype, vi], si);
               model.reload();
               afterEdit({ list: false });
             },
@@ -1580,7 +1580,7 @@ function renderTeamDetail() {
           class: "btn btn-sm",
           text: "+ Add slot",
           onclick: () => {
-            model.doc("team_archetypes.json").append([archetype, vi], { character: model.characters[0] });
+            model.doc("teams.json").append([archetype, vi], { character: model.characters[0] });
             model.reload();
             afterEdit({ list: false });
           },
@@ -1589,7 +1589,7 @@ function renderTeamDetail() {
           class: "btn btn-sm",
           text: "+ Duplicate variant",
           onclick: () => {
-            model.doc("team_archetypes.json").append([archetype], JSON.parse(JSON.stringify(slots)));
+            model.doc("teams.json").append([archetype], JSON.parse(JSON.stringify(slots)));
             model.reload();
             afterEdit({ list: false });
           },
@@ -1598,7 +1598,7 @@ function renderTeamDetail() {
           class: "btn btn-sm btn-danger",
           text: "Delete variant",
           onclick: () => {
-            model.doc("team_archetypes.json").removeAt([archetype], vi);
+            model.doc("teams.json").removeAt([archetype], vi);
             model.reload();
             afterEdit({ list: false });
           },
@@ -1615,7 +1615,7 @@ function renderTeamDetail() {
         class: "btn",
         text: "+ Add variant",
         onclick: () => {
-          model.doc("team_archetypes.json").append([archetype], [{ character: model.characters[0], is_essential: true }]);
+          model.doc("teams.json").append([archetype], [{ character: model.characters[0], is_essential: true }]);
           model.reload();
           afterEdit({ list: false });
         },
@@ -1902,10 +1902,10 @@ function addTransferFlow() {
  * ------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------ *
- * Builds — per-character build data (guide_builds.json)
+ * Builds — per-character build data (builds.json)
  * ------------------------------------------------------------------ */
 
-/** Characters that already have an entry in guide_builds.json. */
+/** Characters that already have an entry in builds.json. */
 function buildNames() {
   return new Set(Object.keys(state.model.guideBuilds()));
 }
@@ -2037,7 +2037,7 @@ function renderBuildDetail() {
       c.avatar ? el("img", { src: c.avatar, class: "avatar", alt: "" }) : null,
       el("div", { style: "flex:1" }, [
         el("div", { class: "detail-title", text: name }),
-        el("div", { class: "detail-sub", text: [c.cnName, c.afflatus, c.shape].filter(Boolean).join(" · ") || "guide_builds.json" }),
+        el("div", { class: "detail-sub", text: [c.cnName, c.afflatus, c.shape].filter(Boolean).join(" · ") || "builds.json" }),
       ]),
       renderNoteLangSwitch(),
     ])
@@ -2249,7 +2249,7 @@ function renderBuildDetail() {
     el("h2", { text: "Portrait value charts" }),
     el("p", {
       class: "hint",
-      text: "From characters_progressions.json. Each chart has a title and its own bars; an untitled chart shows as “Chart N” in the app.",
+      text: "From progressions.json. Each chart has a title and its own bars; an untitled chart shows as “Chart N” in the app.",
     }),
   ]);
 
@@ -2380,7 +2380,7 @@ function renderBuildDetail() {
 }
 
 /* ------------------------------------------------------------------ *
- * Rotations — card plans (guide_rotations.json)
+ * Rotations — card plans (rotations.json)
  * ------------------------------------------------------------------ */
 
 /** Skill cards for a character, read from guide_skills.json. */
@@ -3435,7 +3435,7 @@ function renderRotationDetail() {
     el("div", { class: "detail-head" }, [
       el("div", { style: "flex:1" }, [
         el("div", { class: "detail-title", text: rotation.name || id }),
-        el("div", { class: "detail-sub", text: `${rounds.length} round(s) → guide_rotations.json` }),
+        el("div", { class: "detail-sub", text: `${rounds.length} round(s) → rotations.json` }),
       ]),
       renderNoteLangSwitch(),
       el("button", {
@@ -4503,7 +4503,7 @@ function renderReview() {
   } else {
     for (const name of changed) {
       const doc = model.doc(name);
-      const wrap = el("div", { class: "diff-file" }, [el("div", { class: "name", text: `data/${name}` })]);
+      const wrap = el("div", { class: "diff-file" }, [el("div", { class: "name", text: `${files.dirFor(name)}/${name}` })]);
       const body = el("div", { class: "diff" });
 
       for (const hunk of diffHunks(doc.original, doc.toString(), 2)) {
@@ -4532,7 +4532,7 @@ function renderReview() {
       el("div", {
         class: "field-note",
         style: "margin:0",
-        text: "Extract the archive over the repository root — the entries are already at data/<name>.json.",
+        text: "Extract the archive over the repository root — the entries are already at data/<name>.json or content/<name>.json.",
       })
     );
   }

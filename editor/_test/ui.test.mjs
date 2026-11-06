@@ -380,7 +380,7 @@ try {
   );
   check("the diff mentions the substitute's new tier", /\+.*"euphoria": "E2"/.test(diffText), diffText.slice(0, 300));
   check("and the old tier is removed", /-.*"euphoria": "E1"/.test(diffText), diffText.slice(0, 300));
-  check("only team_archetypes.json is listed", (await page.evaluate(() => document.querySelectorAll("#diff-report .diff-file").length)) === 1);
+  check("only teams.json is listed", (await page.evaluate(() => document.querySelectorAll("#diff-report .diff-file").length)) === 1);
 
   /* ------------------------------------------------------------------ *
    * 5. Character tab controls
@@ -876,7 +876,7 @@ try {
   {
     // Seed the user's rotation list so rotations are present in the list
     await page.evaluate(async () => {
-      const res = await fetch("data/guide_rotations.json");
+      const res = await fetch("content/rotations.json");
       const data = await res.json();
       const list = (data.rotations || []).map((r) => ({ uid: `preset-${r.id}`, presetId: r.id }));
       localStorage.setItem("r1999_rotation_list_v1", JSON.stringify(list));
@@ -1120,7 +1120,7 @@ try {
     // The entry name must be the repository path, so extracting over the repo
     // root puts the file where it belongs.
     const raw = bytes.toString("latin1");
-    check("it contains the changed file at its repository path", raw.includes("data/team_archetypes.json"), "entry name not found");
+    check("it contains the changed file at its repository path", raw.includes("content/teams.json"), "entry name not found");
 
     const bannerText = await page.evaluate(() => document.getElementById("banner").textContent);
     check("the banner names the archive", /\.zip/.test(bannerText), bannerText.slice(0, 120));

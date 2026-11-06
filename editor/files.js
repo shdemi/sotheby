@@ -13,6 +13,23 @@
  */
 
 export const DATA_DIR = "data";
+export const CONTENT_DIR = "content";
+
+/**
+ * Hand-authored files live under `content/`; everything else under `data/`
+ * (AGENTS.md §1.2, §6). The editor edits the content files and reads the rest.
+ */
+export const CONTENT_FILES = new Set([
+  "builds.json",
+  "rotations.json",
+  "teams.json",
+  "progressions.json",
+  "guide_skills.json",
+  "credits.json",
+  "i18n.json",
+]);
+
+export const dirFor = (name) => (CONTENT_FILES.has(name) ? CONTENT_DIR : DATA_DIR);
 
 /** Files the editor reads and may regenerate. */
 export const WRITABLE = [
@@ -20,19 +37,17 @@ export const WRITABLE = [
   "characters_by_afflatus.json",
   "character_reso_shape.json",
   "shape_patterns.json",
-  "reso_shape.json",
   "exclude_character.json",
   "collab_character.json",
   "future_sight.json",
   "global_name_transfer.json",
   "name_map.json",
   "psychube_id.json",
-  "team_archetypes.json",
-  "characters_progressions.json",
-  "guide_builds.json",
-  "guide_rotations.json",
+  "teams.json",
+  "progressions.json",
+  "builds.json",
+  "rotations.json",
   "guide_skills.json",
-  "guide_cards.json",
   "credits.json",
   "i18n.json",
 ];
@@ -59,7 +74,7 @@ async function fetchText(url) {
 export async function loadAll() {
   const names = [...WRITABLE, ...READ_ONLY];
   const [texts, appJs] = await Promise.all([
-    Promise.all(names.map((n) => fetchText(`../${DATA_DIR}/${n}`))).then((list) =>
+    Promise.all(names.map((n) => fetchText(`../${dirFor(n)}/${n}`))).then((list) =>
       Object.fromEntries(names.map((n, i) => [n, list[i]]))
     ),
     fetchText("../app.js").catch(() => ""),
@@ -231,12 +246,12 @@ export function downloadFile(name, text) {
  * @param {string} [dataDir] folder prefix inside the archive
  * @returns {{filename: string, files: string[]}}
  */
-export function downloadZip(files, dataDir = DATA_DIR) {
+export function downloadZip(files) {
   const names = Object.keys(files).sort();
   if (names.length === 0) throw new Error("There is nothing to download.");
 
   const zipped = {};
-  for (const name of names) zipped[`${dataDir}/${name}`] = files[name];
+  for (const name of names) zipped[`${dirFor(name)}/${name}`] = files[name];
 
   const bytes = buildZip(zipped);
   const stamp = new Date().toISOString().slice(0, 10);
