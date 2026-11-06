@@ -389,11 +389,13 @@ const PSYCHUBE_MIN_AMP = 1;
 // Special chubes (Gluttony / Greed) track a raw quantity, so it is not capped
 // at the game's usual 99 — only a sanity bound is applied.
 const PSYCHUBE_MAX_COUNT = 9999;
-// id 1 of each rarity is a special "count-only" chube
-const PSYCHUBE_SPECIAL_IDS = ["1"];
-let psychubeDb = {};        // { "6:1": { rarity, id, name, nameCn, tags, releasePatch, iconUrl } }
+// Special "count-only" chubes by game id: Gluttony (6★) and Greed (5★).
+const PSYCHUBE_SPECIAL_IDS = ["1000", "1001"];
+let psychubeDb = {};        // { "6:1579": { rarity, id, name, nameCn, tags, releasePatch, iconUrl } }
 let psychubeOrder = [];     // ordered keys for stable listing
-let userPsychubes = {};     // { "6:1": { owned, level, amplification, count } }
+let userPsychubes = {};     // { "6:1579": { owned, level, amplification, count } }
+// Old saves keyed chubes by invented sequential ids; this maps them to game ids.
+let psychubeKeyMapCache = {}; // { "6:1": "6:1000", ... }
 let characterRarityMap = {}; // { "Name": 6 }
 let characterIdMap = {}; // { "Name": 3003 }
 let euphoriaOptionsByName = {}; // { "Name": [1,2] }
@@ -1261,7 +1263,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes] = await Promise.all([
+    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/euphoria_list.json"),
@@ -1290,6 +1292,7 @@ async function initApp() {
       fetch("data/character_euphorias.json").catch(() => null),
       fetch("data/skill_glossary.json").catch(() => null),
       fetch("data/psychubes_data.json").catch(() => null),
+      fetch("data/psychube_key_map.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1414,6 +1417,14 @@ async function initApp() {
         buildPsychubeData(psychubeData);
       } catch (e) {
         console.warn("Could not parse psychube_id.json", e);
+      }
+    }
+
+    if (psychubeKeyMapRes && psychubeKeyMapRes.ok) {
+      try {
+        psychubeKeyMapCache = (await psychubeKeyMapRes.json()) || {};
+      } catch (e) {
+        console.warn("Could not parse psychube_key_map.json", e);
       }
     }
 
@@ -1605,7 +1616,41 @@ function loadPsychubes() {
     console.warn("Could not parse psychube state", e);
     userPsychubes = {};
   }
+  if (migratePsychubeKeys()) savePsychubes();
   if (sanitizePsychubeState()) savePsychubes();
+}
+
+/**
+ * One-time translation of saved chube keys from the old invented sequential ids to
+ * game ids (e.g. "6:73" -> "6:1579"), using data/psychube_key_map.json. Without this
+ * every existing player's psychube collection would be silently dropped.
+ */
+function migratePsychubeKeys() {
+  let changed = false;
+  const out = {};
+  for (const [key, state] of Object.entries(userPsychubes)) {
+    const next = psychubeKeyMapCache[key] || key;
+    if (next !== key) changed = true;
+    out[next] = out[next] ? mergePsychubeState(out[next], state) : state;
+  }
+  if (changed) userPsychubes = out;
+  return changed;
+}
+
+function mergePsychubeState(a, b) {
+  const norm = (s) => ({
+    owned: !!s.owned,
+    level: Number(s.level) || 1,
+    amplification: Number(s.amplification) || PSYCHUBE_MIN_AMP,
+    count: Number(s.count) || 0,
+  });
+  const x = norm(a), y = norm(b);
+  return {
+    owned: x.owned || y.owned,
+    level: Math.max(x.level, y.level),
+    amplification: Math.max(x.amplification, y.amplification),
+    count: x.count + y.count,
+  };
 }
 
 function savePsychubes() {

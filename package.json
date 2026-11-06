@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node editor/_test/run-all.mjs",
     "test:ui": "node editor/_test/ui.test.mjs",
-    "serve": "python serve.py 8000"
+    "serve": "python serve.py 8000",
+    "sync": "node scripts/sync/index.mjs",
+    "sync:verify": "node scripts/sync/verify.mjs"
   },
   "devDependencies": {
     "playwright": "^1.49.0"

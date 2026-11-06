@@ -1,0 +1,8 @@
+{
+  "//": "Afflatus overrides. Key = canonical display name, value = afflatus key.",
+  "//why": "character.career is the primary afflatus source, but a few entries in the hand-curated data disagreed with it.",
+  "overrides": {
+    "Necrologist": "Spirit",
+    "The Fool": "Spirit"
+  }
+}

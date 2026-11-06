@@ -1,0 +1,7 @@
+{
+  "//": "Display-name overrides applied on top of the names derived from game data.",
+  "//why": "The game's EN text sometimes disagrees with the roster name the project uses (capitalisation, punctuation). Key = derived name, value = display name.",
+  "overrides": {
+    "aliEn T": "AliEn T"
+  }
+}

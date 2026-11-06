@@ -13,7 +13,6 @@
     "Glyndŵr",
     "Igor",
     "J",
-    "Joe",
     "Leilani",
     "Lopera",
     "Marsha",
@@ -78,18 +77,15 @@
     "Liang Yue",
     "Lilya",
     "Lorelei",
-    "Machine D III",
     "Matilda",
     "Oliver Fog",
     "Regulus",
     "Sputnik",
     "TTT",
-    "The Fool",
     "Tooth Fairy",
     "Voyager",
     "Windsong",
-    "Yenisei",
-    "aliEn T"
+    "Yenisei"
   ],
   "Mineral": [
     "Balloon Party",
@@ -111,7 +107,6 @@
     "Ms. NewBabel",
     "Ms. Stranger",
     "Name Day",
-    "Necrologist",
     "ONiON",
     "Pickles",
     "Recoleta",
@@ -153,7 +148,5 @@
     "White Rum",
     "X"
   ],
-  "Mineral_Star": [
-    "The Twins"
-  ]
+  "Mineral_Star": ["The Twins"]
 }
