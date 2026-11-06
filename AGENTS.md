@@ -100,7 +100,7 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `characters_by_afflatus.json` | `character.json → career` | see caveat below |
 | `character_profiles.json` | `character.json → dmgType`, `character_battle_tag.json` | `dmgType`: 1=Reality, 2=Mental; `battleTag` is `101#117#122` → needs a role map |
 | `character_skills.json` | `character.json`, `character_rank_replace.json`, `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json`, `fight_device.json` + global `language_*` | **derived**: 138 characters; device heroes take stances/specials from `fight_device`; CN-only English + all Vietnamese live in `content/translations/skills.json` |
-| `characters_mats_required.json` | `character_rank.json`, `character_rank_replace.json`, `talent_style.json`, `talent_style_cost.json`, `resonance.json`, `item.json` | |
+| `characters_mats_required.json` | `character_rank.json`, `character_talent.json`, `item.json` + global `language_*` | **mixed**: `insight`/`resonance` derived; `stats`/`euphoria`/`mastery`/`frequency` come from `content/progression.json` |
 | `items.json` | `item.json` + global `language_*` | 782 raw items; app shows a curated subset |
 | `item_formulas.json` | `formula.json` (`costMaterial`, `produce`) | |
 | `psychube_id.json` | `equip.json` | key = `equip.id` (see §5) |
@@ -142,6 +142,7 @@ Owned by the project, not the game. Lives in `content/` after the rebuild.
 | `guide_rotations.json` | skill rotation plans |
 | `guide_skills.json` | skill icon/variant mapping |
 | `characters_progressions.json` | progression charts |
+| `progression.json` | the hand-authored half of `characters_mats_required.json`: `stats` (level bands), `euphoria`, `mastery`, `frequency` (seeded by `scripts/sync/tools/extract-progression.mjs`) |
 | `team_archetypes.json` | team presets |
 | `i18n.json` | UI strings + VI translations |
 | `credits.json` | acknowledgements |
@@ -450,6 +451,20 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 - **Do not strip `<1>`/`<2>`/`<i>` from skill text.** Those are game markers (they tell
   repeated portray lines apart) and the app renders them as HTML. `cleanGame()` mirrors
   the legacy cleaner rather than calling `stripMarkup()` on descriptions.
+- **`characters_mats_required.json` is split by provenance.** `insight` comes from
+  `character_rank` (rank 2..N → insight 1..N-1) and `resonance` from
+  `character_talent` (talent 2..N → resonance N); both merge CN + global and match the
+  legacy quantities exactly. `stats`, `euphoria`, `mastery` and `frequency` cannot be
+  derived from any table (`character_level` uses cumulative levels and different values),
+  so they live in `content/progression.json`, keyed by canonical name. Lower-rarity
+  arcanists have four stat bands, not five.
+- **Material names are refreshed from `item.json`.** The legacy file carried older
+  translations ("Alopecurus Pratensis", "Golden Herb Incense", "Pyroxene Ore"); the
+  generated file uses the current global names ("Fox Tail", "Golden Grass Incense",
+  "Luminite Ore"). Tier counts and quantities are unchanged.
+- **Stale mats rows are dropped.** The legacy file also held `10081:J`, `10067:Ezra
+  Theodore` and `9998:Machine D III`; J/Ezra now key on their real ids and the dummy is
+  gone. Schneider and Ezra had empty costs and now get theirs from the tables.
 
 ---
 

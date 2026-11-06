@@ -155,6 +155,33 @@ ok(
 );
 ok("every character has five portrays", skillEntries.every((e) => e.portrays.length === 5 && e.portrays.every((p, i) => p.level === i + 1)));
 
+// ---- progression ------------------------------------------------------------
+const matsBook = read("characters_mats_required.json");
+const matsKeys = Object.keys(matsBook);
+const matsEntries = Object.values(matsBook);
+const tierShape = (list, key) => list.every((tier, i) => tier[key] === i + (key === "insight" ? 1 : 2));
+const allMaterials = matsEntries.flatMap((e) => [...e.insight, ...e.resonance].flatMap((t) => t.materials));
+ok("characters_mats_required covers the roster", rarities.every((name) => matsBook[name]), rarities.filter((n) => !matsBook[n]).join(","));
+ok("characters_mats_required has no extra keys", matsKeys.every((name) => rarities.includes(name)), matsKeys.filter((n) => !rarities.includes(n)).join(","));
+ok("characters_mats_required ids are unique", new Set(matsEntries.map((e) => e.id)).size === matsKeys.length);
+ok("characters_mats_required drops the dummy arcanist", !matsKeys.includes("Machine D III"));
+ok("mats names match their keys", matsEntries.every((e, i) => e.name === matsKeys[i]));
+ok("every character has insight and resonance costs", matsEntries.every((e) => e.insight.length > 0 && e.resonance.length > 0));
+ok("insight tiers are 1..N in order", matsEntries.every((e) => tierShape(e.insight, "insight")));
+ok("resonance tiers are 2..N in order", matsEntries.every((e) => tierShape(e.resonance, "resonance")));
+ok("every material has a name and a positive quantity", allMaterials.every((m) => m.material && Number(m.quantity) > 0));
+ok(
+  "stats carry four or five level bands of seven numbers",
+  matsEntries.every((e) => {
+    const bands = Object.values(e.stats || {});
+    return bands.length >= 4 && bands.length <= 5 && bands.every((b) => Array.isArray(b) && b.length === 7 && b.every((n) => typeof n === "number"));
+  }),
+);
+ok("rarity/afflatus agree with the roster files", matsEntries.every((e) => {
+  const bucket = Object.entries(afflatus).find(([, names]) => names.includes(e.name));
+  return Boolean(rarity[e.rarity]?.includes(e.name)) && Boolean(bucket);
+}));
+
 // ---- misc -------------------------------------------------------------------
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));
 ok("_meta has both versions", !!meta.globalVersion && !!meta.cnVersion, `${meta.globalVersion} / ${meta.cnVersion}`);

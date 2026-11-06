@@ -62,6 +62,11 @@ export function charactersByAfflatus() {
   return out;
 }
 
+/** The afflatus of one character, honouring the hand overrides. */
+export function afflatusFor(name, ch) {
+  return afflatusOverrides()[name] || CAREER[ch.career];
+}
+
 export function writeCharacterOutputs(outDir) {
   writeJson(path.join(outDir, "characters_by_rarity.json"), charactersByRarity());
   writeJson(path.join(outDir, "characters_by_afflatus.json"), charactersByAfflatus());
