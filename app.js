@@ -6766,12 +6766,12 @@ function renderItemStickerHtml(itemOrName, qty = null, extraClass = "") {
   }
   const qtyHtml = qty !== null && qty !== undefined ? `<span class="item-sticker-qty">${formatMaterialQuantity(qty)}</span>` : "";
   const title = escapeHtml(item.name || "");
-  const iconSrc = item.id ? `images/items/icon/${item.id}.webp` : item.icon;
+  const iconSrc = item.icon || "";
   const borderSrc = item.rarity ? `images/items/border/${item.rarity}.webp` : item.border;
   return `
     <div class="item-sticker ${extraClass}" data-item-id="${item.id}" data-item-name="${escapeHtml(item.name)}" title="${title}">
       <img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" loading="lazy" />
-      <img src="${escapeHtml(iconSrc)}" alt="${title}" class="item-sticker-img" loading="lazy" />
+      ${iconSrc ? `<img src="${escapeHtml(iconSrc)}" alt="${title}" class="item-sticker-img" loading="lazy" />` : ""}
       ${qtyHtml}
     </div>
   `;
@@ -6786,21 +6786,24 @@ let charProgPattern = null;
 let charEuphoriaSelectedTiers = new Set();
 let charMasteryLevel = 0;
 
-const KORNBLUME_CATEGORY_PRIORITY = {
-  "Base Item": 0,
-  "Resonate Material": 1,
-  "Insight Material": 2,
-  "Build Material": 2,
+/** Material ordering: currency first, then the two ritual materials, then the rest. */
+const ITEM_CATEGORY_PRIORITY = {
+  Currency: 0,
+  "Resonate Materials": 1,
+  "Insight Materials": 2,
+  "Portrait Materials": 2,
+  "General Materials": 2,
+  "Psychube Material": 2,
 };
 
-function sortMaterialsKornblume(array) {
+function sortMaterialsByCategory(array) {
   return array.slice().sort((matA, matB) => {
     const itemA = getItemByName(matA.material);
     const itemB = getItemByName(matB.material);
 
     if (itemA && itemB) {
-      const catA = KORNBLUME_CATEGORY_PRIORITY[itemA.category] !== undefined ? KORNBLUME_CATEGORY_PRIORITY[itemA.category] : 99;
-      const catB = KORNBLUME_CATEGORY_PRIORITY[itemB.category] !== undefined ? KORNBLUME_CATEGORY_PRIORITY[itemB.category] : 99;
+      const catA = ITEM_CATEGORY_PRIORITY[itemA.category] !== undefined ? ITEM_CATEGORY_PRIORITY[itemA.category] : 99;
+      const catB = ITEM_CATEGORY_PRIORITY[itemB.category] !== undefined ? ITEM_CATEGORY_PRIORITY[itemB.category] : 99;
       if (catA !== catB) return catA - catB;
       if (itemB.rarity !== itemA.rarity) return (itemB.rarity || 0) - (itemA.rarity || 0);
       return (itemA.id || 0) - (itemB.id || 0);
@@ -6952,7 +6955,7 @@ function calculateCombinedCharacterMaterials(name) {
   }
 
   const rawList = Object.entries(result).map(([material, quantity]) => ({ material, quantity }));
-  return sortMaterialsKornblume(rawList);
+  return sortMaterialsByCategory(rawList);
 }
 
 function updateCharacterMatsOnly(name) {
@@ -9027,13 +9030,13 @@ function renderItemDetail() {
   const isCn = currentLang === "cn";
   const isVi = currentLang === "vi";
   const displayName = isVi && item.nameVi ? item.nameVi : (isCn && item.nameZh ? item.nameZh : item.name);
-  const displayCategory = isVi && item.categoryVi ? item.categoryVi : item.category;
+  const displayCategory = isVi && item.categoryVi ? item.categoryVi : (isCn && item.categoryZh ? item.categoryZh : item.category);
   const displayDesc = isVi && item.descriptionVi ? item.descriptionVi : item.description;
   const displayUsage = isVi && item.usageVi ? item.usageVi : item.usage;
   const displaySource = isVi && item.sourceVi ? item.sourceVi : item.source;
 
   // Formula craft items (Wishing Spring)
-  const formula = itemFormulasData[item.name];
+  const formula = itemFormulasData[item.id];
   const formulaHtml = formula && formula.length
     ? `<div class="build-section" style="margin-top: 16px;">
         <h4 class="build-section-title">${isVi ? "Công thức Chế tạo (Suối Ước)" : (isCn ? "不绝瀑流配方" : "Wishing Spring Formula")}</h4>
@@ -9043,7 +9046,7 @@ function renderItemDetail() {
        </div>`
     : "";
 
-  const iconSrc = item.id ? `images/items/icon/${item.id}.webp` : item.icon;
+  const iconSrc = item.icon || "";
   const borderSrc = item.rarity ? `images/items/border/${item.rarity}.webp` : item.border;
 
   host.innerHTML = `
@@ -9051,7 +9054,7 @@ function renderItemDetail() {
       <div class="material-detail-hero">
         <div class="material-detail-icon-wrap">
           <img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" />
-          <img src="${escapeHtml(iconSrc)}" alt="" class="item-sticker-img" />
+          ${iconSrc ? `<img src="${escapeHtml(iconSrc)}" alt="" class="item-sticker-img" />` : ""}
         </div>
         <div class="material-detail-info">
           <h3 class="material-detail-name">${escapeHtml(displayName)}</h3>

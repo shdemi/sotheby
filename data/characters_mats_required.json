@@ -341,15 +341,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -364,15 +364,15 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -385,15 +385,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 1
           },
           {
@@ -406,11 +406,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -427,11 +427,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -499,7 +499,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -888,19 +888,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -911,11 +911,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -923,7 +923,7 @@
             "quantity": 1
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 1
           }
         ]
@@ -932,19 +932,19 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -953,15 +953,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -974,11 +974,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -1020,7 +1020,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -1064,7 +1064,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -1435,19 +1435,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -1456,7 +1456,7 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of New Sprout",
+            "material": "Overgrown Key",
             "quantity": 1
           }
         ]
@@ -1467,11 +1467,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -1488,11 +1488,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -1500,7 +1500,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -1509,11 +1509,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -1530,11 +1530,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -1991,15 +1991,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -2012,15 +2012,15 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -2035,15 +2035,15 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -2056,11 +2056,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -2077,11 +2077,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -2098,11 +2098,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -2110,7 +2110,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -2188,7 +2188,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -2210,7 +2210,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -3117,15 +3117,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -3140,11 +3140,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -3161,11 +3161,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -3182,15 +3182,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -3203,11 +3203,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -3215,7 +3215,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -3279,7 +3279,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -3297,11 +3297,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -3664,15 +3664,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -3687,15 +3687,15 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -3708,11 +3708,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -3729,11 +3729,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -3750,11 +3750,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -3862,7 +3862,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -4700,7 +4700,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -4935,7 +4935,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 2
           },
           {
@@ -4963,7 +4963,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 2
           },
           {
@@ -4991,7 +4991,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 2
           },
           {
@@ -5810,7 +5810,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -6230,7 +6230,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -6592,7 +6592,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -6867,7 +6867,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -7264,15 +7264,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 6
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 100
           },
           {
@@ -7287,11 +7287,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 10
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 138
           },
           {
@@ -7304,11 +7304,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 15
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 184
           },
           {
@@ -7321,11 +7321,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 18
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 235
           },
           {
@@ -7342,15 +7342,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 629
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -7822,11 +7822,11 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -8210,7 +8210,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -8224,7 +8224,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -8648,7 +8648,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -9043,15 +9043,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -9064,15 +9064,15 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -9087,19 +9087,19 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 1
           }
         ]
@@ -9108,11 +9108,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -9129,11 +9129,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -9150,11 +9150,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -9515,7 +9515,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -11305,19 +11305,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -11326,15 +11326,15 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -11349,11 +11349,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -11370,11 +11370,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -11382,7 +11382,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -11391,19 +11391,19 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -11412,11 +11412,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -11436,7 +11436,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -11488,7 +11488,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -11502,7 +11502,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -11524,7 +11524,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -12329,7 +12329,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 2
           },
           {
@@ -13801,15 +13801,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -13822,19 +13822,19 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -13845,11 +13845,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -13866,15 +13866,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -13887,11 +13887,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -13908,11 +13908,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -13940,7 +13940,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -14646,15 +14646,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 6
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 100
           },
           {
@@ -14667,15 +14667,15 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 6
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 100
           },
           {
@@ -14690,11 +14690,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 10
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 138
           },
           {
@@ -14707,15 +14707,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 15
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 184
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           }
         ]
@@ -14724,11 +14724,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 18
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 235
           },
           {
@@ -14745,11 +14745,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 629
           },
           {
@@ -14757,7 +14757,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 1
           }
         ]
@@ -15459,15 +15459,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 6
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 100
           },
           {
@@ -15482,11 +15482,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 10
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 138
           },
           {
@@ -15499,11 +15499,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 15
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 184
           },
           {
@@ -15516,15 +15516,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 18
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 235
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -15537,11 +15537,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 629
           },
           {
@@ -15579,7 +15579,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -16418,7 +16418,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -16801,15 +16801,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -16824,11 +16824,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -16845,11 +16845,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -16866,11 +16866,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -16887,15 +16887,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -16915,11 +16915,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -16981,7 +16981,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -16999,7 +16999,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -17348,19 +17348,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -17371,11 +17371,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -17392,11 +17392,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -17413,11 +17413,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -17434,11 +17434,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -17502,7 +17502,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -17524,7 +17524,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -18596,15 +18596,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -18617,15 +18617,15 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -18640,11 +18640,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -18661,19 +18661,19 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -18682,11 +18682,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -18703,11 +18703,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -18749,7 +18749,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -18771,7 +18771,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -19164,15 +19164,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -19187,11 +19187,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -19208,11 +19208,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -19229,11 +19229,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -19250,11 +19250,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -19278,7 +19278,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -19296,7 +19296,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -19318,7 +19318,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -19711,15 +19711,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -19734,11 +19734,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -19755,11 +19755,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -19776,15 +19776,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -19797,19 +19797,19 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 2
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -19829,7 +19829,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -19909,7 +19909,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -19917,7 +19917,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -20796,15 +20796,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -20817,15 +20817,15 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -20840,11 +20840,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -20861,11 +20861,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -20882,11 +20882,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -20894,7 +20894,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -20903,15 +20903,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -20971,7 +20971,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -20993,7 +20993,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -21304,7 +21304,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -21798,7 +21798,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 2
           },
           {
@@ -22622,7 +22622,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -23035,15 +23035,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -23058,11 +23058,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -23079,11 +23079,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -23100,19 +23100,19 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -23121,11 +23121,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -23149,7 +23149,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -23215,7 +23215,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -23582,15 +23582,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -23605,15 +23605,15 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -23626,11 +23626,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -23647,11 +23647,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -23659,7 +23659,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -23668,11 +23668,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -23692,7 +23692,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -23784,7 +23784,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -24204,7 +24204,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -24549,15 +24549,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -24572,11 +24572,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -24584,7 +24584,7 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 1
           }
         ]
@@ -24593,11 +24593,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -24614,11 +24614,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -24635,15 +24635,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -24703,7 +24703,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -24725,7 +24725,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -24755,7 +24755,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -25139,7 +25139,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -25516,15 +25516,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -25539,11 +25539,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -25560,15 +25560,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -25581,11 +25581,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -25602,11 +25602,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -25678,7 +25678,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -25692,7 +25692,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -25718,7 +25718,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -26063,7 +26063,7 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Spark",
+            "material": "Blazing Key",
             "quantity": 1
           }
         ]
@@ -26074,11 +26074,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -26095,11 +26095,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -26107,7 +26107,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -26116,11 +26116,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -26137,11 +26137,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -26205,7 +26205,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -26227,7 +26227,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -26235,7 +26235,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -26598,19 +26598,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -26619,15 +26619,15 @@
         "id": 2,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -26642,11 +26642,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -26663,11 +26663,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -26684,11 +26684,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -26696,7 +26696,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -26705,11 +26705,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -26773,7 +26773,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -27227,7 +27227,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -27589,7 +27589,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -28013,7 +28013,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -28081,7 +28081,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -28426,15 +28426,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -28449,19 +28449,19 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 1
           }
         ]
@@ -28470,11 +28470,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -28491,11 +28491,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -28512,11 +28512,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -28602,7 +28602,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -28973,15 +28973,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -28996,11 +28996,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -29017,11 +29017,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -29038,11 +29038,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -29059,15 +29059,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -29175,7 +29175,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -29520,15 +29520,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -29543,11 +29543,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -29564,11 +29564,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -29585,11 +29585,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -29606,11 +29606,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -29630,11 +29630,11 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -29682,7 +29682,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -29700,7 +29700,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -30079,15 +30079,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -30102,11 +30102,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -30123,11 +30123,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -30144,11 +30144,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -30165,11 +30165,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -30193,7 +30193,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -30211,7 +30211,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -30259,7 +30259,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -30626,15 +30626,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -30649,19 +30649,19 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 1
           }
         ]
@@ -30670,19 +30670,19 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 1
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 2
           }
         ]
@@ -30691,11 +30691,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -30712,11 +30712,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -30758,7 +30758,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -31176,7 +31176,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -31593,15 +31593,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -31616,19 +31616,19 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 1
           }
         ]
@@ -31637,11 +31637,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -31658,11 +31658,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -31670,7 +31670,7 @@
             "quantity": 2
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -31679,11 +31679,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -31725,7 +31725,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -31769,7 +31769,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -32152,19 +32152,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -32175,11 +32175,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -32196,11 +32196,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -32217,11 +32217,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -32238,11 +32238,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -32250,7 +32250,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -32262,7 +32262,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -32699,15 +32699,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -32722,11 +32722,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -32743,15 +32743,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -32764,11 +32764,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -32785,11 +32785,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -32831,7 +32831,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -32897,7 +32897,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -34106,19 +34106,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 3
           }
         ]
@@ -34129,11 +34129,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -34150,11 +34150,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -34171,11 +34171,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -34192,11 +34192,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -34204,7 +34204,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -34282,7 +34282,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -34308,7 +34308,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -34665,15 +34665,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -34688,11 +34688,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -34709,15 +34709,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -34730,11 +34730,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -34751,11 +34751,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -34819,7 +34819,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -35148,7 +35148,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 2
           },
           {
@@ -35489,19 +35489,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -35512,11 +35512,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -35533,15 +35533,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -35554,11 +35554,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -35575,11 +35575,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -35621,7 +35621,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -35629,7 +35629,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -35691,11 +35691,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -36048,15 +36048,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -36071,15 +36071,15 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -36092,15 +36092,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 1
           },
           {
@@ -36113,11 +36113,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -36134,11 +36134,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -36158,7 +36158,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -36184,7 +36184,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -36202,7 +36202,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -36250,7 +36250,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -37027,15 +37027,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -37050,15 +37050,15 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -37071,11 +37071,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -37083,7 +37083,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -37092,11 +37092,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -37104,7 +37104,7 @@
             "quantity": 2
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -37113,11 +37113,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -37159,7 +37159,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -37167,7 +37167,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -37229,11 +37229,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -37855,15 +37855,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -37878,11 +37878,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -37899,11 +37899,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -37920,15 +37920,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -37941,15 +37941,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 2
           },
           {
@@ -38409,7 +38409,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -38441,11 +38441,11 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -38822,19 +38822,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -38845,11 +38845,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -38866,11 +38866,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -38878,7 +38878,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -38887,19 +38887,19 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -38908,19 +38908,19 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 2
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 2
           }
         ]
@@ -39416,7 +39416,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -39424,7 +39424,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -39442,7 +39442,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -39460,7 +39460,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -40324,7 +40324,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -40676,7 +40676,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -40694,7 +40694,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -41109,15 +41109,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -41132,11 +41132,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -41144,7 +41144,7 @@
             "quantity": 1
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 1
           }
         ]
@@ -41153,11 +41153,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -41174,11 +41174,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -41195,11 +41195,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -41245,7 +41245,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -41656,15 +41656,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -41679,15 +41679,15 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -41700,15 +41700,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 1
           },
           {
@@ -41721,11 +41721,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -41742,11 +41742,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -41766,11 +41766,11 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -41858,7 +41858,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -42623,15 +42623,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -42646,11 +42646,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -42658,7 +42658,7 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 1
           }
         ]
@@ -42667,11 +42667,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -42679,7 +42679,7 @@
             "quantity": 1
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 2
           }
         ]
@@ -42688,15 +42688,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -42709,15 +42709,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 2
           },
           {
@@ -42759,7 +42759,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -43189,7 +43189,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -43207,7 +43207,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -43273,7 +43273,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -43622,19 +43622,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 3
           }
         ]
@@ -43645,11 +43645,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -43666,11 +43666,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -43687,15 +43687,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -43708,15 +43708,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 2
           },
           {
@@ -43776,7 +43776,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -43828,7 +43828,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -44216,7 +44216,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -44242,7 +44242,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -44630,7 +44630,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -45044,7 +45044,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -45066,15 +45066,15 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -45114,7 +45114,7 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           },
           {
@@ -45502,7 +45502,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -45524,7 +45524,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -45913,15 +45913,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -45936,11 +45936,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -45948,7 +45948,7 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 1
           }
         ]
@@ -45957,11 +45957,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -45969,7 +45969,7 @@
             "quantity": 1
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 2
           }
         ]
@@ -45978,15 +45978,15 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 2
           },
           {
@@ -45999,15 +45999,15 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 2
           },
           {
@@ -46045,7 +46045,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -46071,11 +46071,11 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -46460,15 +46460,15 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
@@ -46483,11 +46483,11 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
@@ -46504,11 +46504,11 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
@@ -46516,7 +46516,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           }
         ]
@@ -46525,11 +46525,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -46537,7 +46537,7 @@
             "quantity": 2
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -46546,11 +46546,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -46558,7 +46558,7 @@
             "quantity": 2
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 2
           }
         ]
@@ -46592,7 +46592,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -46618,7 +46618,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -46644,7 +46644,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -47010,7 +47010,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -47488,7 +47488,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -47506,7 +47506,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -47536,7 +47536,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -47978,7 +47978,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -48322,7 +48322,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -48370,7 +48370,7 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           },
           {
@@ -49246,7 +49246,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -49298,7 +49298,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -49676,7 +49676,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -49728,7 +49728,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -50103,19 +50103,19 @@
         "id": 1,
         "materials": [
           {
-            "material": "Key of Reverie",
+            "material": "Key of Thought",
             "quantity": 12
           },
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 200
           },
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 3
           }
         ]
@@ -50126,19 +50126,19 @@
         "level": 1,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 20
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 275
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 1
           }
         ]
@@ -50147,15 +50147,15 @@
         "level": 2,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 30
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 371
           },
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -50168,11 +50168,11 @@
         "level": 3,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 35
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 470
           },
           {
@@ -50180,7 +50180,7 @@
             "quantity": 2
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           }
         ]
@@ -50189,11 +50189,11 @@
         "level": 4,
         "materials": [
           {
-            "material": "Sprout of Reverie",
+            "material": "Sprout of Fantasy",
             "quantity": 40
           },
           {
-            "material": "Seed of Insight",
+            "material": "Seed of Inspiration",
             "quantity": 1195
           },
           {
@@ -50221,7 +50221,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -50235,7 +50235,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -50243,7 +50243,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -50261,7 +50261,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -50309,7 +50309,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -50679,7 +50679,7 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           },
           {
@@ -50719,15 +50719,15 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -50741,7 +50741,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -50749,7 +50749,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -51097,7 +51097,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -51533,7 +51533,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -51555,7 +51555,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -51577,11 +51577,11 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -51599,7 +51599,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -51621,7 +51621,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -51977,7 +51977,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -52025,7 +52025,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -52069,7 +52069,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -52457,11 +52457,11 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -52487,7 +52487,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -52754,7 +52754,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -52768,7 +52768,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -53142,7 +53142,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -53190,7 +53190,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -53234,7 +53234,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -53622,11 +53622,11 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -53652,7 +53652,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -53919,7 +53919,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -53933,7 +53933,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -54307,7 +54307,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -54355,7 +54355,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -54399,7 +54399,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -54765,7 +54765,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -54773,7 +54773,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -54835,11 +54835,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -55183,7 +55183,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -55209,7 +55209,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -55227,7 +55227,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -55275,7 +55275,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -56051,7 +56051,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -56065,7 +56065,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -56091,11 +56091,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -56109,7 +56109,7 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -56491,7 +56491,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -56505,7 +56505,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -56531,11 +56531,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -56549,7 +56549,7 @@
         "type": "U-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -56931,7 +56931,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -56945,7 +56945,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -56971,11 +56971,11 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -56989,7 +56989,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -57379,7 +57379,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -57427,7 +57427,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -57471,7 +57471,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -57724,7 +57724,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -57738,7 +57738,7 @@
         "type": "Inverted-T",
         "materials": [
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -58100,7 +58100,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -58118,7 +58118,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
@@ -58562,7 +58562,7 @@
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -58976,11 +58976,11 @@
         "type": "Cross",
         "materials": [
           {
-            "material": "Rhine Gold",
+            "material": "Rheingold",
             "quantity": 1
           },
           {
-            "material": "Golden Bell Essence Bottle",
+            "material": "Goldbell Spirit Bottle",
             "quantity": 2
           },
           {
@@ -59028,7 +59028,7 @@
             "quantity": 2
           },
           {
-            "material": "Golden Herb Incense",
+            "material": "Golden Grass Incense",
             "quantity": 3
           },
           {
@@ -59072,7 +59072,7 @@
             "quantity": 2
           },
           {
-            "material": "Heartfelt Easter Egg",
+            "material": "Jeweled Egg",
             "quantity": 3
           },
           {
@@ -59416,7 +59416,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 1
           },
           {
@@ -59438,7 +59438,7 @@
         "type": "Z-shape",
         "materials": [
           {
-            "material": "Roaming Terror Hut",
+            "material": "Walking Terror",
             "quantity": 1
           },
           {
@@ -59464,7 +59464,7 @@
             "quantity": 1
           },
           {
-            "material": "Rootbox Rabbit",
+            "material": "Rhizobox Rabbit",
             "quantity": 2
           },
           {
@@ -59490,7 +59490,7 @@
             "quantity": 2
           },
           {
-            "material": "Red Lacquer Tablet",
+            "material": "Red Lacquer Slab",
             "quantity": 3
           },
           {
@@ -59508,7 +59508,7 @@
             "quantity": 1
           },
           {
-            "material": "Jadeite Tablet",
+            "material": "Emerald Slate",
             "quantity": 2
           },
           {

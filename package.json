@@ -8,7 +8,8 @@
     "test:ui": "node editor/_test/ui.test.mjs",
     "serve": "python serve.py 8000",
     "sync": "node scripts/sync/index.mjs",
-    "sync:verify": "node scripts/sync/verify.mjs"
+    "sync:verify": "node scripts/sync/verify.mjs",
+    "sync:assets": "node scripts/sync/assets.mjs"
   },
   "devDependencies": {
     "playwright": "^1.49.0"

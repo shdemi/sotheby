@@ -20,6 +20,7 @@ import { characterResoShape, shapePatterns } from "./derive/resonance.mjs";
 import { characterEuphorias } from "./derive/euphorias.mjs";
 import { characterSkills } from "./derive/skills.mjs";
 import { charactersMatsRequired } from "./derive/mats.mjs";
+import { itemsData, itemFormulas } from "./derive/items.mjs";
 import { collabCharacters, excludeCharacters } from "./derive/curation.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
 
@@ -39,6 +40,8 @@ const meta = (server) => {
 const generatedAt = new Date().toISOString();
 const globalMeta = meta("global");
 const cnMeta = meta("cn");
+
+const items = itemsData();
 
 const files = {
   "_meta.json": {
@@ -61,6 +64,8 @@ const files = {
   "character_euphorias.json": characterEuphorias(),
   "character_skills.json": characterSkills(),
   "characters_mats_required.json": charactersMatsRequired(),
+  "items.json": items,
+  "item_formulas.json": itemFormulas(new Set(items.map((item) => item.id))),
   "exclude_character.json": excludeCharacters(),
   "collab_character.json": collabCharacters(),
   "psychube_id.json": psychubeId(),

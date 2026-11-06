@@ -100,9 +100,9 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `characters_by_afflatus.json` | `character.json → career` | see caveat below |
 | `character_profiles.json` | `character.json → dmgType`, `character_battle_tag.json` | `dmgType`: 1=Reality, 2=Mental; `battleTag` is `101#117#122` → needs a role map |
 | `character_skills.json` | `character.json`, `character_rank_replace.json`, `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json`, `fight_device.json` + global `language_*` | **derived**: 138 characters; device heroes take stances/specials from `fight_device`; CN-only English + all Vietnamese live in `content/translations/skills.json` |
-| `characters_mats_required.json` | `character_rank.json`, `character_talent.json`, `item.json` + global `language_*` | **mixed**: `insight`/`resonance` derived; `stats`/`euphoria`/`mastery`/`frequency` come from `content/progression.json` |
-| `items.json` | `item.json` + global `language_*` | 782 raw items; app shows a curated subset |
-| `item_formulas.json` | `formula.json` (`costMaterial`, `produce`) | |
+| `characters_mats_required.json` | `character_rank.json`, `character_talent.json`, `item.json` + global `language_*` | **mixed**: `insight`/`resonance` derived; `stats`/`euphoria`/`mastery`/`frequency` come from `content/progression_costs.json` |
+| `items.json` | `item.json` (`isShow === 1`), `currency.json`, `item_use.json` (category) + global `language_*` | **derived**: 526 entries keyed by game id; `subType` → category label; Vietnamese + the editorial `source` live in `content/translations/items.json` |
+| `item_formulas.json` | `formula.json` (`produce`, `costMaterial`, `costScore`) | key = produced item id; inputs are `costMaterial` + `costScore` |
 | `psychube_id.json` | `equip.json` | key = `equip.id` (see §5) |
 | `psychubes_data.json` | `equip.json` + global `language_*` (and equip effect tables, to verify) | |
 | `character_euphorias.json` | `character_destiny.json`, `character_destiny_facets.json`, `character_destiny_facets_consume.json`, `destiny_facets_ex_level.json` + global `language_*` | **derived**: 46 characters / 55 trees; there is no table named "euphoria" — `destiny` is the internal name. CN-only trees are included (union of both servers); their English lives in `content/translations/euphorias.json` |
@@ -151,6 +151,7 @@ Owned by the project, not the game. Lives in `content/` after the rebuild.
 | `translations/psychubes.json` | English for CN-only psychubes + every Vietnamese psychube/amplification string |
 | `translations/euphorias.json` | English for CN-only Euphoria trees + the editorial `version` of each tree |
 | `translations/skills.json` | English for CN-only skills/insights/portrays + every Vietnamese skill string + the collab weapon charts |
+| `translations/items.json` | every Vietnamese item string (description/usage/source) + the editorial `source` prose + English for CN-only items |
 
 `guide_cards.json`, `reso_shape.json` and `pattern_costs.json` were dropped on
 2026-11-06 (never fetched, byte-identical duplicate, and unused respectively).
@@ -249,6 +250,7 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
     global_name_transfer.json  name_map.json
     characters_by_rarity.json  characters_by_afflatus.json
     psychube_id.json  psychube_key_map.json  future_sight.json
+    characters_mats_required.json  items.json  item_formulas.json
     psychubes_data.json      (legacy detail; re-derive in Phase 2)
   content/                   HAND-AUTHORED (class C)
     builds.json rotations.json teams.json progressions.json
@@ -362,7 +364,8 @@ npm test
 
 # Data pipeline (Phase 1)
 npm run sync          # writes every generated file under data/
-npm run sync:verify   # asserts the invariants (rarity, psychubes, future sight)
+npm run sync:verify   # asserts the invariants (rarity, psychubes, future sight, items)
+npm run sync:assets   # copies item artwork from Myssal into images/items/icon/
 
 # Stages data (existing)
 node scripts/build_stages_data.mjs
@@ -473,11 +476,33 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   `progression_costs.json`, `i18n.json`, `credits.json` and `curation.json` moved out of
   `data/`; `app.js` and the editor read them from there (`editor/files.js` `dirFor()`).
   `guide_cards.json`, `reso_shape.json` and `pattern_costs.json` were deleted.
-- **`items.json` and `item_formulas.json` wait for Phase 3.** Both are still Kornblume
-  output: the ids are Kornblume ids and the icons are `images/items/**/*.webp` files
-  named after them. Re-deriving from `item.json` changes every id to the game id, so the
-  item-icon cache has to be rebuilt from Myssal in the same step. Do not regenerate these
-  two until the asset pipeline lands.
+- **`items.json` is now derived (Phase 3).** Items are the union of `item` rows with
+  `isShow === 1`, `currency` rows with a real name, and (when an overlay provides an
+  English name) CN-only `item` rows; every key is the game id. `subType` is an
+  `item_use` id, so the category label comes from that table and only the Vietnamese
+  label plus a few broken game labels live in `scripts/sync/maps/item-categories.json`.
+  Families the game never labels (19, 21, 22, 23, 25, 26, 27, 34, 85, 98, 100 —
+  wilderness decor, critter food, explore items, …) are skipped rather than dumped into
+  an invented bucket. 526 entries, 31 categories, 8 without artwork.
+- **`item_formulas.json` is of the Wishing Spring crafting list.** `formula.produce` is
+  `type#id#qty`; the inputs are `costMaterial` *and* `costScore` (the latter is the
+  Sharpodonty fee, which legacy Kornblume dropped for two recipes). Keys are the produced
+  item ids, and only recipes whose output is in `items.json` are kept (40).
+- **Item artwork is keyed by game id.** `npm run sync:assets` copies
+  `singlebg/propitem/prop/<icon|id>.png` (items) and `singlebg/currencyitem/<icon|id>.png`
+  (currencies) to `images/items/icon/<id>.png`; 92 items share art through `icon`. The
+  Kornblume `images/items/icon/*.webp` cache is gone. `item.icon` is empty when Myssal has
+  no art, and the app skips the `<img>` in that case. Rarity frames stay at
+  `images/items/border/<rarity>.webp`.
+- **Item names changed with the patches.** The legacy file carried old translations
+  (`Rhine Gold`, `Alopecurus Pratensis`, `Key of Reverie`, `Golden Herb Incense`, …); the
+  generated file uses the current ones (`Rheingold`, `Fox Tail`, `Key of Thought`,
+  `Golden Grass Incense`, …). `content/progression_costs.json` was rewritten to the new
+  names by `scripts/sync/tools/extract-item-translations.mjs` so every material still
+  resolves to an icon. Item `rarity` is `rare + 1`, same as characters and psychubes.
+- **`source` is editorial.** No table carries a readable source, so the probe stays empty
+  and the legacy prose ("Pawnshop", "Story", …) lives in
+  `content/translations/items.json`. `usage` comes from `useDesc` unless the game has none.
 
 ---
 

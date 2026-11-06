@@ -1,0 +1,79 @@
+{
+  "//": "Item category labels. `subType` on an item row is an `item_use` id; the labels",
+  "//2": "come from that table (en/zh). This file only holds what the game does not:",
+  "//3": "the Vietnamese label of every category, plus a few overrides where the game",
+  "//4": "label is blank, a placeholder ('0') or missing (CN-only types).",
+  "//5": "`currency` is not in `item_use` at all, so it is declared here.",
+  "currency": {
+    "en": "Currency",
+    "zh": "货币",
+    "vi": "Tiền tệ"
+  },
+  "overrides": {
+    "53": {
+      "en": "Single-Quality Selectable Pack",
+      "zh": "单种品质的自选礼包",
+      "vi": "Gói tùy chọn một phẩm chất"
+    },
+    "60": {
+      "en": "Wilderness Building Exchange Voucher",
+      "zh": "荒原建筑兑换券",
+      "vi": "Phiếu đổi công trình Hoang dã"
+    },
+    "62": {
+      "en": "Euphoria Materials",
+      "zh": "狂想材料",
+      "vi": "Nguyên liệu Euphoria"
+    },
+    "66": {
+      "en": "Wilderness Building Exchange (Retired)",
+      "zh": "荒原建筑兑换-弃用",
+      "vi": "Đổi công trình Hoang dã (ngừng dùng)"
+    },
+    "65": {
+      "en": "6-Star Selectable (Within Range)",
+      "zh": "范围内六星自选",
+      "vi": "Tự chọn 6 sao trong phạm vi"
+    },
+    "401": {
+      "en": "Guaranteed 6-Star Item",
+      "zh": "必new6星道具",
+      "vi": "Vật phẩm chắc chắn 6 sao"
+    },
+    "402": {
+      "en": "Character Recycling Item",
+      "zh": "角色回收道具",
+      "vi": "Vật phẩm thu hồi nhân vật"
+    }
+  },
+  "vi": {
+    "11": "Nguyên liệu Insight",
+    "12": "Nguyên liệu Resonance",
+    "13": "Nguyên liệu Portray",
+    "14": "Nguyên liệu chung",
+    "15": "Vật phẩm thám hiểm",
+    "16": "Thẻ nhân đôi",
+    "17": "Chân dung",
+    "18": "Nguyên liệu Psychube",
+    "48": "Gói tùy chọn",
+    "49": "Gói ngẫu nhiên",
+    "50": "Gói tổng hợp",
+    "52": "Gói quà nhân vật tùy chọn",
+    "54": "Triệu hồi mô phỏng x10",
+    "55": "Phiếu 6 sao",
+    "61": "Vật phẩm Insight",
+    "63": "Phiếu giảm giá",
+    "64": "Thẻ tăng Euphoria tức thời",
+    "69": "Đổi công trình Hoang dã",
+    "70": "Đổi màu đảo Hoang dã",
+    "71": "Trang phục tùy chọn",
+    "75": "Tự chọn Psychube giới hạn 5 & 6 sao",
+    "77": "Chìa khóa chọn chân dung Euphoria",
+    "78": "Token chân dung dư",
+    "79": "Tự chọn chân dung Euphoria",
+    "81": "Vật phẩm Euphoria chắc chắn (Polilog)",
+    "82": "Rương tự chọn vật phẩm (xem trước)",
+    "84": "Vật phẩm tăng cấp Psychube",
+    "86": "Thẻ tăng Euphoria tân thủ"
+  }
+}

@@ -182,6 +182,27 @@ ok("rarity/afflatus agree with the roster files", matsEntries.every((e) => {
   return Boolean(rarity[e.rarity]?.includes(e.name)) && Boolean(bucket);
 }));
 
+// ---- items ------------------------------------------------------------------
+const items = read("items.json");
+const itemFormulas = read("item_formulas.json");
+const itemIds = new Set(items.map((item) => item.id));
+const itemNames = new Set(items.map((item) => item.name.toLowerCase()));
+const itemCategories = new Set(items.map((item) => item.category));
+const formulaMaterials = Object.values(itemFormulas).flat();
+ok("items are keyed by game id", items.every((item) => Number.isInteger(item.id) && item.id > 0));
+ok("item ids are unique", itemIds.size === items.length);
+ok("every item has a name and a category", items.every((item) => item.name && item.nameZh && item.category));
+ok("item rarities are 1..6", items.every((item) => item.rarity >= 1 && item.rarity <= 6));
+ok("every category has en/zh/vi labels", items.every((item) => item.category && item.categoryZh && item.categoryVi));
+ok("item icons point at the game id", items.every((item) => !item.icon || item.icon === `images/items/icon/${item.id}.png`));
+ok("item borders follow the rarity", items.every((item) => item.border === `images/items/border/${item.rarity}.webp`));
+ok("format highlights match the game name", items.every((item) => !item.nameZh.includes("<")));
+ok("only a handful of items lack artwork", items.filter((item) => !item.icon).length <= 10, String(items.filter((i) => !i.icon).length));
+ok("every crafting formula produces a known item", Object.keys(itemFormulas).every((id) => itemIds.has(Number(id))));
+ok("every formula material is a known item", formulaMaterials.every((m) => itemNames.has(m.material.toLowerCase())));
+ok("formula quantities are positive", formulaMaterials.every((m) => Number(m.quantity) > 0));
+ok("every mats material is a known item", allMaterials.every((m) => itemNames.has(m.material.toLowerCase())));
+
 // ---- misc -------------------------------------------------------------------
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));
 ok("_meta has both versions", !!meta.globalVersion && !!meta.cnVersion, `${meta.globalVersion} / ${meta.cnVersion}`);

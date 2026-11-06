@@ -1,0 +1,519 @@
+{
+  "1": {
+    "descVi": "Cơn Bão ập đến, những giọt mưa bay ngược lên trời như trở về vòng tay mẹ, về lại chiếc nồi lửa cháy bỏng đã sinh ra chúng. Nhưng tai nạn vẫn có thể xảy ra. Nếu không kịp tới bờ bên kia trước khi Cơn Bão tan, chúng sẽ rơi trở lại mặt đất.",
+    "usageVi": "Summoning và item purchases.",
+    "usage": "Summoning and item purchases."
+  },
+  "2": {
+    "descVi": "Người anh em song sinh trầm lặng, cũng là đứa đáng tin cậy nhất trong nhà, luôn sẵn lòng giúp đỡ những ai cần. Nó được trang bị đủ mọi đức tính tốt. Là giọt mưa cuối cùng bay lên, và là giọt đầu tiên trở về với đất.",
+    "usageVi": "Summoning hoặc restoring Cellular Activity.",
+    "usage": "Summoning or restoring Cellular Activity."
+  },
+  "3": {
+    "descVi": "Một loại tiền tệ từ thời đại cổ xưa, không còn được ghi chép. Nó có 13 cạnh và một cái miệng đầy răng sắc như dao cạo, chỉ mở ra với những kẻ mang dòng máu pháp sư.",
+    "usageVi": "Everyone needs some of this.",
+    "sourceVi": "Tài nguyên - Tiệm Cầm đồ Mintage Aesthetics",
+    "source": "Resource - Mintage Aesthetics Pawnshop",
+    "usage": "Everyone needs some of this."
+  },
+  "5": {
+    "descVi": "Đạo luật tối thượng huy hoàng đã chẳng còn tìm thấy ở đâu, nhưng sức mạnh của nó vẫn lớn lao và khôn lường. Trong lúc lang thang, những hạt Bụi nó rơi xuống cũng chứa năng lượng để gia tăng sức mạnh. Theo một nghĩa nào đó, đó là một phần của đáp án tối hậu.",
+    "usageVi": "Leveling up characters.",
+    "sourceVi": "Tài nguyên - Tiệm Cầm đồ Poussiere",
+    "source": "Resource - The Poussiere Pawnshop",
+    "usage": "Leveling up characters."
+  },
+  "10": {
+    "descVi": "Có người gọi nó là một cuộn băng, nhưng nhiều pháp sư hơn chọn cái tên \"Bản Nhạc của Kẻ Lạc Lối\". Trong đó có thể đã ghi lại một khúc rock buồn, một màn độc thoại đáng xấu hổ, một đoạn tiếng ồn trắng, hay sự im lặng vô tận.",
+    "usageVi": "Can be exchanged for items at the [Bass Counter] in the Bank.",
+    "sourceVi": "Nhiệm vụ Triệu hồi - Hoạt động tuần",
+    "source": "Summon Task - Weekly Activeness",
+    "usage": "Can be exchanged for items at the [Bass Counter] in the Bank."
+  },
+  "11": {
+    "descVi": "Bản Nhạc của Kẻ Lạc Lối to nhất và hay nhất. Nghĩa là nhiều rock and roll hơn, nhiều màn độc thoại hơn, với những khoảng lặng và tiếng ồn trắng gần như chẳng đổi thay. Những người hâm mộ cuồng nhiệt sẽ mang bản nhạc tới đích, nhưng phải hiểu rằng họ không làm việc này miễn phí.",
+    "usageVi": "Can be exchanged for items at the [Treble Counter] in the Bank.",
+    "sourceVi": "Triệu hồi",
+    "source": "Summon",
+    "usage": "Can be exchanged for items at the [Treble Counter] in the Bank."
+  },
+  "20": {
+    "descVi": "Có vô vàn cách để sắp xếp mớ hỗn độn: lò lửa thiêu rụi, lưỡi dao cắt lìa… nhưng ta muốn giữ nguyên nó như vậy.",
+    "usageVi": "Can be exchanged for items at the [Psychube Shop] in the Bank.",
+    "sourceVi": "Tài nguyên - Phân tích Pneuma",
+    "source": "Resource - Pneuma Analysis",
+    "usage": "Can be exchanged for items at the [Psychube Shop] in the Bank."
+  },
+  "21": {
+    "descVi": "Khi những điều hỗn độn đã được sắp xếp, tầm nhìn u tối dần sáng lên, và những ý tưởng cuối cùng cũng thành hình trong tâm trí ta.",
+    "usageVi": "Can be exchanged for items at the [Psychube Shop] in the Bank.",
+    "sourceVi": "Tài nguyên - Phân tích Pneuma",
+    "source": "Resource - Pneuma Analysis",
+    "usage": "Can be exchanged for items at the [Psychube Shop] in the Bank."
+  },
+  "22": {
+    "descVi": "Những bông tuyết bị bánh xe nghiền nát, cỏ đồng nội xào xạc trong gió, sóng vỡ tan vào vách đá xa. Những âm thanh ấy chẳng đáng kể, nhưng vẫn được ghi lại. Lặp đi lặp lại, cho tới tận cùng.",
+    "usageVi": "Can be exchanged for items in the [Oneiric Shop] in the Bank.",
+    "sourceVi": "Mộng du Nhân tạo",
+    "source": "Artificial Somnambulism",
+    "usage": "Can be exchanged for items in the [Oneiric Shop] in the Bank."
+  },
+  "110101": {
+    "descVi": "Hãy luôn bảo quản cẩn thận và sử dụng ngay sau khi mở. Đừng ngạc nhiên trước tốc độ chạy trốn của những thứ nhỏ bé này: chúng đã hoảng sợ từ trước khi rời khỏi lợi.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Tiệm Cầm đồ, Cốt truyện",
+    "source": "Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110102": {
+    "descVi": "Bạn run rẩy trong giấc mơ và bỗng bật dậy với một tiếng thét. Chúng đang bò khắp da bạn. Được chế từ những chiếc răng nứt, quá trình hóa lỏng đã cải thiện độ ổn định và hạn sử dụng của nó. Không nên nếm thử, vì thứ nó mang lại không chỉ là ác mộng.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110103": {
+    "descVi": "Bạn sẽ không thể biết nó đến từ đâu, thuộc về ai hay vì sao nó trông kỳ lạ đến vậy. Quan trọng hơn, bạn sẽ mãi mãi không biết mình vừa giải phóng thứ gì.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110104": {
+    "descVi": "Bọn trẻ nhà ngươi nói đúng về Ông Kẹ. Là bậc cha mẹ, tốt nhất hãy để mắt tới lũ bắt cóc độc ác này. Nhưng chúng có thể mang lại lợi nhuận. Bắt được một con, ngươi có thể có tiền trả hóa đơn, vì bọn ta đang thu mua chúng! Gọi 098-1937**21 để biết chi tiết.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ",
+    "source": "Craft in the Wilderness, Pawnshop",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110201": {
+    "descVi": "Nó không thực sự hữu dụng trong các nghi lễ cấp cao. Người bán cam đoan rằng phần trông giống khuôn mặt người chỉ là sự trùng hợp do tự nhiên tạo ra.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Tiệm Cầm đồ, Cốt truyện",
+    "source": "Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110202": {
+    "descVi": "Có thể dùng trong các nghi lễ trừ tà và thanh tẩy. Có lẽ nó không quan trọng, nhưng chúng ta không thể thiếu nó.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110203": {
+    "descVi": "Một củ mandrake không gào thét? Đó hẳn phải là phát minh vĩ đại nhất trong lịch sử Arcanum! Robert the Magnesia đã phát tài nhờ thứ này và giờ sống trong dinh thự của riêng mình.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110204": {
+    "descVi": "Một cánh tay khô của loài linh trưởng. Đừng ước bất cứ điều gì từ nó, kể cả những lời ước thầm kín.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ",
+    "source": "Craft in the Wilderness, Pawnshop",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110301": {
+    "descVi": "Cẩn thận, thứ này có thể sắc lắm đấy. Tất nhiên, chỉ kẻ ngốc mới tự làm mình bị thương bằng nó…. ÁI! Coi chừng!",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Tiệm Cầm đồ, Cốt truyện",
+    "source": "Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110302": {
+    "descVi": "Dù không hoàn chỉnh bằng một bộ xương đầy đủ, xương đùi, xương sườn và các mảnh sọ vẫn là giải pháp tối ưu mà bạn có thể chi trả.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110303": {
+    "descVi": "Người ta nói gì nhỉ? Ôi, một sinh linh nhỏ bé tội nghiệp và dị dạng làm sao! Nhưng thử đoán xem các pháp sư nói gì. Ôi chao, hãy nhìn những đường nét siêu phàm chỉ xuất hiện ở dòng máu cao quý nhất!",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ",
+    "source": "Craft in the Wilderness, Pawnshop",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110304": {
+    "descVi": "Rồng — sinh vật huyền bí đích thực. Một con rồng còn sống nắm giữ sức mạnh uy nghi, còn một con đã chết vẫn là cả một kho báu.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ",
+    "source": "Craft in the Wilderness Pawnshop",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110401": {
+    "descVi": "Có thể chiết xuất kim loại quý từ những loại quặng này. Nó cũng là môi chất để thi triển một số kỹ năng huyền bí cơ bản.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Tiệm Cầm đồ, Cốt truyện",
+    "source": "Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110402": {
+    "descVi": "Hơi thô ráp một chút nhưng vẫn dùng được. Hãy dùng nó để thi triển kỹ năng huyền bí, hoặc đổi lấy một hũ kẹo đậu hay bánh quy. Lựa chọn là ở bạn.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110403": {
+    "descVi": "Ai cũng thích một thỏi bạc đẹp đẽ. Được tắm trong sự dồi dào thánh khiết không chỉ mang lại cho chúng vẻ sáng lấp lánh tuyệt mỹ, mà còn cả nguồn năng lượng huyền bí mạnh mẽ cùng khả năng trừ tà.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110404": {
+    "descVi": "Chế tạo một viên tốn không ít công sức, nhưng hoàn toàn đáng giá. Dù mục tiêu của ngươi là ma cà rồng hay người sói, nó cũng sẽ có ích.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110501": {
+    "descVi": "Nó có thể lo liệu cả việc dọn dẹp triệt để lẫn vệ sinh hằng ngày. Chỉ cần một chút tiền là đôi tay bạn sẽ được giải phóng mãi mãi. Còn gì vui hơn thế nữa?",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Tiệm Cầm đồ, Cốt truyện",
+    "source": "Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110502": {
+    "descVi": "Chẳng ai ngờ rằng vật phẩm này lại chính là bí quyết của vận may. Câu chuyện về nguồn gốc của nó bắt đầu từ Marianna, người làm việc tại một quán ăn gia đình...",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110503": {
+    "descVi": "Người bạn thân thiết nhất của mọi nhà thuật pháp! Hãy để chú chim nhỏ này ghi nhớ phép thuật thay bạn. Với hơn 5241 thần chú thực dụng được lưu trong bộ nhớ, đây chính là lựa chọn hàng đầu cho những nhà thuật pháp bận rộn!",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "110504": {
+    "descVi": "Giữa những lời điên loạn trong cuốn sách này, ngươi sẽ đọc được những câu chú bí ẩn nhất, bị cấm đoán nhất và đã bị lãng quên nhất trong lịch sử. Nó là người thầy giỏi nhất cho mọi kẻ phản diện đầy tham vọng. Chỉ cần nhớ một điều: hãy chỉ hỏi, và đừng bao giờ trả lời.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110602": {
+    "descVi": "Vui lòng cất cánh xa khỏi cơ thể, tốt nhất là ở nơi thoáng mát. Thỉnh thoảng chúng run lên là chuyện bình thường; chỉ cần chờ chúng khô hoàn toàn."
+  },
+  "110603": {
+    "descVi": "Hãy tìm một khoảng trống, nắm chắc phần chuôi chìa khóa và niệm đích đến trong tâm trí. Nó sẽ dẫn bạn tới ổ khóa dưới hình dạng một chú chim.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110604": {
+    "descVi": "Xin đừng kích thích nguồn sáng ở đuôi nó. Hãy cầm nhẹ nhàng để tránh bị bỏng.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110702": {
+    "descVi": "Mọi bí mật của thời gian đều ẩn giấu trong vòng quay không ngừng của những bánh răng."
+  },
+  "110703": {
+    "descVi": "Nó cong cổ để nhận lấy dây cót cân bằng của đồng hồ, nhận lấy sự chính xác, nhận lấy chính thời gian.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110704": {
+    "descVi": "Qua mài giũa, khảm nạm và chạm khắc tinh xảo, người ta có thể có được một \"trái tim\" sống động.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "110802": {
+    "descVi": "Những nàng tiên độc ác từng điểm tô đôi chân cáo bằng loài hoa rực rỡ này, cho rằng chúng có thể che lấp tiếng bước chân rình rập của mình."
+  },
+  "110803": {
+    "descVi": "Các thương nhân cam đoan với lương tâm trong sáng: \"Loại nhang này tuyệt đối không chứa bất kỳ bộ phận nào của cáo!\""
+  },
+  "110804": {
+    "descVi": "Tương truyền đây là những chiếc bình phong ấn các linh thể sống bí ẩn. Mỗi chiếc đều được trân quý và vô giá không gì sánh bằng — dù chủ nhân của chúng luôn lảng tránh và cực kỳ giữ kín về nguồn gốc."
+  },
+  "110902": {
+    "descVi": "Những mảnh vỡ bị cuốn trôi khỏi bờ sông có vẻ tầm thường, nhưng chúng ẩn chứa tri thức cổ xưa của sa mạc."
+  },
+  "110903": {
+    "descVi": "Một tấm vé cho mặt trời mọc và lặn. Một ngọn đèn dẫn lối giữa bờ này và bờ kia."
+  },
+  "110904": {
+    "descVi": "\"Tách đất khỏi lửa, luyện tinh chất từ thứ thô ráp, hãy tiến hành thật cẩn trọng.\""
+  },
+  "111001": {
+    "descVi": "Hãy lên đường, hoặc cứ thế mà chờ đợi.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "111002": {
+    "descVi": "Nó sẽ dẫn lối cho bạn.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cốt truyện",
+    "source": "Craft in the Wilderness, Pawnshop, Story",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "111003": {
+    "descVi": "Nó sẽ thanh tẩy những thứ dẫn ngươi đi lạc lối.",
+    "usageVi": "Insight hoặc Resonate rituals of characters. Also used as the material for crafting advanced materials.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ",
+    "source": "Craft in the Wilderness, Pawnshop",
+    "usage": "Insight or Resonate rituals of characters. Also used as the material for crafting advanced materials."
+  },
+  "111004": {
+    "descVi": "Nó là đội tiên phong nổi loạn của những kẻ bất tuân và những ai tìm cầu tri thức.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "111005": {
+    "descVi": "Nó là lưỡi dao dành cho kẻ yếu, kẻ im lặng và kẻ bị coi thường.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "111006": {
+    "descVi": "Nó là phần thưởng cho những tâm hồn ưa phiêu lưu và dũng cảm nhất.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "111007": {
+    "descVi": "Dàn xếp hòa bình giữa những kẻ tranh chấp và thù địch.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "111008": {
+    "descVi": "Kẻ rèn ra nó đã nguyền rủa nó, và người mang nó phải hối hận."
+  },
+  "111009": {
+    "descVi": "Nó nhảy. Nó bước đi. Nhưng không bao giờ gáy. Được tái tạo trung thực từ lời khai của những người sống sót."
+  },
+  "111012": {
+    "descVi": "Chúng nhận biết phương hướng qua độ ẩm của đất và sự thay đổi của ánh sáng, mong chờ khoảnh khắc mình trưởng thành.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "111013": {
+    "descVi": "Nó sẽ loại bỏ những con đường sai lầm cho ngươi.",
+    "usageVi": "Insight hoặc Resonate rituals of characters.",
+    "sourceVi": "Chế tạo trong Hoang dã",
+    "source": "Craft in the Wilderness",
+    "usage": "Insight or Resonate rituals of characters."
+  },
+  "111103": {
+    "descVi": "Truyền thuyết kể rằng phong ấn trái tim mình vào trong quả trứng sẽ ban tặng sự bất tử — có lẽ đây là nỗ lực bảo tồn trái tim để cấy ghép sớm nhất trên thế giới."
+  },
+  "111104": {
+    "descVi": "Một hòn đảo biệt lập. Một cái cây trăm tuổi. Nơi hoàn hảo để gìn giữ những linh hồn nhỏ bé qua bao thế kỷ."
+  },
+  "115011": {
+    "descVi": "Chúng được chôn sâu dưới những vách đá trên núi, nơi một viên ngọc chẳng thể phân biệt với mẩu than.",
+    "usageVi": "The ritual of Mineral Insight I.",
+    "sourceVi": "Insight - Mountain Echoes",
+    "source": "Insight - Mountain Echoes",
+    "usage": "The ritual of Mineral Insight I."
+  },
+  "115012": {
+    "descVi": "Đá khinh bỉ những kẻ có tâm trí yếu ớt. Nó là mật mã giữa khoảnh khắc và vĩnh cửu.",
+    "usageVi": "The ritual of Mineral Insight II.",
+    "sourceVi": "Insight - Mountain Echoes",
+    "source": "Insight - Mountain Echoes",
+    "usage": "The ritual of Mineral Insight II."
+  },
+  "115013": {
+    "descVi": "Nó là một người bảo vệ kiên định và một người bạn không thể phá hủy. Ngay cả giới quý tộc cũng phải cúi đầu trước sứ giả vang dội này.",
+    "usageVi": "The ritual of Mineral Insight III.",
+    "sourceVi": "Insight - Mountain Echoes",
+    "source": "Insight - Mountain Echoes",
+    "usage": "The ritual of Mineral Insight III."
+  },
+  "115021": {
+    "descVi": "Cả mặt trăng lẫn mặt trời đều không thể cướp đi màu sắc của nó.",
+    "usageVi": "The ritual of Star Insight I.",
+    "sourceVi": "Insight - Starfall Locale",
+    "source": "Insight - Starfall Locale",
+    "usage": "The ritual of Star Insight I."
+  },
+  "115022": {
+    "descVi": "Nó nuôi dưỡng những đứa trẻ và giúp chúng ngủ yên. Nó là bạn của những đêm dài và những giấc mộng viển vông.",
+    "usageVi": "The ritual of Star Insight II.",
+    "sourceVi": "Insight - Starfall Locale",
+    "source": "Insight - Starfall Locale",
+    "usage": "The ritual of Star Insight II."
+  },
+  "115023": {
+    "descVi": "Một điềm báo, một bí mật bẩn thỉu, hay một hành vi hoàn toàn đê tiện. Ngươi cũng có thể xem nó như một nắm thủy tinh vỡ trên tấm lụa đen.",
+    "usageVi": "The ritual of Star Insight III.",
+    "sourceVi": "Insight - Starfall Locale",
+    "source": "Insight - Starfall Locale",
+    "usage": "The ritual of Star Insight III."
+  },
+  "115031": {
+    "descVi": "Để vươn tới bầu trời, rễ của nó cắm sâu vào lòng đất, hút dưỡng chất từ những sinh mệnh đã phân hủy.",
+    "usageVi": "The ritual of Plant Insight I.",
+    "sourceVi": "Insight - Sylvanus Shape",
+    "source": "Insight - Sylvanus Shape",
+    "usage": "The ritual of Plant Insight I."
+  },
+  "115032": {
+    "descVi": "Nó sẽ tiếp tục lớn lên cho tới khi che kín cả bầu trời, cho tới khi bóp nghẹt từng khoảng không, cho tới khi thủy triều xanh thẳm phủ kín mọi thứ trong tầm mắt.",
+    "usageVi": "The ritual of Plant Insight II.",
+    "sourceVi": "Insight - Sylvanus Shape",
+    "source": "Insight - Sylvanus Shape",
+    "usage": "The ritual of Plant Insight II."
+  },
+  "115033": {
+    "descVi": "Nó là nguồn gốc của mọi cành nhỏ trong rừng sâu, mọi sợi rêu và đám rong trôi nổi, và là mẹ của muôn loài cây. Tất cả bọn chúng đều biết ngươi.",
+    "usageVi": "The ritual of Plant Insight III.",
+    "sourceVi": "Insight - Sylvanus Shape",
+    "source": "Insight - Sylvanus Shape",
+    "usage": "The ritual of Plant Insight III."
+  },
+  "115041": {
+    "descVi": "Chúng đã khóc, đã gào. Chúng đã sống, và đã chết.",
+    "usageVi": "The ritual of Beast Insight I.",
+    "sourceVi": "Insight - Brutes Wilds",
+    "source": "Insight - Brutes Wilds",
+    "usage": "The ritual of Beast Insight I."
+  },
+  "115042": {
+    "descVi": "Chúng bước đi trên những vùng đất hoang, nghỉ ngơi ban ngày và thức dậy ban đêm.",
+    "usageVi": "The ritual of Beast Insight II.",
+    "sourceVi": "Insight - Brutes Wilds",
+    "source": "Insight - Brutes Wilds",
+    "usage": "The ritual of Beast Insight II."
+  },
+  "115043": {
+    "descVi": "Mỗi hơi thở của chúng đều giống như hơi thở của bà nội bên ngoại và ông nội bên nội chúng. Chúng nhìn thấy những gì phàm nhân nhìn thấy.",
+    "usageVi": "The ritual of Beast Insight III.",
+    "sourceVi": "Insight - Brutes Wilds",
+    "source": "Insight - Brutes Wilds",
+    "usage": "The ritual of Beast Insight III."
+  },
+  "120001": {
+    "descVi": "Khi bóng râm lốm đốm của tán cây đổ xuống mặt đất, khi cành khô gãy răng rắc dưới chân, khi lũ chim hoảng sợ bay đi vì tiếng hú uốn lượn, ngươi sẽ tìm thấy nó ở đó.",
+    "usageVi": "A material for leveling up Character Resonate.",
+    "sourceVi": "Tiệm Cầm đồ, Cửa hàng Mảnh: Oneiric",
+    "source": "Pawnshop, Fragment Shop: Oneiric",
+    "usage": "A material for leveling up Character Resonate."
+  },
+  "120002": {
+    "descVi": "Khi cây cầu treo đang đổ sụp giữa những vách đá, khi kẻ có đôi tai tê rần bước đi trên dây, khi những cơn rùng mình đan xen không thể dừng lại, ngươi sẽ tìm thấy nó ở đó.",
+    "usageVi": "A material for leveling up Character Resonate.",
+    "sourceVi": "Tiệm Cầm đồ, Cửa hàng Mảnh: Oneiric",
+    "source": "Pawnshop, Fragment Shop: Oneiric",
+    "usage": "A material for leveling up Character Resonate."
+  },
+  "120003": {
+    "descVi": "Khi lữ khách đứng trước ngã ba hoang vắng, khi cơn bão cuốn cát đi, khi lời thì thầm giả dối ám ảnh trong sọ, ngươi sẽ tìm thấy nó ở đó.",
+    "usageVi": "A material for leveling up Character Resonate.",
+    "sourceVi": "Tiệm Cầm đồ, Cửa hàng Mảnh: Oneiric",
+    "source": "Pawnshop, Fragment Shop: Oneiric",
+    "usage": "A material for leveling up Character Resonate."
+  },
+  "120004": {
+    "descVi": "Khi nước mắt rơi và đôi mắt khép lại lúc nửa đêm, khi một tiếng thở dài không thể bỏ qua trong nỗi cô độc, khi tiếng vọng khàn đặc chìm xuống đáy biển sâu, ngươi sẽ tìm thấy nó ở đó.",
+    "usageVi": "A material for leveling up Character Resonate.",
+    "sourceVi": "Tiệm Cầm đồ, Cửa hàng Mảnh: Oneiric",
+    "source": "Pawnshop, Fragment Shop: Oneiric",
+    "usage": "A material for leveling up Character Resonate."
+  },
+  "120011": {
+    "descVi": "Trong những giấc mơ ướt đẫm, trên những lối đi rợp bóng ngươi từng lang thang một mình, vào khoảnh khắc một nỗi bồn chồn bất chợt run rẩy chạy dọc sống lưng, ngươi sẽ tìm thấy nó ở đó.",
+    "usageVi": "A material for leveling up Character Resonate.",
+    "sourceVi": "Cửa hàng Mảnh: Oneiric",
+    "source": "Fragment Shop: Oneiric",
+    "usage": "A material for leveling up Character Resonate."
+  },
+  "120012": {
+    "descVi": "Trên đống lửa thiêu những con bướm thành tro cháy, trong khoảng lặng chốc lát giữa tiếng reo hò của đám đông, xuyên qua tạp âm ngắn ngủi cất giữ trong vòng tay, ngươi sẽ tìm thấy nó ở đó.",
+    "usageVi": "A material for leveling up Character Resonate.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cửa hàng Mảnh: Oneiric",
+    "source": "Craft in the Wilderness Pawnshop Fragment Shop: Oneiric",
+    "usage": "A material for leveling up Character Resonate."
+  },
+  "120013": {
+    "descVi": "Trên kẻ bám đuôi vẫn luôn theo ngươi, trên gương mặt xa lạ chào ngươi từ phía bên kia tấm gương, trong hồi chuông vang dội tạo nên những dư âm chói tai, ngươi sẽ tìm thấy nó ở đó.",
+    "usageVi": "A material for leveling up Character Resonate.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ, Cửa hàng Mảnh: Oneiric",
+    "source": "Craft in the Wilderness Pawnshop Fragment Shop: Oneiric",
+    "usage": "A material for leveling up Character Resonate."
+  },
+  "140001": {
+    "descVi": "Chú thỏ vàng là một truyền thuyết ai cũng biết. Nó theo dõi người ta, đánh cắp thời gian của họ, và đôi khi còn đổi thay cả vận mệnh. Tuy đã cũ kỹ, mục nát và nhàm chán, nó vẫn độc nhất và không thể thiếu.",
+    "usageVi": "Character summoning.",
+    "sourceVi": "Tiệm Cầm đồ",
+    "source": "Pawnshop",
+    "usage": "Character summoning."
+  },
+  "140002": {
+    "descVi": "Người kể chuyện chưa từng nghĩ thỏ vàng lại có thể đi theo bầy. Không ai biết điều đó kéo theo những gì, nhưng chẳng ai lại chọn một chú thỏ duy nhất thay vì nhiều hơn thế.",
+    "usageVi": "Character summoning.",
+    "usage": "Character summoning."
+  },
+  "180001": {
+    "descVi": "Dạng phân cực có biên độ cực thấp đến mức không thể quan sát. Nó chủ yếu được sinh ra từ những hình ảnh tinh thần ổn định. Nó đạt đỉnh sau 1-3 giờ kể từ khi hình ảnh hình thành và bắt đầu tan biến sau 12-15 ngày.",
+    "usageVi": "A low-lever material used for ascending Psychube's level limit.",
+    "sourceVi": "Tiệm Cầm đồ, Cửa hàng Mảnh: Oneiric",
+    "source": "Pawnshop, Fragment Shop: Oneiric",
+    "usage": "A low-lever material used for ascending Psychube's level limit."
+  },
+  "180002": {
+    "descVi": "Dạng phân cực có biên độ thấp này có thể được nhìn thấy liên tục khi quan sát. Nó chủ yếu được sinh ra từ những hình ảnh tinh thần nhẹ nhàng và kéo dài, như nỗi buồn và hoài niệm.",
+    "usageVi": "A mId-lever material used for ascending Psychube's level limit.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ",
+    "source": "Craft in the Wilderness Pawnshop",
+    "usage": "A mId-lever material used for ascending Psychube's level limit."
+  },
+  "180003": {
+    "descVi": "Dạng phân cực này có biên độ cao và dễ quan sát, nhưng ít gặp hơn so với Phân cực MF. Nó chủ yếu được sinh ra từ những hình ảnh tinh thần mạnh mẽ và tạm thời, như giận dữ, bốc đồng và tham lam.",
+    "usageVi": "A high-lever material used for ascending Psychube's level limit.",
+    "sourceVi": "Chế tạo trong Hoang dã, Tiệm Cầm đồ",
+    "source": "Craft in the Wilderness Pawnshop",
+    "usage": "A high-lever material used for ascending Psychube's level limit."
+  },
+  "180004": {
+    "descVi": "Dạng phân cực hiếm có với biên độ cực cao. Nó chủ yếu được sinh ra từ những hình ảnh tinh thần cực kỳ bất ổn. Ai nhìn thấy nó đều phải ly tâm ngay lập tức và báo cho trưởng bộ phận càng sớm càng tốt.",
+    "usageVi": "The highest-lever material used for ascending Psychube's level limit.",
+    "sourceVi": "Chế tạo trong Tiệm Cầm đồ TATildarnace",
+    "source": "Craft in tha TATildarnace Pawnshop",
+    "usage": "The highest-lever material used for ascending Psychube's level limit."
+  },
+  "481005": {
+    "descVi": "Một chiếc rương mà mọi nhà thuật pháp đều quen thuộc. Mở ra để nhận một nguyên liệu cấp Thấp do bạn tự chọn, dùng cho Insight hoặc Resonate của nhân vật."
+  },
+  "481006": {
+    "descVi": "Một chiếc rương mà mọi nhà thuật pháp đều quen thuộc. Mở ra để nhận một nguyên liệu cấp Trung do bạn tự chọn, dùng cho Insight hoặc Resonate."
+  },
+  "481007": {
+    "descVi": "Một chiếc rương mà mọi nhà thuật pháp đều quen thuộc. Mở ra để nhận một nguyên liệu cấp Cao do bạn tự chọn, dùng cho Insight hoặc Resonate."
+  },
+  "481010": {
+    "descVi": "Những lời thì thầm bên trong đang tràn ra. Hãy nắm lấy cơ hội khi ngươi được nghe thấy chúng."
+  },
+  "510010": {
+    "descVi": "Một chiếc rương mà mọi nhà thuật pháp đều quen thuộc. Mở ra để nhận một nguyên liệu cấp Cao cấp do bạn tự chọn, dùng cho Insight hoặc Resonate."
+  },
+  "530001": {
+    "descVi": "Một chiếc rương mà mọi nhà thuật pháp đều quen thuộc. Mở ra để nhận một nguyên liệu cấp Huyền bí do bạn tự chọn, dùng cho Insight hoặc Resonance."
+  }
+}
