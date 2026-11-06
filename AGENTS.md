@@ -105,8 +105,7 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `item_formulas.json` | `formula.json` (`costMaterial`, `produce`) | |
 | `psychube_id.json` | `equip.json` | key = `equip.id` (see §5) |
 | `psychubes_data.json` | `equip.json` + global `language_*` (and equip effect tables, to verify) | |
-| `character_euphorias.json` | `character_destiny.json`, `character_destiny_slots.json`, `character_destiny_facets*.json` + global `language_*` | 42 trees; there is **no table named "euphoria"** — `destiny` is the internal name |
-| `euphoria_list.json` | same as above (tier 1/2 names) | |
+| `character_euphorias.json` | `character_destiny.json`, `character_destiny_facets.json`, `character_destiny_facets_consume.json`, `destiny_facets_ex_level.json` + global `language_*` | **derived**: 46 characters / 55 trees; there is no table named "euphoria" — `destiny` is the internal name. CN-only trees are included (union of both servers); their English lives in `content/translations/euphorias.json` |
 | `skill_glossary.json` | skill/buff effect tables + global `language_*` | |
 | `name_map.json` | `character.json` + `language_en.json` + `language_zh.json` | EN↔CN name pairs |
 | `global_name_transfer.json` | join global↔CN `character.json` on `id` | maps raw CN name → canonical EN name |
@@ -146,10 +145,16 @@ Owned by the project, not the game. Lives in `content/` after the rebuild.
 | `i18n.json` | UI strings + VI translations |
 | `credits.json` | acknowledgements |
 | `exclude_character.json`, `collab_character.json` | curation policy (§Class B, hand-decided) |
+| `translations/psychubes.json` | English for CN-only psychubes + every Vietnamese psychube/amplification string |
+| `translations/euphorias.json` | English for CN-only Euphoria trees + the editorial `version` of each tree |
 
 Two current files are **orphans and can be dropped**:
 `guide_cards.json` (never fetched by the app) and `reso_shape.json`
 (byte-identical duplicate of `shape_patterns.json`).
+
+`euphoria_list.json` was dropped on 2026-11-06: it stored stale effect tags
+(“General”, “Pursuit”) instead of the trees' real names, which
+`character_euphorias.json` now carries in all five languages.
 
 ---
 
@@ -401,6 +406,24 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 - The pipeline writes `data/_meta.json` with both server versions and `generatedAt`.
   Every generated file is reproducible with `npm run sync`; `npm run sync:verify` asserts
   the invariants above.
+
+### Phase 2 facts worth not re-deriving
+
+- **Euphoria is `destiny`.** `character_destiny` lists 1–2 facet ids per hero (Regulus,
+  Centurion, Matilda have two); `character_destiny_facets_consume` carries the display
+  name, keyword tags and upgrade cost; `destiny_facets_ex_level` carries the 5 portrait
+  tiers for 5 heroes. A character's entries map positionally to E1/E2.
+- **Facet lists are the union of global + CN** (CN adds `302502`, `303202`, `304102`).
+  55 trees over 46 characters; 6 are CN-only and take their English from
+  `content/translations/euphorias.json`.
+- **Rank text embeds skill names as `▩N%s`**, where N is 0 insight passive, 1/2 the two
+  incantations, 3 the ultimate. `derive/euphorias.mjs` resolves them per language and
+  brackets them `[X]` for en/kr, `【X】` for zh/tw/jp. Two heroes need the family-skill
+  fallback: `exSkill: 0` falls back to the `<skinId>3<rank>` skill (Nautika), and Nautika's
+  `character.skill` ids are from her reworked skin family, so the first `#` id can still
+  point at a renamed skill — the generated text is correct, the legacy file was stale.
+- **CN-only rows carry literal Chinese instead of `language_*` keys**, so literal text is
+  only accepted for `zh`; `tw/jp/kr` fall back to `"N/A"` rather than mislabeling Chinese.
 
 ---
 
