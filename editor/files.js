@@ -21,7 +21,6 @@ export const WRITABLE = [
   "character_reso_shape.json",
   "shape_patterns.json",
   "reso_shape.json",
-  "euphoria_list.json",
   "exclude_character.json",
   "collab_character.json",
   "future_sight.json",

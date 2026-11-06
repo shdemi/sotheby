@@ -500,40 +500,17 @@ function renderCharacterDetail() {
   host.appendChild(classification);
 
   /* --- euphoria --- */
-  const euphoriaCard = el("div", { class: "card" }, [
-    el("h2", { text: "Euphoria" }),
-    el("p", { class: "hint", text: "Effect name only — the file stores \"Name: Effect\". Clearing the effect also clears its Future Sight flag." }),
-  ]);
-
-  for (const tier of ["1", "2"]) {
-    const effect = tier === "1" ? c.euphoria1 : c.euphoria2;
-    const future = tier === "1" ? c.euphoria1Future : c.euphoria2Future;
-
-    const input = el("input", { type: "text", value: effect, placeholder: "e.g. General" });
-    const flag = el("input", { type: "checkbox", checked: future, disabled: effect === "" });
-    flag.addEventListener("change", () => {
-      model.setEuphoria(name, tier, input.value, flag.checked);
-      afterEdit();
-    });
-    input.addEventListener("change", () => {
-      model.setEuphoria(name, tier, input.value, flag.checked);
-      afterEdit();
-    });
-
-    euphoriaCard.appendChild(
-      el("div", { class: "field" }, [
-        el("label", { class: "field-label", text: `Tier ${tier} → euphoria_list.json` }),
-        el("div", { class: "field-row" }, [
-          input,
-          el("label", { class: "toggle", title: "Marks this tier as CN-only in future_sight.json" }, [
-            flag,
-            el("span", { text: "Future Sight (CN-only)" }),
-          ]),
-        ]),
-      ])
-    );
-  }
-  host.appendChild(euphoriaCard);
+  host.appendChild(
+    el("div", { class: "card" }, [
+      el("h2", { text: "Euphoria" }),
+      el("p", {
+        class: "hint",
+        text:
+          "Generated from the game tables in character_euphorias.json (name, tags, ranks, portraits). " +
+          "CN-only trees get their English from content/translations/euphorias.json, so there is nothing to edit here.",
+      }),
+    ])
+  );
 
   /* --- flags --- */
   const flagsCard = el("div", { class: "card" }, [
@@ -611,9 +588,6 @@ function renderFileTouchCard(name) {  const model = state.model;
   }
   for (const [shape, list] of Object.entries(model.value("character_reso_shape.json") || {})) {
     if (Array.isArray(list) && list.includes(name)) push("character_reso_shape.json", shape);
-  }
-  for (const [tier, list] of Object.entries(model.value("euphoria_list.json") || {})) {
-    if (Array.isArray(list) && list.some((e) => String(e).split(":")[0].trim() === name)) push("euphoria_list.json", `tier ${tier}`);
   }
   if ((model.value("exclude_character.json") || []).includes(name)) push("exclude_character.json");
   if ((model.value("collab_character.json") || []).includes(name)) push("collab_character.json");

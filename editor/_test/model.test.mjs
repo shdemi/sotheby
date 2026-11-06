@@ -110,8 +110,7 @@ console.log("\n=== derived values match the shipped data ===");
   check("Druvis III rarity", druvis.rarity === "6", druvis.rarity);
   check("Druvis III afflatus", druvis.afflatus === "Plant", druvis.afflatus);
   check("Druvis III shape", druvis.shape === "Z shape", druvis.shape);
-  check("Druvis III euphoria T1", druvis.euphoria1 === "Petrify", druvis.euphoria1);
-  check("Druvis III euphoria T2", druvis.euphoria2 === "Rank Up", druvis.euphoria2);
+  check("Druvis III has no future-sight euphoria", druvis.eu1FutureSightFlag === false, String(druvis.eu1FutureSightFlag));
   check("Druvis III CN name", druvis.cnName === "槲寄生", druvis.cnName);
   check("Druvis III avatar path", /headicon_small\/300301\.png$/.test(druvis.avatar), druvis.avatar);
   check("Druvis III skins counted", druvis.skins === 4, String(druvis.skins));
@@ -134,7 +133,7 @@ console.log("\n=== derived values match the shipped data ===");
   check("The Twins is collab", twins.collab === true, String(twins.collab));
 
   const thirtySeven = model.character("37");
-  check("37 euphoria T1 is future sight", thirtySeven.euphoria1Future === true, String(thirtySeven.euphoria1Future));
+  check("37 euphoria T1 is future sight", thirtySeven.eu1FutureSightFlag === true, String(thirtySeven.eu1FutureSightFlag));
 }
 
 /* ------------------------------------------------------------------ *
@@ -198,8 +197,6 @@ expectChanged("setFutureSight", (m) => m.setFutureSight("Drake", false), ["futur
 expectChanged("setCnName (new)", (m) => m.setCnName("Newcomer", "新人"), ["name_map.json"]);
 expectChanged("setCnName (change)", (m) => m.setCnName("Druvis III", "槲寄生改"), ["name_map.json"]);
 expectChanged("setTransfer", (m) => m.setTransfer("6", false), ["global_name_transfer.json"]);
-expectChanged("setEuphoria T1", (m) => m.setEuphoria("Druvis III", "1", "Petrify!", false), ["euphoria_list.json"]);
-expectChanged("setEuphoria future flag", (m) => m.setEuphoria("Druvis III", "1", "Petrify", true), ["future_sight.json"]);
 expectChanged("setFutureSkin", (m) => m.setFutureSkin("315503", false), ["future_sight.json"]);
 expectChanged("setPsychubeFutureSight", (m) => m.setPsychubeFutureSight("6", "1579", false), ["future_sight.json"]);
 expectChanged("setPsychubeField tags", (m) => m.setPsychubeField("6", "1579", "tags", ["ATK"]), ["psychube_id.json"]);
@@ -217,7 +214,6 @@ for (const [label, mutate] of [
   ["setShape to the same value", (m) => m.setShape("Drake", m.character("Drake").shape)],
   ["setExcluded to the same value", (m) => m.setExcluded("Drake", false)],
   ["setCnName to the same value", (m) => m.setCnName("Druvis III", "槲寄生")],
-  ["setEuphoria to the same value", (m) => m.setEuphoria("Druvis III", "1", "Petrify", false)],
   ["setTransfer to the same value", (m) => m.setTransfer("6", true)],
   ["setTeamSlot to the same value", (m) => {
     const preset = pickPreset(m);
@@ -250,16 +246,9 @@ console.log("\n=== edit content ===");
 }
 {
   const m = freshModel();
-  m.setEuphoria("Drake", "1", "General", true);
-  const list = m.value("euphoria_list.json")["1"];
-  check("euphoria entry added in the right format", list.includes("Drake: General"), JSON.stringify(list.slice(-2)));
-  check("future sight flag added", m.value("future_sight.json").Euphoria.includes("Drake: 1"), JSON.stringify(m.value("future_sight.json").Euphoria));
-  check("two files changed", m.changedFiles().sort().join(",") === "euphoria_list.json,future_sight.json", m.changedFiles().join(","));
-
-  m.setEuphoria("Drake", "1", "", false);
-  check("clearing the effect removes it", !m.value("euphoria_list.json")["1"].includes("Drake: General"));
-  check("clearing also removes the future sight flag", !m.value("future_sight.json").Euphoria.includes("Drake: 1"));
-  check("both files are back to their original bytes", m.changedFiles().length === 0, m.changedFiles().join(","));
+  m.setFutureSkin("315503", false);
+  check("future skin removed", !(m.value("future_sight.json").Skin || []).includes("315503"));
+  check("only future_sight.json changed", m.changedFiles().join(",") === "future_sight.json", m.changedFiles().join(","));
 }
 {
   const m = freshModel();
@@ -360,7 +349,6 @@ console.log("\n=== a realistic session: add a new character ===");
   m.setAfflatus("Newcomer", "Star");
   m.setShape("Newcomer", "Plus shape");
   m.setCnName("Newcomer", "新人");
-  m.setEuphoria("Newcomer", "1", "General", true);
   m.setFutureSight("Newcomer", true);
 
   const rarity = m.value("characters_by_rarity.json");
@@ -368,15 +356,13 @@ console.log("\n=== a realistic session: add a new character ===");
   check("appears in afflatus Star", m.value("characters_by_afflatus.json").Star.includes("Newcomer"));
   check("appears in Plus shape", m.value("character_reso_shape.json")["Plus shape"].includes("Newcomer"));
   check("has a CN name", m.value("name_map.json").character["Newcomer"] === "新人");
-  check("has euphoria", m.value("euphoria_list.json")["1"].includes("Newcomer: General"));
   check("marked future sight", m.value("future_sight.json").Character.includes("Newcomer"));
-  check("future sight euphoria recorded", m.value("future_sight.json").Euphoria.includes("Newcomer: 1"));
 
   const changed = m.changedFiles().sort();
   check(
-    "six files changed",
+    "five files changed",
     changed.join(",") ===
-      ["characters_by_rarity.json", "characters_by_afflatus.json", "character_reso_shape.json", "name_map.json", "euphoria_list.json", "future_sight.json"]
+      ["characters_by_rarity.json", "characters_by_afflatus.json", "character_reso_shape.json", "name_map.json", "future_sight.json"]
         .sort()
         .join(","),
     changed.join(",")
@@ -387,7 +373,6 @@ console.log("\n=== a realistic session: add a new character ===");
 
   // Undoing every step must bring the files back byte-for-byte.
   m.setFutureSight("Newcomer", false);
-  m.setEuphoria("Newcomer", "1", "", false);
   m.setCnName("Newcomer", "");
   m.setShape("Newcomer", "");
   m.setAfflatus("Newcomer", "");

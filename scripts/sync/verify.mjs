@@ -107,6 +107,32 @@ ok("excluded characters are not in a shape", excluded.every((n) => !Object.value
 ok("every shape has patterns", Object.keys(resoShape).every((shape) => Array.isArray(patterns[shape]) && patterns[shape].length > 0));
 ok("patterns are known resonance styles", Object.values(patterns).flat().every((p) => typeof p === "string" && p.length > 0));
 
+// ---- euphorias ---------------------------------------------------------------
+const euphorias = read("character_euphorias.json");
+const euphoriaKeys = Object.keys(euphorias);
+const euphoriaEntries = Object.values(euphorias).flat();
+ok("euphoria trees are keyed by character", euphoriaKeys.length > 0 && euphoriaEntries.every((e) => Array.isArray(e.ranks) && e.ranks.length > 0));
+ok(
+  "euphoria ids are unique",
+  new Set(euphoriaEntries.map((e) => e.id)).size === euphoriaEntries.length,
+);
+ok("euphoria trees are in the roster", euphoriaKeys.every((name) => rarities.includes(name)), euphoriaKeys.filter((n) => !rarities.includes(n)).join(","));
+ok("euphoria name has en + zh", euphoriaEntries.every((e) => e.name.en && e.name.zh));
+ok("euphoria tags are labels", euphoriaEntries.every((e) => Array.isArray(e.tags) && e.tags.length > 0));
+ok("euphoria materials are numeric ids", euphoriaEntries.every((e) => e.materials.every((m) => Number(m.id) > 0 && m.amount > 0)));
+ok(
+  "euphoria ranks are 1..5 in order",
+  euphoriaEntries.every((e) => e.ranks.every((r, i) => r.rank === i + 1) && e.ranks.length <= 5),
+);
+ok(
+  "euphoria rank text has all five languages",
+  euphoriaEntries.every((e) => e.ranks.every((r) => Object.keys(r.description).length === 5 && Object.values(r.description).every(Boolean))),
+);
+ok(
+  "euphoria portraits are five tiers",
+  euphoriaEntries.filter((e) => e.portraits).every((e) => e.portraits.length === 5 && e.portraits.every((p) => /^p[1-5]$/.test(Object.keys(p)[0]))),
+);
+
 // ---- misc -------------------------------------------------------------------
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));
 ok("_meta has both versions", !!meta.globalVersion && !!meta.cnVersion, `${meta.globalVersion} / ${meta.cnVersion}`);

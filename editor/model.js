@@ -21,7 +21,6 @@ export const FILES = [
   "character_reso_shape.json",
   "shape_patterns.json",
   "reso_shape.json",
-  "euphoria_list.json",
   "exclude_character.json",
   "collab_character.json",
   "future_sight.json",
@@ -439,7 +438,6 @@ export class Model {
     this.rarityOf = new Map();
     this.afflatusOf = new Map();
     this.shapeOf = new Map();
-    this.euphoriaOf = new Map();
     this.cnNameOf = new Map();
 
     const rarity = this.value("characters_by_rarity.json") || {};
@@ -469,18 +467,6 @@ export class Model {
       }
     }
 
-    const euphoria = this.value("euphoria_list.json") || {};
-    for (const [tier, list] of Object.entries(euphoria)) {
-      if (!Array.isArray(list)) continue;
-      for (const entry of list) {
-        const [rawName, ...rest] = String(entry).split(":");
-        const name = this.resolve(rawName.trim());
-        if (!name) continue;
-        if (!this.euphoriaOf.has(name)) this.euphoriaOf.set(name, {});
-        this.euphoriaOf.get(name)[tier] = rest.join(":").trim();
-      }
-    }
-
     const nameMap = this.value("name_map.json") || {};
     for (const [raw, cn] of Object.entries(nameMap.character || {})) {
       const name = this.resolve(raw);
@@ -505,7 +491,6 @@ export class Model {
     for (const n of this.rarityOf.keys()) names.add(n);
     for (const n of this.afflatusOf.keys()) names.add(n);
     for (const n of this.shapeOf.keys()) names.add(n);
-    for (const n of this.euphoriaOf.keys()) names.add(n);
     for (const n of this.excluded) names.add(n);
     for (const n of this.collab) names.add(n);
     for (const n of this.futureSight) names.add(n);
@@ -563,7 +548,6 @@ export class Model {
   character(name) {
     const item = this.arcanistByCanonical.get(name) || null;
     const arcanistEng = item ? item.nameEng : "";
-    const tiered = this.euphoriaOf.get(name) || {};
     return {
       name,
       arcanistEng,
@@ -572,10 +556,6 @@ export class Model {
       rarity: this.rarityOf.get(name) || "",
       afflatus: this.afflatusOf.get(name) || "",
       shape: this.shapeOf.get(name) || "",
-      euphoria1: tiered["1"] || "",
-      euphoria2: tiered["2"] || "",
-      euphoria1Future: this.futureEuphoria.has(`${name}: 1`),
-      euphoria2Future: this.futureEuphoria.has(`${name}: 2`),
       excluded: this.excluded.has(name),
       collab: this.collab.has(name),
       futureSight: this.futureSight.has(name),
@@ -645,59 +625,6 @@ export class Model {
     for (const shapeName of SHAPES) {
       changed = this.setMembership("character_reso_shape.json", [shapeName], name, shapeName === shape) || changed;
     }
-    if (changed) this.reload();
-    return changed;
-  }
-
-  /**
-   * Sets a euphoria tier. `effect` is the effect name only; the file stores
-   * "Name: Effect". Pass an empty effect to remove the entry.
-   */
-  setEuphoria(name, tier, effect, futureSight) {
-    const doc = this.doc("euphoria_list.json");
-    if (!doc) return false;
-    const list = doc.value[tier];
-    if (!Array.isArray(list)) return false;
-
-    const prefix = `${name}:`;
-    const index = list.findIndex((e) => String(e).split(":")[0].trim() === name);
-    const want = String(effect || "").trim();
-    let changed = false;
-
-    if (want === "") {
-      if (index !== -1) {
-        doc.removeAt([tier], index);
-        changed = true;
-      }
-    } else {
-      const entry = `${name}: ${want}`;
-      if (index === -1) {
-        doc.append([tier], entry);
-        changed = true;
-      } else if (String(list[index]) !== entry) {
-        doc.set([tier, index], entry);
-        changed = true;
-      }
-    }
-
-    // The Future Sight flag for a tier only exists alongside a real effect.
-    const fsDoc = this.doc("future_sight.json");
-    if (fsDoc) {
-      const fsList = fsDoc.value.Euphoria || [];
-      const fsIndex = fsList.findIndex((e) => {
-        const parts = String(e).split(":");
-        return parts[0].trim() === name && parts[1] !== undefined && parts[1].trim() === tier;
-      });
-      const wantFlag = want !== "" && !!futureSight;
-      if (wantFlag && fsIndex === -1) {
-        fsDoc.append(["Euphoria"], `${name}: ${tier}`);
-        changed = true;
-      } else if (!wantFlag && fsIndex !== -1) {
-        fsDoc.removeAt(["Euphoria"], fsIndex);
-        changed = true;
-      }
-    }
-
     if (changed) this.reload();
     return changed;
   }
@@ -2330,24 +2257,6 @@ export function validate(model) {
 
   const fs = model.value("future_sight.json") || {};
   if (Array.isArray(fs.Character)) checkList("future_sight.json", "Character", fs.Character);
-
-  /* euphoria entries: "Name: Effect" */
-  for (const [tier, list] of Object.entries(model.value("euphoria_list.json") || {})) {
-    if (!["1", "2"].includes(tier)) err(`euphoria_list.json: unexpected tier key "${tier}"`);
-    if (!Array.isArray(list)) continue;
-    list.forEach((entry, i) => {
-      const text = String(entry);
-      const idx = text.indexOf(":");
-      if (idx === -1) {
-        warn(`euphoria_list.json → ${tier}[${i}]: "${text}" has no effect name`);
-        return;
-      }
-      const rawName = text.slice(0, idx).trim();
-      const effect = text.slice(idx + 1).trim();
-      if (!known.has(rawName)) err(`euphoria_list.json → ${tier}[${i}]: "${rawName}" is not a known character`);
-      if (effect === "") warn(`euphoria_list.json → ${tier}[${i}]: "${text}" has an empty effect name`);
-    });
-  }
 
   /* future sight euphoria: "Name: tier" */
   (fs.Euphoria || []).forEach((entry, i) => {

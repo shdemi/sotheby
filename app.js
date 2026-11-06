@@ -1263,10 +1263,9 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, euphoriaRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes] = await Promise.all([
+    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
-      fetch("data/euphoria_list.json"),
       fetch("data/future_sight.json").catch(() => null),
       fetch("data/exclude_character.json").catch(() => null),
       fetch("data/characters_by_afflatus.json").catch(() => null),
@@ -1343,13 +1342,6 @@ async function initApp() {
       } catch (e) {
         console.warn("Could not parse future_sight.json", e);
       }
-    }
-
-    try {
-      const euphoriaData = await euphoriaRes.json();
-      buildEuphoriaMap(euphoriaData);
-    } catch (e) {
-      console.warn("Could not parse euphoria_list.json", e);
     }
 
     if (afflatusRes && afflatusRes.ok) {
@@ -2018,6 +2010,13 @@ function getMainPattern(name, char) {
   return main || DEFAULT_PATTERN;
 }
 
+/**
+ * Builds the per-character Euphoria index from `character_euphorias.json`.
+ *
+ * A character's entries are ordered: the first tree is Euphoria 1 (`E1`), the
+ * second (only nine characters have one) is Euphoria 2 (`E2`). The stored names
+ * are the real, localized tree names, e.g. "Shine Bright Like Regulus".
+ */
 function buildEuphoriaMap(euphoriaData) {
   euphoriaOptionsByName = {};
   euphoriaNamesByTier = {};
@@ -2025,57 +2024,36 @@ function buildEuphoriaMap(euphoriaData) {
 
   if (!euphoriaData || typeof euphoriaData !== "object") return;
 
-  Object.entries(euphoriaData).forEach(([level, names]) => {
-    if (!Array.isArray(names)) return;
-    const tier = Number(level);
-    if (!Number.isInteger(tier) || tier < 1 || tier > 2) return;
+  Object.entries(euphoriaData).forEach(([rawName, entries]) => {
+    if (!Array.isArray(entries) || !entries.length) return;
+    const canonical = resolveCharacterName(rawName);
+    if (!canonical) return;
 
-    names.forEach((rawEntry) => {
-      // rawEntry can be "CharacterName: EuphoriaName" or just "CharacterName"
-      let rawName = rawEntry;
-      let euName = "";
-      if (typeof rawEntry === "string" && rawEntry.includes(":")) {
-        const parts = rawEntry.split(":");
-        rawName = parts[0].trim();
-        euName = parts[1].trim();
-      }
+    euphoriaOptionsByName[canonical] = [];
+    euphoriaNamesByTier[canonical] = {};
 
-      const canonical = resolveCharacterName(rawName);
-      if (!canonical) return;
-      if (!euphoriaOptionsByName[canonical]) euphoriaOptionsByName[canonical] = [];
-      if (!euphoriaNamesByTier[canonical]) euphoriaNamesByTier[canonical] = {};
-
-      if (!euphoriaOptionsByName[canonical].includes(tier)) {
-        euphoriaOptionsByName[canonical].push(tier);
-      }
-      if (euName) {
-        euphoriaNamesByTier[canonical][tier] = euName;
-      }
-      euphoriaAllowedNames.add(canonical);
+    entries.slice(0, 2).forEach((entry, index) => {
+      const tier = index + 1;
+      euphoriaOptionsByName[canonical].push(tier);
+      if (entry && entry.name) euphoriaNamesByTier[canonical][tier] = entry.name;
     });
+    euphoriaAllowedNames.add(canonical);
   });
+}
 
-  Object.keys(euphoriaOptionsByName).forEach((name) => {
-    euphoriaOptionsByName[name].sort((a, b) => a - b);
-  });
+/** Locates the localized name of a character's Euphoria tree for a given tier. */
+function getEuphoriaTreeName(name, tier) {
+  const canonical = resolveCharacterName(name);
+  const stored = euphoriaNamesByTier[canonical] && euphoriaNamesByTier[canonical][tier];
+  if (!stored) return "";
+  return currentLang === "cn" ? stored.zh || stored.en || "" : stored.en || stored.zh || "";
 }
 
 function getEuphoriaDisplayName(name, tier) {
-  const canonical = resolveCharacterName(name);
-  const specificName = euphoriaNamesByTier[canonical] && euphoriaNamesByTier[canonical][tier];
+  const treeName = getEuphoriaTreeName(name, tier);
   const tag = fmtEuphoria(tier);
-  if (specificName) {
-    return `${euphoriaEffectName(specificName)} (${tag})`;
-  }
+  if (treeName) return `${treeName} (${tag})`;
   return `Euphoria ${tier} (${tag})`;
-}
-
-/** Localises a Euphoria effect name (e.g. "General" -> 一般). */
-function euphoriaEffectName(effect) {
-  if (!effect) return effect;
-  const key = `euphoria.${effect}`;
-  const translated = t(key);
-  return translated === key ? effect : translated;
 }
 
 function getEligibleEuphoriaLevels(name) {
@@ -6758,7 +6736,10 @@ function buildInfoBookData({ items, formulas, matsRequired, profiles, patternCos
   if (profiles && typeof profiles === "object") characterProfilesData = profiles;
   if (patternCosts && typeof patternCosts === "object") patternCostsData = patternCosts;
   if (skillsData && typeof skillsData === "object") characterSkillsData = skillsData;
-  if (euphoriasData && typeof euphoriasData === "object") characterEuphoriasData = euphoriasData;
+  if (euphoriasData && typeof euphoriasData === "object") {
+    characterEuphoriasData = euphoriasData;
+    buildEuphoriaMap(euphoriasData);
+  }
   if (glossaryData && typeof glossaryData === "object") skillGlossaryData = glossaryData;
   if (psychubesDetail && typeof psychubesDetail === "object") psychubesDetailedData = psychubesDetail;
 }

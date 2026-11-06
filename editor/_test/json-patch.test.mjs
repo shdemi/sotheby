@@ -116,7 +116,7 @@ for (const [file, path, sample] of [
   ["characters_by_rarity.json", ["6"], "Test Character"],
   ["character_reso_shape.json", ["Z shape"], "Test Character"],
   ["exclude_character.json", [], "Test Character"],
-  ["euphoria_list.json", ["1"], "Test Character: General"],
+  ["shape_patterns.json", ["Z shape"], "Test Pattern"],
 ]) {
   const original = read(file);
   const doc = new JsonDoc(original);

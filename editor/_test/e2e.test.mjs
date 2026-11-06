@@ -116,7 +116,6 @@ try {
   model.setAfflatus("Newcomer", "Star");
   model.setShape("Newcomer", "Plus shape");
   model.setCnName("Newcomer", "新人");
-  model.setEuphoria("Newcomer", "1", "General", true);
   model.setFutureSight("Newcomer", true);
   session.push("added Newcomer");
 
@@ -185,7 +184,6 @@ try {
     "characters_by_afflatus.json": 1,
     // Two edits: one character gains a shape, and the new "Newcomer" gets one.
     "character_reso_shape.json": (shapeLess ? 1 : 0) + 1,
-    "euphoria_list.json": 1,
     "future_sight.json": 3,
     "name_map.json": 2,
     "psychube_id.json": 1,
@@ -222,7 +220,6 @@ try {
     check("Newcomer survived: afflatus", n.afflatus === "Star", n.afflatus);
     check("Newcomer survived: shape", n.shape === "Plus shape", n.shape);
     check("Newcomer survived: CN name", n.cnName === "新人", n.cnName);
-    check("Newcomer survived: euphoria", n.euphoria1 === "General", n.euphoria1);
     check("Newcomer survived: future sight", n.futureSight === true, String(n.futureSight));
 
     const d = reloaded.character(shapeLess || "Drake");
@@ -258,7 +255,6 @@ try {
     m.setPsychubeField("6", "1579", "tags", pristineChube.tags);
     if (shapeLess) m.setShape(shapeLess, "");
     m.setFutureSight("Newcomer", false);
-    m.setEuphoria("Newcomer", "1", "", false);
     m.setCnName("Newcomer", "");
     m.setShape("Newcomer", "");
     m.setAfflatus("Newcomer", "");

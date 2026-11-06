@@ -17,6 +17,7 @@ import { characterProfiles } from "./derive/profiles.mjs";
 import { psychubeId, psychubeKeyMap } from "./derive/psychubes.mjs";
 import { psychubesData } from "./derive/psychubesData.mjs";
 import { characterResoShape, shapePatterns } from "./derive/resonance.mjs";
+import { characterEuphorias } from "./derive/euphorias.mjs";
 import { collabCharacters, excludeCharacters } from "./derive/curation.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
 
@@ -55,6 +56,7 @@ const files = {
   "character_profiles.json": characterProfiles(),
   "character_reso_shape.json": characterResoShape(),
   "shape_patterns.json": shapePatterns(),
+  "character_euphorias.json": characterEuphorias(),
   "exclude_character.json": excludeCharacters(),
   "collab_character.json": collabCharacters(),
   "psychube_id.json": psychubeId(),
