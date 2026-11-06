@@ -1,0 +1,9 @@
+{
+  "_comment": "English (and optional Chinese) labels for character_battle_tag ids that only exist on the CN server, where the table ships literal Chinese instead of language keys. Add an entry here when a new CN-only tag appears.",
+  "overrides": {
+    "132": {
+      "en": "Pursuit",
+      "zh": "洞知"
+    }
+  }
+}

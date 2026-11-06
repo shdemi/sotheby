@@ -90,6 +90,14 @@ const knownKeys = new Set(ids);
 ok("future psychubes exist in psychube_id", futureChubes.every((id) => knownKeys.has(id)));
 ok("future skins are numeric strings", future.Skin.every((s) => /^\d+$/.test(s)));
 
+// ---- profiles ---------------------------------------------------------------
+const profiles = read("character_profiles.json");
+const profileKeys = Object.keys(profiles);
+ok("profiles cover the roster", rarities.every((name) => profiles[name]), rarities.filter((n) => !profiles[n]).join(","));
+ok("profiles have no extra keys", profileKeys.every((name) => rarities.includes(name)), profileKeys.filter((n) => !rarities.includes(n)).join(","));
+ok("profiles have a damage type", profileKeys.every((name) => ["Reality", "Mental"].includes(profiles[name].dmgType)));
+ok("profiles role tags are arrays", profileKeys.every((name) => Array.isArray(profiles[name].roleTags)));
+
 // ---- misc -------------------------------------------------------------------
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));
 ok("_meta has both versions", !!meta.globalVersion && !!meta.cnVersion, `${meta.globalVersion} / ${meta.cnVersion}`);

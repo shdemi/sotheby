@@ -13,6 +13,7 @@ import { OUT, ROOT, SRC } from "./config.mjs";
 import { readJson, writeJson } from "./util.mjs";
 import { nameMap, globalNameTransfer } from "./derive/names.mjs";
 import { charactersByRarity, charactersByAfflatus } from "./derive/characters.mjs";
+import { characterProfiles } from "./derive/profiles.mjs";
 import { psychubeId, psychubeKeyMap } from "./derive/psychubes.mjs";
 import { psychubesData } from "./derive/psychubesData.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
@@ -49,6 +50,7 @@ const files = {
   "name_map.json": { character: nameMap().character, skin: {} },
   "characters_by_rarity.json": charactersByRarity(),
   "characters_by_afflatus.json": charactersByAfflatus(),
+  "character_profiles.json": characterProfiles(),
   "psychube_id.json": psychubeId(),
   "psychube_key_map.json": psychubeKeyMap(),
   "psychubes_data.json": psychubesData(),
