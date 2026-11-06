@@ -6,10 +6,7 @@
     "name": "Flows in All Things Alike",
     "nameCN": "灵知当齐一",
     "nameVi": "Flows in All Things Alike",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["Critical", "Support"],
     "releasePatch": "4.0",
     "icon": "images/psychube_icon/6/1579.png",
     "descZh": "洞火，星光，浪花卷携真理。\n沙滩写上公式，再被抚平。\n一个关于日光的猜想，\n在夜里证而复证。\n微小的沙粒，请前行吧，\n你的足尖记得黎明。",
@@ -24,49 +21,97 @@
     "breakAttrs": [
       {
         "breakLevel": 0,
-        "attack": 100
+        "attack": 40,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 1,
-        "attack": 100
+        "attack": 60,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 2,
-        "attack": 100
+        "attack": 80,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 3,
-        "attack": 100
+        "attack": 100,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       }
     ],
     "amplifications": [
       {
         "level": 1,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，暴击创伤提升12%；\n记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升4%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，暴击创伤提升{12%}；\n记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升{4%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{12%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{4%} for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{12%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{4%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 2,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，暴击创伤提升15%；记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升5%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，暴击创伤提升{15%}；\n记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升{5%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{15%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{5%} for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{15%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{5%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 3,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，暴击创伤提升18%；记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升6%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，暴击创伤提升{18%}；\n记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升{6%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{18%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{6%} for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{18%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{6%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 4,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，暴击创伤提升21%；记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升7%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，暴击创伤提升{21%}；\n记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升{7%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{21%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{7%} for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{21%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{7%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 5,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，暴击创伤提升24%；记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升8%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，暴击创伤提升{24%}；\n记忆者攻击时，若为额外行动，使己方全体洞知创伤加成提升{8%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{24%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{8%} for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{24%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{8%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       }
@@ -79,10 +124,7 @@
     "name": "To Choose Against Fate",
     "nameCN": "宿命之向背",
     "nameVi": "To Choose Against Fate",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["Critical", "Support"],
     "releasePatch": "4.0",
     "icon": "images/psychube_icon/6/1578.png",
     "descZh": "宿命说：你当顺从我。\n仅对其报以一哂，\n火焰怎能听从荆棘的训诫？\n我是，银杯倾泻不可扑灭的燃烧，\n芒刺也折作薪柴，\n任一万道伤口，不能使我头颅低垂。",
@@ -97,49 +139,97 @@
     "breakAttrs": [
       {
         "breakLevel": 0,
-        "criDmg": 240
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 150,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 1,
-        "criDmg": 240
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 180,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 2,
-        "criDmg": 240
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 210,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 3,
-        "criDmg": 240
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 240,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       }
     ],
     "amplifications": [
       {
         "level": 1,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，造成伤害提升8%；\n记忆者攻击时，若自身处于[燃烧]状态，使己方全体术法威力提升2%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，造成伤害提升{8%}；\n记忆者攻击时，若自身处于【燃烧】状态，使己方全体术法威力提升{2%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{8%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{2%} to all allies for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{8%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{2%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 2,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，造成伤害提升10%；记忆者攻击时，若自身处于[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)状态，使己方全体术法威力提升2.5%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，造成伤害提升{10%}；\n记忆者攻击时，若自身处于【燃烧】状态，使己方全体术法威力提升{2.5%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{10%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{2.5%} to all allies for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{10%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{2.5%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 3,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，造成伤害提升12%；记忆者攻击时，若自身处于[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)状态，使己方全体术法威力提升3%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，造成伤害提升{12%}；\n记忆者攻击时，若自身处于【燃烧】状态，使己方全体术法威力提升{3%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{12%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{3%} to all allies for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{12%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{3%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 4,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，造成伤害提升14%；记忆者攻击时，若自身处于[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)状态，使己方全体术法威力提升3.5%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，造成伤害提升{14%}；\n记忆者攻击时，若自身处于【燃烧】状态，使己方全体术法威力提升{3.5%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{14%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{3.5%} to all allies for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{14%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{3.5%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       },
       {
         "level": 5,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，造成伤害提升16%；记忆者攻击时，若自身处于[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)状态，使己方全体术法威力提升4%，最多叠加4层，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，造成伤害提升{16%}；\n记忆者攻击时，若自身处于【燃烧】状态，使己方全体术法威力提升{4%}，最多叠加4层，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{16%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{4%} to all allies for 3 rounds, stacking up to 4 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{16%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{4%}, duy trì 3 round, cộng dồn tối đa 4 lần."
       }
@@ -152,10 +242,7 @@
     "name": "Atop the Tempest",
     "nameCN": "立于风暴脊",
     "nameVi": "Atop the Tempest",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "4.0",
     "icon": "images/psychube_icon/6/1577.png",
     "descZh": "发动机中盛满伏特加，\n狂饮，轰鸣，冲锋，\n每撕裂一次气流，\n便发表一声恣意的宣言。\n跨上不可跨越的雷暴，\n大笑着与飓风碰拳。\n胜利？噢，它正伏在我足下。",
@@ -170,49 +257,97 @@
     "breakAttrs": [
       {
         "breakLevel": 0,
-        "attack": 100
+        "attack": 40,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 1,
-        "attack": 100
+        "attack": 60,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 2,
-        "attack": 100
+        "attack": 80,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 3,
-        "attack": 100
+        "attack": 100,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       }
     ],
     "amplifications": [
       {
         "level": 1,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，造成伤害提升8%；\n任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升3%，效果可叠加，退出[弱点洞穿]阶段后清空",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，造成伤害提升{8%}；\n任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升{3%}，效果可叠加，退出【弱点洞穿】阶段后清空",
         "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{8%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{3%}, stacking until leaving the [Full Pursuit] phase.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{8%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{3%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit]."
       },
       {
         "level": 2,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，造成伤害提升12%；任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升3%，效果可叠加，退出[弱点洞穿]至多将10个[洞知点]至多存储15点带入此阶段，可消耗[洞知点]至多存储15点释放相同灵感的[洞知]角色的[洞知咒语]阶段后清空",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，造成伤害提升{12%}；\n任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升{3%}，效果可叠加，退出【弱点洞穿】阶段后清空",
         "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{12%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{3%}, stacking until leaving the [Full Pursuit] phase.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{12%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{3%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit]."
       },
       {
         "level": 3,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，造成伤害提升12%；任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升4.5%，效果可叠加，退出[弱点洞穿]至多将10个[洞知点]至多存储15点带入此阶段，可消耗[洞知点]至多存储15点释放相同灵感的[洞知]角色的[洞知咒语]阶段后清空",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，造成伤害提升{12%}；\n任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升{4.5%}，效果可叠加，退出【弱点洞穿】阶段后清空",
         "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{12%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{4.5%}, stacking until leaving the [Full Pursuit] phase.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{12%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{4.5%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit]."
       },
       {
         "level": 4,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，造成伤害提升16%；任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升4.5%，效果可叠加，退出[弱点洞穿]至多将10个[洞知点]至多存储15点带入此阶段，可消耗[洞知点]至多存储15点释放相同灵感的[洞知]角色的[洞知咒语]阶段后清空",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，造成伤害提升{16%}；\n任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升{4.5%}，效果可叠加，退出【弱点洞穿】阶段后清空",
         "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{16%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{4.5%}, stacking until leaving the [Full Pursuit] phase.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{16%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{4.5%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit]."
       },
       {
         "level": 5,
-        "descZh": "进入战斗时，若记忆者灵感为[星]，造成伤害提升16%；任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升6%，效果可叠加，退出[弱点洞穿]至多将10个[洞知点]至多存储15点带入此阶段，可消耗[洞知点]至多存储15点释放相同灵感的[洞知]角色的[洞知咒语]阶段后清空",
+        "descZh": "进入战斗时，若记忆者灵感为【星】，造成伤害提升{16%}；\n任意己方攻击后，若为洞知咒语，使记忆者洞知创伤加成提升{6%}，效果可叠加，退出【弱点洞穿】阶段后清空",
         "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{16%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{6%}, stacking until leaving the [Full Pursuit] phase.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{16%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{6%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit]."
       }
@@ -225,9 +360,7 @@
     "name": "Tides Held Within",
     "nameCN": "拢于心潮间",
     "nameVi": "Tides Held Within",
-    "tags": [
-      "Heal"
-    ],
+    "tags": ["Heal", "Support"],
     "releasePatch": "3.9",
     "icon": "images/psychube_icon/6/1576.png",
     "descZh": "踏足一片粗砺，涉历一汪清凉，\n不止息的步伐啊，奔跑、奔跑，\n直到心声甚于潮声汹涌。\n追逐一场愿景，捉摸一个自我，\n掌心拢着命运的涟漪，怦咚、怦咚，\n应许地近在眼前。",
@@ -242,49 +375,97 @@
     "breakAttrs": [
       {
         "breakLevel": 0,
-        "attack": 100
+        "attack": 40,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 1,
-        "attack": 100
+        "attack": 60,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 2,
-        "attack": 100
+        "attack": 80,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 3,
-        "attack": 100
+        "attack": 100,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       }
     ],
     "amplifications": [
       {
         "level": 1,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，使记忆者治疗率提升12%；记忆者释放仪式后，若记忆者持有[力场]，己方全体仪式威力提升8%，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{12%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{8%}，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{12%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{8%} to all allies for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{12%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{8%}, duy trì 3 round."
       },
       {
         "level": 2,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，使记忆者治疗率提升15%；记忆者释放仪式后，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体仪式威力提升10%，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{15%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{10%}，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{15%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{10%} to all allies for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{15%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{10%}, duy trì 3 round."
       },
       {
         "level": 3,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，使记忆者治疗率提升18%；记忆者释放仪式后，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体仪式威力提升12%，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{18%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{12%}，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{18%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{12%} to all allies for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{18%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{12%}, duy trì 3 round."
       },
       {
         "level": 4,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，使记忆者治疗率提升21%；记忆者释放仪式后，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体仪式威力提升14%，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{21%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{14%}，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{21%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{14%} to all allies for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{21%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{14%}, duy trì 3 round."
       },
       {
         "level": 5,
-        "descZh": "进入战斗时，若记忆者灵感为[兽]，使记忆者治疗率提升24%；记忆者释放仪式后，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体仪式威力提升16%，持续3回合",
+        "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{24%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{16%}，持续3回合",
         "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{24%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{16%} to all allies for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{24%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{16%}, duy trì 3 round."
       }
@@ -297,9 +478,7 @@
     "name": "Arrow of Verdict",
     "nameCN": "宣告以弦鸣",
     "nameVi": "Arrow of Verdict",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "3.9",
     "icon": "images/psychube_icon/6/1575.png",
     "descZh": "一簇不熄的火，搭上弓弦与心弦。\n其间的记忆远比岩浆炽热，\n流经累世宿命，迫使晚霞鲜红。\n这色彩宣读，\n而世界恭肃着等待，\n倏然一声嗡鸣，我的誓言将如此应验。",
@@ -314,49 +493,97 @@
     "breakAttrs": [
       {
         "breakLevel": 0,
-        "cri": 160
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 100,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 1,
-        "cri": 160
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 120,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 2,
-        "cri": 160
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 140,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 3,
-        "cri": 160
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 160,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       }
     ],
     "amplifications": [
       {
         "level": 1,
-        "descZh": "进入战斗时，若记忆者为[术具]角色，造成伤害提升8%；全体己方攻击时，若记忆者持有[力场]，己方全体暴击创伤提升1.5%，可叠加8层",
+        "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{8%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{1.5%}，可叠加8层",
         "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{8%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{1.5%} to all allies, stacking up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{8%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{1.5%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 2,
-        "descZh": "进入战斗时，若记忆者为[术具]通过使用交感能量为术具充能，在行动序列末尾，术具循环运转，消耗交感能量释放咒语角色，造成伤害提升10%；全体己方攻击时，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体暴击创伤提升1.8%，可叠加8层",
+        "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{10%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{1.8%}，可叠加8层",
         "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{10%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{1.8%} to all allies, stacking up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{10%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{1.8%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 3,
-        "descZh": "进入战斗时，若记忆者为[术具]通过使用交感能量为术具充能，在行动序列末尾，术具循环运转，消耗交感能量释放咒语角色，造成伤害提升12%；全体己方攻击时，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体暴击创伤提升2.2%，可叠加8层",
+        "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{12%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{2.2%}，可叠加8层",
         "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{12%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{2.2%} to all allies, stacking up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{12%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{2.2%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 4,
-        "descZh": "进入战斗时，若记忆者为[术具]通过使用交感能量为术具充能，在行动序列末尾，术具循环运转，消耗交感能量释放咒语角色，造成伤害提升14%；全体己方攻击时，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体暴击创伤提升2.6%，可叠加8层",
+        "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{14%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{2.6%}，可叠加8层",
         "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{14%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{2.6%} to all allies, stacking up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{14%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{2.6%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 5,
-        "descZh": "进入战斗时，若记忆者为[术具]通过使用交感能量为术具充能，在行动序列末尾，术具循环运转，消耗交感能量释放咒语角色，造成伤害提升16%；全体己方攻击时，若记忆者持有[力场]持有者对场上指定角色生效的能力，退场时消失，己方全体暴击创伤提升3%，可叠加8层",
+        "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{16%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{3%}，可叠加8层",
         "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{16%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{3%} to all allies, stacking up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{16%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{3%}, cộng dồn tối đa 8 lần."
       }
@@ -369,10 +596,7 @@
     "name": "Where Light and Shadows Rest",
     "nameCN": "光影的栖所",
     "nameVi": "Where Light and Shadows Rest",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "3.8",
     "icon": "images/psychube_icon/6/1574.png",
     "descZh": "构想，丈量，无止尽的涂改，\n一笔过往，勾勒一笔未来。\n一笔划开光与影，一次次起草，\n那愿景中的完美栖所，\n那沉重而实在的生活。\n砖石落定，我亦立于其中。",
@@ -490,9 +714,7 @@
     "name": "A Dream Beyond Light",
     "nameCN": "光之外的梦",
     "nameVi": "A Dream Beyond Light",
-    "tags": [
-      "Survival"
-    ],
+    "tags": ["Survival", "Support"],
     "releasePatch": "3.8",
     "icon": "images/psychube_icon/6/1573.png",
     "descZh": "轻柔地入梦，\n那一束温柔而黯淡的光。\n轻柔地落入我的梦中，友人啊——\n前路的雏菊已经盛开。\n昨日不再，给所有未散的迷惘，\n再多一场睡梦的徘徊。",
@@ -610,10 +832,7 @@
     "name": "The Dance of Science",
     "nameCN": "科学编舞法",
     "nameVi": "The Dance of Science",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "C2",
     "icon": "images/psychube_icon/6/1572.png",
     "descZh": "未来在电流中飞驰。\n计算得更久些，更久些吧，\n沙石所铸造的迷宫，\n竟能创造无尽通路。\n沿着舞者的足尖，看呵，\n那为科学奠基的小小石头。",
@@ -731,10 +950,7 @@
     "name": "The Art of Atoms",
     "nameCN": "艺术原子能",
     "nameVi": "The Art of Atoms",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "C2",
     "icon": "images/psychube_icon/6/1571.png",
     "descZh": "余温从金属中析出。\n冷却得更缓些，更缓些吧，\n原子所包含的能量，\n竟能点亮无尽夜空。\n沿着舞者的指尖，看呵，\n那为文明领航的小小星斗。",
@@ -852,10 +1068,7 @@
     "name": "The Silent Anthem",
     "nameCN": "圣歌应缄默",
     "nameVi": "The Silent Anthem",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["Critical", "Support"],
     "releasePatch": "3.7",
     "icon": "images/psychube_icon/6/1570.png",
     "descZh": "如何在和声中牙牙学语？\n一支太迷狂的歌儿容不下咿呀。\n喉咙空置着，模仿，\n万千漆黑的圆号，丝弦和鼓。\n含住自我！含住泪，从哽噎里发现，\n声带仅在自由时颤抖。",
@@ -973,10 +1186,7 @@
     "name": "Until I Am Me",
     "nameCN": "蜕至我为我",
     "nameVi": "Until I Am Me",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "3.7",
     "icon": "images/psychube_icon/6/1569.png",
     "descZh": "用流淌的姓名与记忆做蛹。\n要忘却身体，忘却沉重，忘却\n原本的行走方式，\n以任何人投下的视线，层层包裹面容。\n那些足以飞翔之物，将从\n一枚茧壳的伤口中孵出。",
@@ -1094,10 +1304,7 @@
     "name": "The Soft Rain of Yesterday",
     "nameCN": "昨日雨声轻",
     "nameVi": "The Soft Rain of Yesterday",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["Support"],
     "releasePatch": "3.7",
     "icon": "images/psychube_icon/6/1568.png",
     "descZh": "比一阵炮火更轻，比\n奔逐的脚步更轻，不使鞋履沾满泥泞。\n比一个故事更轻，比\n无法抵达的呼喊更轻，以免淋湿我们的别离。\n把回忆抛向云翳，明日便会\n落下叩响窗扉的啼鸣。",
@@ -1215,10 +1422,7 @@
     "name": "The Riddle's Limit",
     "nameCN": "解答的边界",
     "nameVi": "The Riddle's Limit",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "3.6",
     "icon": "images/psychube_icon/6/1567.png",
     "descZh": "算法、序列、字符，\n如此熟稔，一如旧友。\n答案被悬置，而生活真实。\n将疑问掷向雨幕，习惯这空缺，\n越过格线，步入明日的世界。",
@@ -1333,12 +1537,10 @@
     "id": "1566",
     "gameId": 1566,
     "rarity": 6,
-    "name": "Drown Out The Hustle",
+    "name": "Drown Out the Hustle",
     "nameCN": "世界多喧闹",
-    "nameVi": "Drown Out The Hustle",
-    "tags": [
-      "ATK"
-    ],
+    "nameVi": "Drown Out the Hustle",
+    "tags": ["ATK", "Support"],
     "releasePatch": "3.5",
     "icon": "images/psychube_icon/6/1566.png",
     "descZh": "嘘，她说。嘘，鬼魂说。\n灯烛燃起，电流滋滋，\n舒适的杂音萦绕。\n现在是休息时间。\n世界上的声音太多太多，\n在长大之前，总会有听一首歌的空隙。",
@@ -1456,10 +1658,7 @@
     "name": "The Fluttering Moment",
     "nameCN": "振翅一瞬间",
     "nameVi": "The Fluttering Moment",
-    "tags": [
-      "Critical",
-      "Support"
-    ],
+    "tags": ["Critical", "Support"],
     "releasePatch": "3.5",
     "icon": "images/psychube_icon/6/1565.png",
     "descZh": "世纪末的万事万物，\n皆系于颤动的悬丝，\n于自诩神明的大脑中，同时演绎。\n从额叶的沟壑，至广阔无限的宇宙，\n抓住那一瞬即逝、即将逃逸的灵光。",
@@ -1577,10 +1776,7 @@
     "name": "All Honor is but Dust",
     "nameCN": "功名尘与土",
     "nameVi": "All Honor is but Dust",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "3.4",
     "icon": "images/psychube_icon/6/1564.png",
     "descZh": "虚名作饵，利禄成钩，\n从来功过把人囚。\n今日不着官袖，水暖鸭戏鱼游。\n弦丝骤沉，抖擞发劲，飞珠乱散，\n嚯，好大一尾。",
@@ -1695,12 +1891,10 @@
     "id": "1563",
     "gameId": 1563,
     "rarity": 6,
-    "name": "Wayfarer of the Tao",
+    "name": "Wayfarer of the Dao",
     "nameCN": "天地一悠游",
-    "nameVi": "Wayfarer of the Tao",
-    "tags": [
-      "Support"
-    ],
+    "nameVi": "Wayfarer of the Dao",
+    "tags": ["ATK", "Support"],
     "releasePatch": "3.4",
     "icon": "images/psychube_icon/6/1563.png",
     "descZh": "金沙走，大荒孤，\n点化冷月光，盛作酒一壶。\n天地正寥落，彤云方始出。\n漫行神州歌百载，\n喜看春风入千途。",
@@ -1818,10 +2012,7 @@
     "name": "Across the Acheron",
     "nameCN": "行至阿刻戎",
     "nameVi": "Across the Acheron",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "3.3",
     "icon": "images/psychube_icon/6/1562.png",
     "descZh": "或许冥府只是长夜的故乡，\n或许顿河是白日的阿刻戎？\n就连那死亡也正注视着，\n一如战友的注目。\n生者与黑马渡过河床，\n不要回头，不要懊悔，因为——\n过去不可赎回。",
@@ -1939,10 +2130,7 @@
     "name": "Singleness of Heart",
     "nameCN": "我心如赤焰",
     "nameVi": "Singleness of Heart",
-    "tags": [
-      "Support",
-      "Survival"
-    ],
+    "tags": ["Survival", "Support"],
     "releasePatch": "3.3",
     "icon": "images/psychube_icon/6/1561.png",
     "descZh": "胜利与荣耀，谁知你燃烧的，\n尽是无辜的骨屑。\n昨日坚信的，已成灰烬。\n是什么还在绝望中，执着不肯熄灭？\n一朵赤色的火焰，摇曳，摇曳，\n温柔地照亮了死亡的林荫。",
@@ -2060,10 +2248,7 @@
     "name": "Shadows in the Subconscious",
     "nameCN": "无意识梦魇",
     "nameVi": "Shadows in the Subconscious",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "3.2",
     "icon": "images/psychube_icon/6/1560.png",
     "descZh": "它发生在我的瞳孔处，我的血管里，\n终日哀鸣，大笑，时而低声细语，\n在心脏里敲击，在脑海里徘徊。\n它是不可言说的我与你，\n也是于同一道影中，不分彼此的我和你。",
@@ -2181,10 +2366,7 @@
     "name": "Her Willful Leap",
     "nameCN": "跃过命运线",
     "nameVi": "Her Willful Leap",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "3.2",
     "icon": "images/psychube_icon/6/1559.png",
     "descZh": "我们如鱼，自由徜徉，生来如此，\n我们是舟，随波逐流，生来亦如此。\n如若暴风将帆也撕裂，\n便将船与桨一同抛却，赤裸着面对，\n或将毁灭，或将跃过命运所编织的终点。",
@@ -2302,10 +2484,7 @@
     "name": "The Thousandfold Fate",
     "nameCN": "千万次应验",
     "nameVi": "The Thousandfold Fate",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "3.2",
     "icon": "images/psychube_icon/6/1558.png",
     "descZh": "一滴水的涟漪，也是命运的褶皱，\n融化进明亮易碎的目光中。\n千万道涟漪，千万条褶皱，唯有一道，\n无法抚平，久久荡漾，\n那是与血一同落下的水滴。",
@@ -2423,10 +2602,7 @@
     "name": "Bitter March of the Living",
     "nameCN": "生者的苦旅",
     "nameVi": "Bitter March of the Living",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "3.1",
     "icon": "images/psychube_icon/6/1557.png",
     "descZh": "登车，启程，从伟大的金角湾岸。\n斜阳西扫，落日沉下多瑙河畔，\n沿着金色辉光，铁轨没入黑暗。\n无人知晓的秘密，\n始于黄昏，迄至黎明。",
@@ -2544,11 +2720,7 @@
     "name": "The Wandering Improviser",
     "nameCN": "流浪即兴曲",
     "nameVi": "The Wandering Improviser",
-    "tags": [
-      "Heal",
-      "Support",
-      "Survival"
-    ],
+    "tags": ["Heal", "Survival", "Support"],
     "releasePatch": "3.1",
     "icon": "images/psychube_icon/6/1556.png",
     "descZh": "旅人，冒险，谎言，\n我编织影子，影子织就诳语。\n影子，唯一的旅伴，感谢你真实存在。\n至于笛声，它已替我哭泣，\n千千万万次。",
@@ -2666,10 +2838,7 @@
     "name": "Into the Gentle Current",
     "nameCN": "汇入涓流中",
     "nameVi": "Into the Gentle Current",
-    "tags": [
-      "Critical",
-      "Survival"
-    ],
+    "tags": ["Critical", "Survival"],
     "releasePatch": "3.0",
     "icon": "images/psychube_icon/6/1555.png",
     "descZh": "致那神采奕奕永不褪色的你。\n此处没有岁月的秘密，\n有且仅有想象，足够一百年分量。\n一瞥，再一瞥，油彩中一抹永恒的蓝，\n汇入生的涓流之中。",
@@ -2787,10 +2956,7 @@
     "name": "Buds Yet to Bloom",
     "nameCN": "向种子呢喃",
     "nameVi": "Buds Yet to Bloom",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["Critical", "Support"],
     "releasePatch": "3.0",
     "icon": "images/psychube_icon/6/1554.png",
     "descZh": "在异乡的沟壑中，血肉在此歇下。\n你的姓，你的名，你的故事，\n化作尘泥，向种子们细语呢喃。\n等到硝烟挥手道别，等到子弹都疲惫不堪，\n新蕾会向春天讲述，你一生的故事。",
@@ -2908,10 +3074,7 @@
     "name": "Homecoming Lament",
     "nameCN": "归乡哀悼词",
     "nameVi": "Homecoming Lament",
-    "tags": [
-      "Critical",
-      "Survival"
-    ],
+    "tags": ["Critical", "Survival"],
     "releasePatch": "3.0",
     "icon": "images/psychube_icon/6/1553.png",
     "descZh": "回家吧，回家吧。\n我们荣归故里，\n带着鲜花。\n回家吧，回家吧。\n我们白发送黑发，\n带着鲜花。",
@@ -3029,10 +3192,7 @@
     "name": "An Epic's End",
     "nameCN": "史诗的终点",
     "nameVi": "An Epic's End",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "C1",
     "icon": "images/psychube_icon/6/1552.png",
     "descZh": "盘旋，扬翅，向玫瑰色手指的黎明，\n跨步，飞跃，驶往酒色的大海。\n缴紧船舵，昂颈高歌，\n直到海妖攀上你的锋刃，\n唤来最初的梦，将你蜇痛。",
@@ -3150,10 +3310,7 @@
     "name": "As the Bell Tolls",
     "nameCN": "钟响于暮色",
     "nameVi": "As the Bell Tolls",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "C1",
     "icon": "images/psychube_icon/6/1551.png",
     "descZh": "看哪，这陈旧匀亮的回忆，\n扑咚一声，坠入天边红云。\n暮色里钟声唤来坟墓里的回忆，\n化作白鸽，失去重量，不再灼痛。\n而我等着，它不倦的无限次的重逢。",
@@ -3271,10 +3428,7 @@
     "name": "A Tingle of a Thought",
     "nameCN": "思维一激灵",
     "nameVi": "A Tingle of a Thought",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.8",
     "icon": "images/psychube_icon/6/1550.png",
     "descZh": "噼啪，噼啪。\n先诞生意识？先模拟神经？\n两者并行！完美圆满的智慧颅像！\n0和1的噼啪声响彻无限。\n今后是磁流摇摆的时代。\n烤面包机也将加入我们。",
@@ -3392,10 +3546,7 @@
     "name": "Family Mentor",
     "nameCN": "家庭指导员",
     "nameVi": "Family Mentor",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "2.8",
     "icon": "images/psychube_icon/6/1549.png",
     "descZh": "重复的别离，相聚的碎片。\n士兵，展露你的笑脸。\n聚餐需要的是热汤与笑谈。\n仅今夜允许战术撤退，不必直面悲伤与痛苦。\n这里是无处可逃之人的家乡。",
@@ -3513,10 +3664,7 @@
     "name": "Embrace the Past",
     "nameCN": "心音墓志铭",
     "nameVi": "Embrace the Past",
-    "tags": [
-      "Critical",
-      "Survival"
-    ],
+    "tags": ["Critical", "Survival"],
     "releasePatch": "2.8",
     "icon": "images/psychube_icon/6/1548.png",
     "descZh": "泪水与羊水有何不同？\n笑声与哭声有何区分？\n我的朋友，这位是梦想，也是悔恨，\n那里是前路，那里也是答案，\n备好墓志铭，再度启程之时已至。",
@@ -3634,10 +3782,7 @@
     "name": "Aurora After Winter",
     "nameCN": "春日轻步至",
     "nameVi": "Aurora After Winter",
-    "tags": [
-      "Support",
-      "Survival"
-    ],
+    "tags": ["Survival", "Support"],
     "releasePatch": "2.7",
     "icon": "images/psychube_icon/6/1547.png",
     "descZh": "呼吸，迈步，把壳内的旧时光珍藏，\n跳跃，旋转，捡拾弥留的星光。\n不可计数的前路，我唯一的小丁香，\n吊环摇摆间，猜想春天到来的声响，\n雪后的春色，该是怎样？",
@@ -3755,10 +3900,7 @@
     "name": "Never-Ending Q&A",
     "nameCN": "双焦点问答",
     "nameVi": "Never-Ending Q&A",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.7",
     "icon": "images/psychube_icon/6/1546.png",
     "descZh": "离别，思索，演算，缠绕一圈。\nσ=F/S。\n一个问题，八种答案，最后一个仍在思考。\n星群的轨迹高于生活——不。\n(R＾3)／(T＾2)＝k。\n吐出信子，接过欢呼，拟合石与棉之术。",
@@ -3876,10 +4018,7 @@
     "name": "Mental Cage",
     "nameCN": "脑室即囚室",
     "nameVi": "Mental Cage",
-    "tags": [
-      "ATK",
-      "Support"
-    ],
+    "tags": ["ATK", "Support"],
     "releasePatch": "2.6",
     "icon": "images/psychube_icon/6/1545.png",
     "descZh": "繁杂的，无尽的，让人迷失的。\n现实，记忆，幻想。\n不存在的存在。\n阿莱夫。\n梅林，理想家。\n扎伊尔，帕拉塞尔苏斯。\n于囚室，于镜中，于脑海的房间里。",
@@ -3997,10 +4136,7 @@
     "name": "The Final Roll",
     "nameCN": "最后的投掷",
     "nameVi": "The Final Roll",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.6",
     "icon": "images/psychube_icon/6/1544.png",
     "descZh": "只需最后一次转动，\n那个你所期待的、故事的结局，\n那个属于你的、幽灵的、所有人的结局。\n快掷下最后一次骰子吧！\n它不再沉重，不再荒唐，\n瞧，它在夜幕的沙丘中闪闪发亮。",
@@ -4118,9 +4254,7 @@
     "name": "Rehearsal of Dreams",
     "nameCN": "造梦的预演",
     "nameVi": "Rehearsal of Dreams",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "2.5",
     "icon": "images/psychube_icon/6/1543.png",
     "descZh": "道具、演员、灯光，一切就位。\n排演、剪辑、特效，一切臻于完美。\n木头关节咔哒，运转悲欢离合。\n它比生活更高，更好。\n如同你我应有的梦。\n而后，她说：咔——",
@@ -4238,10 +4372,7 @@
     "name": "Ready on Call",
     "nameCN": "收到请回答",
     "nameVi": "Ready on Call",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.5",
     "icon": "images/psychube_icon/6/1542.png",
     "descZh": "黑塑料壳平整，恰似祠堂砖石。\n十枚数字列队，指尖跳入小小方格。\n跳房子的孩子长大，跃上通话按键。\n滴嘟，滴嘟，心脏与讯号一同鸣响。\n请接听，老朋友，新朋友。\n我将同你讲述今年春日，\n它同我们十岁时相仿。",
@@ -4359,10 +4490,7 @@
     "name": "Cracks in the Shell",
     "nameCN": "惶然的贝壳",
     "nameVi": "Cracks in the Shell",
-    "tags": [
-      "Heal",
-      "Support"
-    ],
+    "tags": ["Heal", "Support"],
     "releasePatch": "2.4",
     "icon": "images/psychube_icon/6/1541.png",
     "descZh": "从粘稠的黑夜之中，我望见你，\n我的亲人，我的手足，\n那在篝火映照中生辉的故梦。\n如今我将你捞起，\n摩挲文字的纹理，细嗅海盐的气息。\n找不到，找不到，我找不到真正的你。",
@@ -4480,10 +4608,7 @@
     "name": "Addio Coda",
     "nameCN": "离别变奏曲",
     "nameVi": "Addio Coda",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.4",
     "icon": "images/psychube_icon/6/1540.png",
     "descZh": "家乡的音与弦，只为古板宣科。\n稚嫩的音符，挣扎着，跳出襁褓，\n要像海风般自由的，穿行与徜徉。\n至亲呵，不必心忧，不必哀愁，\n眼泪也是一段离别的变奏。",
@@ -4601,10 +4726,7 @@
     "name": "On the Hand of Time",
     "nameCN": "秒针栖息地",
     "nameVi": "On the Hand of Time",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.3",
     "icon": "images/psychube_icon/6/1539.png",
     "descZh": "不准疯跑，不能发问，不要带来麻烦。\n为什么是？为什么不？为什么会这样？\n没有答案，乖孩子从来得不到答案。\n问号很沉，谜底很轻，\n纸折的鸟儿停在大钟针尖上，\n在下落之前，把答案捉在手心。",
@@ -4722,10 +4844,7 @@
     "name": "Offbeat Strides",
     "nameCN": "无韵律跳步",
     "nameVi": "Offbeat Strides",
-    "tags": [
-      "ATK",
-      "Survival"
-    ],
+    "tags": ["ATK", "Survival"],
     "releasePatch": "2.3",
     "icon": "images/psychube_icon/6/1538.png",
     "descZh": "擦拭，上油，加固。\n那将她搀扶而起的，又使她沦为空壳。\n敲响地板，敲响夜，敲响黎明:\n笃、笃、笃。\n以无韵律的舞步拒绝所有来访，\n古宅的门，心底的门，都不再开启。",
@@ -4843,10 +4962,7 @@
     "name": "The Third Commitment",
     "nameCN": "第三次信任",
     "nameVi": "The Third Commitment",
-    "tags": [
-      "Critical",
-      "Support"
-    ],
+    "tags": ["Critical", "Support"],
     "releasePatch": "2.2",
     "icon": "images/psychube_icon/6/1537.png",
     "descZh": "离巢孤鸟，可曾梦见，\n一同飞渡的天穹，以及群栖的树林。\n夕阳，夕阳，你所照耀的，\n不是归途，不是故乡。\n可安歇的雨林，在何方？  ",
@@ -4964,10 +5080,7 @@
     "name": "Transcendent Love",
     "nameCN": "非物质真情",
     "nameVi": "Transcendent Love",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.2",
     "icon": "images/psychube_icon/6/1536.png",
     "descZh": "任谁都有所渴望。\n在心中，在信中。\n还请赠予我，话语与行动外的真情。\n以那平淡的笑容，那生锈的梦想。\n我愿意为此而活。",
@@ -5085,10 +5198,7 @@
     "name": "Tiny Wish",
     "nameCN": "微渺的愿景",
     "nameVi": "Tiny Wish",
-    "tags": [
-      "Support",
-      "Survival"
-    ],
+    "tags": ["Survival", "Support"],
     "releasePatch": "2.3",
     "icon": "images/psychube_icon/6/1535.png",
     "descZh": "树叶从枝上落下。\n逃得远些吧，远些吧，风说，\n否则你将化作泥泞。\n我要落向急流，我要落向河谷，\n树叶回答道，\n瞧，那里还有挣扎的蚁群。",
@@ -5199,6 +5309,124 @@
       }
     ]
   },
+  "6:1534": {
+    "id": "1534",
+    "gameId": 1534,
+    "rarity": 6,
+    "name": "Stray Off the Path",
+    "nameCN": "寻入夜深处",
+    "nameVi": "Stray Off the Path",
+    "tags": ["ATK", "Critical"],
+    "releasePatch": "",
+    "icon": "images/psychube_icon/6/1534.png",
+    "descZh": "如何寻找走失的羔羊？\n寻至夜幕深处，寻至星星升起，\n寻至乳膻缭绕，寻至骨血遍地。\n等到黑暗替你阖上双目，\n没有了羔羊，没有了踪迹，也没有了自己。",
+    "descEn": "You want to find the lost lamb?\nSearch until night falls and the stars surround you,\nSearch until that milky scent lingers, until blood and bones cover the ground.\nAnd when the darkness comes to close your eyes, when you hear that awful sound,\nThere'll be no lamb, no trace, and no you left to be found.",
+    "descVi": "You want to find the lost lamb?\nSearch until night falls and the stars surround you,\nSearch until that milky scent lingers, until blood and bones cover the ground.\nAnd when the darkness comes to close your eyes, when you hear that awful sound,\nThere'll be no lamb, no trace, and no you left to be found.",
+    "baseStats": {
+      "atk": 380,
+      "hp": 2600,
+      "def": 150,
+      "mdef": 150
+    },
+    "breakAttrs": [
+      {
+        "breakLevel": 0,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 100,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 1,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 120,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 2,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 140,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 3,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 160,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      }
+    ],
+    "amplifications": [
+      {
+        "level": 1,
+        "descZh": "记忆者主动使用单体咒语后，本回合内下一次额外行动术法威力提高{12%}；记忆者使用单体咒语后，暴击创伤提高{6%}，最多叠加3层，使用群体咒语后移除",
+        "descEn": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{12%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{6%} (stacks up to 3 times, removed after casting a mass incantation).",
+        "descVi": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{12%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{6%} (stacks up to 3 times, removed after casting a mass incantation)."
+      },
+      {
+        "level": 2,
+        "descZh": "记忆者主动使用单体咒语后，本回合内下一次额外行动术法威力提高{15%}；记忆者使用单体咒语后，暴击创伤提高{7.5%}，最多叠加3层，使用群体咒语后移除",
+        "descEn": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{15%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{7.5%} (stacks up to 3 times, removed after casting a mass incantation).",
+        "descVi": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{15%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{7.5%} (stacks up to 3 times, removed after casting a mass incantation)."
+      },
+      {
+        "level": 3,
+        "descZh": "记忆者主动使用单体咒语后，本回合内下一次额外行动术法威力提高{18%}；记忆者使用单体咒语后，暴击创伤提高{9%}，最多叠加3层，使用群体咒语后移除",
+        "descEn": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{18%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{9%} (stacks up to 3 times, removed after casting a mass incantation).",
+        "descVi": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{18%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{9%} (stacks up to 3 times, removed after casting a mass incantation)."
+      },
+      {
+        "level": 4,
+        "descZh": "记忆者主动使用单体咒语后，本回合内下一次额外行动术法威力提高{21%}；记忆者使用单体咒语后，暴击创伤提高{10.5%}，最多叠加3层，使用群体咒语后移除",
+        "descEn": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{21%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{10.5%} (stacks up to 3 times, removed after casting a mass incantation).",
+        "descVi": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{21%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{10.5%} (stacks up to 3 times, removed after casting a mass incantation)."
+      },
+      {
+        "level": 5,
+        "descZh": "记忆者主动使用单体咒语后，本回合内下一次额外行动术法威力提高{24%}；记忆者使用单体咒语后，暴击创伤提高{12%}，最多叠加3层，使用群体咒语后移除",
+        "descEn": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{24%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{12%} (stacks up to 3 times, removed after casting a mass incantation).",
+        "descVi": "After the carrier actively casts a 1-target incantation, their next extra action within the round gains Incantation Might +{24%}. After the carrier casts a 1-target incantation, the carrier gains Critical DMG +{12%} (stacks up to 3 times, removed after casting a mass incantation)."
+      }
+    ]
+  },
   "6:1533": {
     "id": "1533",
     "gameId": 1533,
@@ -5206,10 +5434,7 @@
     "name": "And the Maid Says",
     "nameCN": "女佣看见了",
     "nameVi": "And the Maid Says",
-    "tags": [
-      "Critical",
-      "Support"
-    ],
+    "tags": ["Support", "Critical"],
     "releasePatch": "2.1",
     "icon": "images/psychube_icon/6/1533.png",
     "descZh": "喑哑，失措，颤栗。\n设计，静候，笑意。\n您问看见了什么？\n我呀，我呀，\n看见髓与血，看见奶与蜜，\n喂饱我的孩子，走进你的眼中，住进你的心里。",
@@ -5324,13 +5549,10 @@
     "id": "1532",
     "gameId": 1532,
     "rarity": 6,
-    "name": "Stray Off the Path",
+    "name": "Starlight Wellspring",
     "nameCN": "漫行如泉流",
-    "nameVi": "Stray Off the Path",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "nameVi": "Starlight Wellspring",
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.1",
     "icon": "images/psychube_icon/6/1532.png",
     "descZh": "喧嚷、光斑，都投入营火；\n情谊、际遇，都折进帐篷。\n走啊，走啊，\n走到清晨如约而至——\n冷泉流过每个夜晚，将黎明濯洗簇新。",
@@ -5448,9 +5670,7 @@
     "name": "The Unbearable Lightness",
     "nameCN": "不可诉之轻",
     "nameVi": "The Unbearable Lightness",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "2.0",
     "icon": "images/psychube_icon/6/1531.png",
     "descZh": "分享徽章、莎莎酱和灰头土脸的胜利，\n分享一把硬币，续关、再续关，\n但那蓝蓝的、蓝蓝的一抹啊，\n轻飘飘，沉甸甸，\n如何分享，如何述说，如何提及。",
@@ -5565,13 +5785,10 @@
     "id": "1530",
     "gameId": 1530,
     "rarity": 6,
-    "name": "Starlight Wellspring",
+    "name": "From the Depths",
     "nameCN": "来自最深处",
-    "nameVi": "Starlight Wellspring",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "nameVi": "From the Depths",
+    "tags": ["ATK", "Survival"],
     "releasePatch": "2.0",
     "icon": "images/psychube_icon/6/1530.png",
     "descZh": "黄昏破碎，夜幕高悬。\n饮下一杯热红酒，饮下寻常的冰冷。\n以时机交换，寸步不停。\n直至不知何时的抵达。",
@@ -5689,9 +5906,7 @@
     "name": "Approaching Rain",
     "nameCN": "渐近的雨声",
     "nameVi": "Approaching Rain",
-    "tags": [
-      "Survival"
-    ],
+    "tags": ["Survival"],
     "releasePatch": "1.9",
     "icon": "images/psychube_icon/6/1529.png",
     "descZh": "时刻滴答，潜入水中；\n云层倾轧而下，\n席卷这短暂的瞬间，\n世界上的所有事，骤然一一察觉。\n她在哪里？她要去哪里？",
@@ -5809,9 +6024,7 @@
     "name": "The Fighter's Best Wishes",
     "nameCN": "勇敢者赠言",
     "nameVi": "The Fighter's Best Wishes",
-    "tags": [
-      "Survival"
-    ],
+    "tags": ["Survival"],
     "releasePatch": "1.9",
     "icon": "images/psychube_icon/6/1528.png",
     "descZh": "决断的时刻已至。别了，朋友。\n我将永远祝福明日，\n为你心怀希冀，\n余下的英勇，我把它们全数倾洒在故土。\n那林荫、殿堂，那承载我的金色环路。",
@@ -5929,10 +6142,7 @@
     "name": "Steps Forward",
     "nameCN": "行进的步音",
     "nameVi": "Steps Forward",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "1.9",
     "icon": "images/psychube_icon/6/1527.png",
     "descZh": "当砖石崩落，\n慌乱的脚步声中，\n能量的心跳，秩序井然。\n她依然遥望着，\n远在天边，照亮一切的火。\n以及那火之中，通往明日的天梯。\n",
@@ -6048,12 +6258,9 @@
     "gameId": 1526,
     "rarity": 6,
     "name": "For Rehabilitation",
-    "nameCN": "成长阵痛",
+    "nameCN": "故尝试证明",
     "nameVi": "For Rehabilitation",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["Critical", "ATK"],
     "releasePatch": "1.8",
     "icon": "images/psychube_icon/6/1526.png",
     "descZh": "第三、十七，或第五十封。\n头衔、格式，与问候。\n蓝图清晰，期许诱人，历经十七次勾画。\n黑面包与肚肠达成谈判。\n那么，下一封信将寄往何处？",
@@ -6168,12 +6375,10 @@
     "id": "1525",
     "gameId": 1525,
     "rarity": 6,
-    "name": "Dawn is Coming",
+    "name": "Dawn Is Coming",
     "nameCN": "黎明将到来",
-    "nameVi": "Dawn is Coming",
-    "tags": [
-      "Heal"
-    ],
+    "nameVi": "Dawn Is Coming",
+    "tags": ["Heal"],
     "releasePatch": "1.8",
     "icon": "images/psychube_icon/6/1525.png",
     "descZh": "黑夜漫长，雪花干燥，\n冰层寂静，比分歧更为古老；\n那颗心已被筑以砖石、钢铁与腾腾的憧憬。\n同志，您瞧，我将绘出这一切——\n万物再不相同，明亮崭新。",
@@ -6291,9 +6496,7 @@
     "name": "Another Story",
     "nameCN": "另一个故事",
     "nameVi": "Another Story",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.7",
     "icon": "images/psychube_icon/6/1524.png",
     "descZh": "一页，再一页。一本，又一本。\n反复阅读，反复揣摩，反复探求。\n自灯塔上，往现实去。\n结局的彼岸，不再空无一人。",
@@ -6411,9 +6614,7 @@
     "name": "Knock on the Door",
     "nameCN": "敲响这窄门",
     "nameVi": "Knock on the Door",
-    "tags": [
-      "Critical"
-    ],
+    "tags": ["Critical"],
     "releasePatch": "1.7",
     "icon": "images/psychube_icon/6/1523.png",
     "descZh": "哪儿，哪儿，是这儿，还是那儿？\n锁眼儿里，门缝儿里，还是被窝儿里？\n簇新的，流动的，金色的我啊；\n灼热的，耀眼的，小小的我啊；\n在你心里，在你脑里，在你骨里。\n吹灭它，吹灭他，吹灭她！\n无处不在的我啊，我在哪里？",
@@ -6531,9 +6732,7 @@
     "name": "Same Old Story",
     "nameCN": "此刻无新事",
     "nameVi": "Same Old Story",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.6",
     "icon": "images/psychube_icon/6/1522.png",
     "descZh": "注视着，注视着。五百岁为春，五百岁为秋。\n树荫之下，并无新事。\n在骨骼中，在玉石中，在读到无数次的故事中。\n即使如此——\n谜题依然，依然存在。",
@@ -6651,9 +6850,7 @@
     "name": "Outside the City",
     "nameCN": "在四方城外",
     "nameVi": "Outside the City",
-    "tags": [
-      "Critical"
-    ],
+    "tags": ["Critical"],
     "releasePatch": "1.6",
     "icon": "images/psychube_icon/6/1521.png",
     "descZh": "柳花、青山与月光。\n诗中的酒香与诗外的酒香。\n城中的天空与城外的天空。\n一字一句，一笔一划，所知晓的，尚懵懂的。\n看呀看，学呀学，世界正如浊酒，滋味饮酌方知。",
@@ -6771,9 +6968,7 @@
     "name": "Long Night Talk",
     "nameCN": "漫长悄悄话",
     "nameVi": "Long Night Talk",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.5",
     "icon": "images/psychube_icon/6/1515.png",
     "descZh": "故事自哪一页起始？\n小石头，红土地，遥远的火。\n摸索的轮廓，夜空之中，扑火的人。\n手与手的相握，心与心碰触\n涌动在喉咙深处，我温暖的火。",
@@ -6891,9 +7086,7 @@
     "name": "Balance, Please",
     "nameCN": "请保持平衡",
     "nameVi": "Balance, Please",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.4",
     "icon": "images/psychube_icon/6/1514.png",
     "descZh": "向前滚动，沿预想的轨迹掉落。\n他望向周遭，倍感亲切。\n每一枚齿轮都有其位置，\n同样不可或缺，同样无足轻重，\n同样身处庞大的机械之中。",
@@ -7011,9 +7204,7 @@
     "name": "Silent and Adoring",
     "nameCN": "沉默与向往",
     "nameVi": "Silent and Adoring",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.4",
     "icon": "images/psychube_icon/6/1513.png",
     "descZh": "昨日，今日，明日。\n保持缄默，保持冷静，保持忠诚。\n戒律由光辉的岭峰游下。\n爬入窗框，钻入床铺，深入皮肤。\n于是我们顺从，我们垂下双眼，我们紧锁口舌，我们摒弃思想。\n但仍旧心怀希望。",
@@ -7128,13 +7319,10 @@
     "id": "1512",
     "gameId": 1512,
     "rarity": 6,
-    "name": "The Carat of a Heart",
+    "name": "The Carat of A Heart",
     "nameCN": "可度量之心",
-    "nameVi": "The Carat of a Heart",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "nameVi": "The Carat of A Heart",
+    "tags": ["ATK", "Critical"],
     "releasePatch": "1.3",
     "icon": "images/psychube_icon/6/1512.png",
     "descZh": "八，十二，菱形，水滴，闪闪发亮。\n有等级的，有标准的，被赋予证书的，失格而摒弃的。\n可我啊，可我也曾是一抔砂砾，\n不可度量，无人问津。",
@@ -7252,11 +7440,7 @@
     "name": "Beyond Wonderland",
     "nameCN": "在仙境之外",
     "nameVi": "Beyond Wonderland",
-    "tags": [
-      "ATK",
-      "Critical",
-      "Heal"
-    ],
+    "tags": ["ATK", "Critical", "Heal"],
     "releasePatch": "1.2",
     "icon": "images/psychube_icon/6/1511.png",
     "descZh": "兔子，兔子，拿饼干，\n帽匠，帽匠，倒茶水。\n柴郡猫将长桌铺整齐，\n爱丽丝端来小茶杯：\n旧访客啊，别哭泣，\n茶会的准备已就绪。",
@@ -7374,10 +7558,7 @@
     "name": "His Bounden Duty",
     "nameCN": "必要的记录",
     "nameVi": "His Bounden Duty",
-    "tags": [
-      "ATK",
-      "Heal"
-    ],
+    "tags": ["ATK", "Heal"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/6/1510.png",
     "descZh": "谨慎，躲避，游走。\n安全考量，瞻前顾后。\n不必要。\n记录，记录，记录。\n记录此刻，记录此时。\n必要。",
@@ -7495,9 +7676,7 @@
     "name": "Luxurious Leisure",
     "nameCN": "大娱乐至上",
     "nameVi": "Luxurious Leisure",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.1",
     "icon": "images/psychube_icon/6/1509.png",
     "descZh": "闪光，黑洞，万众瞩目之星。\n美丽的国度之中最美丽的梦。\n她的发丝价比金箔更贵，她的唇印可抵成捆钞票。\n而她的心呀，心呀，心呀，\n不值一枚金币，不值一枚银币，不值一瞧。",
@@ -7615,9 +7794,7 @@
     "name": "That Inquisitive Dear",
     "nameCN": "好奇心宝贝",
     "nameVi": "That Inquisitive Dear",
-    "tags": [
-      "Heal"
-    ],
+    "tags": ["Heal"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/6/1508.png",
     "descZh": "道路，由人亲手所造。\n酒与面包，靠劳作取得。\n幼小的新芽舒展叶片，\n于成堆魔药中抵抗困意。\n多一点，再多一点时间，\n再看看书的下一页。",
@@ -7735,10 +7912,7 @@
     "name": "Thunderous Applause",
     "nameCN": "掌声如雷鸣",
     "nameVi": "Thunderous Applause",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/6/1507.png",
     "descZh": "越过风声和雨声，越发激昂，\n她的声音在方寸之地回荡。\n更远，更高，绝不止息——绝不。\n坐拥观众与剧场，国王尚在，\n仍自以为无限宇宙之王。",
@@ -7856,9 +8030,7 @@
     "name": "Blasphemer of Night",
     "nameCN": "夜色亵渎者",
     "nameVi": "Blasphemer of Night",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/6/1504.png",
     "descZh": "这夜将亵渎灯的色。\n亵渎美与好，\n亵渎安眠，亵渎长息，\n亵渎她心中所知的每一首摇篮曲。\n从此之后，之后的之后，\n漫漫长夜，再无安宁。",
@@ -7976,9 +8148,7 @@
     "name": "Her Second Life",
     "nameCN": "第二次生命",
     "nameVi": "Her Second Life",
-    "tags": [
-      "Heal"
-    ],
+    "tags": ["Heal"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/6/1503.png",
     "descZh": "打磨，雕刻。水、油、蜜糖与沙堆。\n月光审阅旧枝的蝉蜕，新杖的容貌。\n树木从工匠手中获得新生。\n工匠自明日之中获得新生。\n对林地而言，身份无意义。",
@@ -8096,9 +8266,7 @@
     "name": "Hopscotch",
     "nameCN": "跳房子游戏",
     "nameVi": "Hopscotch",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/6/1502.png",
     "descZh": "第一名是我的！它总是我的！\n小赢家跃入灰白屋。\n第三名，第三名，还是第三名。\n可恶！可恶！可恶！\n那抹橙跳出粉笔格，跳出了灰白屋。\n她又要去哪儿了？小赢家嘟囔着，我还能见到她吗？",
@@ -8216,9 +8384,7 @@
     "name": "Brave New World",
     "nameCN": "美丽新世界",
     "nameVi": "Brave New World",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/6/1501.png",
     "descZh": "调整角度，系紧绶带，理平褶皱。\n悄悄卷起袖口，放下，再卷起。\n她注视着镜中的自己，\n与那温和的良夜。\n我已做好准备为美好新世界与其福祉献上我的一切。",
@@ -8365,10 +8531,7 @@
     "name": "Laughter and Laughter",
     "nameCN": "笑语欢声",
     "nameVi": "Laughter and Laughter",
-    "tags": [
-      "Heal",
-      "Survival"
-    ],
+    "tags": ["Heal", "Survival"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/4104.png",
     "descZh": "四面环顾。\n舞台的边际遥远，如此遥远。\n在岛屿与汪洋之外，在禁令与恐惧之外。\n笑吧！笑吧！戏剧并无尽头！",
@@ -8486,9 +8649,7 @@
     "name": "A Free Heart",
     "nameCN": "自由的心",
     "nameVi": "A Free Heart",
-    "tags": [
-      "Survival"
-    ],
+    "tags": ["Survival"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/4103.png",
     "descZh": "诗歌属于羊皮纸吗？\n诗歌属于胡桃壳与墨水吗？\n诗歌属于权贵与国王吗？\n并非如此，雪夜回答道，诗歌是属于诗歌的。",
@@ -8603,10 +8764,10 @@
     "id": "1451",
     "gameId": 1451,
     "rarity": 5,
-    "name": "Joy of the Present",
+    "name": "Living in the Moment",
     "nameCN": "当下之喜",
-    "nameVi": "Joy of the Present",
-    "tags": [],
+    "nameVi": "Living in the Moment",
+    "tags": ["Critical", "Support"],
     "releasePatch": "",
     "icon": "images/psychube_icon/5/1451.png",
     "descZh": "酸奶、砂糖，秘诀是一点小青柠。\n滋味跃上舌尖，比预想中更富惊喜。\n未来、过去，秘诀是一点缺憾。\n酸涩与甜蜜，皆为爱的配方。",
@@ -8621,49 +8782,97 @@
     "breakAttrs": [
       {
         "breakLevel": 0,
-        "cri": 130
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 70,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 1,
-        "cri": 130
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 90,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 2,
-        "cri": 130
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 110,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 3,
-        "cri": 130
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 130,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       }
     ],
     "amplifications": [
       {
         "level": 1,
-        "descZh": "记忆者攻击时，目标每有1层[光晕]，受到伤害提升0.6%；\n回合开始时，若[余辉]大于等于120，使己方全体暴击创伤提升8%，持续1回合",
+        "descZh": "记忆者攻击时，目标每有1层【光晕】，受到伤害提升{0.6%}；\n回合开始时，若【余辉】大于等于120，使己方全体暴击创伤提升{8%}，持续1回合",
         "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{0.6%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{8%} to all allies for 1 round.",
         "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{0.6%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{8%}, duy trì 1 round."
       },
       {
         "level": 2,
-        "descZh": "记忆者攻击时，目标每有1层[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)，受到伤害提升0.8%；回合开始时，若[余辉]任意敌方被赋予[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)将积累[余辉]，怪物数量越少，积累的[余辉]越多；与[薪血]己方队伍每累计损失3000生命，薪血+1（受到攻击损失的生命仅记录30%）；与[余辉][洞知眼]无法同时存在[洞知眼]在使用咒语前，若至少拥有6个[洞知点]至多存储15点，可进入[弱点洞穿]至多将10个[洞知点]带入此阶段，可消耗[洞知点]释放相同灵感的[洞知]角色的[洞知咒语]阶段；与[余辉][薪血]无法同时存在无法同时存在大于等于120，使己方全体暴击创伤提升8%，持续1回合",
+        "descZh": "记忆者攻击时，目标每有1层【光晕】，受到伤害提升{0.8%}；\n回合开始时，若【余辉】大于等于120，使己方全体暴击创伤提升{8%}，持续1回合",
         "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{0.8%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{8%} to all allies for 1 round.",
         "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{0.8%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{8%}, duy trì 1 round."
       },
       {
         "level": 3,
-        "descZh": "记忆者攻击时，目标每有1层[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)，受到伤害提升0.8%；回合开始时，若[余辉]任意敌方被赋予[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)将积累[余辉]，怪物数量越少，积累的[余辉]越多；与[薪血]己方队伍每累计损失3000生命，薪血+1（受到攻击损失的生命仅记录30%）；与[余辉][洞知眼]无法同时存在[洞知眼]在使用咒语前，若至少拥有6个[洞知点]至多存储15点，可进入[弱点洞穿]至多将10个[洞知点]带入此阶段，可消耗[洞知点]释放相同灵感的[洞知]角色的[洞知咒语]阶段；与[余辉][薪血]无法同时存在无法同时存在大于等于120，使己方全体暴击创伤提升13%，持续1回合",
+        "descZh": "记忆者攻击时，目标每有1层【光晕】，受到伤害提升{0.8%}；\n回合开始时，若【余辉】大于等于120，使己方全体暴击创伤提升{13%}，持续1回合",
         "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{0.8%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{13%} to all allies for 1 round.",
         "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{0.8%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{13%}, duy trì 1 round."
       },
       {
         "level": 4,
-        "descZh": "记忆者攻击时，目标每有1层[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)，受到伤害提升1%；回合开始时，若[余辉]任意敌方被赋予[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)将积累[余辉]，怪物数量越少，积累的[余辉]越多；与[薪血]己方队伍每累计损失3000生命，薪血+1（受到攻击损失的生命仅记录30%）；与[余辉][洞知眼]无法同时存在[洞知眼]在使用咒语前，若至少拥有6个[洞知点]至多存储15点，可进入[弱点洞穿]至多将10个[洞知点]带入此阶段，可消耗[洞知点]释放相同灵感的[洞知]角色的[洞知咒语]阶段；与[余辉][薪血]无法同时存在无法同时存在大于等于120，使己方全体暴击创伤提升13%，持续1回合",
+        "descZh": "记忆者攻击时，目标每有1层【光晕】，受到伤害提升{1%}；\n回合开始时，若【余辉】大于等于120，使己方全体暴击创伤提升{13%}，持续1回合",
         "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{1%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{13%} to all allies for 1 round.",
         "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{1%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{13%}, duy trì 1 round."
       },
       {
         "level": 5,
-        "descZh": "记忆者攻击时，目标每有1层[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)，受到伤害提升1%；回合开始时，若[余辉]任意敌方被赋予[燃烧]状态异常 受到治疗效果降低15%（效果不叠加)；回合结束时受到基于携带者攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层燃烧仅视为1个[状态异常]，生效后扣除一半层数)[光晕]状态异常 受到治疗效果降低25%（效果不叠加)；回合结束时受到基于初始来源攻击*4%的本源创伤（效果可叠加，最多可叠加30层，多层光晕仅视为1个[状态异常]，生效后扣除一半层数)将积累[余辉]，怪物数量越少，积累的[余辉]越多；与[薪血]己方队伍每累计损失3000生命，薪血+1（受到攻击损失的生命仅记录30%）；与[余辉][洞知眼]无法同时存在[洞知眼]在使用咒语前，若至少拥有6个[洞知点]至多存储15点，可进入[弱点洞穿]至多将10个[洞知点]带入此阶段，可消耗[洞知点]释放相同灵感的[洞知]角色的[洞知咒语]阶段；与[余辉][薪血]无法同时存在无法同时存在大于等于120，使己方全体暴击创伤提升18%，持续1回合",
+        "descZh": "记忆者攻击时，目标每有1层【光晕】，受到伤害提升{1%}；\n回合开始时，若【余辉】大于等于120，使己方全体暴击创伤提升{18%}，持续1回合",
         "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{1%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{18%} to all allies for 1 round.",
         "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{1%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{18%}, duy trì 1 round."
       }
@@ -8676,9 +8885,7 @@
     "name": "Dressing Up the Truth",
     "nameCN": "以饰真相",
     "nameVi": "Dressing Up the Truth",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "3.9",
     "icon": "images/psychube_icon/5/1450.png",
     "descZh": "滋长着、逃窜着，又隐入夜色的帷幕，\n狡黠的逸闻啊！\n聚光灯妆点的，一方银幕上、千万道视线下——\n瞧，它的真实与声名同样鲜亮。",
@@ -8693,49 +8900,97 @@
     "breakAttrs": [
       {
         "breakLevel": 0,
-        "attack": 80
+        "attack": 20,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 1,
-        "attack": 80
+        "attack": 40,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 2,
-        "attack": 80
+        "attack": 60,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       },
       {
         "breakLevel": 3,
-        "attack": 80
+        "attack": 80,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
       }
     ],
     "amplifications": [
       {
         "level": 1,
-        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升20%，若目标当前生命低于30%则造成伤害提升额外提升20%",
+        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{20%}，若目标当前生命低于30%则造成伤害提升额外提升{20%}",
         "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{20%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{20%}.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{20%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{20%}."
       },
       {
         "level": 2,
-        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升25%，若目标当前生命低于30%则造成伤害提升额外提升25%",
+        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{25%}，若目标当前生命低于30%则造成伤害提升额外提升{25%}",
         "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{25%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{25%}.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{25%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{25%}."
       },
       {
         "level": 3,
-        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升30%，若目标当前生命低于30%则造成伤害提升额外提升30%",
+        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{30%}，若目标当前生命低于30%则造成伤害提升额外提升{30%}",
         "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{30%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{30%}.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{30%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{30%}."
       },
       {
         "level": 4,
-        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升35%，若目标当前生命低于30%则造成伤害提升额外提升35%",
+        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{35%}，若目标当前生命低于30%则造成伤害提升额外提升{35%}",
         "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{35%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{35%}.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{35%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{35%}."
       },
       {
         "level": 5,
-        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升40%，若目标当前生命低于30%则造成伤害提升额外提升40%",
+        "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{40%}，若目标当前生命低于30%则造成伤害提升额外提升{40%}",
         "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{40%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{40%}.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{40%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{40%}."
       }
@@ -8748,9 +9003,7 @@
     "name": "Farewell to the Old Night",
     "nameCN": "暂别旧夜",
     "nameVi": "Farewell to the Old Night",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["Support"],
     "releasePatch": "3.8",
     "icon": "images/psychube_icon/5/1449.png",
     "descZh": "这一年我们都缄默，\n而一朵矢车菊选择说话：\n见证世界崩塌又重建，\n正如每个冬日夺走的，每个春天又赴约。",
@@ -8861,16 +9114,132 @@
       }
     ]
   },
+  "5:1448": {
+    "id": "1448",
+    "gameId": 1448,
+    "rarity": 5,
+    "name": "Growing Pains",
+    "nameCN": "成长阵痛",
+    "nameVi": "Growing Pains",
+    "tags": ["Support"],
+    "releasePatch": "",
+    "icon": "images/psychube_icon/5/1448.png",
+    "descZh": "腿骨抽痛着作别睡梦，长大时，\n最后一次与从前的尺码紧拥是在哪天？\n背负誓言呀，小小的她说，要前进，要变得挺拔。\n行囊沉在过去，转身之前，唯有一瞥。",
+    "descEn": "Growing pains ache to bid childhood farewell.\nWhat day was it that she outgrew her old uniform?\n\"Live by the Oath,\" the little girl told herself. \"March onward, stand tall.\"\nEyes front, her heavy rucksack left behind, she looks back but just once.",
+    "descVi": "Growing pains ache to bid childhood farewell.\nWhat day was it that she outgrew her old uniform?\n\"Live by the Oath,\" the little girl told herself. \"March onward, stand tall.\"\nEyes front, her heavy rucksack left behind, she looks back but just once.",
+    "baseStats": {
+      "atk": 360,
+      "hp": 1800,
+      "def": 120,
+      "mdef": 120
+    },
+    "breakAttrs": [
+      {
+        "breakLevel": 0,
+        "attack": 20,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 1,
+        "attack": 40,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 2,
+        "attack": 60,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 3,
+        "attack": 80,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      }
+    ],
+    "amplifications": [
+      {
+        "level": 1,
+        "descZh": "若记忆者灵感为【木】，攻击后使己方全体仪式威力提升{2%}，最多叠加4层，持续3回合",
+        "descEn": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{2%} for 3 rounds, up to 4 stacks.",
+        "descVi": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{2%} for 3 rounds, up to 4 stacks."
+      },
+      {
+        "level": 2,
+        "descZh": "若记忆者灵感为【木】，攻击后使己方全体仪式威力提升{2.5%}，最多叠加4层，持续3回合",
+        "descEn": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{2.5%} for 3 rounds, up to 4 stacks.",
+        "descVi": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{2.5%} for 3 rounds, up to 4 stacks."
+      },
+      {
+        "level": 3,
+        "descZh": "若记忆者灵感为【木】，攻击后使己方全体仪式威力提升{3%}，最多叠加4层，持续3回合",
+        "descEn": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{3%} for 3 rounds, up to 4 stacks.",
+        "descVi": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{3%} for 3 rounds, up to 4 stacks."
+      },
+      {
+        "level": 4,
+        "descZh": "若记忆者灵感为【木】，攻击后使己方全体仪式威力提升{3.5%}，最多叠加4层，持续3回合",
+        "descEn": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{3.5%} for 3 rounds, up to 4 stacks.",
+        "descVi": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{3.5%} for 3 rounds, up to 4 stacks."
+      },
+      {
+        "level": 5,
+        "descZh": "若记忆者灵感为【木】，攻击后使己方全体仪式威力提升{4%}，最多叠加4层，持续3回合",
+        "descEn": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{4%} for 3 rounds, up to 4 stacks.",
+        "descVi": "If the carrier is a [Plant] character, after attacking, grants all allies Ultimate Might +{4%} for 3 rounds, up to 4 stacks."
+      }
+    ]
+  },
   "5:1447": {
     "id": "1447",
     "gameId": 1447,
     "rarity": 5,
-    "name": "Luck Be A Lady",
+    "name": "Luck Be a Lady",
     "nameCN": "天助自助",
-    "nameVi": "Luck Be A Lady",
-    "tags": [
-      "ATK"
-    ],
+    "nameVi": "Luck Be a Lady",
+    "tags": ["ATK"],
     "releasePatch": "3.5",
     "icon": "images/psychube_icon/5/1447.png",
     "descZh": "掷出一枚金黄，扎进千层碧浪。\n那当世的神话，正在指尖闪光。\n朋友，这就是秘诀——\n既然不惧怕失去，幸运便总来造访。",
@@ -8985,12 +9354,10 @@
     "id": "1446",
     "gameId": 1446,
     "rarity": 5,
-    "name": "The Wind’s Listener",
+    "name": "The Wind's Listener",
     "nameCN": "无事听风",
-    "nameVi": "The Wind’s Listener",
-    "tags": [
-      "Support"
-    ],
+    "nameVi": "The Wind's Listener",
+    "tags": ["Support"],
     "releasePatch": "3.4",
     "icon": "images/psychube_icon/5/1446.png",
     "descZh": "云冥雨霏，水惊波翠，\n倦了又倦的山，慢慢打个浓绿的哈欠。\n呼出一只久睡的鸟儿，叫他盘旋——\n叫他瞧瞧这有尽春山，无尽人间。",
@@ -9105,12 +9472,10 @@
     "id": "1445",
     "gameId": 1445,
     "rarity": 5,
-    "name": "Parting's Quiet Lament",
+    "name": "Parting's Quiet Lament ",
     "nameCN": "世多别离",
-    "nameVi": "Parting's Quiet Lament",
-    "tags": [
-      "Support"
-    ],
+    "nameVi": "Parting's Quiet Lament ",
+    "tags": ["Support"],
     "releasePatch": "3.3",
     "icon": "images/psychube_icon/5/1445.png",
     "descZh": "浮世啊，浮世，韶光匆匆已逝。\n高朋故戚、旧识新交，如今了无踪。\n若相逢只是离别的前奏，也要为你弹奏至天明。\n纵使去日苦多，心似河水呵，奔流依旧。",
@@ -9228,9 +9593,7 @@
     "name": "In Their Figures",
     "nameCN": "“倒影”所指",
     "nameVi": "In Their Figures",
-    "tags": [
-      "Support"
-    ],
+    "tags": ["Support"],
     "releasePatch": "3.2",
     "icon": "images/psychube_icon/5/1444.png",
     "descZh": "倒影呈现每一次拥抱，\n但倒影无法叙述当刻的满足。\n怀抱的温暖，扬起的眉梢，轻缓的呼吸，\n我们存在于此，即为倒影之外的真实。",
@@ -9348,10 +9711,7 @@
     "name": "Faded Epitaphs",
     "nameCN": "碑文已逝",
     "nameVi": "Faded Epitaphs",
-    "tags": [
-      "Support",
-      "Survival"
-    ],
+    "tags": ["Survival", "Support"],
     "releasePatch": "3.1",
     "icon": "images/psychube_icon/5/1443.png",
     "descZh": "在山林河湖，凡间的安息之地，\n黑纱投下一片夜的影子，\n向逝者俯身侧耳，\n未死者向您致敬。",
@@ -9469,10 +9829,7 @@
     "name": "Substitutes and Simulacra",
     "nameCN": "偷天换日",
     "nameVi": "Substitutes and Simulacra",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "3.0",
     "icon": "images/psychube_icon/5/1442.png",
     "descZh": "没有泪涌如潮，\n没有唉声叹气，\n那是对每一面光芒的亵渎。\n我们都该对它如痴如醉。",
@@ -9590,10 +9947,7 @@
     "name": "Dust on the Roadside",
     "nameCN": "路边尘埃",
     "nameVi": "Dust on the Roadside",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.8",
     "icon": "images/psychube_icon/5/1441.png",
     "descZh": "火车疾驰。千百个座席，没有我的位置。\n他们言传身教：诅咒那铁道！诅咒那烟霾！\n但我仍不愿停步，因为阳光——阳光啊，\n终会眷顾每一粒尘埃。",
@@ -9711,10 +10065,7 @@
     "name": "Melodies Old and New",
     "nameCN": "新旧歌谣",
     "nameVi": "Melodies Old and New",
-    "tags": [
-      "Heal",
-      "Support"
-    ],
+    "tags": ["Heal", "Support"],
     "releasePatch": "2.7",
     "icon": "images/psychube_icon/5/1440.png",
     "descZh": "以新的枝叶，编织旧的罗盘。\n灼灼灯光下，将心意交换。\n千百叶小舟，千百种期待，\n千百种笑声汇成同一支歌。",
@@ -9832,10 +10183,7 @@
     "name": "Off the Scene",
     "nameCN": "镜头注脚",
     "nameVi": "Off the Scene",
-    "tags": [
-      "Support",
-      "Survival"
-    ],
+    "tags": ["Survival", "Support"],
     "releasePatch": "2.6",
     "icon": "images/psychube_icon/5/1439.png",
     "descZh": "卸下妆容，褪去戏服，背离镜头，\n夕阳悄然嘲讽着，那反复修改的注脚。\n该如何出演这漫长余生？\n这讽刺的独角戏。",
@@ -9953,9 +10301,7 @@
     "name": "Your Friendly Exorcist",
     "nameCN": "惊魂拍档",
     "nameVi": "Your Friendly Exorcist",
-    "tags": [
-      "Support"
-    ],
+    "tags": ["Support"],
     "releasePatch": "2.5",
     "icon": "images/psychube_icon/5/1438.png",
     "descZh": "夜晚从不静谧，正是开张吉时。\n揣好朱古力球与锡箔，旋钮开至最大。\n红蓝视野喧闹，同白色花瓣相宜。\n你好，你好，我亲爱的搭档。",
@@ -10073,9 +10419,7 @@
     "name": "Belt It Out",
     "nameCN": "纵情一曲",
     "nameVi": "Belt It Out",
-    "tags": [
-      "Support"
-    ],
+    "tags": ["Support"],
     "releasePatch": "2.4",
     "icon": "images/psychube_icon/5/1437.png",
     "descZh": "我的舞台，我的小岛。\n仅在此处，让神思飞跃现实的藩篱，\n忘却无聊的规训，\n搓亮烛芯，看见摇曳的生命。",
@@ -10193,10 +10537,7 @@
     "name": "One with the Flow",
     "nameCN": "迷途以外",
     "nameVi": "One with the Flow",
-    "tags": [
-      "Support",
-      "Survival"
-    ],
+    "tags": ["Survival", "Support"],
     "releasePatch": "2.3",
     "icon": "images/psychube_icon/5/1436.png",
     "descZh": "一阵暖光，一群涌动的阴影。\n一抹冷色，一股浓稠的暗红。\n霓虹的灯在街头迷失踌躇，\n她总是流淌不息，似难以挽留的河。",
@@ -10314,9 +10655,7 @@
     "name": "The Severed and the Rest",
     "nameCN": "留置心底",
     "nameVi": "The Severed and the Rest",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "2.2",
     "icon": "images/psychube_icon/5/1435.png",
     "descZh": "朋友留下的，红色礼物。\n绝不能收下的，沉重礼物。\n必须抛弃的，喜乐与哀怒，唯有痛楚，\n留置心底，喃喃细语。",
@@ -10434,10 +10773,7 @@
     "name": "Falling for a Sweet Phenomenon",
     "nameCN": "落于现象",
     "nameVi": "Falling for a Sweet Phenomenon",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.2",
     "icon": "images/psychube_icon/5/1434.png",
     "descZh": "终有一日将升入超验的王国。\n或迟或早将摆脱痛苦的现象。\n但在此之前，还请去证明。\n这圆锥体上冰凉又甜蜜的假说。",
@@ -10555,9 +10891,7 @@
     "name": "The Unknown Artist",
     "nameCN": "无人问津",
     "nameVi": "The Unknown Artist",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "2.1",
     "icon": "images/psychube_icon/5/1433.png",
     "descZh": "又一剂太薄、太薄的美梦，\n碎裂仅需一缕悲切、一声颤音。\n孜孜寻找，重新调配。无法涂抹，无法释怀。\n肥皂泡之外，我该做什么，我能做什么？",
@@ -10675,10 +11009,7 @@
     "name": "Spinning Yarns",
     "nameCN": "绘声绘色",
     "nameVi": "Spinning Yarns",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "2.1",
     "icon": "images/psychube_icon/5/1432.png",
     "descZh": "尖牙齿的，会说话的，露肚肠的，\n妖精、幽灵、鬼怪。\n给你形体，给你故事，给你名字，\n朋友、朋友、朋友。",
@@ -10796,10 +11127,7 @@
     "name": "You Deserve It",
     "nameCN": "自食苦果",
     "nameVi": "You Deserve It",
-    "tags": [
-      "ATK",
-      "Heal"
-    ],
+    "tags": ["ATK", "Heal"],
     "releasePatch": "2.0",
     "icon": "images/psychube_icon/5/1431.png",
     "descZh": "一枚金币，一枚银币。\n一颗贪婪的心，一双懒惰的手。\n一声呢喃，一阵笑声。\n一个倒霉蛋，一个小精灵。",
@@ -10917,10 +11245,7 @@
     "name": "Her Mournful Face",
     "nameCN": "黯然失色",
     "nameVi": "Her Mournful Face",
-    "tags": [
-      "ATK",
-      "Heal"
-    ],
+    "tags": ["ATK", "Heal"],
     "releasePatch": "2.0",
     "icon": "images/psychube_icon/5/1430.png",
     "descZh": "郁金香、干酪，焦糊的威尔士兔子。\n气息，气息，气息，与美味的回忆。\n白衬衫、金怀表，一道接一道拿手好菜。\n雨滴，雨滴，雨滴，与光芒闪烁的尘埃。",
@@ -11038,9 +11363,7 @@
     "name": "Going Along Alone",
     "nameCN": "踽踽独行",
     "nameVi": "Going Along Alone",
-    "tags": [
-      "Critical"
-    ],
+    "tags": ["Critical"],
     "releasePatch": "1.9",
     "icon": "images/psychube_icon/5/1429.png",
     "descZh": "波托马克河无声流淌。\n父亲呀，父亲呀。\n青草坪与白十字架矗立过数百个日夜。\n我将动身，我将远行，我的羽翼未丰，我的前途未卜。",
@@ -11158,9 +11481,7 @@
     "name": "In the Shadow",
     "nameCN": "形影相随",
     "nameVi": "In the Shadow",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.9",
     "icon": "images/psychube_icon/5/1428.png",
     "descZh": "走过最深的阴影，穿过剧烈阳光，\n她消失不见了。不在身后，也不在脚下。\n不在相片中，不在镜子里，\n唯有你看见她，你握着她的手。",
@@ -11278,9 +11599,7 @@
     "name": "Silent Gaze",
     "nameCN": "无声注视",
     "nameVi": "Silent Gaze",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.8",
     "icon": "images/psychube_icon/5/1427.png",
     "descZh": "一个名字，或一百又一千个名字。\n砖石轰鸣，无休无止。\n我们不谈论心，或旗帜与郁金香。\n同志，请牢记：朽坏与建立都如此轻易。",
@@ -11398,9 +11717,7 @@
     "name": "Night After Night",
     "nameCN": "夜夜亦然",
     "nameVi": "Night After Night",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.8",
     "icon": "images/psychube_icon/5/1426.png",
     "descZh": "沙发椅柔软，麦克风就位。\n音乐叮咚，即刻开场。\n笑话、填字卡片与砂糖。\n洒入三分戏剧性，随牛奶一道饮用。",
@@ -11518,9 +11835,7 @@
     "name": "Beyond the Gears",
     "nameCN": "齿轮之外",
     "nameVi": "Beyond the Gears",
-    "tags": [
-      "Critical"
-    ],
+    "tags": ["Critical"],
     "releasePatch": "1.7",
     "icon": "images/psychube_icon/5/1425.png",
     "descZh": "扬升，滑落。\n紧紧咬合，熠熠生辉。\n此时，此刻。\n不必计算落点，不必寻求平衡。\n仅需一瞬笑意。",
@@ -11638,9 +11953,7 @@
     "name": "His Tail",
     "nameCN": "昨日往事",
     "nameVi": "His Tail",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.7",
     "icon": "images/psychube_icon/5/1424.png",
     "descZh": "林间的兽，或是飞矢下的头颅；\n勇者的歌，或是权柄下的亡魂；\n于一千三百年前，或是昨日。\n一圈，两圈，三圈。\n咔哒，咔哒，尖喙或是尾羽。\n内容不重要，形式无意义。\n于幽默而言，都是好时机。",
@@ -11758,9 +12071,7 @@
     "name": "A New Leaf",
     "nameCN": "崭新一页",
     "nameVi": "A New Leaf",
-    "tags": [
-      "Survival"
-    ],
+    "tags": ["Survival"],
     "releasePatch": "1.6",
     "icon": "images/psychube_icon/5/1423.png",
     "descZh": "诗在此处，诗人说。\n冬日在此处，山雀说。\n以笔尖，以趾爪，以心灵或知无不言的静默。\n在空白的大地上，写诗。",
@@ -11878,9 +12189,7 @@
     "name": "Tea Break",
     "nameCN": "茶歇时间",
     "nameVi": "Tea Break",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.6",
     "icon": "images/psychube_icon/5/1422.png",
     "descZh": "咖啡，可可，或者“黑子啡”。深色液体旋转，旋转。\n在宇宙的彼岸或此岸。\n寡淡，酸涩，完全冷却，不推荐任何生命体摄入。\n瞧，所谓公务，它没什么不同。",
@@ -11995,12 +12304,10 @@
     "id": "1421",
     "gameId": 1421,
     "rarity": 5,
-    "name": "Let's Set Sail",
+    "name": "Let's Set Sail ",
     "nameCN": "勇往直前",
-    "nameVi": "Let's Set Sail",
-    "tags": [
-      "ATK"
-    ],
+    "nameVi": "Let's Set Sail ",
+    "tags": ["ATK"],
     "releasePatch": "1.5",
     "icon": "images/psychube_icon/5/1421.png",
     "descZh": "风帆鼓起，长剑擦亮，沿河而下。\n一颗星在北方闪烁，追吧，追吧。\n征服海洋，征服陆地，征服溜冰场与公园蓄水池。\n你的星星在北方闪烁，拉葛莎，拉葛莎。",
@@ -12118,9 +12425,7 @@
     "name": "Take the Hard Journey",
     "nameCN": "步此苦旅",
     "nameVi": "Take the Hard Journey",
-    "tags": [
-      "Heal"
-    ],
+    "tags": ["Heal"],
     "releasePatch": "1.5",
     "icon": "images/psychube_icon/5/1420.png",
     "descZh": "锋锐更甚剑刃，炽烈更甚火焰。\n在厅堂上，在影子中，在碌碌的白日与黢黢的黑夜。\n在无需斩下不法之徒头颅的片刻。\n如你不背弃公义，它必不背弃你。",
@@ -12238,9 +12543,7 @@
     "name": "Remaining Absurdity",
     "nameCN": "荒唐余生",
     "nameVi": "Remaining Absurdity",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.4",
     "icon": "images/psychube_icon/5/1414.png",
     "descZh": "他终于谋到了一份新生计。\n略显荒唐，\n好在不必忧心失业。\n所谓崭新驴生，令人期许，令人赞叹。",
@@ -12358,9 +12661,7 @@
     "name": "A Satisfied Eater",
     "nameCN": "食足餮满",
     "nameVi": "A Satisfied Eater",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.4",
     "icon": "images/psychube_icon/5/1413.png",
     "descZh": "街左侧，一名跟踪者。\n后窗右方，三名寻仇而来的蠢蛋呆瓜。\n泥土之下，十五尺处，多足虫不断蠕动。\n狼群环伺，在最后一块奶、糖、油的混合物入腹之前，他们都是安全的。",
@@ -12478,9 +12779,7 @@
     "name": "Her Bright Future",
     "nameCN": "远大前程",
     "nameVi": "Her Bright Future",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/1411.png",
     "descZh": "光映在前方，\n使白更白，发亮的更明亮。\n期待，好奇，渴望。世界是如此构成的。\n我所了解的，并非它的全貌。",
@@ -12598,10 +12897,7 @@
     "name": "An Afternoon Nap",
     "nameCN": "午后小憩",
     "nameVi": "An Afternoon Nap",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/1407.png",
     "descZh": "你的孩子从不是你的孩子，\n优秀的监护人们善于度过独处的午后。\n一枚红果酣然沉睡时，\n绅士是否会从树上坠落。",
@@ -12719,10 +13015,7 @@
     "name": "Decode",
     "nameCN": "示我以真",
     "nameVi": "Decode",
-    "tags": [
-      "Heal",
-      "Survival"
-    ],
+    "tags": ["Heal", "Survival"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/1405.png",
     "descZh": "在格子间中敲打，\n提行，首字节，41——\n再提，第二个字节，41——\n静谧，安宁，稳定。宛若襁褓。",
@@ -12840,9 +13133,7 @@
     "name": "The Footloose",
     "nameCN": "无束无拘",
     "nameVi": "The Footloose",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/1404.png",
     "descZh": "金合欢，落地，削刨，磨打，消光。\n一半趁手的弯弓和箭镞，\n一半踏合的流线与冲浪板。\n海说，你的自由也是树的自由。",
@@ -12960,10 +13251,7 @@
     "name": "Tomorrow Also",
     "nameCN": "明日亦然",
     "nameVi": "Tomorrow Also",
-    "tags": [
-      "ATK",
-      "Critical"
-    ],
+    "tags": ["ATK", "Critical"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/1402.png",
     "descZh": "从雾中捧起城市，勿忘轻拿轻放，\n别将行色匆匆的人群惊扰。\n悄然穿行，踏过街巷，按时来到。\n责任会追上他的脚步，同往常一样。",
@@ -13081,9 +13369,7 @@
     "name": "Yearning Desire",
     "nameCN": "心驰神往",
     "nameVi": "Yearning Desire",
-    "tags": [
-      "ATK"
-    ],
+    "tags": ["ATK"],
     "releasePatch": "1.0",
     "icon": "images/psychube_icon/5/1401.png",
     "descZh": "不可安眠的夜晚，\n疼痛忍耐的清晨，\n漫长而无人可言的午后，\n安静地翻开一本又一本书籍。",

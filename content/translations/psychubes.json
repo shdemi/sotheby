@@ -1,0 +1,2300 @@
+{
+  "1000": {
+    "descVi": "Con rắn khẽ rít lên, tìm lối đi của mình.\nGiờ đây nó đã rõ phải đi đâu, phải cắn vào đâu. Nó mở miệng, lộ nanh, rồi cắm sâu vào con mồi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khát vọng ẩn sâu tận đáy lòng. Nguyên liệu quý giá có thể dùng để tăng cấp Amplification của một Psychube thêm 1 bậc."
+      }
+    }
+  },
+  "1001": {
+    "descVi": "Con rắn khẽ rít lên, tìm lối đi của mình.\nChẳng ai biết nó sẽ đi đâu, nhưng chiếc lưỡi nó sẽ đánh hơi được con mồi trong không khí.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khát vọng ẩn giấu nơi sâu thẳm. Vật liệu quý giá, có thể dùng để tăng cấp Amplification của một Psychube 5 sao thêm 1."
+      }
+    }
+  },
+  "1401": {
+    "descVi": "Trong những đêm không ngủ,\nTrong những buổi sáng đau đớn,\nTrong những buổi chiều dài chẳng có ai để trò chuyện,\nNàng mở hết cuốn sách này đến cuốn sách khác.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có [Stats Down] hoặc [Neg Status], DMG Dealt +{8%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có [Stats Down] hoặc [Neg Status], DMG Dealt +{10%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có [Stats Down] hoặc [Neg Status], DMG Dealt +{12%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có [Stats Down] hoặc [Neg Status], DMG Dealt +{14%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có [Stats Down] hoặc [Neg Status], DMG Dealt +{16%}."
+      }
+    }
+  },
+  "1402": {
+    "descVi": "Khi nhấc màn sương khỏi thành phố, hãy cẩn thận,\nĐừng làm phiền những người đang vội vã trở về nhà.\nAnh ta đi xuyên thành phố qua những con hẻm và đến kịp lúc.\nBổn phận của anh sẽ đuổi kịp anh, như nó vẫn luôn như thế.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị thi triển Ultimate, Critical Rate +{10%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị thi triển Ultimate, Critical Rate +{12.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị thi triển Ultimate, Critical Rate +{15%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị thi triển Ultimate, Critical Rate +{17.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị thi triển Ultimate, Critical Rate +{20%}."
+      }
+    }
+  },
+  "1404": {
+    "descVi": "Cành keo vàng rơi xuống đất. Nàng mài nó, đánh bóng đến khi thành nhám mịn.\nMột nửa biến thành cung tên tiện dụng,\nNửa còn lại biến thành tấm ván lướt sóng thon gọn.\n\"Cây tự do chừng nào bạn còn tự do,\" đại dương nói.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu HP của mục tiêu trên 50%, DMG Dealt +{8%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu HP của mục tiêu trên 50%, DMG Dealt +{10%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu HP của mục tiêu trên 50%, DMG Dealt +{12%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu HP của mục tiêu trên 50%, DMG Dealt +{14%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu HP của mục tiêu trên 50%, DMG Dealt +{16%}."
+      }
+    }
+  },
+  "1405": {
+    "descVi": "Ngồi trong ô vuông nhỏ,\nNàng đánh máy. 41, xuống dòng, 41.\nMọi thứ yên tĩnh, thanh bình và ổn định, \nvà trong thế giới của những con số, nàng được quấn chặt an toàn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị bị Ultimate tấn công, DMG Taken -{10%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị bị Ultimate tấn công, DMG Taken -{12.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị bị Ultimate tấn công, DMG Taken -{15%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị bị Ultimate tấn công, DMG Taken -{17.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị bị Ultimate tấn công, DMG Taken -{20%}."
+      }
+    }
+  },
+  "1407": {
+    "descVi": "Đứa con của bạn chưa từng là con của bạn.\nMột người giám hộ thông minh giỏi tìm ra khoảng thời gian quý giá để ở một mình vào buổi chiều.\nKhi trái chín đỏ đã ngủ say,\nLiệu quý ông có rơi khỏi cành?",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, người trang bị nhận Critical DMG +3% (cộng dồn tối đa {4} lần)."
+      },
+      "2": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, người trang bị nhận Critical DMG +3% (cộng dồn tối đa {5} lần)."
+      },
+      "3": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, người trang bị nhận Critical DMG +3% (cộng dồn tối đa {6} lần)."
+      },
+      "4": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, người trang bị nhận Critical DMG +3% (cộng dồn tối đa {7} lần)."
+      },
+      "5": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, người trang bị nhận Critical DMG +3% (cộng dồn tối đa {8} lần)."
+      }
+    }
+  },
+  "1411": {
+    "descVi": "Ánh sáng đang chiếu rọi phía trước.\nNó khiến thứ gì trắng thì càng trắng hơn, thứ gì sáng thì càng sáng hơn.\nMong đợi, tò mò, khao khát, đó là những gì tạo nên thế giới.\nNhững gì tôi biết về nó chưa phải là bức tranh trọn vẹn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị thi triển Ultimate, nếu bản thân đang ở trạng thái [Stats Up], Ultimate Might +{10%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị thi triển Ultimate, nếu bản thân đang ở trạng thái [Stats Up], Ultimate Might +{12.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị thi triển Ultimate, nếu bản thân đang ở trạng thái [Stats Up], Ultimate Might +{15%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị thi triển Ultimate, nếu bản thân đang ở trạng thái [Stats Up], Ultimate Might +{17.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị thi triển Ultimate, nếu bản thân đang ở trạng thái [Stats Up], Ultimate Might +{20%}."
+      }
+    }
+  },
+  "1413": {
+    "descVi": "Bên trái con phố, một kẻ bám đuôi.\nBên phải khung cửa sau, ba kẻ ngốc đang tìm cách trả thù.\nDưới mặt đất, cách mười lăm bộ, con sâu nghìn chân quằn quại không ngừng.\nBầy sói vây quanh. Cho đến khi những giọt sữa, đường và dầu cuối cùng vào bụng chúng, tất cả đều an toàn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Mỗi khi người trang bị tấn công lúc HP dưới 80%, Penetration Rate +{8%}."
+      },
+      "2": {
+        "descVi": "Mỗi khi người trang bị tấn công lúc HP dưới 80%, Penetration Rate +{10%}."
+      },
+      "3": {
+        "descVi": "Mỗi khi người trang bị tấn công lúc HP dưới 80%, Penetration Rate +{12%}."
+      },
+      "4": {
+        "descVi": "Mỗi khi người trang bị tấn công lúc HP dưới 80%, Penetration Rate +{14%}."
+      },
+      "5": {
+        "descVi": "Mỗi khi người trang bị tấn công lúc HP dưới 80%, Penetration Rate +{16%}."
+      }
+    }
+  },
+  "1414": {
+    "descVi": "Cuối cùng anh ta cũng nghĩ ra một kế hoạch mới.\nDẫu có hơi kỳ quặc,\nNỗi lo thất nghiệp đã không còn.\nCái gọi là cuộc đời con lừa mới, khiến người ta vừa nể phục vừa mong chờ.",
+    "amplifications": {
+      "1": {
+        "descVi": "Mỗi khi người trang bị thực hiện tấn công đơn mục tiêu lúc đang có Shield, Incantation Might +{10%}."
+      },
+      "2": {
+        "descVi": "Mỗi khi người trang bị thực hiện tấn công đơn mục tiêu lúc đang có Shield, Incantation Might +{12.5%}."
+      },
+      "3": {
+        "descVi": "Mỗi khi người trang bị thực hiện tấn công đơn mục tiêu lúc đang có Shield, Incantation Might +{15%}."
+      },
+      "4": {
+        "descVi": "Mỗi khi người trang bị thực hiện tấn công đơn mục tiêu lúc đang có Shield, Incantation Might +{17.5%}."
+      },
+      "5": {
+        "descVi": "Mỗi khi người trang bị thực hiện tấn công đơn mục tiêu lúc đang có Shield, Incantation Might +{20%}."
+      }
+    }
+  },
+  "1420": {
+    "descVi": "Sắc bén hơn mọi lưỡi dao, dữ dội hơn mọi ngọn lửa.\nTrong đại sảnh, trong bóng tối, giữa ban ngày bận rộn và màn đêm tăm tối.\nTrong những khoảnh khắc chẳng cần chặt đầu kẻ xấu.\nNếu bạn không ruồng bỏ công lý, công lý sẽ không ruồng bỏ bạn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị có HP dưới {40%}, Healing Done +12%"
+      },
+      "2": {
+        "descVi": "Khi người trang bị có HP dưới {50%}, Healing Done +12%"
+      },
+      "3": {
+        "descVi": "Khi người trang bị có HP dưới {60%}, Healing Done +12%"
+      },
+      "4": {
+        "descVi": "Khi người trang bị có HP dưới {70%}, Healing Done +12%"
+      },
+      "5": {
+        "descVi": "Khi người trang bị có HP dưới {80%}, Healing Done +12%"
+      }
+    }
+  },
+  "1421": {
+    "descVi": "Cánh buồm căng gió, gươm giáo lấp lánh, xuôi theo dòng sông.\nMột vì sao lấp lánh ở phương bắc, đuổi theo đi, đuổi theo đi.\nChinh phục biển cả, đất liền, sân băng, và hồ nước trong công viên.\nNgôi sao của bạn lấp lánh ở phương bắc, Lagasa, Lagasa.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công mục tiêu đang có trạng thái [Stats Down], Critical DMG +{14%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công mục tiêu đang có trạng thái [Stats Down], Critical DMG +{17.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công mục tiêu đang có trạng thái [Stats Down], Critical DMG +{21%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công mục tiêu đang có trạng thái [Stats Down], Critical DMG +{24.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công mục tiêu đang có trạng thái [Stats Down], Critical DMG +{28%}."
+      }
+    }
+  },
+  "1422": {
+    "descVi": "Cà phê, ca-cao, hay có lẽ là \"cà phê vật chất tối\". Chất lỏng sẫm màu cứ xoáy mãi, xoáy mãi. \nỞ phía bên kia hay bên này của vũ trụ. \nNhạt nhẽo, chua, lạnh ngắt hoàn toàn, không khuyến khích bất kỳ sinh vật nào dùng thử. \nChẳng khác là bao so với việc làm công vụ.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Disarm] hoặc [Silence], DMG Dealt +{14%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Disarm] hoặc [Silence], DMG Dealt +{17.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Disarm] hoặc [Silence], DMG Dealt +{21%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Disarm] hoặc [Silence], DMG Dealt +{24.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Disarm] hoặc [Silence], DMG Dealt +{28%}."
+      }
+    }
+  },
+  "1423": {
+    "descVi": "Thơ ca ở đây, nhà thơ nói. \nMùa đông ở đây, chú chim bạc má nói. \nBằng đầu ngọn bút, bằng móng vuốt nhỏ, bằng linh hồn hay sự im lặng của kẻ biết mọi điều. \nHãy viết thơ lên mặt đất trắng.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], Critical DEF +8%. Khi người trang bị bị tấn công lúc HP dưới {40%}, Critical Resist Rate +{15%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], Critical DEF +8%. Khi người trang bị bị tấn công lúc HP dưới {50%}, Critical Resist Rate +{15%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], Critical DEF +8%. Khi người trang bị bị tấn công lúc HP dưới {50%}, Critical Resist Rate +{20%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], Critical DEF +8%. Khi người trang bị bị tấn công lúc HP dưới {60%}, Critical Resist Rate +{20%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], Critical DEF +8%. Khi người trang bị bị tấn công lúc HP dưới {60%}, Critical Resist Rate +{25%}."
+      }
+    }
+  },
+  "1424": {
+    "descVi": "Những con thú trong rừng, hay những cái đầu dưới mũi tên bay;\nKhúc ca của người anh hùng, hay những linh hồn dưới quyền cai trị,\nMột nghìn ba trăm năm trước, hay chỉ mới hôm qua.\nVòng này đến vòng khác, ba lần.\nLách cách, lách cách, dù là mỏ hay lông đuôi.\nNội dung chẳng quan trọng, hình thức chẳng có nghĩa lý.\nVì nụ cười, lúc nào cũng là dịp vui.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị thuộc Afflatus Primal, Penetration Rate +5%. Khi người trang bị tấn công mục tiêu có HP dưới 75%, Penetration Rate +{6%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị thuộc Afflatus Primal, Penetration Rate +5%. Khi người trang bị tấn công mục tiêu có HP dưới 75%, Penetration Rate +{8%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị thuộc Afflatus Primal, Penetration Rate +5%. Khi người trang bị tấn công mục tiêu có HP dưới 75%, Penetration Rate +{10%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị thuộc Afflatus Primal, Penetration Rate +5%. Khi người trang bị tấn công mục tiêu có HP dưới 75%, Penetration Rate +{12%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị thuộc Afflatus Primal, Penetration Rate +5%. Khi người trang bị tấn công mục tiêu có HP dưới 75%, Penetration Rate +{14%}."
+      }
+    }
+  },
+  "1425": {
+    "descVi": "Vút lên, rơi xuống.\nKhít chặt vào nhau, sáng rực rỡ.\nNgay lúc này, khoảnh khắc này.\nKhông cần tính điểm rơi, không cần tìm thế cân bằng.\nChỉ một khoảnh khắc cười vang.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công mục tiêu KHÔNG ở trạng thái [Pos Status] hoặc [Stats Up], Critical Rate +{6%}, Critical DMG +{6%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công mục tiêu KHÔNG ở trạng thái [Pos Status] hoặc [Stats Up], Critical Rate +{9%}, Critical DMG +{9%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công mục tiêu KHÔNG ở trạng thái [Pos Status] hoặc [Stats Up], Critical Rate +{12%}, Critical DMG +{12%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công mục tiêu KHÔNG ở trạng thái [Pos Status] hoặc [Stats Up], Critical Rate +{15%}, Critical DMG +{15%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công mục tiêu KHÔNG ở trạng thái [Pos Status] hoặc [Stats Up], Critical Rate +{18%}, Critical DMG +{18%}."
+      }
+    }
+  },
+  "1426": {
+    "descVi": "Chiếc ghế bành êm ái, micro đã đặt sẵn.\nNhạc ngân lên, chương trình sắp bắt đầu.\nChuyện đùa, trò chơi ô chữ, và đường.\nRắc thêm một chút kịch tính, rồi thưởng thức cùng sữa.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi HP hiện tại của người trang bị dưới 80%, nhận DMG Dealt +6%. Khi người trang bị không bị [Stats Down], nhận Incantation Might +{8%}."
+      },
+      "2": {
+        "descVi": "Khi HP hiện tại của người trang bị dưới 80%, nhận DMG Dealt +6%. Khi người trang bị không bị [Stats Down], nhận Incantation Might +{11%}."
+      },
+      "3": {
+        "descVi": "Khi HP hiện tại của người trang bị dưới 80%, nhận DMG Dealt +6%. Khi người trang bị không bị [Stats Down], nhận Incantation Might +{14%}."
+      },
+      "4": {
+        "descVi": "Khi HP hiện tại của người trang bị dưới 80%, nhận DMG Dealt +6%. Khi người trang bị không bị [Stats Down], nhận Incantation Might +{17%}."
+      },
+      "5": {
+        "descVi": "Khi HP hiện tại của người trang bị dưới 80%, nhận DMG Dealt +6%. Khi người trang bị không bị [Stats Down], nhận Incantation Might +{20%}."
+      }
+    }
+  },
+  "1427": {
+    "descVi": "Một cái tên, hay hàng trăm cái tên.\nGạch đá và những tảng đá lớn gầm lên, không ngừng nghỉ.\nChúng ta không nói về trái tim, cũng không nói về cờ và hoa tulip.\nĐồng chí, hãy nhớ: mục rữa và vươn lên đều dễ dàng như nhau.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, người trang bị nhận DMG Taken -5%. Khi bắt đầu mỗi round, người trang bị nhận DMG Bonus +3%, cộng dồn tối đa {4} lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, người trang bị nhận DMG Taken -5%. Khi bắt đầu mỗi round, người trang bị nhận DMG Bonus +3%, cộng dồn tối đa {5} lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, người trang bị nhận DMG Taken -5%. Khi bắt đầu mỗi round, người trang bị nhận DMG Bonus +3%, cộng dồn tối đa {6} lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, người trang bị nhận DMG Taken -5%. Khi bắt đầu mỗi round, người trang bị nhận DMG Bonus +3%, cộng dồn tối đa {7} lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, người trang bị nhận DMG Taken -5%. Khi bắt đầu mỗi round, người trang bị nhận DMG Bonus +3%, cộng dồn tối đa {8} lần."
+      }
+    }
+  },
+  "1428": {
+    "descVi": "Bước qua những bóng tối sâu nhất, dưới ánh mặt trời chói chang,\nNàng biến mất. Không ở phía sau, cũng không ở phía dưới.\nKhông trong những bức ảnh, cũng không trong gương,\nChỉ có bạn nhìn thấy nàng, và nắm lấy tay nàng.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu Afflatus của người trang bị là [Mineral], người trang bị nhận DMG Taken -5%. Sau khi người trang bị thi triển Incantation buff, nhận ATK +{0.5%}. Nếu đó là Incantation buff đơn mục tiêu, mức tăng ATK được nhân đôi. Hiệu ứng này cộng dồn tối đa 10%. Khi đạt giới hạn, người trang bị nhận thêm DMG Taken Reduction +{3%}."
+      },
+      "2": {
+        "descVi": "Nếu Afflatus của người trang bị là [Mineral], người trang bị nhận DMG Taken -5%. Sau khi người trang bị thi triển Incantation buff, nhận ATK +{0.5%}. Nếu đó là Incantation buff đơn mục tiêu, mức tăng ATK được nhân đôi. Hiệu ứng này cộng dồn tối đa 10%. Khi đạt giới hạn, người trang bị nhận thêm DMG Taken Reduction +{4%}."
+      },
+      "3": {
+        "descVi": "Nếu Afflatus của người trang bị là [Mineral], người trang bị nhận DMG Taken -5%. Sau khi người trang bị thi triển Incantation buff, nhận ATK +{1%}. Nếu đó là Incantation buff đơn mục tiêu, mức tăng ATK được nhân đôi. Hiệu ứng này cộng dồn tối đa 10%. Khi đạt giới hạn, người trang bị nhận thêm DMG Taken Reduction +{4%}."
+      },
+      "4": {
+        "descVi": "Nếu Afflatus của người trang bị là [Mineral], người trang bị nhận DMG Taken -5%. Sau khi người trang bị thi triển Incantation buff, nhận ATK +{2%}. Nếu đó là Incantation buff đơn mục tiêu, mức tăng ATK được nhân đôi. Hiệu ứng này cộng dồn tối đa 10%. Khi đạt giới hạn, người trang bị nhận thêm DMG Taken Reduction +{5%}."
+      },
+      "5": {
+        "descVi": "Nếu Afflatus của người trang bị là [Mineral], người trang bị nhận DMG Taken -5%. Sau khi người trang bị thi triển Incantation buff, nhận ATK +{2%}. Nếu đó là Incantation buff đơn mục tiêu, mức tăng ATK được nhân đôi. Hiệu ứng này cộng dồn tối đa 10%. Khi đạt giới hạn, người trang bị nhận thêm DMG Taken Reduction +{7%}."
+      }
+    }
+  },
+  "1429": {
+    "descVi": "Sông Potomac lặng lẽ trôi.\nCha ơi, cha ơi.\nCánh đồng cỏ và những cây thánh giá trắng đã đứng đó qua hàng trăm ngày đêm.\nCon sẽ lên đường, con sẽ đi thật xa, đôi cánh con còn chưa đủ mạnh, tương lai con còn chưa tỏ.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu Afflatus của người trang bị là [Plant], Critical Rate +6%. Khi người trang bị dùng Ultimate đơn mục tiêu để tấn công, Critical DMG +{14%}."
+      },
+      "2": {
+        "descVi": "Nếu Afflatus của người trang bị là [Plant], Critical Rate +6%. Khi người trang bị dùng Ultimate đơn mục tiêu để tấn công, Critical DMG +{18%}."
+      },
+      "3": {
+        "descVi": "Nếu Afflatus của người trang bị là [Plant], Critical Rate +6%. Khi người trang bị dùng Ultimate đơn mục tiêu để tấn công, Critical DMG +{22%}."
+      },
+      "4": {
+        "descVi": "Nếu Afflatus của người trang bị là [Plant], Critical Rate +6%. Khi người trang bị dùng Ultimate đơn mục tiêu để tấn công, Critical DMG +{26%}."
+      },
+      "5": {
+        "descVi": "Nếu Afflatus của người trang bị là [Plant], Critical Rate +6%. Khi người trang bị dùng Ultimate đơn mục tiêu để tấn công, Critical DMG +{30%}."
+      }
+    }
+  },
+  "1430": {
+    "descVi": "Hoa tulip, phô mai, và món Welsh rarebit cháy xém.\nHương thơm, hương thơm, hương thơm, quyện cùng những ký ức ngon lành.\nÁo sơ mi trắng, đồng hồ bỏ túi bằng vàng, hết món đặc trưng này đến món khác.\nGiọt mưa, giọt mưa, giọt mưa, và bụi lấp lánh trong ánh sáng.",
+    "amplifications": {
+      "1": {
+        "descVi": "Người trang bị nhận Healing Done +8%. Khi bắt đầu round, nếu đang ở trạng thái [Cure], nhận thêm DMG Taken Reduction +6%. Nếu người trang bị thuộc Afflatus [Plant], hiệu ứng [Poison] do bản thân gây ra nhận DMG Dealt +{16%}."
+      },
+      "2": {
+        "descVi": "Người trang bị nhận Healing Done +8%. Khi bắt đầu round, nếu đang ở trạng thái [Cure], nhận thêm DMG Taken Reduction +6%. Nếu người trang bị thuộc Afflatus [Plant], hiệu ứng [Poison] do bản thân gây ra nhận DMG Dealt +{22%}."
+      },
+      "3": {
+        "descVi": "Người trang bị nhận Healing Done +8%. Khi bắt đầu round, nếu đang ở trạng thái [Cure], nhận thêm DMG Taken Reduction +6%. Nếu người trang bị thuộc Afflatus [Plant], hiệu ứng [Poison] do bản thân gây ra nhận DMG Dealt +{28%}."
+      },
+      "4": {
+        "descVi": "Người trang bị nhận Healing Done +8%. Khi bắt đầu round, nếu đang ở trạng thái [Cure], nhận thêm DMG Taken Reduction +6%. Nếu người trang bị thuộc Afflatus [Plant], hiệu ứng [Poison] do bản thân gây ra nhận DMG Dealt +{34%}."
+      },
+      "5": {
+        "descVi": "Người trang bị nhận Healing Done +8%. Khi bắt đầu round, nếu đang ở trạng thái [Cure], nhận thêm DMG Taken Reduction +6%. Nếu người trang bị thuộc Afflatus [Plant], hiệu ứng [Poison] do bản thân gây ra nhận DMG Dealt +{40%}."
+      }
+    }
+  },
+  "1431": {
+    "descVi": "Một đồng vàng, một đồng bạc.\nMột trái tim tham lam, một đôi bàn tay lười biếng.\nMột lời lẩm bẩm, một tràng cười vang.\nMột kẻ ngốc, và một linh hồn nhỏ.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hồi máu diện rộng, nhận Incantation Might +{1%} và Ultimate Might +{1%}, cộng dồn tối đa 5 lần."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hồi máu diện rộng, nhận Incantation Might +{1.5%} và Ultimate Might +{1.5%}, cộng dồn tối đa 5 lần."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hồi máu diện rộng, nhận Incantation Might +{2%} và Ultimate Might +{2%}, cộng dồn tối đa 5 lần."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hồi máu diện rộng, nhận Incantation Might +{2.5%} và Ultimate Might +{2.5%}, cộng dồn tối đa 5 lần."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hồi máu diện rộng, nhận Incantation Might +{3%} và Ultimate Might +{3%}, cộng dồn tối đa 5 lần."
+      }
+    }
+  },
+  "1432": {
+    "descVi": "Nanh nhọn, lưỡi bạc, lòng dạ bị mổ phanh,\nTiên nữ, ma quái, quái vật.\nBan cho ngươi hình hài, ban cho ngươi câu chuyện, ban cho ngươi một cái tên,\nBạn, một người bạn, bạn của ta.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Ultimate Might +5%. Khi Ultimate của người trang bị là tấn công diện rộng và bạo kích toàn bộ mục tiêu, DMG Dealt +{4%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Ultimate Might +5%. Khi Ultimate của người trang bị là tấn công diện rộng và bạo kích toàn bộ mục tiêu, DMG Dealt +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Ultimate Might +5%. Khi Ultimate của người trang bị là tấn công diện rộng và bạo kích toàn bộ mục tiêu, DMG Dealt +{8%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Ultimate Might +5%. Khi Ultimate của người trang bị là tấn công diện rộng và bạo kích toàn bộ mục tiêu, DMG Dealt +{10%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Ultimate Might +5%. Khi Ultimate của người trang bị là tấn công diện rộng và bạo kích toàn bộ mục tiêu, DMG Dealt +{12%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1433": {
+    "descVi": "Lại một giấc mơ mong manh,\nVỡ tan bởi một làn sầu, một giọng nói run rẩy.\nTa tìm kiếm, sắp xếp lại, không thể xóa đi, không thể buông bỏ.\nNgoài bong bóng này, ta nên làm gì? Ta có thể làm gì?",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], DMG Dealt +6%. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Nightmare], bản thân nhận Penetration Rate +{4%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], DMG Dealt +6%. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Nightmare], bản thân nhận Penetration Rate +{6.5%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], DMG Dealt +6%. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Nightmare], bản thân nhận Penetration Rate +{9%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], DMG Dealt +6%. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Nightmare], bản thân nhận Penetration Rate +{11.5%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], DMG Dealt +6%. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Nightmare], bản thân nhận Penetration Rate +{14%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1434": {
+    "descVi": "Một ngày nào đó, chúng ta sẽ vươn tới vương quốc siêu việt,\nsớm hay muộn cũng thoát khỏi hiện tượng đau đớn này.\nNhưng cho đến ngày ấy, hãy bước tới mà chứng minh,\ngiả thuyết lạnh lẽo mà ngọt ngào trên chiếc nón ấy.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Critical DMG +{10%}. Sau khi thực hiện Extra Action, Genesis DMG Dealt +{6%}, cộng dồn tối đa 5 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Critical DMG +{12.5%}. Sau khi thực hiện Extra Action, Genesis DMG Dealt +{7.5%}, cộng dồn tối đa 5 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Critical DMG +{15%}. Sau khi thực hiện Extra Action, Genesis DMG Dealt +{9%}, cộng dồn tối đa 5 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Critical DMG +{17.5%}. Sau khi thực hiện Extra Action, Genesis DMG Dealt +{10.5%}, cộng dồn tối đa 5 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Critical DMG +{20%}. Sau khi thực hiện Extra Action, Genesis DMG Dealt +{12%}, cộng dồn tối đa 5 lần."
+      }
+    }
+  },
+  "1435": {
+    "descVi": "Một món quà đỏ thắm từ người bạn,\nmột gánh nặng quá đỗi nặng để nhận lấy.\nNiềm vui và nỗi buồn đều bị bỏ lại; vậy mà nỗi đau,\nvẫn ở lại trong tim, một lời thì thầm khe khẽ.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Intellect], Penetration Rate +{8%}. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Paralyze] hoặc [Daze], nhận DMG Bonus +{4%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Intellect], Penetration Rate +{10%}. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Paralyze] hoặc [Daze], nhận DMG Bonus +{5%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Intellect], Penetration Rate +{12%}. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Paralyze] hoặc [Daze], nhận DMG Bonus +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Intellect], Penetration Rate +{14%}. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Paralyze] hoặc [Daze], nhận DMG Bonus +{7%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Intellect], Penetration Rate +{16%}. Khi người trang bị tấn công kẻ địch đang ở trạng thái [Paralyze] hoặc [Daze], nhận DMG Bonus +{8%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1436": {
+    "descVi": "Một nhịp sáng ấm áp, một khối bóng tối cuộn mình.\nMột tia sắc lạnh nhất, một vệt đỏ sẫm đặc quánh.\nĐèn neon nhấp nháy, lạc lối trong phố phường,\nNàng chảy mãi không ngừng, một dòng sông không gì ngăn nổi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị chủ động thi triển Incantation, nếu đang sở hữu [Force Field], có {24%} tỷ lệ nhận 1 Moxie. Trong 3 round sau khi người trang bị thi triển Ultimate, khi đồng minh thi triển Incantation hạng 2/3, đồng minh đó nhận DMG Dealt +{6%}/{8%}."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị chủ động thi triển Incantation, nếu đang sở hữu [Force Field], có {30%} tỷ lệ nhận 1 Moxie. Trong 3 round sau khi người trang bị thi triển Ultimate, khi đồng minh thi triển Incantation hạng 2/3, đồng minh đó nhận DMG Dealt +{7.5%}/{10%}."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị chủ động thi triển Incantation, nếu đang sở hữu [Force Field], có {36%} tỷ lệ nhận 1 Moxie. Trong 3 round sau khi người trang bị thi triển Ultimate, khi đồng minh thi triển Incantation hạng 2/3, đồng minh đó nhận DMG Dealt +{9%}/{12%}."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị chủ động thi triển Incantation, nếu đang sở hữu [Force Field], có {42%} tỷ lệ nhận 1 Moxie. Trong 3 round sau khi người trang bị thi triển Ultimate, khi đồng minh thi triển Incantation hạng 2/3, đồng minh đó nhận DMG Dealt +{10.5%}/{14%}."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị chủ động thi triển Incantation, nếu đang sở hữu [Force Field], có {48%} tỷ lệ nhận 1 Moxie. Trong 3 round sau khi người trang bị thi triển Ultimate, khi đồng minh thi triển Incantation hạng 2/3, đồng minh đó nhận DMG Dealt +{12%}/{16%}."
+      }
+    }
+  },
+  "1437": {
+    "descVi": "Sân khấu của ta, hòn đảo của ta.\nChỉ ở đây, những suy nghĩ của ta mới nhảy qua rào cản của thực tại,\nQuên đi những quy tắc nhàm chán,\nThắp lên bấc nến, và thấy ánh lửa của sự sống.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Star] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Star] nhận DMG Dealt +{2%}, cộng dồn tối đa 4 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Star] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Star] nhận DMG Dealt +{2.5%}, cộng dồn tối đa 4 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Star] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Star] nhận DMG Dealt +{3%}, cộng dồn tối đa 4 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Star] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Star] nhận DMG Dealt +{3.5%}, cộng dồn tối đa 4 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Star] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Star] nhận DMG Dealt +{4%}, cộng dồn tối đa 4 lần."
+      }
+    }
+  },
+  "1438": {
+    "descVi": "Đêm chưa bao giờ yên tĩnh—đó là lúc hoàn hảo để bắt đầu. \nGói vài viên sô-cô-la cùng giấy bạc, vặn núm lên mức tối đa. \nNhững tia sáng đỏ xanh nhảy múa hòa cùng cánh hoa trắng. \nXin chào, xin chào, người bạn thân mến.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Plant] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Plant] nhận DMG Dealt +{2%}, cộng dồn tối đa 4 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Plant] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Plant] nhận DMG Dealt +{2.5%}, cộng dồn tối đa 4 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Plant] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Plant] nhận DMG Dealt +{3%}, cộng dồn tối đa 4 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Plant] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Plant] nhận DMG Dealt +{3.5%}, cộng dồn tối đa 4 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, với mỗi nhân vật có mặt thuộc Afflatus [Plant] (bao gồm cả người trang bị), toàn bộ nhân vật phe ta thuộc Afflatus [Plant] nhận DMG Dealt +{4%}, cộng dồn tối đa 4 lần."
+      }
+    }
+  },
+  "1439": {
+    "descVi": "Lớp phấn son đã xóa, xiêm y đã cởi, máy quay bỏ lại phía sau.\nMặt trời lặn lặng lẽ cười nhạo những lần sửa kịch bản mãi không dứt bên lề.\nNgười ta phải diễn nốt phần đời còn lại như thế nào?\nMột màn độc thoại, thấm đẫm chua chát.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển một Incantation buff, giúp toàn bộ phe ta nhận DMG Dealt +{1%}, cộng dồn tối đa 5 lần.\nNếu người trang bị thuộc Afflatus [Mineral], nhận Reality DEF +{18%}."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển một Incantation buff, giúp toàn bộ phe ta nhận DMG Dealt +{1.5%}, cộng dồn tối đa 5 lần.\nNếu người trang bị thuộc Afflatus [Mineral], nhận Reality DEF +{18%}."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển một Incantation buff, giúp toàn bộ phe ta nhận DMG Dealt +{1.5%}, cộng dồn tối đa 5 lần.\nNếu người trang bị thuộc Afflatus [Mineral], nhận Reality DEF +{27%}."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển một Incantation buff, giúp toàn bộ phe ta nhận DMG Dealt +{2%}, cộng dồn tối đa 5 lần.\nNếu người trang bị thuộc Afflatus [Mineral], nhận Reality DEF +{27%}."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển một Incantation buff, giúp toàn bộ phe ta nhận DMG Dealt +{2%}, cộng dồn tối đa 5 lần.\nNếu người trang bị thuộc Afflatus [Mineral], nhận Reality DEF +{36%}."
+      }
+    }
+  },
+  "1440": {
+    "descVi": "Bằng những cành lá mới, chúng ta tạo nên la bàn của quá khứ.\nDưới ánh đèn rực cháy, chúng ta trao nhau điều lòng mình muốn nói.\nMuôn vàn con thuyền giấy chở theo vô số hy vọng,\nMuôn vàn tiếng cười hòa thành một khúc ca.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nhận Healing Done +{12%}.\nKhi bắt đầu round, giúp toàn bộ phe ta nhận DMG Dealt +{1%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nhận Healing Done +{14%}.\nKhi bắt đầu round, giúp toàn bộ phe ta nhận DMG Dealt +{1%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nhận Healing Done +{14%}.\nKhi bắt đầu round, giúp toàn bộ phe ta nhận DMG Dealt +{2%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nhận Healing Done +{16%}.\nKhi bắt đầu round, giúp toàn bộ phe ta nhận DMG Dealt +{2%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nhận Healing Done +{16%}.\nKhi bắt đầu round, giúp toàn bộ phe ta nhận DMG Dealt +{3%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1441": {
+    "descVi": "Đoàn tàu gầm vang lướt qua. Nghìn chỗ ngồi, chẳng có chỗ nào cho ta.\nHọ dạy bằng lời và bằng việc làm: Nguyền rủa đường ray! Nguyền rủa khói bụi!\nVậy mà ta vẫn không chịu dừng bước—vì ánh mặt trời,\nÁnh mặt trời sẽ chiếu rọi cả những hạt bụi nhỏ nhất.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, với mỗi 1 cộng dồn [Poison] trên mục tiêu, nhận Penetration Rate +{2%}.\nNếu người trang bị là nhân vật [Plant], Critical DMG +{12%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, với mỗi 1 cộng dồn [Poison] trên mục tiêu, nhận Penetration Rate +{2.5%}.\nNếu người trang bị là nhân vật [Plant], Critical DMG +{15%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, với mỗi 1 cộng dồn [Poison] trên mục tiêu, nhận Penetration Rate +{3%}.\nNếu người trang bị là nhân vật [Plant], Critical DMG +{18%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, với mỗi 1 cộng dồn [Poison] trên mục tiêu, nhận Penetration Rate +{3.5%}.\nNếu người trang bị là nhân vật [Plant], Critical DMG +{21%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, với mỗi 1 cộng dồn [Poison] trên mục tiêu, nhận Penetration Rate +{4%}.\nNếu người trang bị là nhân vật [Plant], Critical DMG +{24%}."
+      }
+    }
+  },
+  "1442": {
+    "descVi": "Không giọt lệ nào,\nKhông lời than nhẹ nào,\nSự hiện diện của chúng làm vấy bẩn ánh sáng.\nHãy để ta đắm mình trong thứ ánh sáng thuần khiết ấy.",
+    "amplifications": {
+      "1": {
+        "descVi": "Người trang bị nhận Critical Rate +{8%}.\nSau khi đòn tấn công của người trang bị kích hoạt hiệu ứng Bullet, nhận Critical DMG +{16%}, duy trì 2 round."
+      },
+      "2": {
+        "descVi": "Người trang bị nhận Critical Rate +{10%}.\nSau khi đòn tấn công của người trang bị kích hoạt hiệu ứng Bullet, nhận Critical DMG +{20%}, duy trì 2 round."
+      },
+      "3": {
+        "descVi": "Người trang bị nhận Critical Rate +{12%}.\nSau khi đòn tấn công của người trang bị kích hoạt hiệu ứng Bullet, nhận Critical DMG +{24%}, duy trì 2 round."
+      },
+      "4": {
+        "descVi": "Người trang bị nhận Critical Rate +{14%}.\nSau khi đòn tấn công của người trang bị kích hoạt hiệu ứng Bullet, nhận Critical DMG +{28%}, duy trì 2 round."
+      },
+      "5": {
+        "descVi": "Người trang bị nhận Critical Rate +{16%}.\nSau khi đòn tấn công của người trang bị kích hoạt hiệu ứng Bullet, nhận Critical DMG +{32%}, duy trì 2 round."
+      }
+    }
+  },
+  "1443": {
+    "descVi": "Núi, rừng hay sông—nơi nào người phàm yên nghỉ,\nBóng áo đen ấy lặng lẽ đến gần, mang theo sự vỗ về,\nChăm chú lắng nghe di nguyện của người đã khuất,\nMột hiện thân kỳ dị mà đáng kính của đức hạnh.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Mineral] có mặt (bao gồm cả người trang bị), toàn bộ đồng minh [Mineral] nhận DMG Dealt +{2%}, cộng dồn tối đa 4 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Mineral] có mặt (bao gồm cả người trang bị), toàn bộ đồng minh [Mineral] nhận DMG Dealt +{2.5%}, cộng dồn tối đa 4 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Mineral] có mặt (bao gồm cả người trang bị), toàn bộ đồng minh [Mineral] nhận DMG Dealt +{3%}, cộng dồn tối đa 4 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Mineral] có mặt (bao gồm cả người trang bị), toàn bộ đồng minh [Mineral] nhận DMG Dealt +{3.5%}, cộng dồn tối đa 4 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Mineral] có mặt (bao gồm cả người trang bị), toàn bộ đồng minh [Mineral] nhận DMG Dealt +{4%}, cộng dồn tối đa 4 lần."
+      }
+    }
+  },
+  "1444": {
+    "descVi": "Ánh phản chiếu ghi lại mọi vòng ôm, \nnhưng không thể kể hết sự trọn vẹn của khoảnh khắc. \nHơi ấm của vòng tay, cái nhướng mày, những hơi thở khẽ—\nchúng ta tồn tại ở đây, như sự thật phía sau tấm gương.",
+    "amplifications": {
+      "1": {
+        "descVi": "Với mỗi Eureka phe ta tiêu hao, giúp toàn bộ phe ta nhận Incantation Might +{0.2%}, cộng dồn tối đa 30 lần."
+      },
+      "2": {
+        "descVi": "Với mỗi Eureka phe ta tiêu hao, giúp toàn bộ phe ta nhận Incantation Might +{0.3%}, cộng dồn tối đa 30 lần."
+      },
+      "3": {
+        "descVi": "Với mỗi Eureka phe ta tiêu hao, giúp toàn bộ phe ta nhận Incantation Might +{0.4%}, cộng dồn tối đa 30 lần."
+      },
+      "4": {
+        "descVi": "Với mỗi Eureka phe ta tiêu hao, giúp toàn bộ phe ta nhận Incantation Might +{0.5%}, cộng dồn tối đa 30 lần."
+      },
+      "5": {
+        "descVi": "Với mỗi Eureka phe ta tiêu hao, giúp toàn bộ phe ta nhận Incantation Might +{0.6%}, cộng dồn tối đa 30 lần."
+      }
+    }
+  },
+  "1445": {
+    "descVi": "Cõi đời phù du, phù du, ngày đẹp qua mau thay.\nBạn bè và người thân, cũ mới, đều biến mất chẳng chút dấu.\nNếu mỗi cuộc gặp chỉ là khúc dạo đầu của ly biệt, thì hãy để ta gảy đàn cho ngươi đến tận bình minh.\nDẫu những ngày cũ mang quá nhiều nỗi đau khó nói, lòng ta vẫn như dòng sông, cứ thế trôi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi họ thi triển Incantation hạng 3, toàn bộ phe ta nhận Incantation Might +{6%}, duy trì 3 round.\nNếu người trang bị là nhân vật [Beast], sau khi họ thi triển Ultimate, toàn bộ phe ta nhận Ultimate Might +{6%}, duy trì 3 round."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi họ thi triển Incantation hạng 3, toàn bộ phe ta nhận Incantation Might +{7.5%}, duy trì 3 round.\nNếu người trang bị là nhân vật [Beast], sau khi họ thi triển Ultimate, toàn bộ phe ta nhận Ultimate Might +{7.5%}, duy trì 3 round."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi họ thi triển Incantation hạng 3, toàn bộ phe ta nhận Incantation Might +{9%}, duy trì 3 round.\nNếu người trang bị là nhân vật [Beast], sau khi họ thi triển Ultimate, toàn bộ phe ta nhận Ultimate Might +{9%}, duy trì 3 round."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi thi triển Incantation hạng 3, giúp toàn bộ phe ta nhận Incantation Might +{10.5%}, duy trì 3 round.\nNếu người trang bị là nhân vật [Beast], sau khi thi triển Ultimate, giúp toàn bộ phe ta nhận Ultimate Might +{10.5%}, duy trì 3 round."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi thi triển Incantation hạng 3, giúp toàn bộ phe ta nhận Incantation Might +{12%}, duy trì 3 round.\nNếu người trang bị là nhân vật [Beast], sau khi thi triển Ultimate, giúp toàn bộ phe ta nhận Ultimate Might +{12%}, duy trì 3 round."
+      }
+    }
+  },
+  "1446": {
+    "descVi": "Giọt mưa rơi từ những tầng mây tối, khẽ làm gợn sóng mặt nước.\nNgọn núi đang ngủ vươn mình, thở ra một hơi dài đầy sương.\nMột con chim ngái ngủ bay ra từ cái miệng đang ngáp ấy,\nNhìn xuống mùa xuân xanh biếc và thế giới phía bên kia.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], [Array] mà họ triển khai còn giúp toàn bộ phe ta nhận Ultimate Might +{10%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], [Array] mà họ triển khai còn giúp toàn bộ phe ta nhận Ultimate Might +{12%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], [Array] mà họ triển khai còn giúp toàn bộ phe ta nhận Ultimate Might +{14%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], [Array] mà họ triển khai còn giúp toàn bộ phe ta nhận Ultimate Might +{16%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], [Array] mà họ triển khai còn giúp toàn bộ phe ta nhận Ultimate Might +{18%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      }
+    }
+  },
+  "1447": {
+    "descVi": "Tung một đồng xu vàng óng ánh\nXuống biển sâu thẳm khôn cùng.\nMột huyền thoại của thời đại này\nĐang nằm gọn giữa đầu ngón tay.\nĐây là bí mật, mis amigos:\nKhi bạn chẳng còn sợ mất mát,\nẤy là lúc vận may luôn đổi chiều.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công bằng Incantation hạng 1/2/3, Ultimate Might +{8%}/{12%}/{18%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công bằng Incantation hạng 1/2/3, Ultimate Might +{10%}/{15%}/{22.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công bằng Incantation hạng 1/2/3, Ultimate Might +{12%}/{18%}/{27%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công bằng Incantation hạng 1/2/3, Ultimate Might +{14%}/{21%}/{31.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công bằng Incantation hạng 1/2/3, Ultimate Might +{16%}/{24%}/{36%}."
+      }
+    }
+  },
+  "1449": {
+    "descVi": "Suốt năm qua, chúng ta giữ im lặng,\nChẳng ai ngoài đóa hoa ngô đồng lên tiếng:\nĐừng quay đi ánh mắt, đừng sợ thế giới phai tàn;\nNhững gì mùa đông đã lấy đi, mùa xuân sẽ trả lại.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Plant], toàn bộ phe ta nhận DMG Dealt +{6%} và Genesis DMG +{6%}."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Plant], toàn bộ phe ta nhận DMG Dealt +{7.5%} và Genesis DMG +{7.5%}."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Plant], toàn bộ phe ta nhận DMG Dealt +{9%} và Genesis DMG +{9%}."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Plant], toàn bộ phe ta nhận DMG Dealt +{10.5%} và Genesis DMG +{10.5%}."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Plant], toàn bộ phe ta nhận DMG Dealt +{12%} và Genesis DMG +{12%}."
+      }
+    }
+  },
+  "1450": {
+    "descVi": "Nảy nở, chạy trốn, rồi biến mất sau tấm màn đêm—\nÔi giai thoại ranh mãnh và khó nắm bắt!\nĐược ánh đèn sân khấu tô điểm, trên màn bạc, trước muôn ngàn ánh mắt—\nHãy nhìn xem, sự thật của nó rạng rỡ chẳng kém gì danh tiếng.",
+    "descEn": "Burgeoning, fleeing, then vanishing behind the night's curtain—\nO cunning and elusive anecdote!\nAdorned by the limelight, upon the silver screen, before ten thousand gazes—\nLook, its truth shines just as brilliantly as its fame.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{20%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{20%}.",
+        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{20%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{20%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{25%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{25%}.",
+        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{25%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{25%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{30%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{30%}.",
+        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{30%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{30%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{35%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{35%}.",
+        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{35%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{35%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{40%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{40%}.",
+        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{40%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{40%}."
+      }
+    }
+  },
+  "1451": {
+    "descVi": "Sữa chua, đường, và bí quyết nằm ở một chút chanh xanh.\nMột luồng hương vị nhảy múa trên đầu lưỡi, còn ngọt ngào hơn cả tưởng tượng.\nTương lai, quá khứ, bí quyết nằm ở một chút khiếm khuyết.\nVị chua lẫn vị ngọt cùng tạo nên công thức của tình yêu.",
+    "descEn": "Yogurt, sugar, and the secret lies in a dash of lime.\nA burst of flavor dancing on the tongue, even more delightful than imagined.\nThe future, the past, the secret lies in a hint of flaw.\nBoth tartness and sweetness make up the recipe of love.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{0.6%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{8%}, duy trì 1 round.",
+        "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{0.6%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{8%} to all allies for 1 round."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{0.8%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{8%}, duy trì 1 round.",
+        "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{0.8%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{8%} to all allies for 1 round."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{0.8%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{13%}, duy trì 1 round.",
+        "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{0.8%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{13%} to all allies for 1 round."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{1%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{13%}, duy trì 1 round.",
+        "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{1%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{13%} to all allies for 1 round."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, với mỗi cộng dồn [Halo] trên mục tiêu, DMG Dealt +{1%}.\nKhi bắt đầu round, nếu [Lingering Glow] đạt 120 hoặc cao hơn, giúp toàn bộ phe ta nhận Critical DMG +{18%}, duy trì 1 round.",
+        "descEn": "When the carrier attacks, for each stack of [Halo] on the target, DMG Dealt +{1%}.\nAt the start of the round, if [Lingering Glow] is at 120 or higher, grants Critical DMG +{18%} to all allies for 1 round."
+      }
+    }
+  },
+  "1501": {
+    "descVi": "Chỉnh lại góc áo, thắt chặt dải ruy băng, vuốt phẳng những nếp nhăn.\nCuộn tay áo mà không gây chú ý, rồi lại vuốt xuống, lại cuộn lên.\nNàng nhìn mình trong gương,\nVà một lời chúc ngủ ngon dịu dàng.\nTa đã sẵn sàng dâng hiến tất cả những gì mình có, vì thế giới mới và sự an lành của nó.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate, Incantation Might của Incantation tiếp theo +{20%}."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate, Incantation Might của Incantation tiếp theo +{25%}."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate, Incantation Might của Incantation cơ bản tiếp theo +{30%}."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate, Incantation Might của Incantation tiếp theo +{35%}."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate, Incantation Might của Incantation tiếp theo +{40%}."
+      }
+    }
+  },
+  "1502": {
+    "descVi": "\"Ta đứng nhất! Ta luôn đứng nhất!\"\nKẻ thắng cuộc nhỏ bé nhảy vào ngôi nhà bằng đá cẩm thạch xám và trắng.\nHạng ba ư?\nKHÔNG! KHÔNG! KHÔNG!\nCây bút lông màu cam ấy nhảy ra khỏi hộp phấn, và thậm chí ra khỏi ngôi nhà.\n\"Lần này nó đi đâu vậy?\" Kẻ thắng cuộc nhỏ bé lẩm bẩm, \"Liệu ta có còn gặp lại nó không?\"",
+    "amplifications": {
+      "1": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, Ultimate Might +{4%} cho người trang bị. Cộng dồn tối đa 4 lần."
+      },
+      "2": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, Ultimate Might +{5%} cho người trang bị. Cộng dồn tối đa 4 lần."
+      },
+      "3": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, Ultimate Might +{6%} cho người trang bị. Cộng dồn tối đa 4 lần."
+      },
+      "4": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, Ultimate Might +{7%} cho người trang bị. Cộng dồn tối đa 4 lần."
+      },
+      "5": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, Ultimate Might +{8%} cho người trang bị. Cộng dồn tối đa 4 lần."
+      }
+    }
+  },
+  "1503": {
+    "descVi": "Chạm khắc và đánh bóng. Nước, dầu, mật ong và đống cát.\nÁnh trăng chứng kiến sự hóa thân của cành cây cũ và sự ra đời của cây gậy phép mới.\nCành cây được tái sinh nhờ người thợ.\nNgười thợ được tái sinh nhờ tương lai.\nThân phận chẳng có nghĩa lý gì với khu rừng.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate diện rộng, HP +(ATK của người trang bị ×{32%}) cho toàn bộ phe ta."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate diện rộng, HP +(ATK của người trang bị ×{40%}) cho toàn bộ phe ta."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate diện rộng, HP +(ATK của người trang bị ×{48%}) cho toàn bộ phe ta."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate diện rộng, HP +(ATK của người trang bị ×{56%}) cho toàn bộ phe ta."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate diện rộng, HP +(ATK của người trang bị ×{64%}) cho toàn bộ phe ta."
+      }
+    }
+  },
+  "1504": {
+    "descVi": "Đêm sẽ báng bổ ánh sáng,\nCùng với cái đẹp, niềm hạnh phúc,\nSự bình yên, giấc ngủ,\nVà mọi khúc hát ru trong trái tim nàng.\nKể từ đó, trong tương lai của tương lai,\nSẽ không còn bình yên trong đêm dài.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có từ 2 [Neg Status] trở lên, DMG Dealt +{12%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có từ 2 [Neg Status] trở lên, DMG Dealt +{15%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có từ 2 [Neg Status] trở lên, DMG Dealt +{18%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có từ 2 [Neg Status] trở lên, DMG Dealt +{21%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu mục tiêu có từ 2 [Neg Status] trở lên, DMG Dealt +{24%}."
+      }
+    }
+  },
+  "1507": {
+    "descVi": "Qua gió và mưa, giọng nàng ngày càng vang lớn,\nNgân vang trong không gian chật hẹp.\nXa hơn, cao hơn, nó không ngừng lan tỏa, KHÔNG BAO GIỜ.\nLàm chủ khán giả và rạp hát, nữ hoàng vẫn ở trên sân khấu,\nVẫn tự thấy mình là chúa tể của vũ trụ vô tận.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, Critical DMG +{16%}."
+      },
+      "2": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, Critical DMG +{20%}."
+      },
+      "3": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, Critical DMG +{24%}."
+      },
+      "4": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, Critical DMG +{28%}."
+      },
+      "5": {
+        "descVi": "Khi đòn tấn công đơn mục tiêu của người trang bị bạo kích, Critical DMG +{32%}."
+      }
+    }
+  },
+  "1508": {
+    "descVi": "Đường là do bước chân mà thành.\nRượu và bánh mì là do lao động mà có.\nChồi non vươn lá,\nVật lộn với cơn buồn ngủ giữa núi thuốc.\nThêm thời gian, nàng cần thêm thời gian,\nĐể đọc trang tiếp theo của cuốn sách.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị thi triển Incantation debuff cơ bản, HP +(ATK của người trang bị ×{24%}) cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "2": {
+        "descVi": "Khi người trang bị thi triển Incantation debuff cơ bản, HP +(ATK của người trang bị ×{30%}) cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "3": {
+        "descVi": "Khi người trang bị thi triển Incantation debuff cơ bản, HP +(ATK của người trang bị ×{36%}) cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "4": {
+        "descVi": "Khi người trang bị thi triển Incantation debuff cơ bản, HP +(ATK của người trang bị ×{42%}) cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "5": {
+        "descVi": "Khi người trang bị thi triển Incantation debuff cơ bản, HP +(ATK của người trang bị ×{48%}) cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      }
+    }
+  },
+  "1509": {
+    "descVi": "Dưới mọi ánh đèn sân khấu, nàng như một hố đen của sự chú ý.\nGiấc mơ đẹp nhất trong một quốc gia xinh đẹp ấy.\nMái tóc nàng đắt hơn vàng, dấu môi nàng có thể đổi lấy một bó tiền mặt.\nVậy mà trái tim nàng, chính trái tim ấy,\nChẳng đáng một đồng vàng, một đồng bạc, hay thậm chí một cái nhìn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate đơn mục tiêu, DMG Dealt +{5%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate đơn mục tiêu, DMG Dealt +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate đơn mục tiêu, DMG Dealt +{7%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate đơn mục tiêu, DMG Dealt +{8%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển Ultimate đơn mục tiêu, DMG Dealt +{9%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1510": {
+    "descVi": "Chờ đợi, né tránh, bỏ chạy?\nCảm giác an toàn, sự thận trọng?\nKhông.\nGhi lại, ghi lại, và ghi lại.\nGhi lại chính khoảnh khắc này.\nĐúng vậy.",
+    "amplifications": {
+      "1": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, HP +(ATK của người trang bị ×{60%})."
+      },
+      "2": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, HP +(ATK của người trang bị ×{75%})."
+      },
+      "3": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, HP +(ATK của người trang bị ×{90%})."
+      },
+      "4": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, HP +(ATK của người trang bị ×{105%})."
+      },
+      "5": {
+        "descVi": "Với mỗi mục tiêu kẻ địch bị người trang bị đánh bại, HP +(ATK của người trang bị ×{120%})."
+      }
+    }
+  },
+  "1511": {
+    "descVi": "Thỏ ơi, thỏ ơi, cầm lấy chiếc bánh quy,\nHatter ơi, Hatter ơi, rót trà đi.\nMèo Cheshire bày biện bàn tiệc,\nAlice nâng chén, lòng vui phơi phới.\nNên xin đừng khóc, hỡi vị khách già thân mến,\nChẳng mấy chốc, ta sẽ có một bữa tiệc trà.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị sử dụng Incantation debuff, hiệu suất hồi máu của người trang bị tăng thêm 3%. Hiệu ứng này cộng dồn tối đa 4 lần. Critical Rate của người trang bị +{7%}."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị sử dụng Incantation debuff, hiệu suất hồi máu của người trang bị tăng thêm 3%. Hiệu ứng này cộng dồn tối đa 4 lần. Critical Rate của người trang bị +{10.5%}."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị sử dụng Incantation debuff, hiệu suất hồi máu của người trang bị tăng thêm 3%. Hiệu ứng này cộng dồn tối đa 4 lần. Critical Rate của người trang bị +{14%}."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị sử dụng Incantation debuff, hiệu suất hồi máu của người trang bị tăng thêm 3%. Hiệu ứng này cộng dồn tối đa 4 lần. Critical Rate của người trang bị +{17.5%}."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị sử dụng Incantation debuff, hiệu suất hồi máu của người trang bị tăng thêm 3%. Hiệu ứng này cộng dồn tối đa 4 lần. Critical Rate của người trang bị +{21%}."
+      }
+    }
+  },
+  "1512": {
+    "descVi": "Tám, mười hai, kim cương, giọt nước, sáng lấp lánh.\nNhững kẻ có cấp bậc, những kẻ có tiêu chuẩn, những kẻ được cấp chứng nhận, những kẻ bị loại và bị vứt bỏ.\nNhưng ta, ta cũng từng là một nắm cát.\nKhông đếm xuể và chẳng ai bận tâm.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi round kết thúc, nếu người trang bị nhận được ít nhất 3 Moxie trong round, Ultimate Might +{8%} khi thi triển Ultimate tiếp theo. Nếu người trang bị nhận được ít nhất 4 Moxie trong round, hiệu ứng này tăng thành +{12%}."
+      },
+      "2": {
+        "descVi": "Khi round kết thúc, nếu người trang bị nhận được ít nhất 3 Moxie trong round, Ultimate Might +{10%} khi thi triển Ultimate tiếp theo. Nếu người trang bị nhận được ít nhất 4 Moxie trong round, hiệu ứng này tăng thành +{15%}."
+      },
+      "3": {
+        "descVi": "Khi round kết thúc, nếu người trang bị nhận được ít nhất 3 Moxie trong round, Ultimate Might +{12%} khi thi triển Ultimate tiếp theo. Nếu người trang bị nhận được ít nhất 4 Moxie trong round, hiệu ứng này tăng thành +{18%}."
+      },
+      "4": {
+        "descVi": "Khi round kết thúc, nếu người trang bị nhận được ít nhất 3 Moxie trong round, Ultimate Might +{14%} khi thi triển Ultimate tiếp theo. Nếu người trang bị nhận được ít nhất 4 Moxie trong round, hiệu ứng này tăng thành +{21%}."
+      },
+      "5": {
+        "descVi": "Khi round kết thúc, nếu người trang bị nhận được ít nhất 3 Moxie trong round, Ultimate Might +{16%} khi thi triển Ultimate tiếp theo. Nếu người trang bị nhận được ít nhất 4 Moxie trong round, hiệu ứng này tăng thành +{24%}."
+      }
+    }
+  },
+  "1513": {
+    "descVi": "Hôm qua, hôm nay, ngày mai.\nIm lặng, bình tĩnh, trung thành.\nNhững giới luật bơi xuống từ đỉnh núi huy hoàng.\nTrèo qua cửa sổ, khoan vào giường, thấm sâu vào da thịt.\nVà thế là ta phục tùng, ta cúi mắt, ta khóa chặt lưỡi, ta từ bỏ tư tưởng.\nNhưng ta vẫn còn hy vọng.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị thực hiện hành động thêm, Damage Dealt +12%. Genesis DMG gây ra bằng hành động thêm +{10%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị thực hiện hành động thêm, Damage Dealt +12%. Genesis DMG gây ra bằng hành động thêm +{20%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị thực hiện hành động thêm, Damage Dealt +12%. Genesis DMG gây ra bằng hành động thêm +{30%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị thực hiện hành động thêm, Damage Dealt +12%. Genesis DMG gây ra bằng hành động thêm +{40%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị thực hiện hành động thêm, Damage Dealt +12%. Genesis DMG gây ra bằng hành động thêm +{50%}."
+      }
+    }
+  },
+  "1514": {
+    "descVi": "Lăn về phía trước, rơi theo quỹ đạo đã định.\nAnh nhìn quanh và thấy như ở nhà.\nMỗi bánh răng đều có vai trò của nó,\nMỗi cái đều không thể thiếu, mỗi cái đều nhỏ bé,\nMỗi cái đều tồn tại trong một cỗ máy mênh mông.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu không có lợi thế Afflatus trước kẻ địch, DMG Dealt +{6%}. Nếu Afflatus của người trang bị thuộc Primal Afflatus, hiệu ứng này tăng thành {12%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu không có lợi thế Afflatus trước kẻ địch, DMG Dealt +{7.5%}. Nếu Afflatus của người trang bị thuộc Primal Afflatus, hiệu ứng này tăng thành {15%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu không có lợi thế Afflatus trước kẻ địch, DMG Dealt +{9%}. Nếu Afflatus của người trang bị thuộc Primal Afflatus, hiệu ứng này tăng thành {18%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu không có lợi thế Afflatus trước kẻ địch, DMG Dealt +{10.5%}. Nếu Afflatus của người trang bị thuộc Primal Afflatus, hiệu ứng này tăng thành {21%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu không có lợi thế Afflatus trước kẻ địch, DMG Dealt +{12%}. Nếu Afflatus của người trang bị thuộc Primal Afflatus, hiệu ứng này tăng thành {24%}."
+      }
+    }
+  },
+  "1515": {
+    "descVi": "Câu chuyện bắt đầu từ đâu?\nNhững viên đá nhỏ, đất đỏ, ngọn lửa xa xăm.\nNhững bóng hình mò mẫm, giữa bầu trời đêm, những kẻ đuổi theo lửa.\nTay trong tay, tim chạm tim,\ndâng trào sâu trong cổ họng, ngọn lửa ấm áp của ta.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị có từ 2 buff [Pos Status] trở lên, DMG Dealt +8% khi tấn công.\nKhi người trang bị sử dụng Incantation Buff, nhận ATK +{2%}, cộng dồn tối đa {2} lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị có từ 2 buff [Pos Status] trở lên, DMG Dealt +8% khi tấn công.\nKhi người trang bị sử dụng Incantation Buff, nhận ATK +{2%}, cộng dồn tối đa {3} lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị có từ 2 buff [Pos Status] trở lên, DMG Dealt +8% khi tấn công.\nKhi người trang bị sử dụng Incantation Buff, nhận ATK +{2.5%}, cộng dồn tối đa {3} lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị có từ 2 buff [Pos Status] trở lên, DMG Dealt +8% khi tấn công.\nKhi người trang bị sử dụng Incantation Buff, nhận ATK +{2.5%}, cộng dồn tối đa {4} lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị có từ 2 buff [Pos Status] trở lên, DMG Dealt +8% khi tấn công.\nKhi người trang bị sử dụng Incantation Buff, nhận ATK +{2.5%}, cộng dồn tối đa {5} lần."
+      }
+    }
+  },
+  "1521": {
+    "descVi": "Núi xanh, liễu rủ, và ánh trăng.\nRượu thơm trong thi ca và cả ngoài thi ca.\nBầu trời trong thành phố và bầu trời ngoài kia.\nTừng con chữ và nét bút, điều đã biết và điều còn chưa biết.\nQuan sát và học hỏi, thế gian như chén rượu đục, chỉ nếm thử mới biết mùi vị.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị phát động tấn công đơn mục tiêu bằng hành động thêm, Critical DMG +{2%}, cộng dồn tối đa 10 lần. Đạt 10 cộng dồn, nhận thêm Critical Rate +{8%}."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị phát động tấn công đơn mục tiêu bằng hành động thêm, Critical DMG +{3%}, cộng dồn tối đa 10 lần. Đạt 10 cộng dồn, nhận thêm Critical Rate +{8%}."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị phát động tấn công đơn mục tiêu bằng hành động thêm, Critical DMG +{3%}, cộng dồn tối đa 10 lần. Đạt 10 cộng dồn, nhận thêm Critical Rate +{12%}."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị phát động tấn công đơn mục tiêu bằng hành động thêm, Critical DMG +{4%}, cộng dồn tối đa 10 lần. Đạt 10 cộng dồn, nhận thêm Critical Rate +{12%}."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị phát động tấn công đơn mục tiêu bằng hành động thêm, Critical DMG +{5%}, cộng dồn tối đa 10 lần. Đạt 10 cộng dồn, nhận thêm Critical Rate +{12%}."
+      }
+    }
+  },
+  "1522": {
+    "descVi": "Dõi nhìn, luôn luôn dõi nhìn. Năm trăm năm cho mùa xuân, năm trăm năm cho mùa thu.\nDưới bóng râm của cây cối, chẳng có gì mới mẻ.\nTrong xương cốt, trong ngọc bích, trong những câu chuyện đã đọc không biết bao lần,\nVậy mà câu đố vẫn còn đó, vẫn tồn tại.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Beast], Penetration Rate +5%. Khi người trang bị ở trạng thái [Channel], DMG Dealt +{12%} cho các đòn tấn công diện rộng của họ."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Beast], Penetration Rate +5%. Khi người trang bị ở trạng thái [Channel], DMG Dealt +{16%} cho các đòn tấn công diện rộng của họ."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Beast], Penetration Rate +5%. Khi người trang bị ở trạng thái [Channel], DMG Dealt +{20%} cho các đòn tấn công diện rộng của họ."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Beast], Penetration Rate +5%. Khi người trang bị ở trạng thái [Channel], DMG Dealt +{24%} cho các đòn tấn công diện rộng của họ."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Beast], Penetration Rate +5%. Khi người trang bị ở trạng thái [Channel], DMG Dealt +{28%} cho các đòn tấn công diện rộng của họ."
+      }
+    }
+  },
+  "1523": {
+    "descVi": "Ở đâu, ở đâu? Là ở đây, hay ở kia?\nTrong lỗ khóa, trong khe cửa, hay dưới chăn?\nCái tôi mới mẻ, trôi chảy, vàng son,\nCái tôi cháy bỏng, chói lòa, nhỏ bé,\nTrong trái tim ngươi, trong tâm trí ngươi, trong xương tủy ngươi.\nThổi tắt nó, thổi tắt anh ta, thổi tắt cô ta!\nCái tôi có thể tìm thấy ở khắp nơi—ta đang ở đâu?",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Burn], DMG Dealt +6%. Khi Extra Action của người trang bị là tấn công diện rộng, Incantation Might +{4%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Burn], DMG Dealt +6%. Khi Extra Action của người trang bị là tấn công diện rộng, Incantation Might +{10%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang ở trạng thái [Burn], DMG Dealt +6%. Khi Extra Action của người trang bị là tấn công diện rộng, Incantation Might +{16%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công một kẻ địch đang trong trạng thái [Burn], DMG Dealt +6%. Khi hành động thêm của người trang bị là tấn công diện rộng, Incantation Might +{22%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công một kẻ địch đang trong trạng thái [Burn], DMG Dealt +6%. Khi hành động thêm của người trang bị là tấn công diện rộng, Incantation Might +{28%}."
+      }
+    }
+  },
+  "1524": {
+    "descVi": "Trang này đến trang khác. Một cuốn sách, rồi lại một cuốn.\nĐọc đi đọc lại, suy ngẫm, tìm tòi.\nTừ ngọn hải đăng, hướng về hiện thực.\nBên kia cái kết, không còn bị bỏ rơi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hạng 2/3, DMG Dealt +{1%}/{2%}, cộng dồn tối đa +{8%}. Khi người trang bị tiêu hao từ 2 Eureka trở lên trong một round, nhận Incantation Might +{10%} cho đến khi kết thúc round."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hạng 2/3, DMG Dealt +{1.5%}/{3%}, cộng dồn tối đa +{12%}. Khi người trang bị tiêu hao từ 2 Eureka trở lên trong một round, nhận Incantation Might +{12%} cho đến khi kết thúc round."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hạng 2/3, DMG Dealt +{2%}/{4%}, cộng dồn tối đa +{16%}. Khi người trang bị tiêu hao từ 2 Eureka trở lên trong một round, nhận Incantation Might +{14%} cho đến khi kết thúc round."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hạng 2/3, DMG Dealt +{2.5%}/{5%}, cộng dồn tối đa +{20%}. Khi người trang bị tiêu hao từ 2 Eureka trở lên trong một round, nhận Incantation Might +{16%} cho đến khi kết thúc round."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển Incantation hạng 2/3, DMG Dealt +{3%}/{6%}, cộng dồn tối đa +{24%}. Khi người trang bị tiêu hao từ 2 Eureka trở lên trong một round, nhận Incantation Might +{18%} cho đến khi kết thúc round."
+      }
+    }
+  },
+  "1525": {
+    "descVi": "Đêm dài, những bông tuyết khô,\nCánh đồng băng im lặng, cổ xưa hơn cả bất hòa;\nTrái tim được dựng nên từ gạch, thép, và những giấc mơ nồng cháy.\nĐồng chí, hãy nhìn đây, ta sẽ vẽ lại tất cả—\nMọi thứ thành mới, rạng rỡ và rõ ràng.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển Incantation loại buff đơn mục tiêu, hồi (ATK của bản thân ×{24%}) HP cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển Incantation loại buff đơn mục tiêu, hồi (ATK của bản thân ×{30%}) HP cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển Incantation loại buff đơn mục tiêu, hồi (ATK của bản thân ×{36%}) HP cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển Incantation loại buff đơn mục tiêu, hồi (ATK của bản thân ×{42%}) HP cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển Incantation loại buff đơn mục tiêu, hồi (ATK của bản thân ×{48%}) HP cho đồng minh có tỷ lệ HP thấp nhất (mỗi round chỉ kích hoạt 1 lần)."
+      }
+    }
+  },
+  "1526": {
+    "descVi": "Lá thư thứ ba, thứ mười bảy, hay thứ năm mươi.\nTiêu đề, định dạng, và những lời chào.\nBản thiết kế rõ ràng, kỳ vọng hấp dẫn, được phác họa mười bảy lần.\nBánh mì đen và chiếc bụng rỗng thương lượng cùng nhau.\nVậy, lá thư tiếp theo sẽ được gửi tới đâu?",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Incantation Might +5%. Trong cùng round sau khi thi triển Ultimate, mỗi Incantation loại tấn công đơn mục tiêu của người trang bị giúp nhận DMG Dealt +{4%} cho đến hết trận, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Incantation Might +5%. Trong cùng round sau khi thi triển Ultimate, mỗi Incantation loại tấn công đơn mục tiêu của người trang bị giúp nhận DMG Dealt +{5%} cho đến hết trận, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Incantation Might +5%. Trong cùng round sau khi thi triển Ultimate, mỗi Incantation loại tấn công đơn mục tiêu của người trang bị giúp nhận DMG Dealt +{6%} cho đến hết trận, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Incantation Might +5%. Trong cùng round sau khi thi triển Ultimate, mỗi Incantation loại tấn công đơn mục tiêu của người trang bị giúp nhận DMG Dealt +{7%} cho đến hết trận, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Star], Incantation Might +5%. Trong cùng round sau khi thi triển Ultimate, mỗi Incantation loại tấn công đơn mục tiêu của người trang bị giúp nhận DMG Dealt +{8%} cho đến hết trận, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1527": {
+    "descVi": "Khi những viên gạch vỡ vụn,\nGiữa tiếng bước chân vội vã,\nNhịp đập của năng lượng, chỉnh tề và nhịp nhàng.\nNàng vẫn dõi nhìn,\nVề phía ngọn lửa xa xăm đang soi sáng mọi thứ.\nVà trong ngọn lửa ấy là nấc thang dẫn tới ngày mai.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu Afflatus của người trang bị là [Intellect], Critical Rate tăng thêm 6%. Nếu sở hữu từ 2 loại hiệu ứng [Special] trở lên, khi tấn công Incantation Might tăng thêm {6%}. Ngoài ra, nếu người trang bị còn có [Force Field], khi tấn công Incantation Might tăng thành {12%}, và Critical Rate tăng thêm {3%} khi tấn công."
+      },
+      "2": {
+        "descVi": "Nếu Afflatus của người trang bị là [Intellect], Critical Rate tăng thêm 6%. Nếu sở hữu từ 2 loại hiệu ứng [Special] trở lên, khi tấn công Incantation Might tăng thêm {9%}. Ngoài ra, nếu người trang bị còn có [Force Field], khi tấn công Incantation Might tăng thành {15%}, và Critical Rate tăng thêm {4.5%} khi tấn công."
+      },
+      "3": {
+        "descVi": "Nếu Afflatus của người trang bị là [Intellect], Critical Rate tăng thêm 6%. Nếu sở hữu từ 2 loại hiệu ứng [Special] trở lên, khi tấn công Incantation Might tăng thêm {12%}. Ngoài ra, nếu người trang bị còn có [Force Field], khi tấn công Incantation Might tăng thành {18%}, và Critical Rate tăng thêm {6%} khi tấn công."
+      },
+      "4": {
+        "descVi": "Nếu Afflatus của người trang bị là [Intellect], Critical Rate tăng thêm 6%. Nếu sở hữu từ 2 loại hiệu ứng [Special] trở lên, khi tấn công Incantation Might tăng thêm {15%}. Ngoài ra, nếu người trang bị còn có [Force Field], khi tấn công Incantation Might tăng thành {21%}, và Critical Rate tăng thêm {7.5%} khi tấn công."
+      },
+      "5": {
+        "descVi": "Nếu Afflatus của người trang bị là [Intellect], Critical Rate tăng thêm 6%. Nếu sở hữu từ 2 loại hiệu ứng [Special] trở lên, khi tấn công Incantation Might tăng thêm {18%}. Ngoài ra, nếu người trang bị còn có [Force Field], khi tấn công Incantation Might tăng thành {24%}, và Critical Rate tăng thêm {9%} khi tấn công."
+      }
+    }
+  },
+  "1528": {
+    "descVi": "Khoảnh khắc quyết định đã đến. Tạm biệt, bạn tôi.\nTa sẽ mãi ban phước cho ngày mai,\nÔm hy vọng trong tim dành cho bạn,\nVà rót trọn chút can đảm còn lại lên quê hương ta.\nCon đường rợp bóng ấy, những hành lang ấy, vòng đua vàng son đã cưu mang ta.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi bắt đầu round, nếu HP hiện tại của người trang bị dưới {60%}, nhận DMG Taken -10%; khi người trang bị tấn công, nhận Genesis DMG Dealt +{7%}."
+      },
+      "2": {
+        "descVi": "Khi bắt đầu round, nếu HP hiện tại của người trang bị dưới {65%}, nhận DMG Taken -10%; khi người trang bị tấn công, nhận Genesis DMG Dealt +{9%}."
+      },
+      "3": {
+        "descVi": "Khi bắt đầu round, nếu HP hiện tại của người trang bị dưới {70%}, nhận DMG Taken -10%; khi người trang bị tấn công, nhận Genesis DMG Dealt +{11%}."
+      },
+      "4": {
+        "descVi": "Khi bắt đầu round, nếu HP hiện tại của người trang bị dưới {75%}, nhận DMG Taken -10%; khi người trang bị tấn công, nhận Genesis DMG Dealt +{13%}."
+      },
+      "5": {
+        "descVi": "Khi bắt đầu round, nếu HP hiện tại của người trang bị dưới {80%}, nhận DMG Taken -10%; khi người trang bị tấn công, nhận Genesis DMG Dealt +{15%}."
+      }
+    }
+  },
+  "1529": {
+    "descVi": "Tích tắc, thời gian trôi vào dòng nước;\nNhững đám mây va vào nhau và hạ xuống,\nQuét qua khoảnh khắc phù du này,\nVạn vật trên thế gian bỗng chốc được nhận ra.\nNàng ở đâu? Nàng đang đi về đâu?",
+    "amplifications": {
+      "1": {
+        "descVi": "Ngay sau khi người trang bị thi triển Ultimate counter đơn mục tiêu, nhận DMG Heal +{10%}, duy trì 2 round; Riposte của người trang bị gây thêm Genesis DMG +{30%}."
+      },
+      "2": {
+        "descVi": "Ngay sau khi người trang bị thi triển Ultimate counter đơn mục tiêu, nhận DMG Heal +{10%}, duy trì 2 round; Riposte của người trang bị gây thêm Genesis DMG +{40%}."
+      },
+      "3": {
+        "descVi": "Ngay sau khi người trang bị thi triển Ultimate counter đơn mục tiêu, nhận DMG Heal +{20%}, duy trì 2 round; Riposte của người trang bị gây thêm Genesis DMG +{40%}."
+      },
+      "4": {
+        "descVi": "Ngay sau khi người trang bị thi triển Ultimate counter đơn mục tiêu, nhận DMG Heal +{20%}, duy trì 2 round; Riposte của người trang bị gây thêm Genesis DMG +{50%}."
+      },
+      "5": {
+        "descVi": "Ngay sau khi người trang bị thi triển Ultimate counter đơn mục tiêu, nhận DMG Heal +{20%}, duy trì 2 round; Riposte của người trang bị gây thêm Genesis DMG +{60%}."
+      }
+    }
+  },
+  "1530": {
+    "descVi": "Hoàng hôn buông, bầu trời đêm sầm lại.\nUống một chén rượu vang nóng, gột rửa cái lạnh.\nĐánh đổi thời gian lấy tiến bộ, không ngừng nghỉ.\nCho đến khi ngươi đến nơi, dẫu là khi nào.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi đồng minh mất HP từ 3 lần trở lên trong một lần người trang bị hành động, người trang bị sau đó sẽ nhận trạng thái [Echoes of Life] cho đến khi kết thúc trận (mỗi trận chỉ kích hoạt 1 lần). Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi bất kỳ nhân vật đồng minh nào mất HP trong lần đồng minh hành động, người trang bị nhận Incantation Might +{0.9%}, cộng dồn tối đa 10 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi đồng minh mất HP từ 3 lần trở lên trong một lần người trang bị hành động, người trang bị sau đó sẽ nhận trạng thái [Echoes of Life] cho đến khi kết thúc trận (mỗi trận chỉ kích hoạt 1 lần). Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi bất kỳ nhân vật đồng minh nào mất HP trong lần đồng minh hành động, người trang bị nhận Incantation Might +{1.2%}, cộng dồn tối đa 10 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi đồng minh mất HP từ 3 lần trở lên trong một lần người trang bị hành động, người trang bị sau đó sẽ nhận trạng thái [Echoes of Life] cho đến khi kết thúc trận (mỗi trận chỉ kích hoạt 1 lần). Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi bất kỳ nhân vật đồng minh nào mất HP trong lần đồng minh hành động, người trang bị nhận Incantation Might +{1.5%}, cộng dồn tối đa 10 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi đồng minh mất HP từ 3 lần trở lên trong một lần người trang bị hành động, người trang bị sau đó sẽ nhận trạng thái [Echoes of Life] cho đến khi kết thúc trận (mỗi trận chỉ kích hoạt 1 lần). Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi bất kỳ nhân vật đồng minh nào mất HP trong lần đồng minh hành động, người trang bị nhận Incantation Might +{1.8%}, cộng dồn tối đa 10 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị thuộc Afflatus [Mineral], và mỗi khi đồng minh mất HP hơn 3 lần trong một lần người trang bị hành động, người trang bị sau đó sẽ nhận trạng thái [Echoes of Life] cho đến khi kết thúc trận (mỗi trận tối đa kích hoạt 1 lần). Mỗi khi bất kỳ nhân vật đồng minh nào mất HP trong lần đồng minh hành động, người trang bị nhận Incantation Might +{2.1%}, cộng dồn tối đa 10 lần."
+      }
+    }
+  },
+  "1531": {
+    "descVi": "Chia sẻ huy hiệu, điệu salsa, và những chiến thắng xứng đáng,\nChia sẻ một nắm đồng xu, tiếp tục, tiếp tục bước tới,\nNhưng sắc xanh nhạt ấy, xanh đến nao lòng,\nNhẹ như lông vũ, nặng như đá,\nLàm sao chia sẻ, làm sao nói ra, làm sao nhắc đến?",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị đang ở trạng thái [Burn], khi tấn công nhận Incantation Might +{4%}; và sau khi phát động Riposte diện rộng, bản thân nhận ATK +{1%}, cộng dồn tối đa 6 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị đang ở trạng thái [Burn], khi tấn công nhận Incantation Might +{8%}; và sau khi phát động Riposte diện rộng, bản thân nhận ATK +{1%}, cộng dồn tối đa 6 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị đang ở trạng thái [Burn], khi tấn công nhận Incantation Might +{8%}; và sau khi phát động Riposte diện rộng, bản thân nhận ATK +{1.5%}, cộng dồn tối đa 6 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị đang ở trạng thái [Burn], khi tấn công nhận Incantation Might +{12%}; và sau khi phát động Riposte diện rộng, bản thân nhận ATK +{1.5%}, cộng dồn tối đa 6 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị đang ở trạng thái [Burn], khi tấn công nhận Incantation Might +{12%}; và sau khi phát động Riposte diện rộng, bản thân nhận ATK +{2%}, cộng dồn tối đa 6 lần."
+      }
+    }
+  },
+  "1532": {
+    "descVi": "Tiếng ồn, ánh sáng, tất cả đều ném vào đống lửa trại;\nTình bạn, những cuộc gặp gỡ, tất cả đều gấp lại trong căn lều.\nBước đi, bước đi,\nBước cho đến khi bình minh đến như đã hứa—\nDòng suối lạnh chảy qua từng đêm, gột rửa bình minh thành mới.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị đồng thời có cả [Stats Up] và [Force Field], khi tấn công nhận Critical Rate +12%. Nếu người trang bị thuộc Primal Afflatus, mỗi lần sau khi một Incantation buff diện rộng được thi triển, nhận Incantation Might +{2.5%} và Ultimate Might +{2.5%}, cộng dồn tối đa 4 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị đồng thời có cả [Stats Up] và [Force Field], khi tấn công nhận Critical Rate +12%. Nếu người trang bị thuộc Primal Afflatus, mỗi lần sau khi một Incantation buff diện rộng được thi triển, nhận Incantation Might +{3%} và Ultimate Might +{3%}, cộng dồn tối đa 4 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị đồng thời có cả [Stats Up] và [Force Field], khi tấn công nhận Critical Rate +12%. Nếu người trang bị thuộc Primal Afflatus, mỗi lần sau khi một Incantation buff diện rộng được thi triển, nhận Incantation Might +{3.5%} và Ultimate Might +{3.5%}, cộng dồn tối đa 4 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị đồng thời có cả [Stats Up] và [Force Field], khi tấn công nhận Critical Rate +12%. Nếu người trang bị thuộc Primal Afflatus, mỗi lần sau khi một Incantation buff diện rộng được thi triển, nhận Incantation Might +{4%} và Ultimate Might +{4%}, cộng dồn tối đa 4 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị đồng thời có cả [Stats Up] và [Force Field], khi tấn công nhận Critical Rate +12%. Nếu người trang bị thuộc Primal Afflatus, mỗi lần sau khi một Incantation buff diện rộng được thi triển, nhận Incantation Might +{4.5%} và Ultimate Might +{4.5%}, cộng dồn tối đa 4 lần."
+      }
+    }
+  },
+  "1533": {
+    "descVi": "Thầm lặng, lạc lối, run rẩy.\nToan tính, chờ đợi, và mỉm cười.\nNgươi hỏi ta đã thấy những gì ư?\nChuyện đó có thể mất một lúc ...\nTa đã thấy máu và tủy, cả sữa và mật ong nữa,\nTa đã cho con ta bú, và qua đôi mắt ngươi, ta chọn trú ngụ trong trái tim ngươi.",
+    "amplifications": {
+      "1": {
+        "descVi": "[Array] do người trang bị triển khai giúp toàn bộ phe ta nhận [Poison] DMG Dealt +{4%}, và người trang bị nhận thêm [Poison] DMG Dealt +{4%}. Các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "2": {
+        "descVi": "[Array] do người trang bị triển khai giúp toàn bộ phe ta nhận [Poison] DMG Dealt +{5%}, và người trang bị nhận thêm [Poison] DMG Dealt +{5%}. Các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "3": {
+        "descVi": "[Array] do người trang bị triển khai giúp toàn bộ phe ta nhận [Poison] DMG Dealt +{6%}, và người trang bị nhận thêm [Poison] DMG Dealt +{6%}. Các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "4": {
+        "descVi": "[Array] do người trang bị triển khai giúp toàn bộ phe ta nhận [Poison] DMG Dealt +{7%}, và người trang bị nhận thêm [Poison] DMG Dealt +{7%}. Các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "5": {
+        "descVi": "[Array] do người trang bị triển khai giúp toàn bộ phe ta nhận [Poison] DMG Dealt +{8%}, và người trang bị nhận thêm [Poison] DMG Dealt +{8%}. Các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      }
+    }
+  },
+  "1535": {
+    "descVi": "Một chiếc lá rơi khỏi cành.\nChạy đi, hãy chạy xa hơn nữa, gió nói,\nNếu không, ngươi sẽ hóa thành bùn nhão.\nTa muốn bay về phía ghềnh thác, ta muốn bay về phía vực sâu,\nChiếc lá đáp,\nNhìn kìa, đằng xa, đến lũ kiến còn đang đánh nhau.",
+    "amplifications": {
+      "1": {
+        "descVi": "Trong trận, khi đồng minh bị tăng Stress, lượng Stress đó sẽ được chuyển sang người trang bị. Khi người trang bị kích hoạt Focus hoặc Meltdown lần đầu, người trang bị cũng phát động Focus Behavior của mình, đồng thời toàn bộ phe ta nhận ATK +{10%}, DMG Taken -{6%}, và Stress sẽ không còn được chuyển theo cách này nữa."
+      },
+      "2": {
+        "descVi": "Trong trận, khi đồng minh bị tăng Stress, lượng Stress đó sẽ được chuyển sang người trang bị. Khi người trang bị kích hoạt Focus hoặc Meltdown lần đầu, người trang bị cũng phát động Focus Behavior của mình, đồng thời toàn bộ phe ta nhận ATK +{12.5%}, DMG Taken -{7.5%}, và Stress sẽ không còn được chuyển theo cách này nữa."
+      },
+      "3": {
+        "descVi": "Trong trận, khi đồng minh bị tăng Stress, lượng Stress đó sẽ được chuyển sang người trang bị. Khi người trang bị kích hoạt Focus hoặc Meltdown lần đầu, người trang bị cũng phát động Focus Behavior của mình, đồng thời toàn bộ phe ta nhận ATK +{15%}, DMG Taken -{9%}, và Stress sẽ không còn được chuyển theo cách này nữa."
+      },
+      "4": {
+        "descVi": "Trong trận, khi đồng minh bị tăng Stress, lượng Stress đó sẽ được chuyển sang người trang bị. Khi người trang bị kích hoạt Focus hoặc Meltdown lần đầu, người trang bị cũng phát động Focus Behavior của mình, đồng thời toàn bộ phe ta nhận ATK +{17.5%}, DMG Taken -{10.5%}, và Stress sẽ không còn được chuyển theo cách này nữa."
+      },
+      "5": {
+        "descVi": "Trong trận, khi đồng minh bị tăng Stress, lượng Stress đó sẽ được chuyển sang người trang bị. Khi người trang bị kích hoạt Focus hoặc Meltdown lần đầu, người trang bị cũng phát động Focus Behavior của mình, đồng thời toàn bộ phe ta nhận ATK +{20%}, DMG Taken -{12%}, và Stress sẽ không còn được chuyển theo cách này nữa."
+      }
+    }
+  },
+  "1536": {
+    "descVi": "Ai cũng mang trong mình những khát vọng,\ntrong trái tim, trong những lá thư.\nXin hãy ban cho ta tình cảm chân thật vượt lên cả lời nói và hành động,\nbằng nụ cười dịu dàng ấy, bằng những giấc mơ đã hoen gỉ ấy.\nTa nguyện sống vì điều đó.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị thi triển Incantation trong trạng thái Channel, nhận Critical Rate +{2%} và Critical DMG +{2%}, cộng dồn tối đa 4 lần. Khi người trang bị được liên kết với một đồng minh khác, mỗi lần người trang bị hoặc đồng minh được liên kết thi triển Incantation, cả hai nhân vật được liên kết đều nhận DMG Bonus +{0.8%}, cộng dồn tối đa 10 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị thi triển Incantation trong trạng thái Channel, nhận Critical Rate +{2.5%} và Critical DMG +{2.5%}, cộng dồn tối đa 4 lần. Khi người trang bị được liên kết với một đồng minh khác, mỗi lần người trang bị hoặc đồng minh được liên kết thi triển Incantation, cả hai nhân vật được liên kết đều nhận DMG Bonus +{1%}, cộng dồn tối đa 10 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị thi triển Incantation trong trạng thái Channel, nhận Critical Rate +{3%} và Critical DMG +{3%}, cộng dồn tối đa 4 lần. Khi người trang bị được liên kết với một đồng minh khác, mỗi lần người trang bị hoặc đồng minh được liên kết thi triển Incantation, cả hai nhân vật được liên kết đều nhận DMG Bonus +{1.2%}, cộng dồn tối đa 10 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị thi triển Incantation trong trạng thái Channel, nhận Critical Rate +{3.5%} và Critical DMG +{3.5%}, cộng dồn tối đa 4 lần. Khi người trang bị được liên kết với một đồng minh khác, mỗi lần người trang bị hoặc đồng minh được liên kết thi triển Incantation, cả hai nhân vật được liên kết đều nhận DMG Bonus +{1.4%}, cộng dồn tối đa 10 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị thi triển Incantation trong trạng thái Channel, nhận Critical Rate +{4%} và Critical DMG +{4%}, cộng dồn tối đa 4 lần. Khi người trang bị được liên kết với một đồng minh khác, mỗi lần người trang bị hoặc đồng minh được liên kết thi triển Incantation, cả hai nhân vật được liên kết đều nhận DMG Bonus +{1.6%}, cộng dồn tối đa 10 lần."
+      }
+    }
+  },
+  "1537": {
+    "descVi": "Chú chim lẻ loi, rời tổ, \nngươi đã từng mơ\nvề những bầu trời đã vượt qua, về những khu rừng đã ghé lại?\nHoàng hôn, hỡi hoàng hôn, thứ ngươi soi rọi\nkhông phải đường về nhà, cũng chẳng phải quê hương.\nRừng mưa nào để nương náu đây?",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công và kích hoạt hiệu ứng Bullet, nhận Critical DMG +{16%}, duy trì 2 round. [Array] do người trang bị triển khai giúp toàn bộ phe ta nhận thêm Incantation Might +{6%} và Ultimate Might +{6%}; các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công và kích hoạt hiệu ứng Bullet, nhận Critical DMG +{20%}, duy trì 2 round. [Array] do người trang bị triển khai giúp toàn bộ phe ta nhận thêm Incantation Might +{7.5%} và Ultimate Might +{7.5%}; các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công và kích hoạt hiệu ứng Bullet, nhận Critical DMG +{24%}, duy trì 2 round. [Array] do người trang bị triển khai giúp toàn bộ phe ta nhận thêm Incantation Might +{9%} và Ultimate Might +{9%}; các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công và kích hoạt hiệu ứng Bullet, nhận Critical DMG +{28%}, duy trì 2 round. [Array] do người trang bị triển khai giúp toàn bộ phe ta nhận thêm Incantation Might +{10.5%} và Ultimate Might +{10.5%}; các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công và kích hoạt hiệu ứng Bullet, nhận Critical DMG +{32%}, duy trì 2 round. [Array] do người trang bị triển khai giúp toàn bộ phe ta nhận thêm Incantation Might +{12%} và Ultimate Might +{12%}; các hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      }
+    }
+  },
+  "1538": {
+    "descVi": "Đánh bóng, bôi trơn, và siết chặt.\nThứ từng nâng nàng lên nay chỉ để lại một lớp vỏ rỗng.\nÂm vang khắp mặt sàn, xuyên qua màn đêm, và vào tận bình minh đang hé:\nTách, tách, tách.\nMỗi bước chân lệch nhịp, nàng lại đuổi khách ra về.\nNhững cánh cửa của ngôi nhà cũ, những cánh cửa của trái tim, không còn mở nữa.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nhận 1 Moxie. Với mỗi điểm Moxie người trang bị tiêu hao, nhận Genesis DMG Dealt +{0.4%} và DMG Taken -{0.4%}, cộng dồn tối đa 25 lần. Khi kết thúc round, nếu người trang bị đang ở trạng thái Channel, nhận Poison DMG Dealt +{2%}, cộng dồn tối đa 5 lần; hiệu ứng này duy trì 3 round."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nhận 1 Moxie. Với mỗi điểm Moxie người trang bị tiêu hao, nhận Genesis DMG Dealt +{0.5%} và DMG Taken -{0.5%}, cộng dồn tối đa 25 lần. Khi kết thúc round, nếu người trang bị đang ở trạng thái Channel, nhận Poison DMG Dealt +{2.5%}, cộng dồn tối đa 5 lần; hiệu ứng này duy trì 3 round."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nhận 1 Moxie. Với mỗi điểm Moxie người trang bị tiêu hao, nhận Genesis DMG Dealt +{0.6%} và DMG Taken -{0.6%}, cộng dồn tối đa 25 lần. Khi kết thúc round, nếu người trang bị đang ở trạng thái Channel, nhận Poison DMG Dealt +{3%}, cộng dồn tối đa 5 lần; hiệu ứng này duy trì 3 round."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nhận 1 Moxie. Với mỗi điểm Moxie người trang bị tiêu hao, nhận Genesis DMG Dealt +{0.7%} và DMG Taken -{0.7%}, cộng dồn tối đa 25 lần. Khi kết thúc round, nếu người trang bị đang ở trạng thái Channel, nhận Poison DMG Dealt +{3.5%}, cộng dồn tối đa 5 lần; hiệu ứng này duy trì 3 round."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nhận 1 Moxie. Mỗi điểm Moxie người trang bị tiêu hao sẽ giúp nhận Genesis DMG Dealt +{0.8%} và DMG Taken -{0.8%}, cộng dồn tối đa 25 lần. Khi kết thúc round, nếu người trang bị đang ở trạng thái Channel, nhận Poison DMG Dealt +{4%}, cộng dồn tối đa 5 lần, hiệu ứng duy trì 3 round."
+      }
+    }
+  },
+  "1539": {
+    "descVi": "Không chạy nhảy, không hỏi han, không ồn ào.\nTại sao lại thế này? Tại sao không như thế kia? Tại sao điều đó lại xảy ra?\nĐứa trẻ ngoan ngoãn không bao giờ hỏi những câu hỏi trái khoáy như vậy. \nDấu hỏi treo lơ lửng nặng nề, nhưng câu trả lời lại nhẹ nhàng bay lượn,\nNhư một chú chim giấy, đậu khẽ khàng trên kim đồng hồ,\nBay đi! Trước khi nó rơi xuống, hãy bắt lấy câu trả lời trong tay.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị đang ở trạng thái Channel, đòn tấn công nhận Penetration Rate +{14%}. Khi người trang bị phát động Extra Action, nhận Critical DMG +{6%}, cộng dồn tối đa 3 lần, mỗi lần kết thúc round sẽ mất 1 cộng dồn."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị đang ở trạng thái Channel, đòn tấn công nhận Penetration Rate +{17.5%}. Khi người trang bị phát động Extra Action, nhận Critical DMG +{7.5%}, cộng dồn tối đa 3 lần, mỗi lần kết thúc round sẽ mất 1 cộng dồn."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị đang ở trạng thái Channel, đòn tấn công nhận Penetration Rate +{21%}. Khi người trang bị phát động Extra Action, nhận Critical DMG +{9%}, cộng dồn tối đa 3 lần, mỗi lần kết thúc round sẽ mất 1 cộng dồn."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị đang ở trạng thái Channel, đòn tấn công nhận Penetration Rate +{24.5%}. Khi người trang bị phát động Extra Action, nhận Critical DMG +{10.5%}, cộng dồn tối đa 3 lần, mỗi lần kết thúc round sẽ mất 1 cộng dồn."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị đang ở trạng thái Channel, đòn tấn công nhận Penetration Rate +{28%}. Khi người trang bị phát động Extra Action, nhận Critical DMG +{12%}, cộng dồn tối đa 3 lần, mỗi lần kết thúc round sẽ mất 1 cộng dồn."
+      }
+    }
+  },
+  "1540": {
+    "descVi": "Những nốt nhạc và dây đàn của quê nhà chỉ ngân những khúc cũ.\nNhững nốt nhạc non vùng vẫy thoát khỏi chiếc nôi,\nKhát khao tự do như làn gió biển, phiêu du và lang bạt.\nHỡi những người thân yêu nhất, xin đừng lo lắng, đừng đau buồn,\nBởi nước mắt cũng là một biến tấu của lời từ biệt.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Mỗi khi đồng minh tiêu hao 1 Eureka, toàn bộ phe ta nhận DMG Dealt +{0.3%}, cộng dồn tối đa 20 lần; nếu người trang bị thuộc Afflatus [Star], sau khi hành động, [Impromptu Incantation] nhận số lần tấn công +1 trong round, mỗi round tối đa kích hoạt {1} lần."
+      },
+      "2": {
+        "descVi": "Khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Mỗi khi đồng minh tiêu hao 1 Eureka, toàn bộ phe ta nhận DMG Dealt +{0.4%}, cộng dồn tối đa 20 lần; nếu người trang bị thuộc Afflatus [Star], sau khi hành động, [Impromptu Incantation] nhận số lần tấn công +1 trong round, mỗi round tối đa kích hoạt {1} lần."
+      },
+      "3": {
+        "descVi": "Khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Mỗi khi đồng minh tiêu hao 1 Eureka, toàn bộ phe ta nhận DMG Dealt +{0.5%}, cộng dồn tối đa 20 lần; nếu người trang bị thuộc Afflatus [Star], sau khi hành động, [Impromptu Incantation] nhận số lần tấn công +1 trong round, mỗi round tối đa kích hoạt {1} lần."
+      },
+      "4": {
+        "descVi": "Khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Mỗi khi đồng minh tiêu hao 1 Eureka, toàn bộ phe ta nhận DMG Dealt +{0.6%}, cộng dồn tối đa 20 lần; nếu người trang bị thuộc Afflatus [Star], sau khi hành động, [Impromptu Incantation] nhận số lần tấn công +1 trong round, mỗi round tối đa kích hoạt {1} lần."
+      },
+      "5": {
+        "descVi": "Khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Mỗi khi đồng minh tiêu hao 1 Eureka, toàn bộ phe ta nhận DMG Dealt +{0.6%}, cộng dồn tối đa 20 lần; nếu người trang bị thuộc Afflatus [Star], sau khi hành động, [Impromptu Incantation] nhận số lần tấn công +1 trong round, mỗi round tối đa kích hoạt {2} lần."
+      }
+    }
+  },
+  "1541": {
+    "descVi": "Từ đáy sâu đặc quánh của màn đêm, ta nhìn thấy các ngươi,\nGia đình ta, đồng tộc ta,\nNhững giấc mơ rạng rỡ phản chiếu trong ánh lửa.\nGiờ ta nâng các ngươi lên,\nVuốt ve kết cấu của những con chữ, hít vào mùi muối biển.\nTa không thể tìm thấy, ta e rằng, ta không thể tìm thấy con người thật của các ngươi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị phát động Extra Action, nhận Healing Done +{4%}, cộng dồn tối đa 3 lần. Sau khi người trang bị bị tấn công hoặc chia sẻ sát thương, toàn bộ phe ta nhận Critical DMG +{1.2%}, duy trì 3 round, cộng dồn tối đa 12 lần."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị phát động Extra Action, nhận Healing Done +{5%}, cộng dồn tối đa 3 lần. Sau khi người trang bị bị tấn công hoặc chia sẻ sát thương, toàn bộ phe ta nhận Critical DMG +{1.5%}, duy trì 3 round, cộng dồn tối đa 12 lần."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị phát động Extra Action, nhận Healing Done +{6%}, cộng dồn tối đa 3 lần. Sau khi người trang bị bị tấn công hoặc chia sẻ sát thương, toàn bộ phe ta nhận Critical DMG +{1.8%}, duy trì 3 round, cộng dồn tối đa 12 lần."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị phát động Extra Action, nhận Healing Done +{7%}, cộng dồn tối đa 3 lần. Sau khi người trang bị bị tấn công hoặc chia sẻ sát thương, toàn bộ phe ta nhận Critical DMG +{2.1%}, duy trì 3 round, cộng dồn tối đa 12 lần."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị phát động Extra Action, nhận Healing Done +{8%}, cộng dồn tối đa 3 lần. Sau khi người trang bị bị tấn công hoặc chia sẻ sát thương, toàn bộ phe ta nhận Critical DMG +{2.4%}, duy trì 3 round, cộng dồn tối đa 12 lần."
+      }
+    }
+  },
+  "1542": {
+    "descVi": "Một lớp vỏ nhựa đen, nhẵn mịn như gạch đền thờ. \nMười con số xếp thành hàng, đầu ngón tay nhảy vào những ô vuông nhỏ xíu. \nĐứa trẻ từng chơi lò cò đã lớn, giờ đây bước lên bàn phím. \nBíp-bíp, bíp-bíp—nhịp tim và tín hiệu cùng ngân vang. \nXin hãy nhấc máy, bạn cũ, bạn mới. \nTôi sẽ kể cho bạn nghe về mùa xuân này, như nó đã từng khi chúng ta mười tuổi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation tấn công đơn mục tiêu trong round này, nhận Critical Rate +{1%}, cộng dồn tối đa 6 lần.\nKhi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation Buff đơn mục tiêu trong round này, nhận Critical DMG +{2%}, cộng dồn tối đa 6 lần.\nKhi cả hai hiệu ứng này đạt cộng dồn tối đa, phần thưởng chỉ số của chúng được nhân đôi."
+      },
+      "2": {
+        "descVi": "Khi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation tấn công đơn mục tiêu trong round này, nhận Critical Rate +{1.5%}, cộng dồn tối đa 6 lần.\nKhi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation Buff đơn mục tiêu trong round này, nhận Critical DMG +{2%}, cộng dồn tối đa 6 lần.\nKhi cả hai hiệu ứng này đạt cộng dồn tối đa, phần thưởng chỉ số của chúng được nhân đôi."
+      },
+      "3": {
+        "descVi": "Khi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation tấn công đơn mục tiêu trong round này, nhận Critical Rate +{1.5%}, cộng dồn tối đa 6 lần.\nKhi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation Buff đơn mục tiêu trong round này, nhận Critical DMG +{3%}, cộng dồn tối đa 6 lần.\nKhi cả hai hiệu ứng này đạt cộng dồn tối đa, phần thưởng chỉ số của chúng được nhân đôi."
+      },
+      "4": {
+        "descVi": "Khi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation tấn công đơn mục tiêu trong round này, nhận Critical Rate +{2%}, cộng dồn tối đa 6 lần.\nKhi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation Buff đơn mục tiêu trong round này, nhận Critical DMG +{3%}, cộng dồn tối đa 6 lần.\nKhi cả hai hiệu ứng này đạt cộng dồn tối đa, phần thưởng chỉ số của chúng được nhân đôi."
+      },
+      "5": {
+        "descVi": "Khi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation tấn công đơn mục tiêu trong round này, nhận Critical Rate +{2%}, cộng dồn tối đa 6 lần.\nKhi phát động Extra Action, nếu người trang bị đã chủ động thi triển một Incantation Buff đơn mục tiêu trong round này, nhận Critical DMG +{4%}, cộng dồn tối đa 6 lần.\nKhi cả hai hiệu ứng này đạt cộng dồn tối đa, phần thưởng chỉ số của chúng được nhân đôi."
+      }
+    }
+  },
+  "1543": {
+    "descVi": "Đạo cụ, diễn viên, ánh sáng—đã sắp đặt. \nTập dượt, dựng phim, hiệu ứng—đã hoàn hảo. \nNhững khớp gỗ tách tách, diễn trọn niềm vui và nỗi buồn.\nCao hơn, tốt hơn cả chính cuộc sống. \nNhư những giấc mơ lẽ ra ta đã có. \nRồi nàng nói: Cắt—",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], với mỗi hiệu ứng [Neg Status] gây ra khi chủ động thi triển Incantation, nhận Ultimate Might +{1%}, cộng dồn tối đa 12 lần.\nKhi người trang bị thi triển Ultimate, với mỗi loại hiệu ứng [Stats Down], [Neg Status] hoặc [Control] trên mục tiêu, nhận DMG Dealt +{3%}, tối đa 4 loại được tính cho hiệu ứng này."
+      },
+      "2": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], với mỗi hiệu ứng [Neg Status] gây ra khi chủ động thi triển Incantation, nhận Ultimate Might +{1.5%}, cộng dồn tối đa 12 lần.\nKhi người trang bị thi triển Ultimate, với mỗi loại hiệu ứng [Stats Down], [Neg Status] hoặc [Control] trên mục tiêu, nhận DMG Dealt +{3%}, tối đa 4 loại được tính cho hiệu ứng này."
+      },
+      "3": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], với mỗi hiệu ứng [Neg Status] gây ra khi chủ động thi triển Incantation, nhận Ultimate Might +{1.5%}, cộng dồn tối đa 12 lần.\nKhi người trang bị thi triển Ultimate, với mỗi loại hiệu ứng [Stats Down], [Neg Status] hoặc [Control] trên mục tiêu, nhận DMG Dealt +{4.5%}, tối đa 4 loại được tính cho hiệu ứng này."
+      },
+      "4": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], với mỗi hiệu ứng [Neg Status] gây ra khi chủ động thi triển Incantation, nhận Ultimate Might +{2%}, cộng dồn tối đa 12 lần.\nKhi người trang bị thi triển Ultimate, với mỗi loại hiệu ứng [Stats Down], [Neg Status] hoặc [Control] trên mục tiêu, nhận DMG Dealt +{4.5%}, tối đa 4 loại được tính cho hiệu ứng này."
+      },
+      "5": {
+        "descVi": "Khi người trang bị là nhân vật [Plant], với mỗi hiệu ứng [Neg Status] gây ra khi chủ động thi triển Incantation, nhận Ultimate Might +{2%}, cộng dồn tối đa 12 lần.\nKhi người trang bị thi triển Ultimate, với mỗi loại hiệu ứng [Stats Down], [Neg Status] hoặc [Control] trên mục tiêu, nhận DMG Dealt +{6%}, tối đa 4 loại được tính cho hiệu ứng này."
+      }
+    }
+  },
+  "1544": {
+    "descVi": "Chỉ còn lại một vòng xoay cuối cùng,\ncái kết của câu chuyện ngươi hằng khao khát, cái kết thuộc về ngươi, về bóng ma, về tất cả mọi người.\nHãy tung xúc xắc một lần cuối!\nKhông còn nặng nề, không còn phi lý—\nNhìn kìa, nó lấp lánh giữa những cồn cát của màn đêm.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, với mỗi điểm Moxie đang sở hữu, đòn tấn công nhận Ultimate Might +{1.2%}.\nNếu người trang bị thuộc Afflatus [Mineral], với mỗi điểm Moxie tiêu hao, nhận Critical DMG +{1%}, cộng dồn tối đa 16 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, với mỗi điểm Moxie đang sở hữu, đòn tấn công nhận Ultimate Might +{1.8%}.\nNếu người trang bị thuộc Afflatus [Mineral], với mỗi điểm Moxie tiêu hao, nhận Critical DMG +{1%}, cộng dồn tối đa 16 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, với mỗi điểm Moxie đang sở hữu, đòn tấn công nhận Ultimate Might +{1.8%}.\nNếu người trang bị thuộc Afflatus [Mineral], với mỗi điểm Moxie tiêu hao, nhận Critical DMG +{1.5%}, cộng dồn tối đa 16 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, với mỗi điểm Moxie đang sở hữu, đòn tấn công nhận Ultimate Might +{2.4%}.\nNếu người trang bị thuộc Afflatus [Mineral], với mỗi điểm Moxie tiêu hao, nhận Critical DMG +{1.5%}, cộng dồn tối đa 16 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, với mỗi điểm Moxie đang sở hữu, đòn tấn công nhận Ultimate Might +{2.4%}.\nNếu người trang bị thuộc Afflatus [Mineral], với mỗi điểm Moxie tiêu hao, nhận Critical DMG +{2%}, cộng dồn tối đa 16 lần."
+      }
+    }
+  },
+  "1545": {
+    "descVi": "Phức tạp, vô tận, mê hoặc.\nHiện thực, ký ức, ảo ảnh.\nSự tồn tại của cái không tồn tại.\nAleph.\nMerlin, kẻ Lý tưởng.\nZahir, Paracelsus.\nTrong phòng giam, trong gương, trong những căn phòng của tâm trí.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi đồng minh thi triển nhiều hơn 4 Incantation trong một round, mỗi lần thi triển thêm giúp toàn bộ phe ta nhận DMG Dealt +{3%}, duy trì 1 round, cộng dồn tối đa 3 lần;\nNếu người trang bị thuộc Afflatus [Intellect], mỗi Eureka đồng minh tiêu hao giúp toàn bộ phe ta nhận Incantation Might +{0.2%}, cộng dồn tối đa 30 lần; khi vào trận, bản thân nhận Eureka +2."
+      },
+      "2": {
+        "descVi": "Khi đồng minh thi triển nhiều hơn 4 Incantation trong một round, mỗi lần thi triển thêm giúp toàn bộ phe ta nhận DMG Dealt +{4.5%}, duy trì 1 round, cộng dồn tối đa 3 lần;\nNếu người trang bị thuộc Afflatus [Intellect], mỗi Eureka đồng minh tiêu hao giúp toàn bộ phe ta nhận Incantation Might +{0.2%}, cộng dồn tối đa 30 lần; khi vào trận, bản thân nhận Eureka +2."
+      },
+      "3": {
+        "descVi": "Khi đồng minh thi triển nhiều hơn 4 Incantation trong một round, mỗi lần thi triển thêm giúp toàn bộ phe ta nhận DMG Dealt +{4.5%}, duy trì 1 round, cộng dồn tối đa 3 lần;\nNếu người trang bị thuộc Afflatus [Intellect], mỗi Eureka đồng minh tiêu hao giúp toàn bộ phe ta nhận Incantation Might +{0.3%}, cộng dồn tối đa 30 lần; khi vào trận, bản thân nhận Eureka +2."
+      },
+      "4": {
+        "descVi": "Khi đồng minh thi triển nhiều hơn 4 Incantation trong một round, mỗi lần thi triển thêm giúp toàn bộ phe ta nhận DMG Dealt +{6%}, duy trì 1 round, cộng dồn tối đa 3 lần;\nNếu người trang bị thuộc Afflatus [Intellect], mỗi Eureka đồng minh tiêu hao giúp toàn bộ phe ta nhận Incantation Might +{0.3%}, cộng dồn tối đa 30 lần; khi vào trận, bản thân nhận Eureka +2."
+      },
+      "5": {
+        "descVi": "Khi đồng minh thi triển nhiều hơn 4 Incantation trong một round, mỗi lần thi triển thêm giúp toàn bộ phe ta nhận DMG Dealt +{6%}, duy trì 1 round, cộng dồn tối đa 3 lần;\nNếu người trang bị thuộc Afflatus [Intellect], mỗi Eureka đồng minh tiêu hao giúp toàn bộ phe ta nhận Incantation Might +{0.4%}, cộng dồn tối đa 30 lần; khi vào trận, bản thân nhận Eureka +2."
+      }
+    }
+  },
+  "1546": {
+    "descVi": "Sau lời từ biệt, họ suy ngẫm và tính toán, cuộc đời họ xoay quanh những phương trình.\nσ = F / S.\nMột câu hỏi, tám câu trả lời, câu cuối cùng vẫn còn đang mải suy tư.\nVệt sao có quan trọng hơn chính sinh mệnh không? Không.\n(R＾3) / (T＾2) = k.\nTiếng xì xào và reo hò—nghệ thuật triệu hồi amiăng ra đời.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi người trang bị thi triển một Ultimate đơn mục tiêu, nhận Ultimate Might +{3%}, cộng dồn tối đa 4 lần.\nSau khi người trang bị thi triển một Ultimate diện rộng, nhận Critical DMG +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Sau khi người trang bị thi triển một Ultimate đơn mục tiêu, nhận Ultimate Might +{4.5%}, cộng dồn tối đa 4 lần.\nSau khi người trang bị thi triển một Ultimate diện rộng, nhận Critical DMG +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Sau khi người trang bị thi triển một Ultimate đơn mục tiêu, nhận Ultimate Might +{4.5%}, cộng dồn tối đa 4 lần.\nSau khi người trang bị thi triển một Ultimate diện rộng, nhận Critical DMG +{9%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Sau khi người trang bị thi triển một Ultimate đơn mục tiêu, nhận Ultimate Might +{6%}, cộng dồn tối đa 4 lần.\nSau khi người trang bị thi triển một Ultimate diện rộng, nhận Critical DMG +{9%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Sau khi người trang bị thi triển một Ultimate đơn mục tiêu, nhận Ultimate Might +{6%}, cộng dồn tối đa 4 lần.\nSau khi người trang bị thi triển một Ultimate diện rộng, nhận Critical DMG +{12%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1547": {
+    "descVi": "Hít vào, bước tới một bước—hãy giữ những ký ức cũ trong lớp vỏ của ngươi,\nNhảy lên, xoay tròn—bắt lấy những tia sao sáng cuối cùng trước khi chúng tan biến.\nVô số con đường đang chờ phía trước, nhưng chỉ có ngươi, đóa tử đinh hương nhỏ của ta,\nGiữa những vòng tròn đung đưa, ta hình dung tiếng thì thầm của mùa xuân đang đến gần.\nVà sau cơn tuyết, mùa xuân sẽ mang gương mặt nào?",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị thi triển một Incantation Buff, nhận ATK +{0.4%}, cộng dồn tối đa 10 lần.\nNếu người trang bị thuộc Afflatus [Star], với mỗi 1 Eureka đồng minh tiêu hao, giúp toàn bộ phe ta nhận Critical DMG +{0.4%}, cộng dồn tối đa 30 lần."
+      },
+      "2": {
+        "descVi": "Khi người trang bị thi triển một Incantation Buff, nhận ATK +{0.6%}, cộng dồn tối đa 10 lần.\nNếu người trang bị thuộc Afflatus [Star], với mỗi 1 Eureka đồng minh tiêu hao, giúp toàn bộ phe ta nhận Critical DMG +{0.4%}, cộng dồn tối đa 30 lần."
+      },
+      "3": {
+        "descVi": "Khi người trang bị thi triển một Incantation Buff, nhận ATK +{0.6%}, cộng dồn tối đa 10 lần.\nNếu người trang bị thuộc Afflatus [Star], với mỗi 1 Eureka đồng minh tiêu hao, giúp toàn bộ phe ta nhận Critical DMG +{0.6%}, cộng dồn tối đa 30 lần."
+      },
+      "4": {
+        "descVi": "Khi người trang bị thi triển một Incantation Buff, nhận ATK +{0.8%}, cộng dồn tối đa 10 lần.\nNếu người trang bị thuộc Afflatus [Star], với mỗi 1 Eureka đồng minh tiêu hao, giúp toàn bộ phe ta nhận Critical DMG +{0.6%}, cộng dồn tối đa 30 lần."
+      },
+      "5": {
+        "descVi": "Khi người trang bị thi triển một Incantation Buff, nhận ATK +{0.8%}, cộng dồn tối đa 10 lần.\nNếu người trang bị thuộc Afflatus [Star], với mỗi 1 Eureka đồng minh tiêu hao, giúp toàn bộ phe ta nhận Critical DMG +{0.8%}, cộng dồn tối đa 30 lần."
+      }
+    }
+  },
+  "1548": {
+    "descVi": "Điều gì phân biệt nước mắt ly biệt với dòng nước của sự sống?\nLàm sao phân biệt được tiếng cười hoan lạc với tiếng nấc?\nBạn tôi ơi, đây vừa là một giấc mơ, vừa là một niềm hối tiếc.\nĐó là con đường phía trước, và cũng là câu trả lời.\nHãy chuẩn bị bia mộ của mình. Đã đến lúc lại lên đường.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Spirit], Max HP +{5%}.\nKhi người trang bị chịu DMG, nhận Critical Rate +{1%} khi kết thúc round, cộng dồn tối đa 16 lần.\nKhi người trang bị tấn công, nếu HP dưới 80% và có ít nhất 50 điểm Max Bloodtithe, nhận Critical DMG +{24%}."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Spirit], Max HP +{7.5%}.\nKhi người trang bị chịu DMG, nhận Critical Rate +{1.5%} khi kết thúc round, cộng dồn tối đa 16 lần.\nKhi người trang bị tấn công, nếu HP dưới 80% và có ít nhất 50 điểm Max Bloodtithe, nhận Critical DMG +{24%}."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Spirit], Max HP +{10%}.\nKhi người trang bị chịu DMG, nhận Critical Rate +{1.5%} khi kết thúc round, cộng dồn tối đa 16 lần.\nKhi người trang bị tấn công, nếu HP dưới 80% và có ít nhất 50 điểm Max Bloodtithe, nhận Critical DMG +{36%}."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Spirit], Max HP +{12.5%}.\nKhi người trang bị chịu DMG, nhận Critical Rate +{2%} khi kết thúc round, cộng dồn tối đa 16 lần.\nKhi người trang bị tấn công, nếu HP dưới 80% và có ít nhất 50 điểm Max Bloodtithe, nhận Critical DMG +{36%}."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Spirit], Max HP +{15%}.\nKhi người trang bị chịu DMG, nhận Critical Rate +{2%} khi kết thúc round, cộng dồn tối đa 16 lần.\nKhi người trang bị tấn công, nếu HP dưới 80% và có ít nhất 50 điểm Max Bloodtithe, nhận Critical DMG +{48%}."
+      }
+    }
+  },
+  "1549": {
+    "descVi": "Những lời tạm biệt cứ lặp đi lặp lại. Những cuộc đoàn tụ tan vỡ.\nNgười lính, hãy cho ta thấy nụ cười của ngươi.\nBữa tối cần một bát súp nóng và những lời vui vẻ.\nChỉ đêm nay thôi, không cần rút lui. Sẽ còn đủ thời gian cho đau buồn và khổ đau.\nĐây là nhà cho những kẻ chẳng còn nơi nào để chạy trốn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Sau khi phát động Riposte, người trang bị nhận Ultimate Might +{4%}, cộng dồn tối đa 3 lần.\nNếu người trang bị là nhân vật [Beast], với mỗi 1 Moxie phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{0.4%}, cộng dồn tối đa 30 lần."
+      },
+      "2": {
+        "descVi": "Sau khi phát động Riposte, người trang bị nhận Ultimate Might +{5%}, cộng dồn tối đa 3 lần.\nNếu người trang bị là nhân vật [Beast], với mỗi 1 Moxie phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{0.5%}, cộng dồn tối đa 30 lần."
+      },
+      "3": {
+        "descVi": "Sau khi phát động Riposte, người trang bị nhận Ultimate Might +{6%}, cộng dồn tối đa 3 lần.\nNếu người trang bị là nhân vật [Beast], với mỗi 1 Moxie phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{0.6%}, cộng dồn tối đa 30 lần."
+      },
+      "4": {
+        "descVi": "Sau khi phát động Riposte, người trang bị nhận Ultimate Might +{7%}, cộng dồn tối đa 3 lần.\nNếu người trang bị là nhân vật [Beast], với mỗi 1 Moxie phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{0.7%}, cộng dồn tối đa 30 lần."
+      },
+      "5": {
+        "descVi": "Sau khi phát động Riposte, người trang bị nhận Ultimate Might +{8%}, cộng dồn tối đa 3 lần.\nNếu người trang bị là nhân vật [Beast], với mỗi 1 Moxie phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{0.8%}, cộng dồn tối đa 30 lần."
+      }
+    }
+  },
+  "1550": {
+    "descVi": "Xẹt, lách tách. Xẹt, bốp.\nCái nào đến trước, ý thức hay sự phóng điện của synapse?\nCả hai cùng lúc! Được bọc trong một hộp sọ hoàn hảo và thông tuệ!\nTiếng lách tách nhị phân của 0 và 1 vang vọng mãi không thôi.\nBình minh của một kỷ nguyên mới tắm trong dòng điện từ trường.\nNhững chiếc máy nướng bánh cũng sẽ gia nhập hàng ngũ của chúng ta.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Intellect], sau khi thi triển một Incantation Channel, ATK +{1%}, cộng dồn tối đa 3 lần.\nKhi kết thúc round, với mỗi lần phe ta chuyển [Dynamo], người trang bị nhận Critical DMG +{1.2%}, cộng dồn tối đa 16 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Intellect], sau khi thi triển một Incantation Channel, ATK +{1.5%}, cộng dồn tối đa 3 lần.\nKhi kết thúc round, mỗi lần phe ta chuyển giao [Dynamo], người trang bị nhận Critical DMG +{1.4%}, cộng dồn tối đa 16 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Intellect], sau khi thi triển một Incantation Channel, ATK +{2%}, cộng dồn tối đa 3 lần.\nKhi kết thúc round, mỗi lần phe ta chuyển giao [Dynamo], người trang bị nhận Critical DMG +{1.6%}, cộng dồn tối đa 16 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Intellect], sau khi thi triển một Incantation Channel, ATK +{2.5%}, cộng dồn tối đa 3 lần.\nKhi kết thúc round, mỗi lần phe ta chuyển giao [Dynamo], người trang bị nhận Critical DMG +{1.8%}, cộng dồn tối đa 16 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Intellect], sau khi thi triển một Incantation Channel, ATK +{3%}, cộng dồn tối đa 3 lần.\nKhi kết thúc round, mỗi lần phe ta chuyển giao [Dynamo], người trang bị nhận Critical DMG +{2%}, cộng dồn tối đa 16 lần."
+      }
+    }
+  },
+  "1551": {
+    "descVi": "Hãy nhìn xem, thứ ánh sáng ký ức cũ mòn mà vẫn đều đặn này,\nLao xuống với một tiếng \"tõm\" xuyên qua những áng mây đỏ thắm.\nChuông chiều triệu hồi những hồi ức từ nấm mồ,\nHóa thành những cánh bồ câu trắng—giờ đây nhẹ bẫng, không còn cháy bỏng.\nVà ta chờ đợi, cho những lần trở lại không mỏi mệt, vô tận của nó.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{1%} cho đòn đánh này.\nKhi phát động [Assassination], nếu đòn đánh chỉ nhắm vào 1 mục tiêu, nhận Critical DMG +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{1.5%} cho đòn đánh này.\nKhi phát động [Assassination], nếu đòn đánh chỉ nhắm vào 1 mục tiêu, nhận Critical DMG +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{1.5%} cho đòn đánh này.\nKhi phát động [Assassination], nếu đòn đánh chỉ nhắm vào 1 mục tiêu, nhận Critical DMG +{9%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{2%} cho đòn đánh này.\nKhi phát động [Assassination], nếu đòn đánh chỉ nhắm vào 1 mục tiêu, nhận Critical DMG +{9%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{2%} cho đòn đánh này.\nKhi phát động [Assassination], nếu đòn đánh chỉ nhắm vào 1 mục tiêu, nhận Critical DMG +{12%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1552": {
+    "descVi": "Lượn vòng, dang cánh về phía bình minh hồng ngón tay,\nSải bước, nhảy vọt, ra khơi tới vùng biển màu rượu vang.\nNắm chặt bánh lái, cất cao tiếng hát,\nCho đến khi tiếng siren leo lên lưỡi kiếm của ngươi,\nTriệu gọi giấc mơ đầu tiên khiến ngươi nhói đau.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{1%} cho đòn đánh này.\nKhi bất kỳ đồng minh phát động [Assassination], nếu người trang bị sở hữu [Force Field], toàn bộ phe ta nhận DMG Dealt +{1%}, cộng dồn tối đa 6 lần."
+      },
+      "2": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{1.5%} cho đòn đánh này.\nKhi bất kỳ đồng minh phát động [Assassination], nếu người trang bị sở hữu [Force Field], toàn bộ phe ta nhận DMG Dealt +{1%}, cộng dồn tối đa 6 lần."
+      },
+      "3": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{1.5%} cho đòn đánh này.\nKhi bất kỳ đồng minh phát động [Assassination], nếu người trang bị sở hữu [Force Field], toàn bộ phe ta nhận DMG Dealt +{1.5%}, cộng dồn tối đa 6 lần."
+      },
+      "4": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{2%} cho đòn đánh này.\nKhi bất kỳ đồng minh phát động [Assassination], nếu người trang bị sở hữu [Force Field], toàn bộ phe ta nhận DMG Dealt +{1.5%}, cộng dồn tối đa 6 lần."
+      },
+      "5": {
+        "descVi": "Khi tấn công, nếu người trang bị là nhân vật [Assassination], với mỗi 100 điểm Critical Technique mà người trang bị cao hơn mục tiêu, nhận Final DMG Dealt +{2%} cho đòn đánh này.\nKhi bất kỳ đồng minh phát động [Assassination], nếu người trang bị sở hữu [Force Field], toàn bộ phe ta nhận DMG Dealt +{2%}, cộng dồn tối đa 6 lần."
+      }
+    }
+  },
+  "1553": {
+    "descVi": "Về nhà thôi, về nhà thôi,\nChúng ta trở về với niềm tự hào,\nHoa cầm trong tay.\nVề nhà thôi, về nhà thôi,\nNgười già tiếc thương người trẻ,\nHoa cầm trong tay.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral] và khi tấn công phe ta đang có từ 50 điểm Max [Bloodtithe] trở lên, DMG Dealt +{8%}.\nMỗi khi người trang bị chịu sát thương, khi kết thúc round nhận Critical DMG +{2%}, cộng dồn tối đa 9 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral] và khi tấn công phe ta đang có từ 50 điểm Max [Bloodtithe] trở lên, DMG Dealt +{10%}.\nMỗi khi người trang bị chịu sát thương, khi kết thúc round nhận Critical DMG +{2.5%}, cộng dồn tối đa 9 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral] và khi tấn công phe ta đang có từ 50 điểm Max [Bloodtithe] trở lên, DMG Dealt +{12%}.\nMỗi khi người trang bị chịu sát thương, khi kết thúc round nhận Critical DMG +{3%}, cộng dồn tối đa 9 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral] và khi tấn công phe ta đang có từ 50 điểm Max [Bloodtithe] trở lên, DMG Dealt +{14%}.\nMỗi khi người trang bị chịu sát thương, khi kết thúc round nhận Critical DMG +{3.5%}, cộng dồn tối đa 9 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral] và khi tấn công phe ta đang có từ 50 điểm Max [Bloodtithe] trở lên, DMG Dealt +{16%}.\nMỗi khi người trang bị chịu sát thương, khi kết thúc round nhận Critical DMG +{4%}, cộng dồn tối đa 9 lần."
+      }
+    }
+  },
+  "1554": {
+    "descVi": "Trên một cánh đồng xa lạ, một xác chết đẫm máu nằm trầm mặc.\nTên ngươi, câu chuyện của ngươi, vận mệnh của ngươi,\nĐược thì thầm gửi đến những hạt giống mùa thu đang chờ đợi,\nKhi súng đạn im tiếng và khói lửa cuối cùng cũng tan,\nNhững đóa hoa dưới nắng sẽ kể câu chuyện của ngươi cho tháng Năm sắp tới.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Spirit] và đang trong trạng thái [Channel] khi tấn công, DMG Dealt +{8%}.\nKhi kết thúc round, nếu người trang bị đã chuyển [Dynamo] vào [Pulsing Field] ít nhất 1 lần trong round, toàn bộ phe ta nhận Critical DMG +{4%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Spirit] và đang trong trạng thái [Channel] khi tấn công, DMG Dealt +{10%}.\nKhi kết thúc round, nếu người trang bị đã chuyển [Dynamo] vào [Pulsing Field] ít nhất 1 lần trong round, toàn bộ phe ta nhận Critical DMG +{5%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Spirit] và đang trong trạng thái [Channel] khi tấn công, DMG Dealt +{12%}.\nKhi kết thúc round, nếu người trang bị đã chuyển [Dynamo] vào [Pulsing Field] ít nhất 1 lần trong round, toàn bộ phe ta nhận Critical DMG +{6%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Spirit] và đang trong trạng thái [Channel] khi tấn công, DMG Dealt +{14%}.\nKhi kết thúc round, nếu người trang bị đã chuyển [Dynamo] vào [Pulsing Field] ít nhất 1 lần trong round, toàn bộ phe ta nhận Critical DMG +{7%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Spirit] và đang trong trạng thái [Channel] khi tấn công, DMG Dealt +{16%}.\nKhi kết thúc round, nếu người trang bị đã chuyển [Dynamo] vào [Pulsing Field] ít nhất 1 lần trong round, toàn bộ phe ta nhận Critical DMG +{8%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1555": {
+    "descVi": "Vẻ đẹp của người mãi mãi rạng ngời,\nThời gian chẳng để lại dấu vết trên gương mặt người.\nMột viễn ảnh khó nắm bắt, bền bỉ qua bao thế kỷ,\nNhững ánh nhìn thoáng qua nối tiếp—như sắc xanh vĩnh cửu phết trên toan,\nHòa vào dòng chảy êm đềm của cuộc sống.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi bắt đầu round, nếu người trang bị là nhân vật [Mineral], nhận Ultimate Might +{4%}, cộng dồn tối đa 3 lần.\nKhi thi triển Ultimate, nếu giới hạn [Bloodtithe] hiện tại từ 50 trở lên, nhận Critical DMG +{16%}."
+      },
+      "2": {
+        "descVi": "Khi bắt đầu round, nếu người trang bị là nhân vật [Mineral], nhận Ultimate Might +{5%}, cộng dồn tối đa 3 lần.\nKhi thi triển Ultimate, nếu giới hạn [Bloodtithe] hiện tại từ 50 trở lên, nhận Critical DMG +{20%}."
+      },
+      "3": {
+        "descVi": "Khi bắt đầu round, nếu người trang bị là nhân vật [Mineral], nhận Ultimate Might +{6%}, cộng dồn tối đa 3 lần.\nKhi thi triển Ultimate, nếu giới hạn [Bloodtithe] hiện tại từ 50 trở lên, nhận Critical DMG +{24%}."
+      },
+      "4": {
+        "descVi": "Khi bắt đầu round, nếu người trang bị là nhân vật [Mineral], nhận Ultimate Might +{7%}, cộng dồn tối đa 3 lần.\nKhi thi triển Ultimate, nếu giới hạn [Bloodtithe] hiện tại từ 50 trở lên, nhận Critical DMG +{28%}."
+      },
+      "5": {
+        "descVi": "Khi bắt đầu round, nếu người trang bị là nhân vật [Mineral], nhận Ultimate Might +{8%}, cộng dồn tối đa 3 lần.\nKhi thi triển Ultimate, nếu giới hạn [Bloodtithe] hiện tại từ 50 trở lên, nhận Critical DMG +{32%}."
+      }
+    }
+  },
+  "1556": {
+    "descVi": "Những chuyến đi, những cuộc phiêu lưu, những ảo tưởng,\nTa dệt nên bóng tối, và bóng tối dệt nên dối trá.\nBóng tối, người bạn duy nhất, kẻ mang lòng biết ơn của ta,\nCả cây kaval của ta cũng vậy, khóc thay ta,\nHết lần này đến lần khác.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Mineral], nhận Healing Done +{12%}.\nMỗi khi đồng minh chịu DMG, khi kết thúc round họ nhận Ultimate Might +{2%}, cộng dồn tối đa 6 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Mineral], nhận Healing Done +{15%}.\nMỗi khi đồng minh chịu DMG, khi kết thúc round họ nhận Ultimate Might +{2.5%}, cộng dồn tối đa 6 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Mineral], nhận Healing Done +{18%}.\nMỗi khi đồng minh chịu DMG, khi kết thúc round họ nhận Ultimate Might +{3%}, cộng dồn tối đa 6 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Mineral], nhận Healing Done +{21%}.\nMỗi khi đồng minh chịu DMG, khi kết thúc round họ nhận Ultimate Might +{3.5%}, cộng dồn tối đa 6 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Mineral], nhận Healing Done +{24%}.\nMỗi khi đồng minh chịu DMG, khi kết thúc round họ nhận Ultimate Might +{4%}, cộng dồn tối đa 6 lần."
+      }
+    }
+  },
+  "1557": {
+    "descVi": "Từ Golden Horn, đoàn tàu khởi hành. \nHoàng hôn nhuộm vàng sông Danube. \nMàn đêm buông xuống, phủ đường ray trong tối tăm.\nMột hành trình đầy bí mật bắt đầu.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu đang trong [Pulsing Field Lv.3], nhận Ultimate Might +{12%}.\nSau khi người trang bị thi triển một Incantation đơn mục tiêu, nhận DMG Dealt +{1.4%}, cộng dồn tối đa 6 lần; xóa toàn bộ cộng dồn sau khi dùng một Incantation diện rộng."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu đang trong [Pulsing Field Lv.3], nhận Ultimate Might +{15%}.\nSau khi người trang bị thi triển một Incantation đơn mục tiêu, nhận DMG Dealt +{1.8%}, cộng dồn tối đa 6 lần; xóa toàn bộ cộng dồn sau khi dùng một Incantation diện rộng."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu đang trong [Pulsing Field Lv.3], nhận Ultimate Might +{18%}.\nSau khi người trang bị thi triển một Incantation đơn mục tiêu, nhận DMG Dealt +{2.2%}, cộng dồn tối đa 6 lần; xóa toàn bộ cộng dồn sau khi dùng một Incantation diện rộng."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu đang trong [Pulsing Field Lv.3], nhận Ultimate Might +{21%}.\nSau khi người trang bị thi triển một Incantation đơn mục tiêu, nhận DMG Dealt +{2.6%}, cộng dồn tối đa 6 lần; xóa toàn bộ cộng dồn sau khi dùng một Incantation diện rộng."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu đang trong [Pulsing Field Lv.3], nhận Ultimate Might +{24%}.\nSau khi người trang bị thi triển một Incantation đơn mục tiêu, nhận DMG Dealt +{3%}, cộng dồn tối đa 6 lần; xóa toàn bộ cộng dồn sau khi dùng một Incantation diện rộng."
+      }
+    }
+  },
+  "1558": {
+    "descVi": "Mỗi giọt nước là một gợn sóng vận mệnh,\nTan chảy dưới ánh nhìn trong trẻo, mong manh của nàng.\nMột ngàn gợn sóng, một ngàn nếp nhăn,\nVậy mà một giọt vẫn còn, không tan, không ngừng.\n—Một giọt máu đã rơi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị là nhân vật [Intellect] và có ít nhất 120 điểm [Lingering Glow], nhận Critical DMG +{4%}, cộng dồn tối đa 6 lần.\nKhi người trang bị phát động một đòn tấn công Extra Action và đang có [Force Field], đòn đánh đó nhận Incantation Might +{6%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị là nhân vật [Intellect] và có ít nhất 120 điểm [Lingering Glow], nhận Critical DMG +{5%}, cộng dồn tối đa 6 lần.\nKhi người trang bị phát động một đòn tấn công Extra Action và đang có [Force Field], đòn đánh đó nhận Incantation Might +{7.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị là nhân vật [Intellect] và có ít nhất 120 điểm [Lingering Glow], nhận Critical DMG +{6%}, cộng dồn tối đa 6 lần.\nKhi người trang bị phát động một đòn tấn công Extra Action và đang có [Force Field], đòn đánh đó nhận Incantation Might +{9%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị là nhân vật [Intellect] và có ít nhất 120 điểm [Lingering Glow], nhận Critical DMG +{7%}, cộng dồn tối đa 6 lần.\nKhi người trang bị phát động một đòn tấn công Extra Action và đang có [Force Field], đòn đánh đó nhận Incantation Might +{10.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu người trang bị là nhân vật [Intellect] và có ít nhất 120 điểm [Lingering Glow], nhận Critical DMG +{8%}, cộng dồn tối đa 6 lần.\nKhi người trang bị phát động một đòn tấn công Extra Action và đang có [Force Field], đòn đánh đó nhận Incantation Might +{12%}."
+      }
+    }
+  },
+  "1559": {
+    "descVi": "Sinh ra để tự do, ta là cá giữa nước,\nSinh ra để phiêu bạt, ta là thuyền trên sông,\nBị bão tố xé tan, ta sẽ từ bỏ lớp vỏ,\nTrần trụi ta chìm—\nHoặc ta sẽ vượt qua lòng sông.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], sau khi thi triển một Incantation Channel, cấp DMG Bonus +{8%} cho toàn bộ phe ta, duy trì 1 round.\nKhi người trang bị tấn công, nếu đó là Extra Action, nhận Ultimate Might +{4%}, duy trì 1 round, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], sau khi thi triển một Incantation Channel, cấp DMG Bonus +{10%} cho toàn bộ phe ta, duy trì 1 round.\nKhi người trang bị tấn công, nếu đó là Extra Action, nhận Ultimate Might +{5%}, duy trì 1 round, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], sau khi thi triển một Incantation Channel, cấp DMG Bonus +{12%} cho toàn bộ phe ta, duy trì 1 round.\nKhi người trang bị tấn công, nếu đó là Extra Action, nhận Ultimate Might +{6%}, duy trì 1 round, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], sau khi thi triển một Incantation Channel, cấp DMG Bonus +{14%} cho toàn bộ phe ta, duy trì 1 round.\nKhi người trang bị tấn công, nếu đó là Extra Action, nhận Ultimate Might +{7%}, duy trì 1 round, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Beast], sau khi thi triển một Incantation Channel, cấp DMG Bonus +{16%} cho toàn bộ phe ta, duy trì 1 round.\nKhi người trang bị tấn công, nếu đó là Extra Action, nhận Ultimate Might +{8%}, duy trì 1 round, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1560": {
+    "descVi": "Nó ngự trong đồng tử, chảy trong huyết quản ta,\nKhóc, cười, thì thầm gọi tên ta.\nNó đập trong tim và lang thang trong tâm trí,\nMột mối ràng buộc không thể gọi thành lời—của ngươi và của ta.\nBởi ta chung một bóng—một thân thể, hai linh hồn,\nMột mối dây không thể tách rời: hai con người, một khối nguyên vẹn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang chịu [Burn], DMG Dealt +{8%}.\nKhi bắt đầu round, nếu có ít nhất 120 điểm [Lingering Glow], cấp Critical DMG +{12%} cho toàn bộ phe ta, duy trì 1 round."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang chịu [Burn], DMG Dealt +{10%}.\nKhi bắt đầu round, nếu có ít nhất 120 điểm [Lingering Glow], cấp Critical DMG +{15%} cho toàn bộ phe ta, duy trì 1 round."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang chịu [Burn], DMG Dealt +{12%}.\nKhi bắt đầu round, nếu có ít nhất 120 điểm [Lingering Glow], cấp Critical DMG +{18%} cho toàn bộ phe ta, duy trì 1 round."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang chịu [Burn], DMG Dealt +{14%}.\nKhi bắt đầu round, nếu có ít nhất 120 điểm [Lingering Glow], cấp Critical DMG +{21%} cho toàn bộ phe ta, duy trì 1 round."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công kẻ địch đang chịu [Burn], DMG Dealt +{16%}.\nKhi bắt đầu round, nếu có ít nhất 120 điểm [Lingering Glow], cấp Critical DMG +{24%} cho toàn bộ phe ta, duy trì 1 round."
+      }
+    }
+  },
+  "1561": {
+    "descVi": "Vì chiến thắng, vì vinh quang, ai nào hay\nThứ ngươi thiêu rụi chỉ là những bộ xương vô tội?\nNiềm tin ngươi giữ hôm qua đã hóa thành tro, chẳng còn gì nữa.\nTrong đáy sâu tuyệt vọng của ngươi—ngọn lửa nào đang vật lộn để thở?\nMột đóa lửa chập chờn, đỏ rực\nLặng lẽ soi đường cho những kẻ đã khuất.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi đồng minh bị kẻ địch đang mang trạng thái [Burn] tấn công, DMG Dealt của đòn đánh đó -{2%}.\nSau khi người trang bị thi triển Ultimate, nếu đang có từ 120 điểm [Lingering Glow] trở lên, toàn bộ phe ta nhận Critical DMG +{12%}, duy trì 3 round."
+      },
+      "2": {
+        "descVi": "Khi đồng minh bị kẻ địch đang mang trạng thái [Burn] tấn công, DMG Dealt của đòn đánh đó -{2.5%}.\nSau khi người trang bị thi triển Ultimate, nếu đang có từ 120 điểm [Lingering Glow] trở lên, toàn bộ phe ta nhận Critical DMG +{15%}, duy trì 3 round."
+      },
+      "3": {
+        "descVi": "Khi đồng minh bị kẻ địch đang mang trạng thái [Burn] tấn công, DMG Dealt của đòn đánh đó -{3%}.\nSau khi người trang bị thi triển Ultimate, nếu đang có từ 120 điểm [Lingering Glow] trở lên, toàn bộ phe ta nhận Critical DMG +{18%}, duy trì 3 round."
+      },
+      "4": {
+        "descVi": "Khi đồng minh bị kẻ địch đang mang trạng thái [Burn] tấn công, DMG Dealt của đòn đánh đó -{3.5%}.\nSau khi người trang bị thi triển Ultimate, nếu đang có từ 120 điểm [Lingering Glow] trở lên, toàn bộ phe ta nhận Critical DMG +{21%}, duy trì 3 round."
+      },
+      "5": {
+        "descVi": "Khi đồng minh bị kẻ địch đang mang trạng thái [Burn] tấn công, DMG Dealt của đòn đánh đó -{4%}.\nSau khi người trang bị thi triển Ultimate, nếu đang có từ 120 điểm [Lingering Glow] trở lên, toàn bộ phe ta nhận Critical DMG +{24%}, duy trì 3 round."
+      }
+    }
+  },
+  "1562": {
+    "descVi": "Có lẽ âm phủ là quê hương của màn đêm bất tận.\nCó lẽ Don chính là Acheron dưới ánh ban ngày.\nTử thần đích thân dõi theo bằng đôi mắt không chớp,\nÁnh nhìn trống rỗng ấy hiện diện mỗi khi đồng đội gục ngã.\nTrên lưng những con ngựa đen, kẻ sống băng qua lòng sông.\nĐừng mang theo hối tiếc. Đừng ngoảnh đầu lại.\nBởi quá khứ đã không thể cứu vãn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Beast] đang có mặt (bao gồm cả người trang bị), người trang bị nhận Ultimate Might +{4%}, cộng dồn tối đa 4 lần.\nKhi bắt đầu round, với mỗi loại Bullet đang mang theo, người trang bị nhận DMG Dealt +{2%} cho round này, cộng dồn tối đa 6 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Beast] đang có mặt (bao gồm cả người trang bị), người trang bị nhận Ultimate Might +{5%}, cộng dồn tối đa 4 lần.\nKhi bắt đầu round, với mỗi loại Bullet đang mang theo, người trang bị nhận DMG Dealt +{2.5%} cho round này, cộng dồn tối đa 6 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Beast] đang có mặt (bao gồm cả người trang bị), người trang bị nhận Ultimate Might +{6%}, cộng dồn tối đa 4 lần.\nKhi bắt đầu round, với mỗi loại Bullet đang mang theo, người trang bị nhận DMG Dealt +{3%} cho round này, cộng dồn tối đa 6 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Beast] đang có mặt (bao gồm cả người trang bị), người trang bị nhận Ultimate Might +{7%}, cộng dồn tối đa 4 lần.\nKhi bắt đầu round, với mỗi loại Bullet đang mang theo, người trang bị nhận DMG Dealt +{3.5%} cho round này, cộng dồn tối đa 6 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, với mỗi đồng minh [Beast] đang có mặt (bao gồm cả người trang bị), người trang bị nhận Ultimate Might +{8%}, cộng dồn tối đa 4 lần.\nKhi bắt đầu round, với mỗi loại Bullet đang mang theo, người trang bị nhận DMG Dealt +{4%} cho round này, cộng dồn tối đa 6 lần."
+      }
+    }
+  },
+  "1563": {
+    "descVi": "Ta bước trên miền cát vàng,\nMột chén ánh trăng trong tay.\nGiữa khoảng trời bao la,\nBình minh nhuộm đỏ những áng mây cao.\nPhiêu bạt giữa thế gian, ta cất tiếng ca,\nĐón chào thêm một mùa xuân nữa.",
+    "amplifications": {
+      "1": {
+        "descVi": "Với mỗi Eureka mà phe ta tiêu hao, toàn bộ phe ta nhận DMG Dealt +{0.2%}, cộng dồn tối đa 30 lần.\nNếu người trang bị là nhân vật [Plant], [Array] mà họ đã triển khai còn giúp toàn bộ phe ta nhận thêm Incantation Might +{6%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "2": {
+        "descVi": "Với mỗi Eureka mà phe ta tiêu hao, toàn bộ phe ta nhận DMG Dealt +{0.2%}, cộng dồn tối đa 30 lần.\nNếu người trang bị là nhân vật [Plant], [Array] mà họ đã triển khai còn giúp toàn bộ phe ta nhận thêm Incantation Might +{9%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "3": {
+        "descVi": "Với mỗi Eureka mà phe ta tiêu hao, toàn bộ phe ta nhận DMG Dealt +{0.3%}, cộng dồn tối đa 30 lần.\nNếu người trang bị là nhân vật [Plant], [Array] mà họ đã triển khai còn giúp toàn bộ phe ta nhận thêm Incantation Might +{9%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "4": {
+        "descVi": "Với mỗi Eureka mà phe ta tiêu hao, toàn bộ phe ta nhận DMG Dealt +{0.3%}, cộng dồn tối đa 30 lần.\nNếu người trang bị là nhân vật [Plant], [Array] mà họ đã triển khai còn giúp toàn bộ phe ta nhận thêm Incantation Might +{12%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      },
+      "5": {
+        "descVi": "Với mỗi Eureka mà phe ta tiêu hao, toàn bộ phe ta nhận DMG Dealt +{0.4%}, cộng dồn tối đa 30 lần.\nNếu người trang bị là nhân vật [Plant], [Array] mà họ đã triển khai còn giúp toàn bộ phe ta nhận thêm Incantation Might +{12%}. Hiệu ứng này biến mất sau khi Array kết thúc hoặc bị thay thế."
+      }
+    }
+  },
+  "1564": {
+    "descVi": "Lấy của cải làm lưỡi câu, lấy danh vọng làm mồi,\nMuốn bắt ai đó, chỉ cần kiên nhẫn đợi thôi.\nHôm nay nước ấm chan hòa;\nVịt đùa giỡn, cá quẫy lao xao.\nCắn câu rồi—giữ chặt nhé!\nNó đang vùng vẫy dữ dội—\nÔ hô, ngươi câu được một con cá lớn rồi!",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu đó là tấn công tiếp nối, DMG Dealt +{8%}.\nKhi người trang bị thi triển Ultimate, nếu đó là tấn công tiếp nối, toàn bộ phe ta nhận Incantation Might +{6%}, duy trì 3 round."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu đó là tấn công tiếp nối, DMG Dealt +{10%}.\nKhi người trang bị thi triển Ultimate, nếu đó là tấn công tiếp nối, toàn bộ phe ta nhận Incantation Might +{7.5%}, duy trì 3 round."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu đó là đòn tấn công tiếp theo, DMG Dealt +{12%}.\nKhi người trang bị thi triển Ultimate, nếu đó là đòn tấn công tiếp theo, toàn bộ phe ta nhận Incantation Might +{9%}, duy trì 3 round."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu đó là đòn tấn công tiếp theo, DMG Dealt +{14%}.\nKhi người trang bị thi triển Ultimate, nếu đó là đòn tấn công tiếp theo, toàn bộ phe ta nhận Incantation Might +{10.5%}, duy trì 3 round."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu đó là đòn tấn công tiếp theo, DMG Dealt +{16%}.\nKhi người trang bị thi triển Ultimate, nếu đó là đòn tấn công tiếp theo, toàn bộ phe ta nhận Incantation Might +{12%}, duy trì 3 round."
+      }
+    }
+  },
+  "1565": {
+    "descVi": "Vào cuối thế kỷ,\nMọi thứ đều treo trên một sợi chỉ run rẩy.\nTrong một tâm trí tự nhận là thần thánh,\nMọi thứ bung nở cùng một lúc.\nTừ những nếp gấp của não bộ\nĐến khoảng không bao la của vũ trụ,\nHãy níu lấy khoảnh khắc eureka phù du\nTrước khi nó tan biến.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi kết thúc round, nếu đang có ít nhất 120 điểm [Lingering Glow], giúp toàn bộ phe ta nhận Critical DMG +{6%}, duy trì 2 round.\nKhi đồng minh tấn công bằng một Incantation đã được Rewrite, giúp toàn bộ phe ta nhận DMG Dealt +{2%}, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi kết thúc round, nếu đang có ít nhất 120 điểm [Lingering Glow], giúp toàn bộ phe ta nhận Critical DMG +{7.5%}, duy trì 2 round.\nKhi đồng minh tấn công bằng một Incantation đã được Rewrite, giúp toàn bộ phe ta nhận DMG Dealt +{2.5%}, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi kết thúc round, nếu đang có ít nhất 120 điểm [Lingering Glow], giúp toàn bộ phe ta nhận Critical DMG +{9%}, duy trì 2 round.\nKhi đồng minh tấn công bằng một Incantation đã được Rewrite, giúp toàn bộ phe ta nhận DMG Dealt +{3%}, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi kết thúc round, nếu đang có ít nhất 120 điểm [Lingering Glow], giúp toàn bộ phe ta nhận Critical DMG +{10.5%}, duy trì 2 round.\nKhi đồng minh tấn công bằng một Incantation đã được Rewrite, giúp toàn bộ phe ta nhận DMG Dealt +{3.5%}, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi kết thúc round, nếu đang có ít nhất 120 điểm [Lingering Glow], giúp toàn bộ phe ta nhận Critical DMG +{12%}, duy trì 2 round.\nKhi đồng minh tấn công bằng một Incantation đã được Rewrite, giúp toàn bộ phe ta nhận DMG Dealt +{4%}, duy trì 3 round, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1566": {
+    "descVi": "Suỵt, nàng thì thầm.\nSuỵt, bóng ma đáp lại.\nNến lung linh. Điện ngân nga.\nMột thứ âm thanh êm dịu lan khắp không gian.\nĐã đến lúc nghỉ ngơi.\nThế gian mang theo quá nhiều âm thanh,\nNhưng trước khi ngươi lớn lên,\nLuôn có thời gian cho một khúc ca.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi phát động tấn công Extra Action, nhận Genesis DMG Dealt +{2%}, cộng dồn tối đa 3 lần.\nSau khi đồng minh thi triển một Incantation đã được Rewrite, gây [Poison] DMG Taken +{1%} lên toàn bộ kẻ địch, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi phát động tấn công Extra Action, nhận Genesis DMG Dealt +{3%}, cộng dồn tối đa 3 lần.\nSau khi đồng minh thi triển một Incantation đã được Rewrite, gây [Poison] DMG Taken +{1%} lên toàn bộ kẻ địch, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi phát động tấn công Extra Action, nhận Genesis DMG Dealt +{3%}, cộng dồn tối đa 3 lần.\nSau khi đồng minh thi triển một Incantation đã được Rewrite, gây [Poison] DMG Taken +{2%} lên toàn bộ kẻ địch, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi phát động tấn công Extra Action, nhận Genesis DMG Dealt +{4%}, cộng dồn tối đa 3 lần.\nSau khi đồng minh thi triển một Incantation đã được Rewrite, gây [Poison] DMG Taken +{2%} lên toàn bộ kẻ địch, duy trì 3 round, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Plant], sau khi phát động tấn công Extra Action, nhận Genesis DMG Dealt +{4%}, cộng dồn tối đa 3 lần.\nSau khi đồng minh thi triển một Incantation đã được Rewrite, gây [Poison] DMG Taken +{3%} lên toàn bộ kẻ địch, duy trì 3 round, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1567": {
+    "descVi": "Thuật toán, chuỗi ký tự, và những con chữ.\nChúng quen thuộc đến lạ, như những người bạn cũ.\nCâu trả lời vẫn nằm ngoài tầm với,\nnhưng cuộc đời vẫn tiếp diễn.\nHãy ném những câu hỏi của ngươi vào cơn mưa\nvà chấp nhận sự bất định.\nHãy nhảy qua những đường kẻ của lưới ô vuông,\nvà bước vào thế giới của ngày mai.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi kết thúc round, nếu người trang bị có [Bastion], DMG Taken -{4%}, duy trì 1 round.\nKhi kết thúc round, nếu người trang bị đã chuyển giao bất kỳ [Dynamo] nào trong round, toàn bộ phe ta nhận DMG Dealt +{2%}, cộng dồn tối đa 3 lần."
+      },
+      "2": {
+        "descVi": "Khi kết thúc round, nếu người trang bị có [Bastion], DMG Taken -{5%}, duy trì 1 round.\nKhi kết thúc round, nếu người trang bị đã chuyển giao bất kỳ [Dynamo] nào trong round, toàn bộ phe ta nhận DMG Dealt +{2.5%}, cộng dồn tối đa 3 lần."
+      },
+      "3": {
+        "descVi": "Khi kết thúc round, nếu người trang bị có [Bastion], DMG Taken -{6%}, duy trì 1 round.\nKhi kết thúc round, nếu người trang bị đã chuyển giao bất kỳ [Dynamo] nào trong round, toàn bộ phe ta nhận DMG Dealt +{3%}, cộng dồn tối đa 3 lần."
+      },
+      "4": {
+        "descVi": "Khi kết thúc round, nếu người trang bị có [Bastion], DMG Taken -{7%}, duy trì 1 round.\nKhi kết thúc round, nếu người trang bị đã chuyển giao bất kỳ [Dynamo] nào trong round, toàn bộ phe ta nhận DMG Dealt +{3.5%}, cộng dồn tối đa 3 lần."
+      },
+      "5": {
+        "descVi": "Khi kết thúc round, nếu người trang bị có [Bastion], DMG Taken -{8%}, duy trì 1 round.\nKhi kết thúc round, nếu người trang bị đã chuyển giao bất kỳ [Dynamo] nào trong round, toàn bộ phe ta nhận DMG Dealt +{4%}, cộng dồn tối đa 3 lần."
+      }
+    }
+  },
+  "1568": {
+    "descVi": "Mờ nhạt hơn cả một câu chuyện thì thầm,\nlặng lẽ hơn cả tiếng khóc hấp hối,\nNó tái tạo thế giới trong im lặng.\nNhanh hơn cả bước chân chạy trốn,\nsắc bén hơn cả lưỡi dao đã tôi luyện,\nNó cắt đứt mọi ràng buộc mà không để lại dấu vết.\nHãy rải những ký ức của ngươi\nvào làn sương thung lũng—\nVào ngày mai,\nmột tiếng hót trong trẻo sẽ gõ lên khung cửa ngươi.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [All-Rounder], nhận ATK +{4%} và Max HP +{4%}.\nSau khi người trang bị chủ động thi triển Incantation, giúp toàn bộ phe ta nhận DMG Dealt +{1.2%}, duy trì 3 round, cộng dồn tối đa 6 lần.\nNếu người trang bị là nhân vật [Beast], sau khi thi triển Ultimate, giúp toàn bộ phe ta nhận Critical DMG +{8%}, duy trì 3 round."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [All-Rounder], nhận ATK +{5%} và Max HP +{5%}.\nSau khi người trang bị chủ động thi triển Incantation, giúp toàn bộ phe ta nhận DMG Dealt +{1.4%}, duy trì 3 round, cộng dồn tối đa 6 lần.\nNếu người trang bị là nhân vật [Beast], sau khi thi triển Ultimate, giúp toàn bộ phe ta nhận Critical DMG +{10%}, duy trì 3 round."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [All-Rounder], nhận ATK +{6%} và Max HP +{6%}.\nSau khi người trang bị chủ động thi triển Incantation, giúp toàn bộ phe ta nhận DMG Dealt +{1.6%}, duy trì 3 round, cộng dồn tối đa 6 lần.\nNếu người trang bị là nhân vật [Beast], sau khi thi triển Ultimate, giúp toàn bộ phe ta nhận Critical DMG +{12%}, duy trì 3 round."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [All-Rounder], nhận ATK +{8%} và Max HP +{8%}.\nSau khi người trang bị chủ động thi triển Incantation, giúp toàn bộ phe ta nhận DMG Dealt +{1.8%}, duy trì 3 round, cộng dồn tối đa 6 lần.\nNếu người trang bị là nhân vật [Beast], sau khi thi triển Ultimate, giúp toàn bộ phe ta nhận Critical DMG +{14%}, duy trì 3 round."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [All-Rounder], nhận ATK +{10%} và Max HP +{10%}.\nSau khi người trang bị chủ động thi triển Incantation, giúp toàn bộ phe ta nhận DMG Dealt +{2%}, duy trì 3 round, cộng dồn tối đa 6 lần.\nNếu người trang bị là nhân vật [Beast], sau khi thi triển Ultimate, giúp toàn bộ phe ta nhận Critical DMG +{16%}, duy trì 3 round."
+      }
+    }
+  },
+  "1569": {
+    "descVi": "Dệt nên kén từ những bí danh phiêu bạt và ký ức rỉ máu.\nTừ bỏ nhục thân, trút bỏ gánh nặng,\nXóa nhòa con đường ngươi từng bước qua,\nHãy để những ánh mắt ngang qua của người đời\nche phủ gương mặt ngươi, hết lớp này đến lớp khác.\nBất cứ thứ gì được định đoạt sẽ chiếm lấy bầu trời,\ntrước tiên đều phải xé toạc mà thoát ra\nTừ vết rách đầy sẹo của một lớp vỏ đã vỡ.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Critical DMG +{12%}.\nKhi người trang bị tấn công bằng [Sovereign Incantation], nhận Ultimate Might +{6%} và Incantation Might +{6%}."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Critical DMG +{15%}.\nKhi người trang bị tấn công bằng [Sovereign Incantation], nhận Ultimate Might +{7.5%} và Incantation Might +{7.5%}."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Critical DMG +{18%}.\nKhi người trang bị tấn công bằng [Sovereign Incantation], nhận Ultimate Might +{9%} và Incantation Might +{9%}."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Critical DMG +{21%}.\nKhi người trang bị tấn công bằng [Sovereign Incantation], nhận Ultimate Might +{10.5%} và Incantation Might +{10.5%}."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Critical DMG +{24%}.\nKhi người trang bị tấn công bằng [Sovereign Incantation], nhận Ultimate Might +{12%} và Incantation Might +{12%}."
+      }
+    }
+  },
+  "1570": {
+    "descVi": "Đứa trẻ sơ sinh sao có thể bập bẹ giữa dàn đồng ca?\nMột khúc thánh ca cuồng loạn không có chỗ\ncho những tiếng thút thít như thế.\nCổ họng nàng trống rỗng, một buồng vang\ncho ngàn chiếc kèn tối tăm,\ndây đàn rít gào, và trống dập thình thịch.\nNuốt lấy linh hồn! Nén lại nước mắt!\nTừ những tiếng nấc nghẹn ngào, nàng nhận ra—\nNàng chỉ có thể ca hát khi cổ mình không còn bị xích.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận DMG Dealt +{8%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, giúp toàn bộ phe ta nhận Conduit Might +{0.6%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận DMG Dealt +{10%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, giúp toàn bộ phe ta nhận Conduit Might +{0.7%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận DMG Dealt +{12%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, giúp toàn bộ phe ta nhận Conduit Might +{0.8%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận DMG Dealt +{14%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, giúp toàn bộ phe ta nhận Conduit Might +{0.9%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận DMG Dealt +{16%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, giúp toàn bộ phe ta nhận Conduit Might +{1%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      }
+    }
+  },
+  "1571": {
+    "descVi": "Nhiệt lượng tỏa ra từ thân thể kim loại của nàng.\nCứ cháy đi, cứ cháy đi.\nChẳng ai ngờ rằng\nThế giới được tạo nên từ vô số\nnguyên tử nhỏ bé.\nHãy nhìn nơi ngón tay vũ công chỉ tới—\nĐó chính là phương Bắc đích thực của nền văn minh chúng ta.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Dance of Science], Critical DMG +{18%}.\nNếu người trang bị là nhân vật Star, Conduit Might +{8%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Dance of Science], Critical DMG +{22.5%}.\nNếu người trang bị là nhân vật Star, Conduit Might +{10%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Dance of Science], Critical DMG +{27%}.\nNếu người trang bị là nhân vật Star, Conduit Might +{12%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Dance of Science], Critical DMG +{31.5%}.\nNếu người trang bị là nhân vật Star, Conduit Might +{14%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Dance of Science], Critical DMG +{36%}.\nNếu người trang bị là nhân vật Star, Conduit Might +{16%}."
+      }
+    }
+  },
+  "1572": {
+    "descVi": "Tương lai chảy qua những sợi dây của nàng.\nCứ chạy đi, cứ chạy đi.\nChẳng ai ngờ rằng\nTrí tuệ có thể được dựng nên từ vô số hạt cát nhỏ bé.\nHãy nhìn nơi đầu ngón chân vũ công chỉ tới—\nĐó chính là nền móng của tri thức chúng ta.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Art of Atoms], Critical Rate +{12%}.\nNếu người trang bị là nhân vật Mineral, DMG Dealt +{12%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Art of Atoms], Critical Rate +{15%}.\nNếu người trang bị là nhân vật Mineral, DMG Dealt +{15%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Art of Atoms], Critical Rate +{18%}.\nNếu người trang bị là nhân vật Mineral, DMG Dealt +{18%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Art of Atoms], Critical Rate +{21%}.\nNếu người trang bị là nhân vật Mineral, DMG Dealt +{21%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị tấn công, nếu đồng thời được trang bị [The Art of Atoms], Critical Rate +{24%}.\nNếu người trang bị là nhân vật Mineral, DMG Dealt +{24%}."
+      }
+    }
+  },
+  "1573": {
+    "descVi": "Khẽ khàng, tôi chìm vào giấc ngủ ...\nMột thứ ánh sáng dịu dàng, mờ ảo sưởi ấm gương mặt.\nÁnh sáng ấy tràn xuống giấc mơ tôi,\nmang theo những ký ức ngọt ngào thuở xưa.\nHỡi những người bạn thân yêu nhất,\nnhững đóa cúc dại đã thức giấc ngoài đồng.\nNhững ngày hôm qua đã qua rồi,\nnhưng tôi sẽ ôm chặt lấy dư âm của chúng ...\nVà tôi sẽ cùng bạn bước vào những ngày mai chưa biết.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Healing Done +{12%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{0.8%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Healing Done +{15%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{0.9%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Healing Done +{18%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{1%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Healing Done +{21%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{1.2%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Mineral], nhận Healing Done +{24%}.\nVới mỗi điểm Conduit Energy mà phe ta tiêu hao, toàn bộ phe ta nhận Critical DMG +{1.5%}, duy trì 3 round, cộng dồn tối đa 16 lần."
+      }
+    }
+  },
+  "1574": {
+    "descVi": "Phác họa, đo đạc, xóa nhòa tất cả rồi bắt đầu lại.\nQuá khứ của tôi đổi lấy đống gạch vụn, tương lai của chúng ta đổi lấy khung hình.\nSáng và tối. Cứng và mềm. Phù du và vĩnh cửu.\nTách bạch từng thứ, từng nét một—để tìm thấy mái ấm còn chưa tìm được.\nBởi cuộc sống nơi đây nặng nề, phải ... nhưng đẹp một cách chân thực.\nVà khi viên gạch cuối cùng đã yên vị, tôi sẽ đứng ngay bên cạnh bạn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral], nhận Riposte DMG +{8%}.\nSau khi bất kỳ đồng minh nào phát động Riposte, người trang bị nhận Critical DMG +{3%}, duy trì 3 round, cộng dồn tối đa 6 lần."
+      },
+      "2": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral], nhận Riposte DMG +{12%}.\nSau khi bất kỳ đồng minh nào phát động Riposte, người trang bị nhận Critical DMG +{3%}, duy trì 3 round, cộng dồn tối đa 6 lần."
+      },
+      "3": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral], nhận Riposte DMG +{12%}.\nSau khi bất kỳ đồng minh nào phát động Riposte, người trang bị nhận Critical DMG +{4.5%}, duy trì 3 round, cộng dồn tối đa 6 lần."
+      },
+      "4": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral], nhận Riposte DMG +{16%}.\nSau khi bất kỳ đồng minh nào phát động Riposte, người trang bị nhận Critical DMG +{4.5%}, duy trì 3 round, cộng dồn tối đa 6 lần."
+      },
+      "5": {
+        "descVi": "Nếu người trang bị là nhân vật [Mineral], nhận Riposte DMG +{16%}.\nSau khi bất kỳ đồng minh nào phát động Riposte, người trang bị nhận Critical DMG +{6%}, duy trì 3 round, cộng dồn tối đa 6 lần."
+      }
+    }
+  },
+  "1575": {
+    "descVi": "Ngọn lửa bất khuất căng mình trên cả dây cung lẫn dây lòng.\nNhững ký ức bên trong cháy bỏng hơn cả dung nham nóng chảy,\nChảy qua bao kiếp vận mệnh để nhuộm hoàng hôn thành sắc máu.\nSắc màu ấy cất lời,\nTrong khi thế gian lặng lẽ chờ đợi—\nMột tiếng ngân rung chợt vang, và lời thề của ta sẽ thành hiện thực.",
+    "descEn": "An unyielding flame draws back upon both bowstring and heartstrings.\nThe memories within burn hotter than molten magma,\nFlowing through lifetimes of destiny to stain the dusk blood-red.\nThis hue proclaims,\nWhile the world waits in solemn silence—\nA sudden, vibrating hum, and thus shall my vow be fulfilled.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{8%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{1.5%}, cộng dồn tối đa 8 lần.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{8%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{1.5%} to all allies, stacking up to 8 times."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{10%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{1.8%}, cộng dồn tối đa 8 lần.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{10%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{1.8%} to all allies, stacking up to 8 times."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{12%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{2.2%}, cộng dồn tối đa 8 lần.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{12%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{2.2%} to all allies, stacking up to 8 times."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{14%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{2.6%}, cộng dồn tối đa 8 lần.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{14%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{2.6%} to all allies, stacking up to 8 times."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{16%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{3%}, cộng dồn tối đa 8 lần.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{16%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{3%} to all allies, stacking up to 8 times."
+      }
+    }
+  },
+  "1576": {
+    "descVi": "Bước trên sỏi đá gồ ghề, lội qua vùng nước nông mát lạnh,\nNhững bước chân không ngừng—chạy mãi, chạy mãi,\nCho đến khi tiếng nói trong lòng gào thét dữ dội hơn cả sóng vỗ.\nĐuổi theo một viễn ảnh, nắm bắt lấy chính mình,\nLòng bàn tay nàng ôm lấy gợn sóng vận mệnh, thình thịch, thình thịch,\nMiền đất hứa đã ở ngay trước mắt.",
+    "descEn": "Treading upon rough grit, wading through cool shallows,\nSteps unceasing—running, ever running,\nUntil the voice within roars fiercer than the pounding surf.\nChasing a vision, grasping for the self,\nHer palm cupping the ripples of destiny, thumping, thumping,\nThe promised land lies right before her eyes.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{12%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{8%}, duy trì 3 round.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{12%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{8%} to all allies for 3 rounds."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{15%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{10%}, duy trì 3 round.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{15%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{10%} to all allies for 3 rounds."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{18%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{12%}, duy trì 3 round.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{18%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{12%} to all allies for 3 rounds."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{21%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{14%}, duy trì 3 round.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{21%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{14%} to all allies for 3 rounds."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{24%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{16%}, duy trì 3 round.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{24%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{16%} to all allies for 3 rounds."
+      }
+    }
+  },
+  "1577": {
+    "descVi": "Vodka tràn đầy cỗ động cơ gầm vang,\nSay sưa, sấm dậy, lao thẳng về phía trước!\nMỗi lần xé toạc cơn gió lớn,\nMột lời tuyên ngôn ngang tàng lại vang lên rành rọt.\nCưỡi lên cơn giông tố không thể vượt qua,\nCười vang khi giao đấu cùng bão tố.\nChiến thắng ư? À, nó đang nằm thuần phục dưới chân ta.",
+    "descEn": "Vodka fills the roaring engine,\nCarousing, thundering, charging ahead!\nWith every tear through the gale,\nA brazen declaration rings loud and clear.\nStraddling the insurmountable thunderstorm,\nLaughing as she trades blows with the hurricane.\nVictory? Ah, it lies tamed beneath my feet.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{8%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{3%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit].",
+        "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{8%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{3%}, stacking until leaving the [Full Pursuit] phase."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{12%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{3%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit].",
+        "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{12%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{3%}, stacking until leaving the [Full Pursuit] phase."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{12%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{4.5%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit].",
+        "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{12%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{4.5%}, stacking until leaving the [Full Pursuit] phase."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{16%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{4.5%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit].",
+        "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{16%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{4.5%}, stacking until leaving the [Full Pursuit] phase."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], DMG Dealt +{16%}.\nSau khi bất kỳ đồng minh nào tấn công, nếu thi triển [Pursuit Incantation], người trang bị nhận [Pursuit] DMG Bonus +{6%}, cộng dồn cho đến khi rời khỏi trạng thái [Full Pursuit].",
+        "descEn": "When entering battle, if the carrier is a [Star] character, DMG Dealt +{16%}.\nAfter any ally attacks, if casting a [Pursuit Incantation], grants the carrier [Pursuit] DMG Bonus +{6%}, stacking until leaving the [Full Pursuit] phase."
+      }
+    }
+  },
+  "1578": {
+    "descVi": "Vận mệnh tuyên bố: Ngươi phải khuất phục ta.\nNàng chỉ đáp lại bằng một nụ cười khinh bỉ.\nLửa nào nghe lời răn dạy của gai nhọn?\nTa là ngọn lửa không thể dập tắt, tuôn trào từ chiếc chén bạc;\nDẫu gai góc cũng phải gãy để làm củi.\nDẫu thân chịu muôn vết thương, đầu ta quyết chẳng cúi.",
+    "descEn": "Fate declared: You shall submit to me.\nTo which she responded only with a sneer.\nHow could fire heed the admonitions of thorns?\nI am the unquenchable blaze poured forth from a silver cup;\nEven briars shall snap to serve as firewood.\nThough ten thousand wounds be inflicted, my head shall never bow.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{8%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{2%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{8%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{2%} to all allies for 3 rounds, stacking up to 4 times."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{10%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{2.5%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{10%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{2.5%} to all allies for 3 rounds, stacking up to 4 times."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{12%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{3%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{12%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{3%} to all allies for 3 rounds, stacking up to 4 times."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{14%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{3.5%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{14%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{3.5%} to all allies for 3 rounds, stacking up to 4 times."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], DMG Dealt +{16%}.\nKhi người trang bị tấn công, nếu đang chịu trạng thái [Burn], giúp toàn bộ phe ta nhận Incantation Might +{4%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, DMG Dealt +{16%}.\nWhen the carrier attacks, if under the [Burn] status, grants Incantation Might +{4%} to all allies for 3 rounds, stacking up to 4 times."
+      }
+    }
+  },
+  "1579": {
+    "descVi": "Lửa trong hang, ánh sao, những con sóng mang theo chân lý.\nNhững công thức viết trên bờ cát, chỉ để rồi bị xóa nhòa.\nMột giả thuyết về ánh sáng mặt trời,\nĐược chứng minh rồi lại chứng minh, giữa đêm tối mịt mùng.\nHỡi hạt cát nhỏ bé, hãy bước tới;\nGót chân ngươi vẫn còn nhớ buổi bình minh.",
+    "descEn": "Cave fire, starlight, waves carrying truth.\nFormulas written upon the shore, only to be smoothed away.\nA hypothesis concerning the sunlight,\nProven and re-proven in the dead of night.\nO tiny grain of sand, press forward;\nThe soles of your feet still remember the dawn.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{12%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{4%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{12%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{4%} for 3 rounds, stacking up to 4 times."
+      },
+      "2": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{15%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{5%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{15%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{5%} for 3 rounds, stacking up to 4 times."
+      },
+      "3": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{18%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{6%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{18%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{6%} for 3 rounds, stacking up to 4 times."
+      },
+      "4": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{21%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{7%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{21%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{7%} for 3 rounds, stacking up to 4 times."
+      },
+      "5": {
+        "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Star], Critical DMG +{24%}.\nKhi người trang bị tấn công, nếu sử dụng [Extra Action], giúp toàn bộ phe ta nhận [Pursuit] DMG Bonus +{8%}, duy trì 3 round, cộng dồn tối đa 4 lần.",
+        "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{24%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{8%} for 3 rounds, stacking up to 4 times."
+      }
+    }
+  },
+  "4103": {
+    "descVi": "Thơ ca có thuộc về trang giấy da?\nThơ ca có thuộc về vỏ óc chó và mực?\nThơ ca có thuộc về quý tộc và nhà vua?\nKhông, đêm tuyết nói, thơ ca chỉ thuộc về chính nó.",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi người trang bị bị tấn công và HP dưới 50%, DMG Taken -{10%}."
+      },
+      "2": {
+        "descVi": "Khi người trang bị bị tấn công và HP dưới 50%, DMG Taken -{12.5%}."
+      },
+      "3": {
+        "descVi": "Khi người trang bị bị tấn công và HP dưới 50%, DMG Taken -{15%}."
+      },
+      "4": {
+        "descVi": "Khi người trang bị bị tấn công và HP dưới 50%, DMG Taken -{17.5%}."
+      },
+      "5": {
+        "descVi": "Khi người trang bị bị tấn công và HP dưới 50%, DMG Taken -{20%}."
+      }
+    }
+  },
+  "4104": {
+    "descVi": "Hãy nhìn quanh đi.\nRìa sân khấu xa lắm, xa lắm.\nNó ở bên kia những hòn đảo, bên kia biển cả, bên kia lệnh cấm và nỗi sợ.\nCười đi, cười lên nào! Vở diễn này chẳng có hồi kết!",
+    "amplifications": {
+      "1": {
+        "descVi": "Khi một round bắt đầu, Healing Done +3% cho người trang bị. Cộng dồn tối đa {4} lần."
+      },
+      "2": {
+        "descVi": "Khi một round bắt đầu, Healing Done +3% cho người trang bị. Cộng dồn tối đa {5} lần."
+      },
+      "3": {
+        "descVi": "Khi một round bắt đầu, Healing Done +3% cho người trang bị. Cộng dồn tối đa {6} lần."
+      },
+      "4": {
+        "descVi": "Khi một round bắt đầu, Healing Done +3% cho người trang bị. Cộng dồn tối đa {7} lần."
+      },
+      "5": {
+        "descVi": "Khi một round bắt đầu, Healing Done +3% cho người trang bị. Cộng dồn tối đa {8} lần."
+      }
+    }
+  }
+}

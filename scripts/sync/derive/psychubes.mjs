@@ -26,7 +26,7 @@ export function isRealPsychube(e) {
 }
 
 /** `tag` ids ("1#2") -> human labels from `equip_tag.json`, in tag order. */
-function tagLabels() {
+export function tagLabels() {
   const tagTable = table("global", "equip_tag");
   const byId = new Map(tagTable.map((t) => [String(t.id), t]));
   return (tag) => {

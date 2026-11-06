@@ -14,6 +14,7 @@ import { readJson, writeJson } from "./util.mjs";
 import { nameMap, globalNameTransfer } from "./derive/names.mjs";
 import { charactersByRarity, charactersByAfflatus } from "./derive/characters.mjs";
 import { psychubeId, psychubeKeyMap } from "./derive/psychubes.mjs";
+import { psychubesData } from "./derive/psychubesData.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
 
 const argOut = (() => {
@@ -50,6 +51,7 @@ const files = {
   "characters_by_afflatus.json": charactersByAfflatus(),
   "psychube_id.json": psychubeId(),
   "psychube_key_map.json": psychubeKeyMap(),
+  "psychubes_data.json": psychubesData(),
   "future_sight.json": futureSight(),
 };
 

@@ -67,7 +67,19 @@ ok(
 
 if (details) {
   const missing = chubeEntries.filter((e) => !details[e.key]).map((e) => e.key);
-  ok("psychubes_data covers psychube_id (allow <= 2 legacy gaps)", missing.length <= 2, missing.join(","));
+  ok("psychubes_data covers psychube_id", missing.length === 0, missing.join(","));
+  const detailRows = Object.entries(details).map(([key, row]) => ({ key, row }));
+  ok("psychubes_data keys are `<rarity>:<gameId>`", detailRows.every(({ key, row }) => key === `${row.rarity}:${row.id}`));
+  ok("psychubes_data has text in en/zh", detailRows.every(({ row }) => row.name && row.nameCN && row.descEn && row.descZh));
+  ok("psychubes_data has vi text", detailRows.every(({ row }) => row.descVi));
+  ok(
+    "psychubes_data breakAttrs are 4 tiers or empty",
+    detailRows.every(({ row }) => row.breakAttrs.length === 0 || row.breakAttrs.length === 4),
+  );
+  ok(
+    "psychubes_data amplifications are 1..5 levels",
+    detailRows.every(({ row }) => row.amplifications.length >= 1 && row.amplifications.length <= 5),
+  );
 }
 
 // ---- future sight -----------------------------------------------------------

@@ -239,7 +239,7 @@
   },
   "Centurion": {
     "pattern": "Elucidation",
-    "psychubes": ["The Final Roll", "Luck Be A Lady"],
+    "psychubes": ["The Final Roll", "Luck Be a Lady"],
     "resonance": {
   "R10-11": "APQkK0Q4RToEKQU0AjQAPCA8MClCQFBCUUVA",
   "R12-15": "APQkK0Q4RToEKQU0AjQAPCApQjwwLUBEUEVh"
@@ -499,7 +499,7 @@
     "pattern": "Elucidation",
     "psychubes": [
       "The Third Commitment",
-      "The Wind’s Listener"
+      "The Wind's Listener"
     ],
     "resonance": {
   "R10-15": "AfgkLUQtQi1APGM8MDQFOxM5AjQRRBBFACZQ"
@@ -988,7 +988,7 @@
   },
   "Paper Heron": {
     "pattern": "Hyper",
-    "psychubes": ["Wayfarer of the Tao", "Long Night Talk"],
+    "psychubes": ["Wayfarer of the Dao", "Long Night Talk"],
     "resonance": {
   "R10-11": "A/gkNEQoVDQUJAQ4AjkAPGA8UEAwQjFEM0EQSCI=",
   "R12-15": "A/gkNEQoVDQUOAI5ADxgPFBAMEIxRDNBEEgiRQREBg=="

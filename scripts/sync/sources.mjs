@@ -38,6 +38,28 @@ export function text(lang, key) {
   return language(lang).get(str) ?? str;
 }
 
+/** Rich-text markup -> plain text. `<br>` becomes a newline, every other tag is dropped. */
+export function stripMarkup(value) {
+  if (value === undefined || value === null) return "";
+  return String(value)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]*>/g, "");
+}
+
+/**
+ * Like `text()`, but reports whether the game actually had the string.
+ * Used where a missing translation must fall back to a hand-authored overlay
+ * instead of leaking a raw `language_*` key.
+ */
+export function lookup(lang, key) {
+  if (key === undefined || key === null) return { found: false, value: "" };
+  const str = String(key);
+  if (!str.startsWith("language_")) return { found: true, value: stripMarkup(str) };
+  const value = language(lang).get(str);
+  if (value === undefined) return { found: false, value: "" };
+  return { found: true, value: stripMarkup(value) };
+}
+
 /** Indexes an array table by a field (default `id`). */
 export function indexBy(rows, field = "id") {
   const map = new Map();

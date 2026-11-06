@@ -20,6 +20,7 @@ export const SRC = {
 };
 
 export const OUT = path.join(ROOT, "data");
+export const CONTENT = path.join(ROOT, "content");
 export const MAPS = path.join(HERE, "maps");
 
 /** Languages available in the global repo. The CN repo has empty language stubs. */
