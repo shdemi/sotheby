@@ -383,10 +383,12 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 2. **Missing asset folders:** skill-card art lives under
    `singlebg/fight/` in the Myssal repo. Insight / afflatus / dmg-type icons are static
    UI and are ignored by the pipeline.
-3. **`guide_skills.json`:** generated, not hand-authored.
-4. **`pattern_costs.json`:** unused — delete it (do not generate).
-5. **`exclude_character` / `collab_character`:** hand-curated policy (class C). They may be
-   merged into one curation file when `content/` lands.
+3. **`guide_skills.json`:** hand-authored. Its slot numbers and variant art (Beryl's
+   crystal icons, stance duplicates for Nautika/The Twins/Rhiannon) are editorial
+   choices, not a table lookup; it lives in `content/`.
+4. **`pattern_costs.json`:** deleted 2026-11-06 — it was unused.
+5. **`exclude_character` / `collab_character`:** hand-curated policy. Both now derive
+   from `content/curation.json`.
 6. **Old psychube localStorage migration:** yes. `scripts/sync/legacy/psychube-migration.json`
    maps every old key to `<appRarity>:<gameId>`; `app.js` applies it once on load and
    re-saves (`psychubeKeyMapCache` ← `data/psychube_key_map.json`).
