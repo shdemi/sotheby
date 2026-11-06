@@ -167,13 +167,13 @@ Verified paths inside `githubfetch/Myssal/Reverse-1999-CN-Asset/`:
 | Character head (small) | `singlebg/headicon_small/<skinId>.png` | `skinId` (default = `<charId>01`) |
 | Monster head | `singlebg/headicon_monster/<id>.png` | |
 | Character signature | `singlebg/signature/<charId>.png` | |
+| Skill card art | `singlebg/fight/**` | skill id |
 
 IDs collide across folders (e.g. `620101.png` exists as item, monster and head icon), so
 **always namespace by category folder** when caching.
 
-**Still to verify (TBD):** skill card icons, insight icons, afflatus/dmg-type icons,
-trait/tuning icons. Some live in `atlassrc/ui_*` as sprite atlases; others may not exist
-as standalone PNGs.
+Insight, afflatus and damage-type icons are static UI art; the pipeline ignores them.
+Trait/tuning icons are still unverified.
 
 `data/ArcanistMap.json` is currently a copy of
 `mappings/ArcanistMap.json` from the Myssal repo (same 139 ids/keys). Prefer
@@ -182,17 +182,16 @@ game data and images have separate sources.
 
 ---
 
-## 5. Psychube re-key migration (id → game id)
+## 5. Psychube re-key migration (id → game id) — DONE
 
 The old pipeline (`ignore/testCodeChube/compose.py`) composed icons by hand and
 **invented sequential ids** (e.g. `6:73`), storing the real id separately as `gameId`.
-That is going away.
+That is retired.
 
-New rule: **the psychube key is `"<rare>:<equip.id>"` using the game id.** For example the
-chube currently stored as `"6:73"` becomes `"6:1579"` (its real id is `1579`; rarity comes
-from `equip.rare`).
+Rule: **the psychube key is `"<appRarity>:<equip.id>"` using the game id**, where
+`appRarity = equip.rare + 1`. The chube once stored as `"6:73"` is now `"6:1579"`.
 
-Facts to preserve during migration:
+Facts preserved during the migration:
 
 - `equip.json` (global) has 128 rows; `name_en` is populated on all of them.
 - Display name: EN = `equip.name_en`; CN = `language_zh[equip.name]`.
@@ -204,9 +203,12 @@ Facts to preserve during migration:
   assumes.
 - IDs `999` and `10002` exist in `equip.json` but may not be real psychubes — filter.
 
-When migrating, user saves in `localStorage` (`r1999_psychube_v1`) are keyed by the old
-`"<rarity>:<oldId>"`. A one-time migration map must translate old key → game id, or the
-key scheme change will silently drop every existing user's psychube collection.
+Because user saves in `localStorage` (`r1999_psychube_v1`) were keyed by the old
+`"<rarity>:<oldId>"`, the scheme change would silently drop every existing collection.
+`scripts/sync/legacy/psychube-migration.json` freezes what git held at the switch, and
+`data/psychube_key_map.json` ships it to the app. `app.js` calls `migratePsychubeKeys()`
+before sanitising state, and merges duplicate targets with `mergePsychubeState()`.
+`scripts/sync/tools/migrate-psychubes-legacy.mjs` performed the one-time data + icon rename.
 
 ---
 
@@ -236,16 +238,24 @@ key scheme change will silently drop every existing user's psychube collection.
       hub/ suitcase/ teams/ rotations/ infobook/ stages/ timeline/
   data/                      GENERATED  (committed, never hand-edited)
     _meta.json               { globalVersion, cnVersion, generatedAt, sources[] }
+    global_name_transfer.json  name_map.json
+    characters_by_rarity.json  characters_by_afflatus.json
+    psychube_id.json  psychube_key_map.json  future_sight.json
+    psychubes_data.json      (legacy detail; re-derive in Phase 2)
   content/                   HAND-AUTHORED (class C)
     builds.json rotations.json teams.json progressions.json
     i18n/ exclude.json collab.json credits.json
   scripts/
     sync/
-      adapters/global.js  adapters/cn.js
-      derive/*.js
-      maps/*.json          hand-written mappings (class B)
-      index.mjs            run the whole pipeline
-    build_stages_data.mjs  (existing, fold into sync/)
+      config.mjs  util.mjs  sources.mjs
+      derive/names.mjs  derive/characters.mjs
+      derive/psychubes.mjs  derive/futureSight.mjs
+      maps/*.json            hand-written mappings (class B)
+      legacy/                frozen migration inputs (do not regenerate)
+      tools/                 one-time migration scripts
+      index.mjs              run the whole pipeline
+      verify.mjs             assert the generated invariants
+    build_stages_data.mjs    (existing, fold into sync/)
   editor/                    JSON editor (keep working; update to new paths)
   images/                    asset cache (generated from Myssal)
 ```
@@ -341,8 +351,9 @@ python -m http.server 8000
 # Editor + regression tests (see package.json)
 npm test
 
-# Data pipeline (after Phase 1)
-node scripts/sync/index.mjs
+# Data pipeline (Phase 1)
+npm run sync          # writes every generated file under data/
+npm run sync:verify   # asserts the invariants (rarity, psychubes, future sight)
 
 # Stages data (existing)
 node scripts/build_stages_data.mjs
@@ -353,17 +364,43 @@ node scripts/build_stages_data.mjs
 
 ---
 
-## 10. Open questions to verify with the owner
+## 10. Resolved questions & Phase 1 facts
 
-1. **Stage file set:** which of `story` / `main_story` and `resource` / `resources` and
-   `events` is authoritative? Three of them have no generator. Confirm before Phase 6.
-2. **Missing asset folders:** confirm paths for skill card icons, insight icons, and
-   afflatus/dmg-type icons inside the Myssal repo (could not verify from the data checkout).
-3. **`guide_skills.json`:** confirm it is hand-authored, not generated.
-4. **`pattern_costs.json`:** currently `{}` — should it stay empty or be generated?
-5. **`exclude_character` / `collab_character`:** keep as hand-curated policy (class C), confirm.
-6. **Old psychube localStorage migration:** confirm we must migrate existing users' saved
-   chube keys to game ids.
+These were open questions; answers are settled as of Phase 1 (2026-11-06).
+
+1. **Stage file set:** deferred. Stage data is unfinished game content and the owner
+   does not know what to keep yet. Do **not** generate or delete stage files until Phase 6
+   is scheduled.
+2. **Missing asset folders:** skill-card art lives under
+   `singlebg/fight/` in the Myssal repo. Insight / afflatus / dmg-type icons are static
+   UI and are ignored by the pipeline.
+3. **`guide_skills.json`:** generated, not hand-authored.
+4. **`pattern_costs.json`:** unused — delete it (do not generate).
+5. **`exclude_character` / `collab_character`:** hand-curated policy (class C). They may be
+   merged into one curation file when `content/` lands.
+6. **Old psychube localStorage migration:** yes. `scripts/sync/legacy/psychube-migration.json`
+   maps every old key to `<appRarity>:<gameId>`; `app.js` applies it once on load and
+   re-saves (`psychubeKeyMapCache` ← `data/psychube_key_map.json`).
+
+### Phase 1 facts worth not re-deriving
+
+- **Rarity is `game.rare + 1`** for both characters and psychubes (a 6★ is `rare: 5`).
+  The generator owns this offset (`config.mjs` → `RARITY_OFFSET`); never add 1 by hand.
+- **Roster is 138 characters** (was 141). The pipeline drops the dummy `9998`
+  (“Machine D III” / `???`) and de-duplicates `aliEn T`, `Joe`.
+- **Psychubes are 116** = 109 global real (68 six-star, 41 five-star) + 7 CN-only.
+  Two global rows (`5:1448` Growing Pains, `6:1534` Stray Off the Path) exist in
+  `psychube_id.json` but not yet in `psychubes_data.json`; the app handles that gracefully.
+- **`future_sight` is derived completely.** The old hand file was stale: it listed 11 skins,
+  the derived set has 24 (CN-only skins for CN-only arcanists), and Euphoria is now in
+  descending hero id. Treat the derived file as correct.
+- **`psychube_id.json` no longer carries a `gameId` field** — the id *is* the game id.
+- **Data formatting mirrors the editor** (`editor/json-patch.js` `renderValue`):
+  arrays of short primitives stay on one line (tag lists), everything else is 2-space
+  pretty JSON. `scripts/sync/util.mjs` `writeJson` owns this.
+- The pipeline writes `data/_meta.json` with both server versions and `generatedAt`.
+  Every generated file is reproducible with `npm run sync`; `npm run sync:verify` asserts
+  the invariants above.
 
 ---
 
