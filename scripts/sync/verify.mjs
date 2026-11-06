@@ -98,6 +98,15 @@ ok("profiles have no extra keys", profileKeys.every((name) => rarities.includes(
 ok("profiles have a damage type", profileKeys.every((name) => ["Reality", "Mental"].includes(profiles[name].dmgType)));
 ok("profiles role tags are arrays", profileKeys.every((name) => Array.isArray(profiles[name].roleTags)));
 
+// ---- resonance shapes -------------------------------------------------------
+const resoShape = read("character_reso_shape.json");
+const patterns = read("shape_patterns.json");
+const excluded = read("exclude_character.json");
+ok("every character has one resonance shape", rarities.filter((n) => !excluded.includes(n)).every((n) => Object.values(resoShape).flat().includes(n)), rarities.filter((n) => !excluded.includes(n) && !Object.values(resoShape).flat().includes(n)).join(","));
+ok("excluded characters are not in a shape", excluded.every((n) => !Object.values(resoShape).flat().includes(n)));
+ok("every shape has patterns", Object.keys(resoShape).every((shape) => Array.isArray(patterns[shape]) && patterns[shape].length > 0));
+ok("patterns are known resonance styles", Object.values(patterns).flat().every((p) => typeof p === "string" && p.length > 0));
+
 // ---- misc -------------------------------------------------------------------
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));
 ok("_meta has both versions", !!meta.globalVersion && !!meta.cnVersion, `${meta.globalVersion} / ${meta.cnVersion}`);

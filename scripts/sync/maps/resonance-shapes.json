@@ -1,0 +1,9 @@
+{
+  "_comment": "`character_talent.talentMould` -> the board label the app shows. The game has no display name for these, so the labels are editorial.",
+  "shapes": {
+    "1": "Z shape",
+    "2": "Plus shape",
+    "3": "T shape",
+    "4": "U shape"
+  }
+}

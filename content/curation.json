@@ -1,0 +1,5 @@
+{
+  "_comment": "Hand-curated roster policy. `exclude` hides characters from the app entirely; `collab` marks collaboration characters. Both are editorial decisions, not game data.",
+  "exclude": ["Schneider"],
+  "collab": ["The Twins", "NORA", "Ezio Auditore", "Kassandra", "Alexios"]
+}
