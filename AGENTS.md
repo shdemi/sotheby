@@ -99,7 +99,7 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `characters_by_rarity.json` | `character.json → rare` | 134 global / 140 CN |
 | `characters_by_afflatus.json` | `character.json → career` | see caveat below |
 | `character_profiles.json` | `character.json → dmgType`, `character_battle_tag.json` | `dmgType`: 1=Reality, 2=Mental; `battleTag` is `101#117#122` → needs a role map |
-| `character_skills.json` | `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json` + global `language_*` | |
+| `character_skills.json` | `character.json`, `character_rank_replace.json`, `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json`, `fight_device.json` + global `language_*` | **derived**: 138 characters; device heroes take stances/specials from `fight_device`; CN-only English + all Vietnamese live in `content/translations/skills.json` |
 | `characters_mats_required.json` | `character_rank.json`, `character_rank_replace.json`, `talent_style.json`, `talent_style_cost.json`, `resonance.json`, `item.json` | |
 | `items.json` | `item.json` + global `language_*` | 782 raw items; app shows a curated subset |
 | `item_formulas.json` | `formula.json` (`costMaterial`, `produce`) | |
@@ -130,6 +130,7 @@ Keep these maps in `scripts/sync/maps/`.
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
 | `pattern_costs.json` | pattern → cost mapping (currently ships `{}`) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
+| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations) and `device-ranks.json` (frozen rank-id lists for The Twins) |
 
 ### Class C — human-authored content (NOT derivable)
 
@@ -147,6 +148,7 @@ Owned by the project, not the game. Lives in `content/` after the rebuild.
 | `exclude_character.json`, `collab_character.json` | curation policy (§Class B, hand-decided) |
 | `translations/psychubes.json` | English for CN-only psychubes + every Vietnamese psychube/amplification string |
 | `translations/euphorias.json` | English for CN-only Euphoria trees + the editorial `version` of each tree |
+| `translations/skills.json` | English for CN-only skills/insights/portrays + every Vietnamese skill string + the collab weapon charts |
 
 Two current files are **orphans and can be dropped**:
 `guide_cards.json` (never fetched by the app) and `reso_shape.json`
@@ -424,6 +426,30 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   point at a renamed skill — the generated text is correct, the legacy file was stale.
 - **CN-only rows carry literal Chinese instead of `language_*` keys**, so literal text is
   only accepted for `zh`; `tw/jp/kr` fall back to `"N/A"` rather than mislabeling Chinese.
+- **`character_skills.json` is keyed by canonical roster name only.** The legacy file also
+  stored raw aliases (`Joe`, `Six`, `Thirty-seven`, `Вила`, …) pointing at the same object;
+  those were redundant because `resolveCharacterName()` maps them through
+  `global_name_transfer.json` first. The CN server's duplicate APPLe row (id `3999`)
+  collapses onto the global one (`3028`).
+- **The device path is chosen by data, not by hand.** A hero takes its incantations from
+  `fight_device` when the device has a `specialPowerSkill` or a multi-part `skill1`/`skill2`
+  (Coppélia, Everecho, The Twins). Hedone also has a device but its `character.skill` is
+  already the full kit, so it uses the normal path; the device still supplies `cost`.
+- **`cost` and `harmonization` are fully derived.** `cost` is the third field of the
+  device's `skill1`/`skill2` entries; `harmonization` is the `60292#<n>` behaviour on the
+  skill effect, and an ultimate takes its negative value from `uniqueSkill_point`
+  (`4#100` → `-100`). `scripts/apply_conduit_cost_harm.mjs` (hardcoded maps) is deleted.
+- **The legacy file invented slot-4 "Special" skills** for Regulus, Vila, Argus, Barbara,
+  Recoleta, Hissabeth, Ms. Stranger, Hedone, 37 and Huntsworn Lilya (including the bogus
+  ids `790001`/`790002`). Those rows are not in any game table and are gone. Only
+  game-declared specials remain: device `specialPowerSkill`, plus the hand-mapped
+  Rhiannon and Beryl entries in `scripts/sync/maps/skill-extras.json`.
+- **The Twins' rank ids are frozen in `scripts/sync/maps/device-ranks.json`.** Their
+  `character.skill` and the device's per-tier `skill1`/`skill2` disagree, so the base
+  skill id is expanded to its three/five rank variants from that map.
+- **Do not strip `<1>`/`<2>`/`<i>` from skill text.** Those are game markers (they tell
+  repeated portray lines apart) and the app renders them as HTML. `cleanGame()` mirrors
+  the legacy cleaner rather than calling `stripMarkup()` on descriptions.
 
 ---
 

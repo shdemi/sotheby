@@ -133,6 +133,28 @@ ok(
   euphoriaEntries.filter((e) => e.portraits).every((e) => e.portraits.length === 5 && e.portraits.every((p) => /^p[1-5]$/.test(Object.keys(p)[0]))),
 );
 
+// ---- skills -----------------------------------------------------------------
+const skillBook = read("character_skills.json");
+const skillKeys = Object.keys(skillBook);
+const skillEntries = Object.values(skillBook);
+const allSkills = skillEntries.flatMap((entry) => entry.skills);
+const allRanks = allSkills.flatMap((skill) => Object.values(skill.ranks || {}));
+ok("character_skills covers the roster", rarities.every((name) => skillBook[name]), rarities.filter((n) => !skillBook[n]).join(","));
+ok("character_skills has no extra keys", skillKeys.every((name) => rarities.includes(name)), skillKeys.filter((n) => !rarities.includes(n)).join(","));
+ok("character_skills ids are unique", new Set(skillEntries.map((entry) => entry.id)).size === skillKeys.length);
+ok("character_skills has en/zh/vi character names", skillEntries.every((e) => e.nameEn && e.nameZh && e.nameVi));
+ok("character_skills drops the dummy arcanist", !skillKeys.includes("Machine D III"));
+ok("every skill has a name and an icon", allSkills.every((s) => s.nameEn && s.nameZh && s.nameVi && /^images\/skills\/\d+\.png$/.test(s.icon)));
+ok("every non-ultimate skill has ranks", allSkills.filter((s) => s.type !== "Ultimate").every((s) => Object.keys(s.ranks || {}).length > 0));
+ok("every rank has en/zh/vi text", allRanks.every((r) => r.id && r.descEn && r.descZh && r.descVi));
+ok("rank cost/harmonisation are numbers", allRanks.every((r) => (r.cost === undefined || typeof r.cost === "number") && (r.harmonization === undefined || typeof r.harmonization === "number")));
+ok("ultimates have en/zh text", allSkills.filter((s) => s.type === "Ultimate").every((s) => s.descEn && s.descZh));
+ok(
+  "insights have en/zh/vi text",
+  skillEntries.every((e) => e.insights.length > 0 && e.insights.every((i) => i.nameEn && i.nameZh && i.nameVi && i.descEn && i.descZh && i.descVi)),
+);
+ok("every character has five portrays", skillEntries.every((e) => e.portrays.length === 5 && e.portrays.every((p, i) => p.level === i + 1)));
+
 // ---- misc -------------------------------------------------------------------
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));
 ok("_meta has both versions", !!meta.globalVersion && !!meta.cnVersion, `${meta.globalVersion} / ${meta.cnVersion}`);
