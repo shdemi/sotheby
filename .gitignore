@@ -1,3 +1,6 @@
+# Raw source checkouts cloned locally; never committed
+githubfetch/
+
 # Ignore folder for external references, scratch data, and heavy raw assets
 ignore/
 Reverse-1999-CN-Asset/
