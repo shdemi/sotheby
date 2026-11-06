@@ -129,12 +129,12 @@ try {
   }
 
   // (c) fix a psychube tag
-  model.setPsychubeField("6", "73", "tags", ["ATK", "Heal"]);
-  session.push("retagged chube 6:73");
+  model.setPsychubeField("6", "1579", "tags", ["ATK", "Heal"]);
+  session.push("retagged chube 6:1579");
 
   // (d) mark a psychube as CN-only
-  model.setPsychubeFutureSight("6", "68", true);
-  session.push("chube 6:68 future sight");
+  model.setPsychubeFutureSight("6", "1574", true);
+  session.push("chube 6:1574 future sight");
 
   // (e) team preset: swap a member and mark it essential.
   // The preset is picked from the data so this does not break when presets change.
@@ -228,9 +228,9 @@ try {
     const d = reloaded.character(shapeLess || "Drake");
     if (shapeLess) check("the new shape persisted", d.shape === "T shape", d.shape);
 
-    const chube = reloaded.psychubes.find((p) => p.key === "6:73");
+    const chube = reloaded.psychubes.find((p) => p.key === "6:1579");
     check("psychube tags persisted", chube.tags.join(",") === "ATK,Heal", JSON.stringify(chube.tags));
-    const fs68 = reloaded.psychubes.find((p) => p.key === "6:68");
+    const fs68 = reloaded.psychubes.find((p) => p.key === "6:1574");
     check("psychube future sight persisted", fs68.futureSight === true, String(fs68.futureSight));
 
     const wc = reloaded.team(editedPreset)[0];
@@ -253,8 +253,9 @@ try {
     m.setCnName("Druvis III", "槲寄生");
     m.setTeamSlot(editedPreset, 0, 0, "character", originalSlot.character);
     m.setTeamSlot(editedPreset, 0, 0, "isEssential", originalSlot.is_essential === true);
-    m.setPsychubeFutureSight("6", "68", false);
-    m.setPsychubeField("6", "73", "tags", ["ATK", "Critical"]);
+    m.setPsychubeFutureSight("6", "1574", false);
+    const pristineChube = JSON.parse(originals["psychube_id.json"])["6"].find((p) => p.id === "1579");
+    m.setPsychubeField("6", "1579", "tags", pristineChube.tags);
     if (shapeLess) m.setShape(shapeLess, "");
     m.setFutureSight("Newcomer", false);
     m.setEuphoria("Newcomer", "1", "", false);

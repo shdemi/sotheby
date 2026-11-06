@@ -201,8 +201,8 @@ expectChanged("setTransfer", (m) => m.setTransfer("6", false), ["global_name_tra
 expectChanged("setEuphoria T1", (m) => m.setEuphoria("Druvis III", "1", "Petrify!", false), ["euphoria_list.json"]);
 expectChanged("setEuphoria future flag", (m) => m.setEuphoria("Druvis III", "1", "Petrify", true), ["future_sight.json"]);
 expectChanged("setFutureSkin", (m) => m.setFutureSkin("315503", false), ["future_sight.json"]);
-expectChanged("setPsychubeFutureSight", (m) => m.setPsychubeFutureSight("6", "73", false), ["future_sight.json"]);
-expectChanged("setPsychubeField tags", (m) => m.setPsychubeField("6", "73", "tags", ["ATK"]), ["psychube_id.json"]);
+expectChanged("setPsychubeFutureSight", (m) => m.setPsychubeFutureSight("6", "1579", false), ["future_sight.json"]);
+expectChanged("setPsychubeField tags", (m) => m.setPsychubeField("6", "1579", "tags", ["ATK"]), ["psychube_id.json"]);
 expectChanged("setTeamSlot character", (m) => m.setTeamSlot("Conduit", 0, 0, "character", "Sotheby"), ["team_archetypes.json"]);
 expectChanged("setTeamSlot essential", (m) => {
   const preset = pickPresetWithNonEssential(m);
@@ -284,8 +284,8 @@ console.log("\n=== edit content ===");
 }
 {
   const m = freshModel();
-  m.setPsychubeField("6", "73", "tags", ["ATK", "Heal"]);
-  const item = m.value("psychube_id.json")["6"].find((p) => String(p.id) === "73");
+  m.setPsychubeField("6", "1579", "tags", ["ATK", "Heal"]);
+  const item = m.value("psychube_id.json")["6"].find((p) => String(p.id) === "1579");
   check("tags updated", item.tags.join(",") === "ATK,Heal", JSON.stringify(item.tags));
   check("tags stay inline in the file", /"tags": \["ATK", "Heal"\]/.test(m.doc("psychube_id.json").toString()));
 }
@@ -415,7 +415,7 @@ console.log("\n=== characters are newest first ===");
   const withId = m.characters.filter((n) => m.arcanistIdByCanonical.get(n) !== undefined);
   const withoutId = m.characters.filter((n) => m.arcanistIdByCanonical.get(n) === undefined);
   check("characters without an id are last", m.characters.slice(withId.length).join("|") === withoutId.join("|"));
-  check("only 3F3F has no id", withoutId.join(",") === "3F3F", withoutId.join(","));
+  check("every character has an ArcanistMap id", withoutId.length === 0, withoutId.join(","));
 }
 
 console.log("\n=== psychubes list rarity 6 first ===");
@@ -426,7 +426,7 @@ console.log("\n=== psychubes list rarity 6 first ===");
   const firstFive = m.psychubes.map((p) => p.rarity).indexOf("5");
   check("every 6-star comes before every 5-star", lastSix < firstFive, `last6=${lastSix} first5=${firstFive}`);
   check("all 116 psychubes are listed", m.psychubes.length === 116, String(m.psychubes.length));
-  check("the highest id is first", m.psychubes[0].id === "73", m.psychubes[0].id);
+  check("the highest id is first", m.psychubes[0].id === "1579", m.psychubes[0].id);
   check("the file's own order was 5 then 6", Object.keys(m.value("psychube_id.json"))[0] === "5");
 }
 
@@ -620,41 +620,41 @@ console.log("\n=== addPsychube ===");
   const m = freshModel();
   const original = m.doc("psychube_id.json").toString();
 
-  check("the next id for rarity 6 is 74", m.nextPsychubeId("6") === "74", m.nextPsychubeId("6"));
-  check("the next id for rarity 5 is 44", m.nextPsychubeId("5") === "44", m.nextPsychubeId("5"));
+  check("the next id for rarity 6 is 1580", m.nextPsychubeId("6") === "1580", m.nextPsychubeId("6"));
+  check("the next id for rarity 5 is 4105", m.nextPsychubeId("5") === "4105", m.nextPsychubeId("5"));
 
   const countBefore = m.psychubes.length;
-  m.addPsychube("6", "74", { name: "Brand New Chube", nameCN: "全新心相", tags: ["ATK"], releasePatch: "4.1" });
+  m.addPsychube("6", "1580", { name: "Brand New Chube", nameCN: "全新心相", tags: ["ATK"], releasePatch: "4.1" });
 
   check("the psychube count grew", m.psychubes.length === countBefore + 1, `${countBefore} -> ${m.psychubes.length}`);
   const list = m.value("psychube_id.json")["6"];
-  check("it is first, because ids descend", list[0].id === "74", list[0].id);
+  check("it is first, because ids descend", list[0].id === "1580", list[0].id);
   check("it has the fields given", list[0].name === "Brand New Chube" && list[0].release_patch === "4.1", JSON.stringify(list[0]));
   check("tags render inline", /"tags": \["ATK"\]/.test(m.doc("psychube_id.json").toString()));
   check("only psychube_id.json changed", m.changedFiles().join(",") === "psychube_id.json", m.changedFiles().join(","));
   check("it validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
-  m.removePsychube("6", "74");
+  m.removePsychube("6", "1580");
   check("removing it restores the file byte-for-byte", m.doc("psychube_id.json").toString() === original, "differs");
 
-  // Ids are dense (1..73), so the only way to insert into the middle is to free a
-  // slot first. Re-adding it must put it back where it belongs.
-  const idxBefore = m.value("psychube_id.json")["6"].findIndex((p) => p.id === "72");
-  check("id 72 sits at index 1 to start with", idxBefore === 1, String(idxBefore));
-  m.removePsychube("6", "72");
-  check("it is gone", m.value("psychube_id.json")["6"].findIndex((p) => p.id === "72") === -1);
-  m.addPsychube("6", "72", { name: "Middle Chube" });
+  // Ids are sparse now (game ids), so re-adding a removed one must slot back in
+  // by numeric order rather than at the end.
+  const idxBefore = m.value("psychube_id.json")["6"].findIndex((p) => p.id === "1578");
+  check("id 1578 sits at index 1 to start with", idxBefore === 1, String(idxBefore));
+  m.removePsychube("6", "1578");
+  check("it is gone", m.value("psychube_id.json")["6"].findIndex((p) => p.id === "1578") === -1);
+  m.addPsychube("6", "1578", { name: "Middle Chube" });
 
   const ids = m.value("psychube_id.json")["6"].map((p) => Number(p.id));
   check("re-inserting keeps the list descending", ids.every((v, i) => i === 0 || ids[i - 1] > v), ids.slice(0, 6).join(","));
-  check("and it landed back at index 1", m.value("psychube_id.json")["6"][1].id === "72", m.value("psychube_id.json")["6"][1].id);
+  check("and it landed back at index 1", m.value("psychube_id.json")["6"][1].id === "1578", m.value("psychube_id.json")["6"][1].id);
 
   for (const [label, fn] of [
-    ["a duplicate id", () => m.addPsychube("6", "72", { name: "Dupe" })],
-    ["the reserved id 1", () => m.addPsychube("6", "1", { name: "Reserved" })],
+    ["a duplicate id", () => m.addPsychube("6", "1578", { name: "Dupe" })],
+    ["the reserved special id", () => m.addPsychube("6", "1000", { name: "Reserved" })],
     ["a non-numeric id", () => m.addPsychube("6", "abc", { name: "Bad" })],
-    ["an empty name", () => m.addPsychube("6", "75", { name: "  " })],
-    ["an unknown rarity", () => m.addPsychube("4", "1", { name: "Bad" })],
+    ["an empty name", () => m.addPsychube("6", "1581", { name: "  " })],
+    ["an unknown rarity", () => m.addPsychube("4", "1000", { name: "Bad" })],
   ]) {
     let threw = false;
     try {
@@ -669,13 +669,13 @@ console.log("\n=== addPsychube ===");
 console.log("\n=== a new psychube can be flagged Future Sight ===");
 {
   const m = freshModel();
-  m.addPsychube("6", "74", { name: "CN Only Chube", futureSight: true });
-  check("the flag is in future_sight.json", m.value("future_sight.json").Psychube["6"].includes("74"), JSON.stringify(m.value("future_sight.json").Psychube));
+  m.addPsychube("6", "1580", { name: "CN Only Chube", futureSight: true });
+  check("the flag is in future_sight.json", m.value("future_sight.json").Psychube["6"].includes("1580"), JSON.stringify(m.value("future_sight.json").Psychube));
   check("two files changed", m.changedFiles().sort().join(",") === "future_sight.json,psychube_id.json", m.changedFiles().join(","));
   check("it validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
-  m.removePsychube("6", "74");
-  check("removing it clears the flag too", !m.value("future_sight.json").Psychube["6"].includes("74"));
+  m.removePsychube("6", "1580");
+  check("removing it clears the flag too", !m.value("future_sight.json").Psychube["6"].includes("1580"));
   check("both files are back to their originals", m.changedFiles().length === 0, m.changedFiles().join(","));
 }
 

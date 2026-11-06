@@ -47,6 +47,12 @@ export const SHAPES = ["Z shape", "Plus shape", "T shape", "U shape"];
 export const PSYCHUBE_TAGS = ["ATK", "Critical", "Heal", "Survival", "Support"];
 export const PSYCHUBE_RARITIES = ["6", "5"];
 
+/**
+ * The two count-only psychubes (Gluttony 6★, Greed 5★). Their ids are game ids
+ * (see AGENTS.md §5), so they are no longer the sequential "1" of the old data.
+ */
+export const PSYCHUBE_SPECIAL_IDS = ["1000", "1001"];
+
 /** Team-archetype tags a rotation may carry (mirrors app.js). */
 export const ROTATION_ARCHETYPES = [
   // Raid and Focused Flashback lead the list and never appear together.
@@ -857,7 +863,9 @@ export class Model {
 
     const wanted = String(id).trim();
     if (!/^\d+$/.test(wanted)) throw new Error(`"${wanted}" is not a numeric id.`);
-    if (wanted === "1") throw new Error("Id 1 is reserved for the special chube.");
+    if (PSYCHUBE_SPECIAL_IDS.includes(wanted)) {
+      throw new Error(`Id ${wanted} is reserved for the special chube.`);
+    }
     if (list.some((item) => String(item.id) === wanted)) {
       throw new Error(`Psychube ${rarity}:${wanted} already exists.`);
     }
@@ -2403,7 +2411,7 @@ export function validate(model) {
         if (seenNames.has(lower)) err(`psychube_id.json: name "${item.name}" is used by ${seenNames.get(lower)} and ${label}`);
         else seenNames.set(lower, label);
       }
-      if (id === "1") warn(`${label}: id 1 is the reserved special chube`);
+      if (PSYCHUBE_SPECIAL_IDS.includes(id)) warn(`${label}: id ${id} is the reserved special chube`);
     });
   }
 
