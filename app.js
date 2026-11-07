@@ -9402,7 +9402,7 @@ function renderPsychubeDetail() {
 
       const amps = p.amplifications || [];
       const curAmp = amps.find((a) => a.level === psychubeDetailAmp) || amps[0] || {};
-      let curDesc = isCn && curAmp.descZh ? curAmp.descZh : (curAmp.descEn || curAmp.descZh || "No description");
+      let curDesc = pickLocalizedDesc(curAmp) || "No description";
       curDesc = formatSkillKeywords(curDesc.replace(/\{(\d+(?:\.\d+)?%?)\}/g, "$1"));
 
       const ampBox = host.querySelector("#chube-detail-amp-box");
