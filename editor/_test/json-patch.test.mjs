@@ -205,7 +205,7 @@ console.log("\n=== object properties ===");
   const doc = new JsonDoc(original);
   const keysBefore = Object.keys(doc.value).length;
 
-  doc.setProperty([], "Liang", "Liang Yue");
+  doc.setProperty([], "Joe", "J");
   check("setProperty on an existing key is a no-op", doc.toString() === original, "file changed");
 
   doc.setProperty([], "Test Key", "Test Value");
@@ -213,7 +213,7 @@ console.log("\n=== object properties ===");
   check("new property: valid JSON", parses(out));
   check("new property: present", JSON.parse(out)["Test Key"] === "Test Value");
   check("new property: one key added", Object.keys(JSON.parse(out)).length === keysBefore + 1);
-  check("new property: existing keys untouched", JSON.parse(out)["Liang"] === "Liang Yue");
+  check("new property: existing keys untouched", JSON.parse(out)["Joe"] === "J");
   check(
     "new property: line count grew by one",
     lines(out).length === lines(original).length + 1,

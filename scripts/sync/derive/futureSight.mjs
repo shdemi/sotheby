@@ -14,17 +14,14 @@ import path from "node:path";
 import { RARITY_OFFSET } from "../config.mjs";
 import { writeJson } from "../util.mjs";
 import { table } from "../sources.mjs";
-import { arcanistMap, canonicalName } from "./names.mjs";
+import { canonicalName } from "./names.mjs";
+import { arcanistIds } from "./arcanistMap.mjs";
 import { APP_RARITIES, allEquipRows, isRealPsychube } from "./psychubes.mjs";
-
-function realArcanistIds() {
-  return new Set(arcanistMap().map((c) => c.id));
-}
 
 /** CN-only characters, newest first (CN appends new rows, so reverse its order). */
 export function futureCharacters() {
   const globalIds = new Set(table("global", "character").map((c) => c.id));
-  const arcanists = realArcanistIds();
+  const arcanists = arcanistIds();
   const cn = table("cn", "character");
   const out = [];
   for (let i = cn.length - 1; i >= 0; i--) {
@@ -57,7 +54,7 @@ export function futurePsychubes() {
 /** CN-only skin ids for real arcanists, newest first. */
 export function futureSkins() {
   const globalIds = new Set(table("global", "skin").map((s) => s.id));
-  const arcanists = realArcanistIds();
+  const arcanists = arcanistIds();
   const out = [];
   for (const skin of table("cn", "skin")) {
     if (globalIds.has(skin.id)) continue;

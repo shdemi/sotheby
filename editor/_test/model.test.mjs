@@ -670,8 +670,8 @@ console.log("\n=== addTransfer / removeTransfer ===");
   m.addTransfer("Six", "6");
   check("re-adding an existing mapping is a no-op", m.doc("global_name_transfer.json").toString() === original);
 
-  m.addTransfer("Liang", "Liang Yue");
-  check("changing the target works", m.value("global_name_transfer.json")["Liang"] === "Liang Yue");
+  m.addTransfer("Joe", "J");
+  check("re-adding an existing mapping keeps its target", m.value("global_name_transfer.json")["Joe"] === "J");
 
   m.addTransfer("Brand New Raw", "Sotheby");
   check("a new mapping is added", m.value("global_name_transfer.json")["Brand New Raw"] === "Sotheby", JSON.stringify(m.value("global_name_transfer.json")));

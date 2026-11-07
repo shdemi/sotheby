@@ -98,6 +98,18 @@ ok("profiles have no extra keys", profileKeys.every((name) => rarities.includes(
 ok("profiles have a damage type", profileKeys.every((name) => ["Reality", "Mental"].includes(profiles[name].dmgType)));
 ok("profiles role tags are arrays", profileKeys.every((name) => Array.isArray(profiles[name].roleTags)));
 
+// ---- arcanist map -----------------------------------------------------------
+const arcanistMap = read("ArcanistMap.json");
+const arcanistSkins = arcanistMap.flatMap((entry) => entry.live2d);
+const arcanistSkinIds = new Set(arcanistSkins.map((skin) => String(skin.id)));
+ok("arcanist map is one entry per roster character", arcanistMap.length === rarities.length, `${arcanistMap.length} vs ${rarities.length}`);
+ok("arcanist map ids are unique", new Set(arcanistMap.map((e) => e.id)).size === arcanistMap.length);
+ok("arcanist map drops the dummy arcanist", !arcanistMap.some((e) => e.id === 9998));
+ok("arcanist map has zh + en names and a birthday", arcanistMap.every((e) => e.name && e.nameEng && e.roleBirthday));
+ok("arcanist map has skins", arcanistMap.every((e) => Array.isArray(e.live2d) && e.live2d.length > 0));
+ok("arcanist skin ids are unique", arcanistSkinIds.size === arcanistSkins.length);
+ok("every future-sight skin is in the arcanist map", future.Skin.every((id) => arcanistSkinIds.has(String(id))), future.Skin.filter((id) => !arcanistSkinIds.has(String(id))).join(","));
+
 // ---- resonance shapes -------------------------------------------------------
 const resoShape = read("character_reso_shape.json");
 const patterns = read("shape_patterns.json");

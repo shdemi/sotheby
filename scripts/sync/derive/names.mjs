@@ -9,20 +9,18 @@
  * The game's English text sometimes carries markup (`<i>Lady by the Lake</i>`), so it
  * is stripped. A handful of names still disagree with the roster name the project
  * uses; those live in `maps/name-overrides.json`.
+ *
+ * `global_name_transfer.json` comes from the same two names: the game's own English
+ * label (`nameEng`) mapped onto the canonical key whenever they differ. Legacy
+ * labels the game no longer ships (`Changeling`, `Liang`, `Black Dwarf`) are handled
+ * by `NAME_ALIASES` in app.js, not here.
  */
 import path from "node:path";
-import { SRC, MAPS, EXCLUDED_CHARACTER_IDS } from "../config.mjs";
-import { asArray, readJson, tryReadJson } from "../util.mjs";
+import { MAPS, EXCLUDED_CHARACTER_IDS } from "../config.mjs";
+import { tryReadJson } from "../util.mjs";
 import { table, text } from "../sources.mjs";
 
 let cache = null;
-
-/** The Myssal mapping is the aggregate of characters; it is the raw-name source. */
-export function arcanistMap() {
-  return asArray(readJson(path.join(SRC.assets, "mappings", "ArcanistMap.json"))).filter(
-    (entry) => !EXCLUDED_CHARACTER_IDS.has(entry.id),
-  );
-}
 
 function overrides() {
   const file = path.join(MAPS, "name-overrides.json");
@@ -52,8 +50,6 @@ export function charactersById() {
 function build() {
   const chars = charactersById();
   const override = overrides();
-  const raw = new Map(); // id -> raw Myssal name
-  for (const entry of arcanistMap()) raw.set(entry.id, entry.nameEng || entry.name);
 
   const byId = new Map();
   for (const [id, ch] of chars) {
@@ -63,18 +59,15 @@ function build() {
     byId.set(id, override[name] || name);
   }
 
-  // Myssal may know characters St-Pavlov has not shipped yet; keep their nameEng.
-  for (const [id, name] of raw) {
-    if (!byId.has(id)) byId.set(id, override[name] || name);
-  }
-
+  // The game's own English label, mapped onto the canonical roster key.
   const transfer = {};
-  for (const [id, rawName] of raw) {
+  for (const [id, ch] of chars) {
+    const raw = clean(ch.nameEng);
     const canonical = byId.get(id);
-    if (rawName && canonical && rawName !== canonical) transfer[rawName] = canonical;
+    if (raw && canonical && raw !== canonical) transfer[raw] = canonical;
   }
 
-  cache = { chars, byId, transfer, raw };
+  cache = { chars, byId, transfer };
   return cache;
 }
 
@@ -90,7 +83,21 @@ export function resolveName(name) {
   return identity().transfer[name] ?? name;
 }
 
-/** `{ rawName: canonicalName }` for every character whose raw name differs. */
+/**
+ * One character per canonical name, ascending by game id. The CN server ships a
+ * second APPLe row (3999) that folds into the global one (3028), so the roster and
+ * the generated ArcanistMap stay single-valued. Returns canonical name -> game id.
+ */
+export function charactersByCanonicalName() {
+  const out = new Map();
+  for (const id of [...charactersById().keys()].sort((a, b) => a - b)) {
+    const canonical = canonicalName(id);
+    if (canonical && !out.has(canonical)) out.set(canonical, id);
+  }
+  return out;
+}
+
+/** `{ rawName: canonicalName }` for every character whose game label differs. */
 export function globalNameTransfer() {
   const { transfer } = identity();
   const out = {};
@@ -102,9 +109,7 @@ export function globalNameTransfer() {
 export function nameMap() {
   const chars = charactersById();
   const character = {};
-  for (const entry of arcanistMap()) {
-    const id = entry.id;
-    const name = identity().byId.get(id);
+  for (const [name, id] of charactersByCanonicalName()) {
     const ch = chars.get(id);
     if (!name || !ch) continue;
     const cn = clean(text("zh", ch.name)) || clean(ch.nameEng);

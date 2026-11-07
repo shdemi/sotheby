@@ -21,6 +21,7 @@ import { characterEuphorias } from "./derive/euphorias.mjs";
 import { characterSkills } from "./derive/skills.mjs";
 import { charactersMatsRequired } from "./derive/mats.mjs";
 import { itemsData, itemFormulas } from "./derive/items.mjs";
+import { arcanistMap } from "./derive/arcanistMap.mjs";
 import { collabCharacters, excludeCharacters } from "./derive/curation.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
 
@@ -56,6 +57,7 @@ const files = {
   },
   "global_name_transfer.json": globalNameTransfer(),
   "name_map.json": { character: nameMap().character, skin: {} },
+  "ArcanistMap.json": arcanistMap(),
   "characters_by_rarity.json": charactersByRarity(),
   "characters_by_afflatus.json": charactersByAfflatus(),
   "character_profiles.json": characterProfiles(),

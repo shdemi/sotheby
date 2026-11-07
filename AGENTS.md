@@ -108,7 +108,8 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `character_euphorias.json` | `character_destiny.json`, `character_destiny_facets.json`, `character_destiny_facets_consume.json`, `destiny_facets_ex_level.json` + global `language_*` | **derived**: 46 characters / 55 trees; there is no table named "euphoria" — `destiny` is the internal name. CN-only trees are included (union of both servers); their English lives in `content/translations/euphorias.json` |
 | `skill_glossary.json` | skill/buff effect tables + global `language_*` | |
 | `name_map.json` | `character.json` + `language_en.json` + `language_zh.json` | EN↔CN name pairs |
-| `global_name_transfer.json` | join global↔CN `character.json` on `id` | maps raw CN name → canonical EN name |
+| `global_name_transfer.json` | `character.json → nameEng` + the canonical roster name | maps the game's own English label → canonical key whenever they differ |
+| `ArcanistMap.json` | `character.json`, `skin.json` (global + CN) + global `language_*` | **derived**: 138 entries / 423 skins, ascending by game id; one entry per canonical name (CN APPLe `3999` folds into `3028`); the dummy `9998` and the Myssal-only URL fields are not emitted (§4) |
 | `future_sight.json` | `diff(CN, global)` on characters, equips, skins, destiny | **verified**: 6 chars + 7 psychubes |
 | `stages/*.json` | `chapter.json`, `episode.json`, `battle.json`, `monster*.json`, `tower_permanent_episode.json`, `activity128_*.json` (CN) | already produced by `scripts/build_stages_data.mjs` |
 
@@ -184,10 +185,12 @@ IDs collide across folders (e.g. `620101.png` exists as item, monster and head i
 Insight, afflatus and damage-type icons are static UI art; the pipeline ignores them.
 Trait/tuning icons are still unverified.
 
-`data/ArcanistMap.json` is currently a copy of
-`mappings/ArcanistMap.json` from the Myssal repo (same 139 ids/keys). Prefer
-re-deriving it from St-Pavlov `character.json` + `skin.json` + `language_*` so that
-game data and images have separate sources.
+`data/ArcanistMap.json` is generated from St-Pavlov now (see §3). It is the
+character/skin identity map the app and the editor read: `character.json` (id, zh
+name, `nameEng`, `roleBirthday`) plus `skin.json` (the union of both servers,
+global first so its Chinese language keys win over the CN literals). It is sorted
+by ascending game id and only carries fields something reads, so the Myssal
+mapping file is no longer a data source — only `images/` comes from that repo.
 
 `scripts/sync/assets.mjs` owns the cache (`npm run sync:assets`, `--check` to
 report). It copies four groups, each keyed by game id and each driven by a
@@ -198,14 +201,15 @@ art is downloaded:
 |---|---|---|---|
 | Items + currencies | 526 (8 without art) | `propitem/prop/`, `currencyitem/` | `images/items/icon/<id>.png` |
 | Psychubes | 116 | `equipment/icon/` | `images/psychube_icon/<rarity>/<id>.png` |
-| Character heads | 422 (2 without art) | `headicon_small/` | `images/headicon_small/<skinId>.png` |
+| Character heads | 421 (1 without art) | `headicon_small/` | `images/headicon_small/<skinId>.png` |
 | Skill cards | 453 (4 without art) | `fight/skill/` | `images/skills/<name>.png` |
 
-The 2 heads Myssal never shipped are `302902` (a Schneider skin; Schneider is
-excluded anyway) and `999801` (the dummy `Machine D III`). The 4 skill icons
-Myssal never shipped are Beryl's three crystal variants and `31460151`; they are
-editorial entries in `guide_skills.json` and stay as committed. Signature art is
-not copied: nothing in the app reads it.
+The only head Myssal never shipped is `302902` (a Schneider skin; Schneider is
+excluded anyway); the dummy `Machine D III` is gone from the map, so its
+placeholder head is no longer needed. The 4 skill icons Myssal never shipped are
+Beryl's three crystal variants and `31460151`; they are editorial entries in
+`guide_skills.json` and stay as committed. Signature art is not copied: nothing in
+the app reads it.
 
 ---
 
@@ -510,11 +514,28 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   `singlebg/propitem/prop/<icon|id>.png` (items) and `singlebg/currencyitem/<icon|id>.png`
   (currencies) to `images/items/icon/<id>.png`, `singlebg/equipment/icon/<icon|id>.png` to
   `images/psychube_icon/<rarity>/<id>.png` (116), `singlebg/headicon_small/<skinId>.png`
-  to `images/headicon_small/<skinId>.png` (422) and `singlebg/fight/skill/<name>.png` to
+  to `images/headicon_small/<skinId>.png` (421) and `singlebg/fight/skill/<name>.png` to
   `images/skills/<name>.png` (453, the icons `guide_skills.json` points at). 92 items share
   art through `icon`. The Kornblume `images/items/icon/*.webp` cache is gone. `item.icon` is
   empty when Myssal has no art, and the app skips the `<img>` in that case. Rarity frames
   stay at `images/items/border/<rarity>.webp`.
+- **`ArcanistMap.json` is derived too (Phase 3).** The Myssal mapping file is no longer a
+  data source. The generator keeps `character.json` rows from both servers, one per
+  canonical name (the CN APPLe `3999` folds into global `3028`; the dummy `9998` is
+  dropped), and takes each hero's skins from the union of both `skin.json` tables, global
+  first. It emits only what the app/editor read — `id`, zh name, `nameEng`,
+  `roleBirthday`, and per skin `id`, zh name, `nameEng`, `des`, `characterSkin`,
+  `characterSkinNameEng`, `skinDescription`. The Myssal-only `signature`, `spine`,
+  `cubism` and `alternateSpine` URLs are not emitted, and the file is sorted by ascending
+  game id (138 entries / 423 skins). The game's `nameEng` is newer than the Myssal copy for
+  two heroes — `3056` "Changeling"→"Jessica" and `3110` "Liang"→"Liang Yue" — and that is
+  what the app now shows (both were already covered by `CANONICAL_NAME_OVERRIDES`).
+- **`global_name_transfer.json` now comes from the game.** It maps a character's `nameEng`
+  onto the canonical roster key whenever they differ (9 entries: `Six`, `Thirty-seven`,
+  `Ezra Theodore`, `Matilda Bouanich`, `Joe`, `aliEn T`, `Авксивий`, `Вила`, `Енисей`).
+  The legacy labels the game no longer ships — `Changeling`, `Liang`, `Black Dwarf` — are
+  handled by `NAME_ALIASES` in app.js instead, so the editor's "transfer key must be an
+  ArcanistMap `nameEng`" check stays clean.
 - **Item names changed with the patches.** The legacy file carried old translations
   (`Rhine Gold`, `Alopecurus Pratensis`, `Key of Reverie`, `Golden Herb Incense`, …); the
   generated file uses the current ones (`Rheingold`, `Fox Tail`, `Key of Thought`,
