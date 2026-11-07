@@ -49,8 +49,17 @@ def main() -> int:
     root = os.path.dirname(os.path.abspath(__file__))
     handler = functools.partial(Handler, directory=root)
 
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("127.0.0.1", port), handler) as httpd:
+    # The page fires ~28 requests at once. Plain `TCPServer` serves them one at a
+    # time with a 5-connection accept backlog, so the rest are refused
+    # (ERR_CONNECTION_REFUSED) and a random data file silently never arrives --
+    # which showed up as an empty Glossary/Psychubes tab. Serve each request on
+    # its own thread with a wide backlog instead.
+    class ThreadingServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+        allow_reuse_address = True
+        daemon_threads = True
+        request_queue_size = 128
+
+    with ThreadingServer(("127.0.0.1", port), handler) as httpd:
         print(f"Serving {root}")
         print(f"  app    http://127.0.0.1:{port}/index.html")
         print(f"  editor http://127.0.0.1:{port}/editor/index.html")
