@@ -2276,14 +2276,14 @@ body::before {
 .euphoria-check-thumb {
   position: relative;
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
 }
 
 .euphoria-check-icon {
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   object-fit: cover;
   border: 1px solid rgba(181, 181, 179, 0.35);
   background: rgba(0, 0, 0, 0.4);
@@ -2296,10 +2296,10 @@ body::before {
   position: absolute;
   left: 0;
   bottom: 0;
-  padding: 0 3px;
-  font-size: 0.55rem;
+  padding: 0 5px;
+  font-size: 0.7rem;
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.5;
   letter-spacing: 0.02em;
   color: #f7f7f7;
   background: rgba(0, 0, 0, 0.72);
@@ -8299,9 +8299,18 @@ body.guide-rail-resizing * {
 
 .items-grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  /* Three per row: the rail is narrow, so `auto-fill` only ever fit two 68px
+     stickers and left a ragged column. */
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 8px;
+}
+
+/* Fill the column rather than keeping the fixed 68px sticker size. */
+.items-grid-container .item-sticker {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
 }
 
 .item-sticker {
