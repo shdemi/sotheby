@@ -8335,12 +8335,12 @@ function renderCharacterSkillsSection(name) {
           .join("");
 
         const wTitle = isCn ? currentWeapon.nameZh || currentWeapon.nameEn : currentWeapon.nameEn || currentWeapon.nameZh;
-        const wMainDesc = isCn ? currentWeapon.mainDescZh || currentWeapon.mainDescEn : currentWeapon.mainDescEn || currentWeapon.mainDescZh;
+        const wMainDesc = isCn ? currentWeapon.mainDescZh || currentWeapon.mainDescEn : (currentLang === "vi" ? currentWeapon.mainDescVi || currentWeapon.mainDescEn : currentWeapon.mainDescEn || currentWeapon.mainDescZh);
 
         const combosHtml = (currentWeapon.combos || [])
           .map((c) => {
             const cName = isCn ? c.daggerZh || c.daggerEn : c.daggerEn || c.daggerZh;
-            const cDesc = isCn ? c.descZh || c.descEn : c.descEn || c.descZh;
+            const cDesc = isCn ? c.descZh || c.descEn : (currentLang === "vi" ? c.descVi || c.descEn : c.descEn || c.descZh);
             return `
               <div class="uttu-weapon-combo-card">
                 <span class="uttu-weapon-combo-name">${escapeHtml(cName)}</span>
