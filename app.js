@@ -6719,8 +6719,7 @@ let characterSkillsData = {};
 let characterEuphoriasData = {};
 let skillGlossaryData = {};
 let psychubesDetailedData = {};
-let infoBookActiveTab = "characters"; // "characters" | "items" | "glossary"
-let infoBookItemSubTab = "items"; // "items" | "psychubes"
+let infoBookActiveTab = "characters"; // "characters" | "psychubes" | "items" | "glossary"
 let selectedItemId = null;
 let selectedPsychubeKey = null;
 let selectedGlossaryKey = null;
@@ -8881,13 +8880,11 @@ function characterHasBuild(name) {
 function renderBuilds() {
   const rarityGroup = document.getElementById("builds-rarity-group");
   const afflatusGroup = document.getElementById("builds-afflatus-group");
-  const subtabs = document.getElementById("builds-item-subtabs");
   const searchInput = document.getElementById("builds-search");
 
   if (infoBookActiveTab === "glossary") {
     if (rarityGroup) rarityGroup.style.display = "none";
     if (afflatusGroup) afflatusGroup.style.display = "none";
-    if (subtabs) subtabs.style.display = "none";
     if (searchInput) {
       searchInput.placeholder = t("builds.searchGlossary") || "Search Glossary";
     }
@@ -8895,21 +8892,22 @@ function renderBuilds() {
     return;
   }
 
-  if (infoBookActiveTab === "items") {
+  if (infoBookActiveTab === "psychubes") {
     if (rarityGroup) rarityGroup.style.display = "none";
     if (afflatusGroup) afflatusGroup.style.display = "none";
-    if (subtabs) subtabs.style.display = "flex";
-    if (infoBookItemSubTab === "psychubes") {
-      if (searchInput) searchInput.placeholder = t("builds.searchPsychubes") || "Search Psychubes";
-      renderPsychubesRail();
-    } else {
-      if (searchInput) searchInput.placeholder = t("builds.searchItems") || "Search Items";
-      renderItemsRail();
-    }
+    if (searchInput) searchInput.placeholder = t("builds.searchPsychubes") || "Search Psychubes";
+    renderPsychubesRail();
     return;
   }
 
-  if (subtabs) subtabs.style.display = "none";
+  if (infoBookActiveTab === "items") {
+    if (rarityGroup) rarityGroup.style.display = "none";
+    if (afflatusGroup) afflatusGroup.style.display = "none";
+    if (searchInput) searchInput.placeholder = t("builds.searchItems") || "Search Items";
+    renderItemsRail();
+    return;
+  }
+
   if (rarityGroup) rarityGroup.style.display = "";
   if (afflatusGroup) afflatusGroup.style.display = "";
   if (searchInput) searchInput.placeholder = t("toolbar.search") || "Search Characters";
@@ -10939,66 +10937,35 @@ function setupGuideListeners() {
       storageKey: "r1999_builds_rail_height_v1",
     });
 
-    // InfoBook mode switcher (Characters vs Items vs Glossary)
+    // InfoBook mode switcher (Characters / Psychubes / Items / Glossary)
     const btnTabChars = document.getElementById("builds-tab-characters");
+    const btnTabPsychubes = document.getElementById("builds-tab-psychubes");
     const btnTabItems = document.getElementById("builds-tab-items");
     const btnTabGlossary = document.getElementById("builds-tab-glossary");
-    const subtabItems = document.getElementById("builds-subtab-items");
-    const subtabPsychubes = document.getElementById("builds-subtab-psychubes");
     const buildsSearchInput = document.getElementById("builds-search");
 
     const updateModeTabsUI = () => {
-      [btnTabChars, btnTabItems, btnTabGlossary].forEach((b) => {
+      [btnTabChars, btnTabPsychubes, btnTabItems, btnTabGlossary].forEach((b) => {
         if (b) b.classList.remove("is-active");
       });
       if (infoBookActiveTab === "characters" && btnTabChars) btnTabChars.classList.add("is-active");
+      if (infoBookActiveTab === "psychubes" && btnTabPsychubes) btnTabPsychubes.classList.add("is-active");
       if (infoBookActiveTab === "items" && btnTabItems) btnTabItems.classList.add("is-active");
       if (infoBookActiveTab === "glossary" && btnTabGlossary) btnTabGlossary.classList.add("is-active");
     };
 
-    if (btnTabChars) {
-      btnTabChars.addEventListener("click", () => {
-        infoBookActiveTab = "characters";
-        updateModeTabsUI();
-        renderBuilds();
-        setBuildsView("list");
-      });
-    }
+    const selectMode = (mode) => {
+      infoBookActiveTab = mode;
+      if (buildsSearchInput) buildsSearchInput.value = "";
+      updateModeTabsUI();
+      renderBuilds();
+      setBuildsView("list");
+    };
 
-    if (btnTabItems) {
-      btnTabItems.addEventListener("click", () => {
-        infoBookActiveTab = "items";
-        updateModeTabsUI();
-        renderBuilds();
-        setBuildsView("list");
-      });
-    }
-
-    if (btnTabGlossary) {
-      btnTabGlossary.addEventListener("click", () => {
-        infoBookActiveTab = "glossary";
-        updateModeTabsUI();
-        renderBuilds();
-        setBuildsView("list");
-      });
-    }
-
-    if (subtabItems && subtabPsychubes) {
-      subtabItems.addEventListener("click", () => {
-        infoBookItemSubTab = "items";
-        subtabItems.classList.add("is-active");
-        subtabPsychubes.classList.remove("is-active");
-        renderBuilds();
-        setBuildsView("list");
-      });
-      subtabPsychubes.addEventListener("click", () => {
-        infoBookItemSubTab = "psychubes";
-        subtabPsychubes.classList.add("is-active");
-        subtabItems.classList.remove("is-active");
-        renderBuilds();
-        setBuildsView("list");
-      });
-    }
+    if (btnTabChars) btnTabChars.addEventListener("click", () => selectMode("characters"));
+    if (btnTabPsychubes) btnTabPsychubes.addEventListener("click", () => selectMode("psychubes"));
+    if (btnTabItems) btnTabItems.addEventListener("click", () => selectMode("items"));
+    if (btnTabGlossary) btnTabGlossary.addEventListener("click", () => selectMode("glossary"));
 
     document.querySelectorAll("#builds-rarity-group .filter-btn").forEach((btn) => {
       btn.addEventListener("click", () => {

@@ -10002,42 +10002,6 @@ body.guide-rail-resizing * {
   font-weight: 700;
 }
 
-.builds-item-subtabs {
-  display: flex;
-  width: 100%;
-  gap: 6px;
-  margin-bottom: 8px;
-}
-
-.builds-subtab-btn {
-  flex: 1;
-  height: 28px;
-  padding: 0 10px;
-  font-family: var(--primary-font, Georgia, serif);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #B5B5B3;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.builds-subtab-btn:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.builds-subtab-btn.is-active {
-  color: #ED7D31;
-  background: #2a2825;
-  border-color: #ED7D31;
-  box-shadow: 0 2px 8px rgba(237, 125, 49, 0.2);
-}
-
 /* Psychube detail view */
 .psychube-detail-card {
   display: flex;
