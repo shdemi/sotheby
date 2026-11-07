@@ -7556,6 +7556,7 @@ function showTermPopover(targetEl, termText, charName) {
           nameZh: s.nameZh || s.nameEn,
           descEn: r1.descEn || s.descEn,
           descZh: r1.descZh || s.descZh || r1.descEn || s.descEn,
+          descVi: r1.descVi || s.descVi || "",
           tagEn: s.type || "Skill",
           tagZh: s.type === "Ultimate" ? "至终仪式" : (s.type === "Special" ? "特殊术式" : "神秘术"),
         };
@@ -7570,6 +7571,7 @@ function showTermPopover(targetEl, termText, charName) {
             nameZh: ins.nameZh || ins.nameEn,
             descEn: ins.descEn,
             descZh: ins.descZh || ins.descEn,
+            descVi: ins.descVi || "",
             tagEn: "Insight",
             tagZh: "传承",
           };
@@ -7585,6 +7587,7 @@ function showTermPopover(targetEl, termText, charName) {
             nameZh: w.nameZh || w.nameEn,
             descEn: w.mainDescEn,
             descZh: w.mainDescZh || w.mainDescEn,
+            descVi: w.mainDescVi || "",
             tagEn: "Weapon",
             tagZh: "武器",
           };
@@ -7597,6 +7600,7 @@ function showTermPopover(targetEl, termText, charName) {
               nameZh: cb.daggerZh || cb.daggerEn,
               descEn: cb.descEn,
               descZh: cb.descZh || cb.descEn,
+              descVi: cb.descVi || "",
               tagEn: "Combo",
               tagZh: "组合",
             };
