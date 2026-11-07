@@ -9,7 +9,8 @@
     "serve": "python serve.py 8000",
     "sync": "node scripts/sync/index.mjs",
     "sync:verify": "node scripts/sync/verify.mjs",
-    "sync:assets": "node scripts/sync/assets.mjs"
+    "sync:assets": "node scripts/sync/assets.mjs",
+    "sync:prune": "node scripts/sync/tools/prune-images.mjs"
   },
   "devDependencies": {
     "playwright": "^1.49.0"

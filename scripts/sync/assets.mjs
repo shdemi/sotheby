@@ -93,9 +93,8 @@ function psychubeAssets() {
 
 /**
  * Character heads. The app renders one per skin of `data/ArcanistMap.json`
- * (and skips skin ids longer than six digits, which are concept rows). That
- * file is still the Myssal mapping; re-deriving it from St-Pavlov
- * `character.json` + `skin.json` is the outstanding item noted in AGENTS.md §4.
+ * (and skips skin ids longer than six digits, which are concept rows), so the
+ * map's skin ids are the whole head set.
  */
 function headAssets() {
   const map = readJson(path.join(OUT, "ArcanistMap.json"));

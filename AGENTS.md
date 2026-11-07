@@ -211,6 +211,27 @@ Beryl's three crystal variants and `31460151`; they are editorial entries in
 `guide_skills.json` and stay as committed. Signature art is not copied: nothing in
 the app reads it.
 
+`scripts/sync/tools/prune-images.mjs` keeps `images/` honest (`npm run sync:prune`,
+`--delete` to act). It prunes two things and reports everything else:
+
+- **dead directories** — a folder under `images/` whose path prefix
+  (`images/<dir>/`) occurs nowhere in the shipped text. Every image path in the
+  codebase names its folder literally and only interpolates the leaf, so such a
+  folder cannot be reached. This is what retired `attribute/`, `bossrush/`,
+  `fight/`, `headicon_middle/`, `headicon_monster/` and `arcanists/misc/`.
+- **stale cache files** — the generated caches (`items`, `psychube_icon`,
+  `headicon_small`, `skills`, `arcanists/euphoria`, `shape_pattern`) are reduced to
+  the set the data names, plus any literal reference found in the repo.
+
+It is idempotent (a second run reports zero) and refuses to prune a file that its
+own needed set names. `images/dungeon/` is left whole on purpose: `data/stages/*.json`
+references it and stage data is unfinished (§10.1), so unused covers stay until
+Phase 6. `images/.git/` (a nested checkout) is never touched.
+
+After the first prune `images/` went from 8,251 files / 337.7 MB to 1,801 files /
+90.8 MB. `npm run sync:assets --check` reports the same coverage before and after,
+which is the invariant: pruning removes only what the data does not name.
+
 ---
 
 ## 5. Psychube re-key migration (id → game id) — DONE
@@ -387,7 +408,8 @@ npm test
 # Data pipeline (Phase 1)
 npm run sync          # writes every generated file under data/
 npm run sync:verify   # asserts the invariants (rarity, psychubes, future sight, items)
-npm run sync:assets   # copies item artwork from Myssal into images/items/icon/
+npm run sync:assets   # fills the images/ cache from Myssal (items, psychubes, heads, skills)
+npm run sync:prune    # reports unreachable art under images/ (--delete to remove)
 
 # Stages data (existing)
 node scripts/build_stages_data.mjs
