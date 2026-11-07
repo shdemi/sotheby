@@ -2056,6 +2056,41 @@ function getEuphoriaDisplayName(name, tier) {
   return `Euphoria ${tier} (${tag})`;
 }
 
+/**
+ * The character editor labels each Euphoria checkbox with the tree's icon
+ * (`images/arcanists/euphoria/<charId>_<tier>.webp`) so the checkbox reads at a
+ * glance. Ezra and J never shipped art, so those fall back to the tree name.
+ */
+function setEuphoriaCheckLabel(host, name, tier) {
+  if (!host) return;
+  const displayName = getEuphoriaDisplayName(name, tier);
+  host.textContent = displayName;
+
+  const mats = getCharacterMats(name);
+  const charId = mats && mats.id;
+  if (!charId || !getEligibleEuphoriaLevels(name).includes(tier)) return;
+
+  const img = document.createElement("img");
+  img.className = "euphoria-check-icon";
+  img.alt = displayName;
+  img.title = displayName;
+  // A missing file keeps the text label instead of showing a broken image.
+  img.addEventListener("error", () => {
+    host.textContent = displayName;
+  }, { once: true });
+  img.src = `images/arcanists/euphoria/${charId}_${tier}.webp`;
+
+  const thumb = document.createElement("span");
+  thumb.className = "euphoria-check-thumb";
+  const badge = document.createElement("span");
+  badge.className = "euphoria-check-tier";
+  badge.textContent = fmtEuphoria(tier);
+  thumb.append(img, badge);
+
+  host.textContent = "";
+  host.appendChild(thumb);
+}
+
 function getEligibleEuphoriaLevels(name) {
   const canonical = resolveCharacterName(name);
   if (!canonical) return [];
@@ -3483,10 +3518,10 @@ function updateModalView() {
   }
 
   if (labelTextE1) {
-    labelTextE1.textContent = getEuphoriaDisplayName(currentEditingName || "", 1);
+    setEuphoriaCheckLabel(labelTextE1, currentEditingName || "", 1);
   }
   if (labelTextE2) {
-    labelTextE2.textContent = getEuphoriaDisplayName(currentEditingName || "", 2);
+    setEuphoriaCheckLabel(labelTextE2, currentEditingName || "", 2);
   }
 
   checkE1.checked = !!tempEditState.e1 && eligibleEuphoriaLevels.includes(1);
