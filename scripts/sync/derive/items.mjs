@@ -21,15 +21,41 @@
  * `item_formulas.json` is the Wishing Spring crafting list, keyed by the id of
  * the produced item (`formula.produce`), with `costMaterial` + `costScore` as
  * the inputs.
+ *
+ * Two editorial filters keep the list usable: a row without artwork is dropped
+ * (a sticker with no icon is a broken entry), and rows that share a display
+ * name collapse to one, because the game reissues the same event currency under
+ * a fresh id every patch.
  */
 import fs from "node:fs";
 import path from "node:path";
-import { CONTENT, MAPS, RARITY_OFFSET, SRC } from "../config.mjs";
+import { CONTENT, MAPS, RARITY_OFFSET, ROOT, SRC } from "../config.mjs";
 import { lookup, stripMarkup, table } from "../sources.mjs";
 import { parseMaterialList, sortKeys, tryReadJson } from "../util.mjs";
 
 const ITEM_ICON_DIR = path.join(SRC.assets, "singlebg", "propitem", "prop");
 const CURRENCY_ICON_DIR = path.join(SRC.assets, "singlebg", "currencyitem");
+
+/** Static rarity frames that ship with the site (`images/items/border/*.webp`). */
+const ITEM_BORDER_DIR = path.join(ROOT, "images", "items", "border");
+let borderFrames = null;
+
+/**
+ * The frame path for a rarity, or "" when that frame is not shipped. The game
+ * has no rarity-1 frame art, and an `<img>` pointing at a missing file logs a
+ * console error, so a frameless rarity is left unframed instead.
+ */
+function borderFrame(rarity) {
+  if (!rarity) return "";
+  if (!borderFrames) {
+    try {
+      borderFrames = new Set(fs.readdirSync(ITEM_BORDER_DIR));
+    } catch {
+      borderFrames = new Set();
+    }
+  }
+  return borderFrames.has(`${rarity}.webp`) ? `images/items/border/${rarity}.webp` : "";
+}
 
 /** filenames present in an asset folder, cached per folder */
 function artwork(folder) {
@@ -68,7 +94,13 @@ function categories() {
   return out;
 }
 
-const asText = (value) => stripMarkup(value || "").trim();
+// The game uses non-breaking spaces in a few names ("Wish in a Bottle"), which
+// would break search and name lookups, so collapse them to plain spaces.
+const asText = (value) =>
+  stripMarkup(value || "")
+    .replace(/[\u00a0\u2000-\u200b\u3000]/g, " ")
+    .replace(/[ \t]+/g, " ")
+    .trim();
 
 /** The shared item shape. `icon` stays empty when Myssal has no artwork. */
 function makeItem({ id, nameEn, nameZh, rarity, category, game, overlay, art }) {
@@ -90,7 +122,7 @@ function makeItem({ id, nameEn, nameZh, rarity, category, game, overlay, art }) 
     usageVi: overlay.usageVi || "",
     isReleased: true,
     icon: art ? `images/items/icon/${id}.png` : "",
-    border: rarity ? `images/items/border/${rarity}.webp` : "",
+    border: borderFrame(rarity),
   };
 }
 
@@ -197,7 +229,22 @@ export function itemsData() {
     (a, b) => rank(a) - rank(b) || b.rarity - a.rarity || a.id - b.id,
   );
 
-  return entries;
+  // A sticker without art is a broken row in the list, so it is not shipped.
+  // The game also reissues the same event currency under a new id every patch
+  // (Reading Chance, UTTU Points, UTTU Voucher, ...), so one row per name is
+  // kept: the one with the most text, falling back to the lowest id.
+  const completeness = (entry) =>
+    (entry.description ? 2 : 0) + (entry.usage && entry.usage !== "DNT" ? 1 : 0);
+  const byName = new Map();
+  for (const entry of entries) {
+    if (!entry.icon) continue;
+    const previous = byName.get(entry.name);
+    if (!previous || completeness(entry) > completeness(previous)) {
+      byName.set(entry.name, entry);
+    }
+  }
+
+  return [...byName.values()];
 }
 
 export function itemFormulas(knownIds) {

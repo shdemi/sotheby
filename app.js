@@ -6801,10 +6801,10 @@ function renderItemStickerHtml(itemOrName, qty = null, extraClass = "") {
   const qtyHtml = qty !== null && qty !== undefined ? `<span class="item-sticker-qty">${formatMaterialQuantity(qty)}</span>` : "";
   const title = escapeHtml(item.name || "");
   const iconSrc = item.icon || "";
-  const borderSrc = item.rarity ? `images/items/border/${item.rarity}.webp` : item.border;
+  const borderSrc = item.border || "";
   return `
     <div class="item-sticker ${extraClass}" data-item-id="${item.id}" data-item-name="${escapeHtml(item.name)}" title="${title}">
-      <img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" loading="lazy" />
+      ${borderSrc ? `<img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" loading="lazy" />` : ""}
       ${iconSrc ? `<img src="${escapeHtml(iconSrc)}" alt="${title}" class="item-sticker-img" loading="lazy" />` : ""}
       ${qtyHtml}
     </div>
@@ -9080,13 +9080,13 @@ function renderItemDetail() {
     : "";
 
   const iconSrc = item.icon || "";
-  const borderSrc = item.rarity ? `images/items/border/${item.rarity}.webp` : item.border;
+  const borderSrc = item.border || "";
 
   host.innerHTML = `
     <div class="material-detail-card">
       <div class="material-detail-hero">
         <div class="material-detail-icon-wrap">
-          <img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" />
+          ${borderSrc ? `<img src="${escapeHtml(borderSrc)}" alt="" class="item-sticker-border" />` : ""}
           ${iconSrc ? `<img src="${escapeHtml(iconSrc)}" alt="" class="item-sticker-img" />` : ""}
         </div>
         <div class="material-detail-info">
