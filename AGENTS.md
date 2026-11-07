@@ -189,6 +189,24 @@ Trait/tuning icons are still unverified.
 re-deriving it from St-Pavlov `character.json` + `skin.json` + `language_*` so that
 game data and images have separate sources.
 
+`scripts/sync/assets.mjs` owns the cache (`npm run sync:assets`, `--check` to
+report). It copies four groups, each keyed by game id and each driven by a
+generated `data/` file (skills by `content/guide_skills.json`) so only showable
+art is downloaded:
+
+| Group | Needed | Source | Local path |
+|---|---|---|---|
+| Items + currencies | 526 (8 without art) | `propitem/prop/`, `currencyitem/` | `images/items/icon/<id>.png` |
+| Psychubes | 116 | `equipment/icon/` | `images/psychube_icon/<rarity>/<id>.png` |
+| Character heads | 422 (2 without art) | `headicon_small/` | `images/headicon_small/<skinId>.png` |
+| Skill cards | 453 (4 without art) | `fight/skill/` | `images/skills/<name>.png` |
+
+The 2 heads Myssal never shipped are `302902` (a Schneider skin; Schneider is
+excluded anyway) and `999801` (the dummy `Machine D III`). The 4 skill icons
+Myssal never shipped are Beryl's three crystal variants and `31460151`; they are
+editorial entries in `guide_skills.json` and stay as committed. Signature art is
+not copied: nothing in the app reads it.
+
 ---
 
 ## 5. Psychube re-key migration (id → game id) — DONE
@@ -488,12 +506,15 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   `type#id#qty`; the inputs are `costMaterial` *and* `costScore` (the latter is the
   Sharpodonty fee, which legacy Kornblume dropped for two recipes). Keys are the produced
   item ids, and only recipes whose output is in `items.json` are kept (40).
-- **Item artwork is keyed by game id.** `npm run sync:assets` copies
+- **Artwork is keyed by game id.** `npm run sync:assets` copies
   `singlebg/propitem/prop/<icon|id>.png` (items) and `singlebg/currencyitem/<icon|id>.png`
-  (currencies) to `images/items/icon/<id>.png`; 92 items share art through `icon`. The
-  Kornblume `images/items/icon/*.webp` cache is gone. `item.icon` is empty when Myssal has
-  no art, and the app skips the `<img>` in that case. Rarity frames stay at
-  `images/items/border/<rarity>.webp`.
+  (currencies) to `images/items/icon/<id>.png`, `singlebg/equipment/icon/<icon|id>.png` to
+  `images/psychube_icon/<rarity>/<id>.png` (116), `singlebg/headicon_small/<skinId>.png`
+  to `images/headicon_small/<skinId>.png` (422) and `singlebg/fight/skill/<name>.png` to
+  `images/skills/<name>.png` (453, the icons `guide_skills.json` points at). 92 items share
+  art through `icon`. The Kornblume `images/items/icon/*.webp` cache is gone. `item.icon` is
+  empty when Myssal has no art, and the app skips the `<img>` in that case. Rarity frames
+  stay at `images/items/border/<rarity>.webp`.
 - **Item names changed with the patches.** The legacy file carried old translations
   (`Rhine Gold`, `Alopecurus Pratensis`, `Key of Reverie`, `Golden Herb Incense`, …); the
   generated file uses the current ones (`Rheingold`, `Fox Tail`, `Key of Thought`,

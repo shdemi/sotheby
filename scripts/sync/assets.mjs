@@ -1,77 +1,170 @@
 /**
- * Item artwork: Myssal -> `images/items/icon/<gameId>.png`.
- *
- * `data/items.json` lists which items exist and whether they have art (`icon`
- * is empty when they do not). This script copies the matching PNG out of the
- * Myssal checkout, keyed by the game id so the cache is stable across patches:
- *
- *   item       singlebg/propitem/prop/<icon or id>.png
- *   currency   singlebg/currencyitem/<icon or id>.png
+ * Asset cache: Myssal -> `images/`, keyed by game id.
  *
  *   node scripts/sync/assets.mjs [--check]
  *
- * `--check` only reports what is missing or stale (used by `sync:verify`).
- * Everything under `images/` is committed; this script is how it got there.
+ * Four groups, each driven by a generated `data/` file (or the hand-authored
+ * `content/guide_skills.json`) so the cache only holds art the app can show:
+ *
+ *   items      data/items.json         singlebg/propitem/prop/<icon|id>.png
+ *                                      singlebg/currencyitem/<icon|id>.png
+ *                  -> images/items/icon/<id>.png
+ *   psychubes  data/psychube_id.json   singlebg/equipment/icon/<icon|id>.png
+ *                  -> images/psychube_icon/<rarity>/<id>.png
+ *   heads      data/ArcanistMap.json   singlebg/headicon_small/<skinId>.png
+ *                  -> images/headicon_small/<skinId>.png
+ *   skills     content/guide_skills.json  singlebg/fight/skill/<name>.png
+ *                  -> images/skills/<name>.png
+ *
+ * Rows whose art Myssal does not ship are reported, not invented: the app skips
+ * the `<img>` (items), has no skin entry (heads), or keeps the editorial icon
+ * already in the repo (skills).
+ *
+ * Signature art is not copied: nothing in the app reads it.
+ *
+ * `--check` only reports (see `npm run sync:verify`). Everything under
+ * `images/` is committed; this script is how it got there.
  */
 import fs from "node:fs";
 import path from "node:path";
-import { OUT, ROOT, SRC } from "./config.mjs";
+import { CONTENT, OUT, ROOT, SRC } from "./config.mjs";
 import { readJson } from "./util.mjs";
 import { table } from "./sources.mjs";
 
-const ITEM_SRC = path.join(SRC.assets, "singlebg", "propitem", "prop");
-const CURRENCY_SRC = path.join(SRC.assets, "singlebg", "currencyitem");
-const DEST = path.join(ROOT, "images", "items", "icon");
-
 const check = process.argv.includes("--check");
 
-const items = readJson(path.join(OUT, "items.json"));
-const itemRows = new Map(table("global", "item").map((row) => [row.id, row]));
-const currencyRows = new Map(table("global", "currency").map((row) => [row.id, row]));
-
-const sourceFor = (id) => {
-  const item = itemRows.get(id);
-  if (item) {
-    for (const name of [String(item.icon), String(item.id)]) {
-      const file = path.join(ITEM_SRC, `${name}.png`);
-      if (fs.existsSync(file)) return file;
-    }
-  }
-  const currency = currencyRows.get(id);
-  if (currency) {
-    for (const name of [String(currency.icon), String(currency.id)]) {
-      const file = path.join(CURRENCY_SRC, `${name}.png`);
-      if (fs.existsSync(file)) return file;
-    }
-  }
-  return null;
+const DIRS = {
+  item: path.join(SRC.assets, "singlebg", "propitem", "prop"),
+  currency: path.join(SRC.assets, "singlebg", "currencyitem"),
+  equipment: path.join(SRC.assets, "singlebg", "equipment", "icon"),
+  equipmentDefault: path.join(SRC.assets, "singlebg", "equip_defaulticon"),
+  head: path.join(SRC.assets, "singlebg", "headicon_small"),
+  skill: path.join(SRC.assets, "singlebg", "fight", "skill"),
 };
 
-if (!check) fs.mkdirSync(DEST, { recursive: true });
-
-let copied = 0;
-let present = 0;
-const missing = [];
-for (const item of items) {
-  const target = path.join(DEST, `${item.id}.png`);
-  const exists = fs.existsSync(target);
-  const source = sourceFor(item.id);
-  if (!source) {
-    missing.push(item.id);
-    continue;
+/** First `<name>.png` that exists in `folder`, out of the given candidates. */
+function pick(folder, names) {
+  for (const name of names) {
+    if (name === undefined || name === null || name === "") continue;
+    const file = path.join(folder, `${name}.png`);
+    if (fs.existsSync(file)) return file;
   }
-  if (exists) {
-    present++;
-    continue;
-  }
-  if (!check) fs.copyFileSync(source, target);
-  copied++;
+  return null;
 }
 
-if (check) {
-  console.log(`items: ${present}/${items.length} icons present, ${missing.length} without artwork`);
-  if (missing.length) console.log(`  no artwork: ${missing.join(", ")}`);
-} else {
-  console.log(`items: copied ${copied}, already present ${present}, no artwork ${missing.length}`);
-  if (missing.length) console.log(`  no artwork: ${missing.join(", ")}`);
+/** Items and currencies, exactly as `data/items.json` lists them. */
+function itemAssets() {
+  const items = readJson(path.join(OUT, "items.json"));
+  const itemRows = new Map(table("global", "item").map((row) => [row.id, row]));
+  const currencyRows = new Map(table("global", "currency").map((row) => [row.id, row]));
+
+  return items.map((entry) => {
+    const item = itemRows.get(entry.id);
+    const currency = currencyRows.get(entry.id);
+    const source =
+      (item && pick(DIRS.item, [item.icon, item.id])) ||
+      (currency && pick(DIRS.currency, [currency.icon, currency.id])) ||
+      null;
+    return { id: entry.id, dest: path.join("images", "items", "icon", `${entry.id}.png`), source };
+  });
+}
+
+/** Psychube icons, one folder per app rarity (`<rarity>:<equip.id>`). */
+function psychubeAssets() {
+  const book = readJson(path.join(OUT, "psychube_id.json"));
+  const equips = new Map();
+  for (const server of ["global", "cn"]) {
+    for (const row of table(server, "equip")) equips.set(row.id, row);
+  }
+
+  const assets = [];
+  for (const [rarity, list] of Object.entries(book)) {
+    for (const entry of list) {
+      const id = Number(entry.id);
+      const equip = equips.get(id);
+      const source = equip
+        ? pick(DIRS.equipment, [equip.icon, equip.id]) || pick(DIRS.equipmentDefault, [equip.icon])
+        : null;
+      assets.push({ id, dest: path.join("images", "psychube_icon", rarity, `${id}.png`), source });
+    }
+  }
+  return assets;
+}
+
+/**
+ * Character heads. The app renders one per skin of `data/ArcanistMap.json`
+ * (and skips skin ids longer than six digits, which are concept rows). That
+ * file is still the Myssal mapping; re-deriving it from St-Pavlov
+ * `character.json` + `skin.json` is the outstanding item noted in AGENTS.md §4.
+ */
+function headAssets() {
+  const map = readJson(path.join(OUT, "ArcanistMap.json"));
+  const ids = new Set();
+  for (const entry of Object.values(map)) {
+    for (const skin of entry.live2d || []) {
+      const id = String(skin.id || "");
+      if (id && id.length <= 6) ids.add(Number(id));
+    }
+  }
+  return [...ids].map((id) => ({
+    id,
+    dest: path.join("images", "headicon_small", `${id}.png`),
+    source: pick(DIRS.head, [id]),
+  }));
+}
+
+/** Skill card art referenced by the hand-authored `content/guide_skills.json`. */
+function skillAssets() {
+  const guide = readJson(path.join(CONTENT, "guide_skills.json"));
+  const icons = new Set();
+  for (const list of Object.values(guide)) {
+    for (const row of Array.isArray(list) ? list : []) {
+      if (row && row.icon) icons.add(row.icon);
+    }
+  }
+  return [...icons].map((icon) => ({
+    id: path.basename(icon),
+    dest: icon,
+    source: pick(DIRS.skill, [path.basename(icon, ".png")]),
+  }));
+}
+
+const groups = [
+  ["items", itemAssets()],
+  ["psychubes", psychubeAssets()],
+  ["heads", headAssets()],
+  ["skills", skillAssets()],
+];
+
+for (const [name, assets] of groups) {
+  let copied = 0;
+  let present = 0;
+  const unsourced = [];
+  const absent = [];
+
+  for (const asset of assets) {
+    if (!asset.source) {
+      unsourced.push(asset.id);
+      continue;
+    }
+    const target = path.join(ROOT, asset.dest);
+    if (fs.existsSync(target)) {
+      present++;
+      continue;
+    }
+    if (!check) {
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.copyFileSync(asset.source, target);
+    }
+    copied++;
+    absent.push(asset.id);
+  }
+
+  const detail = [`${present}/${assets.length} present`];
+  if (!check) detail.push(`${copied} copied`);
+  else if (absent.length) detail.push(`${absent.length} missing`);
+  detail.push(`${unsourced.length} without artwork`);
+  console.log(`${name}: ${detail.join(", ")}`);
+  if (absent.length && check) console.log(`  not copied yet: ${absent.join(", ")}`);
+  if (unsourced.length) console.log(`  no artwork: ${unsourced.join(", ")}`);
 }
