@@ -12673,12 +12673,26 @@ body.sim-mode {
   z-index: 10000;
   overflow-y: auto;
   overscroll-behavior: contain;
-  /* The app's own background art, not an invented gradient. */
-  background: var(--bg-color) url("images/background.png") center / cover no-repeat;
-  background-attachment: fixed;
+  background-color: var(--bg-color);
   color: var(--text-primary);
   font-family: var(--main-font-family);
   animation: sim-fade 200ms ease-out;
+}
+
+/* The app's own background art, not an invented gradient — painted on a fixed layer
+   exactly like the main page's `body::before`. Do not put it on `.sim-view` itself with
+   `background-attachment: fixed`: iOS Safari does not support it, sizes the image against
+   the scrolling element's content box instead and blows the 1920x800 art up into a few
+   giant pixels (the phone-only "torn background"). `.sim-view` is `position: fixed` with
+   a z-index, so it is a stacking context and the negative layer stays inside it: above
+   the panel's colour, below the shell. */
+.sim-view::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("images/background.png") center / cover no-repeat;
+  pointer-events: none;
+  z-index: -1;
 }
 
 @keyframes sim-fade {

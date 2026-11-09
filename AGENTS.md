@@ -820,6 +820,13 @@ share pane was therefore **blank on a phone**. `.sim-build-card .builds-detail
 { display: flex }` sits after that media query on purpose (same specificity, later in the
 file) and keeps the copied pane visible at every width.
 
+The wallpaper is painted on `.sim-view::before` (`position: fixed` + `inset: 0`), the same
+trick as the app's `body::before`, **not** as `background-attachment: fixed` on the
+scrolling overlay: iOS Safari does not support fixed backgrounds, sizes the 1920x800 art
+against the scroll container's content box instead, and the page shows a few giant torn
+pixels. The overlay is `position: fixed` with a z-index (so it is a stacking context), which
+keeps the negative layer above the panel colour and below the shell.
+
 **Share buttons.** Each team card's head carries an icon-only button
 (`.btn-team-share`, `images/random_icon/share_icon.png`) as does the InfoBook character
 build hero (`.builds-share-btn`). Both call `copyShareLink()` → `guideCopyText()` and
