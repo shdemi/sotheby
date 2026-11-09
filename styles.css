@@ -12757,12 +12757,16 @@ body.sim-mode {
    `.team-slots`, `.team-slot*`), so this section only sizes the single card:
    the app's board already sits on `images/background.png`, and so does the page. */
 
+/* The card is the export card, so it takes the same width as the framed build
+   pane below it rather than a narrower column. `width: 100%` matters: a centring
+   `margin: auto` alone would let the grid shrink to its content, and a member
+   whose art failed to load would then squeeze the whole card. */
 .sim-team-list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   padding: 0;
-  max-width: 820px;
+  width: 100%;
   margin: 0 auto;
 }
 
