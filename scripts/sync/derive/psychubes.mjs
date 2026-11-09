@@ -73,7 +73,15 @@ export function psychubeId() {
   for (const rarity of APP_RARITIES) {
     out[String(rarity)] = rows[rarity].map(({ row }) => ({
       id: String(row.id),
-      name: String(row.name_en || text("en", row.name) || row.name || "").trim(),
+      // The language table is the display name; `equip.name_en` is the stale
+      // internal label the CN client ships for some rows ("The Unknown Artist"
+      // vs. the shipped "The Loner"), so it is only a fallback.
+      name: String(
+        (String(row.name ?? "").startsWith("language_") ? text("en", row.name) : "") ||
+          row.name_en ||
+          row.name ||
+          ""
+      ).trim(),
       nameCN: String(text("zh", row.name) || "").trim(),
       tags: labels(row.tag),
       release_patch: release[row.id] ? String(release[row.id]) : "",

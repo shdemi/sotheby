@@ -1,4 +1,11 @@
 {
+  "3066": [
+    { "slot": 4, "subSlot": "Special 1", "type": "Special", "ranks": [306601511], "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3124": [
+    { "slot": 4, "subSlot": "Special 1", "type": "Special", "ranks": [31240101], "badge": { "en": "Versatile", "zh": "万能" } },
+    { "slot": 5, "subSlot": "Special 2", "type": "Special", "ranks": [31240102], "badge": { "en": "Versatile", "zh": "万能" } }
+  ],
   "3134": [
     { "slot": 4, "subSlot": "Blue", "type": "Special", "ranks": [31340161, 31340162, 31340163] },
     { "slot": 4, "subSlot": "Purple", "type": "Special", "ranks": [31340164, 31340165, 31340166] },
@@ -8,5 +15,17 @@
     { "slot": 1, "subSlot": "Bendith", "type": "Incantation", "ranks": [31460211] },
     { "slot": 2, "subSlot": "Bendith", "type": "Incantation", "ranks": [31460221] },
     { "slot": 4, "subSlot": "Feast Call", "type": "Special", "ranks": [31460181] }
+  ],
+  "3147": [
+    { "slot": 4, "subSlot": "Special 1", "type": "Special", "ranks": [31470131], "badge": { "en": "Versatile", "zh": "万能" } }
+  ],
+  "3155": [
+    { "slot": 4, "subSlot": "Special 1", "type": "Special", "ranks": [31550151], "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3156": [
+    { "slot": 4, "subSlot": "Special 1", "type": "Special", "ranks": [31560182, 31560183, 31560184], "badge": { "en": "Energy", "zh": "交感" } }
+  ],
+  "3159": [
+    { "slot": 4, "subSlot": "Special 1", "type": "Special", "ranks": [31590151], "badge": { "en": "Attack", "zh": "攻击" } }
   ]
 }

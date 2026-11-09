@@ -15,6 +15,13 @@
       "release_patch": "1.0"
     },
     {
+      "id": "1452",
+      "name": "The Path to Perfection",
+      "nameCN": "完满之路",
+      "tags": ["Support"],
+      "release_patch": ""
+    },
+    {
       "id": "1451",
       "name": "Living in the Moment",
       "nameCN": "当下之喜",
@@ -142,7 +149,7 @@
     },
     {
       "id": "1433",
-      "name": "The Unknown Artist",
+      "name": "The Loner",
       "nameCN": "无人问津",
       "tags": ["ATK"],
       "release_patch": "2.1"
@@ -303,6 +310,20 @@
     }
   ],
   "6": [
+    {
+      "id": "1581",
+      "name": "An Edible Puzzle",
+      "nameCN": "可食用谜题",
+      "tags": ["ATK", "Critical"],
+      "release_patch": ""
+    },
+    {
+      "id": "1580",
+      "name": "The Coffin of Purity",
+      "nameCN": "纯洁的棺床",
+      "tags": ["Survival", "Support"],
+      "release_patch": ""
+    },
     {
       "id": "1579",
       "name": "Flows in All Things Alike",
@@ -739,7 +760,7 @@
     },
     {
       "id": "1512",
-      "name": "The Carat of A Heart",
+      "name": "The Carat of a Heart",
       "nameCN": "可度量之心",
       "tags": ["ATK", "Critical"],
       "release_patch": "1.3"

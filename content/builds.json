@@ -1356,5 +1356,10 @@
   "Output": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUEpCQ"
 },
     "pattern": "Hyperphrenia",
-    "psychubes": ["Family Mentor"]}
+    "psychubes": ["Family Mentor"]},
+  "Perchta": {"resonance": {
+  "R10-15": "AvwlNFU0UzwDPBM6JDkAMBIwEDAwTENIMkhCTFImUA=="
+},
+    "psychubes": ["Aurora After Winter", "The Coffin of Purity"],
+    "pattern": "Overindulgence"}
 }

@@ -8,7 +8,7 @@
   <meta name="description" content="Suitcase. With information. R1999." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <!-- html2canvas for exporting high quality screenshot -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -109,11 +109,11 @@
           <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
             <span data-i18n="toolbar.teams">Teams</span><img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
           </button>
-          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
-            <span data-i18n="toolbar.builds">InfoBook</span><img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
-          </button>
           <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-rotations" title="Skill Rotations" data-i18n-title="rotations.title" aria-label="Skill Rotations" data-i18n-aria-label="rotations.title">
             <span data-i18n="toolbar.rotations">Rotations</span><img src="images/random_icon/Rotation_icon.png" alt="" class="btn-team-icon" />
+          </button>
+          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
+            <span data-i18n="toolbar.builds">InfoBook</span><img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
           </button>
         </div>
 
@@ -1130,7 +1130,6 @@
           <div class="setting-label-row">
             <label class="setting-label" data-i18n="label.showcaseTiersFull">Showcase Tiers (Top-to-Bottom Evaluation)</label>
             <div style="display: flex; gap: 6px; align-items: center;">
-              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-preset-tier"><span data-i18n="action.addUnbuiltShort">+ Unbuilt</span></button>
               <button type="button" class="btn btn-secondary btn-sm" id="btn-add-tier"><span data-i18n="action.addCharacterShort">+ Character</span></button>
               <button type="button" class="btn btn-secondary btn-sm" id="btn-add-chube-tier"><span data-i18n="action.addPsychubeShort">+ Psychube</span></button>
             </div>
@@ -1247,7 +1246,8 @@
           <div class="builds-mode-group" role="tablist">
             <button type="button" class="btn btn-secondary btn-sm builds-mode-btn is-active" id="builds-tab-characters" data-mode="characters" data-i18n="builds.tabCharacters">Characters</button>
             <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-psychubes" data-mode="psychubes" data-i18n="builds.subTabPsychubes">Psychubes</button>
-            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-items" data-mode="items" data-i18n="builds.subTabItems">Items</button>
+            <!-- Parked until the item data is revised: remove `hidden` to bring the tab back. -->
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-items" data-mode="items" data-i18n="builds.subTabItems" hidden>Items</button>
             <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="builds-tab-glossary" data-mode="glossary" data-i18n="builds.tabGlossary">Glossary</button>
           </div>
           <button class="modal-close" id="builds-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>

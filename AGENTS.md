@@ -99,18 +99,18 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `characters_by_rarity.json` | `character.json → rare` | 134 global / 140 CN |
 | `characters_by_afflatus.json` | `character.json → career` | see caveat below |
 | `character_profiles.json` | `character.json → dmgType`, `character_battle_tag.json` | `dmgType`: 1=Reality, 2=Mental; `battleTag` is `101#117#122` → needs a role map |
-| `character_skills.json` | `character.json`, `character_rank_replace.json`, `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json`, `fight_device.json` + global `language_*` | **derived**: 138 characters; device heroes take stances/specials from `fight_device`; CN-only English + all Vietnamese live in `content/translations/skills.json` |
+| `character_skills.json` | `character.json`, `character_rank_replace.json`, `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json`, `fight_device.json` + global `language_*` | **derived**: 139 characters; device heroes take stances/specials from `fight_device`; CN-only English + all Vietnamese live in `content/translations/skills.json` |
 | `characters_mats_required.json` | `character_rank.json`, `character_talent.json`, `item.json` + global `language_*` | **mixed**: `insight`/`resonance` derived; `stats`/`euphoria`/`mastery`/`frequency` come from `content/progression_costs.json` |
-| `items.json` | `item.json` (`isShow === 1`), `currency.json`, `item_use.json` (category) + global `language_*` | **derived**: 526 entries keyed by game id; `subType` → category label; Vietnamese + the editorial `source` live in `content/translations/items.json` |
+| `items.json` | `item.json` (`isShow === 1`), `currency.json`, `item_use.json` (category) + global `language_*` | **derived**: 425 entries keyed by game id; `subType` → category label; Vietnamese + the editorial `source` live in `content/translations/items.json` |
 | `item_formulas.json` | `formula.json` (`produce`, `costMaterial`, `costScore`) | key = produced item id; inputs are `costMaterial` + `costScore` |
 | `psychube_id.json` | `equip.json` | key = `equip.id` (see §5) |
 | `psychubes_data.json` | `equip.json` + global `language_*` (and equip effect tables, to verify) | |
-| `character_euphorias.json` | `character_destiny.json`, `character_destiny_facets.json`, `character_destiny_facets_consume.json`, `destiny_facets_ex_level.json` + global `language_*` | **derived**: 46 characters / 55 trees; there is no table named "euphoria" — `destiny` is the internal name. CN-only trees are included (union of both servers); their English lives in `content/translations/euphorias.json` |
+| `character_euphorias.json` | `character_destiny.json`, `character_destiny_facets.json`, `character_destiny_facets_consume.json`, `destiny_facets_ex_level.json` + global `language_*` | **derived**: 47 characters / 57 trees; there is no table named "euphoria" - `destiny` is the internal name. CN-only trees are included (union of both servers); their English lives in `content/translations/euphorias.json` |
 | `skill_glossary.json` | skill/buff effect tables + global `language_*` | |
 | `name_map.json` | `character.json` + `language_en.json` + `language_zh.json` | EN↔CN name pairs |
 | `global_name_transfer.json` | `character.json → nameEng` + the canonical roster name | maps the game's own English label → canonical key whenever they differ |
-| `ArcanistMap.json` | `character.json`, `skin.json` (global + CN) + global `language_*` | **derived**: 138 entries / 423 skins, ascending by game id; one entry per canonical name (CN APPLe `3999` folds into `3028`); the dummy `9998` and the Myssal-only URL fields are not emitted (§4) |
-| `future_sight.json` | `diff(CN, global)` on characters, equips, skins, destiny | **verified**: 6 chars + 7 psychubes |
+| `ArcanistMap.json` | `character.json`, `skin.json` (global + CN) + global `language_*` | **derived**: 139 entries / 431 skins, ascending by game id; one entry per canonical name (CN APPLe `3999` folds into `3028`); the dummy `9998` and the Myssal-only URL fields are not emitted (§4) |
+| `future_sight.json` | `diff(CN, global)` on characters, equips, skins, destiny | **verified**: 6 CN-only characters + 10 psychubes |
 | `stages/*.json` | `chapter.json`, `episode.json`, `battle.json`, `monster*.json`, `tower_permanent_episode.json`, `activity128_*.json` (CN) | already produced by `scripts/build_stages_data.mjs` |
 
 `characters_by_afflatus` caveat: `career` is the primary afflatus key
@@ -131,7 +131,7 @@ Keep these maps in `scripts/sync/maps/`.
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
 | `pattern_costs.json` | pattern → cost mapping (currently ships `{}`) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
-| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations) and `device-ranks.json` (frozen rank-id lists for The Twins) |
+| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`) and `device-ranks.json` (frozen rank-id lists for The Twins) |
 
 ### Class C — human-authored content (NOT derivable)
 
@@ -199,17 +199,25 @@ art is downloaded:
 
 | Group | Needed | Source | Local path |
 |---|---|---|---|
-| Items + currencies | 526 (8 without art) | `propitem/prop/`, `currencyitem/` | `images/items/icon/<id>.png` |
-| Psychubes | 116 | `equipment/icon/` | `images/psychube_icon/<rarity>/<id>.png` |
-| Character heads | 421 (1 without art) | `headicon_small/` | `images/headicon_small/<skinId>.png` |
-| Skill cards | 453 (4 without art) | `fight/skill/` | `images/skills/<name>.png` |
+| Items + currencies | 425 | `propitem/prop/`, `currencyitem/` | `images/items/icon/<id>.png` |
+| Psychubes | 119 (3 without art) | `equipment/icon/` | `images/psychube_icon/<rarity>/<id>.png` |
+| Character heads | 431 (8 without art) | `headicon_small/` | `images/headicon_small/<skinId>.png` |
+| Skill cards | 456 (7 without art) | `fight/skill/` | `images/skills/<name>.png` |
 
-The only head Myssal never shipped is `302902` (a Schneider skin; Schneider is
-excluded anyway); the dummy `Machine D III` is gone from the map, so its
-placeholder head is no longer needed. The 4 skill icons Myssal never shipped are
-Beryl's three crystal variants and `31460151`; they are editorial entries in
-`guide_skills.json` and stay as committed. Signature art is not copied: nothing in
-the app reads it.
+CN 113.0.1421 landed ahead of the Myssal art sweep (that checkout is already at its
+remote HEAD, 2026-09-28), so these are still missing and must be added by hand:
+psychubes `5/1452`, `6/1580`, `6/1581`; heads `305903`, `311304`, `312704`, `313703`,
+`313904`, `314404`, `315901`, `315902`; Perchta's three skill cards `31590111/21/31`;
+and the Euphoria portraits `images/arcanists/euphoria/3072_2.webp` (Shamane E2) and
+`3107_1.webp` (Ulrich E1). The four long-standing skill gaps (Beryl's three crystals and
+`31460151`) are unrelated. `npm run sync:verify` therefore fails on `every psychube has an
+icon file` until those three PNGs exist; every other check passes.
+
+The oldest head gap is `302902` (a Schneider skin; Schneider is excluded anyway); the
+dummy `Machine D III` is gone from the map, so its placeholder head is no longer needed.
+The four long-standing skill icons Myssal never shipped are Beryl's three crystal variants
+and `31460151`; they are editorial entries in `guide_skills.json` and stay as committed.
+Signature art is not copied: nothing in the app reads it.
 
 `scripts/sync/tools/prune-images.mjs` keeps `images/` honest (`npm run sync:prune`,
 `--delete` to act). It prunes two things and reports everything else:
@@ -246,7 +254,10 @@ Rule: **the psychube key is `"<appRarity>:<equip.id>"` using the game id**, wher
 Facts preserved during the migration:
 
 - `equip.json` (global) has 128 rows; `name_en` is populated on all of them.
-- Display name: EN = `equip.name_en`; CN = `language_zh[equip.name]`.
+- Display name: EN = `language_en[equip.name]`, then `equip.name_en` as the fallback
+  (the CN client's `name_en` column is stale for a few rows: `1433` ships as "The
+  Unknown Artist" but the global client shows "The Loner"; `1512` "The Carat of A Heart"
+  → "The Carat of a Heart"); CN = `language_zh[equip.name]`.
 - Icon: `singlebg/equipment/icon/<equip.id>.png`.
 - Old `data/psychubes_data.json` has 116 entries; **109 match `equip.json` by `gameId`**.
   The 7 that do not (`1450`, `1451`, `1575`, `1576`, `1577`, `1578`, `1579`) are exactly
@@ -444,13 +455,17 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 
 - **Rarity is `game.rare + 1`** for both characters and psychubes (a 6★ is `rare: 5`).
   The generator owns this offset (`config.mjs` → `RARITY_OFFSET`); never add 1 by hand.
-- **Roster is 138 characters** (was 141). The pipeline drops the dummy `9998`
-  (“Machine D III” / `???`) and de-duplicates `aliEn T`, `Joe`.
-- **Psychubes are 116** = 109 global real (68 six-star, 41 five-star) + 7 CN-only.
-  Two global rows (`5:1448` Growing Pains, `6:1534` Stray Off the Path) exist in
-  `psychube_id.json` but not yet in `psychubes_data.json`; the app handles that gracefully.
+- **Roster is 139 characters** (was 141). The pipeline drops the dummy `9998`
+  (“Machine D III” / `???`), de-duplicates `aliEn T`, `Joe`, and skips CN rows the CN
+  client has not released yet (`isOnline: "0"`, placeholder skills and no art — e.g.
+  Evelyn `3160`; global rows are exempt because there `isOnline: "0"` just means NPC).
+- **Psychubes are 119** = 109 global real (68 six-star, 41 five-star) + 10 CN-only
+  (7 six-star, 3 five-star). Two global rows (`5:1448` Growing Pains, `6:1534` Stray
+  off the Path) exist in `psychube_id.json` but not yet in `psychubes_data.json`; the
+  app handles that gracefully. A CN-ahead chube whose `equip_skill` rows have not
+  shipped yet (`6:1581`) gets an empty `amplifications` list.
 - **`future_sight` is derived completely.** The old hand file was stale: it listed 11 skins,
-  the derived set has 24 (CN-only skins for CN-only arcanists), and Euphoria is now in
+  the derived set has 32 (CN-only skins for CN-only arcanists), and Euphoria is now in
   descending hero id. Treat the derived file as correct.
 - **`psychube_id.json` no longer carries a `gameId` field** — the id *is* the game id.
 - **Data formatting mirrors the editor** (`editor/json-patch.js` `renderValue`):
@@ -467,8 +482,19 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   name, keyword tags and upgrade cost; `destiny_facets_ex_level` carries the 5 portrait
   tiers for 5 heroes. A character's entries map positionally to E1/E2.
 - **Facet lists are the union of global + CN** (CN adds `302502`, `303202`, `304102`).
-  55 trees over 46 characters; 6 are CN-only and take their English from
-  `content/translations/euphorias.json`.
+  57 trees over 47 characters; 8 are CN-only and take their English from
+  `content/translations/euphorias.json`. Their `tags` are supplied by that overlay too,
+  because the CN `keyword` is literal Chinese (2026-11-08: Ulrich `310701` → `Dynamo`,
+  Shamane `307202` → `Shift`).
+- **New-mechanic vocabulary (no official EN yet, invented once and reused).** The CN-ahead
+  rows lean on two systems the overlays already name: 洞知 is **Perception** (`[Eye of
+  Perception]`, `[Perception Incantation]`, `Perception Points`, `Perception Skill Set`,
+  `[Perception Ability-N]`, `[Full Pursuit]` for 弱点洞穿) and 脉络 is **Thread**
+  (`Thread Points`, `[Thread: Clear Sight]`). Perchta `3159` adds 砍创 **`[Cleave]`**,
+  七友人 **`["Seven Friends"]`**, 七友人守护 **`["Seven Friends' Ward"]`**, 圆满结局
+  **`[Happy Ending]`**, 复仇线索 **`[Vengeance Clue]`** and 雪恨 **`[Vengeance Sated]`**;
+  Shamane's `307202` adds 沃土 **`[Fertile Soil]`**. Replace them if a global build ships
+  official wording.
 - **Rank text embeds skill names as `▩N%s`**, where N is 0 insight passive, 1/2 the two
   incantations, 3 the ultimate. `derive/euphorias.mjs` resolves them per language and
   brackets them `[X]` for en/kr, `【X】` for zh/tw/jp. Two heroes need the family-skill
@@ -495,6 +521,18 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   ids `790001`/`790002`). Those rows are not in any game table and are gone. Only
   game-declared specials remain: device `specialPowerSkill`, plus the hand-mapped
   Rhiannon and Beryl entries in `scripts/sync/maps/skill-extras.json`.
+- **Two of those slot-4 cards were real, and are back through `skill-extras.json`.**
+  Ms. Stranger's special card is skill `31470131` — `[A Moth to a Flame]`, the only
+  "Sovereign Incantation" (主格特殊咒语) in the game besides Beryl's three emanations —
+  and Huntsworn Lilya's is `31550151` (`Shoot Down` / 击毁), her `[Full Pursuit]` pursuit
+  skill. Both ids carry `showInBattle: 0` and are absent from `character.skill`, so no
+  table walks you to them: the map names them. The other eight were duplicates of
+  insight 0 (e.g. Hissabeth's "Experimental Payload" pointed at `31160141`
+  `Eternally Inquisitive`) with invented names and blurbs, so they stay deleted. A map
+  entry may carry `badge: { en, zh }` to force the card-type label the heuristic would
+  get wrong — `attribute` / `attributeZh` in the generated row — because
+  `[A Moth to a Flame]` is an omni ("Versatile" / 万能) card whose own name says nothing
+  about it.
 - **The Twins' rank ids are frozen in `scripts/sync/maps/device-ranks.json`.** Their
   `character.skill` and the device's per-tier `skill1`/`skill2` disagree, so the base
   skill id is expanded to its three/five rank variants from that map.
@@ -527,7 +565,7 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   label plus a few broken game labels live in `scripts/sync/maps/item-categories.json`.
   Families the game never labels (19, 21, 22, 23, 25, 26, 27, 34, 85, 98, 100 —
   wilderness decor, critter food, explore items, …) are skipped rather than dumped into
-  an invented bucket. 526 entries, 31 categories, 8 without artwork.
+  an invented bucket. 425 entries, 31 categories, every one with artwork.
 - **`item_formulas.json` is of the Wishing Spring crafting list.** `formula.produce` is
   `type#id#qty`; the inputs are `costMaterial` *and* `costScore` (the latter is the
   Sharpodonty fee, which legacy Kornblume dropped for two recipes). Keys are the produced

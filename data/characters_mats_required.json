@@ -59795,5 +59795,334 @@
         ]
       }
     ]
+  },
+  "Perchta": {
+    "id": 3159,
+    "name": "Perchta",
+    "rarity": 6,
+    "afflatus": "Star",
+    "stats": {
+      "0-1": [200, 1200, 100, 100, 200, 5, 130],
+      "0-30": [350, 2000, 180, 180, 200, 5, 130],
+      "1-40": [600, 3500, 300, 300, 250, 7, 135],
+      "2-50": [900, 5000, 450, 450, 300, 10, 140],
+      "3-60": [1100, 6500, 550, 550, 350, 12, 145]
+    },
+    "insight": [
+      {
+        "insight": 1,
+        "materials": [
+          {
+            "material": "Sharpodonty",
+            "quantity": 18000
+          },
+          {
+            "material": "Page of Starlit Ascent",
+            "quantity": 6
+          },
+          {
+            "material": "Trembling Tooth",
+            "quantity": 5
+          },
+          {
+            "material": "Luminite Ore",
+            "quantity": 5
+          }
+        ]
+      },
+      {
+        "insight": 2,
+        "materials": [
+          {
+            "material": "Sharpodonty",
+            "quantity": 40000
+          },
+          {
+            "material": "Scroll of Starlit Ascent",
+            "quantity": 10
+          },
+          {
+            "material": "Cicada Wings",
+            "quantity": 6
+          },
+          {
+            "material": "Biting Box",
+            "quantity": 5
+          }
+        ]
+      },
+      {
+        "insight": 3,
+        "materials": [
+          {
+            "material": "Sharpodonty",
+            "quantity": 200000
+          },
+          {
+            "material": "Tome of Starlit Ascent",
+            "quantity": 16
+          },
+          {
+            "material": "Bogeyman",
+            "quantity": 5
+          },
+          {
+            "material": "Mistilteinn",
+            "quantity": 3
+          }
+        ]
+      }
+    ],
+    "resonance": [
+      {
+        "resonance": 2,
+        "materials": [
+          {
+            "material": "Moment of Dissonance",
+            "quantity": 5
+          }
+        ]
+      },
+      {
+        "resonance": 3,
+        "materials": [
+          {
+            "material": "Moment of Dissonance",
+            "quantity": 5
+          },
+          {
+            "material": "Shattered Bones",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "resonance": 4,
+        "materials": [
+          {
+            "material": "Moment of Dissonance",
+            "quantity": 5
+          },
+          {
+            "material": "Spell of Banishing",
+            "quantity": 6
+          },
+          {
+            "material": "Solidus",
+            "quantity": 3
+          }
+        ]
+      },
+      {
+        "resonance": 5,
+        "materials": [
+          {
+            "material": "Brief Cacophony",
+            "quantity": 5
+          },
+          {
+            "material": "Esoteric Bones",
+            "quantity": 3
+          },
+          {
+            "material": "Cicada Wings",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "resonance": 6,
+        "materials": [
+          {
+            "material": "Sharpodonty",
+            "quantity": 30000
+          },
+          {
+            "material": "Brief Cacophony",
+            "quantity": 5
+          },
+          {
+            "material": "Clawed Pendulum",
+            "quantity": 3
+          }
+        ]
+      },
+      {
+        "resonance": 7,
+        "materials": [
+          {
+            "material": "Brief Cacophony",
+            "quantity": 6
+          },
+          {
+            "material": "Bifurcated Skeleton",
+            "quantity": 5
+          }
+        ]
+      },
+      {
+        "resonance": 8,
+        "materials": [
+          {
+            "material": "Brief Cacophony",
+            "quantity": 6
+          },
+          {
+            "material": "Goose Neck",
+            "quantity": 4
+          },
+          {
+            "material": "Perpetual Cog",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "resonance": 9,
+        "materials": [
+          {
+            "material": "Brief Cacophony",
+            "quantity": 8
+          },
+          {
+            "material": "Biting Box",
+            "quantity": 4
+          },
+          {
+            "material": "Liquefied Terror",
+            "quantity": 5
+          }
+        ]
+      },
+      {
+        "resonance": 10,
+        "materials": [
+          {
+            "material": "Hoarse Echo",
+            "quantity": 1
+          },
+          {
+            "material": "Sonorous Knell",
+            "quantity": 5
+          },
+          {
+            "material": "Bifurcated Skeleton",
+            "quantity": 8
+          },
+          {
+            "material": "Clawed Pendulum",
+            "quantity": 6
+          }
+        ]
+      },
+      {
+        "resonance": 11,
+        "materials": [
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          },
+          {
+            "material": "Hoarse Echo",
+            "quantity": 1
+          },
+          {
+            "material": "Sonorous Knell",
+            "quantity": 5
+          },
+          {
+            "material": "Watch Core",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "resonance": 12,
+        "materials": [
+          {
+            "material": "Hoarse Echo",
+            "quantity": 1
+          },
+          {
+            "material": "Sonorous Knell",
+            "quantity": 6
+          },
+          {
+            "material": "Platinum Ouija",
+            "quantity": 4
+          },
+          {
+            "material": "Winged Key",
+            "quantity": 5
+          }
+        ]
+      },
+      {
+        "resonance": 13,
+        "materials": [
+          {
+            "material": "Hoarse Echo",
+            "quantity": 1
+          },
+          {
+            "material": "Sonorous Knell",
+            "quantity": 6
+          },
+          {
+            "material": "Rhizobox Rabbit",
+            "quantity": 5
+          },
+          {
+            "material": "Golden Grass Incense",
+            "quantity": 5
+          }
+        ]
+      },
+      {
+        "resonance": 14,
+        "materials": [
+          {
+            "material": "Hoarse Echo",
+            "quantity": 1
+          },
+          {
+            "material": "Sonorous Knell",
+            "quantity": 8
+          },
+          {
+            "material": "Rheingold",
+            "quantity": 2
+          },
+          {
+            "material": "Emerald Slate",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "resonance": 15,
+        "materials": [
+          {
+            "material": "Hoarse Echo",
+            "quantity": 1
+          },
+          {
+            "material": "Sonorous Knell",
+            "quantity": 8
+          },
+          {
+            "material": "Walking Terror",
+            "quantity": 3
+          },
+          {
+            "material": "Glowing Mothwing",
+            "quantity": 4
+          }
+        ]
+      }
+    ],
+    "euphoria": [],
+    "mastery": [],
+    "frequency": []
   }
 }

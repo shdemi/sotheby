@@ -21,14 +21,6 @@
     "roleTagsZh": ["输出", "额外行动", "辅助", "追击", "灵光"],
     "nameZh": "37"
   },
-  "APPLe": {
-    "id": 3028,
-    "dmgType": "Mental",
-    "dmgTypeZh": "精神创伤",
-    "roleTags": ["Heal"],
-    "roleTagsZh": ["治疗"],
-    "nameZh": "APPLe"
-  },
   "Glyndŵr": {
     "id": 3163,
     "dmgType": "Reality",
@@ -36,6 +28,14 @@
     "roleTags": ["DPS", "Support", "Extra Action", "Follow-Up"],
     "roleTagsZh": ["输出", "辅助", "额外行动", "追击"],
     "nameZh": "格林杜尔"
+  },
+  "Perchta": {
+    "id": 3159,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": ["Heal", "Pursuit", "Support", "Remove Debuffs"],
+    "roleTagsZh": ["治疗", "洞知", "辅助", "净化"],
+    "nameZh": "佩施塔"
   },
   "Drake": {
     "id": 3158,
@@ -978,6 +978,14 @@
     "roleTags": [],
     "roleTagsZh": [],
     "nameZh": "斯奈德"
+  },
+  "APPLe": {
+    "id": 3028,
+    "dmgType": "Mental",
+    "dmgTypeZh": "精神创伤",
+    "roleTags": ["Heal"],
+    "roleTagsZh": ["治疗"],
+    "nameZh": "APPLe"
   },
   "Ms. Radio": {
     "id": 3027,

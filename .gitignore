@@ -8,13 +8,21 @@ references/
 references2/
 testCodeChube/
 
+# Design reference notes (read while rebuilding the UI, never loaded by the app)
+gnomon-research/
+
 # Dev-only: playwright for the editor UI tests
 node_modules/
+
+# Browser test artifacts: screenshots, page dumps, console logs
+.playwright-mcp/
+*.log
 
 # Scratch scripts and test screenshots
 _*.mjs
 _*.py
+tmp-*.mjs
+tmp-*.py
 /*.png
 check-*.png
 editor/_test/*.png
-references2/

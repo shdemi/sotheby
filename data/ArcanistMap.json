@@ -1913,6 +1913,15 @@
         "characterSkin": "",
         "characterSkinNameEng": "",
         "skinDescription": "它通往你。"
+      },
+      {
+        "id": 305903,
+        "name": "自我之鉴",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "自我之鉴",
+        "characterSkinNameEng": "Reflection of the Self",
+        "skinDescription": "镜面是一扇蓝眼睛，注视自我的片片碎裂——在这濒临猩红的夜晚。"
       }
     ]
   },
@@ -3702,6 +3711,15 @@
         "characterSkin": "意象的欢宴",
         "characterSkinNameEng": "A Feast of Imagery",
         "skinDescription": "已死的、濒死的、神经质的、癫狂的……他的创作。"
+      },
+      {
+        "id": 311304,
+        "name": "迷走殿堂",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "迷走殿堂",
+        "characterSkinNameEng": "In His Palace",
+        "skinDescription": "他乐于置身迷雾中，因此处为逻辑与理论的居所。"
       }
     ]
   },
@@ -4175,6 +4193,15 @@
         "characterSkin": "不熄的怀抱",
         "characterSkinNameEng": "The Ever-Burning Embrace",
         "skinDescription": "以一缕光的易逝，对抗黑暗的永恒。"
+      },
+      {
+        "id": 312704,
+        "name": "告慰尘与惘",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "告慰尘与惘",
+        "characterSkinNameEng": "Solace for the Lost",
+        "skinDescription": "她如约道晚安，向叹息、哀恸与迷惘作别。"
       }
     ]
   },
@@ -4367,6 +4394,15 @@
         "characterSkin": "檐外鹭",
         "characterSkinNameEng": "Breaking Free from a Burning Cage",
         "skinDescription": "他要借焚笼的光，看一看外面的天。"
+      },
+      {
+        "id": 313703,
+        "name": "第三秒",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "第三秒",
+        "characterSkinNameEng": "The Third Second",
+        "skinDescription": "第一秒街灯爆破，第二秒霓虹叫嚣，他在第三秒赶到。"
       }
     ]
   },
@@ -4428,6 +4464,15 @@
         "characterSkin": "致命银弦",
         "characterSkinNameEng": "Finale in Silver",
         "skinDescription": "藏木于林，藏悲鸣于乐音齐奏，一个小小的窍门。"
+      },
+      {
+        "id": 313904,
+        "name": "我之野兽",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "我之野兽",
+        "characterSkinNameEng": "The Beast Within Me",
+        "skinDescription": "她曾被写进两个关于国王的故事，后来两个故事都没有了国王。"
       }
     ]
   },
@@ -4585,6 +4630,15 @@
         "characterSkin": "醒时声",
         "characterSkinNameEng": "Sounds that Wake Her",
         "skinDescription": "与它告别吧，那迷路时一再跌宕的呜咽回声。"
+      },
+      {
+        "id": 314404,
+        "name": "窗外新世界",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "窗外新世界",
+        "characterSkinNameEng": "A World Through the Porthole",
+        "skinDescription": "在此，陆上的疆域不再拘束你我。在此，波浪的和声无尽，永不止息。"
       }
     ]
   },
@@ -4881,6 +4935,32 @@
         "characterSkin": "骑士的叙事诗",
         "characterSkinNameEng": "Idylls of the Knight",
         "skinDescription": "谨以此献给他的过去——荆棘、火焰与通向“我”的门径。"
+      }
+    ]
+  },
+  {
+    "id": 3159,
+    "name": "佩施塔",
+    "nameEng": "Perchta",
+    "roleBirthday": "12/7",
+    "live2d": [
+      {
+        "id": 315901,
+        "name": "佩施塔",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "",
+        "characterSkinNameEng": "",
+        "skinDescription": "自一场噩梦中逃离，如今以复仇之名带来噩梦。"
+      },
+      {
+        "id": 315902,
+        "name": "佩施塔",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "童话出逃日",
+        "characterSkinNameEng": "Once Upon a Runaway",
+        "skinDescription": "有鲜血，有猎刀，有看得见与看不见的友人相伴。她不再畏惧。"
       }
     ]
   },

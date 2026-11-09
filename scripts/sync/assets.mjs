@@ -138,16 +138,24 @@ const groups = [
 for (const [name, assets] of groups) {
   let copied = 0;
   let present = 0;
+  const handAdded = [];
   const unsourced = [];
   const absent = [];
 
   for (const asset of assets) {
+    const target = path.join(ROOT, asset.dest);
+    const onDisk = fs.existsSync(target);
     if (!asset.source) {
-      unsourced.push(asset.id);
+      // Myssal never shipped this art; a hand-placed file still counts.
+      if (onDisk) {
+        present++;
+        handAdded.push(asset.id);
+      } else {
+        unsourced.push(asset.id);
+      }
       continue;
     }
-    const target = path.join(ROOT, asset.dest);
-    if (fs.existsSync(target)) {
+    if (onDisk) {
       present++;
       continue;
     }
@@ -162,8 +170,10 @@ for (const [name, assets] of groups) {
   const detail = [`${present}/${assets.length} present`];
   if (!check) detail.push(`${copied} copied`);
   else if (absent.length) detail.push(`${absent.length} missing`);
+  if (handAdded.length) detail.push(`${handAdded.length} hand-added`);
   detail.push(`${unsourced.length} without artwork`);
   console.log(`${name}: ${detail.join(", ")}`);
   if (absent.length && check) console.log(`  not copied yet: ${absent.join(", ")}`);
+  if (handAdded.length) console.log(`  hand-added: ${handAdded.join(", ")}`);
   if (unsourced.length) console.log(`  no artwork: ${unsourced.join(", ")}`);
 }

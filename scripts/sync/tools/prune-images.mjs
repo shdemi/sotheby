@@ -144,12 +144,21 @@ function skillNeeded() {
   return need;
 }
 
-/** Euphoria portraits: `<mats.id>_<tier.id>.webp` for each tree the app can open. */
+/**
+ * Euphoria portraits: `<mats.id>_<n>.webp`, where `n` is the tree's position in
+ * `character_euphorias.json` (the app uses `index + 1`, not the tier id). The
+ * mats file only lists the trees a player can buy, so a tree whose costs are not
+ * in `content/progression_costs.json` (Ulrich 3107) has no tiers there and its
+ * portrait would be reported stale even though the app loads it.
+ */
 function euphoriaNeeded() {
   const need = new Set();
-  for (const entry of Object.values(readJson(path.join(OUT, "characters_mats_required.json")))) {
-    for (const tier of entry.euphoria || []) {
-      need.add(`images/arcanists/euphoria/${entry.id}_${tier.id}.webp`);
+  const mats = readJson(path.join(OUT, "characters_mats_required.json"));
+  for (const [name, trees] of Object.entries(readJson(path.join(OUT, "character_euphorias.json")))) {
+    const id = mats[name]?.id;
+    if (!id) continue;
+    for (let tier = 1; tier <= (Array.isArray(trees) ? trees.length : 0); tier += 1) {
+      need.add(`images/arcanists/euphoria/${id}_${tier}.webp`);
     }
   }
   return need;

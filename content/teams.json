@@ -199,19 +199,18 @@
   "Pursuit": [
     [
       { "character": "Huntsworn Lilya", "psychube": "Atop The Tempest", "is_essential": true },
-      { "character": "37", "psychube": "Flows in All Things Alike", "euphoria": "E1" },
+      { "character": "37", "psychube": "Flows in All Things Alike", "euphoria": "E1", "is_essential": true },
       {
         "character": "Rhiannon",
         "psychube": "The Soft Rain of Yesterday"
       },
       {
-        "character": "J",
-        "psychube": "Family Mentor",
+        "character": "Perchta",
+        "psychube": "Aurora After Winter",
         "substitutes": [
-          { "character": "Kiperina", "psychube": "Aurora After Winter" },
-          { "character": "Enigma", "psychube": "Long Night Talk" }
-        ],
-        "euphoria": "E1"
+          { "character": "J", "psychube": "Family Mentor", "euphoria": "E1" },
+          { "character": "Kiperina", "psychube": "Aurora After Winter" }
+        ]
       }
     ]
   ],
@@ -233,7 +232,8 @@
 	"substitutes": [
 	{
 		"character": "Recoleta",
-		"psychube": "The Final Roll"
+		"psychube": "The Final Roll",
+		"euphoria": "E1"
 	}
 ]
 },

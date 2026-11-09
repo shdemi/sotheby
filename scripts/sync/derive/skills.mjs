@@ -221,13 +221,20 @@ export function characterSkills() {
     };
   }
 
-  function incantation(slot, subSlot, type, rankIds, ctx, skillOverlay) {
+  /**
+   * @param badge `{ en, zh }` card-type label a hero's extra skill overrides the
+   *   heuristic with (e.g. Ms. Stranger's special card is a "Versatile" card even
+   *   though its own name says nothing about it).
+   */
+  function incantation(slot, subSlot, type, rankIds, ctx, skillOverlay, badge = {}) {
     const first = skills.get(rankIds[0]);
     const inner = { ...ctx, skillOverlay };
     return {
       slot,
       subSlot,
       type,
+      ...(badge.en ? { attribute: badge.en } : {}),
+      ...(badge.zh ? { attributeZh: badge.zh } : {}),
       nameEn: localized("en", first?.name) || skillOverlay.nameEn || "",
       nameZh: localized("zh", first?.name) || skillOverlay.nameZh || "",
       nameVi: skillOverlay.nameVi || "",
@@ -376,8 +383,8 @@ export function characterSkills() {
       }
 
       for (const extraSkill of extras[id] || []) {
-        const { slot, subSlot, type, ranks } = extraSkill;
-        entry.skills.push(incantation(slot, subSlot, type, ranks, ctx, skillOverlay(slot, subSlot)));
+        const { slot, subSlot, type, ranks, badge } = extraSkill;
+        entry.skills.push(incantation(slot, subSlot, type, ranks, ctx, skillOverlay(slot, subSlot), badge));
       }
     }
 

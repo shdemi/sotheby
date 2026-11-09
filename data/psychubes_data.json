@@ -1,4 +1,209 @@
 {
+  "6:1581": {
+    "id": "1581",
+    "gameId": 1581,
+    "rarity": 6,
+    "name": "An Edible Puzzle",
+    "nameCN": "可食用谜题",
+    "nameVi": "An Edible Puzzle",
+    "tags": ["ATK", "Critical"],
+    "releasePatch": "",
+    "icon": "images/psychube_icon/6/1581.png",
+    "descZh": "盘中迸溅果酱，\n眼底绽放灵光；\n上一秒章鱼软糖还在尖叫，\n下一秒索玛甜就开始狂笑；\n噗哧一刀，\n谜底揭晓！",
+    "descEn": "Jam splatters across the plate,\nInspiration blooms in the eye;\nOne second the octopus gummies are still screaming,\nThe next, the soma sweets burst into hysterics;\nWith a single squelching cut,\nThe answer is revealed!",
+    "descVi": "Mứt bắn tung tóe trên đĩa,\nLinh cảm nở rộ trong ánh mắt;\nGiây trước kẹo bạch tuộc còn đang gào thét,\nGiây sau kẹo soma đã cười điên dại;\nMột nhát cắt \"phập\",\nĐáp án lộ diện!",
+    "baseStats": {
+      "atk": 370,
+      "hp": 2200,
+      "def": 200,
+      "mdef": 150
+    },
+    "breakAttrs": [
+      {
+        "breakLevel": 0,
+        "attack": 40,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 1,
+        "attack": 60,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 2,
+        "attack": 80,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 3,
+        "attack": 100,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      }
+    ],
+    "amplifications": []
+  },
+  "6:1580": {
+    "id": "1580",
+    "gameId": 1580,
+    "rarity": 6,
+    "name": "The Coffin of Purity",
+    "nameCN": "纯洁的棺床",
+    "nameVi": "The Coffin of Purity",
+    "tags": ["Survival", "Support"],
+    "releasePatch": "",
+    "icon": "images/psychube_icon/6/1580.png",
+    "descZh": "我的梦里住着一场大雪\n自童话死去的那天。\n请把月亮放在额头，\n让我无人问津地沉睡。\n若有人肯为无名的森林歌唱，\n纯洁之心将枕着棺床醒来。",
+    "descEn": "A heavy snowfall has lived in my dreams\nSince the day the fairy tale died.\nPlace the moon upon my brow,\nAnd let me sleep, untroubled by any soul.\nIf someone would but sing for the nameless forest,\nA pure heart shall wake, pillowed on the coffin bed.",
+    "descVi": "Một trận tuyết lớn đã sống trong giấc mơ tôi\nTừ ngày câu chuyện cổ tích chết đi.\nHãy đặt vầng trăng lên vầng trán này,\nĐể tôi ngủ yên, không ai đoái hoài.\nNếu có ai chịu hát cho khu rừng vô danh,\nTrái tim thuần khiết sẽ tỉnh giấc, gối đầu trên quan tài.",
+    "baseStats": {
+      "atk": 360,
+      "hp": 3000,
+      "def": 160,
+      "mdef": 160
+    },
+    "breakAttrs": [
+      {
+        "breakLevel": 0,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 1,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 2,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 3,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 0,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      }
+    ],
+    "amplifications": [
+      {
+        "level": 1,
+        "descZh": "进入战斗时，若记忆者灵感为【星】，使自身生命值提升{5%}；\n记忆者释放洞知咒语后，使己方全体洞知创伤提升{12%}，退出【弱点洞穿】阶段后清空",
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{5%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG by {12%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{5%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG của toàn bộ phe ta thêm {12%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      {
+        "level": 2,
+        "descZh": "进入战斗时，若记忆者灵感为【星】，使自身生命值提升{7.5%}；\n记忆者释放洞知咒语后，使己方全体洞知创伤加成提升{14%}，退出【弱点洞穿】阶段后清空",
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{7.5%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {14%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{7.5%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {14%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      {
+        "level": 3,
+        "descZh": "进入战斗时，若记忆者灵感为【星】，使自身生命值提升{10%}；\n记忆者释放洞知咒语后，使己方全体洞知创伤加成提升{16%}，退出【弱点洞穿】阶段后清空",
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{10%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {16%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{10%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {16%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      {
+        "level": 4,
+        "descZh": "进入战斗时，若记忆者灵感为【星】，使自身生命值提升{12.5%}；\n记忆者释放洞知咒语后，使己方全体洞知创伤加成提升{18%}，退出【弱点洞穿】阶段后清空",
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{12.5%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {18%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{12.5%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {18%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      {
+        "level": 5,
+        "descZh": "进入战斗时，若记忆者灵感为【星】，使自身生命值提升{15%}；\n记忆者释放洞知咒语后，使己方全体洞知创伤加成提升{20%}，退出【弱点洞穿】阶段后清空",
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{15%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {20%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{15%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {20%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      }
+    ]
+  },
   "6:1579": {
     "id": "1579",
     "gameId": 1579,
@@ -7319,9 +7524,9 @@
     "id": "1512",
     "gameId": 1512,
     "rarity": 6,
-    "name": "The Carat of A Heart",
+    "name": "The Carat of a Heart",
     "nameCN": "可度量之心",
-    "nameVi": "The Carat of A Heart",
+    "nameVi": "The Carat of a Heart",
     "tags": ["ATK", "Critical"],
     "releasePatch": "1.3",
     "icon": "images/psychube_icon/6/1512.png",
@@ -8760,6 +8965,124 @@
       }
     ]
   },
+  "5:1452": {
+    "id": "1452",
+    "gameId": 1452,
+    "rarity": 5,
+    "name": "The Path to Perfection",
+    "nameCN": "完满之路",
+    "nameVi": "The Path to Perfection",
+    "tags": ["Support"],
+    "releasePatch": "",
+    "icon": "images/psychube_icon/5/1452.png",
+    "descZh": "野心、追寻、命运的绕行，\n时间、残像、光辉的阴影，\n终得觐见，\n充满神迹的千夜之夜。",
+    "descEn": "Ambition, pursuit, the detours of fate,\nTime, afterimages, the shadows of glory,\nAt last, an audience is granted—\nA thousand nights brimming with miracles.",
+    "descVi": "Tham vọng, truy cầu, những vòng vèo của định mệnh,\nThời gian, dư ảnh, bóng tối của hào quang,\nCuối cùng cũng được diện kiến,\nNgàn đêm chan chứa những phép màu.",
+    "baseStats": {
+      "atk": 340,
+      "hp": 2000,
+      "def": 130,
+      "mdef": 130
+    },
+    "breakAttrs": [
+      {
+        "breakLevel": 0,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 40,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 1,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 60,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 2,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 80,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      },
+      {
+        "breakLevel": 3,
+        "attack": 0,
+        "hp": 0,
+        "def": 0,
+        "mdef": 0,
+        "cri": 0,
+        "recri": 0,
+        "criDmg": 0,
+        "criDef": 0,
+        "addDmg": 100,
+        "dropDmg": 0,
+        "heal": 0,
+        "clutch": 0,
+        "normalSkillRate": 0
+      }
+    ],
+    "amplifications": [
+      {
+        "level": 1,
+        "descZh": "己方全体攻击时，每有1点灵光，使己方全体术法威力提升{1.2%}，最多计入6点",
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.2%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.2%}, tính tối đa 6 điểm."
+      },
+      {
+        "level": 2,
+        "descZh": "己方全体攻击时，每有1点灵光，使己方全体术法威力提升{1.4%}，最多计入6点",
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.4%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.4%}, tính tối đa 6 điểm."
+      },
+      {
+        "level": 3,
+        "descZh": "己方全体攻击时，每有1点灵光，使己方全体术法威力提升{1.6%}，最多计入6点",
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.6%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.6%}, tính tối đa 6 điểm."
+      },
+      {
+        "level": 4,
+        "descZh": "己方全体攻击时，每有1点灵光，使己方全体术法威力提升{1.8%}，最多计入6点",
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.8%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.8%}, tính tối đa 6 điểm."
+      },
+      {
+        "level": 5,
+        "descZh": "己方全体攻击时，每有1点灵光，使己方全体术法威力提升{2%}，最多计入6点",
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {2%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {2%}, tính tối đa 6 điểm."
+      }
+    ]
+  },
   "5:1451": {
     "id": "1451",
     "gameId": 1451,
@@ -9472,9 +9795,9 @@
     "id": "1445",
     "gameId": 1445,
     "rarity": 5,
-    "name": "Parting's Quiet Lament ",
+    "name": "Parting's Quiet Lament",
     "nameCN": "世多别离",
-    "nameVi": "Parting's Quiet Lament ",
+    "nameVi": "Parting's Quiet Lament",
     "tags": ["Support"],
     "releasePatch": "3.3",
     "icon": "images/psychube_icon/5/1445.png",
@@ -10888,9 +11211,9 @@
     "id": "1433",
     "gameId": 1433,
     "rarity": 5,
-    "name": "The Unknown Artist",
+    "name": "The Loner",
     "nameCN": "无人问津",
-    "nameVi": "The Unknown Artist",
+    "nameVi": "The Loner",
     "tags": ["ATK"],
     "releasePatch": "2.1",
     "icon": "images/psychube_icon/5/1433.png",
@@ -12304,9 +12627,9 @@
     "id": "1421",
     "gameId": 1421,
     "rarity": 5,
-    "name": "Let's Set Sail ",
+    "name": "Let's Set Sail",
     "nameCN": "勇往直前",
-    "nameVi": "Let's Set Sail ",
+    "nameVi": "Let's Set Sail",
     "tags": ["ATK"],
     "releasePatch": "1.5",
     "icon": "images/psychube_icon/5/1421.png",

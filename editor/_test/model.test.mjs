@@ -101,7 +101,7 @@ check("every owned file is loaded", FILES.every((f) => model.doc(f) !== null), F
 check("no file is dirty on load", model.changedFiles().length === 0, model.changedFiles().join(", "));
 check("output() is empty on load", Object.keys(model.output()).length === 0);
 check("characters were derived", model.characters.length > 100, String(model.characters.length));
-check("psychubes were derived", model.psychubes.length === 116, String(model.psychubes.length));
+check("psychubes were derived", model.psychubes.length === 119, String(model.psychubes.length));
 check("team presets were derived", model.teamNames.length > 0, String(model.teamNames.length));
 check("shapes were derived", model.shapeNames.length === 4, model.shapeNames.join(", "));
 
@@ -404,8 +404,8 @@ console.log("\n=== psychubes list rarity 6 first ===");
   const lastSix = m.psychubes.map((p) => p.rarity).lastIndexOf("6");
   const firstFive = m.psychubes.map((p) => p.rarity).indexOf("5");
   check("every 6-star comes before every 5-star", lastSix < firstFive, `last6=${lastSix} first5=${firstFive}`);
-  check("all 116 psychubes are listed", m.psychubes.length === 116, String(m.psychubes.length));
-  check("the highest id is first", m.psychubes[0].id === "1579", m.psychubes[0].id);
+  check("all 119 psychubes are listed", m.psychubes.length === 119, String(m.psychubes.length));
+  check("the highest id is first", m.psychubes[0].id === "1581", m.psychubes[0].id);
   check("the file's own order was 5 then 6", Object.keys(m.value("psychube_id.json"))[0] === "5");
 }
 
@@ -599,40 +599,41 @@ console.log("\n=== addPsychube ===");
   const m = freshModel();
   const original = m.doc("psychube_id.json").toString();
 
-  check("the next id for rarity 6 is 1580", m.nextPsychubeId("6") === "1580", m.nextPsychubeId("6"));
+  check("the next id for rarity 6 is 1582", m.nextPsychubeId("6") === "1582", m.nextPsychubeId("6"));
   check("the next id for rarity 5 is 4105", m.nextPsychubeId("5") === "4105", m.nextPsychubeId("5"));
 
   const countBefore = m.psychubes.length;
-  m.addPsychube("6", "1580", { name: "Brand New Chube", nameCN: "全新心相", tags: ["ATK"], releasePatch: "4.1" });
+  m.addPsychube("6", "1582", { name: "Brand New Chube", nameCN: "全新心相", tags: ["ATK"], releasePatch: "4.1" });
 
   check("the psychube count grew", m.psychubes.length === countBefore + 1, `${countBefore} -> ${m.psychubes.length}`);
   const list = m.value("psychube_id.json")["6"];
-  check("it is first, because ids descend", list[0].id === "1580", list[0].id);
+  check("it is first, because ids descend", list[0].id === "1582", list[0].id);
   check("it has the fields given", list[0].name === "Brand New Chube" && list[0].release_patch === "4.1", JSON.stringify(list[0]));
   check("tags render inline", /"tags": \["ATK"\]/.test(m.doc("psychube_id.json").toString()));
   check("only psychube_id.json changed", m.changedFiles().join(",") === "psychube_id.json", m.changedFiles().join(","));
   check("it validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
-  m.removePsychube("6", "1580");
+  m.removePsychube("6", "1582");
   check("removing it restores the file byte-for-byte", m.doc("psychube_id.json").toString() === original, "differs");
 
   // Ids are sparse now (game ids), so re-adding a removed one must slot back in
   // by numeric order rather than at the end.
-  const idxBefore = m.value("psychube_id.json")["6"].findIndex((p) => p.id === "1578");
-  check("id 1578 sits at index 1 to start with", idxBefore === 1, String(idxBefore));
+  const idsBefore = m.value("psychube_id.json")["6"].map((p) => p.id);
+  const idxBefore = idsBefore.indexOf("1578");
+  check("id 1578 sits mid-list", idxBefore > 0 && idxBefore < idsBefore.length - 1, String(idxBefore));
   m.removePsychube("6", "1578");
   check("it is gone", m.value("psychube_id.json")["6"].findIndex((p) => p.id === "1578") === -1);
   m.addPsychube("6", "1578", { name: "Middle Chube" });
 
   const ids = m.value("psychube_id.json")["6"].map((p) => Number(p.id));
   check("re-inserting keeps the list descending", ids.every((v, i) => i === 0 || ids[i - 1] > v), ids.slice(0, 6).join(","));
-  check("and it landed back at index 1", m.value("psychube_id.json")["6"][1].id === "1578", m.value("psychube_id.json")["6"][1].id);
+  check("and it landed back at the same index", m.value("psychube_id.json")["6"][idxBefore].id === "1578", m.value("psychube_id.json")["6"][idxBefore].id);
 
   for (const [label, fn] of [
     ["a duplicate id", () => m.addPsychube("6", "1578", { name: "Dupe" })],
     ["the reserved special id", () => m.addPsychube("6", "1000", { name: "Reserved" })],
     ["a non-numeric id", () => m.addPsychube("6", "abc", { name: "Bad" })],
-    ["an empty name", () => m.addPsychube("6", "1581", { name: "  " })],
+    ["an empty name", () => m.addPsychube("6", "1582", { name: "  " })],
     ["an unknown rarity", () => m.addPsychube("4", "1000", { name: "Bad" })],
   ]) {
     let threw = false;
@@ -648,13 +649,13 @@ console.log("\n=== addPsychube ===");
 console.log("\n=== a new psychube can be flagged Future Sight ===");
 {
   const m = freshModel();
-  m.addPsychube("6", "1580", { name: "CN Only Chube", futureSight: true });
-  check("the flag is in future_sight.json", m.value("future_sight.json").Psychube["6"].includes("1580"), JSON.stringify(m.value("future_sight.json").Psychube));
+  m.addPsychube("6", "1582", { name: "CN Only Chube", futureSight: true });
+  check("the flag is in future_sight.json", m.value("future_sight.json").Psychube["6"].includes("1582"), JSON.stringify(m.value("future_sight.json").Psychube));
   check("two files changed", m.changedFiles().sort().join(",") === "future_sight.json,psychube_id.json", m.changedFiles().join(","));
   check("it validates", validate(m).errors.length === 0, validate(m).errors.join("; "));
 
-  m.removePsychube("6", "1580");
-  check("removing it clears the flag too", !m.value("future_sight.json").Psychube["6"].includes("1580"));
+  m.removePsychube("6", "1582");
+  check("removing it clears the flag too", !m.value("future_sight.json").Psychube["6"].includes("1582"));
   check("both files are back to their originals", m.changedFiles().length === 0, m.changedFiles().join(","));
 }
 

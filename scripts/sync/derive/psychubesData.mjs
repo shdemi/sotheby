@@ -102,7 +102,14 @@ export function psychubesData() {
   for (const { rarity, row } of psychubes) {
     const id = String(row.id);
     const overlay = content[id] || {};
-    const name = lookup("en", row.name_en || row.name).value || String(row.name ?? "");
+    // Display name: the language table wins over `equip.name_en`, which is the
+    // stale internal label for a few rows. CN-only rows carry literal Chinese in
+    // `equip.name`, so their English still comes from `name_en`.
+    const langName = lookup("en", row.name);
+    const name =
+      (langName.found && !hasChinese(langName.value) ? langName.value : "") ||
+      lookup("en", row.name_en).value ||
+      String(row.name ?? "");
     const nameCN = lookup("zh", row.name).value || String(row.name ?? "");
 
     const en = lookup("en", row.desc);

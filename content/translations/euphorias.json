@@ -5,7 +5,9 @@
   "303202": {
     "nameEn": "Hanging by a Thread, Yet Full of Zest",
     "nameZh": "命悬一线，滋味盎然",
-    "tags": ["Shift"],
+    "tags": [
+      "Shift"
+    ],
     "ranks": {
       "1": "[Hot Sauce Expert]'s Insight I gains a new effect:\nMoxie is replaced by Thread Points; self skills that gain benefits based on Moxie are changed to gain benefits based on Thread Points instead. The Ultimate no longer counts toward the Spelldock Draw Limit.\nAt the start of the round, generates 1 [Thread: Heaven's Fortune] at a random position other than self's own position (up to 4 Threads may exist at each position).\n[Victorious General] gains a new effect: Shifts self 1 position forward after casting.\n[Outdoor Superstar] gains a new effect: Shifts self 1 position backward after casting.",
       "2": "[Victorious General]'s effect is enhanced: Deals additional Reality DMG equal to 100% of the base Reality DMG.\n[Outdoor Superstar]'s effect is enhanced: Deals additional Reality DMG equal to 100% of the base Reality DMG.",
@@ -16,7 +18,9 @@
   "304102": {
     "nameEn": "A Dazzling Road to Victory",
     "nameZh": "熠熠取胜之路",
-    "tags": ["Lingering Glow"],
+    "tags": [
+      "Lingering Glow"
+    ],
     "ranks": {
       "1": "[The Proud Star]'s Insight I gains a new effect: Whenever an enemy is inflicted with [Burn] or [Halo], accumulates [Lingering Glow]; before attacking, Matilda inflicts 3 stacks of [Halo] on the target.",
       "2": "[The Proud Star]'s Insight III gains a new effect: If Beryl is present in the team, after Beryl actively casts [Blaze Through the Lens], Matilda additionally casts a rank 1 [Work of Genius].\n[Work of Genius]'s effect is enhanced: Deals additional Mental DMG equal to 200% of the base Mental DMG; if the target's [Halo] reaches 5/10/20/30 stacks, increases all allies' Critical Rate by 25%/50%/75%/100% for 3 rounds.",
@@ -27,7 +31,9 @@
   "306601": {
     "nameEn": "Never Divided by the World",
     "nameZh": "不曾为世界整除",
-    "tags": ["Pursuit"],
+    "tags": [
+      "Pursuit"
+    ],
     "ranks": {
       "1": "[Calculation of Genesis] gains a new effect: Self gains the Perception Skill Set [Reductio ad Absurdum]; when entering battle, gains [Eye of Perception] and fills 2 [Star Perception Points];\n[Supplementary Formula] gains a new effect: Fills 1 [Star Perception Point] (triggers at most once per round).",
       "2": "[Calculation of Genesis]'s condition for gaining Eureka changes from \"after self casts an Incantation / after another ally takes an extra action\" to \"after any ally acts.\"",
@@ -42,13 +48,42 @@
       "p5": "[Kingdom of Geometry]: The Eureka self gains is increased to 4.\n[Calculation of Genesis]'s Perception Skill Set [Reductio ad Absurdum] is enhanced:\n[Perception Ability-1]: During [Full Pursuit], the decrease to all enemies' Perception DMG Taken Reduction becomes 100%, and the decrease to their overall DMG Taken Reduction becomes 100%;\n[Perception Incantation]'s Mental DMG dealt is increased to 1000%; [Dichotomy Paradox]'s coefficient is increased to 80%."
     }
   },
+  "307202": {
+    "nameEn": "Waking at the Foothills, the Drum Rides the Wind",
+    "nameZh": "醒于山麓，响鼓踏风",
+    "tags": [
+      "Shift"
+    ],
+    "ranks": {
+      "1": "[Inheritance of Wisdom]'s Insight I gains a new effect:\nMoxie is replaced by Thread Points; the Ultimate is no longer gained; when self Thread Points reach 6 or more, automatically casts the Ultimate at the end of the round; at the start of each round, generates 1 [Thread: Clear Sight] at a random position other than self's own position (up to 4 Threads may exist at each position).\n[Nature's Blessing]'s effect is changed to: after casting the Ultimate, consumes 5 stacks of this status (consumes all remaining stacks if fewer), and restores an equal amount of Thread Points.\n[Edict of Atman] gains a new effect: after attacking, consumes all self Thread Points.\n[Apprentice's Dance] gains a new effect: after attacking, shifts self 1 position forward.\n[Spirit Medium] gains a new effect: after casting, shifts self 1 position backward.",
+      "2": "[Apprentice's Dance]: the Reality DMG dealt is increased by an amount equal to 100% of the base Reality DMG; at Incantation rank 1, additionally grants self 1 stack of [Nature's Blessing].\n[Spirit Medium]: additionally increases all enemies' DMG Taken by 80%; the effects that increase all enemies' DMG Taken and reduce their Reality DEF and Mental DEF now last 3 rounds at Incantation rank 1/2.",
+      "3": "[Inheritance of Wisdom]'s Insight III gains a new effect:\nWhen entering battle, increases the Thread Point limit of the ally in position 1 by 2, grants all allies Thread Points +2, and grants self Thread Points +3 additionally.\n[Edict of Atman]: the Reality DMG dealt is increased by an amount equal to 700% of the base Reality DMG; deals additional 1750% Reality DMG to the primary target; after attacking, shifts the ally in position 1 back one position at a time until they reach the rearmost position.",
+      "4": "[Edict of Atman]: for every 1 Thread Point self holds, deals additional 800% Reality DMG to the primary target; when attacking, no longer increases Critical Rate against the primary target, and no longer converts excess Critical Rate into Critical DMG; gains a new effect: before attacking, grants all allies [Fertile Soil] for 3 rounds; after attacking, grants other allies Thread Points +1."
+    }
+  },
   "309401": {
     "version": "3.8"
+  },
+  "310701": {
+    "nameEn": "Endless Recursion, a Flash of Inspiration",
+    "nameZh": "循环演算，灵思乍现",
+    "tags": [
+      "Dynamo"
+    ],
+    "ranks": {
+      "1": "[The First Rhythm] [Amplified Surge] effect enhanced: the Moxie gained immediately after entering [Pulsing Field Lv.3] is increased to 4.\n[Scanning Mode] effect enhanced: if already in the [Structure Analysis] status, its duration is extended by 3 rounds.\n[Structure Analysis] effect enhanced: the cap of [Decryption Key] that can be injected is increased by 5; the trigger timing of the debuff granted while channeling is changed to the end of the round, and its duration is increased by 1 round.",
+      "2": "[Brown Noise] effect enhanced: if already in the [Frequency Analysis] status, its duration is extended by 3 rounds.\n[Frequency Analysis] effect enhanced: the cap of [Decryption Key] that can be injected is increased by 5; the trigger timing of the buff granted while channeling is changed to the end of the round, and its duration is increased by 1 round.",
+      "3": "[The First Rhythm] [Surge Spike] effect enhanced: if [Structure Analysis] or [Frequency Analysis] holds 10 or more [Decryption Key] groups, consumes the excess; for each group consumed, allied [Dynamo] Reality-DMG characters deal additional Reality DMG equal to 90% of the base Reality DMG when attacking, for 2 rounds.",
+      "4": "[The Sum of Infinity] effect adjusted: [Hyper Analysis] duration +2 rounds.\n[Hyper Analysis] effect enhanced: at the end of the round, if channeling, casts self's normal Incantations in the Incantation zone as much as possible; channeling no longer restricts actions."
+    }
   },
   "311101": {
     "nameEn": "This Is the Best Take",
     "nameZh": "此为最佳镜次",
-    "tags": ["Ritual", "Neg Status"],
+    "tags": [
+      "Ritual",
+      "Neg Status"
+    ],
     "ranks": {
       "1": "[Genius Idea] no longer gives the Ultimate a chance to be recast; changed to: at the start of each round, if self's Moxie reaches 5 and [Genius Idea] reaches the original Ultimate's consumption stack count, consumes that stack count and gains 1 stack of [Endless Inspiration] (triggers at most once per round); for every 1 stack of [Genius Idea] self holds, has the original base chance to gain 1 additional stack of [Endless Inspiration], up to a maximum of 4 stacks; if [Endless Inspiration] has reached its stack limit, [Genius Idea] is no longer consumed",
       "2": "[Miniature Set] new effect: Moxie +3 for self when entering battle; when another ally casts an Ultimate, Noire gains 1 stack of [Scene Direction], up to a stack limit equal to the original stack limit of [Genius Idea]",
@@ -66,7 +101,10 @@
   "312101": {
     "nameEn": "Blessings That Stay the Whole Journey Through",
     "nameZh": "祝福长伴于归途",
-    "tags": ["Ritual", "Support"],
+    "tags": [
+      "Ritual",
+      "Support"
+    ],
     "ranks": {
       "1": "[To the \"Family\"] effect enhanced:\nIf at no less than 10 stacks of [Readiness], all allies gain [Assertiveness] for 1 round",
       "2": "[To the \"Family\"] effect enhanced:\n[Tactical Coordination]: the Ultimate DMG provided per stack of [Readiness] is increased by 20% of the base value;\n[Armament Enhancement]: the Critical Rate provided is increased by 20% of the base value",
@@ -78,7 +116,9 @@
   "313401": {
     "nameEn": "A Moment of Shimmering Fate",
     "nameZh": "一刻命运粼粼",
-    "tags": ["Lingering Glow"],
+    "tags": [
+      "Lingering Glow"
+    ],
     "ranks": {
       "1": "[Nothing Unexpected]'s [Vision] stacks granted are additionally increased by 100% of the original base amount, and grants [Foresight] for 2 rounds.",
       "2": "[Clairvoyant Prism] gains new effects:\n[Emanation of Blue]: Consumes 3 stacks of [Vision]; when [Destined Doom] is cast this round, deals additional Mental DMG equal to 35% of the original base Mental DMG, up to 1/2/3 times at Incantation rank 1/2/3; and at the end of the round, self Moxie +1.\n[Emanation of Purple]: Extends [Foresight]'s duration by 1/1/2 round(s); consumes 3 stacks of [Vision]; when [Destined Doom] is cast this round, for every point of [Lingering Glow], deals additional Mental DMG equal to 100% of the original additional Mental DMG per point of [Lingering Glow], up to 1/2/3 times at Incantation rank 1/2/3, and at the end of the round, self Moxie +1.\n[Emanation of Green]: Consumes 3 stacks of [Vision]; when [Destined Doom] is cast this round at rank 1/2/3, deals additional Mental DMG equal to 150% of the original additional Mental DMG at rank 1/2/3, up to 1/2/3 times at Incantation rank 1/2/3, and at the end of the round, self Moxie +1.",

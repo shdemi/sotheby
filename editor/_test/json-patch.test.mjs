@@ -233,6 +233,9 @@ for (const key of ["id", "nameCN", "release_patch"]) {
   const original = read("psychube_id.json");
   const doc = new JsonDoc(original);
   check(`first chube has "${key}"`, Object.prototype.hasOwnProperty.call(doc.value["6"][0], key));
+  const survivors = Object.fromEntries(
+    Object.entries(doc.value["6"][0]).filter(([k]) => k !== key),
+  );
 
   doc.deleteProperty(["6", 0], key);
   const out = doc.toString();
@@ -240,7 +243,7 @@ for (const key of ["id", "nameCN", "release_patch"]) {
 
   const item = JSON.parse(out)["6"][0];
   check(`delete "${key}": gone`, !Object.prototype.hasOwnProperty.call(item, key));
-  check(`delete "${key}": sibling keys survive`, item.name === "Flows in All Things Alike", JSON.stringify(item));
+  check(`delete "${key}": sibling keys survive`, JSON.stringify(item) === JSON.stringify(survivors), JSON.stringify(item));
   check(`delete "${key}": no other chube affected`, JSON.parse(out)["6"].length === JSON.parse(original)["6"].length);
 }
 

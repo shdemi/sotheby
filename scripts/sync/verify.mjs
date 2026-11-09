@@ -9,6 +9,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { OUT } from "./config.mjs";
+import { table } from "./sources.mjs";
+import { allEquipRows, isRealPsychube } from "./derive/psychubes.mjs";
 import { readJson } from "./util.mjs";
 
 const dir = process.argv[2] ? path.resolve(process.argv[2]) : OUT;
@@ -76,16 +78,37 @@ if (details) {
     "psychubes_data breakAttrs are 4 tiers or empty",
     detailRows.every(({ row }) => row.breakAttrs.length === 0 || row.breakAttrs.length === 4),
   );
+  // A psychube the CN build has shipped ahead of its `equip_skill` rows has no
+  // amplifications to show yet (113.0.1421: `6:1581`). That is a real data gap,
+  // so an empty list is accepted only when the game ships no rows at all.
+  const ampIds = new Set(
+    ["cn", "global"].flatMap((server) => table(server, "equip_skill").map((row) => String(row.id))),
+  );
   ok(
     "psychubes_data amplifications are 1..5 levels",
-    detailRows.every(({ row }) => row.amplifications.length >= 1 && row.amplifications.length <= 5),
+    detailRows.every(({ row }) => {
+      const n = row.amplifications.length;
+      if (n >= 1 && n <= 5) return true;
+      return n === 0 && !ampIds.has(String(row.id));
+    }),
+    detailRows.filter(({ row }) => row.amplifications.length === 0).map(({ key }) => key).join(","),
   );
 }
 
 // ---- future sight -----------------------------------------------------------
 ok("future characters is a non-empty list", Array.isArray(future.Character) && future.Character.length > 0, String(future.Character.length));
 const futureChubes = flat(future.Psychube);
-ok("future psychubes are CN-only game ids", futureChubes.length === 7, futureChubes.join(","));
+// The list is the set difference CN-minus-global, so derive it instead of pinning a
+// count: every CN-ahead patch adds psychubes without touching this file.
+const globalEquipIds = new Set(table("global", "equip").map((e) => e.id));
+const cnOnlyChubes = [...allEquipRows().values()]
+  .filter((row) => isRealPsychube(row) && !globalEquipIds.has(row.id))
+  .map((row) => String(row.id));
+ok(
+  "future psychubes are CN-only game ids",
+  futureChubes.length === cnOnlyChubes.length && cnOnlyChubes.every((id) => futureChubes.includes(id)),
+  futureChubes.join(","),
+);
 const knownKeys = new Set(ids);
 ok("future psychubes exist in psychube_id", futureChubes.every((id) => knownKeys.has(id)));
 ok("future skins are numeric strings", future.Skin.every((s) => /^\d+$/.test(s)));

@@ -34,14 +34,29 @@ function clean(value) {
   return String(value).replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
 }
 
+/**
+ * CN-ahead rows the CN client has not released yet (`isOnline: "0"`) only carry a
+ * name and a birthday: their skill rows are placeholders (`heroId: 0`, no icon) and
+ * no art exists. They wait for the patch that ships them. Global rows are exempt —
+ * that client only ships released content, and an `isOnline: "0"` row there is an
+ * NPC (Schneider) that curation already handles.
+ */
+function isUnreleasedPlaceholder(ch) {
+  return String(ch.isOnline ?? "1") === "0";
+}
+
 /** All characters from both servers, indexed by id (global wins on conflict). */
 export function charactersById() {
   const map = new Map();
+  const globalIds = new Set(table("global", "character").map((c) => c.id));
   for (const ch of table("cn", "character")) {
-    if (!EXCLUDED_CHARACTER_IDS.has(ch.id)) map.set(ch.id, { ...ch, _server: "cn" });
+    if (EXCLUDED_CHARACTER_IDS.has(ch.id)) continue;
+    if (!globalIds.has(ch.id) && isUnreleasedPlaceholder(ch)) continue;
+    map.set(ch.id, { ...ch, _server: "cn" });
   }
   for (const ch of table("global", "character")) {
-    if (!EXCLUDED_CHARACTER_IDS.has(ch.id)) map.set(ch.id, { ...ch, _server: "global" });
+    if (EXCLUDED_CHARACTER_IDS.has(ch.id)) continue;
+    map.set(ch.id, { ...ch, _server: "global" });
   }
   return map;
 }

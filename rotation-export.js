@@ -1,50 +1,83 @@
-﻿/**
+/**
  * Rotation PNG export.
  *
- * Draws the selected card plan onto a canvas and downloads it. The drawing is
- * done by hand rather than with html2canvas, because the plan uses
- * `aspect-ratio`, `object-fit` and percentage insets that a DOM screenshot does
- * not reproduce faithfully â€” and a plan sheet is the one image people will
- * actually read.
+ * The plan is taken straight off the modal card with html2canvas, so the PNG is
+ * the plan the app draws — same rule, ribbons and type — rather than a second
+ * design that imitates it. The ground is flat: #111111 outside the amber rule,
+ * #0F0F0F inside, with no background art. `render` is the fallback for a page
+ * without html2canvas: it redraws the same plan on a canvas, mirroring the
+ * modal's CSS values one by one.
  *
  * All sizes below are CSS pixels; the canvas is scaled up by SCALE so the PNG
  * stays sharp on a retina display.
  */
 (function () {
   const SCALE = 2;
-  const PAD = 28;
+  /* `.rotations-detail` is 20px 26px 28px inside the modal card. */
+  const PAD = 26;
+  const PAD_TOP = 20;
+  const PAD_BOTTOM = 28;
+  /* Margin between the PNG's edge and the card's own rule — the same #111111
+   * gap the snapshot leaves, so both paths look alike. */
+  const FRAME = 24;
 
-  /* Layout constants, mirroring styles.css. */
+  /* The export's ground is flat: #111111 outside the amber rule, #0F0F0F inside.
+   * The modal keeps its background art; only the PNG drops it. */
+  const PAGE_INK = "#111111";
+  const SHEET_INK = "#0F0F0F";
+  const SHEET_RULE = "#B55829";
+  /* How much #111111 shows around the sheet. */
+  const STAGE_PAD = 24;
+
+  /* Layout constants, copied from styles.css so the PNG is the modal. */
   const GAP = 5;
   const ROUND_GAP = 22;
   const SLOT_H = 132;
-  const CAPTION_H = 8;
+  const CAPTION_H = 7.4;
   const CAPTION_GAP = 4;
   const SECTION_H = 34;
-  const SECTION_GAP = 14;
+  const SECTION_GAP = 24; // `.rotations-detail` gap
+  const BLOCK_GAP = 14; // `.rot-block` gap
+  const EMPTY_PLATE = "images/card_modulo/Normal.png";
 
   const COLOR = {
     bg: "#111111",
-    bgEdge: "#111111",
     title: "#ECE5D9",
-    text: "#E7E0D3",
+    text: "#ECE5D9",
     muted: "#8f8a83",
-    gold: "#E8A33D",
-    accent: "#D4B235",
-    border: "rgba(255, 255, 255, 0.10)",
+    gold: "#E09532",
+    accent: "#ED7D31",
+    border: "rgba(181, 181, 179, 0.3)",
     panel: "rgba(0, 0, 0, 0.22)",
     note: "#F0E6D2",
+    rule: "rgba(255, 255, 255, 0.08)",
   };
 
-  const TITLE_FONT = '400 30px Georgia, "Times New Roman", serif';
-  const NOTE_FONT = '400 14px Georgia, "Times New Roman", serif';
-  const ROUND_NO_FONT = '400 21px Georgia, "Times New Roman", serif';
-  const ROUND_TITLE_FONT = '700 13px Georgia, "Times New Roman", serif';
+  const AMIRI = 'Amiri, Georgia, "Times New Roman", serif';
+  const TITLE_FONT = `700 31px ${AMIRI}`;
+  const KICKER_FONT = '700 10px "gg sans", "Segoe UI", Arial, sans-serif';
+  const NOTE_FONT = `400 14px ${AMIRI}`;
+  const ROUND_NO_FONT = `700 22.4px ${AMIRI}`;
+  const ROUND_TITLE_FONT = `700 14.4px ${AMIRI}`;
+  const SECTION_FONT = '700 14px "gg sans", "Segoe UI", Arial, sans-serif';
+  const META_FONT = '400 10.4px "gg sans", "Segoe UI", Arial, sans-serif';
+  const CHIP_FONT = '700 9.3px "gg sans", "Segoe UI", Arial, sans-serif';
   const LABEL_FONT = '400 10px "gg sans", "Segoe UI", Arial, sans-serif';
   const BODY_FONT = '400 13px "gg sans", "Segoe UI", Arial, sans-serif';
-  const SMALL_FONT = '400 11px "gg sans", "Segoe UI", Arial, sans-serif';
-  // The tag plate's serif; the size drops when a long tag has to fit a card.
-  const tagFont = (size) => `700 ${size}px Georgia, "Times New Roman", serif`;
+  const NAME_FONT = '400 11.8px "gg sans", "Segoe UI", Arial, sans-serif';
+  const SMALL_FONT = '400 9px "gg sans", "Segoe UI", Arial, sans-serif';
+  const CAPTION_FONT = '400 7.4px "gg sans", "Segoe UI", Arial, sans-serif';
+  const TEXT_FONT = '400 9.3px "gg sans", "Segoe UI", Arial, sans-serif';
+  const TUNE_NOTE_FONT = '400 9.6px "gg sans", "Segoe UI", Arial, sans-serif';
+  // The tag ribbon's serif; the size drops when a long tag has to fit a card.
+  const tagFont = (size) => `700 ${size}px ${AMIRI}`;
+
+  // AP Free is gold, Precast the sheet's amber, an authored tag a cool steel.
+  const TAG_INK = {
+    "ap-free": [204, 163, 41],
+    precast: [217, 123, 31],
+    custom: [110, 136, 172],
+  };
 
   /* ---- image loading ---- */
 
@@ -232,13 +265,14 @@
     const archetypes = rotationArchetypes(rotation);
 
     const strips = rounds.map(stripWidth);
-    const gutter = 56;
+    // `.rot-round`: a 36px number column, then a 10px gap, then the cards.
+    const gutter = 46;
     const roundNotes = Array.isArray(rotation.roundNotes) ? rotation.roundNotes : [];
     const railW = roundNotes.length ? 150 : 0;
 
     const contentW = Math.max(
       520,
-      ...strips.map((w) => gutter + 10 + w),
+      ...strips.map((w) => gutter + w),
       archetypes.length ? archetypes.join("  ").length * 9 : 0
     );
 
@@ -248,30 +282,44 @@
   function teamTileWidth(ctx, member) {
     const chubeKey = psychubeKeyFromName(member.psychube);
     const chube = chubeKey ? psychubeDb[chubeKey] : null;
-    setFont(ctx, LABEL_FONT, COLOR.text);
+    setFont(ctx, NAME_FONT, COLOR.text);
     const nameW = ctx.measureText(displayCharName(member.character)).width;
     let right = nameW;
     if (chube) {
       setFont(ctx, SMALL_FONT, COLOR.muted);
       right = Math.max(right, 26 + 6 + ctx.measureText(psychubeNameFromName(member.psychube)).width);
     }
-    return 7 + 56 + 10 + right + 16;
+    return 7 + 56 + 10 + right + 14;
   }
 
   /* ---- drawing ---- */
 
-  function drawSectionHeader(ctx, label, x, y, w) {
+  /**
+   * `.archetype-section-header`: a black plate with a hairline and an amber
+   * spine, the words in small-caps sans. The modal lays a warm wash over the
+   * plate; the export keeps only the plate and the spine.
+   */
+  function drawSectionHeader(ctx, label, x, y, w, right = "") {
     ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
     ctx.fillRect(x, y, w, SECTION_H);
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+    ctx.strokeStyle = COLOR.rule;
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, w - 1, SECTION_H - 1);
-    ctx.fillStyle = COLOR.accent;
+    ctx.fillStyle = COLOR.gold;
     ctx.fillRect(x, y, 3, SECTION_H);
-    setFont(ctx, ROUND_TITLE_FONT, COLOR.text, "2px");
+
+    setFont(ctx, SECTION_FONT, COLOR.title, "1.1px");
     ctx.textBaseline = "middle";
-    ctx.fillText(String(label).toUpperCase(), x + 12, y + SECTION_H / 2 + 1);
+    ctx.fillText(String(label).toUpperCase(), x + 11, y + SECTION_H / 2 + 1);
     if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+    if (right) {
+      setFont(ctx, META_FONT, "#B5B5B3", "1.4px");
+      ctx.textAlign = "right";
+      ctx.fillText(String(right).toUpperCase(), x + w - 12, y + SECTION_H / 2 + 1);
+      ctx.textAlign = "left";
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+    }
     ctx.textBaseline = "alphabetic";
     return SECTION_H;
   }
@@ -280,13 +328,14 @@
     const w = teamTileWidth(ctx, member);
     const h = 75;
 
+    // `.rot-member`: the page ink at 22%, a hairline, 7px 14px 7px 7px.
     ctx.fillStyle = COLOR.panel;
     ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = "rgba(181, 181, 179, 0.3)";
+    ctx.strokeStyle = COLOR.border;
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
 
-    // Portrait.
+    // Portrait, 56×56 over #2a2825.
     const avatar = characterDb[member.character];
     const img = avatar ? imageCache.get(avatar) : null;
     const value = img && img.__loaded ? img : null;
@@ -301,55 +350,51 @@
     }
     ctx.restore();
 
-    // Portrait tier: five dashes, the first N filled.
+    // The portrait bar sits under the avatar: five dashes, the first N lit.
     const tier = Math.max(0, Math.min(5, Number(member.portrait) || 0));
-    const dashW = 56 / 5;
+    const dashW = 58 / 5;
     for (let i = 0; i < 5; i++) {
-      ctx.fillStyle = i < tier ? "#FBAE31" : "rgba(255, 255, 255, 0.08)";
-      ctx.fillRect(x + 7 + i * dashW, y + 7 + 56 + 2, dashW - 1, 3);
+      ctx.fillStyle = i < tier ? "#FBAE31" : "rgba(255, 255, 255, 0.14)";
+      ctx.fillRect(x + 6 + i * dashW, y + 65, dashW - 1, 3);
     }
 
-    // Name and psychube.
+    // Name, then the psychube it runs.
     const textX = x + 7 + 56 + 10;
-    setFont(ctx, BODY_FONT, COLOR.text);
-    ctx.fillText(displayCharName(member.character), textX, y + 22);
+    setFont(ctx, NAME_FONT, "#ECE5D9");
+    ctx.fillText(displayCharName(member.character), textX, y + 28);
 
     const chubeKey = psychubeKeyFromName(member.psychube);
     const chube = chubeKey ? psychubeDb[chubeKey] : null;
     if (chube) {
       const icon = imageCache.get(chube.iconUrl);
-      if (icon && icon.__loaded) {
-        ctx.drawImage(icon, textX, y + 30, 26, 31);
-      }
+      if (icon && icon.__loaded) ctx.drawImage(icon, textX, y + 34, 26, 31);
       setFont(ctx, SMALL_FONT, COLOR.muted);
-      ctx.fillText(psychubeNameFromName(member.psychube), textX + 32, y + 49);
+      ctx.fillText(psychubeNameFromName(member.psychube), textX + 32, y + 53);
     }
     return w;
   }
 
-  const TUNING_TILE_W = 75;
+  /* `.rot-team-tuning`: padding 7px 14px around a 56px-high icon, capped at 84. */
+  const TUNING_TILE_W = 84;
 
   function drawTuningTile(ctx, tuning, x, y) {
     const w = TUNING_TILE_W;
     const h = 75;
 
-    // Same surface and hairline border as a member tile.
-    ctx.fillStyle = "rgba(0, 0, 0, 0.22)";
+    ctx.fillStyle = COLOR.panel;
     ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = "rgba(181, 181, 179, 0.3)";
+    ctx.strokeStyle = COLOR.border;
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
 
     const src = `images/tuning_abilities/${encodeURIComponent(tuning)}.png`;
     const img = imageCache.get(src);
     if (img && img.__loaded) {
-      // Sized like the member portraits, so the icon carries the tile.
-      const iconSize = 56;
+      // 56px tall, never wider than 84: the icon carries the tile.
+      const iconH = 56;
       const ratio = img.naturalWidth / img.naturalHeight || 1;
-      const iw = Math.min(w - 28, iconSize * ratio);
-      const ix = Math.round(x + (w - iw) / 2);
-      const iy = Math.round(y + (h - iconSize) / 2);
-      ctx.drawImage(img, ix, iy, iw, iconSize);
+      const iw = Math.min(84, iconH * ratio);
+      ctx.drawImage(img, x + (w - iw) / 2, y + (h - iconH) / 2, iw, iconH);
     }
     return w;
   }
@@ -428,61 +473,81 @@
   }
 
   /**
-   * The tag plates on the slot's first card. Every tag draws its words on the
-   * blank ribbon; the plate is capped at the card's width and the words shrink
-   * until they fit, so a long tag never spills off the art.
+   * The tag ribbons on the slot's first card. The ink fades into the art, a
+   * halftone screen closes the ribbon, and the words shrink until they fit, so
+   * a long tag never spills off the card.
    */
   function drawTagPlates(ctx, tags, x, cardTop, ultimate, tagText = "", cardWidth = 0) {
-    let y = cardTop + (ultimate ? 30 : 6);
     const limit = cardWidth || 64;
-    const room = Math.max(1, limit - 11);
+    // Flush with the card, like the ribbon in the plan itself.
+    const left = 0;
+    const width = Math.max(26, limit);
+    const h = 15;
+    let y = cardTop + (ultimate ? 27 : 5);
     for (const key of tags) {
       const tag = ROT_SLOT_TAGS.find((entry) => entry.key === key);
-      if (!tag || !tag.image) continue;
-      const img = imageCache.get(tag.image);
-      const h = 13;
+      if (!tag) continue;
+      const ink = TAG_INK[key] || TAG_INK["ap-free"];
+      const [r, g, b] = ink;
+      const px = x + left;
+
+      const grad = ctx.createLinearGradient(px, 0, px + width, 0);
+      grad.addColorStop(0, `rgb(${r}, ${g}, ${b})`);
+      grad.addColorStop(0.9, `rgba(${r}, ${g}, ${b}, 0.5)`);
+      grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(px, y, width, h);
+
+      // Halftone tail: a grid of dark dots on the fading end of the ribbon.
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(px + width - 14, y - 1, 14, h + 2);
+      ctx.clip();
+      ctx.fillStyle = "rgba(26, 26, 26, 0.72)";
+      const step = 3;
+      for (let gy = y - 2, row = 0; gy < y + h + 1; gy += step, row += 1) {
+        for (let gx = px + width - 14; gx < px + width; gx += step) {
+          ctx.beginPath();
+          ctx.arc(gx + (row % 2 ? step / 2 : 0), gy, 0.9, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+
       let label = String(rotationTagLabel(tag, tagText) || "").trim();
-      let size = 9;
-      let textW = 0;
-      setFont(ctx, tagFont(size), "#FFFFFF", "0.1px");
-      textW = label ? ctx.measureText(label).width : 0;
-      // The DOM shrinks the type the same way, then clips with an ellipsis.
-      while (size > 6 && textW > room) {
-        size -= 0.5;
-        setFont(ctx, tagFont(size), "#FFFFFF", "0.1px");
-        textW = label ? ctx.measureText(label).width : 0;
-      }
-      if (textW > room) {
-        while (label.length > 1 && ctx.measureText(`${label}â€¦`).width > room) label = label.slice(0, -1);
-        label = `${label}â€¦`;
-        textW = ctx.measureText(label).width;
-      }
-      const w = Math.min(limit, Math.max(label ? 43 : 24, textW + 11));
-      if (img && img.__loaded) ctx.drawImage(img, x, y, w, h);
       if (label) {
+        const room = width - 17;
+        let size = 11;
+        setFont(ctx, tagFont(size), "#FFFFFF", "0.1px");
+        while (size > 6.5 && ctx.measureText(label).width > room) {
+          size -= 0.5;
+          setFont(ctx, tagFont(size), "#FFFFFF", "0.1px");
+        }
+        if (ctx.measureText(label).width > room) {
+          while (label.length > 1 && ctx.measureText(`${label}…`).width > room) label = label.slice(0, -1);
+          label = `${label}…`;
+        }
         ctx.save();
         ctx.beginPath();
-        ctx.rect(x + 5, y, w - 11, h);
+        ctx.rect(px + 5, y, width - 16, h);
         ctx.clip();
         ctx.textBaseline = "middle";
-        ctx.fillText(label, x + 5, y + h / 2 + 0.5);
+        ctx.fillText(label, px + 5, y + h / 2 + 0.5);
         ctx.textBaseline = "alphabetic";
         ctx.restore();
       }
       if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
-      y += h + 5;
+      y += h + 4;
     }
   }
 
-  function drawSlot(ctx, slot, x, stripBottom) {
+  function drawSlot(ctx, slot, x, bodyBottom) {
     const type = slot.type || "normal";
     const cards = Array.isArray(slot.cards) ? slot.cards.filter(Boolean) : [];
     const width = slotWidth(slot);
     const tags = rotationSlotTags(slot);
     const tagText = typeof slot.tagText === "string" ? slot.tagText : "";
     const caption = slotCaption(slot);
-    const bodyBottom = stripBottom - (caption ? CAPTION_H + CAPTION_GAP : 0);
-    const height = slotHeight(slot);
 
     if (type === "text") {
       const boxTop = bodyBottom - 81;
@@ -491,9 +556,9 @@
       ctx.strokeStyle = "rgba(122, 160, 224, 0.45)";
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, boxTop + 0.5, TEXT_W - 1, 80);
-      setFont(ctx, SMALL_FONT, "#DCE6F5");
-      const lines = wrapLines(ctx, slot.text || "", TEXT_W - 16);
-      drawLines(ctx, lines.slice(0, 5), x + 8, boxTop + 18, 15, "#DCE6F5");
+      setFont(ctx, TEXT_FONT, "#DCE6F5");
+      const lines = wrapLines(ctx, slot.text || "", TEXT_W - 20);
+      drawLines(ctx, lines.slice(0, 5), x + 10, boxTop + 17, 13.45, "#DCE6F5");
     } else if (type === "tuning") {
       const boxTop = bodyBottom - 81;
       ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
@@ -501,12 +566,14 @@
       ctx.strokeStyle = "rgba(237, 125, 49, 0.55)";
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, boxTop + 0.5, TUNING_W - 1, 80);
-      setFont(ctx, SMALL_FONT, "#ECE5D9");
-      const lines = wrapLines(ctx, slot.text || "", TUNING_W - 8);
-      drawLines(ctx, lines.slice(0, 4), x + 4, boxTop + 14, 12, "#ECE5D9");
-      const artSrc = cards[0] ? cardArt(cards[0]) : null;
-      const special = artSrc ? image(artSrc) : null;
-      if (special && special.__loaded) ctx.drawImage(special, x + TUNING_W - 26, boxTop + 81 - 26, 23, 23);
+      setFont(ctx, TUNE_NOTE_FONT, "#ECE5D9");
+      const lines = wrapLines(ctx, slot.text || "", TUNING_W - 8 - 20);
+      drawLines(ctx, lines.slice(0, 4), x + 4, boxTop + 13, 12, "#ECE5D9");
+      // The tuning card shrinks into the bottom-right corner.
+      if (cards[0]) {
+        const cw = 30 * (isUltimate(cards[0]) ? ULTIMATE_ASPECT : NORMAL_ASPECT);
+        drawCard(ctx, cards[0], x + TUNING_W - 3 - cw, boxTop + 81 - 3, 30);
+      }
     } else if (type === "double_or" || type === "or3" || (type === "or" && cards.length > 2)) {
       const card2 = cards[2];
       const card1 = cards[1];
@@ -578,13 +645,22 @@
       }
     } else if (cards.length === 0) {
       const boxTop = bodyBottom - EMPTY_H;
-      ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
-      ctx.fillRect(x, boxTop, EMPTY_W, EMPTY_H);
+      // `.rot-slot.is-empty`: the plate face at 55%, inside a dashed frame.
       ctx.strokeStyle = "rgba(181, 181, 179, 0.16)";
       ctx.setLineDash([4, 3]);
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, boxTop + 0.5, EMPTY_W - 1, EMPTY_H - 1);
       ctx.setLineDash([]);
+      const plate = image(EMPTY_PLATE);
+      if (plate && plate.__loaded) {
+        ctx.save();
+        ctx.globalAlpha = 0.55;
+        ctx.beginPath();
+        ctx.rect(x, boxTop, EMPTY_W, EMPTY_H);
+        ctx.clip();
+        coverDraw(ctx, plate, x, boxTop, EMPTY_W, EMPTY_H);
+        ctx.restore();
+      }
       drawTagPlates(ctx, tags, x, boxTop, false, tagText, EMPTY_W);
     } else {
       const h = type === "lb" ? LB_H : isUltimate(cards[0]) ? ULTIMATE_H : CARD_H;
@@ -593,31 +669,31 @@
     }
 
     if (caption) {
-      setFont(ctx, LABEL_FONT, type === "text" ? "#7d94b8" : type === "tuning" ? "#ED7D31" : COLOR.muted, "1.5px");
-      ctx.fillText(caption, x, stripBottom - 1);
+      setFont(ctx, CAPTION_FONT, type === "text" ? "#7d94b8" : type === "tuning" ? COLOR.accent : "#6f6a63", "1.2px");
+      ctx.fillText(caption, x, bodyBottom + CAPTION_GAP + CAPTION_H - 1);
       if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
     }
     return width;
   }
 
   function drawRoundNotePlaque(ctx, text, x, y) {
-    setFont(ctx, '700 14px Amiri, Georgia, "Times New Roman", serif', "#DFDFDF");
+    setFont(ctx, ROUND_TITLE_FONT, "#DFDFDF");
     const label = String(text);
-    const w = ctx.measureText(label).width + 34;
-    const h = 22;
+    const w = ctx.measureText(label).width + 38;
+    const h = 24;
     const gradient = ctx.createLinearGradient(x, y, x + w, y);
-    gradient.addColorStop(0, "#86783C");
-    gradient.addColorStop(0.25, "rgba(134, 120, 60, 0.75)");
-    gradient.addColorStop(0.5, "rgba(134, 120, 60, 0.5)");
-    gradient.addColorStop(0.75, "rgba(134, 120, 60, 0.25)");
-    gradient.addColorStop(1, "rgba(134, 120, 60, 0)");
+    gradient.addColorStop(0, "#5E4524");
+    gradient.addColorStop(0.25, "rgba(94, 69, 36, 0.75)");
+    gradient.addColorStop(0.5, "rgba(94, 69, 36, 0.5)");
+    gradient.addColorStop(0.75, "rgba(94, 69, 36, 0.25)");
+    gradient.addColorStop(1, "rgba(94, 69, 36, 0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(x, y, w, h);
-    ctx.fillStyle = "#D4B235";
-    ctx.fillRect(x, y, 3, h);
+    ctx.fillStyle = "#E09532";
+    ctx.fillRect(x, y, 4, h);
     ctx.fillStyle = "#DFDFDF";
     ctx.textBaseline = "middle";
-    ctx.fillText(label, x + 10, y + h / 2 + 1);
+    ctx.fillText(label, x + 13, y + h / 2 + 1);
     ctx.textBaseline = "alphabetic";
     if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
     return h;
@@ -683,6 +759,13 @@
     // Measure the parts that depend on text before sizing the canvas.
     const measure = document.createElement("canvas").getContext("2d");
     await document.fonts.ready;
+    if (document.fonts && document.fonts.load) {
+      await Promise.all([
+        document.fonts.load(`700 14px ${AMIRI}`),
+        document.fonts.load(`400 14px ${AMIRI}`),
+        document.fonts.load(`700 34px ${AMIRI}`),
+      ]).catch(() => {});
+    }
 
     const tileWidths = members.map((member) => teamTileWidth(measure, member));
     const tuning = typeof rotation.tuning === "string" ? rotation.tuning.trim() : "";
@@ -693,10 +776,10 @@
     const contentW = Math.max(
       560,
       teamRowW,
-      ...strips.map((w) => gutter + 10 + w),
+      ...strips.map((w) => gutter + w),
       railW
     );
-    const width = PAD * 2 + contentW;
+    const width = (FRAME + PAD) * 2 + contentW;
     const height = measureHeight(rotation, data, contentW);
 
     const canvas = document.createElement("canvas");
@@ -707,86 +790,98 @@
     ctx.textBaseline = "alphabetic";
 
     drawBackground(ctx, width, height);
+    drawSheetPanel(ctx, width, height);
 
-    let y = PAD;
-    const x0 = PAD;
+    let y = FRAME + PAD_TOP;
+    const x0 = FRAME + PAD;
 
-    // Title.
+    // `.rot-hero`: a corpus kicker, the plan's name in Amiri, the chips, then a
+    // hairline that closes the block.
+    setFont(ctx, KICKER_FONT, "rgba(181, 181, 179, 0.5)", "3.4px");
+    ctx.fillText("ROTATION", x0, y + 10);
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+    y += 18;
+
     setFont(ctx, TITLE_FONT, COLOR.title);
     ctx.fillText(rotation.name || rotation.id || "", x0, y + 26);
-    y += 40;
+    y += 34;
 
-    // Archetype chips. Raid and Focused Flashback carry their own colour.
+    // `.rot-hero-tag`: an outline chip in the archetype's own colour.
     if (archetypes.length) {
       let cx = x0;
       for (const tag of archetypes) {
-        const color = ARCHETYPE_COLORS[tag] || "#ED7D31";
-        setFont(ctx, LABEL_FONT, color, "1px");
-        const w = ctx.measureText(tag).width + 20;
-        // An outline only: no fill behind the words, matching the modal.
+        const color = ARCHETYPE_COLORS[tag] || COLOR.accent;
+        const label = String(tag).toUpperCase();
+        setFont(ctx, CHIP_FONT, color, "0.75px");
+        const w = ctx.measureText(label).width + 20;
         ctx.strokeStyle = color;
         ctx.lineWidth = 1;
-        ctx.strokeRect(cx + 0.5, y + 0.5, w - 1, 20);
-        ctx.fillStyle = color;
-        ctx.fillText(tag, cx + 10, y + 15);
+        ctx.strokeRect(cx + 0.5, y + 0.5, w - 1, 19);
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, cx + 10, y + 10.5);
+        ctx.textBaseline = "alphabetic";
         if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
         cx += w + 6;
       }
-      y += 21;
+      y += 19;
     }
 
     y += 16;
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+    ctx.strokeStyle = COLOR.rule;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(x0, y + 0.5);
     ctx.lineTo(x0 + contentW, y + 0.5);
     ctx.stroke();
-    y += 20;
+    y += SECTION_GAP;
 
-    // Team.
-    y += drawSectionHeader(ctx, "Team", x0, y, contentW) + 10;
-    let tx = x0;
-    let rowH = 0;
-    members.forEach((member, i) => {
-      const w = tileWidths[i];
-      if (tx > x0 && tx + w > x0 + contentW) {
-        tx = x0;
-        y += rowH + 10;
-        rowH = 0;
+    // Team: the section plate, then the member row.
+    y += drawSectionHeader(ctx, "Team", x0, y, contentW) + BLOCK_GAP;
+
+    const teamEntries = members.map((member, i) => ({ kind: "member", index: i, w: tileWidths[i] }));
+    if (tuning) teamEntries.push({ kind: "tuning", w: tuningW });
+    const teamRows = [];
+    let teamRow = [];
+    let tx = 0;
+    for (const entry of teamEntries) {
+      if (tx > 0 && tx + entry.w > contentW) {
+        teamRows.push(teamRow);
+        teamRow = [];
+        tx = 0;
       }
-      drawMemberTile(ctx, member, tx, y);
-      tx += w + 10;
-      rowH = 75;
-    });
-    if (tuning) {
-      if (tx > x0 && tx + tuningW > x0 + contentW) {
-        tx = x0;
-        y += rowH + 10;
-        rowH = 0;
-      }
-      drawTuningTile(ctx, tuning, tx, y);
-      tx += tuningW + 10;
-      rowH = 75;
+      teamRow.push({ ...entry, x: tx });
+      tx += entry.w + 10;
     }
-    y += rowH + 20;
+    if (teamRow.length) teamRows.push(teamRow);
 
-    // Rotation notes.
+    if (teamRows.length) {
+      teamRows.forEach((row, rowIndex) => {
+        const rowY = y + rowIndex * 85;
+        row.forEach((cell) => {
+          if (cell.kind === "tuning") drawTuningTile(ctx, tuning, x0 + cell.x, rowY);
+          else drawMemberTile(ctx, members[cell.index], x0 + cell.x, rowY);
+        });
+      });
+      y += teamRows.length * 75 + (teamRows.length - 1) * 10;
+      y += SECTION_GAP;
+    }
+
+    // Rotation notes, as body copy under their own plate.
     if (rotation.notes) {
-      y += drawSectionHeader(ctx, "Notes", x0, y, contentW) + 10;
-      setFont(ctx, BODY_FONT, "#b9b2a6");
+      y += drawSectionHeader(ctx, "Notes", x0, y, contentW) + BLOCK_GAP;
+      setFont(ctx, BODY_FONT, "rgba(236, 229, 217, 0.82)");
       for (const paragraph of String(exportLocalizeText(rotation.notes)).split("\n")) {
         const lines = wrapLines(ctx, paragraph, contentW);
-        y += drawLines(ctx, lines, x0, y + 13, 19, "#b9b2a6");
+        y += drawLines(ctx, lines, x0, y + 13, 19, "rgba(236, 229, 217, 0.82)");
         y += 4;
       }
-      y += 16;
+      y += SECTION_GAP - 4;
     }
 
     // Rounds.
-    y += drawSectionHeader(ctx, "Rounds", x0, y, contentW) + SECTION_GAP;
+    y += drawSectionHeader(ctx, "Rounds", x0, y, contentW, `${rounds.length} ROUNDS`) + BLOCK_GAP;
 
-    const stripLeft = x0 + gutter + 10;
+    const stripLeft = x0 + gutter;
     const roundTop = [];
     const roundBottom = [];
 
@@ -801,22 +896,13 @@
         stripTop = y + drawRoundNotePlaque(ctx, exportLocalizeText(round.note), x0, y) + 8;
       }
 
-      // The number sits in a small bordered box level with the cards.
-      const noTop = stripTop + 26;
-      const noText = String(index + 1).padStart(2, "0");
-      setFont(ctx, ROUND_NO_FONT, "#F0E6D2");
-      const noW = Math.max(44, ctx.measureText(noText).width + 20);
-      const noH = 38;
-      ctx.fillStyle = "transparent";
-      ctx.strokeStyle = COLOR.border;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x0 + 0.5, noTop + 0.5, noW - 1, noH - 1);
-      ctx.fillStyle = "#F0E6D2";
-      ctx.fillText(noText, x0 + 10, noTop + noH - 12);
-      drawCornerMark(ctx, x0, noTop, 13, "tl");
-      drawCornerMark(ctx, x0 + noW, noTop + noH, 13, "br");
+      // The number brackets the cards' top; both start 24px down the round.
+      const noTop = stripTop + 24;
+      drawRoundBadge(ctx, String(index + 1).padStart(2, "0"), x0, noTop);
 
-      const stripBottom = stripTop + SLOT_H - 12;
+      // `.rot-slot` is 132 high; the caption keeps its room even when blank.
+      const slotBottom = stripTop + SLOT_H;
+      const bodyBottom = slotBottom - CAPTION_H - CAPTION_GAP;
 
       // Slots.
       const slotXs = [];
@@ -824,11 +910,11 @@
       slots.forEach((slot) => {
         const w = slotWidth(slot);
         slotXs.push({ left: sx, right: sx + w });
-        drawSlot(ctx, slot, sx, stripBottom);
+        drawSlot(ctx, slot, sx, bodyBottom);
         sx += w + GAP;
       });
 
-      y = stripTop + SLOT_H;
+      y = slotBottom;
 
       // Annotations under the cards.
       const last = Math.max(0, slots.length - 1);
@@ -847,7 +933,7 @@
         const lanes = packLanes(notes);
         const laneCount = Math.max(...lanes) + 1;
         notes.forEach((note, i) => {
-          drawAnnotation(ctx, note, slotXs, stripBottom, y + lanes[i] * 26 + 10);
+          drawAnnotation(ctx, note, slotXs, slotBottom, y + lanes[i] * 26 + 10);
         });
         y += laneCount * 26;
       }
@@ -888,27 +974,67 @@
       });
     }
 
+    // Footer mark: a quiet signature at the sheet's edge.
+    setFont(ctx, KICKER_FONT, "rgba(181, 181, 179, 0.45)", "1.4px");
+    ctx.textAlign = "right";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("SOTHEBY'S MANSION   ·   ROTATION", width - FRAME - PAD, height - FRAME - 12);
+    ctx.textAlign = "left";
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
     return canvas;
   }
 
-  function drawCornerMark(ctx, x, y, size, corner) {
+  /** `.rot-round-no`: an amber bracket with the number set in Amiri inside it. */
+  function drawRoundBadge(ctx, noText, x, y) {
+    const w = 36;
+    const h = 36;
+    // Only the bottom and right edges remain, as an ⌟ bracket around the
+    // number's lower-right corner, rounded at that one corner.
+    ctx.beginPath();
+    ctx.moveTo(x + w, y);
+    ctx.lineTo(x + w, y + h - 10);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - 10, y + h);
+    ctx.lineTo(x, y + h);
     ctx.strokeStyle = COLOR.gold;
     ctx.lineWidth = 2;
+    ctx.stroke();
+
+    setFont(ctx, ROUND_NO_FONT, "#EADCC9");
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(noText, x + w / 2, y + h / 2 + 1);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+  }
+
+  /**
+   * The modal card's own edge — `.archetype-modal-card`: a 1px #B55829 rule with
+   * a single rounded corner at the top right. In the export the sheet is filled
+   * flat (#0F0F0F) instead of carrying the page's art.
+   */
+  function drawSheetPanel(ctx, width, height) {
+    const l = FRAME + 0.5;
+    const t = FRAME + 0.5;
+    const r = width - FRAME - 0.5;
+    const b = height - FRAME - 0.5;
+    ctx.fillStyle = SHEET_INK;
     ctx.beginPath();
-    if (corner === "tl") {
-      ctx.moveTo(x - 1, y + size);
-      ctx.lineTo(x - 1, y - 1);
-      ctx.lineTo(x + size, y - 1);
-    } else {
-      ctx.moveTo(x + 1, y - size);
-      ctx.lineTo(x + 1, y + 1);
-      ctx.lineTo(x - size, y + 1);
-    }
+    ctx.moveTo(l, t);
+    ctx.lineTo(r - 20, t);
+    ctx.quadraticCurveTo(r, t, r, t + 20);
+    ctx.lineTo(r, b);
+    ctx.lineTo(l, b);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = SHEET_RULE;
+    ctx.lineWidth = 1;
     ctx.stroke();
   }
 
+  /** The page ink outside the sheet; no art in the export. */
   function drawBackground(ctx, width, height) {
-    ctx.fillStyle = "#111111";
+    ctx.fillStyle = PAGE_INK;
     ctx.fillRect(0, 0, width, height);
   }
 
@@ -916,10 +1042,14 @@
   function measureHeight(rotation, data, contentW) {
     const { members, rounds, archetypes } = data;
     const measure = document.createElement("canvas").getContext("2d");
-    let y = PAD + 40;
-    if (archetypes.length) y += 21;
-    y += 16 + 20;
-    y += SECTION_H + 10;
+    let y = FRAME + PAD_TOP;
+    y += 18; // kicker
+    y += 34; // name
+    if (archetypes.length) y += 19; // chips
+    y += 16 + 1; // the hero's padding-bottom and its hairline
+    y += SECTION_GAP;
+
+    y += SECTION_H + BLOCK_GAP;
 
     // Team tiles wrap exactly as they will when drawn.
     const widths = members.map((member) => teamTileWidth(measure, member));
@@ -935,23 +1065,25 @@
       }
       tx += w + 10;
     });
-    y += rows * 75 + Math.max(0, rows - 1) * 10 + 20;
+    if (rows) {
+      y += rows * 75 + Math.max(0, rows - 1) * 10;
+      y += SECTION_GAP;
+    }
 
     if (rotation.notes) {
-      y += SECTION_H + 10;
-      setFont(measure, BODY_FONT, "#b9b2b6");
+      y += SECTION_H + BLOCK_GAP;
+      setFont(measure, BODY_FONT, "#ECE5D9");
       for (const paragraph of String(exportLocalizeText(rotation.notes)).split("\n")) {
         y += Math.max(1, wrapLines(measure, paragraph, contentW).length) * 19 + 4;
       }
-      y += 16;
+      y += SECTION_GAP - 4;
     }
 
-    y += SECTION_H + SECTION_GAP;
+    y += SECTION_H + BLOCK_GAP;
 
     rounds.forEach((round) => {
-      let stripTop = y;
-      if (round.note) stripTop = y + 32;
-      let bottom = stripTop + SLOT_H;
+      if (round.note) y += 24 + 8;
+      y += SLOT_H;
 
       const slots = Array.isArray(round.slots) ? round.slots : [];
       const last = Math.max(0, slots.length - 1);
@@ -963,12 +1095,13 @@
           from: Math.max(0, Math.min(last, Number(note.from) || 0)),
           to: Math.max(0, Math.min(last, Number(note.to) || 0)),
         }));
-        bottom += (Math.max(...packLanes(mapped)) + 1) * 26;
+        y += (Math.max(...packLanes(mapped)) + 1) * 26;
       }
-      y = bottom + ROUND_GAP;
+      y += ROUND_GAP;
     });
 
-    return y + PAD - ROUND_GAP;
+    // Back out the trailing round gap, then add the footer line and the frame.
+    return y - ROUND_GAP + 20 + PAD_BOTTOM + FRAME;
   }
 
   /* ---- the download ---- */
@@ -980,8 +1113,8 @@
     };
 
     add(ultimateFrame().image);
+    add(EMPTY_PLATE);
     surfaces().forEach((surface) => add(surface.image));
-    ROT_SLOT_TAGS.forEach((tag) => add(tag.image));
 
     rotationMembers(rotation).forEach((member) => {
       add(characterDb[member.character]);
@@ -1003,7 +1136,149 @@
     return [...urls];
   }
 
+  /* ---- the modal snapshot ---- */
+
+  /**
+   * The plan exactly as the modal draws it, on a flat ground.
+   *
+   * html2canvas repaints the card itself — its ribbons, brackets and Amiri type —
+   * so the PNG is the plan the app draws rather than a second design imitating
+   * it. The export differs from the modal in three deliberate ways: the card's
+   * background art is replaced by #0F0F0F inside the amber rule with #111111
+   * around it, the section headers drop their warm gradient, and the round
+   * numbers keep only a bottom-right bracket.
+   *
+   * A clone is expanded to its full height off-screen first, because the real
+   * detail pane scrolls and only shows one screenful.
+   *
+   * Returns null when the modal is closed or html2canvas is not on the page;
+   * `render` then draws the sheet by hand instead.
+   */
+  async function snapshot() {
+    if (typeof html2canvas !== "function") return null;
+    const card = document.getElementById("rotations-card");
+    if (!card || !card.offsetWidth || !card.offsetHeight) return null;
+
+    if (document.fonts && document.fonts.ready) await document.fonts.ready.catch(() => {});
+
+    const clone = card.cloneNode(true);
+    // The modal animates its blocks in; a clone would restart those animations
+    // and be caught half-faded, so the snapshot switches them off wholesale.
+    clone.setAttribute("data-rot-export", "1");
+    clone.style.animation = "none";
+    clone.style.opacity = "1";
+    clone.style.transform = "none";
+    clone.style.height = "auto";
+    clone.style.maxHeight = "none";
+    clone.style.width = "max-content";
+    // `.archetype-modal-card` sets its art with !important, so the override has
+    // to outrank it: the sheet is filled flat instead of carrying the art.
+    clone.style.setProperty("background-image", "none", "important");
+    clone.style.setProperty("background-color", SHEET_INK, "important");
+    clone.style.setProperty("border", `1px solid ${SHEET_RULE}`, "important");
+    clone.style.setProperty("border-radius", "0 20px 0 0", "important");
+    clone.style.setProperty("box-shadow", "none", "important");
+
+    // The plan, not the modal chrome around it.
+    clone
+      .querySelectorAll(
+        ".archetype-modal-header, .rotations-browse, .guide-rail-resizer, .rot-scale-control"
+      )
+      .forEach((el) => {
+        el.style.display = "none";
+      });
+
+    // Section plates: the black plate and its amber spine stay, the warm wash
+    // that only reads on the artwork goes.
+    clone.querySelectorAll(".rot-block > .archetype-section-header").forEach((el) => {
+      el.style.setProperty("background-image", "none", "important");
+      el.style.setProperty("background-color", "rgba(0, 0, 0, 0.4)", "important");
+    });
+
+    // The round number keeps only the bottom-right bracket.
+    clone.querySelectorAll(".rot-round-no").forEach((el) => {
+      el.style.border = "none";
+      el.style.borderRight = `2px solid ${COLOR.gold}`;
+      el.style.borderBottom = `2px solid ${COLOR.gold}`;
+      el.style.borderRadius = "0 0 10px 0";
+    });
+
+    const body = clone.querySelector(".rotations-body");
+    if (body) {
+      body.style.height = "auto";
+      body.style.maxHeight = "none";
+      body.style.width = "max-content";
+    }
+    const detail = clone.querySelector(".rotations-detail");
+    if (detail) {
+      detail.style.overflow = "visible";
+      detail.style.height = "auto";
+      detail.style.maxHeight = "none";
+      detail.style.width = "max-content";
+      detail.style.paddingBottom = "26px";
+    }
+    clone.querySelectorAll(".rot-rounds-body").forEach((el) => {
+      el.style.overflow = "visible";
+      el.style.paddingRight = "0";
+      el.style.paddingBottom = "0";
+    });
+
+    // #111111 sits outside the amber rule, so the PNG still has a margin when
+    // it is dropped on a white page.
+    const stage = document.createElement("div");
+    stage.setAttribute("data-rot-export", "1");
+    stage.style.cssText = `background:${PAGE_INK};padding:${STAGE_PAD}px;width:max-content;`;
+
+    const host = document.createElement("div");
+    host.style.cssText = "position:fixed;left:-20000px;top:0;pointer-events:none;";
+    host.setAttribute("aria-hidden", "true");
+    const freeze = document.createElement("style");
+    freeze.textContent =
+      "[data-rot-export], [data-rot-export] * { animation: none !important; transition: none !important; }";
+    stage.appendChild(clone);
+    host.appendChild(freeze);
+    host.appendChild(stage);
+    document.body.appendChild(host);
+
+    try {
+      // `max-content` can land on a half pixel; pinning the sheet to whole
+      // pixels keeps the four #111111 margins identical instead of leaving one
+      // side half a pixel wider.
+      const sheet = clone.getBoundingClientRect();
+      clone.style.width = `${Math.ceil(sheet.width)}px`;
+
+      // The sheet's own bottom edge, plus the same #111111 margin the other
+      // three sides get. Measuring the last round instead would eat into the
+      // sheet's bottom padding and leave a thinner gap than the sides.
+      const origin = stage.getBoundingClientRect().top;
+      const width = stage.offsetWidth;
+      const height = Math.ceil(clone.getBoundingClientRect().bottom - origin) + STAGE_PAD;
+      if (!width || !height) return null;
+
+      return await html2canvas(stage, {
+        backgroundColor: PAGE_INK,
+        scale: SCALE,
+        useCORS: true,
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        width,
+        height,
+        windowWidth: Math.max(width, window.innerWidth),
+        windowHeight: Math.max(height, window.innerHeight),
+      });
+    } finally {
+      host.remove();
+    }
+  }
+
   async function exportRotation(rotation) {
+    const shot = await snapshot().catch((error) => {
+      console.warn("Rotation snapshot failed; drawing the sheet instead.", error);
+      return null;
+    });
+    if (shot) return shot;
+
     await Promise.all(
       collectImages(rotation).map((src) =>
         loadImage(src).then((img) => {
@@ -1070,7 +1345,7 @@
       label.textContent = tr("rotations.exporting", "Exporting...");
       try {
         const canvas = await exportRotation(rotation);
-        download(canvas, `${slugify(rotation.name || rotation.id)}-card-plan.png`);
+        download(canvas, `${slugify(rotation.name || rotation.id)}-rotation.png`);
         label.textContent = tr("rotations.exportSaved", "Saved");
         setTimeout(() => {
           setIdle();

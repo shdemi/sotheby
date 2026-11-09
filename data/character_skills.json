@@ -253,6 +253,27 @@
         "artEn": "It is the omega, the final answer, the result of all calculations.",
         "artZh": "它是尽头，是答案，是一切计算的结果。",
         "artVi": "Đó là omega, là đáp án cuối cùng, là kết quả của mọi phép tính."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
+        "nameEn": "Reductio ad Absurdum",
+        "nameZh": "归谬",
+        "nameVi": "Reductio ad Absurdum",
+        "icon": "images/skills/790001.png",
+        "ranks": {
+          "1": {
+            "id": 306601511,
+            "descEn": "Mass attack. Deals 800% Mental DMG to all enemies. After attacking, grants self 1 stack of [Dichotomy Paradox].\nStrengthened by Euphoria: the DMG rises to 900% at E2 and 1000% at E5.",
+            "descZh": "群体攻击，对敌方全体造成800%精神创伤，攻击后赋予自身1层【两分悖论】",
+            "descVi": "Tấn công diện rộng. Gây 800% Mental DMG lên toàn bộ kẻ địch. Sau khi tấn công, trao cho bản thân 1 cộng dồn [Dichotomy Paradox].\nĐược cường hóa bởi Euphoria: DMG tăng lên 900% ở E2 và 1000% ở E5.",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -8124,7 +8145,7 @@
           "1": {
             "id": 31630121,
             "descEn": "Mass buff. Increases all allies' DMG Bonus by 30% for 2 rounds.\nIf [Rhyfelwr Adar Llwch Gwin] is present, [Rhyfelwr Adar Llwch Gwin] increases all allies' Extra Action DMG Bonus by 15% for 2 rounds.",
-            "descZh": "群体强化，使己方全体创伤加成提升30%，持续2回合；\n若【勇士尘酿鹰】在场，【勇士尘酿鹰】将使己方全体额外行动创伤加成提升15%，持续2回合",
+            "descZh": "群体增强，使己方全体创伤加成提升30%，持续2回合；\n若【勇士尘酿鹰】在场，【勇士尘酿鹰】将使己方全体额外行动创伤加成提升15%，持续2回合",
             "descVi": "Buff diện rộng. Tăng DMG Bonus của toàn bộ phe ta thêm 30%, duy trì 2 round.\nNếu [Rhyfelwr Adar Llwch Gwin] đang có mặt, [Rhyfelwr Adar Llwch Gwin] tăng Extra Action DMG Bonus của toàn bộ phe ta thêm 15%, duy trì 2 round.",
             "artEn": "The clan's ancestral blessing passed down through generations.",
             "artZh": "族群代代相传的赐福。",
@@ -8133,7 +8154,7 @@
           "2": {
             "id": 31630122,
             "descEn": "Mass buff. Increases all allies' DMG Bonus by 40% for 2 rounds.\nIf [Rhyfelwr Adar Llwch Gwin] is present, [Rhyfelwr Adar Llwch Gwin] increases all allies' Extra Action DMG Bonus by 20% for 2 rounds.",
-            "descZh": "群体强化，使己方全体创伤加成提升40%，持续2回合；\n若【勇士尘酿鹰】在场，【勇士尘酿鹰】将使己方全体额外行动创伤加成提升20%，持续2回合",
+            "descZh": "群体增强，使己方全体创伤加成提升40%，持续2回合；\n若【勇士尘酿鹰】在场，【勇士尘酿鹰】将使己方全体额外行动创伤加成提升20%，持续2回合",
             "descVi": "Buff diện rộng. Tăng DMG Bonus của toàn bộ phe ta thêm 40%, duy trì 2 round.\nNếu [Rhyfelwr Adar Llwch Gwin] đang có mặt, [Rhyfelwr Adar Llwch Gwin] tăng Extra Action DMG Bonus của toàn bộ phe ta thêm 20%, duy trì 2 round.",
             "artEn": "The clan's ancestral blessing passed down through generations, unchanged since its feathers were tender.",
             "artZh": "族群代代相传的赐福，从它羽毛稚嫩时就如此。",
@@ -8142,7 +8163,7 @@
           "3": {
             "id": 31630123,
             "descEn": "Mass buff. Increases all allies' DMG Bonus by 50% for 2 rounds.\nIf [Rhyfelwr Adar Llwch Gwin] is present, [Rhyfelwr Adar Llwch Gwin] increases all allies' Extra Action DMG Bonus by 25% for 2 rounds.",
-            "descZh": "群体强化，使己方全体创伤加成提升50%，持续2回合；\n若【勇士尘酿鹰】在场，【勇士尘酿鹰】将使己方全体额外行动创伤加成提升25%，持续2回合",
+            "descZh": "群体增强，使己方全体创伤加成提升50%，持续2回合；\n若【勇士尘酿鹰】在场，【勇士尘酿鹰】将使己方全体额外行动创伤加成提升25%，持续2回合",
             "descVi": "Buff diện rộng. Tăng DMG Bonus của toàn bộ phe ta thêm 50%, duy trì 2 round.\nNếu [Rhyfelwr Adar Llwch Gwin] đang có mặt, [Rhyfelwr Adar Llwch Gwin] tăng Extra Action DMG Bonus của toàn bộ phe ta thêm 25%, duy trì 2 round.",
             "artEn": "The blessing passed down through generations, unchanged since its youth, will continue to be inherited.",
             "artZh": "代代相传的赐福，从它儿时就如此，此后它将继续传承。",
@@ -8319,13 +8340,50 @@
         "nameZh": "第十三项壮举",
         "nameVi": "The Thirteenth Feat",
         "icon": "images/skills/31560131.png",
-        "descEn": "[Cyclic Incantation: At Full Draw]\nMass attack, deals 800% Reality DMG to all enemies, and deals additional [Static Genesis DMG] to the primary target equal to 100% of [Aesthetic of Might], while dealing 50% [Static Genesis DMG] to non-primary targets. If [Flame Undying] is not held in the Spelldock at attack time, generates 1 [Flame Undying] in the Spelldock; otherwise, this attack deals an additional 800% Reality DMG. After attacking, grants self 1 stack of [Conduit Calibration II], and clears the recorded value of [Aesthetic of Might].",
+        "descEn": "[Switch: At Full Draw]\nMass attack, deals 800% Reality DMG to all enemies, and deals additional [Static Genesis DMG] to the primary target equal to 100% of [Aesthetic of Might], while dealing 50% [Static Genesis DMG] to non-primary targets. If [Flame Undying] is not held in the Spelldock at attack time, generates 1 [Flame Undying] in the Spelldock; otherwise, this attack deals an additional 800% Reality DMG. After attacking, grants self 1 stack of [Conduit Calibration II], and clears the recorded value of [Aesthetic of Might].",
         "descZh": "【流转：金镞所向】\n群体攻击，对敌方全体造成800%的现实创伤，并对主目标额外造成【力量美学】100%的【稳态本源创伤】，对非主目标额外造成【力量美学】50%【稳态本源创伤】；攻击时若咒语区未持有【复燃再燃】，则在咒语区生成1张【复燃再燃】；否则本次攻击额外造成800%的现实创伤；攻击后赋予自身1层【术具调谐Ⅱ】，并清空【力量美学】的记录值",
-        "descVi": "[Cyclic Incantation: At Full Draw]\nTấn công diện rộng, gây 800% Reality DMG lên toàn bộ kẻ địch, đồng thời gây thêm [Static Genesis DMG] lên mục tiêu chính bằng 100% [Aesthetic of Might], trong khi gây 50% [Static Genesis DMG] lên các mục tiêu không phải mục tiêu chính. Nếu lúc tấn công không có [Flame Undying] trong Spelldock, tạo 1 [Flame Undying] trong Spelldock; nếu không, đòn tấn công này gây thêm 800% Reality DMG. Sau khi tấn công, cấp cho bản thân 1 cộng dồn [Conduit Calibration II], và xóa giá trị đã ghi nhận của [Aesthetic of Might].",
+        "descVi": "[Switch: At Full Draw]\nTấn công diện rộng, gây 800% Reality DMG lên toàn bộ kẻ địch, đồng thời gây thêm [Static Genesis DMG] lên mục tiêu chính bằng 100% [Aesthetic of Might], trong khi gây 50% [Static Genesis DMG] lên các mục tiêu không phải mục tiêu chính. Nếu lúc tấn công không có [Flame Undying] trong Spelldock, tạo 1 [Flame Undying] trong Spelldock; nếu không, đòn tấn công này gây thêm 800% Reality DMG. Sau khi tấn công, cấp cho bản thân 1 cộng dồn [Conduit Calibration II], và xóa giá trị đã ghi nhận của [Aesthetic of Might].",
         "artEn": "For the next celebration, the sun should rise once again.",
         "artZh": "为了下一场庆贺，太阳理应再升起一次。",
         "artVi": "Cho lễ hội kế tiếp, mặt trời nên mọc lên một lần nữa.",
         "harmonization": -100
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Energy",
+        "attributeZh": "交感",
+        "nameEn": "Flame Undying",
+        "nameZh": "复燃再燃",
+        "nameVi": "Flame Undying",
+        "icon": "images/skills/31560144.png",
+        "ranks": {
+          "1": {
+            "id": 31560182,
+            "descEn": "At the end of each round, smelts up to 2 unused basic Energy cards in the Spelldock, prioritizing lower-value basic Energy first; each 1 point of Energy smelted accumulates 1 point of [Flame Undying] Energy, up to 4 accumulated points, after which it stops smelting; stores up to 7 points; upon use, gains the accumulated amount of Mineral Energy.\nStarts in a locked state and cannot be used; once at least 1 point has accumulated, it unlocks and becomes usable; does not count against the team's Incantation Draw Limit, and does not consume AP.",
+            "descZh": "每回合结束时，熔炼至多2张咒语区未使用的普通交感能量，优先熔炼能量较低的普通交感能量，每熔炼1点交感能量可累积1点【复燃再燃】的能量，累积熔炼4点能量后不再熔炼，至多保存7点能量，使用后获得累积数量的岩交感能量；\n初始处于未解锁状态，不可使用，当累积熔炼1点能量及以上时，解锁变为可使用，不占己方咒语获取数量上限，不消耗行动点",
+            "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 2 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 1 điểm Energy [Flame Undying], tối đa tích lũy 4 điểm, sau đó dừng nung chảy; lưu trữ tối đa 7 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
+            "artEn": "",
+            "artZh": ""
+          },
+          "2": {
+            "id": 31560183,
+            "descEn": "At the end of each round, smelts up to 3 unused basic Energy cards in the Spelldock, prioritizing lower-value basic Energy first; each 1 point of Energy smelted accumulates 1 point of [Flame Undying] Energy, up to 6 accumulated points, after which it stops smelting; stores up to 10 points; upon use, gains the accumulated amount of Mineral Energy.\nStarts in a locked state and cannot be used; once at least 1 point has accumulated, it unlocks and becomes usable; does not count against the team's Incantation Draw Limit, and does not consume AP.",
+            "descZh": "每回合结束时，熔炼至多3张咒语区未使用的普通交感能量，优先熔炼能量较低的普通交感能量，每熔炼1点交感能量可累积1点【复燃再燃】的能量，累积熔炼6点能量后不再熔炼，至多保存10点能量，使用后获得累积数量的岩交感能量；\n初始处于未解锁状态，不可使用，当累积熔炼1点能量及以上时，解锁变为可使用，不占己方咒语获取数量上限，不消耗行动点",
+            "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 3 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 1 điểm Energy [Flame Undying], tối đa tích lũy 6 điểm, sau đó dừng nung chảy; lưu trữ tối đa 10 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
+            "artEn": "",
+            "artZh": ""
+          },
+          "3": {
+            "id": 31560184,
+            "descEn": "At the end of each round, smelts up to 3 unused basic Energy cards in the Spelldock, prioritizing lower-value basic Energy first; each 1 point of Energy smelted accumulates 2 points of [Flame Undying] Energy, up to 8 points smelted, after which it stops smelting; stores up to 12 points; upon use, gains the accumulated amount of Mineral Energy.\nStarts in a locked state and cannot be used; once at least 1 point has accumulated, it unlocks and becomes usable; does not count against the team's Incantation Draw Limit, and does not consume AP.",
+            "descZh": "每回合结束时，熔炼至多3张咒语区未使用的普通交感能量，优先熔炼能量较低的普通交感能量，每熔炼1点交感能量可累积2点【复燃再燃】的能量，累积熔炼8点能量后不再熔炼，至多保存12点能量，使用后获得累积数量的岩交感能量；\n初始处于未解锁状态，不可使用，当累积熔炼1点能量及以上时，解锁变为可使用，不占己方咒语获取数量上限，不消耗行动点",
+            "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 3 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 2 điểm Energy [Flame Undying], nung chảy tối đa 8 điểm, sau đó dừng nung chảy; lưu trữ tối đa 12 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -8812,6 +8870,27 @@
         "artEn": "Now that it's come to this, here's a big present for you!",
         "artZh": "事已至此，给你们送份大礼！",
         "artVi": "Đã đến nước này, đây là một món quà lớn cho ngươi!"
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
+        "nameEn": "Shoot Down",
+        "nameZh": "击毁",
+        "nameVi": "Shoot Down",
+        "icon": "images/skills/790002.png",
+        "ranks": {
+          "1": {
+            "id": 31550151,
+            "descEn": "Pursuit Skill:\nConsumes 1 [Star Pursuit Point]. 1-target attack. Deals 900% Reality DMG, Critical DMG +60% when attacking.\nPursuit Ability:\nDuring [Full Pursuit], every 2 actions self takes, the 3rd action becomes a Mass attack, dealing 2000% Reality DMG to all enemies, Critical DMG +80% when attacking;\nBefore exiting the [Full Pursuit] phase, self can perform an additional finishing attack, dealing 3000% Reality DMG to all enemies, Critical DMG +100% when attacking; for every action taken by all allies during this phase, this attack deals an additional 150% Reality DMG;\nExits the [Full Pursuit] phase after this attack.",
+            "descZh": "单体攻击，造成900%现实创伤，攻击时暴击创伤提升60%",
+            "descVi": "Pursuit Skill:\nTiêu hao 1 [Star Pursuit Point]. Tấn công đơn mục tiêu. Gây 900% Reality DMG, Critical DMG +60% khi tấn công.\nPursuit Ability:\nTrong [Full Pursuit], cứ mỗi 2 hành động của bản thân, hành động thứ 3 sẽ trở thành tấn công diện rộng, gây 2000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +80% khi tấn công;\nTrước khi rời khỏi giai đoạn [Full Pursuit], bản thân có thể thực hiện thêm 1 đòn kết liễu, gây 3000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +100% khi tấn công; với mỗi hành động mà toàn bộ phe ta thực hiện trong giai đoạn này, đòn tấn công này gây thêm 150% Reality DMG;\nSau đòn tấn công này, rời khỏi giai đoạn [Full Pursuit].",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -8847,17 +8926,17 @@
         "nameEn": "Perpetual Motion Engine III",
         "nameZh": "永动引擎Ⅲ",
         "nameVi": "Perpetual Motion Engine III",
-        "descEn": "The first time [Cobra Drive] is used after entering battle, grants self 3 stacks of [Supercharger] and 6 stacks of [Ammo Loading], and increases self Moxie by 1;\nEach time self acts during the [Weakness Penetration] phase, grants self 1 stack of [Ammo Loading].",
+        "descEn": "The first time [Cobra Drive] is used after entering battle, grants self 3 stacks of [Supercharger] and 6 stacks of [Ammo Loading], and increases self Moxie by 1;\nEach time self acts during the [Full Pursuit] phase, grants self 1 stack of [Ammo Loading].",
         "descZh": "进入战斗后首次使用【眼镜蛇机动】时赋予自身3层【增压】与6层【弹药装填】，并使自身激情+1；\n自身每在【弱点洞穿】阶段中行动1次，赋予自身1层【弹药装填】",
-        "descVi": "Sau khi vào trận, lần đầu tiên sử dụng [Cobra Drive] sẽ cấp cho bản thân 3 cộng dồn [Supercharger] và 6 cộng dồn [Ammo Loading], đồng thời tăng Moxie của bản thân thêm 1;\nMỗi khi bản thân hành động trong giai đoạn [Weakness Penetration], cấp cho bản thân 1 cộng dồn [Ammo Loading]."
+        "descVi": "Sau khi vào trận, lần đầu tiên sử dụng [Cobra Drive] sẽ cấp cho bản thân 3 cộng dồn [Supercharger] và 6 cộng dồn [Ammo Loading], đồng thời tăng Moxie của bản thân thêm 1;\nMỗi khi bản thân hành động trong giai đoạn [Full Pursuit], cấp cho bản thân 1 cộng dồn [Ammo Loading]."
       }
     ],
     "portrays": [
       {
         "level": 1,
-        "descEn": "[Perpetual Motion Engine]: The [Star Pursuit Point] filled after entering battle is increased to 6. [Precognition] Insight skill set [Shoot Down] enhancement:\n[Perception Incantation] Reality DMG dealt is increased to 1500%;\n[Perception Ability 1] Reality DMG dealt by every third enhanced attack is increased to 3200%;\n[Perception Ability 2] Finishing attack's Reality DMG dealt is increased to 5000%, and for every action taken by all allies, additional Reality DMG dealt is increased to 250%.",
+        "descEn": "[Perpetual Motion Engine]: The [Star Pursuit Point] filled after entering battle is increased to 6. [Precognition] Insight skill set [Shoot Down] enhancement:\n[Perception Incantation] Reality DMG dealt is increased to 1500%;\n[Perception Ability-1] Reality DMG dealt by every third enhanced attack is increased to 3200%;\n[Perception Ability-2] Finishing attack's Reality DMG dealt is increased to 5000%, and for every action taken by all allies, additional Reality DMG dealt is increased to 250%.",
         "descZh": "【先觉】进入战斗后填充的【星系洞知点】提升至6个；\n【先觉】洞知技能组【击毁】强化：\n【洞知咒语】造成的现实创伤提升至1500%;\n【洞知能力-1】每第三次强化攻击造成的现实创伤提升至3200%;\n【洞知能力-2】终结攻击造成的现实创伤提升至5000%，己方全体每行动1次，额外造成的现实创伤提升至250%",
-        "descVi": "[Perpetual Motion Engine]: [Star Pursuit Point] được nạp sau khi vào trận tăng thành 6. [Precognition] Cường hóa bộ kỹ năng Insight [Shoot Down]:\n[Perception Incantation] Reality DMG gây ra tăng thành 1500%;\n[Perception Ability 1] Reality DMG gây ra bởi mỗi đòn tấn công cường hóa thứ ba tăng thành 3200%;\n[Perception Ability 2] Reality DMG gây ra của đòn kết liễu tăng thành 5000%, và với mỗi hành động của toàn bộ phe ta, Reality DMG gây thêm tăng thành 250%."
+        "descVi": "[Perpetual Motion Engine]: [Star Pursuit Point] được nạp sau khi vào trận tăng thành 6. [Precognition] Cường hóa bộ kỹ năng Insight [Shoot Down]:\n[Perception Incantation] Reality DMG gây ra tăng thành 1500%;\n[Perception Ability-1] Reality DMG gây ra bởi mỗi đòn tấn công cường hóa thứ ba tăng thành 3200%;\n[Perception Ability-2] Reality DMG gây ra của đòn kết liễu tăng thành 5000%, và với mỗi hành động của toàn bộ phe ta, Reality DMG gây thêm tăng thành 250%."
       },
       {
         "level": 2,
@@ -8879,9 +8958,9 @@
       },
       {
         "level": 5,
-        "descEn": "[Try This Move!]: The [Star Pursuit Point] filled when cast while under [Hyper Velocity] is increased to 5;\nInsight skill set [Shoot Down] enhancement:\n[Perception Incantation] Reality DMG dealt is increased to 2200%, and Critical DMG when attacking is increased to 80%;\n[Perception Ability 1] Reality DMG dealt by every third enhanced attack is increased to 4800%, and Critical DMG when attacking is increased to 100%;\n[Perception Ability 2] Finishing attack's Reality DMG dealt is increased to 7000%, additional Reality DMG dealt per ally action is increased to 350%, and Critical DMG when attacking is increased to 125%.",
+        "descEn": "[Try This Move!]: The [Star Pursuit Point] filled when cast while under [Hyper Velocity] is increased to 5;\nInsight skill set [Shoot Down] enhancement:\n[Perception Incantation] Reality DMG dealt is increased to 2200%, and Critical DMG when attacking is increased to 80%;\n[Perception Ability-1] Reality DMG dealt by every third enhanced attack is increased to 4800%, and Critical DMG when attacking is increased to 100%;\n[Perception Ability-2] Finishing attack's Reality DMG dealt is increased to 7000%, additional Reality DMG dealt per ally action is increased to 350%, and Critical DMG when attacking is increased to 125%.",
         "descZh": "【试试杀手锏】在处于【极限速度】中施放时填充的【星系洞知点】提升至5个；\n洞知技能组【击毁】强化：\n【洞知咒语】造成的现实创伤提升至2200%，攻击时暴击创伤提升至80%；\n【洞知能力-1】每第三次强化攻击造成的现实创伤提升至4800%，攻击时暴击创伤提升至100%；\n【洞知能力-2】终结攻击造成的现实创伤提升至7000%，己方全体每行动1次，额外造成的现实创伤提升至350%，攻击时暴击创伤提升至125%",
-        "descVi": "[Try This Move!]: [Star Pursuit Point] được nạp khi thi triển trong [Hyper Velocity] tăng thành 5;\nCường hóa bộ kỹ năng Insight [Shoot Down]:\n[Perception Incantation] Reality DMG gây ra tăng thành 2200%, và Critical DMG khi tấn công tăng thành 80%;\n[Perception Ability 1] Reality DMG gây ra bởi mỗi đòn tấn công cường hóa thứ ba tăng thành 4800%, và Critical DMG khi tấn công tăng thành 100%;\n[Perception Ability 2] Reality DMG gây ra của đòn kết liễu tăng thành 7000%, Reality DMG gây thêm mỗi hành động của đồng minh tăng thành 350%, và Critical DMG khi tấn công tăng thành 125%."
+        "descVi": "[Try This Move!]: [Star Pursuit Point] được nạp khi thi triển trong [Hyper Velocity] tăng thành 5;\nCường hóa bộ kỹ năng Insight [Shoot Down]:\n[Perception Incantation] Reality DMG gây ra tăng thành 2200%, và Critical DMG khi tấn công tăng thành 80%;\n[Perception Ability-1] Reality DMG gây ra bởi mỗi đòn tấn công cường hóa thứ ba tăng thành 4800%, và Critical DMG khi tấn công tăng thành 100%;\n[Perception Ability-2] Reality DMG gây ra của đòn kết liễu tăng thành 7000%, Reality DMG gây thêm mỗi hành động của đồng minh tăng thành 350%, và Critical DMG khi tấn công tăng thành 125%."
       }
     ]
   },
@@ -10411,6 +10490,48 @@
         "artEn": "Victory and golden fate are ordained to her by the gods.",
         "artZh": "胜利与金色的命运将由众神为她注定。",
         "artVi": "Chiến thắng và vận mệnh hoàng kim đã được các vị thần định sẵn cho nàng."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
+        "nameEn": "Sparta Kick",
+        "nameZh": "斯巴达踢击",
+        "nameVi": "Sparta Kick",
+        "icon": "images/skills/31240121.png",
+        "ranks": {
+          "1": {
+            "id": 31240101,
+            "descEn": "1-target attack. Deals 200% Reality DMG. Inflicts [Daze] on the target hit for 1 round. If the target is already afflicted with [Daze], deals an additional 100% Reality DMG.\nThis incantation is a [Sovereign Incantation].",
+            "descZh": "单体攻击，造成200%现实创伤，命中时使其陷入【眩晕】1回合；若目标处于【眩晕】，额外造成100%现实创伤；\n该咒语是【主格特殊咒语】",
+            "descVi": "Tấn công đơn mục tiêu. Gây 200% Reality DMG. Gây [Daze] lên mục tiêu trúng đòn trong 1 round. Nếu mục tiêu đã bị [Daze], gây thêm 100% Reality DMG;\nIncantation này là [Sovereign Incantation].",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
+      },
+      {
+        "slot": 5,
+        "subSlot": "Special 2",
+        "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
+        "nameEn": "Rain of Destruction",
+        "nameZh": "毁灭之雨",
+        "nameVi": "Rain of Destruction",
+        "icon": "images/skills/31240111.png",
+        "ranks": {
+          "1": {
+            "id": 31240102,
+            "descEn": "Mass attack. Deals 500% Reality DMG to all enemies.\nThis incantation is a [Sovereign Incantation].",
+            "descZh": "群体攻击，对敌方全体造成500%现实创伤；\n该咒语是【主格特殊咒语】",
+            "descVi": "Tấn công diện rộng. Gây 500% Reality DMG lên toàn bộ kẻ địch.\nIncantation này là [Sovereign Incantation].",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -14439,6 +14560,27 @@
         "artEn": "They settle into the most crowded coffin together.",
         "artZh": "她们一起躺入最拥挤的棺椁。",
         "artVi": "Họ cùng nhau yên nghỉ trong chiếc quan tài đông đúc nhất."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
+        "nameEn": "A Moth to a Flame",
+        "nameZh": "纤弱者的自毁",
+        "nameVi": "A Moth to a Flame",
+        "icon": "images/skills/31470141.png",
+        "ranks": {
+          "1": {
+            "id": 31470131,
+            "descEn": "1-target attack. Deals 440% Mental DMG to 1 enemy (does not consume AP; this incantation is a [Sovereign Incantation] and counts as an Ultimate).\nThis incantation can gain [Incantation Enhancements].",
+            "descZh": "单体攻击，对1名敌方造成440%精神创伤（不消耗行动点，该咒语是【主格特殊咒语】，视为至终的仪式）；\n该咒语能够获得【特殊咒语强化】",
+            "descVi": "Tấn công đơn mục tiêu. Gây 440% Mental DMG lên 1 kẻ địch (không tiêu hao AP; Incantation này là [Sovereign Incantation] và được coi là Ultimate).\nIncantation này có thể nhận [Incantation Enhancements].",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -16307,6 +16449,195 @@
         "descEn": "[Nosier Than Me]'s effect changes to: Deals 600% Mental DMG. The [Self-healing] status now recovers (the user's Missing HP x35%) HP.",
         "descZh": "【比我更吵的家伙们】造成的精神创伤提升至600%；【自愈】状态的回复量提升至使用者35%已损失生命",
         "descVi": "Hiệu ứng của [Nosier Than Me] thay đổi thành: gây 600% Mental DMG. Trạng thái [Self-healing] giờ hồi (Missing HP của người thi triển ×35%) HP."
+      }
+    ]
+  },
+  "Perchta": {
+    "id": 3159,
+    "nameEn": "Perchta",
+    "nameZh": "佩施塔",
+    "nameVi": "Perchta",
+    "skills": [
+      {
+        "slot": 1,
+        "subSlot": "",
+        "type": "Incantation",
+        "nameEn": "The Revenge Act",
+        "nameZh": "复仇戏码",
+        "nameVi": "The Revenge Act",
+        "icon": "images/skills/31590111.png",
+        "ranks": {
+          "1": {
+            "id": 31590111,
+            "descEn": "1-target attack. Deals 200% Reality DMG. If the target does not have [Cleave], inflicts [Cleave] on the target on hit; otherwise, after the attack, increases [Cleave]'s DMG coefficient by 6%.",
+            "descZh": "单体攻击，造成200%现实创伤，若目标没有【砍创】，则在命中后赋予目标【砍创】；否则攻击后令【砍创】伤害系数提升6%",
+            "descVi": "Tấn công đơn mục tiêu. Gây 200% Reality DMG. Nếu mục tiêu không có [Cleave], thi triển [Cleave] lên mục tiêu khi đánh trúng; nếu không, sau khi tấn công, tăng hệ số DMG của [Cleave] thêm 6%.",
+            "artEn": "Not every princess in a story is frail.",
+            "artZh": "故事里的公主并不全都柔弱。",
+            "artVi": "Không phải công chúa trong mọi câu chuyện đều yếu đuối."
+          },
+          "2": {
+            "id": 31590112,
+            "descEn": "1-target attack. Deals 300% Reality DMG. If the target does not have [Cleave], inflicts [Cleave] on the target on hit; otherwise, after the attack, increases [Cleave]'s DMG coefficient by 9%.",
+            "descZh": "单体攻击，造成300%现实创伤，若目标没有【砍创】，则在命中后赋予目标【砍创】；否则攻击后令【砍创】伤害系数提升9%",
+            "descVi": "Tấn công đơn mục tiêu. Gây 300% Reality DMG. Nếu mục tiêu không có [Cleave], thi triển [Cleave] lên mục tiêu khi đánh trúng; nếu không, sau khi tấn công, tăng hệ số DMG của [Cleave] thêm 9%.",
+            "artEn": "Not every princess in a story can only wait to be rescued.",
+            "artZh": "故事里的公主并不都只能等待被救。",
+            "artVi": "Không phải công chúa trong mọi câu chuyện đều chỉ biết chờ được cứu."
+          },
+          "3": {
+            "id": 31590113,
+            "descEn": "1-target attack. Deals 500% Reality DMG. If the target does not have [Cleave], inflicts [Cleave] on the target on hit; otherwise, after the attack, increases [Cleave]'s DMG coefficient by 15%.",
+            "descZh": "单体攻击，造成500%现实创伤，若目标没有【砍创】，则在命中后赋予目标【砍创】；否则攻击后令【砍创】伤害系数提升15%",
+            "descVi": "Tấn công đơn mục tiêu. Gây 500% Reality DMG. Nếu mục tiêu không có [Cleave], thi triển [Cleave] lên mục tiêu khi đánh trúng; nếu không, sau khi tấn công, tăng hệ số DMG của [Cleave] thêm 15%.",
+            "artEn": "In the end the princess in the story picks up a weapon and turns its cold gleam upon her foe.",
+            "artZh": "故事里的公主最终拾起武器，将寒光指向仇敌。",
+            "artVi": "Cuối cùng, công chúa trong câu chuyện nhặt lấy vũ khí, hướng ánh thép lạnh về phía kẻ thù."
+          }
+        }
+      },
+      {
+        "slot": 2,
+        "subSlot": "",
+        "type": "Incantation",
+        "nameEn": "The Fruit of Life",
+        "nameZh": "生命之果",
+        "nameVi": "The Fruit of Life",
+        "icon": "images/skills/31590121.png",
+        "ranks": {
+          "1": {
+            "id": 31590121,
+            "descEn": "Mass heal. Redistributes HP evenly among allies, and dispels 1 [Stats Down]/[Neg Status]/[Control] effect from all allies.\nThen restores HP to all allies equal to 20% of her own Max HP (healing cannot crit).\nRestores HP to [\"Seven Friends\"] equal to 20% of her own Max HP (cannot crit and is unaffected by Healing Rate).",
+            "descZh": "群体治疗，均分己方生命，驱散己方全体1种【属性削弱】【状态异常】【控制】；\n随后使己方全体回复相当于自身20%最大生命值的生命（治疗无法暴击）；\n使【“七友人”】回复自身20%最大生命值的生命（无法暴击且不受治疗率影响）",
+            "descVi": "Hồi máu diện rộng. Phân bổ đều HP giữa các đồng minh, và thanh tẩy 1 hiệu ứng [Stats Down]/[Neg Status]/[Control] khỏi toàn bộ phe ta.\nSau đó hồi HP cho toàn bộ phe ta bằng 20% Max HP của bản thân (hồi máu không thể chí mạng).\nHồi HP cho [\"Seven Friends\"] bằng 20% Max HP của bản thân (không thể chí mạng và không chịu ảnh hưởng của Healing Rate).",
+            "artEn": "A crystalline, translucent fruit.",
+            "artZh": "一颗晶莹剔透的果实。",
+            "artVi": "Một trái cây trong suốt như pha lê."
+          },
+          "2": {
+            "id": 31590122,
+            "descEn": "Mass heal. Redistributes HP evenly among allies, and dispels 1 [Stats Down]/[Neg Status]/[Control] effect from all allies.\nThen restores HP to all allies equal to 25% of her own Max HP (healing cannot crit).\nRestores HP to [\"Seven Friends\"] equal to 25% of her own Max HP (cannot crit and is unaffected by Healing Rate).",
+            "descZh": "群体治疗，均分己方生命，驱散己方全体1种【属性削弱】【状态异常】【控制】；\n随后使己方全体回复相当于自身25%最大生命值的生命（治疗无法暴击）；\n使【“七友人”】回复自身25%最大生命值的生命（无法暴击且不受治疗率影响）",
+            "descVi": "Hồi máu diện rộng. Phân bổ đều HP giữa các đồng minh, và thanh tẩy 1 hiệu ứng [Stats Down]/[Neg Status]/[Control] khỏi toàn bộ phe ta.\nSau đó hồi HP cho toàn bộ phe ta bằng 25% Max HP của bản thân (hồi máu không thể chí mạng).\nHồi HP cho [\"Seven Friends\"] bằng 25% Max HP của bản thân (không thể chí mạng và không chịu ảnh hưởng của Healing Rate).",
+            "artEn": "A crystalline, translucent fruit—sweet, and it stirs the imagination.",
+            "artZh": "一颗晶莹剔透的果实，甜美而引人遐想。",
+            "artVi": "Một trái cây trong suốt như pha lê—ngọt ngào và khơi gợi trí tưởng tượng."
+          },
+          "3": {
+            "id": 31590123,
+            "descEn": "Mass heal. Redistributes HP evenly among allies, and dispels 1 [Stats Down]/[Neg Status]/[Control] effect from all allies.\nThen restores HP to all allies equal to 30% of her own Max HP (healing cannot crit).\nRestores HP to [\"Seven Friends\"] equal to 30% of her own Max HP (cannot crit and is unaffected by Healing Rate).",
+            "descZh": "群体治疗，均分己方生命，驱散己方全体1种【属性削弱】【状态异常】【控制】；\n随后使己方全体回复相当于自身30%最大生命值的生命（治疗无法暴击）；\n使【“七友人”】回复自身30%最大生命值的生命（无法暴击且不受治疗率影响）",
+            "descVi": "Hồi máu diện rộng. Phân bổ đều HP giữa các đồng minh, và thanh tẩy 1 hiệu ứng [Stats Down]/[Neg Status]/[Control] khỏi toàn bộ phe ta.\nSau đó hồi HP cho toàn bộ phe ta bằng 30% Max HP của bản thân (hồi máu không thể chí mạng).\nHồi HP cho [\"Seven Friends\"] bằng 30% Max HP của bản thân (không thể chí mạng và không chịu ảnh hưởng của Healing Rate).",
+            "artEn": "A crystalline, translucent fruit. Rest easy—it is not lethal.",
+            "artZh": "一颗晶莹剔透的果实。放心，它并不致命。",
+            "artVi": "Một trái cây trong suốt như pha lê. Yên tâm, nó không gây chết người."
+          }
+        }
+      },
+      {
+        "slot": 3,
+        "type": "Ultimate",
+        "nameEn": "Through Waking and Surviving",
+        "nameZh": "历经苏醒与幸存",
+        "nameVi": "Through Waking and Surviving",
+        "icon": "images/skills/31590131.png",
+        "descEn": "Mass attack. Deals 750% Reality DMG to all enemies. For targets with [Cleave], after the attack, increases [Cleave]'s DMG coefficient by 30% and immediately settles [Cleave] 1 time, dealing Genesis DMG equal to 200% of the current coefficient.\nAfter the attack, grants [Happy Ending] to all allies for 3 rounds.\nIf [\"Seven Friends\"] is not present, grants self [\"Seven Friends\"] and [\"Seven Friends' Ward\"]; otherwise, restores HP to it equal to 60% of Perchta's Max HP (cannot crit and is unaffected by Healing Rate).",
+        "descZh": "群体攻击，对敌方全体造成750%现实创伤，对持有【砍创】的目标，攻击后令【砍创】伤害系数提升30%并立即结算1次【砍创】，造成当前系数200%的本源创伤；\n攻击后赋予己方全体【圆满结局】，持续3回合；\n若【“七友人”】不存在则赋予自身【“七友人”】与【“七友人守护”】，否则回复其相当于佩施塔60%最大生命值的生命（无法暴击且不受治疗率影响）",
+        "descVi": "Tấn công diện rộng. Gây 750% Reality DMG lên toàn bộ kẻ địch. Với mục tiêu đang có [Cleave], sau khi tấn công, tăng hệ số DMG của [Cleave] thêm 30% và lập tức kích hoạt [Cleave] 1 lần, gây Genesis DMG bằng 200% hệ số hiện tại.\nSau khi tấn công, thi triển [Happy Ending] lên toàn bộ phe ta, duy trì 3 round.\nNếu [\"Seven Friends\"] không tồn tại, thi triển [\"Seven Friends\"] và [\"Seven Friends' Ward\"] lên bản thân; nếu không, hồi HP cho nó bằng 60% Max HP của Perchta (không thể chí mạng và không chịu ảnh hưởng của Healing Rate).",
+        "artEn": "A bedtime story never heard before, unlike every happy-ending fairy tale you know.",
+        "artZh": "一个未曾听闻的睡前故事，有别于你所知晓的每一部圆满童话。",
+        "artVi": "Một câu chuyện trước giờ đi ngủ chưa từng ai kể, khác với mọi câu chuyện cổ tích có hậu mà bạn từng biết."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
+        "nameEn": "Black Forest",
+        "nameZh": "“黑森林”",
+        "nameVi": "Black Forest",
+        "icon": "images/skills/790003.png",
+        "ranks": {
+          "1": {
+            "id": 31590151,
+            "descEn": "Mass attack. Deals 500% Reality DMG to all enemies. If this removed 8 stacks of [Vengeance Clue], grants self 8 stacks of [Vengeance Sated] after attacking.",
+            "descZh": "群体攻击，对敌方全体造成500%现实创伤，若本次移除了8层【复仇线索】，攻击后赋予自身8层【雪恨】",
+            "descVi": "Tấn công diện rộng. Gây 500% Reality DMG lên toàn bộ kẻ địch. Nếu lần này đã loại bỏ 8 cộng dồn [Vengeance Clue], sau khi tấn công sẽ trao cho bản thân 8 cộng dồn [Vengeance Sated].",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
+      }
+    ],
+    "insights": [
+      {
+        "insight": 0,
+        "nameEn": "Foreknowledge",
+        "nameZh": "先觉",
+        "nameVi": "Foreknowledge",
+        "descEn": "Gains [Eye of Perception] upon entering battle. Perchta grants herself [\"Seven Friends\"] and [\"Seven Friends' Ward\"].\nWhile [\"Seven Friends\"] is present, after [\"Seven Friends' Ward\"] takes effect and is removed, Perchta grants herself [\"Seven Friends' Ward\"] again at the start of the round 3 rounds later.",
+        "descZh": "进入战斗后获得【洞知眼】，佩施塔赋予自身【“七友人”】与【“七友人守护”】；\n【“七友人”】存在期间，【“七友人守护”】生效而被移除后，佩施塔在3回合后的回合开始时再次赋予自身【“七友人守护”】",
+        "descVi": "Nhận [Eye of Perception] sau khi vào trận. Perchta thi triển [\"Seven Friends\"] và [\"Seven Friends' Ward\"] lên bản thân.\nTrong thời gian [\"Seven Friends\"] tồn tại, sau khi [\"Seven Friends' Ward\"] phát huy hiệu lực và bị loại bỏ, Perchta thi triển lại [\"Seven Friends' Ward\"] lên bản thân vào đầu round 3 round sau."
+      },
+      {
+        "insight": 1,
+        "nameEn": "The True Fairy Tale",
+        "nameZh": "真实童话",
+        "nameVi": "The True Fairy Tale",
+        "descEn": "If [\"Seven Friends\"] is present at the start of the round, all allies are immune to up to 4 [Control] effects this round, and the first time Perchta actively uses an Incantation this round it costs no AP; that action additionally grants her Moxie +1.\nWhile Perchta is on the field, all allies' DMG Taken Reduction +30%, and any excess Moxie gained by allies is stored temporarily and then refills empty Moxie slots at the end of the round, up to 3 Moxie.",
+        "descZh": "若回合开始时【“七友人”】存在，本回合己方全体免疫至多4次【控制】，并且佩施塔在本回合首次主动使用咒语时不消耗行动点，该次行动会让自身激情额外+1；\n佩施塔在场期间，己方全体受创减免+30%，并且己方全体溢出的激情会被临时存储，回合结束时若自身激情空余时补充，最多储存3点激情",
+        "descVi": "Nếu [\"Seven Friends\"] tồn tại khi bắt đầu round, toàn bộ phe ta miễn nhiễm tối đa 4 hiệu ứng [Control] trong round này, và lần đầu Perchta chủ động sử dụng Incantation trong round này sẽ không tiêu hao AP; hành động đó còn giúp bản thân Moxie +1.\nTrong thời gian Perchta có mặt, DMG Taken Reduction của toàn bộ phe ta +30%, và lượng Moxie dư thừa mà đồng minh nhận được sẽ được lưu tạm, đến cuối round sẽ bù vào các ô Moxie trống, tối đa 3 Moxie."
+      },
+      {
+        "insight": 2,
+        "nameEn": "The True Fairy Tale II",
+        "nameZh": "真实童话Ⅱ",
+        "nameVi": "The True Fairy Tale II",
+        "descEn": "When entering battle, Max HP +5%.",
+        "descZh": "进入战斗时，最大生命提升5%",
+        "descVi": "Khi vào trận, Max HP +5%."
+      },
+      {
+        "insight": 3,
+        "nameEn": "The True Fairy Tale III",
+        "nameZh": "真实童话Ⅲ",
+        "nameVi": "The True Fairy Tale III",
+        "descEn": "Upon entering battle, Perchta grants herself Moxie +1 and grants [Happy Ending] to all allies for 3 rounds.",
+        "descZh": "进入战斗后，佩施塔使自身激情+1，并赋予己方全体【圆满结局】，持续3回合",
+        "descVi": "Sau khi vào trận, Perchta giúp bản thân Moxie +1 và thi triển [Happy Ending] lên toàn bộ phe ta, duy trì 3 round."
+      }
+    ],
+    "portrays": [
+      {
+        "level": 1,
+        "descEn": "Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Incantation]: the Perception Point cost is reduced to 6, the [Vengeance Clue] cap is reduced to 6 stacks, [Vengeance Sated]'s DMG Bonus is increased to 20%, and its Penetration Rate is increased to 15%.\n[Perception Ability-1]: When entering the [Full Pursuit] phase, the [Vengeance Clue] stacks Perchta grants herself become 6.\n[Perception Ability-2]: After all allies' total action count reaches 5/7, all allies' Perception DMG Bonus increases to 20%/40%.",
+        "descZh": "洞知技能组【“黑森林”】强化：\n【洞知咒语】洞知点消耗降低至6，【复仇线索】上限降低至6层，【雪恨】创伤加成提升至20%，穿透率提升至15%；\n【洞知能力-1】进入【弱点洞穿】阶段时，佩施塔赋予自身【复仇线索】层数变为6层；\n【洞知能力-2】己方全体累计行动次数达到5/7次后，己方全体洞知创伤加成提升至20%/40%",
+        "descVi": "Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Incantation]: tiêu hao Perception Point giảm còn 6, giới hạn [Vengeance Clue] giảm còn 6 cộng dồn, DMG Bonus của [Vengeance Sated] tăng lên 20%, Penetration Rate tăng lên 15%.\n[Perception Ability-1]: Khi tiến vào giai đoạn [Full Pursuit], số cộng dồn [Vengeance Clue] mà Perchta thi triển lên bản thân trở thành 6.\n[Perception Ability-2]: Sau khi tổng số lần hành động của toàn bộ phe ta đạt 5/7 lần, Perception DMG Bonus của toàn bộ phe ta tăng lên 20%/40%."
+      },
+      {
+        "level": 2,
+        "descEn": "[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 35%, DMG Bonus increased to 35%.\n[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 4/6.",
+        "descZh": "【历经苏醒与幸存】【圆满结局】暴击创伤提升至35%，创伤加成提升至35%；\n【真实童话Ⅲ】洞知技能组【“黑森林”】强化：\n【洞知能力-2】提供增益的行动次数条件变为4/6次后",
+        "descVi": "[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 35%, DMG Bonus tăng lên 35%.\n[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 4/6."
+      },
+      {
+        "level": 3,
+        "descEn": "[Foreknowledge] [\"Seven Friends\"] HP increased to 180% of Perchta's Max HP.\n[The Fruit of Life] at rank 1/2/3: healing to all allies is increased to 30/35/40% of her Max HP, and healing to [\"Seven Friends\"] is increased to 30/35/40% of her Max HP.\n[Through Waking and Surviving]: healing to [\"Seven Friends\"] is increased to 100% of Perchta's Max HP.",
+        "descZh": "【先觉】【“七友人”】生命值提升至佩施塔最大生命*180%；\n【生命之果】在1/2/3阶时，对己方全体的治疗效果提升至自身最大生命的30/35/40%，对【“七友人”】的回复效果提升至自身最大生命的30/35/40%；\n【历经苏醒与幸存】回复【“七友人”】生命提升至佩施塔最大生命*100%",
+        "descVi": "[Foreknowledge]: HP của [\"Seven Friends\"] tăng lên 180% Max HP của Perchta.\n[The Fruit of Life] ở bậc 1/2/3: lượng hồi máu cho toàn bộ phe ta tăng lên 30/35/40% Max HP của bản thân, lượng hồi máu cho [\"Seven Friends\"] tăng lên 30/35/40% Max HP của bản thân.\n[Through Waking and Surviving]: lượng hồi máu cho [\"Seven Friends\"] tăng lên 100% Max HP của Perchta."
+      },
+      {
+        "level": 4,
+        "descEn": "[The Revenge Act] at rank 1/2/3: the [Cleave] DMG coefficient increase becomes 10/15/25%; [Cleave]'s base Genesis DMG is increased to 30% of Perchta's Max HP, and its coefficient can increase up to 250%.\n[Through Waking and Surviving]: the [Cleave] DMG coefficient increase becomes 45%, and the settled DMG is increased to 300% of the current coefficient.",
+        "descZh": "【复仇戏码】在1/2/3阶时，提升【砍创】伤害系数变为10/15/25%；【砍创】基础本源创伤提升至佩施塔最大生命*30%，系数至多提升至250%\n【历经苏醒与幸存】提升【砍创】伤害系数变为45%，结算伤害提升至当前系数*300%",
+        "descVi": "[The Revenge Act] ở bậc 1/2/3: mức tăng hệ số DMG của [Cleave] trở thành 10/15/25%; Genesis DMG nền của [Cleave] tăng lên 30% Max HP của Perchta, và hệ số có thể tăng tối đa đến 250%.\n[Through Waking and Surviving]: mức tăng hệ số DMG của [Cleave] trở thành 45%, lượng DMG kích hoạt tăng lên 300% hệ số hiện tại."
+      },
+      {
+        "level": 5,
+        "descEn": "[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 3/5, and all allies' Perception DMG Bonus increases to 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 50%, DMG Bonus increased to 50%.",
+        "descZh": "【真实童话Ⅲ】洞知技能组【“黑森林”】强化：\n【洞知能力-2】提供增益的行动次数条件变为3/5次后，己方全体洞知创伤加成提升至25%/50%\n【历经苏醒与幸存】【圆满结局】暴击创伤提升至50%，创伤加成提升至50%",
+        "descVi": "[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 3/5, Perception DMG Bonus của toàn bộ phe ta tăng lên 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 50%, DMG Bonus tăng lên 50%."
       }
     ]
   },

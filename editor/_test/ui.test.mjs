@@ -626,8 +626,8 @@ try {
         guideGone: !document.getElementById("btn-guide") && !document.getElementById("guide-modal"),
       };
     });
-    check("the data group is Teams → Builds → Rotations", toolbar.order.join(",") === "btn-team,btn-builds,btn-rotations", JSON.stringify(toolbar.order));
-    check("Builds and Rotations are labelled", toolbar.labels.join(",") === "Teams,InfoBook,Rotations", JSON.stringify(toolbar.labels));
+    check("the data group is Teams → Rotations → InfoBook", toolbar.order.join(",") === "btn-team,btn-rotations,btn-builds", JSON.stringify(toolbar.order));
+    check("Rotations and InfoBook are labelled", toolbar.labels.join(",") === "Teams,Rotations,InfoBook", JSON.stringify(toolbar.labels));
     check("the old Guide button and modal are gone", toolbar.guideGone);
   }
 

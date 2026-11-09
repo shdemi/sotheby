@@ -2888,10 +2888,12 @@ function createPsychubeCard(key) {
       <div class="ct-body">
         ${special
           ? `<div class="ct-row"><span class="ct-label">${t("chube.owned")}</span><span class="ct-value">x${Number(state.count) || 0}</span></div>`
-          : `
+          : state.owned
+            ? `
             <div class="ct-row"><span class="ct-label">${t("chube.level")}</span><span class="ct-value">${Number(state.level) || 1}</span></div>
             <div class="ct-row"><span class="ct-label">${t("chube.amplification")}</span><span class="ct-value">${fmtAmp(Number(state.amplification) || PSYCHUBE_MIN_AMP)}</span></div>
-          `}
+          `
+            : `<div class="ct-row"><span class="ct-value ct-unowned">${escapeHtml(t("action.unowned"))}</span></div>`}
       </div>
     </div>
   `;
@@ -3231,12 +3233,16 @@ function createCharacterCard(name, char, iconUrl) {
           <span class="ct-name${isItalicNameCharacter(name) ? " is-italic-name" : ""}">${escapeHtml(displayCharName(name))}</span>
         </div>
         <div class="ct-body">
-          <div class="ct-row"><span class="ct-label">${t("card.insight")}</span><span class="ct-value">${fmtInsight(insightVal)}</span></div>
+          ${
+            char.owned
+              ? `<div class="ct-row"><span class="ct-label">${t("card.insight")}</span><span class="ct-value">${fmtInsight(insightVal)}</span></div>
           <div class="ct-row"><span class="ct-label">${t("card.level")}</span><span class="ct-value">${fmtLevel(levelVal)}</span></div>
           <div class="ct-row"><span class="ct-label">${t("card.resonance")}</span><span class="ct-value">${fmtResonance(char.resonance)}</span></div>
           <div class="ct-row"><span class="ct-label">${t("card.portrait")}</span><span class="ct-value">${fmtPortrait(char.portrait)}</span></div>
           ${euphoriaRowHtml}
-          ${patternRowHtml}
+          ${patternRowHtml}`
+              : `<div class="ct-row"><span class="ct-value ct-unowned">${escapeHtml(t("action.unowned"))}</span></div>`
+          }
         </div>
       </div>
     `;
@@ -6621,6 +6627,9 @@ const ROTATION_LIST_STORAGE_KEY = "r1999_rotation_list_v1";
 const ROTATION_SCALE_STORAGE_KEY = "r1999_rotation_scale_v1";
 
 let rotationRoundsScale = 1.0;
+// Watches the rounds body so the tag ribbons re-fit whenever the cards settle at
+// a new width (scale slider, splitter drag, late font metrics).
+let rotationTagFitObserver = null;
 try {
   const savedRotScale = parseFloat(localStorage.getItem(ROTATION_SCALE_STORAGE_KEY));
   if (Number.isFinite(savedRotScale) && savedRotScale >= 0.4 && savedRotScale <= 1.5) {
@@ -7333,7 +7342,7 @@ function getSkillBadgeText(sk, isCn = false, rank = 1) {
   }
 
   // Explicit attribute override if specified
-  if (sk.attribute) return sk.attribute;
+  if (sk.attribute) return isCn && sk.attributeZh ? sk.attributeZh : sk.attribute;
 
   const nameEn = (sk.nameEn || "").toLowerCase();
   const nameZh = sk.nameZh || "";
@@ -7525,19 +7534,22 @@ function showTermPopover(targetEl, termText, charName) {
   if (!termText || !targetEl) return;
 
   const isCn = currentLang === "cn";
-  const cleanTerm = termText.trim().toLowerCase();
+  // Some game terms keep the quotes the game wraps around a name
+  // (`["Seven Friends"]`, `【“七友人”】`); the glossary keys are unquoted.
+  const lookupTerm = termText.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
+  const cleanTerm = lookupTerm.toLowerCase();
 
   let found = null;
   // 1. Look in skillGlossaryData (exact key, lowercase, or by nameZh/nameEn matching)
   if (skillGlossaryData) {
-    if (skillGlossaryData[termText]) {
-      found = skillGlossaryData[termText];
+    if (skillGlossaryData[lookupTerm]) {
+      found = skillGlossaryData[lookupTerm];
     } else if (skillGlossaryData[cleanTerm]) {
       found = skillGlossaryData[cleanTerm];
     } else {
       for (const [k, v] of Object.entries(skillGlossaryData)) {
         if (!v) continue;
-        if ((v.nameZh && v.nameZh === termText) || (v.nameEn && v.nameEn.toLowerCase() === cleanTerm)) {
+        if ((v.nameZh && v.nameZh === lookupTerm) || (v.nameEn && v.nameEn.toLowerCase() === cleanTerm)) {
           found = v;
           break;
         }
@@ -7549,7 +7561,7 @@ function showTermPopover(targetEl, termText, charName) {
   if (!found && charName && characterSkillsData && characterSkillsData[charName]) {
     const c = characterSkillsData[charName];
     for (const s of (c.skills || [])) {
-      if ((s.nameEn && s.nameEn.toLowerCase() === cleanTerm) || (s.nameZh && (s.nameZh === termText || s.nameZh.toLowerCase() === cleanTerm))) {
+      if ((s.nameEn && s.nameEn.toLowerCase() === cleanTerm) || (s.nameZh && (s.nameZh === lookupTerm || s.nameZh.toLowerCase() === cleanTerm))) {
         const r1 = s.ranks ? (s.ranks["1"] || Object.values(s.ranks)[0] || {}) : s;
         found = {
           nameEn: s.nameEn,
@@ -7565,7 +7577,7 @@ function showTermPopover(targetEl, termText, charName) {
     }
     if (!found) {
       for (const ins of (c.insights || [])) {
-        if ((ins.nameEn && ins.nameEn.toLowerCase() === cleanTerm) || (ins.nameZh && (ins.nameZh === termText || ins.nameZh.toLowerCase() === cleanTerm))) {
+        if ((ins.nameEn && ins.nameEn.toLowerCase() === cleanTerm) || (ins.nameZh && (ins.nameZh === lookupTerm || ins.nameZh.toLowerCase() === cleanTerm))) {
           found = {
             nameEn: ins.nameEn,
             nameZh: ins.nameZh || ins.nameEn,
@@ -7581,7 +7593,7 @@ function showTermPopover(targetEl, termText, charName) {
     }
     if (!found && Array.isArray(c.weapons)) {
       for (const w of c.weapons) {
-        if ((w.nameEn && w.nameEn.toLowerCase() === cleanTerm) || (w.nameZh && (w.nameZh === termText || w.nameZh.toLowerCase() === cleanTerm))) {
+        if ((w.nameEn && w.nameEn.toLowerCase() === cleanTerm) || (w.nameZh && (w.nameZh === lookupTerm || w.nameZh.toLowerCase() === cleanTerm))) {
           found = {
             nameEn: w.nameEn,
             nameZh: w.nameZh || w.nameEn,
@@ -7594,7 +7606,7 @@ function showTermPopover(targetEl, termText, charName) {
           break;
         }
         for (const cb of (w.combos || [])) {
-          if ((cb.daggerEn && cb.daggerEn.toLowerCase() === cleanTerm) || (cb.daggerZh && (cb.daggerZh === termText || cb.daggerZh.toLowerCase() === cleanTerm))) {
+          if ((cb.daggerEn && cb.daggerEn.toLowerCase() === cleanTerm) || (cb.daggerZh && (cb.daggerZh === lookupTerm || cb.daggerZh.toLowerCase() === cleanTerm))) {
             found = {
               nameEn: cb.daggerEn,
               nameZh: cb.daggerZh || cb.daggerEn,
@@ -8482,7 +8494,7 @@ function renderCharacterSkillsSection(name) {
 
   return `
     <section class="build-section char-skills-section" id="char-skills-section-panel">
-      <h4 class="build-section-title">${isCn ? "技能与洞悉详情" : "Skills & Insight Details"}</h4>
+      <h4 class="build-section-title">${escapeHtml(t("builds.skillsInsight"))}</h4>
       ${tabsHtml}
       <div class="uttu-skills-container">${mainBodyHtml}</div>
     </section>
@@ -9251,7 +9263,7 @@ function renderPsychubeDetail() {
   const is6Star = p.rarity === 6;
   const matsBreakdownHtml = `
     <div class="psychube-mats-breakdown">
-      <h4 class="build-section-title">${isCn ? "升维素材" : "Breakthrough Materials"}</h4>
+      <h4 class="build-section-title">${escapeHtml(t("builds.breakMats"))}</h4>
       <div class="psychube-break-tiers-grid">
         <div class="psychube-break-tier">
           <span class="psychube-break-title">Lv. 20</span>
@@ -10172,13 +10184,14 @@ const ROT_LEGACY_SLOT_TAGS = { free: "ap-free", precast: "precast" };
 
 /**
  * Slot tags. The layout lives in `type`; the meaning lives here, so a slot can
- * carry both AP Free and Precast. `image` is the shipped plate art.
+ * carry both AP Free and Precast. The ribbon itself is drawn in CSS/canvas, so
+ * no plate art ships.
  */
 const ROT_SLOT_TAGS = [
-  { key: "ap-free", label: "AP Free", kind: "badge", image: "images/card_modulo/Tag_Empty.png" },
-  { key: "precast", label: "Precast", kind: "plaque", image: "images/card_modulo/Tag_Empty.png" },
-  // The blank plaque the author types into.
-  { key: "custom", label: "Custom", kind: "plaque", image: "images/card_modulo/Tag_Empty.png", text: true },
+  { key: "ap-free", label: "AP Free", kind: "badge" },
+  { key: "precast", label: "Precast", kind: "plaque" },
+  // The blank ribbon the author types into.
+  { key: "custom", label: "Custom", kind: "plaque", text: true },
 ];
 
 /** The words a tag's plate draws: the typed text for the blank tag, else its name. */
@@ -10245,10 +10258,9 @@ function rotationCardArtSrc(card) {
   return card.icon || guideSkillIcon(resolveCharacterName(card.character) || card.character, card.skill);
 }
 
-/** One tag's plate: the blank ribbon with the tag's words laid on it. */
+/** One tag's ribbon: the ink, the halftone tail and the tag's words. */
 function rotationTagPlateHtml(tag, text = "") {
   return `<span class="rot-tag-plate is-${tag.kind} is-text" data-tag="${escapeHtml(tag.key)}" title="${escapeHtml(text)}">
-      <img src="${escapeHtml(tag.image)}" alt="" />
       <span class="rot-tag-plate-text">${escapeHtml(text)}</span>
     </span>`;
 }
@@ -10412,15 +10424,36 @@ function fitRotationTagPlates(root = document) {
     const card = plate.parentElement;
     if (!text || !card) continue;
     plate.style.fontSize = "";
-    const style = getComputedStyle(plate);
-    const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-    const available = card.clientWidth;
-    let size = parseFloat(style.fontSize) || 9;
-    // Stop at 6px: below that the words stop reading, so the plate clips instead.
-    while (size > 6 && text.scrollWidth + pad > available) {
+    plate.classList.remove("is-wordless");
+    // Measure the words themselves against the ribbon's content box. Integer
+    // `scrollWidth` rounds down, so a label a fraction of a pixel too wide still
+    // painted an ellipsis while the fit pass called it fine.
+    const range = document.createRange();
+    const words = () => {
+      range.selectNodeContents(text);
+      return range.getBoundingClientRect().width;
+    };
+    const fits = () => {
+      const style = getComputedStyle(plate);
+      const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const room = plate.getBoundingClientRect().width - pad;
+      return words() <= room - 0.5;
+    };
+    let size = parseFloat(getComputedStyle(plate).fontSize) || 12;
+    // At thumbnail zoom the words cannot reach the 7px floor, and an ellipsis at
+    // 6px is noise: the ribbon keeps its ink and drops the words instead.
+    if (size < 7) {
+      plate.classList.add("is-wordless");
+      continue;
+    }
+    // Stop at 7px: below that the words stop reading.
+    while (size > 7 && !fits()) {
       size -= 0.5;
       plate.style.fontSize = `${size}px`;
     }
+    // A narrow card can still be short at the floor: drop the words rather than
+    // print half of them.
+    if (!fits()) plate.classList.add("is-wordless");
   }
 }
 
@@ -10814,6 +10847,11 @@ function renderRotationsDetail() {
     if (slider) slider.value = String(newScale);
     if (scaleVal) scaleVal.textContent = `${Math.round(newScale * 100)}%`;
 
+    // Reading a metric forces layout, so fitting now already sees the new card
+    // widths. The frames after it are a safety net for late font metrics.
+    fitRotationTuningNotes(host);
+    fitRotationTagPlates(host);
+
     requestAnimationFrame(() => {
       fitRotationTuningNotes(host);
       fitRotationTagPlates(host);
@@ -10841,7 +10879,19 @@ function renderRotationsDetail() {
     fitRotationTagPlates(host);
     drawRotationConnectors(host);
     drawRoundNoteRail(host);
+    // Amiri arrives after the first pass; re-fit once its wider glyphs are in.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => fitRotationTagPlates(host));
+    }
   });
+
+  // Whatever moves the cards (window resize, splitter, fonts) ends with the pane
+  // at a new width, so re-fit the ribbons there instead of trusting one timing.
+  if (roundsBlock && typeof ResizeObserver === "function") {
+    if (rotationTagFitObserver) rotationTagFitObserver.disconnect();
+    rotationTagFitObserver = new ResizeObserver(() => fitRotationTagPlates(host));
+    rotationTagFitObserver.observe(roundsBlock);
+  }
 }
 
 // Card widths change with the viewport, so the connectors are redrawn on resize.
@@ -10994,6 +11044,9 @@ function setupGuideListeners() {
     };
 
     const selectMode = (mode) => {
+      // The Items tab is parked for now; its button carries `hidden` in index.html.
+      // The renderer stays in place so removing that attribute brings it back.
+      if (mode === "items" && btnTabItems && btnTabItems.hidden) return;
       infoBookActiveTab = mode;
       if (buildsSearchInput) buildsSearchInput.value = "";
       updateModeTabsUI();
@@ -12673,7 +12726,6 @@ function setupEventListeners() {
   const listingBtnSave = document.getElementById("btn-save-listing");
   const listingBtnReset = document.getElementById("btn-reset-listing");
   const btnAddTier = document.getElementById("btn-add-tier");
-  const btnAddPresetTier = document.getElementById("btn-add-preset-tier");
   const listingTiersList = document.getElementById("listing-tiers-list");
 
   const inputOtherLabel = document.getElementById("input-other-label");
@@ -13346,23 +13398,6 @@ function setupEventListeners() {
     });
     renderListingTiersEditor();
   });
-
-  if (btnAddPresetTier) {
-    btnAddPresetTier.addEventListener("click", () => {
-      // The Unbuilt preset also lands at the top
-      tempListingTiers.unshift({
-        id: "tier_preset_unbuilt_" + Date.now(),
-        label: t("label.unbuilt"),
-        color: "#9a9a9a",
-        ruleGroups: [[
-          { field: "insight", op: "=", value: 0 },
-          { field: "level", op: "=", value: 1 },
-          { field: "resonance", op: "=", value: 1 },
-        ]],
-      });
-      renderListingTiersEditor();
-    });
-  }
 
   // Psychube tiers land at the bottom and default to owned = true
   const btnAddChubeTier = document.getElementById("btn-add-chube-tier");

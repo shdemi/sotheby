@@ -807,6 +807,32 @@
       }
     }
   },
+  "1452": {
+    "descEn": "Ambition, pursuit, the detours of fate,\nTime, afterimages, the shadows of glory,\nAt last, an audience is granted—\nA thousand nights brimming with miracles.",
+    "descVi": "Tham vọng, truy cầu, những vòng vèo của định mệnh,\nThời gian, dư ảnh, bóng tối của hào quang,\nCuối cùng cũng được diện kiến,\nNgàn đêm chan chứa những phép màu.",
+    "amplifications": {
+      "1": {
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.2%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.2%}, tính tối đa 6 điểm."
+      },
+      "2": {
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.4%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.4%}, tính tối đa 6 điểm."
+      },
+      "3": {
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.6%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.6%}, tính tối đa 6 điểm."
+      },
+      "4": {
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.8%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.8%}, tính tối đa 6 điểm."
+      },
+      "5": {
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {2%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {2%}, tính tối đa 6 điểm."
+      }
+    }
+  },
   "1501": {
     "descVi": "Chỉnh lại góc áo, thắt chặt dải ruy băng, vuốt phẳng những nếp nhăn.\nCuộn tay áo mà không gây chú ý, rồi lại vuốt xuống, lại cuộn lên.\nNàng nhìn mình trong gương,\nVà một lời chúc ngủ ngon dịu dàng.\nTa đã sẵn sàng dâng hiến tất cả những gì mình có, vì thế giới mới và sự an lành của nó.",
     "amplifications": {
@@ -2256,6 +2282,36 @@
         "descEn": "When entering battle, if the carrier is a [Star] character, Critical DMG +{24%}.\nWhen the carrier attacks, if using an [Extra Action], grants all allies [Pursuit] DMG Bonus +{8%} for 3 rounds, stacking up to 4 times."
       }
     }
+  },
+  "1580": {
+    "descEn": "A heavy snowfall has lived in my dreams\nSince the day the fairy tale died.\nPlace the moon upon my brow,\nAnd let me sleep, untroubled by any soul.\nIf someone would but sing for the nameless forest,\nA pure heart shall wake, pillowed on the coffin bed.",
+    "descVi": "Một trận tuyết lớn đã sống trong giấc mơ tôi\nTừ ngày câu chuyện cổ tích chết đi.\nHãy đặt vầng trăng lên vầng trán này,\nĐể tôi ngủ yên, không ai đoái hoài.\nNếu có ai chịu hát cho khu rừng vô danh,\nTrái tim thuần khiết sẽ tỉnh giấc, gối đầu trên quan tài.",
+    "amplifications": {
+      "1": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{5%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG by {12%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{5%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG của toàn bộ phe ta thêm {12%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      "2": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{7.5%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {14%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{7.5%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {14%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      "3": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{10%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {16%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{10%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {16%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      "4": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{12.5%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {18%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{12.5%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {18%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      },
+      "5": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Star], self HP +{15%}.\nAfter the carrier casts a [Perception Incantation], increases all allies' Perception DMG Bonus by {20%}. Cleared after leaving the [Full Pursuit] phase.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Star], HP bản thân +{15%}.\nSau khi người trang bị thi triển [Perception Incantation], tăng Perception DMG Bonus của toàn bộ phe ta thêm {20%}. Xóa sau khi rời khỏi giai đoạn [Full Pursuit]."
+      }
+    }
+  },
+  "1581": {
+    "descEn": "Jam splatters across the plate,\nInspiration blooms in the eye;\nOne second the octopus gummies are still screaming,\nThe next, the soma sweets burst into hysterics;\nWith a single squelching cut,\nThe answer is revealed!",
+    "descVi": "Mứt bắn tung tóe trên đĩa,\nLinh cảm nở rộ trong ánh mắt;\nGiây trước kẹo bạch tuộc còn đang gào thét,\nGiây sau kẹo soma đã cười điên dại;\nMột nhát cắt \"phập\",\nĐáp án lộ diện!"
   },
   "4103": {
     "descVi": "Thơ ca có thuộc về trang giấy da?\nThơ ca có thuộc về vỏ óc chó và mực?\nThơ ca có thuộc về quý tộc và nhà vua?\nKhông, đêm tuyết nói, thơ ca chỉ thuộc về chính nó.",

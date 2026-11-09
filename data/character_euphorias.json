@@ -873,7 +873,7 @@
           "rank": 1,
           "description": {
             "en": "[Hot Sauce Expert]'s Insight I gains a new effect:\nMoxie is replaced by Thread Points; self skills that gain benefits based on Moxie are changed to gain benefits based on Thread Points instead. The Ultimate no longer counts toward the Spelldock Draw Limit.\nAt the start of the round, generates 1 [Thread: Heaven's Fortune] at a random position other than self's own position (up to 4 Threads may exist at each position).\n[Victorious General] gains a new effect: Shifts self 1 position forward after casting.\n[Outdoor Superstar] gains a new effect: Shifts self 1 position backward after casting.",
-            "zh": "【辣酱专家】洞悉Ⅰ新增效果：\n激情点替换为脉络点，基于激情点获得收益的自身技能改为基于脉络点获得收益，至终的仪式不占己方咒语获取数量上限；\n回合开始时，在自身位置以外的随机位置生成1个【脉络：天赐之财】（每个位置至多存在4个脉络）\n【全胜将军】新增效果：释放后，向前位移1位\n【户外明星】新增效果：释放后，向后位移1位",
+            "zh": "【辣酱专家】洞悉Ⅰ新增效果：\n激情点替换为脉络点，基于激情点获得收益的自身技能改为基于脉络点获得收益，至终的仪式不占己方咒语获取数量上限；\n回合开始时，在自身位置以外的随机位置生成1点【脉络：天赐之财】（每个位置至多存在4点脉络点）\n【全胜将军】新增效果：释放后，向前位移1位\n【户外明星】新增效果：释放后，向后位移1位",
             "tw": "N/A",
             "jp": "N/A",
             "kr": "N/A"
@@ -903,7 +903,7 @@
           "rank": 4,
           "description": {
             "en": "[Hot Sauce Expert]'s Insight III gains a new effect: When entering battle, self Thread Points +3.\n[Reality Show Premiere] gains a new effect: If holding 4/5/6 Thread Points when cast, grants all allied characters 1/2/3 stack(s) of [Fortune].",
-            "zh": "【辣酱专家】洞悉Ⅲ新增效果：进入战斗时，自身脉络点+3\n【真人秀火热开场】新增效果：释放时若持有4/5/6点脉络，则使己方全体角色获得1/2/3层【鸿运】",
+            "zh": "【辣酱专家】洞悉Ⅲ新增效果：进入战斗时，自身脉络点+3\n【真人秀火热开场】新增效果：释放时若持有4/5/6点脉络点，则使己方全体角色获得1/2/3层【鸿运】",
             "tw": "N/A",
             "jp": "N/A",
             "kr": "N/A"
@@ -3559,6 +3559,77 @@
           }
         }
       ]
+    },
+    {
+      "name": {
+        "en": "Waking at the Foothills, the Drum Rides the Wind",
+        "zh": "醒于山麓，响鼓踏风",
+        "tw": "N/A",
+        "jp": "N/A",
+        "kr": "N/A"
+      },
+      "id": 307202,
+      "tags": ["Shift"],
+      "materials": [
+        {
+          "id": 620103,
+          "amount": 12
+        },
+        {
+          "id": 620102,
+          "amount": 40
+        },
+        {
+          "id": 620101,
+          "amount": 200
+        },
+        {
+          "id": 111004,
+          "amount": 3
+        }
+      ],
+      "ranks": [
+        {
+          "rank": 1,
+          "description": {
+            "en": "[Inheritance of Wisdom]'s Insight I gains a new effect:\nMoxie is replaced by Thread Points; the Ultimate is no longer gained; when self Thread Points reach 6 or more, automatically casts the Ultimate at the end of the round; at the start of each round, generates 1 [Thread: Clear Sight] at a random position other than self's own position (up to 4 Threads may exist at each position).\n[Nature's Blessing]'s effect is changed to: after casting the Ultimate, consumes 5 stacks of this status (consumes all remaining stacks if fewer), and restores an equal amount of Thread Points.\n[Edict of Atman] gains a new effect: after attacking, consumes all self Thread Points.\n[Apprentice's Dance] gains a new effect: after attacking, shifts self 1 position forward.\n[Spirit Medium] gains a new effect: after casting, shifts self 1 position backward.",
+            "zh": "【古老的智慧】洞悉Ⅰ新增效果：\n激情点替换为脉络点，不再获得至终的仪式，当自身脉络点大于等于6点，在回合结束时自动释放至终的仪式；每回合开始时，在自身所在位置以外的随机的位置生成1点【脉络：明目】（每个位置至多存在4点脉络点）；\n【自然的庇护】效果改为：使用至终的仪式后，消耗5层此状态（不足则全消耗），回复等量脉络点；\n【万物之灵的旨意】新增效果：攻击后，消耗自身所有脉络点\n【见习舞术】：新增效果：攻击后，使自身向前位移1位\n【通灵之媒】：新增效果：释放后，使自身向后位移1位",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
+          }
+        },
+        {
+          "rank": 2,
+          "description": {
+            "en": "[Apprentice's Dance]: the Reality DMG dealt is increased by an amount equal to 100% of the base Reality DMG; at Incantation rank 1, additionally grants self 1 stack of [Nature's Blessing].\n[Spirit Medium]: additionally increases all enemies' DMG Taken by 80%; the effects that increase all enemies' DMG Taken and reduce their Reality DEF and Mental DEF now last 3 rounds at Incantation rank 1/2.",
+            "zh": "【见习舞术】：造成的现实创伤提升，相当于基础现实创伤的100%；在咒语1阶时，新增使自身获得1层【自然的庇护】\n【通灵之媒】：额外使敌方全体受到伤害提升80%；使敌方全体受到伤害提升、现实防御降低、精神防御降低效果，在咒语1/2阶时，改为持续3回合",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
+          }
+        },
+        {
+          "rank": 3,
+          "description": {
+            "en": "[Inheritance of Wisdom]'s Insight III gains a new effect:\nWhen entering battle, increases the Thread Point limit of the ally in position 1 by 2, grants all allies Thread Points +2, and grants self Thread Points +3 additionally.\n[Edict of Atman]: the Reality DMG dealt is increased by an amount equal to 700% of the base Reality DMG; deals additional 1750% Reality DMG to the primary target; after attacking, shifts the ally in position 1 back one position at a time until they reach the rearmost position.",
+            "zh": "【古老的智慧】洞悉Ⅲ新增效果：\n进入战斗时，使己方1号位角色脉络点上限提升2点，并使己方全体脉络点+2，自身脉络点额外+3\n【万物之灵的旨意】造成的现实创伤提升，相当于基础现实创伤的700%；对主目标额外造成1750%的现实创伤；攻击后，使己方1号位角色逐位后退至最后方",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
+          }
+        },
+        {
+          "rank": 4,
+          "description": {
+            "en": "[Edict of Atman]: for every 1 Thread Point self holds, deals additional 800% Reality DMG to the primary target; when attacking, no longer increases Critical Rate against the primary target, and no longer converts excess Critical Rate into Critical DMG; gains a new effect: before attacking, grants all allies [Fertile Soil] for 3 rounds; after attacking, grants other allies Thread Points +1.",
+            "zh": "【万物之灵的旨意】每持有1点脉络点，对主目标额外造成800%的现实创伤；攻击时，不再对主目标暴击率提升，且不再将溢出的暴击率转化为暴击创伤；新增效果：攻击前，使己方全体获得【沃土】，持续3回合；攻击后，使其他友方脉络点+1",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
+          }
+        }
+      ]
     }
   ],
   "Sotheby": [
@@ -3966,6 +4037,79 @@
             "tw": "【為您效勞】新增效果：回合結束時，若處於【驚懼故事會】中，藍手帕使自身激情+1，並使敵方全體持有的來自【累日的拍撫】的減益效果延長1回合",
             "jp": "【思し召しのままに】効果追加：ターン終了時、【怪談夜会】中の場合、チューズデーのMP+1、敵全員の【愛しい慰撫】によるデバフ効果の持続ターン数+1。",
             "kr": "[당신을 위하여] 추가 효과: 턴 종료 시 [괴담의 밤] 상태일 경우 튜즈데이 자신의 열정 +1, 모든 적군이 보유한 [어머니의 품에서]의 디버프 효과 지속 시간 1턴 연장"
+          }
+        }
+      ]
+    }
+  ],
+  "Ulrich": [
+    {
+      "name": {
+        "en": "Endless Recursion, a Flash of Inspiration",
+        "zh": "循环演算，灵思乍现",
+        "tw": "N/A",
+        "jp": "N/A",
+        "kr": "N/A"
+      },
+      "id": 310701,
+      "tags": ["Dynamo"],
+      "materials": [
+        {
+          "id": 620103,
+          "amount": 12
+        },
+        {
+          "id": 620102,
+          "amount": 40
+        },
+        {
+          "id": 620101,
+          "amount": 200
+        },
+        {
+          "id": 111006,
+          "amount": 3
+        }
+      ],
+      "ranks": [
+        {
+          "rank": 1,
+          "description": {
+            "en": "[The First Rhythm] [Amplified Surge] effect enhanced: the Moxie gained immediately after entering [Pulsing Field Lv.3] is increased to 4.\n[Scanning Mode] effect enhanced: if already in the [Structure Analysis] status, its duration is extended by 3 rounds.\n[Structure Analysis] effect enhanced: the cap of [Decryption Key] that can be injected is increased by 5; the trigger timing of the debuff granted while channeling is changed to the end of the round, and its duration is increased by 1 round.",
+            "zh": "【原始律动】【电涌增幅】效果增强：进入涌动电场lv3后立刻获得的激情提升至4点\n【识别模式】效果增强：若已处于【结构分析】状态，则持续时间延长3回合\n【结构分析】效果增强：可注入的密钥上限+5；吟诵期间赋予减益的触发时机改为回合结束时，且持续回合+1",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
+          }
+        },
+        {
+          "rank": 2,
+          "description": {
+            "en": "[Brown Noise] effect enhanced: if already in the [Frequency Analysis] status, its duration is extended by 3 rounds.\n[Frequency Analysis] effect enhanced: the cap of [Decryption Key] that can be injected is increased by 5; the trigger timing of the buff granted while channeling is changed to the end of the round, and its duration is increased by 1 round.",
+            "zh": "【棕色旋律】效果增强：若已处于【频率分析】状态，则持续时间延长3回合\n【频率分析】效果增强：可注入的密钥上限+5；吟诵期间赋予增益的触发时机改为回合结束时，且持续回合+1",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
+          }
+        },
+        {
+          "rank": 3,
+          "description": {
+            "en": "[The First Rhythm] [Surge Spike] effect enhanced: if [Structure Analysis] or [Frequency Analysis] holds 10 or more [Decryption Key] groups, consumes the excess; for each group consumed, allied [Dynamo] Reality-DMG characters deal additional Reality DMG equal to 90% of the base Reality DMG when attacking, for 2 rounds.",
+            "zh": "【原始律动】【峰电位】效果增强：若【结构分析】或【频率分析】具有10组以上【密钥】，则消耗超出部分，每消耗1组使己方【电能】现实创伤类角色攻击时，额外造成90%现实创伤，持续2回合",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
+          }
+        },
+        {
+          "rank": 4,
+          "description": {
+            "en": "[The Sum of Infinity] effect adjusted: [Hyper Analysis] duration +2 rounds.\n[Hyper Analysis] effect enhanced: at the end of the round, if channeling, casts self's normal Incantations in the Incantation zone as much as possible; channeling no longer restricts actions.",
+            "zh": "【无限运算的总和】效果调整：【超算分析】持续回合+2\n【超算分析】效果增强：回合结束时若处于吟诵状态，尽可能地释放咒语区的自身普通咒语；吟诵期间不再限制行动；",
+            "tw": "N/A",
+            "jp": "N/A",
+            "kr": "N/A"
           }
         }
       ]

@@ -969,7 +969,8 @@ body::before {
   z-index: 120;
 }
 
-/* Character Card Custom Tooltip — UTTU Term Popover aesthetic */
+/* Character Card Custom Tooltip — same surface as the mainboard
+   (`.showcase-board`): #111 body, hairline white borders, cream type. */
 .char-tooltip {
   position: absolute;
   bottom: calc(100% + 8px);
@@ -977,10 +978,10 @@ body::before {
   transform: translateX(-50%);
   min-width: 190px;
   max-width: 262px;
-  background-color: rgba(27, 27, 27, 0.95);
+  background-color: rgba(17, 17, 17, 0.97);
   background-image: none;
-  color: #e7e3db;
-  border: 2px solid #333230;
+  color: rgba(244, 239, 233, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   padding: 0;
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
@@ -992,7 +993,7 @@ body::before {
   transition: opacity 0.15s ease, visibility 0.15s ease;
   z-index: 250;
   text-align: left;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* Name header */
@@ -1002,8 +1003,8 @@ body::before {
   justify-content: space-between;
   gap: 10px;
   padding: 9px 12px 8px;
-  background: rgba(35, 35, 35, 0.6);
-  border-bottom: 1px solid #333230;
+  background: var(--board-header-bg, rgba(255, 255, 255, 0.04));
+  border-bottom: var(--board-header-border-width, 1px) solid var(--board-header-border-color, rgba(255, 255, 255, 0.1));
   border-radius: 0;
 }
 
@@ -1012,7 +1013,7 @@ body::before {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: #e7e3db;
+  color: var(--char-name-color, rgba(244, 239, 233, 0.84));
 }
 
 /* Detail rows — typography mirrors Character Setting */
@@ -1036,7 +1037,7 @@ body::before {
   font-weight: bold;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: #9d9d9b;
+  color: #9a9a9a;
   white-space: nowrap;
 }
 
@@ -1047,12 +1048,23 @@ body::before {
   font-family: var(--mono-font), 'gg sans', 'Noto Sans', monospace;
   font-size: 12px;
   font-weight: 700;
-  color: #ECE5D9;
+  color: rgba(244, 239, 233, 0.92);
   white-space: nowrap;
 }
 
 .char-tooltip .ct-euphoria {
-  color: #04FFEE;
+  color: var(--accent-e, #04FFEE);
+}
+
+/* Unowned cards have no build to report, so the tooltip body is a single
+   muted label under the name instead of Insight/Level/Resonance rows. */
+.char-tooltip .ct-unowned {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(244, 239, 233, 0.55);
 }
 
 .char-tooltip .ct-patterns {
@@ -1062,7 +1074,7 @@ body::before {
   width: 100%;
   margin-top: 3px;
   padding-top: 7px;
-  border-top: 1px solid #333230;
+  border-top: 1px solid var(--board-header-border-color, rgba(255, 255, 255, 0.1));
   box-sizing: border-box;
 }
 
@@ -4872,10 +4884,10 @@ a.credit-name:hover {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  background-color: rgba(27, 27, 27, 0.95);
+  background-color: rgba(17, 17, 17, 0.97);
   background-image: none;
-  color: #e7e3db;
-  border: 2px solid #333230;
+  color: rgba(244, 239, 233, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 6px 12px;
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
   font-size: 12px;
@@ -4888,7 +4900,7 @@ a.credit-name:hover {
   transition: opacity 0.15s ease, visibility 0.15s ease;
   z-index: 250;
   border-radius: 0;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .chess-pieces-container.pos-bottom .chess-piece-tooltip {
@@ -7630,6 +7642,9 @@ body.guide-rail-resizing * {
   font-weight: 700;
 }
 
+/* The Items tab is parked (see the `hidden` attribute in index.html). */
+#builds-modal .builds-mode-btn[hidden] { display: none !important; }
+
 /* Hidden list: the build takes the full width. */
 .builds-body.is-list-hidden .builds-rail {
   display: none;
@@ -8300,7 +8315,7 @@ body.guide-rail-resizing * {
 .items-grid-container {
   display: grid;
   /* Three per row: the rail is narrow, so `auto-fill` only ever fit two 68px
-     stickers and left a ragged column. */
+     stickers (the rail's scrollbar eats the third) and left a ragged column. */
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 8px;
@@ -10451,6 +10466,15 @@ body.guide-rail-resizing * {
   .builds-afflatus-btn img { width: 14px; height: 14px; }
 
   .builds-list { padding: 4px 6px; }
+
+  /* The items list now spans the whole modal, so three fixed columns would blow
+     each sticker up to ~230px. Add columns and cap them at icon scale instead. */
+  .items-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+    justify-items: center;
+  }
+
+  .items-grid-container .item-sticker { max-width: 96px; }
   .builds-row { padding: 6px 8px; gap: 9px; }
   .builds-row-portrait { width: 34px; height: 34px; }
   .builds-row-name { font-size: 0.72rem; }
@@ -11202,9 +11226,10 @@ body.guide-rail-resizing * {
 
 .rot-hero-name {
   margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 28px;
-  font-weight: normal;
+  font-family: 'Amiri', var(--serif-font);
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: #ECE5D9;
 }
 
@@ -11241,7 +11266,9 @@ body.guide-rail-resizing * {
 
 /* The plan's own headers (Team, Notes, Rounds) all use the banner's spine. */
 #rotations-card .rot-block > .archetype-section-header {
-  border-left-color: #D4B235;
+  border-left-color: #E09532;
+  background:
+    linear-gradient(90deg, rgba(94, 69, 36, 0.4) 0%, rgba(0, 0, 0, 0.4) 45%, rgba(0, 0, 0, 0.4) 100%);
 }
 
 /* The tuning ability closes the team row. It carries the same surface and
@@ -11461,51 +11488,32 @@ body.guide-rail-resizing * {
 
 /* The number sits at the top of the gutter, level with the top of the cards,
    inside an L-shaped bracket. Zero-padded, so a ten-round plan still lines up. */
-/* The number sits in the gutter in a small box, just wide enough for two digits,
-   with the same transparent surface and hairline border a card has. */
+/* The number is an amber bracket cut from the sheet: two rounded corners, the
+   number set in Amiri over whatever the gutter shows through. It sits level with
+   the top of the cards. */
 .rot-round-no {
   position: relative;
   grid-column: 1;
   grid-row: 2;
   align-self: start;
   justify-self: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* Sits level with the card strip, like the plan sheets. */
-  margin-top: calc(26px * var(--rot-scale, 1));
-  padding: calc(6px * var(--rot-scale, 1)) calc(10px * var(--rot-scale, 1)) calc(7px * var(--rot-scale, 1));
+  margin-top: calc(24px * var(--rot-scale, 1));
+  width: calc(36px * var(--rot-scale, 1));
+  height: calc(36px * var(--rot-scale, 1));
   box-sizing: border-box;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-  font-family: var(--main-font-family);
-  font-size: calc(1.3rem * var(--rot-scale, 1));
-  font-weight: 400;
+  border: calc(2px * var(--rot-scale, 1)) solid #E09532;
+  border-radius: 0 calc(9px * var(--rot-scale, 1)) 0 calc(10px * var(--rot-scale, 1));
+  font-family: 'Amiri', var(--serif-font);
+  font-size: calc(1.4rem * var(--rot-scale, 1));
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.04em;
-  color: #F0E6D2;
-}
-
-/* Two gold corners bracket the number: top-left and bottom-right. */
-.rot-round-no::before,
-.rot-round-no::after {
-  content: "";
-  position: absolute;
-  width: calc(13px * var(--rot-scale, 1));
-  height: calc(13px * var(--rot-scale, 1));
-  pointer-events: none;
-}
-
-.rot-round-no::before {
-  left: -1px;
-  top: -1px;
-  border-left: 2px solid #E8A33D;
-  border-top: 2px solid #E8A33D;
-}
-
-.rot-round-no::after {
-  right: -1px;
-  bottom: -1px;
-  border-right: 2px solid #E8A33D;
-  border-bottom: 2px solid #E8A33D;
+  letter-spacing: 0;
+  color: #EADCC9;
 }
 
 /* The round note is the round's title: a plaque cut from the same material as
@@ -11524,23 +11532,23 @@ body.guide-rail-resizing * {
 }
 
 /* The round note is the round's title: a plaque cut from the same material as
-   the section headers, with the header's olive spine. */
+   the sheet labels, with the amber spine and serif capitals. */
 .rot-round-note {
   display: inline-flex;
   align-items: center;
-  min-height: calc(22px * var(--rot-scale, 1));
-  padding: 0 calc(12px * var(--rot-scale, 1)) 0 calc(10px * var(--rot-scale, 1));
-  border-left: calc(3px * var(--rot-scale, 1)) solid #D4B235;
+  min-height: calc(24px * var(--rot-scale, 1));
+  padding: 0 calc(14px * var(--rot-scale, 1)) 0 calc(11px * var(--rot-scale, 1));
+  border-left: calc(4px * var(--rot-scale, 1)) solid #E09532;
   background: linear-gradient(
     90deg,
-    #86783C 0%,
-    rgba(134, 120, 60, 0.75) 25%,
-    rgba(134, 120, 60, 0.5) 50%,
-    rgba(134, 120, 60, 0.25) 75%,
-    rgba(134, 120, 60, 0) 100%
+    #5E4524 0%,
+    rgba(94, 69, 36, 0.75) 25%,
+    rgba(94, 69, 36, 0.5) 50%,
+    rgba(94, 69, 36, 0.25) 75%,
+    rgba(94, 69, 36, 0) 100%
   );
-  font-family: 'Amiri', Georgia, 'Times New Roman', serif;
-  font-size: calc(0.85rem * var(--rot-scale, 1));
+  font-family: 'Amiri', var(--serif-font);
+  font-size: calc(0.9rem * var(--rot-scale, 1));
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.02em;
@@ -11767,69 +11775,100 @@ body.guide-rail-resizing * {
 
 /* ---- slot tags ---- */
 
-/* The shipped plate art (AP Free / Precast), pinned to the card's top-left
-   corner. When both are present the plaque drops 3px below the badge. */
-/* Both plates hang off the slot's first card, so they stay on its corner
-   whatever shape the card is. The plaque sits 5px under the badge. */
+/* A tag is a ribbon cut from the plan-sheet language: ink that fades into the
+   art, a screen-printed halftone tail, and Amiri set in white. The ink is per
+   kind, so AP Free, Precast and an authored tag read apart at a glance. */
 .rot-card > .rot-tag-plate {
+  --tag-ink: #CCA329;
+  --tag-ink-soft: rgba(204, 163, 41, 0.5);
+  --tag-ink-none: rgba(204, 163, 41, 0);
+
   position: absolute;
   left: 0;
   top: calc(6px * var(--rot-scale, 1));
-  height: calc(13px * var(--rot-scale, 1));
-  width: auto;
   z-index: 4;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65));
-  pointer-events: none;
-}
-
-/* 6px top + 13px tall + 5px gap = 24px. */
-.rot-card.has-badge > .rot-tag-plate.is-plaque { top: calc(24px * var(--rot-scale, 1)); }
-
-/* The tag plate: the blank ribbon with the tag's words on it, so the same art
-   carries "AP Free", "Precast" or whatever the author types. It never leaves the
-   card: the plate is capped at the card's width and the words shrink to fit. */
-.rot-card > .rot-tag-plate.is-text {
   display: inline-flex;
   align-items: center;
-  width: max-content;
-  /* The plate never leaves the card: it is capped at the card's width, and the
-     words shrink to fit rather than spilling onto the next card. An empty tag
-     still shows a short stretch of ribbon, so the tag is visible. */
-  min-width: min(calc(24px * var(--rot-scale, 1)), 100%);
+  /* The ribbon is cut from the card itself: it starts at the card's left edge and
+     runs to the right one, so it reads as part of the card rather than a chip
+     floating inside it. */
+  width: 100%;
   max-width: 100%;
-  height: calc(13px * var(--rot-scale, 1));
-  padding: 0 calc(6px * var(--rot-scale, 1)) 0 calc(5px * var(--rot-scale, 1));
+  height: calc(16px * var(--rot-scale, 1));
+  /* Only the left pad is real breathing room. The halftone tail is drawn under
+     the words, so the ribbon never withholds width the label needs: on a plan
+     card that is barely 60px wide, 14px of reserved tail would force the text
+     to clip. */
+  padding: 0 calc(8px * var(--rot-scale, 1)) 0 calc(6px * var(--rot-scale, 1));
   box-sizing: border-box;
-  font-family: var(--serif-font);
-  font-size: calc(9px * var(--rot-scale, 1));
+  font-family: 'Amiri', var(--serif-font);
+  font-size: calc(11px * var(--rot-scale, 1));
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.01em;
   color: #FFFFFF;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
   white-space: nowrap;
   overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--tag-ink) 0%,
+    var(--tag-ink-soft) 90%,
+    var(--tag-ink-none) 100%
+  );
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
-.rot-card > .rot-tag-plate.is-text > img {
+
+/* The halftone tail: a dark dot screen that carries the fade off the card. */
+.rot-card > .rot-tag-plate::after {
+  content: "";
   position: absolute;
-  inset: 0;
-  width: 100%;
+  right: 0;
+  top: 0;
+  width: calc(14px * var(--rot-scale, 1));
   height: 100%;
-  object-fit: fill;
-  filter: none;
+  background: rgba(26, 26, 26, 0.78);  -webkit-mask-image: radial-gradient(circle, #000 0.9px, transparent 1.3px);
+  -webkit-mask-size: calc(4px * var(--rot-scale, 1)) calc(4px * var(--rot-scale, 1));
+  mask-image: radial-gradient(circle, #000 0.9px, transparent 1.3px);
+  mask-size: calc(4px * var(--rot-scale, 1)) calc(4px * var(--rot-scale, 1));
+  opacity: 0.85;
+  transform: skewX(-10deg) scaleY(1.15);
 }
-.rot-card > .rot-tag-plate.is-text > .rot-tag-plate-text {
+
+/* Precast keeps the sheet's amber; a custom tag takes a cool steel ink so a
+   note about a character never reads as an AP rule. */
+.rot-card > .rot-tag-plate.is-plaque {
+  --tag-ink: #D97B1F;
+  --tag-ink-soft: rgba(217, 123, 31, 0.5);
+  --tag-ink-none: rgba(217, 123, 31, 0);
+}
+.rot-card > .rot-tag-plate[data-tag="custom"] {
+  --tag-ink: #6E88AC;
+  --tag-ink-soft: rgba(110, 136, 172, 0.5);
+  --tag-ink-none: rgba(110, 136, 172, 0);
+}
+
+.rot-card > .rot-tag-plate > .rot-tag-plate-text {
   position: relative;
+  z-index: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* An Ultimate card is an arch, so its top corner is empty: the plate drops to
+/* When the words cannot be set large enough to read (thumbnail zoom, or a card
+   squeezed narrow), the ribbon keeps its ink and drops them instead of printing
+   a clip. Colour alone still tells the kinds apart. */
+.rot-card > .rot-tag-plate.is-wordless > .rot-tag-plate-text { display: none; }
+
+/* When both tags sit on one card the plaque drops clear of the badge. */
+.rot-card.has-badge > .rot-tag-plate.is-plaque { top: calc(27px * var(--rot-scale, 1)); }
+
+/* An Ultimate card is an arch, so its top corner is empty: the ribbon drops to
    where the art begins, the way the plan sheets draw it. */
 .rot-card.is-ultimate > .rot-tag-plate { top: calc(30px * var(--rot-scale, 1)); }
-/* 30px top + 13px tall + 5px gap = 48px. */
-.rot-card.is-ultimate.has-badge > .rot-tag-plate.is-plaque { top: calc(48px * var(--rot-scale, 1)); }
+.rot-card.is-ultimate.has-badge > .rot-tag-plate.is-plaque { top: calc(51px * var(--rot-scale, 1)); }
 
 /* A Tuning slot keeps the AP box as a text box; the tuning card shrinks into
    its bottom-right corner so the note and the art never overlap. */
