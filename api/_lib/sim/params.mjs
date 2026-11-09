@@ -254,7 +254,7 @@ export function simImageQuery(sim) {
  * dashes, the parchment team card, …) changes the picture without changing the payload,
  * and without the salt every link already posted would keep showing the old bitmap.
  */
-export const CARD_RENDER_VERSION = "2026-11-09c";
+export const CARD_RENDER_VERSION = "2026-11-09d";
 
 export function simVersion(sim) {
   return crypto
@@ -285,15 +285,10 @@ export function simDescription(sim) {
   }
 
   if (sim.mode === "character") {
-    const char = sim.character;
-    const parts = [];
-    if (char.portrait) parts.push(`${t(lang, "card.portrait", "Portrait")}: ${char.portrait}`);
-    if (char.pattern) parts.push(`${t(lang, "card.resonance", "Resonance")}: ${char.pattern}`);
-    if (char.psychubes.length) {
-      parts.push(`${t(lang, "builds.psychubes", "Recommended Psychubes")}: ${char.psychubes.length}`);
-    }
-    const name = lang === "cn" ? char.nameZh || char.name : char.name;
-    return parts.length ? `${name} — ${parts.join(" · ")}` : `${name} — R1999 build.`;
+    // Discord prints this single line under the title, and the card already draws the
+    // portrait tiers, the pattern and the chubes. What the card cannot carry is the long
+    // resonance import string, so the description is just `<preset>: <code>` pairs.
+    return sim.character.resonance.map((preset) => `${preset.label}: ${preset.code}`).join(" · ");
   }
 
   return lang === "cn"

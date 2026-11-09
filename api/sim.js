@@ -45,13 +45,22 @@ function metaTags(sim, origin, canonicalUrl, fullTitle) {
   // so, otherwise Discord crops the card to a 630px box.
   const imageHeight = sim.mode === "character" ? characterCardHeight(sim.character) : 630;
 
+  // A character with no resonance preset has nothing useful to say here, and an empty
+  // description tag makes Discord show a blank line, so the tags are dropped entirely.
+  const descriptionTags = description
+    ? [
+        `<meta name="description" content="${esc(description)}" />`,
+        `<meta property="og:description" content="${esc(description)}" />`,
+        `<meta name="twitter:description" content="${esc(description)}" />`,
+      ]
+    : [];
+
   return [
-    `<meta name="description" content="${esc(description)}" />`,
+    ...descriptionTags,
     `<link rel="canonical" href="${esc(canonicalUrl)}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="Sotheby's Mansion" />`,
     `<meta property="og:title" content="${esc(fullTitle)}" />`,
-    `<meta property="og:description" content="${esc(description)}" />`,
     `<meta property="og:url" content="${esc(canonicalUrl)}" />`,
     `<meta property="og:image" content="${esc(image)}" />`,
     `<meta property="og:image:width" content="1200" />`,
@@ -59,7 +68,6 @@ function metaTags(sim, origin, canonicalUrl, fullTitle) {
     `<meta property="og:image:alt" content="${esc(simTitle(sim))}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${esc(fullTitle)}" />`,
-    `<meta name="twitter:description" content="${esc(description)}" />`,
     `<meta name="twitter:image" content="${esc(image)}" />`,
   ].join("\n    ");
 }

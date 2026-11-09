@@ -15,7 +15,7 @@
  */
 import { ImageResponse } from "@vercel/og";
 
-import { imageSize, loadAll, ogFonts, ogIndex } from "./assets.mjs";
+import { imageSize, imageSrc, loadAll, ogFonts, ogIndex } from "./assets.mjs";
 import { characterCard, characterCardHeight, defaultCard, teamCard } from "./cards.mjs";
 import { normalizeSim } from "../sim/params.mjs";
 import { findCharacter } from "./resolve.mjs";
@@ -37,6 +37,15 @@ function insightIcon(insight) {
   return value > 0 ? `images/insight_icon/I${value}.png` : "";
 }
 
+/**
+ * The pattern glyph is drawn at 44px, so the card uses the pre-scaled copy in
+ * `assets/og/pattern/` (see `scripts/og/pattern-icons.py`) and falls back to the 170px
+ * original only if that file is missing.
+ */
+function patternIconSrc(char) {
+  return char.patternIcon ? char.patternIcon.replace("images/shape_pattern/", "assets/og/pattern/") : "";
+}
+
 async function characterArt(index, char, origin) {
   const chubeIcons = char.psychubes.map((key) => index.psychubes[key]?.icon || "");
   const chubeNames = {};
@@ -45,10 +54,11 @@ async function characterArt(index, char, origin) {
     chubeNames[key] = row ? { en: row.name || key, zh: row.nameZh || "" } : { en: key, zh: "" };
   }
 
-  const [dmg, head, afflatus, shape, ...chubes] = await loadAll(
-    [dmgIcon(char.dmgType), char.head, afflatusIcon(char.afflatus), char.patternIcon, ...chubeIcons],
+  const [dmg, head, afflatus, scaledShape, ...chubes] = await loadAll(
+    [dmgIcon(char.dmgType), char.head, afflatusIcon(char.afflatus), patternIconSrc(char), ...chubeIcons],
     origin,
   );
+  const shape = scaledShape || (await imageSrc(char.patternIcon, origin));
   return { dmg, head, afflatus, shape, shapeSize: imageSize(shape), chubes, chubeNames };
 }
 

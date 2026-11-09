@@ -292,7 +292,7 @@ function patternIcon(art) {
 function resonanceBlock(char, lang, art, wellStyle = {}) {
   const pattern = char.pattern ? safeText(patternLabel(lang, char.pattern)) : "";
   const color = char.patternColor || BUILD.ink;
-  const presets = char.resonance.slice(0, 2);
+  const presets = char.resonance.slice(0, 2).map((preset) => preset.label);
 
   return well(
     kids(

@@ -131,6 +131,11 @@ check("compact character mode", compactChar.mode === "character", compactChar.mo
 check("compact character carries the skin", compactChar.character.skinId === 308601 && compactChar.character.name === "Lucy");
 check("compact character uses the skin art", compactChar.character.head === "images/headicon_small/308601.png");
 check("compact character keeps the build data", compactChar.character.portrait === "0/1/3/5");
+check(
+  "resonance presets carry the label and the code",
+  compactChar.character.resonance.every((preset) => preset.label && preset.code),
+  JSON.stringify(compactChar.character.resonance),
+);
 
 const bareCharLink = normalizeSim({ c: "3086" });
 check("a bare id in c= uses the default skin", bareCharLink.character.skinId === 308601, bareCharLink.character.skinId);
@@ -208,7 +213,9 @@ const teamDescription = simDescription(team);
 check("team description counts members", teamDescription.startsWith("4 members"), teamDescription);
 check("team description lists the names", teamDescription.includes("Lucy, Jessica, Six, Windsong"), teamDescription);
 check("cn team description uses chinese names", simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })).includes("露西, 6"), simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })));
-check("character description lists the build", /Portrait: 0\/1\/3\/5/.test(simDescription(character)), simDescription(character));
+check("character description prints the resonance codes", /^R10-11: [A-Za-z0-9+/=]+ · R12-15: [A-Za-z0-9+/=]+$/.test(simDescription(character)), simDescription(character));
+check("character description drops the old build summary", !/Portrait|Resonance:|Psychubes/.test(simDescription(character)), simDescription(character));
+check("an empty resonance gives no description", simDescription({ ...character, character: { ...character.character, resonance: [] } }) === "");
 check("default description is the site tagline", simDescription(normalizeSim({})) === "Suitcase. With information. R1999.", simDescription(normalizeSim({})));
 
 /* ------------------------------------------------------------------ *
