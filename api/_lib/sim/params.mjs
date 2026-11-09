@@ -227,9 +227,21 @@ export function simImageQuery(sim) {
   return params.toString();
 }
 
-/** Short content hash: Discord caches an OG image by URL, so the URL must change with it. */
+/**
+ * Short content hash: Discord caches an OG image by URL, so the URL must change with it.
+ *
+ * `CARD_RENDER_VERSION` is part of the hash on purpose: a layout fix (the portrait
+ * dashes, the parchment team card, …) changes the picture without changing the payload,
+ * and without the salt every link already posted would keep showing the old bitmap.
+ */
+export const CARD_RENDER_VERSION = "2026-11-09";
+
 export function simVersion(sim) {
-  return crypto.createHash("sha1").update(simImageQuery(sim)).digest("hex").slice(0, 10);
+  return crypto
+    .createHash("sha1")
+    .update(`${CARD_RENDER_VERSION}:${simImageQuery(sim)}`)
+    .digest("hex")
+    .slice(0, 10);
 }
 
 export function simTitle(sim) {

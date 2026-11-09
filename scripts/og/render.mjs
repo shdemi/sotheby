@@ -19,6 +19,8 @@ const CASES = [
   { file: "character-lucy-cn", params: { c: "308601", lang: "cn" } },
   { file: "character-lucy-vi", params: { c: "308601", lang: "vi" } },
   { file: "character-jessica-en", params: { c: "305601", lang: "en" } },
+  // A head icon that shipped as WebP under a `.png` name (empty portrait once).
+  { file: "character-perchta-vi", params: { c: "315901", lang: "vi" } },
   // Legacy name links keep rendering the same card.
   { file: "character-lucy-legacy", params: { character: "Lucy", lang: "en" } },
   {

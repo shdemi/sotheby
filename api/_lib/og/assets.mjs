@@ -18,13 +18,6 @@ import { fileURLToPath } from "node:url";
 // root, and Vercel runs the bundle from /var/task where the same layout applies.
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
-const MIME = {
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".webp": "image/webp",
-};
-
 let index = null;
 
 export function ogIndex() {
@@ -56,9 +49,27 @@ export function ogFonts() {
 const images = new Map();
 
 /**
+ * The real image format, read from the bytes rather than the file name.
+ *
+ * Eight head icons shipped from Myssal as WebP data under a `.png` name; declaring them
+ * as PNG made satori draw nothing (or, declared as WebP, throw), which is why those
+ * characters' cards had an empty portrait box. WebP is not supported here, so anything
+ * that is neither PNG nor JPEG resolves to null and the card keeps its text fallback.
+ */
+function magicMime(buffer) {
+  if (buffer.length >= 8 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) {
+    return "image/png";
+  }
+  if (buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) {
+    return "image/jpeg";
+  }
+  return null;
+}
+
+/**
  * Turns a repo-relative image path into a data URI satori can draw.
- * Returns null when the artwork is missing (eight head icons have no art yet),
- * so a card can fall back to a text placeholder instead of failing.
+ * Returns null when the artwork is missing, so a card can fall back to a text
+ * placeholder instead of failing.
  */
 export async function imageSrc(relPath, origin) {
   if (!relPath) return null;
@@ -81,9 +92,8 @@ export async function imageSrc(relPath, origin) {
     }
   }
 
-  const uri = buffer
-    ? `data:${MIME[path.extname(relPath).toLowerCase()] || "image/png"};base64,${buffer.toString("base64")}`
-    : null;
+  const mime = buffer ? magicMime(buffer) : null;
+  const uri = mime ? `data:${mime};base64,${buffer.toString("base64")}` : null;
   if (uri) images.set(relPath, uri);
   return uri;
 }

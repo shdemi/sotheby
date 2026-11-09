@@ -289,6 +289,27 @@ ok(
 ok("og_index characters carry a rarity and an afflatus", ogChars.every(([, c]) => c.rarity >= 2 && c.rarity <= 6 && c.afflatus));
 ok("og_index characters carry an en + zh name", ogChars.every(([, c]) => c.name && c.nameZh));
 ok("og_index head icons follow the skin id", ogChars.every(([, c]) => /^images\/headicon_small\/\d+\.png$/.test(c.head)));
+// Myssal ships a handful of head icons as WebP data under a `.png` name. The browser
+// sniffs the bytes, but satori reads the extension, so such a file draws an empty
+// portrait on the share card. Check the magic number, not just that the file exists.
+function isRealBitmap(relPath) {
+  const file = path.join(OUT, "..", relPath);
+  if (!fs.existsSync(file)) return false;
+  const head = Buffer.alloc(8);
+  const fd = fs.openSync(file, "r");
+  try {
+    fs.readSync(fd, head, 0, 8, 0);
+  } finally {
+    fs.closeSync(fd);
+  }
+  const png = head[0] === 0x89 && head[1] === 0x50 && head[2] === 0x4e && head[3] === 0x47;
+  const jpeg = head[0] === 0xff && head[1] === 0xd8 && head[2] === 0xff;
+  return png || jpeg;
+}
+const ogHeadsMissing = ogChars.filter(([, c]) => !fs.existsSync(path.join(OUT, "..", c.head))).map(([n]) => n);
+ok("every og head icon file exists", ogHeadsMissing.length === 0, ogHeadsMissing.join(","));
+const ogHeadsFake = ogChars.filter(([, c]) => fs.existsSync(path.join(OUT, "..", c.head)) && !isRealBitmap(c.head)).map(([n]) => n);
+ok("every og head icon is a real PNG/JPEG", ogHeadsFake.length === 0, ogHeadsFake.join(","));
 ok(
   "og_index build psychubes resolve to a known key",
   ogChars.every(([, c]) => c.psychubes.every((key) => ogIndex.psychubes[key])),

@@ -209,13 +209,19 @@ art is downloaded:
 | Skill cards | 456 (7 without art) | `fight/skill/` | `images/skills/<name>.png` |
 
 CN 113.0.1421 landed ahead of the Myssal art sweep (that checkout is already at its
-remote HEAD, 2026-09-28), so these are still missing and must be added by hand:
-psychubes `5/1452`, `6/1580`, `6/1581`; heads `305903`, `311304`, `312704`, `313703`,
-`313904`, `314404`, `315901`, `315902`; Perchta's three skill cards `31590111/21/31`;
-and the Euphoria portraits `images/arcanists/euphoria/3072_2.webp` (Shamane E2) and
-`3107_1.webp` (Ulrich E1). The four long-standing skill gaps (Beryl's three crystals and
-`31460151`) are unrelated. `npm run sync:verify` therefore fails on `every psychube has an
-icon file` until those three PNGs exist; every other check passes.
+remote HEAD, 2026-09-28), so a few assets had to be added by hand: Perchta's three skill
+cards (`31590111/21/31`) and the Euphoria portraits
+`images/arcanists/euphoria/3072_2.webp` (Shamane E2) and `3107_1.webp` (Ulrich E1). The
+four long-standing skill gaps (Beryl's three crystals and `31460151`) are unrelated.
+
+**Eight head icons were WebP data under a `.png` name** (`305903`, `311304`, `312704`,
+`313703`, `313904`, `314404`, `315901`, `315902`). A browser sniffs the bytes, so the app
+looked fine; satori trusts the extension, drew nothing and left an **empty portrait box**
+on those characters' share cards (Perchta `315901` was the visible one). They are real
+PNGs now. `scripts/sync/assets.mjs` copies whatever bytes Myssal ships, so a re-sync can
+bring the problem back: `api/_lib/og/assets.mjs` detects the format from the magic number
+(PNG/JPEG only — resvg cannot decode WebP) and `npm run sync:verify` asserts that every
+`og_index` head icon is a real PNG or JPEG, not merely present.
 
 The oldest head gap is `302902` (a Schneider skin; Schneider is excluded anyway); the
 dummy `Machine D III` is gone from the map, so its placeholder head is no longer needed.
@@ -806,9 +812,11 @@ data (skin id is the equipped skin, or `01` when skins are hidden), and
 language. The export PNG sheet hides the share button (`.team-export-sheet .btn-team-share`).
 
 **Caching.** Discord caches an OG image by URL forever, so the share URL appends
-`&v=<sha1, first 10 hex, of the canonical query>`. `/api/og` then answers with
-`Cache-Control: public, s-maxage=31536000, stale-while-revalidate=604800`: the URL only
-changes when the payload does. `/sim` uses `s-maxage=300`.
+`&v=<sha1, first 10 hex, of "<CARD_RENDER_VERSION>:<canonical query>">`. `/api/og` then
+answers with `Cache-Control: public, s-maxage=31536000, stale-while-revalidate=604800`:
+the URL only changes when the payload **or the renderer** does. Bump
+`CARD_RENDER_VERSION` in `api/_lib/sim/params.mjs` with any card-layout change, otherwise
+links that were already posted keep resolving to the old bitmap. `/sim` uses `s-maxage=300`.
 
 **The renderer.** `@vercel/og` 0.6.8 on the **Node runtime** (not Edge: the Edge bundle cap
 is 4 MB and the fonts alone are ~600 KB). 1.0.x crashes on Node 24

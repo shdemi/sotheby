@@ -119,7 +119,9 @@ export function characterCard({ char, lang, art }) {
           secondary ? h("div", { display: "flex", fontSize: "25px", color: C.muted, marginTop: "6px" }, secondary) : null,
         ]),
         h("div", { display: "flex", alignItems: "center", marginTop: "16px" }, chips),
-        infoRow(t(lang, "card.portrait", "Portrait"), portraitPills(char.portrait)),
+        // A character with no recorded portrait tiers drops the row instead of printing a
+        // lone em dash, which reads like a broken card.
+        char.portrait ? infoRow(t(lang, "card.portrait", "Portrait"), portraitPills(char.portrait)) : null,
         infoRow(
           t(lang, "card.resonance", "Resonance"),
           resonanceBlock(char.pattern, char.shape, art.shape, lang),
@@ -148,25 +150,37 @@ const TEAM_CHUBE_W = 87;
 const TEAM_CHUBE_H = 103;
 const TEAM_GAP = 14;
 
-/** Five portrait dashes, drawn inside the portrait just above its bottom edge. */
+/**
+ * Five portrait dashes, drawn inside the portrait just above its bottom edge, matching
+ * `.team-slot-portrait-bar` in styles.css: 2px tall, 1px apart, inset 12% per side.
+ *
+ * The widths are explicit pixels because satori's flex shrinking fused the five
+ * children into two long segments when each one asked for `100%`.
+ */
 function portraitDashes(portraitTier) {
   const tier = Math.max(0, Math.min(5, Number(portraitTier) || 0));
+  const inset = Math.round(TEAM_SLOT_H * 0.12);
+  const total = TEAM_SLOT_H - inset * 2;
+  const gap = 1;
+  const dashWidth = Math.round(((total - gap * 4) / 5) * 10) / 10;
   return h(
     "div",
     {
       display: "flex",
       position: "absolute",
-      left: "12%",
-      right: "12%",
+      left: `${inset}px`,
       bottom: "2px",
-      height: "3px",
+      width: `${total}px`,
+      height: "2px",
     },
     Array.from({ length: 5 }, (_, i) =>
       h("div", {
         display: "flex",
-        width: "100%",
-        height: "100%",
-        marginLeft: i === 0 ? "0" : "1px",
+        flexGrow: 0,
+        flexShrink: 0,
+        width: `${dashWidth}px`,
+        height: "2px",
+        marginLeft: i === 0 ? "0" : `${gap}px`,
         backgroundColor: i < tier ? P.dashOn : P.dashOff,
       }),
     ),
