@@ -8,7 +8,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { OUT } from "./config.mjs";
+import { OUT, ROOT } from "./config.mjs";
 import { table } from "./sources.mjs";
 import { allEquipRows, isRealPsychube } from "./derive/psychubes.mjs";
 import { readJson } from "./util.mjs";
@@ -35,6 +35,13 @@ const details = (() => {
 const future = read("future_sight.json");
 const transfer = read("global_name_transfer.json");
 const meta = read("_meta.json");
+const builds = (() => {
+  try {
+    return readJson(path.join(ROOT, "content", "builds.json")) || {};
+  } catch {
+    return {};
+  }
+})();
 
 const flat = (obj) => Object.values(obj).flat();
 const dups = (arr) => arr.filter((x, i) => arr.indexOf(x) !== i);
@@ -266,6 +273,32 @@ ok("every crafting formula produces a known item", Object.keys(itemFormulas).eve
 ok("every formula material is a known item", formulaMaterials.every((m) => itemNames.has(m.material.toLowerCase())));
 ok("formula quantities are positive", formulaMaterials.every((m) => Number(m.quantity) > 0));
 ok("every mats material is a known item", allMaterials.every((m) => itemNames.has(m.material.toLowerCase())));
+
+// ---- og index ---------------------------------------------------------------
+const ogIndex = read("og_index.json");
+const ogChars = Object.entries(ogIndex.characters);
+const ogChubes = Object.entries(ogIndex.psychubes);
+ok("og_index covers the roster", ogChars.length === rarities.length, `${ogChars.length} vs ${rarities.length}`);
+ok("og_index keys are canonical roster names", ogChars.every(([name]) => rarities.includes(name)), ogChars.filter(([n]) => !rarities.includes(n)).map(([n]) => n).join(","));
+ok("og_index covers every psychube", ogChubes.length === ids.length, `${ogChubes.length} vs ${ids.length}`);
+ok(
+  "og_index keys are `<rarity>:<gameId>`",
+  ogChubes.every(([key, row]) => /^[56]:\d{3,}$/.test(key) && key === `${row.rarity}:${key.split(":")[1]}`),
+  ogChubes.filter(([key, row]) => key !== `${row.rarity}:${key.split(":")[1]}`).map(([k]) => k).join(","),
+);
+ok("og_index characters carry a rarity and an afflatus", ogChars.every(([, c]) => c.rarity >= 2 && c.rarity <= 6 && c.afflatus));
+ok("og_index characters carry an en + zh name", ogChars.every(([, c]) => c.name && c.nameZh));
+ok("og_index head icons follow the skin id", ogChars.every(([, c]) => /^images\/headicon_small\/\d+\.png$/.test(c.head)));
+ok(
+  "og_index build psychubes resolve to a known key",
+  ogChars.every(([, c]) => c.psychubes.every((key) => ogIndex.psychubes[key])),
+  ogChars.flatMap(([n, c]) => c.psychubes.filter((key) => !ogIndex.psychubes[key]).map((key) => `${n}:${key}`)).join(","),
+);
+ok("og_index pattern icons only exist with a shape", ogChars.every(([, c]) => (c.patternIcon ? Boolean(c.shape && c.pattern) : true)));
+ok(
+  "og_index characters with a build have a pattern",
+  ogChars.filter(([name]) => builds[name]).every(([name, c]) => !builds[name].pattern || c.pattern === builds[name].pattern),
+);
 
 // ---- misc -------------------------------------------------------------------
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));

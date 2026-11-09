@@ -24,6 +24,7 @@ import { itemsData, itemFormulas } from "./derive/items.mjs";
 import { arcanistMap } from "./derive/arcanistMap.mjs";
 import { collabCharacters, excludeCharacters } from "./derive/curation.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
+import { ogIndex } from "./derive/ogIndex.mjs";
 
 const argOut = (() => {
   const i = process.argv.indexOf("--out");
@@ -44,6 +45,15 @@ const cnMeta = meta("cn");
 
 const items = itemsData();
 
+// The expensive derivations run once so `og_index.json` can reuse them.
+const arcanists = arcanistMap();
+const profiles = characterProfiles();
+const rarityBuckets = charactersByRarity();
+const afflatusBuckets = charactersByAfflatus();
+const resoShape = characterResoShape();
+const chubeDetails = psychubesData();
+const transfer = globalNameTransfer();
+
 const files = {
   "_meta.json": {
     globalVersion: globalMeta.version || null,
@@ -55,13 +65,13 @@ const files = {
       "github.com/Myssal/Reverse-1999-CN-Asset (images only)",
     ],
   },
-  "global_name_transfer.json": globalNameTransfer(),
+  "global_name_transfer.json": transfer,
   "name_map.json": { character: nameMap().character, skin: {} },
-  "ArcanistMap.json": arcanistMap(),
-  "characters_by_rarity.json": charactersByRarity(),
-  "characters_by_afflatus.json": charactersByAfflatus(),
-  "character_profiles.json": characterProfiles(),
-  "character_reso_shape.json": characterResoShape(),
+  "ArcanistMap.json": arcanists,
+  "characters_by_rarity.json": rarityBuckets,
+  "characters_by_afflatus.json": afflatusBuckets,
+  "character_profiles.json": profiles,
+  "character_reso_shape.json": resoShape,
   "shape_patterns.json": shapePatterns(),
   "character_euphorias.json": characterEuphorias(),
   "character_skills.json": characterSkills(),
@@ -72,8 +82,17 @@ const files = {
   "collab_character.json": collabCharacters(),
   "psychube_id.json": psychubeId(),
   "psychube_key_map.json": psychubeKeyMap(),
-  "psychubes_data.json": psychubesData(),
+  "psychubes_data.json": chubeDetails,
   "future_sight.json": futureSight(),
+  "og_index.json": ogIndex({
+    arcanists,
+    profiles,
+    rarity: rarityBuckets,
+    afflatus: afflatusBuckets,
+    resoShape,
+    psychubesData: chubeDetails,
+    transfer,
+  }),
 };
 
 for (const [name, data] of Object.entries(files)) {

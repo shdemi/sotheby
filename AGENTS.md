@@ -9,22 +9,23 @@ Owner language: Vietnamese. Codebase language: English. UI locales: `en`, `cn`, 
 
 ## 0. What this project is
 
-A static resource hub for the game *Reverse: 1999*, in the shape of **uma.moe**:
-a landing page that links to independent branches.
+A static resource hub for the game *Reverse: 1999*: **one page with 23 modals**
+(`index.html` + `app.js`, ~13,960 lines) plus three Vercel functions: promo codes (§12),
+share cards and share pages (§13).
 
-Target branches:
+| Feature | How it ships today |
+|---|---|
+| Suitcase (mainboard + settings) | the page itself |
+| Team Building | modal |
+| Rotations | modal |
+| InfoBook | modal |
+| Stages | data generated in `data/stages/`, UI missing |
+| Timeline | no data yet |
+| Share card / share page | `/api/og` PNG + `/sim` shell (§13) |
 
-| Branch | Route (planned) | Status |
-|---|---|---|
-| Suitcase (mainboard + settings) | `#/suitcase` | exists today, as the single page |
-| Team Building | `#/teams` | exists today, as a modal |
-| Rotations | `#/rotations` | exists today, as a modal |
-| InfoBook | `#/infobook` | exists today, as a modal |
-| Stages | `#/stages` | data generated, UI missing |
-| Timeline | `#/timeline` | no data yet |
-
-Today the whole site is **one page with 23 modals** (`index.html` + `app.js`, ~13,960 lines).
-The rebuild splits that into a hub + routes. See §7 (phases).
+The multi-route rebuild (hub + `#/suitcase`, `#/teams`, …) was **cancelled on 2026-11-09**.
+The single page is the shipped design: there is no `src/` layer, no `styles/` split and no
+data manifest. Do not start that refactor unless the owner asks for it again.
 
 ---
 
@@ -81,7 +82,7 @@ githubfetch/
 Version stamps (from `data/meta.json`):
 
 - global: `111.0.1050`
-- CN: `113.0.1391`
+- CN: `113.0.1421`
 
 **Rule:** numbers/tables come from St-Pavlov (global and/or CN). Text comes from
 **global's** `language_*.json` even for CN-only content, because the CN repo has no text.
@@ -138,7 +139,7 @@ Keep these maps in `scripts/sync/maps/`.
 
 ### Class C — human-authored content (NOT derivable)
 
-Owned by the project, not the game. Lives in `content/` after the rebuild.
+Owned by the project, not the game. Lives in `content/` (moved out of `data/` in Phase 2).
 
 | File | What it is |
 |---|---|
@@ -278,42 +279,34 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
 
 ---
 
-## 6. Target repo layout
+## 6. Repo layout
 
 ```
 /
-  index.html                 shell (header/footer + route outlet)
+  index.html                 the app shell (header/footer + all 23 modals)
+  app.js                     the whole client app (~13,960 lines)
+  styles.css                 all styling (~283 KB, one file)
+  rotation-export.js         rotation export helper
+  serve.py                   dev server (HTTP, not file://)
   AGENTS.md                  this file
-  styles/
-    base.css                 tokens, reset, header, footer, background
-    hub.css  suitcase.css  teams.css  rotations.css
-    infobook.css  stages.css  timeline.css
-  src/
-    main.js                  bootstrap
-    router.js                hash router (#/suitcase, #/teams, …)
-    core/
-      store.js               pub/sub + localStorage helpers (r1999_*)
-      i18n.js                t(), language switching without reload
-      dom.js                 el(), qs(), modal, tooltip primitives
-      format.js
-    data/
-      manifest.js            SINGLE list of every dataset (see below)
-      loader.js              fetch + cache + lazy + explicit errors
-      normalize/             characters.js psychubes.js items.js guide.js stages.js
-    routes/
-      hub/ suitcase/ teams/ rotations/ infobook/ stages/ timeline/
   data/                      GENERATED  (committed, never hand-edited)
     _meta.json               { globalVersion, cnVersion, generatedAt, sources[] }
     global_name_transfer.json  name_map.json
     characters_by_rarity.json  characters_by_afflatus.json
     psychube_id.json  psychube_key_map.json  future_sight.json
     characters_mats_required.json  items.json  item_formulas.json
-    psychubes_data.json      (legacy detail; re-derive in Phase 2)
-    promo_codes.json         snapshot of the Fandom page (§12)
+    psychubes_data.json      detail rows; regenerate with `npm run sync`
+    character_skills.json  character_euphorias.json  skill_glossary.json
+    ArcanistMap.json  promo_codes.json  og_index.json  stages/*.json
   api/                       Vercel Node functions
     codes.js                 GET /api/codes + edge cache (§12)
+    og.js                    GET /api/og PNG share card (§13)
+    sim.js                   GET /sim share page shell (§13)
     _lib/wiki.mjs            the one outbound request
     _lib/parse-codes.mjs     pure wikitext parser (unit-tested)
+    _lib/og/*.mjs            card renderer (labels, assets, theme, cards, render, resolve)
+    _lib/sim/params.mjs      share payload, title/description, cache key (§13)
+  assets/og/*.ttf            TTF fonts satori can load (§13, generated once)
   vercel.json .vercelignore  function config + upload exclusions
   content/                   HAND-AUTHORED (class C)
     builds.json rotations.json teams.json progressions.json
@@ -324,27 +317,32 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
       config.mjs  util.mjs  sources.mjs
       derive/names.mjs  derive/characters.mjs
       derive/psychubes.mjs  derive/futureSight.mjs
+      derive/ogIndex.mjs     the compact lookup the share cards read
       maps/*.json            hand-written mappings (class B)
       legacy/                frozen migration inputs (do not regenerate)
       tools/                 one-time migration scripts
       index.mjs              run the whole pipeline
       verify.mjs             assert the generated invariants
+    og/
+      fetch-fonts.py         rebuild assets/og/*.ttf (fonttools)
+      render.mjs             render sample cards to .tmp-og/*.png
     build_stages_data.mjs    (existing, fold into sync/)
-  editor/                    JSON editor (keep working; update to new paths)
+  editor/                    JSON editor (keep working; reads/writes `content/`)
   images/                    asset cache (generated from Myssal)
 ```
 
-**`src/data/manifest.js` is the single place to answer "what is this file and who uses it".**
-Each entry declares: `file`, `shape`, `scope` (`core` | `lazy`), `routes[]`, `normalize`,
-and `source` (which repo/table). Routes declare needs; the loader loads only those.
-Nothing else may call `fetch()` on `data/`.
+There is **no** `src/` layer and no data manifest: `app.js` owns its own `fetch()` calls and
+cache for `data/*.json`, and `editor/files.js` (`dirFor()`) is what maps a file to
+`data/` or `content/` for the editor.
 
 ---
 
 ## 7. Phases
 
-Ordered. Each phase must leave the site working (old code stays until Phase 6).
-Do work on a branch, e.g. `rebuild-core`; keep `main` deployable.
+Ordered. Each phase must leave the site working. Do work on a branch and keep `main`
+deployable. Phase numbers are **not** renumbered: the old Phase 4 (frontend shell) and
+Phase 5 (port features route by route) were cancelled on 2026-11-09 with the multi-route
+rebuild, so the list jumps from 3 to 6.
 
 ### Phase 0 — Freeze & document (done)
 - Deleted the outdated `README.md`.
@@ -367,16 +365,6 @@ Do work on a branch, e.g. `rebuild-core`; keep `main` deployable.
 ### Phase 3 — Asset pipeline
 - Download only the assets we need from the Myssal repo, keyed by game id, into `images/`.
 - Delete `ignore/testCodeChube/compose.py` from the workflow.
-
-### Phase 4 — Frontend shell
-- `index.html` = hub with 6 cards + shared header (language switcher, credits).
-- `src/router.js` hash router; each route is a placeholder first.
-- Verify deep links, back button, and F5 on every route.
-
-### Phase 5 — Port existing features, route by route
-- Suitcase first (board, edit modal, options, styling, tiers, roster/chube managers,
-  JSON import/export, PNG export), then Teams, Rotations, InfoBook.
-- Move logic out of `app.js`; keep the old file intact until every branch is ported.
 
 ### Phase 6 — Stages
 - Data exists in `data/stages/`. `events.json` is ~18 MB and **must not** be one fetch:
@@ -435,6 +423,10 @@ npm run sync:verify   # asserts the invariants (rarity, psychubes, future sight,
 npm run sync:assets   # fills the images/ cache from Myssal (items, psychubes, heads, skills)
 npm run sync:prune    # reports unreachable art under images/ (--delete to remove)
 npm run codes:snapshot  # refreshes data/promo_codes.json from the Fandom wiki
+
+# Share cards (see §13)
+python scripts/og/fetch-fonts.py   # rebuild assets/og/*.ttf (needs fonttools)
+node scripts/og/render.mjs         # render sample PNGs to .tmp-og/ (no server needed)
 
 # Stages data (existing)
 node scripts/build_stages_data.mjs
@@ -669,15 +661,17 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 
 ---
 
-## 11. Legacy being replaced
+## 11. Legacy: what stays
 
-- `app.js` (repo root, ~13,960 lines): the current single-page app with all 23 modals.
-  Keep it working until Phase 6, then remove.
-- `styles.css` (~283 KB): split into `styles/base.css` + per-route files.
+- `app.js` (repo root, ~13,960 lines): the shipped single-page app with all 23 modals.
+  It is **not** being replaced — the multi-route rebuild was cancelled 2026-11-09, so
+  changes go into this file rather than a new `src/` tree.
+- `styles.css` (~283 KB): the shipped stylesheet. It stays one file; do not split it into
+  `styles/base.css` + per-route files unless the owner approves a new plan.
 - Root `README.md`: deleted 2026-11-06 (out of date: claimed "14 JSON files", documented
   only 14 of the 30 shipped files).
-- `editor/`: keep. It reads/writes data over HTTP and exports a ZIP; after the rebuild it
-  must point at `content/` for hand-authored files and stop offering generated files.
+- `editor/`: keep. It reads/writes data over HTTP and exports a ZIP; it points at
+  `content/` for hand-authored files and does not offer generated files.
 
 ---
 
@@ -731,3 +725,115 @@ button (`guideCopyText`), its rewards as item stickers (`renderItemStickerHtml`)
 `editor/_test/fixtures/promo-codes.wikitext`; it never touches the network. It covers
 section filtering, duplicate handling, reward parsing, every expiry shape and the
 snapshot shape.
+
+---
+
+## 13. Share images (`/api/og`) and share pages (`/sim`)
+
+A team build or a character build can be shared as a link whose preview is a generated
+PNG card. Two functions do the work:
+
+| Route | What it returns |
+|---|---|
+| `GET /api/og?…` | 1200x630 PNG (character card, team card, or the brand card) |
+| `GET /sim?…` | the app shell with per-link `og:*` tags + `window.__SIM__` |
+
+Link scheme (both routes take the same parameters):
+
+```
+/sim?team=Lucy,Jessica,6,Windsong&chubes=6:1527,6:1504,6:1545,6:1539&name=FUA&lang=en
+/sim?character=Lucy&lang=vi
+```
+
+- `team` is at most four names; `character` is used when `team` is absent.
+- `chubes` is positional: the *n*-th psychube belongs to the *n*-th team member.
+- Names resolve case-insensitively against `data/og_index.json`; a name that does not
+  resolve is **dropped, and its chube with it**, so stale links still render. Filtering
+  happens before the four-member cut, so a junk token cannot consume a slot.
+- `lang` is `en` / `cn` / `vi` (anything else falls back to `en`).
+
+**Why `/sim` is server-rendered.** Discord, X and Reddit read the HTML of the URL; they do
+not run JavaScript. `api/sim.js` therefore loads `index.html` from disk and injects
+`<title>`, `og:*` / `twitter:*`, `<link rel="canonical">`, and a
+`<script>window.__SIM__ = {…}</script>` before `app.js`. `index.html` keeps its base tags
+between `<!-- og:base -->` and `<!-- /og:base -->`; the function **replaces that block**,
+so a crawler never sees two `og:title` / description tags.
+
+**The client view.** `app.js` `renderSimView()` draws a fixed overlay (`#sim-view`,
+`body.sim-mode`) over the app, so one page serves both the crawler and the visitor. It
+reads `window.__SIM__` when present and otherwise parses `location.search` itself
+(`readSimParams()`), which is what makes `python serve.py` work without Vercel: `serve.py`
+maps `/sim` onto `index.html`. The overlay has a language switch (persisted, URL updated
+via `replaceState`) and a copy-link button.
+
+**Caching.** Discord caches an OG image by URL forever, so the share URL appends
+`&v=<sha1, first 10 hex, of the canonical query>`. `/api/og` then answers with
+`Cache-Control: public, s-maxage=31536000, stale-while-revalidate=604800`: the URL only
+changes when the payload does. `/sim` uses `s-maxage=300`.
+
+**The renderer.** `@vercel/og` 0.6.8 on the **Node runtime** (not Edge: the Edge bundle cap
+is 4 MB and the fonts alone are ~600 KB). 1.0.x crashes on Node 24
+(`Dynamic require of "fs" is not supported`), so the version is pinned.
+
+- `api/_lib/og/render.mjs` `renderOg()` — param resolution, art loading, `ImageResponse`.
+- `api/_lib/og/cards.mjs` — the three card trees; `theme.mjs` — palette, rarity colours,
+  `h()` / `img()` / `frame()`; `labels.mjs` — locale lookup from `content/i18n.json`.
+- Satori is **flexbox only**: no grid, no `box-shadow`, and every element with more than
+  one child needs `display: flex`. Do not print `★` / `✦`: satori treats the codepoint as
+  a missing glyph and tries a **dynamic Google-font download that 400s**. Rarity is drawn
+  as gold pips instead.
+- Art is fetched over HTTP from the deployment origin (`x-forwarded-host`), falling back to
+  reading `images/**` from disk, then cached per instance as data URIs. That keeps the
+  function bundle free of the asset cache.
+
+**Fonts.** Satori only accepts TTF/OTF/WOFF (WOFF2 throws
+`Unsupported OpenType signature wOF2`), so `assets/og/` ships:
+
+| File | Covers |
+|---|---|
+| `be-vietnam-pro-400.ttf` / `-700.ttf` | Latin + full Vietnamese diacritics |
+| `noto-sans-sc-400.ttf` / `-700.ttf` | **subset**: the Chinese glyphs a card can print |
+
+Regenerate with `python scripts/og/fetch-fonts.py` (needs `fonttools`) after the roster,
+the psychube names or the `i18n.json` card labels change — the subset is built from
+`ArcanistMap.json`, `psychube_id.json` and the CN strings of `content/i18n.json`
+(`og.*`, `card.portrait`, `card.resonance`, `builds.psychubes`, `afflatus.*`, `pattern.*`).
+A missing glyph renders as tofu, not as an error.
+
+**Data.** `data/og_index.json` (~78 KB) is generated by `scripts/sync/derive/ogIndex.mjs`
+and joins, once, what a card prints: `ArcanistMap` (id + default-skin head icon),
+`characters_by_rarity` / `characters_by_afflatus` (buckets), `character_profiles`
+(`dmgType`), `character_reso_shape` (board shape), `content/builds.json` (pattern,
+portrait, recommended psychubes) and `psychubes_data` (name + icon). Characters are keyed
+by **canonical roster name** — `ArcanistMap` ships the game's own label (`Six`,
+`Thirty-seven`), which is resolved through the `character_profiles` id. `sync:verify`
+asserts the roster/psychube counts, the head paths, the pattern icons and that every
+recommended chube resolves to a key.
+
+**Local development.**
+
+```powershell
+python serve.py                       # /sim works through index.html
+node scripts/og/render.mjs            # writes .tmp-og/*.png, no server needed
+node scripts/og/render.mjs team cn    # one case: <character|team|default> <lang>
+```
+
+`scripts/og/render.mjs` reads art from disk, so it works offline; it is the fastest way to
+see a layout change.
+
+**Deployment.** `vercel.json`:
+
+- `rewrites`: `/sim` → `/api/sim`.
+- `functions["api/og.js"].includeFiles`: `data/og_index.json`, `content/i18n.json`,
+  `assets/og/**`.
+- `functions["api/sim.js"].includeFiles`: the same plus `index.html`.
+- `images/**` is **not** bundled; the function fetches art over HTTP.
+
+Paths are anchored to the module (`import.meta.url`), not to `process.cwd()`, so the same
+code resolves `/var/task/...` in the bundle and the repo checkout in tests.
+
+**Tests.** `editor/_test/og.test.mjs` (wired into `npm test`) covers `parseList`, the
+name/psychube resolvers (EN, CN, case-insensitive, unknown), `normalizeSim` in all three
+modes, chube alignment, truncation, name sanitising, the canonical image query, the
+content hash, the title/description strings and the label fallbacks. It never renders a
+PNG; satori's WASM is not a unit-test dependency.

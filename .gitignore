@@ -26,3 +26,7 @@ tmp-*.py
 /*.png
 check-*.png
 editor/_test/*.png
+
+# Local render/font scratch spaces (scripts/og/*)
+.tmp-fonts/
+.tmp-og/

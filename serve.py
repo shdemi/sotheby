@@ -35,6 +35,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # Strip the query string so a cache-busting ?v= still resolves to a file.
         if "?" in self.path:
             self.path = self.path.split("?")[0]
+        # `/sim` is a Vercel function in production (see vercel.json). Locally there
+        # is no Node server, so serve the shell and let app.js read the query
+        # string itself.
+        if self.path.rstrip("/") == "/sim":
+            self.path = "/index.html"
         return super().send_head()
 
     def log_message(self, fmt: str, *args) -> None:
@@ -63,6 +68,7 @@ def main() -> int:
         print(f"Serving {root}")
         print(f"  app    http://127.0.0.1:{port}/index.html")
         print(f"  editor http://127.0.0.1:{port}/editor/index.html")
+        print(f"  share  http://127.0.0.1:{port}/sim?team=Lucy,Jessica,6,Windsong")
         print("Text assets are served no-store, so edits show up on a plain reload.")
         try:
             httpd.serve_forever()

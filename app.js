@@ -14390,5 +14390,306 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+/* ---------------- /sim share page ---------------- */
+
+const SIM_MAX_MEMBERS = 4;
+
+/**
+ * True when this load is a share link. `api/sim.js` injects `window.__SIM__`;
+ * locally `serve.py` serves `index.html` for `/sim` and the query string is the
+ * only signal.
+ */
+function isSimPage() {
+  if (window.__SIM__ && typeof window.__SIM__ === "object") return true;
+  const params = new URLSearchParams(window.location.search);
+  return params.has("team") || params.has("character");
+}
+
+/** One team slot from a link token; unknown names return null and are dropped. */
+function simMemberFromToken(token, chubeToken) {
+  const canonical = resolveCharacterName(token);
+  if (!canonical || !characterDb[canonical]) return null;
+  const key = chubeToken && psychubeDb[chubeToken] ? chubeToken : psychubeKeyFromName(chubeToken);
+  const row = key ? psychubeDb[key] : null;
+  return {
+    name: characterDisplayEn[canonical] || canonical,
+    nameZh: characterDisplayCn[canonical] || "",
+    rarity: getCharacterRarity(canonical),
+    afflatus: getCharacterAfflatus(canonical) || "",
+    head: characterDb[canonical],
+    psychube: key || "",
+    psychubeName: row ? row.name : "",
+    psychubeNameZh: row ? row.nameCn : "",
+    psychubeIcon: key ? psychubeIconUrl(key) : "",
+  };
+}
+
+/** A character card from a link token, using the local build/roster data. */
+function simCharacterFromToken(token) {
+  const canonical = resolveCharacterName(token);
+  if (!canonical || !characterDb[canonical]) return null;
+  const build = getBuild(canonical) || {};
+  const profile = characterProfilesData[canonical] || {};
+  const pattern = build.pattern || "";
+  const shape = characterResoShape[canonical] || "";
+  return {
+    name: characterDisplayEn[canonical] || canonical,
+    nameZh: characterDisplayCn[canonical] || "",
+    rarity: getCharacterRarity(canonical),
+    afflatus: getCharacterAfflatus(canonical) || "",
+    dmgType: profile.dmgType || "",
+    dmgTypeZh: profile.dmgTypeZh || "",
+    head: characterDb[canonical],
+    pattern,
+    shape,
+    patternIcon: shape && pattern ? `images/shape_pattern/${shape}/${pattern}.png` : "",
+    portrait: build.portrait || "",
+    psychubes: (Array.isArray(build.psychubes) ? build.psychubes : [])
+      .map(psychubeKeyFromName)
+      .filter(Boolean),
+  };
+}
+
+/**
+ * The share payload, normalised to the shape `api/_lib/sim/params.mjs` emits so
+ * the client renders the same view with or without the serverless function.
+ */
+function readSimParams() {
+  const injected = window.__SIM__;
+  if (injected && typeof injected === "object") {
+    return {
+      lang: SUPPORTED_LANGS.includes(injected.lang) ? injected.lang : currentLang,
+      name: String(injected.name || ""),
+      mode: injected.mode === "team" || injected.mode === "character" ? injected.mode : "default",
+      members: Array.isArray(injected.members) ? injected.members : [],
+      character: injected.character && typeof injected.character === "object" ? injected.character : null,
+    };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const chubeTokens = String(params.get("chubes") || "")
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const members = String(params.get("team") || "")
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((token, i) => simMemberFromToken(token, chubeTokens[i]))
+    .filter(Boolean)
+    .slice(0, SIM_MAX_MEMBERS);
+  const character = members.length ? null : simCharacterFromToken(params.get("character"));
+
+  return {
+    lang: SUPPORTED_LANGS.includes(params.get("lang")) ? params.get("lang") : currentLang,
+    name: String(params.get("name") || "").replace(/[\u0000-\u001f]/g, "").trim().slice(0, 40),
+    mode: members.length ? "team" : character ? "character" : "default",
+    members,
+    character,
+  };
+}
+
+/** Name in the active language; the payload carries both spellings. */
+function simDisplayName(item) {
+  if (!item) return "";
+  if (currentLang === "cn") return item.nameZh || item.name || "";
+  return item.name || item.nameZh || "";
+}
+
+function simAfflatusChip(afflatus) {
+  if (!afflatus) return "";
+  return `<span class="sim-chip"><img src="images/afflatus_icon/${escapeHtml(afflatus)}.png" alt="" loading="lazy" decoding="async" />${escapeHtml(displayAfflatus(afflatus))}</span>`;
+}
+
+function simDmgChip(char) {
+  if (!char.dmgType) return "";
+  const label = currentLang === "cn" ? char.dmgTypeZh || char.dmgType : char.dmgType;
+  const icon = char.dmgType === "Reality" ? "images/dmg_type_icon/reality_dmg.png" : "images/dmg_type_icon/mental_dmg.png";
+  return `<span class="sim-chip"><img src="${escapeHtml(icon)}" alt="" loading="lazy" decoding="async" />${escapeHtml(label)}</span>`;
+}
+
+function simMemberHtml(member) {
+  const rarity = Number(member.rarity) || 0;
+  const accent = RARITY_COLORS[rarity] || "var(--accent-gold)";
+  const chubeName = member.psychube
+    ? (currentLang === "cn" && member.psychubeNameZh ? member.psychubeNameZh : member.psychubeName || member.psychube)
+    : "";
+  const chubeIcon = member.psychubeIcon || (member.psychube ? psychubeIconUrl(member.psychube) : "");
+  const name = simDisplayName(member);
+
+  return `
+    <article class="sim-member" style="--sim-rarity:${accent}">
+      <div class="sim-member-frame">
+        <img src="${escapeHtml(member.head || "")}" alt="${escapeHtml(name)}" loading="lazy" decoding="async" />
+      </div>
+      <h2 class="sim-member-name">${escapeHtml(name)}</h2>
+      ${member.afflatus ? `<p class="sim-member-meta">${simAfflatusChip(member.afflatus)}</p>` : ""}
+      ${chubeName
+        ? `<div class="sim-member-chube">${chubeIcon ? `<img src="${escapeHtml(chubeIcon)}" alt="" loading="lazy" decoding="async" />` : ""}<span>${escapeHtml(chubeName)}</span></div>`
+        : `<div class="sim-member-chube is-empty">—</div>`}
+    </article>`;
+}
+
+function simPortraitPills(portrait) {
+  const values = String(portrait || "")
+    .split("/")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  if (!values.length) return `<span class="sim-muted">—</span>`;
+  return `<div class="sim-pills">${values.map((value) => `<span class="sim-pill">${escapeHtml(value)}</span>`).join("")}</div>`;
+}
+
+function simResonanceHtml(char) {
+  if (!char.pattern) return `<span class="sim-muted">—</span>`;
+  return `<div class="sim-reso">
+      ${char.patternIcon ? `<img class="sim-pattern-icon" src="${escapeHtml(char.patternIcon)}" alt="" loading="lazy" decoding="async" />` : ""}
+      <div class="sim-reso-text">
+        <strong>${escapeHtml(patternLabel(char.pattern))}</strong>
+        ${char.shape ? `<span>${escapeHtml(char.shape)}</span>` : ""}
+      </div>
+    </div>`;
+}
+
+function simChubesHtml(keys) {
+  if (!keys.length) return `<span class="sim-muted">—</span>`;
+  return `<div class="sim-chubes">${keys
+    .map((key) => {
+      const icon = psychubeIconUrl(key);
+      return `<div class="sim-chube">${icon ? `<img src="${escapeHtml(icon)}" alt="" loading="lazy" decoding="async" />` : ""}<span>${escapeHtml(psychubeName(key))}</span></div>`;
+    })
+    .join("")}</div>`;
+}
+
+/** Draws the share page over the app; the app itself keeps running underneath. */
+function renderSimView(sim) {
+  const previous = document.getElementById("sim-view");
+  if (previous) previous.remove();
+
+  const teamTitle = sim.name || t("og.teamBuild");
+  const charTitle = sim.mode === "character" ? simDisplayName(sim.character) : "";
+  const title = sim.mode === "team" ? teamTitle : sim.mode === "character" ? charTitle : "Sotheby's Mansion";
+  const kicker =
+    sim.mode === "team"
+      ? `Reverse: 1999 · ${t("og.teamBuild")}`
+      : sim.mode === "character"
+        ? `Reverse: 1999 · ${t("sim.character")}`
+        : "Reverse: 1999";
+
+  let body = "";
+  if (sim.mode === "team") {
+    body = `
+      <section class="sim-hero">
+        <p class="sim-kicker">${escapeHtml(kicker)}</p>
+        <h1 class="sim-title">${escapeHtml(teamTitle)}</h1>
+        <p class="sim-sub">${escapeHtml(t("og.members", { n: sim.members.length }))}</p>
+      </section>
+      <div class="sim-team">${sim.members.map(simMemberHtml).join("")}</div>`;
+  } else if (sim.mode === "character") {
+    const char = sim.character;
+    const rarity = Number(char.rarity) || 0;
+    const accent = RARITY_COLORS[rarity] || "var(--accent-gold)";
+    body = `
+      <section class="sim-hero sim-hero-char">
+        <div class="sim-portrait" style="--sim-rarity:${accent}">
+          <img src="${escapeHtml(char.head || "")}" alt="${escapeHtml(charTitle)}" loading="lazy" decoding="async" />
+        </div>
+        <div class="sim-hero-text">
+          <p class="sim-kicker">${escapeHtml(kicker)}</p>
+          <h1 class="sim-title">${escapeHtml(charTitle)}${rarity ? `<span class="sim-stars" style="color:${accent}">${"✦".repeat(rarity)}</span>` : ""}</h1>
+          ${currentLang === "cn" && char.name ? `<p class="sim-sub">${escapeHtml(char.name)}</p>` : char.nameZh ? `<p class="sim-sub">${escapeHtml(char.nameZh)}</p>` : ""}
+          <div class="sim-chips">${simAfflatusChip(char.afflatus)}${simDmgChip(char)}</div>
+        </div>
+      </section>
+      <section class="sim-build">
+        <div class="sim-row"><span class="sim-row-label">${escapeHtml(t("card.portrait"))}</span>${simPortraitPills(char.portrait)}</div>
+        <div class="sim-row"><span class="sim-row-label">${escapeHtml(t("card.resonance"))}</span>${simResonanceHtml(char)}</div>
+        <div class="sim-row"><span class="sim-row-label">${escapeHtml(t("builds.psychubes"))}</span>${simChubesHtml(char.psychubes || [])}</div>
+      </section>`;
+  } else {
+    body = `
+      <section class="sim-hero sim-hero-default">
+        <p class="sim-kicker">${escapeHtml(kicker)}</p>
+        <h1 class="sim-title">Sotheby's Mansion</h1>
+        <p class="sim-sub">${escapeHtml(t("sim.noShare"))}</p>
+      </section>`;
+  }
+
+  const view = document.createElement("div");
+  view.id = "sim-view";
+  view.className = "sim-view no-export";
+  view.innerHTML = `
+    <div class="sim-shell">
+      <header class="sim-head">
+        <a class="sim-brand" href="./">
+          <img src="images/sotheby_mansion.webp" alt="" />
+          <span>Sotheby's Mansion</span>
+        </a>
+        <div class="sim-actions">
+          <div class="sim-langs" role="group" aria-label="Language">
+            ${SUPPORTED_LANGS.map(
+              (lang) =>
+                `<button type="button" class="sim-lang${lang === currentLang ? " is-active" : ""}" data-sim-lang="${lang}">${lang === "cn" ? "中文" : lang.toUpperCase()}</button>`,
+            ).join("")}
+          </div>
+          <button type="button" class="sim-copy" data-sim-copy>${escapeHtml(t("sim.copy"))}</button>
+          <a class="sim-open" href="./">${escapeHtml(t("sim.open"))}</a>
+        </div>
+      </header>
+      ${body}
+      <footer class="sim-foot">
+        <span>sothebymansion.com</span>
+        <span>${escapeHtml(kicker)}</span>
+      </footer>
+    </div>`;
+
+  document.body.appendChild(view);
+  document.body.classList.add("sim-mode");
+
+  view.querySelectorAll("[data-sim-lang]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const next = button.getAttribute("data-sim-lang");
+      if (!next || next === currentLang) return;
+      await setLanguage(next);
+      // Keep the address bar in step so "Copy link" shares the language on screen.
+      const url = new URL(window.location.href);
+      url.searchParams.set("lang", next);
+      window.history.replaceState(null, "", url.toString());
+      renderSimView(sim);
+    });
+  });
+
+  const copyButton = view.querySelector("[data-sim-copy]");
+  if (copyButton) {
+    copyButton.addEventListener("click", async () => {
+      const done = () => {
+        copyButton.textContent = t("sim.copied");
+        copyButton.classList.add("is-done");
+        window.setTimeout(() => {
+          copyButton.textContent = t("sim.copy");
+          copyButton.classList.remove("is-done");
+        }, 1800);
+      };
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        done();
+      } catch (e) {
+        // Clipboard needs a secure context; select the URL instead of failing silently.
+        window.prompt(t("sim.copy"), window.location.href);
+      }
+    });
+  }
+
+  document.title =
+    sim.mode === "default" ? "Sotheby's Mansion" : `${title} · Sotheby's Mansion`;
+}
+
 // Start
-initApp();
+initApp().then(() => {
+  if (!isSimPage()) return;
+  const sim = readSimParams();
+  if (sim.lang && sim.lang !== currentLang) {
+    setLanguage(sim.lang).then(() => renderSimView(sim));
+    return;
+  }
+  renderSimView(sim);
+});

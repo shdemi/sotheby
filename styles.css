@@ -12545,3 +12545,472 @@ body.guide-rail-resizing * {
     margin-left: 0;
   }
 }
+
+/* ---------------- /sim share page ---------------- */
+/*
+  The share link renders a fixed overlay over the app so a visitor sees only the
+  build they were sent, while the page itself stays the normal single-page app.
+  app.js adds `.sim-mode` to <body> and builds `#sim-view` (see renderSimView).
+*/
+
+body.sim-mode {
+  overflow: hidden;
+}
+
+.sim-view {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background:
+    radial-gradient(1100px 560px at 12% -12%, rgba(246, 195, 74, 0.16), transparent 62%),
+    radial-gradient(900px 520px at 100% 0%, rgba(217, 130, 36, 0.12), transparent 58%),
+    #07080b;
+  color: var(--text-primary);
+  font-family: var(--main-font-family);
+  animation: sim-fade 200ms ease-out;
+}
+
+@keyframes sim-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sim-shell {
+  width: min(1060px, 100%);
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 26px 26px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* Header -------------------------------------------------------------- */
+
+.sim-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(246, 195, 74, 0.22);
+}
+
+.sim-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sim-brand img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.sim-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sim-langs {
+  display: inline-flex;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sim-lang {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.sim-lang:hover { color: var(--text-primary); }
+
+.sim-lang.is-active {
+  background: rgba(246, 195, 74, 0.9);
+  color: #14100a;
+  font-weight: 700;
+}
+
+.sim-copy,
+.sim-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(246, 195, 74, 0.45);
+  background: rgba(246, 195, 74, 0.08);
+  color: var(--accent-gold);
+  font: inherit;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.sim-copy:hover,
+.sim-open:hover {
+  background: rgba(246, 195, 74, 0.2);
+  border-color: var(--accent-gold);
+}
+
+.sim-copy.is-done {
+  background: rgba(246, 195, 74, 0.9);
+  border-color: var(--accent-gold);
+  color: #14100a;
+}
+
+/* Hero ---------------------------------------------------------------- */
+
+.sim-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sim-kicker {
+  margin: 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tier-unowned, #9a9a9a);
+}
+
+.sim-title {
+  margin: 0;
+  font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.sim-sub {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.sim-hero-char {
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+}
+
+.sim-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sim-portrait {
+  flex: 0 0 auto;
+  width: 168px;
+  height: 168px;
+  border-radius: 14px;
+  border: 3px solid var(--sim-rarity, var(--accent-gold));
+  background: #0c0e12;
+  overflow: hidden;
+}
+
+.sim-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sim-stars {
+  margin-left: 12px;
+  font-size: 0.6em;
+  letter-spacing: 0.14em;
+  vertical-align: middle;
+}
+
+.sim-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.sim-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+.sim-chip img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+/* Team ---------------------------------------------------------------- */
+
+.sim-team {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.sim-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 3px solid var(--sim-rarity, var(--accent-gold));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  text-align: center;
+}
+
+.sim-member-frame {
+  width: 118px;
+  height: 118px;
+  border-radius: 12px;
+  border: 2px solid var(--sim-rarity, var(--accent-gold));
+  background: #0c0e12;
+  overflow: hidden;
+}
+
+.sim-member-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sim-member-name {
+  margin: 2px 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.sim-member-meta {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.sim-member-meta .sim-chip {
+  padding: 3px 10px;
+  font-size: 0.74rem;
+}
+
+.sim-member-chube {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: left;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.sim-member-chube.is-empty {
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.sim-member-chube img {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.sim-member-chube span {
+  line-height: 1.25;
+}
+
+/* Character build rows ------------------------------------------------ */
+
+.sim-build {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.sim-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sim-row:first-child {
+  border-top: 0;
+}
+
+.sim-row-label {
+  flex: 0 0 190px;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tier-unowned, #9a9a9a);
+}
+
+.sim-muted {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.sim-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sim-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 8px;
+  border-radius: 10px;
+  border: 2px solid var(--accent-gold);
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.sim-reso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sim-pattern-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.sim-reso-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.sim-reso-text strong {
+  font-size: 1.05rem;
+}
+
+.sim-reso-text span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.sim-chubes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.sim-chube {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 260px;
+  font-size: 0.86rem;
+}
+
+.sim-chube img {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+/* Footer -------------------------------------------------------------- */
+
+.sim-foot {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  color: var(--tier-unowned, #9a9a9a);
+}
+
+/* Small screens ------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .sim-team {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .sim-shell {
+    padding: 18px 14px 30px;
+    gap: 20px;
+  }
+
+  .sim-hero-char {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .sim-portrait {
+    width: 126px;
+    height: 126px;
+  }
+
+  .sim-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .sim-row-label {
+    flex: none;
+  }
+
+  .sim-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

@@ -18,6 +18,7 @@ const SUITES = [
   ["ui", "ui.test.mjs"],
   ["rotation-ui", "rotation-ui.test.mjs"],
   ["codes", "codes.test.mjs"],
+  ["og", "og.test.mjs"],
 ];
 
 let failed = 0;

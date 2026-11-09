@@ -4,8 +4,19 @@
     "api/codes.js": {
       "maxDuration": 10,
       "includeFiles": "data/promo_codes.json"
+    },
+    "api/og.js": {
+      "maxDuration": 10,
+      "includeFiles": "{data/og_index.json,content/i18n.json,assets/og/**}"
+    },
+    "api/sim.js": {
+      "maxDuration": 10,
+      "includeFiles": "{index.html,data/og_index.json,content/i18n.json,assets/og/**}"
     }
   },
+  "rewrites": [
+    { "source": "/sim", "destination": "/api/sim" }
+  ],
   "headers": [
     {
       "source": "/data/promo_codes.json",
