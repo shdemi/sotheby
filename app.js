@@ -5230,6 +5230,16 @@ function renderTeamCard(team) {
 
   head.appendChild(nameInput);
 
+  // Share: icon-only, copies the /sim link for this exact team.
+  const btnShare = document.createElement("button");
+  btnShare.type = "button";
+  btnShare.className = "btn-team-share";
+  btnShare.title = t("team.share");
+  btnShare.setAttribute("aria-label", t("team.share"));
+  btnShare.innerHTML = `<img src="images/random_icon/share_icon.png" alt="" class="btn-team-share-icon" />`;
+  btnShare.addEventListener("click", () => copyShareLink(btnShare, simShareUrlForTeam(team), t("team.share")));
+  head.appendChild(btnShare);
+
   // Recommend: only offered when the team fields an essential member of a preset
   if (recommendableVariantsForTeam(team).length > 0) {
     const btnRec = document.createElement("button");
@@ -10095,6 +10105,7 @@ function renderBuildsDetail() {
         </div>
         ${profileMetaHtml}
       </div>
+      <button type="button" class="builds-share-btn" data-builds-share title="${escapeHtml(t("builds.share"))}" aria-label="${escapeHtml(t("builds.share"))}"><img src="images/random_icon/share_icon.png" alt="" /></button>
     </div>
 
     ${renderCharacterSkillsSection(name)}
@@ -10110,6 +10121,13 @@ function renderBuildsDetail() {
   `;
   setupCharacterMatsListeners(host);
   setupCharacterSkillsListeners(host);
+
+  const shareBtn = host.querySelector("[data-builds-share]");
+  if (shareBtn) {
+    shareBtn.addEventListener("click", () =>
+      copyShareLink(shareBtn, simShareUrlForCharacter(name), t("builds.share")),
+    );
+  }
 
   // The label is the copy button for its code.
   host.querySelectorAll(".build-resonance-btn").forEach((btn) => {
@@ -14403,6 +14421,66 @@ function isSimPage() {
   if (window.__SIM__ && typeof window.__SIM__ === "object") return true;
   const params = new URLSearchParams(window.location.search);
   return params.has("team") || params.has("character");
+}
+
+/** Canonical roster key for a link token; `resolveCharacterName` folds aliases too. */
+function simLinkName(name) {
+  return resolveCharacterName(name) || name || "";
+}
+
+/**
+ * Share link for a team card. `chubes` is positional, so a member without a
+ * psychube keeps its slot with `0` (which never resolves) and trailing empties
+ * are dropped, keeping the copied link as short as the data allows.
+ */
+function simShareUrlForTeam(team) {
+  const params = new URLSearchParams();
+  const names = [];
+  const chubes = [];
+
+  (team.slots || []).forEach((slot) => {
+    if (!slot || !slot.character) return;
+    names.push(simLinkName(slot.character));
+    chubes.push(slot.psychube || "0");
+  });
+
+  while (chubes.length && chubes[chubes.length - 1] === "0") chubes.pop();
+
+  if (names.length) params.set("team", names.join(","));
+  if (chubes.length) params.set("chubes", chubes.join(","));
+
+  const name = String(team.name || "").trim();
+  if (name) params.set("name", name);
+  params.set("lang", currentLang);
+
+  return `${window.location.origin}/sim?${params.toString()}`;
+}
+
+/** Share link for a character build, in the same shape `/api/sim` reads. */
+function simShareUrlForCharacter(name) {
+  const params = new URLSearchParams();
+  const canonical = simLinkName(name);
+  if (canonical) params.set("character", canonical);
+  params.set("lang", currentLang);
+  return `${window.location.origin}/sim?${params.toString()}`;
+}
+
+/**
+ * Copies a share link and flashes the icon button. The button has no text, so
+ * the only feedback is the colour change plus the title swap.
+ */
+async function copyShareLink(button, url, label) {
+  const ok = await guideCopyText(url);
+  button.classList.toggle("is-copied", ok);
+  button.classList.toggle("is-failed", !ok);
+  const message = ok ? t("sim.copied") : t("builds.copyFailed");
+  button.title = message;
+  button.setAttribute("aria-label", message);
+  window.setTimeout(() => {
+    button.classList.remove("is-copied", "is-failed");
+    button.title = label;
+    button.setAttribute("aria-label", label);
+  }, 1200);
 }
 
 /** One team slot from a link token; unknown names return null and are dropped. */

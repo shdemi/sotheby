@@ -6541,6 +6541,7 @@ a.credit-name:hover {
 }
 .team-export-sheet .team-drag-handle,
 .team-export-sheet .btn-team-del,
+.team-export-sheet .btn-team-share,
 .team-export-sheet .btn-team-recommend {
   display: none !important;
 }
@@ -7119,6 +7120,60 @@ body.team-resizing * {
   height: 100%;
   object-fit: contain;
   display: block;
+}
+
+/* Share: icon-only, copies the /sim link for the team. */
+.btn-team-share {
+  background: transparent;
+  border: 1px solid rgba(50, 60, 52, 0.35);
+  color: #323C34;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-team-share:hover,
+.btn-team-share:focus-visible {
+  border-color: #ED7D31;
+  background: rgba(237, 125, 49, 0.22);
+}
+
+.btn-team-share:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 2px;
+}
+
+.btn-team-share.is-copied {
+  border-color: #3B8C4F;
+  background: rgba(59, 140, 79, 0.25);
+}
+
+.btn-team-share.is-failed {
+  border-color: #B33A3A;
+  background: rgba(179, 58, 58, 0.22);
+}
+
+/* The supplied icon ships grey; darken it to the card's ink. */
+.btn-team-share-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0);
+  opacity: 0.62;
+  transition: opacity 0.15s ease;
+}
+
+.btn-team-share:hover .btn-team-share-icon,
+.btn-team-share.is-copied .btn-team-share-icon {
+  opacity: 0.95;
 }
 
 /* Name of the team the recommendation is being computed for */
@@ -7903,6 +7958,61 @@ body.guide-rail-resizing * {
   align-items: baseline;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+/* Share: icon-only, copies the /sim link for this build. */
+.builds-share-btn {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(236, 229, 217, 0.28);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.builds-share-btn:hover,
+.builds-share-btn:focus-visible {
+  border-color: var(--accent-gold, #F6C34A);
+  background: rgba(246, 195, 74, 0.14);
+}
+
+.builds-share-btn:focus-visible {
+  outline: 2px solid var(--accent-gold, #F6C34A);
+  outline-offset: 2px;
+}
+
+.builds-share-btn.is-copied {
+  border-color: #4CAF6A;
+  background: rgba(76, 175, 106, 0.2);
+}
+
+.builds-share-btn.is-failed {
+  border-color: #C0504D;
+  background: rgba(192, 80, 77, 0.2);
+}
+
+/* Dark panel: invert the grey arrow to the panel's parchment ink. */
+.builds-share-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+  opacity: 0.62;
+  transition: opacity 0.15s ease;
+}
+
+.builds-share-btn:hover img,
+.builds-share-btn.is-copied img,
+.builds-share-btn.is-failed img {
+  opacity: 1;
 }
 
 .builds-hero-name {

@@ -766,6 +766,17 @@ reads `window.__SIM__` when present and otherwise parses `location.search` itsel
 maps `/sim` onto `index.html`. The overlay has a language switch (persisted, URL updated
 via `replaceState`) and a copy-link button.
 
+**Share buttons.** Each team card's head carries an icon-only button
+(`.btn-team-share`, `images/random_icon/share_icon.png`) as does the InfoBook character
+build hero (`.builds-share-btn`). Both call `copyShareLink()` → `guideCopyText()` and
+flash green/red for 1.2s, since there is no text label. `simShareUrlForTeam()` builds
+`/sim?team=…&chubes=…&name=…&lang=…` from the slot data using **canonical** names (the
+same keys `og_index.json` uses), and `simShareUrlForCharacter()` builds
+`/sim?character=…&lang=…`. `chubes` is positional, so a member without a psychube keeps
+its slot with `0` (an id that never resolves) and trailing empty slots are dropped;
+otherwise a gap would shift every later psychube onto the wrong member. The export PNG
+sheet hides the share button (`.team-export-sheet .btn-team-share`).
+
 **Caching.** Discord caches an OG image by URL forever, so the share URL appends
 `&v=<sha1, first 10 hex, of the canonical query>`. `/api/og` then answers with
 `Cache-Control: public, s-maxage=31536000, stale-while-revalidate=604800`: the URL only
