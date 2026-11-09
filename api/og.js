@@ -33,14 +33,7 @@ export default async function handler(req, res) {
   const origin = host ? `${proto}://${host}` : "";
 
   try {
-    const image = await renderOg({
-      character: str(query.character),
-      team: str(query.team, 240),
-      chubes: str(query.chubes, 240),
-      name: str(query.name, 40),
-      lang: str(query.lang, 4),
-      origin,
-    });
+    const image = await renderOg({ query, origin });
 
     const buffer = Buffer.from(await image.arrayBuffer());
     res.statusCode = 200;
@@ -51,7 +44,7 @@ export default async function handler(req, res) {
   } catch (error) {
     // A broken card must not break the share: fall back to the brand card once.
     try {
-      const fallback = await renderOg({ lang: str(query.lang, 4), origin });
+      const fallback = await renderOg({ query: { lang: str(query.lang, 4) }, origin });
       const buffer = Buffer.from(await fallback.arrayBuffer());
       res.statusCode = 200;
       res.setHeader("Content-Type", "image/png");

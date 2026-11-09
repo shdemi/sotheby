@@ -14420,47 +14420,120 @@ const SIM_MAX_MEMBERS = 4;
 function isSimPage() {
   if (window.__SIM__ && typeof window.__SIM__ === "object") return true;
   const params = new URLSearchParams(window.location.search);
-  return params.has("team") || params.has("character");
+  return params.has("t") || params.has("c") || params.has("team") || params.has("character");
 }
 
-/** Canonical roster key for a link token; `resolveCharacterName` folds aliases too. */
-function simLinkName(name) {
-  return resolveCharacterName(name) || name || "";
+/* ---- Compact link ids -------------------------------------------------
+   A link stores the game ids, not display names: `t=<skinId>-<insight>-<level>-
+   <portrait>-<chube>,…` per team member and `c=<charId|skinId>` per character.
+   The skin id already carries the character (`<charId><skinSuffix>`), and a
+   psychube's game id is unique across rarities. */
+
+/** Reverse of `characterIdMap`: game id -> canonical roster key (built once). */
+let simCharacterIdIndex = null;
+function simCanonicalForId(id) {
+  if (!simCharacterIdIndex) {
+    simCharacterIdIndex = new Map();
+    for (const name of Object.keys(characterDb)) {
+      const charId = Number(characterIdMap[name]);
+      if (charId && !simCharacterIdIndex.has(charId)) simCharacterIdIndex.set(charId, name);
+    }
+  }
+  return simCharacterIdIndex.get(Number(id)) || "";
+}
+
+/** Reverse of the psychube keys: bare game id -> `<rarity>:<id>` (built once). */
+let simPsychubeIdIndex = null;
+function simPsychubeKeyForId(id) {
+  const bare = String(id || "").trim();
+  if (!/^\d+$/.test(bare)) return "";
+  if (!simPsychubeIdIndex) {
+    simPsychubeIdIndex = new Map();
+    for (const key of Object.keys(psychubeDb)) {
+      const idPart = String(key).split(":").pop();
+      if (!simPsychubeIdIndex.has(idPart)) simPsychubeIdIndex.set(idPart, key);
+    }
+  }
+  return simPsychubeIdIndex.get(bare) || "";
+}
+
+/** Default skin id for a character (`<charId>01`). */
+function simDefaultSkinId(canonical) {
+  const charId = Number(characterIdMap[canonical]);
+  return charId ? charId * 100 + 1 : 0;
+}
+
+/** Skin id to share: the equipped one, or the default when skins are hidden. */
+function simSkinIdFor(canonical, char) {
+  const fallback = simDefaultSkinId(canonical);
+  if (!char || !char.owned || displayOptions.hideSkin || !char.skin) return fallback;
+  const skin = getSkinInfo(canonical, char.skin);
+  if (!skin || skin.isDefault) return fallback;
+  return Number(skin.id) || fallback;
+}
+
+/** Head art for a skin id, falling back to the character's default head. */
+function simHeadForSkin(canonical, skinId) {
+  const fallback = characterDb[canonical] || "";
+  if (!skinId) return fallback;
+  if (Number(skinId) === simDefaultSkinId(canonical)) return fallback;
+  const skin = (characterSkinsMap[canonical] || []).find((s) => Number(s.id) === Number(skinId));
+  return (skin && skin.iconUrl) || fallback;
+}
+
+/** `<skinId>-<insight>-<level>-<portrait>-<chube>`, trailing empty fields dropped. */
+function simCompactToken(member) {
+  const fields = [
+    member.skinId || 0,
+    Number(member.insight) || 0,
+    Number(member.level) || 0,
+    Number(member.portraitTier) || 0,
+    member.psychube ? String(member.psychube).split(":").pop() : "",
+  ];
+  while (fields.length > 1 && !fields[fields.length - 1]) fields.pop();
+  return fields.join("-");
 }
 
 /**
- * Share link for a team card. `chubes` is positional, so a member without a
- * psychube keeps its slot with `0` (which never resolves) and trailing empties
- * are dropped, keeping the copied link as short as the data allows.
+ * Share link for a team card. Every member is self-contained, so a slot the sharer
+ * left empty is simply skipped instead of shifting the others.
  */
 function simShareUrlForTeam(team) {
-  const params = new URLSearchParams();
-  const names = [];
-  const chubes = [];
-
+  const tokens = [];
   (team.slots || []).forEach((slot) => {
     if (!slot || !slot.character) return;
-    names.push(simLinkName(slot.character));
-    chubes.push(slot.psychube || "0");
+    const canonical = resolveCharacterName(slot.character) || slot.character;
+    if (!characterDb[canonical]) return;
+    const char = userRoster[canonical] || {};
+    const owned = Boolean(char.owned);
+    tokens.push(
+      simCompactToken({
+        skinId: simSkinIdFor(canonical, char),
+        insight: owned ? char.insight : 0,
+        level: owned ? char.level : 0,
+        portraitTier: owned ? char.portrait : 0,
+        psychube: slot.psychube || "",
+      }),
+    );
   });
 
-  while (chubes.length && chubes[chubes.length - 1] === "0") chubes.pop();
-
-  if (names.length) params.set("team", names.join(","));
-  if (chubes.length) params.set("chubes", chubes.join(","));
-
+  const params = new URLSearchParams();
+  if (tokens.length) params.set("t", tokens.join(","));
   const name = String(team.name || "").trim();
   if (name) params.set("name", name);
+  // The language travels with the link: the card the crawler caches and the page
+  // the visitor lands on then agree.
   params.set("lang", currentLang);
-
   return `${window.location.origin}/sim?${params.toString()}`;
 }
 
-/** Share link for a character build, in the same shape `/api/sim` reads. */
+/** Share link for a character build: just the skin id (`<charId>01` by default). */
 function simShareUrlForCharacter(name) {
+  const canonical = resolveCharacterName(name) || name || "";
+  const skinId = simSkinIdFor(canonical, userRoster[canonical] || {});
   const params = new URLSearchParams();
-  const canonical = simLinkName(name);
-  if (canonical) params.set("character", canonical);
+  if (skinId) params.set("c", String(skinId));
+  else if (canonical) params.set("character", canonical);
   params.set("lang", currentLang);
   return `${window.location.origin}/sim?${params.toString()}`;
 }
@@ -14483,41 +14556,81 @@ async function copyShareLink(button, url, label) {
   }, 1200);
 }
 
-/** One team slot from a link token; unknown names return null and are dropped. */
-function simMemberFromToken(token, chubeToken) {
-  const canonical = resolveCharacterName(token);
-  if (!canonical || !characterDb[canonical]) return null;
-  const key = chubeToken && psychubeDb[chubeToken] ? chubeToken : psychubeKeyFromName(chubeToken);
-  const row = key ? psychubeDb[key] : null;
+/** One payload member, filled from the local data so the view and the app agree. */
+function simMemberPayload(canonical, extra) {
+  const row = extra.psychube && psychubeDb[extra.psychube] ? psychubeDb[extra.psychube] : null;
   return {
+    id: Number(characterIdMap[canonical]) || 0,
     name: characterDisplayEn[canonical] || canonical,
     nameZh: characterDisplayCn[canonical] || "",
     rarity: getCharacterRarity(canonical),
     afflatus: getCharacterAfflatus(canonical) || "",
-    head: characterDb[canonical],
-    psychube: key || "",
+    head: simHeadForSkin(canonical, extra.skinId),
+    skinId: Number(extra.skinId) || 0,
+    insight: Number(extra.insight) || 0,
+    level: Number(extra.level) || 0,
+    portraitTier: Number(extra.portraitTier) || 0,
+    psychube: extra.psychube || "",
     psychubeName: row ? row.name : "",
     psychubeNameZh: row ? row.nameCn : "",
-    psychubeIcon: key ? psychubeIconUrl(key) : "",
+    psychubeIcon: extra.psychube ? psychubeIconUrl(extra.psychube) : "",
   };
 }
 
-/** A character card from a link token, using the local build/roster data. */
-function simCharacterFromToken(token) {
+/** A legacy `team=` token: a name (plus its positional chube). */
+function simMemberFromToken(token, chubeToken) {
+  const canonical = resolveCharacterName(token);
+  if (!canonical || !characterDb[canonical]) return null;
+  const chube = chubeToken && psychubeDb[chubeToken] ? chubeToken : psychubeKeyFromName(chubeToken);
+  return simMemberPayload(canonical, {
+    skinId: simDefaultSkinId(canonical),
+    psychube: chube || "",
+  });
+}
+
+/** A compact `t=` token: `skinId-insight-level-portrait-chube`. */
+function simMemberFromCompact(token) {
+  const raw = String(token || "").trim();
+  if (!raw) return null;
+  const parts = raw.split("-");
+  const numeric = Number(parts[0]);
+  if (!Number.isFinite(numeric) || numeric <= 0) return null;
+
+  const digits = String(Math.trunc(numeric));
+  const isSkin = digits.length > 4;
+  const charId = isSkin ? Math.trunc(numeric / 100) : Math.trunc(numeric);
+  const skinId = isSkin ? Math.trunc(numeric) : charId * 100 + 1;
+  const canonical = simCanonicalForId(charId);
+  if (!canonical) return null;
+
+  return simMemberPayload(canonical, {
+    skinId,
+    insight: Number(parts[1]) || 0,
+    level: Number(parts[2]) || 0,
+    portraitTier: Number(parts[3]) || 0,
+    psychube: simPsychubeKeyForId(parts.slice(4).join("-")),
+  });
+}
+
+/** A character card from a roster key, using the local build data. */
+function simCharacterFromToken(token, skinId) {
   const canonical = resolveCharacterName(token);
   if (!canonical || !characterDb[canonical]) return null;
   const build = getBuild(canonical) || {};
   const profile = characterProfilesData[canonical] || {};
   const pattern = build.pattern || "";
   const shape = characterResoShape[canonical] || "";
+  const skin = Number(skinId) || simDefaultSkinId(canonical);
   return {
+    id: Number(characterIdMap[canonical]) || 0,
     name: characterDisplayEn[canonical] || canonical,
     nameZh: characterDisplayCn[canonical] || "",
     rarity: getCharacterRarity(canonical),
     afflatus: getCharacterAfflatus(canonical) || "",
     dmgType: profile.dmgType || "",
     dmgTypeZh: profile.dmgTypeZh || "",
-    head: characterDb[canonical],
+    head: simHeadForSkin(canonical, skin),
+    skinId: skin,
     pattern,
     shape,
     patternIcon: shape && pattern ? `images/shape_pattern/${shape}/${pattern}.png` : "",
@@ -14528,35 +14641,99 @@ function simCharacterFromToken(token) {
   };
 }
 
+/** A compact `c=` token: a character id or a skin id. */
+function simCharacterFromCompact(token) {
+  const numeric = Number(String(token || "").trim().split("-")[0]);
+  if (!Number.isFinite(numeric) || numeric <= 0) return null;
+  const digits = String(Math.trunc(numeric));
+  const isSkin = digits.length > 4;
+  const charId = isSkin ? Math.trunc(numeric / 100) : Math.trunc(numeric);
+  const skinId = isSkin ? Math.trunc(numeric) : charId * 100 + 1;
+  const canonical = simCanonicalForId(charId);
+  if (!canonical) return null;
+  return simCharacterFromToken(canonical, skinId);
+}
+
 /**
- * The share payload, normalised to the shape `api/_lib/sim/params.mjs` emits so
- * the client renders the same view with or without the serverless function.
+ * The payload `api/sim.js` injects carries the server's view of the build; the
+ * local data is authoritative for names, art and build content, so fill from it.
+ */
+function simNormalizeInjectedMember(member) {
+  if (!member || typeof member !== "object") return null;
+  const canonical = resolveCharacterName(member.name || "");
+  if (!canonical || !characterDb[canonical]) return member;
+  return simMemberPayload(canonical, {
+    skinId: Number(member.skinId) || simDefaultSkinId(canonical),
+    insight: member.insight,
+    level: member.level,
+    portraitTier: member.portraitTier,
+    psychube: member.psychube || "",
+  });
+}
+
+function simNormalizeInjectedCharacter(char) {
+  if (!char || typeof char !== "object") return null;
+  const canonical = resolveCharacterName(char.name || "");
+  if (!canonical || !characterDb[canonical]) return char;
+  return simCharacterFromToken(canonical, char.skinId);
+}
+
+/**
+ * The share payload, normalised to one shape whether it came from `window.__SIM__`
+ * or from the query string (`python serve.py` has no serverless function).
  */
 function readSimParams() {
   const injected = window.__SIM__;
   if (injected && typeof injected === "object") {
+    const members = (Array.isArray(injected.members) ? injected.members : [])
+      .map(simNormalizeInjectedMember)
+      .filter(Boolean)
+      .slice(0, SIM_MAX_MEMBERS);
+    const character = members.length ? null : simNormalizeInjectedCharacter(injected.character);
     return {
-      lang: SUPPORTED_LANGS.includes(injected.lang) ? injected.lang : currentLang,
+      // A link copied by the app names its language; one without it follows the
+      // visitor's own setting.
+      lang:
+        injected.langExplicit && SUPPORTED_LANGS.includes(injected.lang)
+          ? injected.lang
+          : currentLang,
       name: String(injected.name || ""),
-      mode: injected.mode === "team" || injected.mode === "character" ? injected.mode : "default",
-      members: Array.isArray(injected.members) ? injected.members : [],
-      character: injected.character && typeof injected.character === "object" ? injected.character : null,
+      mode: members.length ? "team" : character ? "character" : "default",
+      members,
+      character,
     };
   }
 
   const params = new URLSearchParams(window.location.search);
-  const chubeTokens = String(params.get("chubes") || "")
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean);
-  const members = String(params.get("team") || "")
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .map((token, i) => simMemberFromToken(token, chubeTokens[i]))
-    .filter(Boolean)
-    .slice(0, SIM_MAX_MEMBERS);
-  const character = members.length ? null : simCharacterFromToken(params.get("character"));
+  let members = [];
+
+  if (params.get("t")) {
+    members = String(params.get("t"))
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map(simMemberFromCompact)
+      .filter(Boolean)
+      .slice(0, SIM_MAX_MEMBERS);
+  } else {
+    const chubeTokens = String(params.get("chubes") || "")
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+    members = String(params.get("team") || "")
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((token, i) => simMemberFromToken(token, chubeTokens[i]))
+      .filter(Boolean)
+      .slice(0, SIM_MAX_MEMBERS);
+  }
+
+  const character = members.length
+    ? null
+    : params.get("c")
+      ? simCharacterFromCompact(params.get("c"))
+      : simCharacterFromToken(params.get("character"));
 
   return {
     lang: SUPPORTED_LANGS.includes(params.get("lang")) ? params.get("lang") : currentLang,
@@ -14574,68 +14751,128 @@ function simDisplayName(item) {
   return item.name || item.nameZh || "";
 }
 
-function simAfflatusChip(afflatus) {
-  if (!afflatus) return "";
-  return `<span class="sim-chip"><img src="images/afflatus_icon/${escapeHtml(afflatus)}.png" alt="" loading="lazy" decoding="async" />${escapeHtml(displayAfflatus(afflatus))}</span>`;
-}
+/**
+ * One team slot, emitted with the modal's own classes so the team-card CSS (the
+ * same rules the PNG export uses) does all the design work.
+ */
+function simTeamSlotHtml(member) {
+  if (!member) {
+    return `<div class="team-slot"><div class="team-slot-char"><span class="team-slot-plus">+</span></div></div>`;
+  }
 
-function simDmgChip(char) {
-  if (!char.dmgType) return "";
-  const label = currentLang === "cn" ? char.dmgTypeZh || char.dmgType : char.dmgType;
-  const icon = char.dmgType === "Reality" ? "images/dmg_type_icon/reality_dmg.png" : "images/dmg_type_icon/mental_dmg.png";
-  return `<span class="sim-chip"><img src="${escapeHtml(icon)}" alt="" loading="lazy" decoding="async" />${escapeHtml(label)}</span>`;
-}
+  const label = escapeHtml(simDisplayName(member));
+  const insight = Number(member.insight) || 0;
+  const level = Number(member.level) || 0;
+  const portraitTier = Number(member.portraitTier) || 0;
+  const hasRoster = insight > 0 || level > 0 || portraitTier > 0;
 
-function simMemberHtml(member) {
-  const rarity = Number(member.rarity) || 0;
-  const accent = RARITY_COLORS[rarity] || "var(--accent-gold)";
-  const chubeName = member.psychube
-    ? (currentLang === "cn" && member.psychubeNameZh ? member.psychubeNameZh : member.psychubeName || member.psychube)
+  const afflatusHtml = member.afflatus
+    ? `<span class="team-slot-afflatus"><img src="images/afflatus_icon/${escapeHtml(member.afflatus)}.png" alt="${escapeHtml(displayAfflatus(member.afflatus))}" loading="lazy" decoding="async" /></span>`
     : "";
-  const chubeIcon = member.psychubeIcon || (member.psychube ? psychubeIconUrl(member.psychube) : "");
-  const name = simDisplayName(member);
+  const insightHtml =
+    insight > 0
+      ? `<img src="images/insight_icon/I${insight}.png" alt="${escapeHtml(fmtInsight(insight))}" class="team-slot-insight" loading="lazy" decoding="async" />`
+      : "";
+  const metaHtml = hasRoster
+    ? `<span class="team-slot-meta">${insightHtml}<span class="team-slot-level">${escapeHtml(fmtLevel(level))}</span></span>`
+    : "";
+  const barHtml = hasRoster
+    ? `<span class="team-slot-portrait-bar">${rotationPortraitDashesHtml(portraitTier, member.rarity)}</span>`
+    : "";
+  const chubeHtml = member.psychube
+    ? `<div class="team-slot-chube is-filled"><img src="${escapeHtml(member.psychubeIcon || psychubeIconUrl(member.psychube))}" alt="${escapeHtml(psychubeName(member.psychube))}" loading="lazy" decoding="async" /></div>`
+    : `<div class="team-slot-chube"><span class="team-slot-chube-plus">+</span></div>`;
 
   return `
-    <article class="sim-member" style="--sim-rarity:${accent}">
-      <div class="sim-member-frame">
-        <img src="${escapeHtml(member.head || "")}" alt="${escapeHtml(name)}" loading="lazy" decoding="async" />
+    <div class="team-slot is-filled">
+      <div class="team-slot-char" role="img" aria-label="${label}">
+        <span class="team-slot-portrait">
+          <img src="${escapeHtml(member.head || "")}" alt="${label}" class="team-slot-img" loading="lazy" decoding="async" />
+          ${afflatusHtml}${metaHtml}${barHtml}
+        </span>
       </div>
-      <h2 class="sim-member-name">${escapeHtml(name)}</h2>
-      ${member.afflatus ? `<p class="sim-member-meta">${simAfflatusChip(member.afflatus)}</p>` : ""}
-      ${chubeName
-        ? `<div class="sim-member-chube">${chubeIcon ? `<img src="${escapeHtml(chubeIcon)}" alt="" loading="lazy" decoding="async" />` : ""}<span>${escapeHtml(chubeName)}</span></div>`
-        : `<div class="sim-member-chube is-empty">—</div>`}
-    </article>`;
+      ${chubeHtml}
+    </div>`;
 }
 
-function simPortraitPills(portrait) {
-  const values = String(portrait || "")
-    .split("/")
-    .map((value) => value.trim())
-    .filter(Boolean);
-  if (!values.length) return `<span class="sim-muted">—</span>`;
-  return `<div class="sim-pills">${values.map((value) => `<span class="sim-pill">${escapeHtml(value)}</span>`).join("")}</div>`;
-}
-
-function simResonanceHtml(char) {
-  if (!char.pattern) return `<span class="sim-muted">—</span>`;
-  return `<div class="sim-reso">
-      ${char.patternIcon ? `<img class="sim-pattern-icon" src="${escapeHtml(char.patternIcon)}" alt="" loading="lazy" decoding="async" />` : ""}
-      <div class="sim-reso-text">
-        <strong>${escapeHtml(patternLabel(char.pattern))}</strong>
-        ${char.shape ? `<span>${escapeHtml(char.shape)}</span>` : ""}
+/** The exported team card: one parchment card, four slots, the name in the head. */
+function simTeamCardHtml(sim) {
+  const name = sim.name || t("og.teamBuild");
+  const slots = [];
+  for (let i = 0; i < SIM_MAX_MEMBERS; i += 1) slots.push(simTeamSlotHtml(sim.members[i]));
+  return `
+    <div class="team-list sim-team-list">
+      <div class="team-card">
+        <div class="team-card-head"><span class="team-name-text">${escapeHtml(name)}</span></div>
+        <div class="team-slots">${slots.join("")}</div>
       </div>
     </div>`;
 }
 
-function simChubesHtml(keys) {
-  if (!keys.length) return `<span class="sim-muted">—</span>`;
-  return `<div class="sim-chubes">${keys
-    .map((key) => {
-      const icon = psychubeIconUrl(key);
-      return `<div class="sim-chube">${icon ? `<img src="${escapeHtml(icon)}" alt="" loading="lazy" decoding="async" />` : ""}<span>${escapeHtml(psychubeName(key))}</span></div>`;
-    })
-    .join("")}</div>`;
+/**
+ * The InfoBook build pane, rendered by the modal itself and copied out, so the share
+ * page is literally the same markup. Skills and materials are dropped: a share card
+ * shows the build, not the farming list.
+ */
+function simBuildHtml(char) {
+  const canonical = resolveCharacterName(char.name || "");
+  const host = document.getElementById("builds-detail");
+  // The build sits inside the InfoBook's own card, so a shared character looks like
+  // the modal it was copied from rather than a loose block on the wallpaper.
+  const shell = (inner, accent, extraClass = "") =>
+    `<div class="modal-card archetype-modal-card builds-modal-card sim-build-card${extraClass}">
+      <div class="builds-body">
+        <div class="builds-detail sim-builds" style="--build-accent:${accent}">${inner}</div>
+      </div>
+    </div>`;
+
+  if (!canonical || !host || !characterDb[canonical]) {
+    const accent = RARITY_COLORS[Number(char.rarity) || 0] || "var(--accent-gold)";
+    return shell(
+      `<div class="builds-hero">
+          <span class="builds-hero-portrait"><img src="${escapeHtml(char.head || "")}" alt="" /></span>
+          <div class="builds-hero-text"><div class="builds-hero-head"><h3 class="builds-hero-name">${escapeHtml(simDisplayName(char))}</h3></div></div>
+        </div>`,
+      accent,
+    );
+  }
+
+  const previous = buildsSelected;
+  buildsSelected = canonical;
+  let html = "";
+  try {
+    renderBuildsDetail();
+    html = host.innerHTML;
+  } finally {
+    // Put the modal back the way the visitor left it.
+    buildsSelected = previous;
+    renderBuildsDetail();
+  }
+
+  // Trim in a detached node so no listener ever touches the modal's own copy.
+  const holder = document.createElement("div");
+  holder.innerHTML = html;
+  holder.querySelectorAll(".builds-share-btn, .char-skills-section, .char-mats-panel").forEach((el) => el.remove());
+
+  const accent = rarityColor(getCharacterRarity(canonical));
+  // Sotheby keeps her easter-egg theme on the share page too.
+  return shell(holder.innerHTML, accent, canonical === "Sotheby" ? " is-sotheby-theme" : "");
+}
+
+/** Resonance codes stay copyable on the share page. */
+function setupSimBuildListeners(view) {
+  view.querySelectorAll(".build-resonance-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const original = btn.textContent;
+      const ok = await guideCopyText(btn.dataset.code || "");
+      btn.textContent = ok ? t("builds.copied") : t("builds.copyFailed");
+      btn.classList.toggle("is-copied", ok);
+      window.setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove("is-copied");
+      }, 1100);
+    });
+  });
 }
 
 /** Draws the share page over the app; the app itself keeps running underneath. */
@@ -14655,34 +14892,9 @@ function renderSimView(sim) {
 
   let body = "";
   if (sim.mode === "team") {
-    body = `
-      <section class="sim-hero">
-        <p class="sim-kicker">${escapeHtml(kicker)}</p>
-        <h1 class="sim-title">${escapeHtml(teamTitle)}</h1>
-        <p class="sim-sub">${escapeHtml(t("og.members", { n: sim.members.length }))}</p>
-      </section>
-      <div class="sim-team">${sim.members.map(simMemberHtml).join("")}</div>`;
+    body = simTeamCardHtml(sim);
   } else if (sim.mode === "character") {
-    const char = sim.character;
-    const rarity = Number(char.rarity) || 0;
-    const accent = RARITY_COLORS[rarity] || "var(--accent-gold)";
-    body = `
-      <section class="sim-hero sim-hero-char">
-        <div class="sim-portrait" style="--sim-rarity:${accent}">
-          <img src="${escapeHtml(char.head || "")}" alt="${escapeHtml(charTitle)}" loading="lazy" decoding="async" />
-        </div>
-        <div class="sim-hero-text">
-          <p class="sim-kicker">${escapeHtml(kicker)}</p>
-          <h1 class="sim-title">${escapeHtml(charTitle)}${rarity ? `<span class="sim-stars" style="color:${accent}">${"✦".repeat(rarity)}</span>` : ""}</h1>
-          ${currentLang === "cn" && char.name ? `<p class="sim-sub">${escapeHtml(char.name)}</p>` : char.nameZh ? `<p class="sim-sub">${escapeHtml(char.nameZh)}</p>` : ""}
-          <div class="sim-chips">${simAfflatusChip(char.afflatus)}${simDmgChip(char)}</div>
-        </div>
-      </section>
-      <section class="sim-build">
-        <div class="sim-row"><span class="sim-row-label">${escapeHtml(t("card.portrait"))}</span>${simPortraitPills(char.portrait)}</div>
-        <div class="sim-row"><span class="sim-row-label">${escapeHtml(t("card.resonance"))}</span>${simResonanceHtml(char)}</div>
-        <div class="sim-row"><span class="sim-row-label">${escapeHtml(t("builds.psychubes"))}</span>${simChubesHtml(char.psychubes || [])}</div>
-      </section>`;
+    body = simBuildHtml(sim.character);
   } else {
     body = `
       <section class="sim-hero sim-hero-default">
@@ -14695,40 +14907,56 @@ function renderSimView(sim) {
   const view = document.createElement("div");
   view.id = "sim-view";
   view.className = "sim-view no-export";
+  // The toolbar is the app's own: same `.top-controls` panel, same `.btn`s, same
+  // sliding `.lang-switcher`, only the centre cluster (search/manage/export) is
+  // dropped because nothing here is editable.
+  const logo =
+    currentLang === "cn"
+      ? "images/sotheby_mansion_cn.png"
+      : currentLang === "vi"
+        ? "images/dinhthusotheby.png"
+        : "images/sotheby_mansion.webp";
   view.innerHTML = `
     <div class="sim-shell">
-      <header class="sim-head">
-        <a class="sim-brand" href="./">
-          <img src="images/sotheby_mansion.webp" alt="" />
-          <span>Sotheby's Mansion</span>
-        </a>
-        <div class="sim-actions">
-          <div class="sim-langs" role="group" aria-label="Language">
-            ${SUPPORTED_LANGS.map(
-              (lang) =>
-                `<button type="button" class="sim-lang${lang === currentLang ? " is-active" : ""}" data-sim-lang="${lang}">${lang === "cn" ? "中文" : lang.toUpperCase()}</button>`,
-            ).join("")}
+      <header class="top-controls sim-head">
+        <div class="header-primary-bar">
+          <div class="header-brand-row">
+            <a class="app-brand sim-brand" href="./" title="Sotheby's Mansion">
+              <span class="app-brand-icon-box"><img src="images/web_icon.png" alt="" class="app-brand-icon" /></span>
+              <span class="app-logo-wrap"><img src="${logo}" alt="Sotheby's Mansion" class="app-logo-img" /></span>
+            </a>
           </div>
-          <button type="button" class="sim-copy" data-sim-copy>${escapeHtml(t("sim.copy"))}</button>
-          <a class="sim-open" href="./">${escapeHtml(t("sim.open"))}</a>
+          <div class="header-actions-row"></div>
+          <div class="header-stats-row">
+            <div class="lang-switcher lang-switcher-header" role="group" aria-label="Language">
+              ${["cn", "vi", "en"]
+                .map(
+                  (lang) =>
+                    `<button type="button" class="lang-btn${lang === currentLang ? " active" : ""}" data-lang="${lang}" data-sim-lang="${lang}">${lang === "cn" ? "CN" : lang.toUpperCase()}</button>`,
+                )
+                .join("")}
+            </div>
+            <button type="button" class="btn btn-secondary" data-sim-copy>${escapeHtml(t("sim.copy"))}</button>
+            <a class="btn btn-primary sim-open" href="./">${escapeHtml(t("sim.open"))}</a>
+          </div>
         </div>
       </header>
       ${body}
-      <footer class="sim-foot">
-        <span>sothebymansion.com</span>
-        <span>${escapeHtml(kicker)}</span>
-      </footer>
     </div>`;
 
   document.body.appendChild(view);
   document.body.classList.add("sim-mode");
+  // Give the copy of the switcher the same sliding highlight the app header has.
+  setupSlidingThumbs();
+  if (sim.mode === "character") setupSimBuildListeners(view);
 
   view.querySelectorAll("[data-sim-lang]").forEach((button) => {
     button.addEventListener("click", async () => {
       const next = button.getAttribute("data-sim-lang");
       if (!next || next === currentLang) return;
       await setLanguage(next);
-      // Keep the address bar in step so "Copy link" shares the language on screen.
+      // The link carries its language, so the URL (and the copied link) follows the
+      // switch instead of drifting away from what is on screen.
       const url = new URL(window.location.href);
       url.searchParams.set("lang", next);
       window.history.replaceState(null, "", url.toString());

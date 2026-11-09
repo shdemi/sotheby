@@ -68,7 +68,7 @@ def main() -> int:
         print(f"Serving {root}")
         print(f"  app    http://127.0.0.1:{port}/index.html")
         print(f"  editor http://127.0.0.1:{port}/editor/index.html")
-        print(f"  share  http://127.0.0.1:{port}/sim?team=Lucy,Jessica,6,Windsong")
+        print(f"  share  http://127.0.0.1:{port}/sim?t=308601-3-60-5-1527,305601-3-60&lang=en")
         print("Text assets are served no-store, so edits show up on a plain reload.")
         try:
             httpd.serve_forever()

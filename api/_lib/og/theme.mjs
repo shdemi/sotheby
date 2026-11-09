@@ -20,6 +20,22 @@ export const C = {
   empty: "rgba(255, 255, 255, 0.04)",
 };
 
+/**
+ * Parchment palette of the team card (`--team-card-bg`, `.team-card` ink). The team
+ * share image is the exported PNG card, so it uses the modal's light card, not `C`.
+ */
+export const P = {
+  bg: "linear-gradient(to top right, #ddb39f 0%, #d5d3cf 20%, #d5d3cf 80%, #ddb39f 100%)",
+  sheet: "#1b1613",
+  ink: "#323C34",
+  sub: "#5A625B",
+  line: "rgba(50, 60, 52, 0.28)",
+  slot: "#454545",
+  dashOff: "rgba(255, 255, 255, 0.22)",
+  dashOn: "#FBAE31",
+  band: "linear-gradient(to top, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.30) 70%, rgba(0, 0, 0, 0))",
+};
+
 /** Rarity colours, copied from `app.js` `RARITY_COLORS`. */
 export const RARITY = {
   6: "#CB7820",

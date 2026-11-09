@@ -32,6 +32,15 @@ export function findPsychube(index, token) {
   if (!raw) return null;
   if (index.psychubes[raw]) return { key: raw, ...index.psychubes[raw] };
 
+  // Bare game id (what a compact link stores, e.g. `1527`). The id is unique across
+  // rarities, so the first matching key is the right one.
+  if (/^\d+$/.test(raw)) {
+    for (const [key, row] of Object.entries(index.psychubes)) {
+      if (String(key).split(":").pop() === raw) return { key, ...row };
+    }
+    return null;
+  }
+
   const lower = raw.toLowerCase();
   for (const [key, row] of Object.entries(index.psychubes)) {
     if (String(row.name || "").toLowerCase() === lower) return { key, ...row };

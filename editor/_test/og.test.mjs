@@ -56,9 +56,11 @@ check("blank name is null", findCharacter(index, "   ") === null);
 
 const chube = findPsychube(index, "6:1527");
 check("psychube key resolves", chube?.key === "6:1527" && Boolean(chube.name), JSON.stringify(chube));
+check("psychube by bare game id", findPsychube(index, "1527")?.key === "6:1527");
 check("psychube by english name", findPsychube(index, chube.name)?.key === "6:1527");
 check("psychube by chinese name", findPsychube(index, chube.nameZh)?.key === "6:1527");
 check("unknown psychube is null", findPsychube(index, "9:9") === null);
+check("unknown bare id is null", findPsychube(index, "999999") === null);
 
 /* ------------------------------------------------------------------ *
  * normalizeSim — team
@@ -102,6 +104,40 @@ const strayChube = normalizeSim({ team: "Lucy", chubes: "9:9", lang: "en" });
 check("an unknown chube leaves the slot empty", strayChube.members[0].psychube === "", strayChube.members[0].psychube);
 
 /* ------------------------------------------------------------------ *
+ * normalizeSim — compact links (`t=` / `c=`)
+ * ------------------------------------------------------------------ */
+
+console.log("\n=== normalizeSim: compact ===");
+const compact = normalizeSim({ t: "308601-3-60-5-1527,305601-3-60", name: "FUA Hypercarry" });
+check("compact mode is team", compact.mode === "team", compact.mode);
+check("compact keeps both members", compact.members.length === 2, compact.members.length);
+check("compact carries the character id", compact.members[0].id === 3086, compact.members[0].id);
+check("compact carries insight/level/portrait", compact.members[0].insight === 3 && compact.members[0].level === 60 && compact.members[0].portraitTier === 5);
+check("compact chube resolves by game id", compact.members[0].psychube === "6:1527", compact.members[0].psychube);
+check("compact names the skin art", compact.members[0].head === "images/headicon_small/308601.png", compact.members[0].head);
+check("compact skin carries the character", compact.members[0].name === "Lucy", compact.members[0].name);
+check("trailing zero fields are optional", compact.members[1].psychube === "" && compact.members[1].insight === 3);
+check("name is kept", compact.name === "FUA Hypercarry", compact.name);
+
+const bareChar = normalizeSim({ t: "3086" });
+check("a bare character id uses the default skin", bareChar.members[0].skinId === 308601, bareChar.members[0].skinId);
+
+const compactNoise = normalizeSim({ t: "308601-3,999999-3,305601" });
+check("unknown compact ids are dropped", compactNoise.members.map((m) => m.name).join(",") === "Lucy,Jessica", compactNoise.members.map((m) => m.name).join(","));
+
+const compactChar = normalizeSim({ c: "308601" });
+check("compact character mode", compactChar.mode === "character", compactChar.mode);
+check("compact character carries the skin", compactChar.character.skinId === 308601 && compactChar.character.name === "Lucy");
+check("compact character uses the skin art", compactChar.character.head === "images/headicon_small/308601.png");
+check("compact character keeps the build data", compactChar.character.portrait === "0/1/3/5");
+
+const bareCharLink = normalizeSim({ c: "3086" });
+check("a bare id in c= uses the default skin", bareCharLink.character.skinId === 308601, bareCharLink.character.skinId);
+check("an unknown c= falls back to the brand card", normalizeSim({ c: "999999" }).mode === "default");
+check("a link with no lang marks its language implicit", compact.langExplicit === false && compact.lang === "en");
+check("an old link marks its language explicit", team.langExplicit === true && team.lang === "en");
+
+/* ------------------------------------------------------------------ *
  * normalizeSim — character / default / language / name
  * ------------------------------------------------------------------ */
 
@@ -131,17 +167,28 @@ check("control characters are stripped", controlName.name === "abc", JSON.string
 
 console.log("\n=== image query, version, text ===");
 const teamQuery = new URLSearchParams(simImageQuery(team));
-check("query repeats the canonical team order", teamQuery.get("team") === "Lucy,Jessica,Six,Windsong", teamQuery.get("team"));
-check("query carries the chubes", teamQuery.get("chubes") === "6:1527,6:1504,6:1545,6:1539");
+check(
+  "query uses the compact team tokens",
+  teamQuery.get("t") === "308601-0-0-0-1527,305601-0-0-0-1504,307901-0-0-0-1545,307701-0-0-0-1539",
+  teamQuery.get("t"),
+);
 check("query carries the name", teamQuery.get("name") === "FUA Hypercarry");
-check("query carries the language", teamQuery.get("lang") === "en");
+check("legacy query carries the language", teamQuery.get("lang") === "en");
+check("query has no verbose team param", !teamQuery.has("team") && !teamQuery.has("chubes"));
+
+const compactQuery = new URLSearchParams(simImageQuery(compact));
+check("compact query round-trips", compactQuery.get("t") === "308601-3-60-5-1527,305601-3-60", compactQuery.get("t"));
+check("a query without an explicit language omits lang", !compactQuery.has("lang"), compactQuery.toString());
+
+const sharedQuery = new URLSearchParams(simImageQuery(normalizeSim({ t: "308601-3-60-5-1527", name: "FUA", lang: "vi" })));
+check("a shared compact link carries its language", sharedQuery.get("lang") === "vi", sharedQuery.toString());
 
 const emptyChubes = new URLSearchParams(simImageQuery(normalizeSim({ team: "Lucy", lang: "en" })));
-check("an unset chube list is omitted", !emptyChubes.has("chubes"));
+check("trailing empty fields are dropped", emptyChubes.get("t") === "308601", emptyChubes.get("t"));
 
 const charQuery = new URLSearchParams(simImageQuery(character));
-check("character query names the character", charQuery.get("character") === "Lucy", charQuery.get("character"));
-check("character query has no team", !charQuery.has("team"));
+check("character query names the skin", charQuery.get("c") === "308601", charQuery.get("c"));
+check("character query has no team", !charQuery.has("t") && !charQuery.has("team"));
 
 const version = simVersion(team);
 check("version is ten hex chars", /^[0-9a-f]{10}$/.test(version), version);

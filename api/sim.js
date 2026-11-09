@@ -67,18 +67,11 @@ export default async function handler(req, res) {
   const origin = host ? `${proto}://${host}` : "";
 
   const sim = normalizeSim(query);
-  const search = new URLSearchParams();
-  if (sim.mode === "team") {
-    search.set("team", sim.members.map((m) => m.name).join(","));
-    const chubes = sim.members.map((m) => m.psychube).filter(Boolean);
-    if (chubes.length) search.set("chubes", chubes.join(","));
-    if (sim.name) search.set("name", sim.name);
-  } else if (sim.mode === "character") {
-    search.set("character", sim.character.name);
-  }
-  if (sim.lang) search.set("lang", sim.lang);
+  // Canonical URL uses the same compact query the card is rendered from, so a link
+  // copied from the page stays short.
+  const search = simImageQuery(sim);
 
-  const canonicalUrl = `${origin}/sim${search.toString() ? `?${search.toString()}` : ""}`;
+  const canonicalUrl = `${origin}/sim${search ? `?${search}` : ""}`;
 
   let html;
   try {

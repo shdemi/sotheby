@@ -1,25 +1,34 @@
 /**
  * Renders the OG image for `/api/og`.
  *
- *   /api/og?character=Lucy&lang=en
- *   /api/og?team=Lucy,Jessica,6,37&chubes=6:1527,5:1434,6:1579,6:1500&name=My%20Team
- *   /api/og                       (brand card)
+ * The function takes the raw query string so it accepts both link shapes:
  *
- * Everything is resolved against `data/og_index.json`, so an unknown name is dropped
- * instead of failing the request: a shared link with stale ids still yields a card.
+ *   /api/og?c=308601                        compact share link
+ *   /api/og?t=308601-3-60-5-1527,302801-…   compact team
+ *   /api/og?character=Lucy&lang=en          legacy
+ *   /api/og?team=Lucy,Jessica,6,37&chubes=6:1527,5:1434,6:1579,6:1500&name=My%20Team
+ *   /api/og                                 brand card
+ *
+ * `normalizeSim` owns the parsing, so the card and the `/sim` page never disagree.
+ * Everything resolves against `data/og_index.json`, so an unknown id is dropped instead
+ * of failing the request: a shared link with stale data still yields a card.
  */
 import { ImageResponse } from "@vercel/og";
 
 import { loadAll, ogFonts, ogIndex } from "./assets.mjs";
 import { characterCard, defaultCard, teamCard } from "./cards.mjs";
-import { normalizeLang } from "./labels.mjs";
-import { findCharacter, findPsychube, parseList } from "./resolve.mjs";
+import { normalizeSim } from "../sim/params.mjs";
+import { findCharacter } from "./resolve.mjs";
 
-const MAX_MEMBERS = 4;
 const SHOWCASE = ["Lucy", "Jessica", "6", "Windsong"];
 
 function afflatusIcon(afflatus) {
   return afflatus ? `images/afflatus_icon/${afflatus}.png` : "";
+}
+
+function insightIcon(insight) {
+  const value = Number(insight) || 0;
+  return value > 0 ? `images/insight_icon/I${value}.png` : "";
 }
 
 async function characterArt(index, char, origin) {
@@ -40,23 +49,27 @@ async function characterArt(index, char, origin) {
 async function teamArt(members, origin) {
   return Promise.all(
     members.map(async (member) => {
-      const [head, afflatus, chube] = await loadAll(
-        [member.head, afflatusIcon(member.afflatus), member.psychubeIcon],
+      const [head, afflatus, chube, insight] = await loadAll(
+        [member.head, afflatusIcon(member.afflatus), member.psychubeIcon, insightIcon(member.insight)],
         origin,
       );
-      return { head, afflatus, chube };
+      return { head, afflatus, chube, insight };
     }),
   );
 }
 
-export async function renderOg({ character, team, chubes, name, lang, origin } = {}) {
+/**
+ * `query` is the raw request query (preferred); the legacy named parameters are still
+ * accepted so `scripts/og/render.mjs` and old callers keep working. When `query` is
+ * absent the whole argument is used as the query, which is what the sample script passes.
+ */
+export async function renderOg(input = {}) {
   const index = ogIndex();
-  const locale = normalizeLang(lang);
+  const sim = normalizeSim(input.query || input);
+  const locale = sim.lang;
+  const origin = input.origin || "";
 
-  const chubeTokens = parseList(chubes);
-  const teamTokens = parseList(team);
-
-  if (!teamTokens.length && !character) {
+  if (sim.mode === "default") {
     const heads = await loadAll(
       SHOWCASE.map((n) => findCharacter(index, n)?.head).filter(Boolean),
       origin,
@@ -68,42 +81,16 @@ export async function renderOg({ character, team, chubes, name, lang, origin } =
     });
   }
 
-  if (teamTokens.length) {
-    const members = teamTokens
-      .map((token, i) => {
-        const char = findCharacter(index, token);
-        if (!char) return null;
-        const chube = findPsychube(index, chubeTokens[i]);
-        return {
-          name: char.name,
-          nameZh: char.nameZh,
-          rarity: char.rarity,
-          afflatus: char.afflatus,
-          head: char.head,
-          psychube: chube?.key || "",
-          psychubeName: chube?.name || "",
-          psychubeNameZh: chube?.nameZh || "",
-          psychubeIcon: chube?.icon || "",
-        };
-      })
-      .filter(Boolean)
-      .slice(0, MAX_MEMBERS);
-
-    const art = await teamArt(members, origin);
-    return new ImageResponse(teamCard({ team: name, members, lang: locale, art }), {
-      width: 1200,
-      height: 630,
-      fonts: ogFonts(),
-    });
+  if (sim.mode === "team") {
+    const art = await teamArt(sim.members, origin);
+    return new ImageResponse(
+      teamCard({ team: sim.name, members: sim.members, lang: locale, art }),
+      { width: 1200, height: 630, fonts: ogFonts() },
+    );
   }
 
-  const char = findCharacter(index, character);
-  if (!char) {
-    return renderOg({ lang: locale, origin });
-  }
-
-  const art = await characterArt(index, char, origin);
-  return new ImageResponse(characterCard({ char, lang: locale, art }), {
+  const art = await characterArt(index, sim.character, origin);
+  return new ImageResponse(characterCard({ char: sim.character, lang: locale, art }), {
     width: 1200,
     height: 630,
     fonts: ogFonts(),

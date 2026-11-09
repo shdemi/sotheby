@@ -738,7 +738,29 @@ PNG card. Two functions do the work:
 | `GET /api/og?…` | 1200x630 PNG (character card, team card, or the brand card) |
 | `GET /sim?…` | the app shell with per-link `og:*` tags + `window.__SIM__` |
 
-Link scheme (both routes take the same parameters):
+Link scheme (both routes take the same parameters). The canonical, compact shape stores
+**game ids**, so a link is short and never goes stale on a rename:
+
+```
+/sim?t=308601-3-60-5-1527,305601-3-60,307901-3-60,307701-3-60&name=FUA&lang=en
+/sim?c=308601&lang=vi
+```
+
+- A team member is `<skinId>-<insight>-<level>-<portrait>-<chubeGameId>`; **trailing zero
+  fields are omitted**, so `305601-3-60` is a member with no portrait and no psychube.
+- `skinId` is `<charId><skinSuffix>` (`01` = the default skin), so it already carries the
+  character: `308601` is Lucy's first skin. A bare `charId` (`t=3086`, `c=3086`) is
+  accepted and expands to the default skin.
+- A psychube is the bare game id (`1527`, not `6:1527`); the id is unique across
+  rarities, so `findPsychube()` maps it back to its `<rarity>:<id>` key.
+- Unknown ids are **dropped** (a dropped member takes its psychube with it) so a stale
+  link still renders. An empty team slot is skipped entirely rather than kept as a gap.
+- `lang` is written by both share buttons, so the card Discord caches and the page the
+  visitor lands on are the same language; the switcher on the page rewrites it in the URL.
+  It stays optional: a hand-written link without it gets `en` tags for crawlers and the
+  visitor's saved language on the page (`normalizeSim` reports `langExplicit`).
+
+The **legacy** shape is still parsed, because Discord caches an OG image by URL forever:
 
 ```
 /sim?team=Lucy,Jessica,6,Windsong&chubes=6:1527,6:1504,6:1545,6:1539&name=FUA&lang=en
@@ -746,11 +768,9 @@ Link scheme (both routes take the same parameters):
 ```
 
 - `team` is at most four names; `character` is used when `team` is absent.
-- `chubes` is positional: the *n*-th psychube belongs to the *n*-th team member.
-- Names resolve case-insensitively against `data/og_index.json`; a name that does not
-  resolve is **dropped, and its chube with it**, so stale links still render. Filtering
-  happens before the four-member cut, so a junk token cannot consume a slot.
-- `lang` is `en` / `cn` / `vi` (anything else falls back to `en`).
+- `chubes` is positional: the *n*-th psychube belongs to the *n*-th team member. Names and
+  chubes resolve case-insensitively against `data/og_index.json`; unknown tokens are
+  dropped before the four-member cut, so a junk token cannot consume a slot.
 
 **Why `/sim` is server-rendered.** Discord, X and Reddit read the HTML of the URL; they do
 not run JavaScript. `api/sim.js` therefore loads `index.html` from disk and injects
@@ -763,19 +783,27 @@ so a crawler never sees two `og:title` / description tags.
 `body.sim-mode`) over the app, so one page serves both the crawler and the visitor. It
 reads `window.__SIM__` when present and otherwise parses `location.search` itself
 (`readSimParams()`), which is what makes `python serve.py` work without Vercel: `serve.py`
-maps `/sim` onto `index.html`. The overlay has a language switch (persisted, URL updated
-via `replaceState`) and a copy-link button.
+maps `/sim` onto `index.html`. The overlay has a language switch (which rewrites `lang` in
+the URL, so the copied link keeps following the visitor) and a copy-link button.
+
+The two views are **the app's own markup**, not a second design: the team view emits
+`.team-card` / `.team-slots` / `.team-slot*` (the exact card the PNG export renders) straight
+on the page's `images/background.png`, and the character view calls `renderBuildsDetail()`
+and copies `#builds-detail` out — inside the InfoBook's own `.modal-card` frame
+(`.sim-build-card`) — dropping `.builds-share-btn`, `.char-skills-section` and
+`.char-mats-panel` so only the build shows. The toolbar is the app's `.top-controls` /
+`.header-*` / `.lang-switcher` / `.btn` markup with the middle cluster (search, Manage,
+JSON, Export PNG) left out. Keep new visuals in `styles.css` modal rules; do not add a
+parallel `/sim` look.
 
 **Share buttons.** Each team card's head carries an icon-only button
 (`.btn-team-share`, `images/random_icon/share_icon.png`) as does the InfoBook character
 build hero (`.builds-share-btn`). Both call `copyShareLink()` → `guideCopyText()` and
 flash green/red for 1.2s, since there is no text label. `simShareUrlForTeam()` builds
-`/sim?team=…&chubes=…&name=…&lang=…` from the slot data using **canonical** names (the
-same keys `og_index.json` uses), and `simShareUrlForCharacter()` builds
-`/sim?character=…&lang=…`. `chubes` is positional, so a member without a psychube keeps
-its slot with `0` (an id that never resolves) and trailing empty slots are dropped;
-otherwise a gap would shift every later psychube onto the wrong member. The export PNG
-sheet hides the share button (`.team-export-sheet .btn-team-share`).
+`/sim?t=<skinId>-<insight>-<level>-<portrait>-<chube>,…&name=…&lang=…` from the roster + slot
+data (skin id is the equipped skin, or `01` when skins are hidden), and
+`simShareUrlForCharacter()` builds `/sim?c=<skinId>&lang=…`. Both append the current
+language. The export PNG sheet hides the share button (`.team-export-sheet .btn-team-share`).
 
 **Caching.** Discord caches an OG image by URL forever, so the share URL appends
 `&v=<sha1, first 10 hex, of the canonical query>`. `/api/og` then answers with
@@ -786,8 +814,14 @@ changes when the payload does. `/sim` uses `s-maxage=300`.
 is 4 MB and the fonts alone are ~600 KB). 1.0.x crashes on Node 24
 (`Dynamic require of "fs" is not supported`), so the version is pinned.
 
-- `api/_lib/og/render.mjs` `renderOg()` — param resolution, art loading, `ImageResponse`.
-- `api/_lib/og/cards.mjs` — the three card trees; `theme.mjs` — palette, rarity colours,
+- `api/_lib/og/render.mjs` `renderOg({ query, origin })` — takes the **raw query string**
+  (falls back to the argument itself), normalises it with `normalizeSim`, then loads art and
+  builds the `ImageResponse`. `/api/og` therefore parses a link and a card identically.
+- `api/_lib/og/cards.mjs` — the three card trees. The **team card is the parchment export
+  card** (`P` palette in `theme.mjs`): one `.team-card`-style sheet with four slots of
+  portrait + afflatus emblem + insight/Lv band + five portrait dashes + a side psychube,
+  `+` placeholders for empty slots and the site footer. The **character card stays dark**
+  (`C` palette), matching the InfoBook pane. `theme.mjs` also has palette, rarity colours,
   `h()` / `img()` / `frame()`; `labels.mjs` — locale lookup from `content/i18n.json`.
 - Satori is **flexbox only**: no grid, no `box-shadow`, and every element with more than
   one child needs `display: flex`. Do not print `★` / `✦`: satori treats the codepoint as
@@ -826,11 +860,12 @@ recommended chube resolves to a key.
 ```powershell
 python serve.py                       # /sim works through index.html
 node scripts/og/render.mjs            # writes .tmp-og/*.png, no server needed
-node scripts/og/render.mjs team cn    # one case: <character|team|default> <lang>
+node scripts/og/render.mjs team cn    # one case: <character|team|default|character-…> <lang>
 ```
 
 `scripts/og/render.mjs` reads art from disk, so it works offline; it is the fastest way to
-see a layout change.
+see a layout change. Its `CASES` use compact links (`c=` / `t=`) plus one `team-legacy`
+case, so both parsers stay rendered.
 
 **Deployment.** `vercel.json`:
 
@@ -844,7 +879,8 @@ Paths are anchored to the module (`import.meta.url`), not to `process.cwd()`, so
 code resolves `/var/task/...` in the bundle and the repo checkout in tests.
 
 **Tests.** `editor/_test/og.test.mjs` (wired into `npm test`) covers `parseList`, the
-name/psychube resolvers (EN, CN, case-insensitive, unknown), `normalizeSim` in all three
-modes, chube alignment, truncation, name sanitising, the canonical image query, the
-content hash, the title/description strings and the label fallbacks. It never renders a
-PNG; satori's WASM is not a unit-test dependency.
+name/psychube resolvers (EN, CN, case-insensitive, bare game id, unknown), `normalizeSim`
+in all three modes and both link shapes, compact round-tripping, chube alignment,
+truncation, name sanitising, `langExplicit`, the canonical image query, the content hash,
+the title/description strings and the label fallbacks. It never renders a PNG; satori's
+WASM is not a unit-test dependency.

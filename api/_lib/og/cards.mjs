@@ -11,6 +11,8 @@
 import { afflatusLabel, patternLabel, t } from "./labels.mjs";
 import {
   C,
+  FONT,
+  P,
   RARITY,
   chip,
   dash,
@@ -138,93 +140,219 @@ export function characterCard({ char, lang, art }) {
   ]);
 }
 
-function teamMember(member, lang, art) {
-  const primary = lang === "cn" ? member.nameZh || member.name : member.name;
-  const chubeName = member.psychube
-    ? (lang === "cn" && member.psychubeNameZh) || member.psychubeName || member.psychube
-    : "";
-  return h("div", { display: "flex", flexDirection: "column", alignItems: "center", flex: 1, marginRight: "18px" }, [
-    portrait(art.head, 190, member.rarity, primary),
-    h(
-      "div",
-      {
+/* ---- Team card: the exported PNG card (parchment), not the dark build sheet ---- */
+
+const TEAM_SLOT_W = 261;
+const TEAM_SLOT_H = 174;
+const TEAM_CHUBE_W = 87;
+const TEAM_CHUBE_H = 103;
+const TEAM_GAP = 14;
+
+/** Five portrait dashes, drawn inside the portrait just above its bottom edge. */
+function portraitDashes(portraitTier) {
+  const tier = Math.max(0, Math.min(5, Number(portraitTier) || 0));
+  return h(
+    "div",
+    {
+      display: "flex",
+      position: "absolute",
+      left: "12%",
+      right: "12%",
+      bottom: "2px",
+      height: "3px",
+    },
+    Array.from({ length: 5 }, (_, i) =>
+      h("div", {
         display: "flex",
-        fontSize: "24px",
-        fontWeight: 700,
-        marginTop: "12px",
-        textAlign: "center",
-        lineHeight: 1.15,
-        height: "30px",
-      },
-      primary,
+        width: "100%",
+        height: "100%",
+        marginLeft: i === 0 ? "0" : "1px",
+        backgroundColor: i < tier ? P.dashOn : P.dashOff,
+      }),
     ),
-    member.afflatus
-      ? h("div", { display: "flex", alignItems: "center", marginTop: "6px" }, [
-          kids(
-            art.afflatus ? img(art.afflatus, { width: "22px", height: "22px", marginRight: "6px" }) : null,
-            h("div", { display: "flex", fontSize: "16px", color: C.muted }, afflatusLabel(lang, member.afflatus)),
-          ),
-        ])
-      : null,
-    member.psychube
-      ? h("div", { display: "flex", alignItems: "center", marginTop: "12px" }, [
-          kids(
-            art.chube
-              ? img(art.chube, { width: "44px", height: "44px", borderRadius: "8px", marginRight: "8px" })
-              : h("div", { display: "flex", width: "44px", height: "44px", borderRadius: "8px", background: C.empty }),
-            h(
-              "div",
-              { display: "flex", width: "150px", fontSize: "15px", lineHeight: 1.25, color: C.text },
-              chubeName,
-            ),
-          ),
-        ])
-      : h("div", { display: "flex", fontSize: "15px", color: C.muted, marginTop: "12px" }, "—"),
-  ]);
+  );
 }
 
-function emptyMember() {
-  return h("div", { display: "flex", flexDirection: "column", alignItems: "center", flex: 1, marginRight: "18px" }, [
-    h(
-      "div",
-      {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "190px",
-        height: "190px",
-        borderRadius: "14px",
-        border: `2px dashed ${C.lineSoft}`,
-        background: C.empty,
-        fontSize: "54px",
-        color: C.muted,
-      },
-      "+",
-    ),
-  ]);
+/** One team slot: portrait (afflatus, level band, portrait dashes) + psychube. */
+function teamSlot(member, art, index, lang) {
+  const insight = Number(member.insight) || 0;
+  const level = Number(member.level) || 0;
+  const portraitTier = Number(member.portraitTier) || 0;
+  const showMeta = insight > 0 || level > 0;
+  const levelText = lang === "cn" ? `${level}级` : `Lv.${level}`;
+
+  const layers = kids(
+    art.head
+      ? img(art.head, {
+          position: "absolute",
+          top: "0",
+          left: "0",
+          width: `${TEAM_SLOT_H}px`,
+          height: `${TEAM_SLOT_H}px`,
+          objectFit: "cover",
+        })
+      : null,
+    art.afflatus
+      ? h(
+          "div",
+          {
+            display: "flex",
+            position: "absolute",
+            top: "0",
+            left: "0",
+            height: "38%",
+            width: `${Math.round(TEAM_SLOT_H * 0.38 * (74 / 118))}px`,
+          },
+          img(art.afflatus, { width: "100%", height: "100%", objectFit: "fill" }),
+        )
+      : null,
+    showMeta
+      ? h(
+          "div",
+          {
+            display: "flex",
+            position: "absolute",
+            left: "0",
+            right: "0",
+            bottom: "0",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "26px",
+            background: P.band,
+          },
+          kids(
+            art.insight ? img(art.insight, { width: "14px", height: "14px", marginRight: "4px" }) : null,
+            h("div", { display: "flex", fontSize: "15px", fontWeight: 700, color: "#FFFFFF" }, levelText),
+          ),
+        )
+      : null,
+    showMeta || portraitTier > 0 ? portraitDashes(portraitTier) : null,
+  );
+
+  return h(
+    "div",
+    {
+      display: "flex",
+      alignItems: "flex-end",
+      width: `${TEAM_SLOT_W}px`,
+      height: `${TEAM_SLOT_H}px`,
+      marginLeft: index === 0 ? "0" : `${TEAM_GAP}px`,
+    },
+    [
+      h(
+        "div",
+        {
+          display: "flex",
+          position: "relative",
+          width: `${TEAM_SLOT_H}px`,
+          height: `${TEAM_SLOT_H}px`,
+          overflow: "hidden",
+          backgroundColor: "#0f0e0c",
+          border: `1px solid ${P.slot}`,
+        },
+        layers,
+      ),
+      h(
+        "div",
+        {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: `${TEAM_CHUBE_W}px`,
+          height: `${TEAM_CHUBE_H}px`,
+          alignSelf: "flex-end",
+        },
+        kids(
+          art.chube
+            ? img(art.chube, { width: `${TEAM_CHUBE_W}px`, height: `${TEAM_CHUBE_H}px`, objectFit: "contain" })
+            : null,
+        ),
+      ),
+    ],
+  );
+}
+
+function emptySlot(index) {
+  return h(
+    "div",
+    {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: `${TEAM_SLOT_W}px`,
+      height: `${TEAM_SLOT_H}px`,
+      marginLeft: index === 0 ? "0" : `${TEAM_GAP}px`,
+      border: `1px dashed rgba(50, 60, 52, 0.35)`,
+    },
+    h("div", { display: "flex", fontSize: "38px", color: "#7d857c" }, "+"),
+  );
 }
 
 export function teamCard({ team, members, lang, art }) {
   const title = team || t(lang, "og.teamBuild", "Team Build");
-  const count = t(lang, "og.members", "members").replace("{n}", String(members.length));
-  const badge = h("div", { display: "flex", fontSize: "18px", letterSpacing: "1px", color: C.muted }, count);
+  const count = t(lang, "og.members", "{n} members").replace("{n}", String(members.length));
 
-  const columns = [];
+  const slots = [];
   for (let i = 0; i < 4; i += 1) {
     const member = members[i];
-    columns.push(member ? teamMember(member, lang, art[i] || {}) : emptyMember());
+    slots.push(member ? teamSlot(member, art[i] || {}, i, lang) : emptySlot(i));
   }
-  if (columns.length) columns[columns.length - 1].props.style.marginRight = "0";
 
-  return frame([
-    header(badge),
-    h("div", { display: "flex", flexDirection: "column", marginTop: "10px" }, [
-      h("div", { display: "flex", fontSize: "44px", fontWeight: 700, lineHeight: 1.1 }, title),
-      h("div", { display: "flex", fontSize: "18px", color: C.muted, marginTop: "4px" }, "Reverse: 1999 · Team Build"),
-    ]),
-    h("div", { display: "flex", alignItems: "flex-start", flex: 1, marginTop: "22px" }, columns),
-    footer(lang === "cn" ? "Reverse: 1999 · 培养指南" : "Reverse: 1999 · Team Build"),
-  ]);
+  return h(
+    "div",
+    {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100%",
+      padding: "30px",
+      backgroundColor: P.sheet,
+      fontFamily: FONT,
+      color: P.ink,
+    },
+    [
+      h(
+        "div",
+        {
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          padding: "22px 26px",
+          background: P.bg,
+          border: `1px solid ${P.line}`,
+        },
+        [
+          h("div", { display: "flex", alignItems: "center", justifyContent: "space-between" }, [
+            h(
+              "div",
+              { display: "flex", fontSize: "30px", fontWeight: 700, letterSpacing: "0.02em", color: P.ink },
+              title,
+            ),
+            h("div", { display: "flex", fontSize: "15px", letterSpacing: "1px", color: P.sub }, count),
+          ]),
+          h("div", { display: "flex", alignItems: "flex-start", marginTop: "16px" }, slots),
+        ],
+      ),
+      h(
+        "div",
+        {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          marginTop: "18px",
+          fontSize: "15px",
+          color: C.muted,
+        },
+        [
+          h("div", { display: "flex", letterSpacing: "1px" }, "sothebymansion.com"),
+          h("div", { display: "flex" }, lang === "cn" ? "Reverse: 1999 · 培养指南" : "Reverse: 1999 · Team Build"),
+        ],
+      ),
+    ],
+  );
 }
 
 export function defaultCard({ lang, art }) {
