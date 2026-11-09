@@ -12804,6 +12804,15 @@ body.sim-mode {
   overflow: visible;
 }
 
+/* Phones swap the InfoBook's rail/detail split for a master-detail flow, so
+   `.builds-body .builds-detail` is `display: none` until the body carries `.is-detail`.
+   The share page copies the detail on its own and has no rail to go "back" to, so it is
+   always shown. This rule sits after that media query on purpose: same specificity, later
+   in the file, so it wins at every width. */
+.sim-build-card .builds-detail {
+  display: flex;
+}
+
 /* Small screens ------------------------------------------------------- */
 
 @media (max-width: 768px) {

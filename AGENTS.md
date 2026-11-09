@@ -813,6 +813,13 @@ chart already draws (only Charlie and Matilda carry prose). The toolbar is the a
 (search, Manage, JSON, Export PNG) left out. Keep new visuals in `styles.css` modal rules;
 do not add a parallel `/sim` look.
 
+One rule exists because of that reuse: below 768px the InfoBook swaps rail + detail for a
+master-detail flow, so `.builds-body .builds-detail` is `display: none` until the body
+carries `.is-detail` — which `/sim` never sets (there is no rail to come back from). The
+share pane was therefore **blank on a phone**. `.sim-build-card .builds-detail
+{ display: flex }` sits after that media query on purpose (same specificity, later in the
+file) and keeps the copied pane visible at every width.
+
 **Share buttons.** Each team card's head carries an icon-only button
 (`.btn-team-share`, `images/random_icon/share_icon.png`) as does the InfoBook character
 build hero (`.builds-share-btn`). Both call `copyShareLink()` → `guideCopyText()` and
