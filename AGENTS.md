@@ -831,15 +831,19 @@ is 4 MB and the fonts alone are ~600 KB). 1.0.x crashes on Node 24
   card** (`P` palette in `theme.mjs`): one `.team-card`-style sheet with four slots of
   portrait + afflatus emblem + insight/Lv band + five portrait dashes + a side psychube,
   `+` placeholders for empty slots and the site footer. The **character card is the
-  InfoBook's detail pane** (`BUILD` palette, same `images/background.png`, `#B55829`
-  frame): hero row (84px portrait, rarity diamonds, damage icon + role tags), the Portrait
-  Value bars, Recommended Psychubes and the Resonance panel with its orange preset
-  buttons. It is **1200x630 when a chart fills the sheet and shorter when it does not** —
-  `characterCardHeight()` returns the natural height of the two loadout panels for the 85
-  heroes without a progression chart, so the sheet is never half empty and the preview
-  keeps the `/sim` pane's proportions. `theme.mjs` also has palette, rarity colours,
-  `h()` / `img()` / `frame()` / `safeText()`; `labels.mjs` — locale lookup from
-  `content/i18n.json`.
+  InfoBook's detail pane** (`BUILD` palette, `#B55829` frame, flat `#111111` field — the
+  wallpaper was cropped past recognition at 1200x630 and read as noise): hero row (84px
+  portrait, rarity diamonds, damage icon + role tags), the Portrait Value bars, Recommended
+  Psychubes and the Resonance panel with its orange preset buttons. It is **1200x630 when a
+  chart fills the sheet and shorter when it does not** — `characterCardHeight()` returns the
+  natural height of the two loadout panels for the 85 heroes without a progression chart,
+  so the sheet is never half empty and the preview keeps the `/sim` pane's proportions.
+  `theme.mjs` also has palette, rarity colours, `h()` / `img()` / `frame()` / `safeText()`;
+  `labels.mjs` — locale lookup from `content/i18n.json`.
+- Satori's `objectFit` is not reliable: the 170x114 pattern glyphs were drawn stretched into
+  the 44x44 `.build-pattern img` box. `assets.mjs` `imageSize()` reads the PNG header, so
+  the card draws the glyph at its real ratio inside a fixed 44x44 box (psychube art is
+  180x214 in a 54x64 box — near enough that it needs no help).
 - `safeText()` runs on every string the cards print: it maps the site's decorative
   codepoints (`✦ ★ ⌽ → …`) to ASCII and **drops anything the fonts cannot draw**, because
   an unknown codepoint makes satori attempt a Google-font download that 400s and kills the

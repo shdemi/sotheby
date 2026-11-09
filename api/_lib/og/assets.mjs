@@ -102,3 +102,19 @@ export async function imageSrc(relPath, origin) {
 export function loadAll(paths, origin) {
   return Promise.all([...new Set(paths.filter(Boolean))].map((p) => imageSrc(p, origin)));
 }
+
+/**
+ * Intrinsic size of a data URI, read from the PNG or JPEG header.
+ *
+ * Satori's `objectFit: contain` does not scale every image (the 170x114 pattern glyphs were
+ * drawn stretched into a 44x44 box), so a card that needs the real ratio asks for it here
+ * and draws the art at that size inside a fixed box.
+ */
+export function imageSize(uri) {
+  if (!uri) return null;
+  const buffer = Buffer.from(uri.slice(uri.indexOf(",") + 1), "base64");
+  if (buffer.length >= 24 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e) {
+    return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+  }
+  return null;
+}

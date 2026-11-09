@@ -254,7 +254,7 @@ export function simImageQuery(sim) {
  * dashes, the parchment team card, …) changes the picture without changing the payload,
  * and without the salt every link already posted would keep showing the old bitmap.
  */
-export const CARD_RENDER_VERSION = "2026-11-09b";
+export const CARD_RENDER_VERSION = "2026-11-09c";
 
 export function simVersion(sim) {
   return crypto

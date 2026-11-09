@@ -12,10 +12,11 @@ import { patternLabel, t } from "./labels.mjs";
 import { C, FONT, P, RARITY, footer, frame, h, header, img, kids, safeText } from "./theme.mjs";
 
 /**
- * The character card is the InfoBook's detail pane, not the dark brand sheet: the same
- * `images/background.png` art, the `#B55829` modal frame, the Portrait Value bars and the
- * two loadout panels. Colours and sizes are copied from the `.builds-*` / `.build-section`
- * rules in styles.css so the Discord preview and the `/sim` page read as one design.
+ * The character card is the InfoBook's detail pane, not the dark brand sheet: the
+ * `#B55829` modal frame, the Portrait Value bars and the two loadout panels, on a flat
+ * `#111111` field (the wallpaper was cropped at 1200x630 and read as noise). Colours and
+ * sizes are copied from the `.builds-*` / `.build-section` rules in styles.css so the
+ * Discord preview and the `/sim` page read as one design.
  */
 const BUILD = {
   ink: "#ECE5D9",
@@ -261,6 +262,32 @@ function psychubeRow(name, src, index) {
   );
 }
 
+/**
+ * `.build-pattern img`: a 44x44 box with the art contained, sized by hand. Satori does not
+ * honour `objectFit` for these 170x114 glyphs and drew them stretched into the square.
+ */
+function patternIcon(art) {
+  if (!art.shape) return null;
+  const box = 44;
+  const size = art.shapeSize;
+  const scale = size ? Math.min(box / size.width, box / size.height) : 1;
+  const width = Math.max(1, Math.round(size ? size.width * scale : box));
+  const height = Math.max(1, Math.round(size ? size.height * scale : box));
+  return h(
+    "div",
+    {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: `${box}px`,
+      height: `${box}px`,
+      flexShrink: 0,
+      marginRight: "12px",
+    },
+    img(art.shape, { width: `${width}px`, height: `${height}px` }),
+  );
+}
+
 /** `.build-pattern` + `.build-resonance-btn`: the coloured pattern name and its presets. */
 function resonanceBlock(char, lang, art, wellStyle = {}) {
   const pattern = char.pattern ? safeText(patternLabel(lang, char.pattern)) : "";
@@ -495,10 +522,7 @@ export function characterCard({ char, lang, art }) {
       width: "100%",
       height: "100%",
       padding: "20px",
-      backgroundImage: art.background ? `url("${art.background}")` : "none",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundColor: "#101010",
+      backgroundColor: "#111111",
       fontFamily: FONT,
       color: BUILD.ink,
     },

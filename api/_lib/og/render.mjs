@@ -15,15 +15,12 @@
  */
 import { ImageResponse } from "@vercel/og";
 
-import { loadAll, ogFonts, ogIndex } from "./assets.mjs";
+import { imageSize, loadAll, ogFonts, ogIndex } from "./assets.mjs";
 import { characterCard, characterCardHeight, defaultCard, teamCard } from "./cards.mjs";
 import { normalizeSim } from "../sim/params.mjs";
 import { findCharacter } from "./resolve.mjs";
 
 const SHOWCASE = ["Lucy", "Jessica", "6", "Windsong"];
-
-/** The InfoBook pane sits on the same art as every modal. */
-const BACKGROUND = "images/background.png";
 
 function afflatusIcon(afflatus) {
   return afflatus ? `images/afflatus_icon/${afflatus}.png` : "";
@@ -48,11 +45,11 @@ async function characterArt(index, char, origin) {
     chubeNames[key] = row ? { en: row.name || key, zh: row.nameZh || "" } : { en: key, zh: "" };
   }
 
-  const [background, dmg, head, afflatus, shape, ...chubes] = await loadAll(
-    [BACKGROUND, dmgIcon(char.dmgType), char.head, afflatusIcon(char.afflatus), char.patternIcon, ...chubeIcons],
+  const [dmg, head, afflatus, shape, ...chubes] = await loadAll(
+    [dmgIcon(char.dmgType), char.head, afflatusIcon(char.afflatus), char.patternIcon, ...chubeIcons],
     origin,
   );
-  return { background, dmg, head, afflatus, shape, chubes, chubeNames };
+  return { dmg, head, afflatus, shape, shapeSize: imageSize(shape), chubes, chubeNames };
 }
 
 async function teamArt(members, origin) {
