@@ -23,6 +23,7 @@ import {
   simTitle,
   simVersion,
 } from "./_lib/sim/params.mjs";
+import { characterCardHeight } from "./_lib/og/cards.mjs";
 
 // The bundle root, so `index.html` resolves whether the function runs from the repo
 // checkout (tests, local `vercel dev`) or from /var/task.
@@ -40,6 +41,9 @@ const esc = (value) =>
 function metaTags(sim, origin, canonicalUrl, fullTitle) {
   const description = simDescription(sim);
   const image = `${origin}/api/og?${simImageQuery(sim)}&v=${simVersion(sim)}`;
+  // A character without a progression chart renders a shorter sheet; the tags have to say
+  // so, otherwise Discord crops the card to a 630px box.
+  const imageHeight = sim.mode === "character" ? characterCardHeight(sim.character) : 630;
 
   return [
     `<meta name="description" content="${esc(description)}" />`,
@@ -51,7 +55,7 @@ function metaTags(sim, origin, canonicalUrl, fullTitle) {
     `<meta property="og:url" content="${esc(canonicalUrl)}" />`,
     `<meta property="og:image" content="${esc(image)}" />`,
     `<meta property="og:image:width" content="1200" />`,
-    `<meta property="og:image:height" content="630" />`,
+    `<meta property="og:image:height" content="${imageHeight}" />`,
     `<meta property="og:image:alt" content="${esc(simTitle(sim))}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${esc(fullTitle)}" />`,

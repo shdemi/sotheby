@@ -3,2087 +3,4274 @@
     "6": {
       "id": 3079,
       "name": "Six",
+      "display": "6",
       "nameZh": "6",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "DPS", "Remove Debuffs", "Eureka"],
+      "roleTagsZh": ["辅助", "输出", "净化", "灵光"],
       "head": "images/headicon_small/307901.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["5:1444", "6:1545"]
+      "chart": {
+        "label": "Team Improvement",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 0
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 9
+          },
+          {
+            "badge": "P5",
+            "val": 21
+          }
+        ]
+      },
+      "psychubes": ["5:1444", "6:1545"],
+      "resonance": ["Output"]
     },
     "37": {
       "id": 3066,
       "name": "Thirty-seven",
+      "display": "37",
       "nameZh": "37",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": [
+        "DPS",
+        "Extra Action",
+        "Support",
+        "Follow-Up",
+        "Eureka"
+      ],
+      "roleTagsZh": ["输出", "额外行动", "辅助", "追击", "灵光"],
       "head": "images/headicon_small/306601.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/4",
-      "psychubes": ["6:1579", "6:1539"]
+      "chart": null,
+      "psychubes": ["6:1579", "6:1539"],
+      "resonance": ["Portrait 0", "Portrait 1+"]
     },
     "A Knight": {
       "id": 3007,
       "name": "A Knight",
+      "display": "A Knight",
       "nameZh": "未锈铠",
       "rarity": 6,
       "afflatus": "Spirit",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/300701.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1",
-      "psychubes": ["6:1514", "6:1546"]
+      "chart": null,
+      "psychubes": ["6:1514", "6:1546"],
+      "resonance": ["Output"]
     },
     "Aleph": {
       "id": 3113,
       "name": "Aleph",
+      "display": "Aleph",
       "nameZh": "阿莱夫",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Inspiration", "Channel", "Eureka"],
+      "roleTagsZh": ["辅助", "启示", "吟诵", "灵光"],
       "head": "images/headicon_small/311301.png",
       "shape": "T shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/T shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1545", "6:1515"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 16
+          },
+          {
+            "badge": "P2",
+            "val": 9
+          },
+          {
+            "badge": "P3",
+            "val": 10
+          },
+          {
+            "badge": "P4",
+            "val": 9
+          },
+          {
+            "badge": "P5",
+            "val": 15
+          }
+        ]
+      },
+      "psychubes": ["6:1545", "6:1515"],
+      "resonance": ["R10-11"]
     },
     "Alexios": {
       "id": 3122,
       "name": "Alexios",
+      "display": "Alexios",
       "nameZh": "阿利克西欧斯",
       "rarity": 5,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Ritual", "Assassination"],
+      "roleTagsZh": ["输出", "仪式", "刺杀"],
       "head": "images/headicon_small/312201.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "5",
-      "psychubes": ["6:1546", "6:1514"]
+      "chart": null,
+      "psychubes": ["6:1546", "6:1514"],
+      "resonance": ["Output"]
     },
     "AliEn T": {
       "id": 3034,
       "name": "aliEn T",
+      "display": "AliEn T",
       "nameZh": "星之眼",
       "rarity": 3,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Control"],
+      "roleTagsZh": ["输出", "控制"],
       "head": "images/headicon_small/303401.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "An-an Lee": {
       "id": 3039,
       "name": "An-an Lee",
+      "display": "An-an Lee",
       "nameZh": "泥鯭的士",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "DPS", "Control"],
+      "roleTagsZh": ["辅助", "输出", "控制"],
       "head": "images/headicon_small/303901.png",
       "shape": "T shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/T shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["5:1444", "5:1445"]
+      "chart": null,
+      "psychubes": ["5:1444", "5:1445"],
+      "resonance": ["R10-15"]
     },
     "Anjo Nala": {
       "id": 3100,
       "name": "Anjo Nala",
+      "display": "Anjo Nala",
       "nameZh": "天使娜娜",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": [
+        "DPS",
+        "Extra Action",
+        "Ritual",
+        "Control",
+        "Channel"
+      ],
+      "roleTagsZh": ["输出", "额外行动", "仪式", "控制", "吟诵"],
       "head": "images/headicon_small/310001.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1539", "6:1536"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 7
+          },
+          {
+            "badge": "P2",
+            "val": 13
+          },
+          {
+            "badge": "P3",
+            "val": 9
+          },
+          {
+            "badge": "P4",
+            "val": 5
+          },
+          {
+            "badge": "P5",
+            "val": 16
+          }
+        ]
+      },
+      "psychubes": ["6:1539", "6:1536"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "APPLe": {
       "id": 3028,
       "name": "APPLe",
+      "display": "APPLe",
       "nameZh": "APPLe",
       "rarity": 4,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal"],
+      "roleTagsZh": ["治疗"],
       "head": "images/headicon_small/302801.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Output"]
     },
     "Argus": {
       "id": 3097,
       "name": "Argus",
+      "display": "Argus",
       "nameZh": "阿尔古斯",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Rank Up", "Support", "Remove Buffs"],
+      "roleTagsZh": ["输出", "升阶", "辅助", "驱散"],
       "head": "images/headicon_small/309701.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/4",
-      "psychubes": ["6:1530", "6:1521"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 15
+          },
+          {
+            "badge": "P2",
+            "val": 15
+          },
+          {
+            "badge": "P3",
+            "val": 13
+          },
+          {
+            "badge": "P4",
+            "val": 15
+          },
+          {
+            "badge": "P5",
+            "val": 9
+          }
+        ]
+      },
+      "psychubes": ["6:1530", "6:1521"],
+      "resonance": ["R10-15"]
     },
     "Avgust": {
       "id": 3078,
       "name": "Авксивий",
+      "display": "Avgust",
       "nameZh": "阿夫西维",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Support", "Remove Buffs"],
+      "roleTagsZh": ["治疗", "辅助", "驱散"],
       "head": "images/headicon_small/307801.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/2/5",
-      "psychubes": ["5:1439", "5:1440"]
+      "chart": null,
+      "psychubes": ["5:1439", "5:1440"],
+      "resonance": ["Survivability"]
     },
     "Baby Blue": {
       "id": 3016,
       "name": "Baby Blue",
+      "display": "Baby Blue",
       "nameZh": "婴儿蓝",
       "rarity": 5,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Support", "Control"],
+      "roleTagsZh": ["输出", "辅助", "控制"],
       "head": "images/headicon_small/301601.png",
       "shape": "U shape",
       "pattern": "Prudentiality",
       "patternIcon": "images/shape_pattern/U shape/Prudentiality.png",
+      "patternColor": "#62A771",
       "portrait": "0/5",
-      "psychubes": ["5:1437", "5:1440"]
+      "chart": null,
+      "psychubes": ["5:1437", "5:1440"],
+      "resonance": ["Survivability"]
     },
     "Balloon Party": {
       "id": 3024,
       "name": "Balloon Party",
+      "display": "Balloon Party",
       "nameZh": "气球派对",
       "rarity": 5,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Heal"],
+      "roleTagsZh": ["治疗"],
       "head": "images/headicon_small/302401.png",
       "shape": "U shape",
       "pattern": "Quiescence",
       "patternIcon": "images/shape_pattern/U shape/Quiescence.png",
+      "patternColor": "#62A771",
       "portrait": "0/3",
-      "psychubes": ["5:1440", "6:1556"]
+      "chart": null,
+      "psychubes": ["5:1440", "6:1556"],
+      "resonance": ["Survivability"]
     },
     "Barbara": {
       "id": 3099,
       "name": "Barbara",
+      "display": "Barbara",
       "nameZh": "数羊羔",
       "rarity": 5,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Shield", "Support"],
+      "roleTagsZh": ["护盾", "辅助"],
       "head": "images/headicon_small/309901.png",
       "shape": "U shape",
       "pattern": "Overindulgence",
       "patternIcon": "images/shape_pattern/U shape/Overindulgence.png",
+      "patternColor": "#62A771",
       "portrait": "0/5",
-      "psychubes": ["6:1547", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1547", "5:1440"],
+      "resonance": ["Survivability"]
     },
     "Barcarola": {
       "id": 3108,
       "name": "Barcarola",
+      "display": "Barcarola",
       "nameZh": "芭卡洛儿",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Inspiration", "Support", "Eureka"],
+      "roleTagsZh": ["输出", "启示", "辅助", "灵光"],
       "head": "images/headicon_small/310801.png",
       "shape": "T shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/T shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2",
-      "psychubes": ["6:1540", "5:1444"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 20
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 5
+          },
+          {
+            "badge": "P5",
+            "val": 13
+          }
+        ]
+      },
+      "psychubes": ["6:1540", "5:1444"],
+      "resonance": ["R10-15"]
     },
     "Beryl": {
       "id": 3134,
       "name": "Beryl",
+      "display": "Beryl",
       "nameZh": "贝丽尔",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": [
+        "DPS",
+        "Lingering Glow",
+        "Extra Action",
+        "Rank Up"
+      ],
+      "roleTagsZh": ["输出", "余辉", "额外行动", "升阶"],
       "head": "images/headicon_small/313401.png",
       "shape": "Plus shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Plus shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1515", "6:1558"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 30
+          },
+          {
+            "badge": "P2",
+            "val": 40
+          },
+          {
+            "badge": "P3",
+            "val": 15
+          },
+          {
+            "badge": "P4",
+            "val": 2
+          },
+          {
+            "badge": "P5",
+            "val": 31
+          }
+        ]
+      },
+      "psychubes": ["6:1515", "6:1558"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Bette": {
       "id": 3045,
       "name": "Bette",
+      "display": "Bette",
       "nameZh": "贝蒂",
       "rarity": 3,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Shield", "Support"],
+      "roleTagsZh": ["护盾", "辅助"],
       "head": "images/headicon_small/304501.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Bkornblume": {
       "id": 3020,
       "name": "Bkornblume",
+      "display": "Bkornblume",
       "nameZh": "柏林以东",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Support", "Control"],
+      "roleTagsZh": ["输出", "辅助", "控制"],
       "head": "images/headicon_small/302001.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1509", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1509", "5:1440"],
+      "resonance": ["Output"]
     },
     "Blonney": {
       "id": 3060,
       "name": "Blonney",
+      "display": "Blonney",
       "nameZh": "金蜜儿",
       "rarity": 5,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Support"],
+      "roleTagsZh": ["输出", "辅助"],
       "head": "images/headicon_small/306001.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/5",
-      "psychubes": ["5:1432", "6:1510"]
+      "chart": null,
+      "psychubes": ["5:1432", "6:1510"],
+      "resonance": ["Output"]
     },
     "Brimley": {
       "id": 3106,
       "name": "Brimley",
+      "display": "Brimley",
       "nameZh": "宽檐帽",
       "rarity": 5,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Extra Action", "Remove Debuffs"],
+      "roleTagsZh": ["辅助", "额外行动", "净化"],
       "head": "images/headicon_small/310601.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0/5",
-      "psychubes": ["5:1439", "5:1440"]
+      "chart": null,
+      "psychubes": ["5:1439", "5:1440"],
+      "resonance": ["Output"]
     },
     "Brume": {
       "id": 3135,
       "name": "Brume",
+      "display": "Brume",
       "nameZh": "灰调蓝",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Dynamo", "Support", "Channel", "Array"],
+      "roleTagsZh": ["输出", "电能", "辅助", "吟诵", "术阵"],
       "head": "images/headicon_small/313501.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/4",
-      "psychubes": ["6:1539", "6:1559"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 33
+          },
+          {
+            "badge": "P2",
+            "val": 8
+          },
+          {
+            "badge": "P3",
+            "val": 9
+          },
+          {
+            "badge": "P4",
+            "val": 13
+          },
+          {
+            "badge": "P5",
+            "val": 7
+          }
+        ]
+      },
+      "psychubes": ["6:1539", "6:1559"],
+      "resonance": ["DPS", "With Corvus"]
     },
     "Buddy Fairchild": {
       "id": 3115,
       "name": "Buddy Fairchild",
+      "display": "Buddy Fairchild",
       "nameZh": "嚼嚼松果",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Ritual"],
+      "roleTagsZh": ["输出", "仪式"],
       "head": "images/headicon_small/311501.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "5",
-      "psychubes": ["6:1546", "6:1514"]
+      "chart": null,
+      "psychubes": ["6:1546", "6:1514"],
+      "resonance": ["Output"]
     },
     "Bunny Bunny": {
       "id": 3014,
       "name": "Bunny Bunny",
+      "display": "Bunny Bunny",
       "nameZh": "芭妮芭妮",
       "rarity": 4,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Heal", "Remove Debuffs"],
+      "roleTagsZh": ["治疗", "净化"],
       "head": "images/headicon_small/301401.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Output"]
     },
     "Centurion": {
       "id": 3032,
       "name": "Centurion",
+      "display": "Centurion",
       "nameZh": "百夫长",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/303201.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1",
-      "psychubes": ["6:1544", "5:1447"]
+      "chart": null,
+      "psychubes": ["6:1544", "5:1447"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Charlie": {
       "id": 3017,
       "name": "Charlie",
+      "display": "Charlie",
       "nameZh": "夏利",
       "rarity": 5,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Remove Buffs"],
+      "roleTagsZh": ["输出", "驱散"],
       "head": "images/headicon_small/301701.png",
       "shape": "T shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/T shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": ["6:1526", "6:1510"]
+      "chart": null,
+      "psychubes": ["6:1526", "6:1510"],
+      "resonance": ["Output"]
     },
     "Charon": {
       "id": 3128,
       "name": "Charon",
+      "display": "Charon",
       "nameZh": "卡戎",
       "rarity": 6,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Dynamo", "DPS", "Channel", "Array"],
+      "roleTagsZh": ["辅助", "电能", "输出", "吟诵", "术阵"],
       "head": "images/headicon_small/312801.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1554", "6:1537"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 0
+          },
+          {
+            "badge": "P3",
+            "val": 17
+          },
+          {
+            "badge": "P4",
+            "val": 15
+          },
+          {
+            "badge": "P5",
+            "val": 16
+          }
+        ]
+      },
+      "psychubes": ["6:1554", "6:1537"],
+      "resonance": ["Output", "Survivability"]
     },
     "Cheng Heguang": {
       "id": 3137,
       "name": "Cheng Heguang",
+      "display": "Cheng Heguang",
       "nameZh": "程和光",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "Extra Action", "DPS", "Follow-Up"],
+      "roleTagsZh": ["辅助", "额外行动", "输出", "追击"],
       "head": "images/headicon_small/313701.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/1",
-      "psychubes": ["6:1575", "5:1444"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 16
+          },
+          {
+            "badge": "P2",
+            "val": 8
+          },
+          {
+            "badge": "P3",
+            "val": 1
+          },
+          {
+            "badge": "P4",
+            "val": 1
+          },
+          {
+            "badge": "P5",
+            "val": 3
+          }
+        ]
+      },
+      "psychubes": ["6:1575", "5:1444"],
+      "resonance": ["R10-15"]
     },
     "Click": {
       "id": 3049,
       "name": "Click",
+      "display": "Click",
       "nameZh": "喀嚓喀嚓",
       "rarity": 5,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/304901.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0",
-      "psychubes": ["6:1514", "6:1510"]
+      "chart": null,
+      "psychubes": ["6:1514", "6:1510"],
+      "resonance": ["Survivability"]
     },
     "Coppélia": {
       "id": 3144,
       "name": "Coppélia",
+      "display": "Coppélia",
       "nameZh": "珐琅眼",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Conduit", "Support"],
+      "roleTagsZh": ["输出", "术具", "辅助"],
       "head": "images/headicon_small/314401.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/4/5",
-      "psychubes": ["6:1515", "6:1570"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 9
+          },
+          {
+            "badge": "P2",
+            "val": 16
+          },
+          {
+            "badge": "P3",
+            "val": 16
+          },
+          {
+            "badge": "P4",
+            "val": 33
+          },
+          {
+            "badge": "P5",
+            "val": 20
+          }
+        ]
+      },
+      "psychubes": ["6:1515", "6:1570"],
+      "resonance": ["R10-11"]
     },
     "Cornerstone": {
       "id": 3140,
       "name": "Cornerstone",
+      "display": "Cornerstone",
       "nameZh": "奠基石",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Riposte"],
+      "roleTagsZh": ["输出", "反击"],
       "head": "images/headicon_small/314001.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1521", "6:1574"]
+      "chart": {
+        "label": "P4: Survival Improvement",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 51
+          },
+          {
+            "badge": "P2",
+            "val": 36
+          },
+          {
+            "badge": "P3",
+            "val": 4
+          },
+          {
+            "badge": "P4",
+            "val": 0
+          },
+          {
+            "badge": "P5",
+            "val": 28
+          }
+        ]
+      },
+      "psychubes": ["6:1521", "6:1574"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Corvus": {
       "id": 3132,
       "name": "Corvus",
+      "display": "Corvus",
       "nameZh": "告死鸟",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Dynamo", "Channel", "Array"],
+      "roleTagsZh": ["输出", "电能", "吟诵", "术阵"],
       "head": "images/headicon_small/313201.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1521", "6:1539"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 20
+          },
+          {
+            "badge": "P2",
+            "val": 30
+          },
+          {
+            "badge": "P3",
+            "val": 10
+          },
+          {
+            "badge": "P4",
+            "val": 11
+          },
+          {
+            "badge": "P5",
+            "val": 12
+          }
+        ]
+      },
+      "psychubes": ["6:1521", "6:1539"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Cristallo": {
       "id": 3031,
       "name": "Cristallo",
+      "display": "Cristallo",
       "nameZh": "铅玻璃",
       "rarity": 4,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support"],
+      "roleTagsZh": ["辅助"],
       "head": "images/headicon_small/303101.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Darley Clatter": {
       "id": 3050,
       "name": "Darley Clatter",
+      "display": "Darley Clatter",
       "nameZh": "哒哒达利",
       "rarity": 3,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support"],
+      "roleTagsZh": ["辅助"],
       "head": "images/headicon_small/305001.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Desert Flannel": {
       "id": 3075,
       "name": "Desert Flannel",
+      "display": "Desert Flannel",
       "nameZh": "沙丝绒",
       "rarity": 5,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "DPS"],
+      "roleTagsZh": ["辅助", "输出"],
       "head": "images/headicon_small/307501.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/5",
-      "psychubes": ["6:1549", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1549", "5:1440"],
+      "resonance": ["Output"]
     },
     "Diggers": {
       "id": 3064,
       "name": "Diggers",
+      "display": "Diggers",
       "nameZh": "挖掘艺术",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Control"],
+      "roleTagsZh": ["输出", "控制"],
       "head": "images/headicon_small/306401.png",
       "shape": "Z shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/Z shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "0/4",
-      "psychubes": ["6:1510", "6:1504"]
+      "chart": null,
+      "psychubes": ["6:1510", "6:1504"],
+      "resonance": ["Output"]
     },
     "Dikke": {
       "id": 3022,
       "name": "Dikke",
+      "display": "Dikke",
       "nameZh": "帕米埃",
       "rarity": 5,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal"],
+      "roleTagsZh": ["治疗"],
       "head": "images/headicon_small/302201.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/4",
-      "psychubes": ["6:1510", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1510", "5:1440"],
+      "resonance": ["Survivability"]
     },
     "Door": {
       "id": 3059,
       "name": "Door",
+      "display": "Door",
       "nameZh": "门",
       "rarity": 2,
       "afflatus": "Intellect",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Support"],
+      "roleTagsZh": ["输出", "辅助"],
       "head": "images/headicon_small/305901.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Drake": {
       "id": 3158,
       "name": "Drake",
+      "display": "Drake",
       "nameZh": "德雷克",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Lingering Glow", "DPS", "Channel"],
+      "roleTagsZh": ["辅助", "余辉", "输出", "吟诵"],
       "head": "images/headicon_small/315801.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/5",
-      "psychubes": ["6:1560", "6:1578"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 25
+          },
+          {
+            "badge": "P2",
+            "val": 8
+          },
+          {
+            "badge": "P3",
+            "val": 7
+          },
+          {
+            "badge": "P4",
+            "val": 6
+          },
+          {
+            "badge": "P5",
+            "val": 42
+          }
+        ]
+      },
+      "psychubes": ["6:1560", "6:1578"],
+      "resonance": ["R10", "R11-15"]
     },
     "Druvis III": {
       "id": 3003,
       "name": "Druvis III",
+      "display": "Druvis III",
       "nameZh": "槲寄生",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Support", "Control"],
+      "roleTagsZh": ["输出", "辅助", "控制"],
       "head": "images/headicon_small/300301.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/1",
-      "psychubes": ["5:1438", "5:1440"]
+      "chart": null,
+      "psychubes": ["5:1438", "5:1440"],
+      "resonance": ["R10-15"]
     },
     "Eagle": {
       "id": 3006,
       "name": "Eagle",
+      "display": "Eagle",
       "nameZh": "小春雀儿",
       "rarity": 4,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/300601.png",
       "shape": "Plus shape",
       "pattern": "Hyperphrenia",
       "patternIcon": "images/shape_pattern/Plus shape/Hyperphrenia.png",
+      "patternColor": "#F67E26",
       "portrait": "5",
-      "psychubes": ["6:1521", "6:1543"]
+      "chart": null,
+      "psychubes": ["6:1521", "6:1543"],
+      "resonance": ["Output"]
     },
     "Enigma": {
       "id": 3143,
       "name": "Enigma",
+      "display": "Enigma",
       "nameZh": "哑谜",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Shield", "Dynamo", "Support", "Array"],
+      "roleTagsZh": ["护盾", "电能", "辅助", "术阵"],
       "head": "images/headicon_small/314301.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1537", "6:1567"]
+      "chart": {
+        "label": "P4: Survival Improvement",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 31
+          },
+          {
+            "badge": "P2",
+            "val": 10
+          },
+          {
+            "badge": "P3",
+            "val": 6
+          },
+          {
+            "badge": "P4",
+            "val": 0
+          },
+          {
+            "badge": "P5",
+            "val": 12
+          }
+        ]
+      },
+      "psychubes": ["6:1537", "6:1567"],
+      "resonance": ["R10-15"]
     },
     "Erick": {
       "id": 3058,
       "name": "Erick",
+      "display": "Erick",
       "nameZh": "埃里克",
       "rarity": 4,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Remove Buffs"],
+      "roleTagsZh": ["输出", "驱散"],
       "head": "images/headicon_small/305801.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Eternity": {
       "id": 3051,
       "name": "Eternity",
+      "display": "Eternity",
       "nameZh": "温妮弗雷德",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/305101.png",
       "shape": "Z shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/Z shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "0/1",
-      "psychubes": ["6:1555", "6:1556"]
+      "chart": null,
+      "psychubes": ["6:1555", "6:1556"],
+      "resonance": ["R10-11"]
     },
     "Everecho": {
       "id": 3145,
       "name": "Everecho",
+      "display": "Everecho",
       "nameZh": "回声谣",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Heal", "Conduit", "Support"],
+      "roleTagsZh": ["治疗", "术具", "辅助"],
       "head": "images/headicon_small/314501.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1573", "6:1556"]
+      "chart": {
+        "label": "P4: Survival Improvement",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 11
+          },
+          {
+            "badge": "P3",
+            "val": 6
+          },
+          {
+            "badge": "P4",
+            "val": 0
+          },
+          {
+            "badge": "P5",
+            "val": 24
+          }
+        ]
+      },
+      "psychubes": ["6:1573", "6:1556"],
+      "resonance": ["R10-15"]
     },
     "Ezio Auditore": {
       "id": 3123,
       "name": "Ezio Auditore",
+      "display": "Ezio Auditore",
       "nameZh": "艾吉奥·奥迪托雷",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": [
+        "DPS",
+        "Poison",
+        "Ritual",
+        "Extra Action",
+        "Assassination"
+      ],
+      "roleTagsZh": ["输出", "中毒", "仪式", "额外行动", "刺杀"],
       "head": "images/headicon_small/312301.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1551", "5:1434"]
+      "chart": {
+        "label": "FuA",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 15
+          },
+          {
+            "badge": "P2",
+            "val": 11
+          },
+          {
+            "badge": "P3",
+            "val": 10
+          },
+          {
+            "badge": "P4",
+            "val": 15
+          },
+          {
+            "badge": "P5",
+            "val": 11
+          }
+        ]
+      },
+      "psychubes": ["6:1551", "5:1434"],
+      "resonance": ["Poison", "Follow-Up Attack", "Ultimate"]
     },
     "Ezra": {
       "id": 3074,
       "name": "Ezra Theodore",
+      "display": "Ezra",
       "nameZh": "爱兹拉",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Shield", "Support", "Eureka"],
+      "roleTagsZh": ["护盾", "辅助", "灵光"],
       "head": "images/headicon_small/307401.png",
       "shape": "Plus shape",
       "pattern": "Stupefaction",
       "patternIcon": "images/shape_pattern/Plus shape/Stupefaction.png",
+      "patternColor": "#E6AE34",
       "portrait": "0/2/5",
-      "psychubes": ["6:1537", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1537", "5:1440"],
+      "resonance": ["R10-15"]
     },
     "Fatutu": {
       "id": 3109,
       "name": "Fatutu",
+      "display": "Fatutu",
       "nameZh": "图图石子",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Extra Action", "Remove Debuffs"],
+      "roleTagsZh": ["治疗", "额外行动", "净化"],
       "head": "images/headicon_small/310901.png",
       "shape": "T shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/T shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/3",
-      "psychubes": ["6:1541", "6:1556"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 0
+          },
+          {
+            "badge": "P2",
+            "val": 0
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 0
+          },
+          {
+            "badge": "P5",
+            "val": 0
+          }
+        ]
+      },
+      "psychubes": ["6:1541", "6:1556"],
+      "resonance": ["R10-11"]
     },
     "Flutterpage": {
       "id": 3105,
       "name": "Flutterpage",
+      "display": "Flutterpage",
       "nameZh": "纸信圈儿",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": [
+        "Support",
+        "Extra Action",
+        "DPS",
+        "Channel",
+        "Eureka"
+      ],
+      "roleTagsZh": ["辅助", "额外行动", "输出", "吟诵", "灵光"],
       "head": "images/headicon_small/310501.png",
       "shape": "Plus shape",
       "pattern": "Hyperphrenia",
       "patternIcon": "images/shape_pattern/Plus shape/Hyperphrenia.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/3",
-      "psychubes": ["6:1575", "6:1547"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 20
+          },
+          {
+            "badge": "P2",
+            "val": 7
+          },
+          {
+            "badge": "P3",
+            "val": 22
+          },
+          {
+            "badge": "P4",
+            "val": 12
+          },
+          {
+            "badge": "P5",
+            "val": 16
+          }
+        ]
+      },
+      "psychubes": ["6:1575", "6:1547"],
+      "resonance": ["R10-15"]
     },
     "Getian": {
       "id": 3084,
       "name": "Getian",
+      "display": "Getian",
       "nameZh": "葛天",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "Channel", "Eureka", "Array"],
+      "roleTagsZh": ["辅助", "吟诵", "灵光", "术阵"],
       "head": "images/headicon_small/308401.png",
       "shape": "T shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/T shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/3/5",
-      "psychubes": ["6:1537", "5:1446"]
+      "chart": null,
+      "psychubes": ["6:1537", "5:1446"],
+      "resonance": ["R10-15"]
     },
     "Glyndŵr": {
       "id": 3163,
       "name": "Glyndŵr",
+      "display": "Glyndŵr",
       "nameZh": "格林杜尔",
       "rarity": 4,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Support", "Extra Action", "Follow-Up"],
+      "roleTagsZh": ["输出", "辅助", "额外行动", "追击"],
       "head": "images/headicon_small/316301.png",
       "shape": "Plus shape",
       "pattern": "Hyperphrenia",
       "patternIcon": "images/shape_pattern/Plus shape/Hyperphrenia.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": ["6:1549"]
+      "chart": null,
+      "psychubes": ["6:1549"],
+      "resonance": ["Output"]
     },
     "Hedone": {
       "id": 3156,
       "name": "Hedone",
+      "display": "Hedone",
       "nameZh": "赫多涅",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "Conduit", "DPS"],
+      "roleTagsZh": ["辅助", "术具", "输出"],
       "head": "images/headicon_small/315601.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/5",
-      "psychubes": ["5:1443", "6:1570"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 6
+          },
+          {
+            "badge": "P2",
+            "val": 10
+          },
+          {
+            "badge": "P3",
+            "val": 3
+          },
+          {
+            "badge": "P4",
+            "val": 3
+          },
+          {
+            "badge": "P5",
+            "val": 31
+          }
+        ]
+      },
+      "psychubes": ["5:1443", "6:1570"],
+      "resonance": ["R10-15"]
     },
     "Hissabeth": {
       "id": 3116,
       "name": "Hissabeth",
+      "display": "Hissabeth",
       "nameZh": "冷周六",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Ritual", "Control"],
+      "roleTagsZh": ["输出", "仪式", "控制"],
       "head": "images/headicon_small/311601.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1",
-      "psychubes": ["6:1546", "6:1545"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 22
+          },
+          {
+            "badge": "P2",
+            "val": 0
+          },
+          {
+            "badge": "P3",
+            "val": 11
+          },
+          {
+            "badge": "P4",
+            "val": 15
+          },
+          {
+            "badge": "P5",
+            "val": 9
+          }
+        ]
+      },
+      "psychubes": ["6:1546", "6:1545"],
+      "resonance": ["R10-15"]
     },
     "Horropedia": {
       "id": 3061,
       "name": "Horropedia",
+      "display": "Horropedia",
       "nameZh": "恐怖通",
       "rarity": 5,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Support", "Remove Buffs"],
+      "roleTagsZh": ["输出", "辅助", "驱散"],
       "head": "images/headicon_small/306101.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/5",
-      "psychubes": ["6:1544", "6:1510"]
+      "chart": null,
+      "psychubes": ["6:1544", "6:1510"],
+      "resonance": ["Output"]
     },
     "Huntsworn Lilya": {
       "id": 3155,
       "name": "Huntsworn Lilya",
+      "display": "Huntsworn Lilya",
       "nameZh": "狩勋女巫红弩箭",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Pursuit", "Channel"],
+      "roleTagsZh": ["输出", "洞知", "吟诵"],
       "head": "images/headicon_small/315501.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/3/5",
-      "psychubes": ["6:1577", "6:1526"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 35
+          },
+          {
+            "badge": "P2",
+            "val": 30
+          },
+          {
+            "badge": "P3",
+            "val": 40
+          },
+          {
+            "badge": "P4",
+            "val": 8
+          },
+          {
+            "badge": "P5",
+            "val": 26
+          }
+        ]
+      },
+      "psychubes": ["6:1577", "6:1526"],
+      "resonance": [
+        "R10  + P0 37",
+        "R15 + P0 37",
+        "R10 + P1 37",
+        "R15 + P1 37"
+      ]
     },
     "Igor": {
       "id": 3092,
       "name": "Igor",
+      "display": "Igor",
       "nameZh": "伊戈尔",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Extra Action", "Ritual", "Bullet"],
+      "roleTagsZh": ["输出", "额外行动", "仪式", "子弹"],
       "head": "images/headicon_small/309201.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/5",
-      "psychubes": ["6:1562", "6:1546"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 35
+          },
+          {
+            "badge": "P2",
+            "val": 10
+          },
+          {
+            "badge": "P3",
+            "val": 15
+          },
+          {
+            "badge": "P4",
+            "val": 12
+          },
+          {
+            "badge": "P5",
+            "val": 41
+          }
+        ]
+      },
+      "psychubes": ["6:1562", "6:1546"],
+      "resonance": ["Family", "With Flutterpage"]
     },
     "Isolde": {
       "id": 3081,
       "name": "Isolde",
+      "display": "Isolde",
       "nameZh": "伊索尔德",
       "rarity": 6,
       "afflatus": "Spirit",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Burn", "Support"],
+      "roleTagsZh": ["输出", "燃烧", "辅助"],
       "head": "images/headicon_small/308101.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/3/5",
-      "psychubes": ["6:1560", "6:1565"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 7
+          },
+          {
+            "badge": "P2",
+            "val": 15
+          },
+          {
+            "badge": "P3",
+            "val": 8
+          },
+          {
+            "badge": "P4",
+            "val": 0
+          },
+          {
+            "badge": "P5",
+            "val": 17
+          }
+        ]
+      },
+      "psychubes": ["6:1560", "6:1565"],
+      "resonance": ["R10-11"]
     },
     "J": {
       "id": 3094,
       "name": "Joe",
+      "display": "J",
       "nameZh": "J",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Shield", "Burn", "Support", "Riposte"],
+      "roleTagsZh": ["护盾", "燃烧", "辅助", "反击"],
       "head": "images/headicon_small/309401.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1549", "6:1521"]
+      "chart": {
+        "label": "Riposte",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 22
+          },
+          {
+            "badge": "P2",
+            "val": 40
+          },
+          {
+            "badge": "P3",
+            "val": 41
+          },
+          {
+            "badge": "P4",
+            "val": 9
+          },
+          {
+            "badge": "P5",
+            "val": 31
+          }
+        ]
+      },
+      "psychubes": ["6:1549", "6:1521"],
+      "resonance": ["R10-15"]
     },
     "Jessica": {
       "id": 3056,
       "name": "Jessica",
+      "display": "Jessica",
       "nameZh": "洁西卡",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Poison"],
+      "roleTagsZh": ["输出", "中毒"],
       "head": "images/headicon_small/305601.png",
       "shape": "T shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/T shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["5:1434", "6:1504"]
+      "chart": null,
+      "psychubes": ["5:1434", "6:1504"],
+      "resonance": ["R10-15 (Petrify)", "R10-15 (Poison)"]
     },
     "Jiu Niangzi": {
       "id": 3083,
       "name": "Jiu Niangzi",
+      "display": "Jiu Niangzi",
       "nameZh": "曲娘",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Extra Action", "Channel"],
+      "roleTagsZh": ["输出", "额外行动", "吟诵"],
       "head": "images/headicon_small/308301.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/3/5",
-      "psychubes": ["6:1521", "6:1539"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 8
+          },
+          {
+            "badge": "P2",
+            "val": 15
+          },
+          {
+            "badge": "P3",
+            "val": 9
+          },
+          {
+            "badge": "P4",
+            "val": 9
+          },
+          {
+            "badge": "P5",
+            "val": 9
+          }
+        ]
+      },
+      "psychubes": ["6:1521", "6:1539"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "John Titor": {
       "id": 3036,
       "name": "John Titor",
+      "display": "John Titor",
       "nameZh": "约翰·提托",
       "rarity": 3,
       "afflatus": "Intellect",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Shield", "Remove Debuffs", "Remove Buffs"],
+      "roleTagsZh": ["护盾", "净化", "驱散"],
       "head": "images/headicon_small/303601.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1531", "6:1523"]
+      "chart": null,
+      "psychubes": ["6:1531", "6:1523"],
+      "resonance": ["Survivability"]
     },
     "Kaalaa Baunaa": {
       "id": 3070,
       "name": "Kaalaa Baunaa",
+      "display": "Kaalaa Baunaa",
       "nameZh": "伽菈波那",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Follow-Up"],
+      "roleTagsZh": ["输出", "追击"],
       "head": "images/headicon_small/307001.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1",
-      "psychubes": ["6:1521", "6:1539"]
+      "chart": null,
+      "psychubes": ["6:1521", "6:1539"],
+      "resonance": ["R10-15"]
     },
     "Kakania": {
       "id": 3080,
       "name": "Kakania",
+      "display": "Kakania",
       "nameZh": "卡卡尼亚",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Support"],
+      "roleTagsZh": ["治疗", "辅助"],
       "head": "images/headicon_small/308001.png",
       "shape": "U shape",
       "pattern": "Overindulgence",
       "patternIcon": "images/shape_pattern/U shape/Overindulgence.png",
+      "patternColor": "#62A771",
       "portrait": "0/2/3/5",
-      "psychubes": ["6:1548", "6:1528"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 8
+          },
+          {
+            "badge": "P2",
+            "val": 22
+          },
+          {
+            "badge": "P3",
+            "val": 40
+          },
+          {
+            "badge": "P4",
+            "val": 3
+          },
+          {
+            "badge": "P5",
+            "val": 10
+          }
+        ]
+      },
+      "psychubes": ["6:1548", "6:1528"],
+      "resonance": ["R10-15"]
     },
     "Kanjira": {
       "id": 3071,
       "name": "Kanjira",
+      "display": "Kanjira",
       "nameZh": "坎吉拉",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Poison", "Support"],
+      "roleTagsZh": ["输出", "中毒", "辅助"],
       "head": "images/headicon_small/307101.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "1",
-      "psychubes": ["6:1510", "6:1504"]
+      "chart": null,
+      "psychubes": ["6:1510", "6:1504"],
+      "resonance": ["Output"]
     },
     "Kassandra": {
       "id": 3124,
       "name": "Kassandra",
+      "display": "Kassandra",
       "nameZh": "卡珊德拉",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": [
+        "DPS",
+        "Extra Action",
+        "Ritual",
+        "Support",
+        "Assassination"
+      ],
+      "roleTagsZh": ["输出", "额外行动", "仪式", "辅助", "刺杀"],
       "head": "images/headicon_small/312401.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2",
-      "psychubes": ["6:1575", "5:1444"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 1
+          },
+          {
+            "badge": "P2",
+            "val": 15
+          },
+          {
+            "badge": "P3",
+            "val": 15
+          },
+          {
+            "badge": "P4",
+            "val": 12
+          },
+          {
+            "badge": "P5",
+            "val": 11
+          }
+        ]
+      },
+      "psychubes": ["6:1575", "5:1444"],
+      "resonance": ["R10-15"]
     },
     "Kiperina": {
       "id": 3117,
       "name": "Kiperina",
+      "display": "Kiperina",
       "nameZh": "库珀花环",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Shield", "Inspiration", "Support", "Eureka"],
+      "roleTagsZh": ["护盾", "启示", "辅助", "灵光"],
       "head": "images/headicon_small/311701.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1547", "6:1515"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 3
+          },
+          {
+            "badge": "P2",
+            "val": 3
+          },
+          {
+            "badge": "P3",
+            "val": 2
+          },
+          {
+            "badge": "P4",
+            "val": 0
+          },
+          {
+            "badge": "P5",
+            "val": 4
+          }
+        ]
+      },
+      "psychubes": ["6:1547", "6:1515"],
+      "resonance": ["R10-15"]
     },
     "La Source": {
       "id": 3030,
       "name": "La Source",
+      "display": "La Source",
       "nameZh": "拉拉泉",
       "rarity": 3,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal"],
+      "roleTagsZh": ["治疗"],
       "head": "images/headicon_small/303001.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Lady by the Lake": {
       "id": 3136,
       "name": "Lady by the Lake",
+      "display": "Lady by the Lake",
       "nameZh": "《湖边的女人》",
       "rarity": 4,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Support"],
+      "roleTagsZh": ["输出", "辅助"],
       "head": "images/headicon_small/313601.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Leilani": {
       "id": 3035,
       "name": "Leilani",
+      "display": "Leilani",
       "nameZh": "莉拉妮",
       "rarity": 3,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Support"],
+      "roleTagsZh": ["输出", "辅助"],
       "head": "images/headicon_small/303501.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Output"]
     },
     "Liang Yue": {
       "id": 3110,
       "name": "Liang Yue",
+      "display": "Liang Yue",
       "nameZh": "梁月",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Extra Action", "Immunity"],
+      "roleTagsZh": ["输出", "额外行动", "免疫"],
       "head": "images/headicon_small/311001.png",
       "shape": "Plus shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Plus shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1542", "6:1515"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 7
+          },
+          {
+            "badge": "P2",
+            "val": 22
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 5
+          },
+          {
+            "badge": "P5",
+            "val": 42
+          }
+        ]
+      },
+      "psychubes": ["6:1542", "6:1515"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Lilya": {
       "id": 3004,
       "name": "Lilya",
+      "display": "Lilya",
       "nameZh": "红弩箭",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Follow-Up"],
+      "roleTagsZh": ["输出", "追击"],
       "head": "images/headicon_small/300401.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1526", "6:1521"]
+      "chart": null,
+      "psychubes": ["6:1526", "6:1521"],
+      "resonance": ["R10-15"]
     },
     "Loggerhead": {
       "id": 3112,
       "name": "Loggerhead",
+      "display": "Loggerhead",
       "nameZh": "空脑袋",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal"],
+      "roleTagsZh": ["治疗"],
       "head": "images/headicon_small/311201.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "0/3/4/5",
-      "psychubes": ["5:1440", "6:1508"]
+      "chart": null,
+      "psychubes": ["5:1440", "6:1508"],
+      "resonance": ["Survivability"]
     },
     "Lopera": {
       "id": 3102,
       "name": "Lopera",
+      "display": "Lopera",
       "nameZh": "洛佩拉",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": [
+        "Support",
+        "Burn",
+        "Channel",
+        "Bullet",
+        "Array"
+      ],
+      "roleTagsZh": ["辅助", "燃烧", "吟诵", "子弹", "术阵"],
       "head": "images/headicon_small/310201.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1537", "6:1549"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 10
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 10
+          },
+          {
+            "badge": "P5",
+            "val": 8
+          }
+        ]
+      },
+      "psychubes": ["6:1537", "6:1549"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Lorelei": {
       "id": 3091,
       "name": "Lorelei",
+      "display": "Lorelei",
       "nameZh": "罗蕾莱",
       "rarity": 5,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "DPS"],
+      "roleTagsZh": ["辅助", "输出"],
       "head": "images/headicon_small/309101.png",
       "shape": "Plus shape",
       "pattern": "Stupefaction",
       "patternIcon": "images/shape_pattern/Plus shape/Stupefaction.png",
+      "patternColor": "#E6AE34",
       "portrait": "1/3/5",
-      "psychubes": ["5:1440", "5:1432"]
+      "chart": null,
+      "psychubes": ["5:1440", "5:1432"],
+      "resonance": ["Output"]
     },
     "Lorentz Butterfly": {
       "id": 3139,
       "name": "Lorentz Butterfly",
+      "display": "Lorentz Butterfly",
       "nameZh": "洛伦兹蝴蝶",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Lingering Glow", "DPS", "Rewrite"],
+      "roleTagsZh": ["辅助", "余辉", "输出", "改写"],
       "head": "images/headicon_small/313901.png",
       "shape": "Plus shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Plus shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1565", "6:1561"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 18
+          },
+          {
+            "badge": "P2",
+            "val": 15
+          },
+          {
+            "badge": "P3",
+            "val": 6
+          },
+          {
+            "badge": "P4",
+            "val": 6
+          },
+          {
+            "badge": "P5",
+            "val": 11
+          }
+        ]
+      },
+      "psychubes": ["6:1565", "6:1561"],
+      "resonance": ["Attack", "Survivability"]
     },
     "Lucy": {
       "id": 3086,
       "name": "Lucy",
+      "display": "Lucy",
       "nameZh": "露西",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Dynamo"],
+      "roleTagsZh": ["输出", "电能"],
       "head": "images/headicon_small/308601.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/3/5",
-      "psychubes": ["6:1527", "6:1515"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 17
+          },
+          {
+            "badge": "P2",
+            "val": 9
+          },
+          {
+            "badge": "P3",
+            "val": 12
+          },
+          {
+            "badge": "P4",
+            "val": 10
+          },
+          {
+            "badge": "P5",
+            "val": 21
+          }
+        ]
+      },
+      "psychubes": ["6:1527", "6:1515"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Marcus": {
       "id": 3065,
       "name": "Marcus",
+      "display": "Marcus",
       "nameZh": "马库斯",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Rank Up", "Eureka"],
+      "roleTagsZh": ["输出", "升阶", "灵光"],
       "head": "images/headicon_small/306501.png",
       "shape": "T shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/T shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0/4",
-      "psychubes": ["6:1524", "6:1504"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 3
+          },
+          {
+            "badge": "P2",
+            "val": 5
+          },
+          {
+            "badge": "P3",
+            "val": 13
+          },
+          {
+            "badge": "P4",
+            "val": 11
+          },
+          {
+            "badge": "P5",
+            "val": 4
+          }
+        ]
+      },
+      "psychubes": ["6:1524", "6:1504"],
+      "resonance": ["R10-15"]
     },
     "Marsha": {
       "id": 3127,
       "name": "Marsha",
+      "display": "Marsha",
       "nameZh": "玛尔纱",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": [
+        "Shield",
+        "Lingering Glow",
+        "Support",
+        "Remove Debuffs"
+      ],
+      "roleTagsZh": ["护盾", "余辉", "辅助", "净化"],
       "head": "images/headicon_small/312701.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/5",
-      "psychubes": ["6:1549", "6:1560"]
+      "chart": {
+        "label": "P4: Survival Improvement",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 9
+          },
+          {
+            "badge": "P2",
+            "val": 4
+          },
+          {
+            "badge": "P3",
+            "val": 10
+          },
+          {
+            "badge": "P4",
+            "val": 0
+          },
+          {
+            "badge": "P5",
+            "val": 20
+          }
+        ]
+      },
+      "psychubes": ["6:1549", "6:1560"],
+      "resonance": ["R10-15"]
     },
     "Matilda": {
       "id": 3041,
       "name": "Matilda Bouanich",
+      "display": "Matilda",
       "nameZh": "玛蒂尔达",
       "rarity": 5,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Support"],
+      "roleTagsZh": ["输出", "辅助"],
       "head": "images/headicon_small/304101.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": ["6:1509", "6:1510"]
+      "chart": null,
+      "psychubes": ["6:1509", "6:1510"],
+      "resonance": ["Output"]
     },
     "Medicine Pocket": {
       "id": 3047,
       "name": "Medicine Pocket",
+      "display": "Medicine Pocket",
       "nameZh": "兔毛手袋",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Support", "Control"],
+      "roleTagsZh": ["治疗", "辅助", "控制"],
       "head": "images/headicon_small/304701.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1541", "6:1556"]
+      "chart": null,
+      "psychubes": ["6:1541", "6:1556"],
+      "resonance": ["R10-15"]
     },
     "Melania": {
       "id": 3062,
       "name": "Melania",
+      "display": "Melania",
       "nameZh": "梅兰妮",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/306201.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1549", "6:1556"]
+      "chart": null,
+      "psychubes": ["6:1549", "6:1556"],
+      "resonance": ["R10-15"]
     },
     "Mercuria": {
       "id": 3095,
       "name": "Mercuria",
+      "display": "Mercuria",
       "nameZh": "环状水星",
       "rarity": 6,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Rank Up", "DPS"],
+      "roleTagsZh": ["辅助", "升阶", "输出"],
       "head": "images/headicon_small/309501.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/4/5",
-      "psychubes": ["6:1515", "6:1575"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 0
+          },
+          {
+            "badge": "P2",
+            "val": 17
+          },
+          {
+            "badge": "P3",
+            "val": 8
+          },
+          {
+            "badge": "P4",
+            "val": 30
+          },
+          {
+            "badge": "P5",
+            "val": 36
+          }
+        ]
+      },
+      "psychubes": ["6:1515", "6:1575"],
+      "resonance": ["R10-11"]
     },
     "Mesmer Jr.": {
       "id": 3057,
       "name": "Mesmer Jr.",
+      "display": "Mesmer Jr.",
       "nameZh": "小梅斯梅尔",
       "rarity": 4,
       "afflatus": "Intellect",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Control"],
+      "roleTagsZh": ["输出", "控制"],
       "head": "images/headicon_small/305701.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1531", "6:1523"]
+      "chart": null,
+      "psychubes": ["6:1531", "6:1523"],
+      "resonance": ["Survivability"]
     },
     "Moldir": {
       "id": 3121,
       "name": "Moldir",
+      "display": "Moldir",
       "nameZh": "莫莉德尔",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "Ritual", "DPS", "Riposte"],
+      "roleTagsZh": ["辅助", "仪式", "输出", "反击"],
       "head": "images/headicon_small/312101.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1",
-      "psychubes": ["6:1549", "5:1445"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 20
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 7
+          },
+          {
+            "badge": "P5",
+            "val": 11
+          }
+        ]
+      },
+      "psychubes": ["6:1549", "5:1445"],
+      "resonance": ["R10-15"]
     },
     "Mondlicht": {
       "id": 3026,
       "name": "Mondlicht",
+      "display": "Mondlicht",
       "nameZh": "红斗篷",
       "rarity": 4,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Bullet"],
+      "roleTagsZh": ["输出", "子弹"],
       "head": "images/headicon_small/302601.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Mr. Duncan": {
       "id": 3103,
       "name": "Mr. Duncan",
+      "display": "Mr. Duncan",
       "nameZh": "邓肯先生",
       "rarity": 5,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Riposte", "Bullet"],
+      "roleTagsZh": ["输出", "反击", "子弹"],
       "head": "images/headicon_small/310301.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/5",
-      "psychubes": ["6:1521", "6:1509"]
+      "chart": null,
+      "psychubes": ["6:1521", "6:1509"],
+      "resonance": ["Output"]
     },
     "Ms. Moissan": {
       "id": 3044,
       "name": "Ms. Moissan",
+      "display": "Ms. Moissan",
       "nameZh": "莫桑女士",
       "rarity": 4,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Shield", "Control"],
+      "roleTagsZh": ["护盾", "控制"],
       "head": "images/headicon_small/304401.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Ms. NewBabel": {
       "id": 3052,
       "name": "Ms. NewBabel",
+      "display": "Ms. NewBabel",
       "nameZh": "新巴别塔",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Shield", "Riposte"],
+      "roleTagsZh": ["护盾", "反击"],
       "head": "images/headicon_small/305201.png",
       "shape": "U shape",
       "pattern": "Quiescence",
       "patternIcon": "images/shape_pattern/U shape/Quiescence.png",
+      "patternColor": "#62A771",
       "portrait": "0",
-      "psychubes": ["5:1439"]
+      "chart": null,
+      "psychubes": ["5:1439"],
+      "resonance": ["R10-11"]
     },
     "Ms. Radio": {
       "id": 3027,
       "name": "Ms. Radio",
+      "display": "Ms. Radio",
       "nameZh": "无线电小姐",
       "rarity": 2,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Control"],
+      "roleTagsZh": ["输出", "控制"],
       "head": "images/headicon_small/302701.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Ms. Stranger": {
       "id": 3147,
       "name": "Ms. Stranger",
+      "display": "Ms. Stranger",
       "nameZh": "无名者",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Ritual"],
+      "roleTagsZh": ["输出", "仪式"],
       "head": "images/headicon_small/314701.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1515", "6:1569"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 19
+          },
+          {
+            "badge": "P2",
+            "val": 39
+          },
+          {
+            "badge": "P3",
+            "val": 6
+          },
+          {
+            "badge": "P4",
+            "val": 14
+          },
+          {
+            "badge": "P5",
+            "val": 40
+          }
+        ]
+      },
+      "psychubes": ["6:1515", "6:1569"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Name Day": {
       "id": 3118,
       "name": "Name Day",
+      "display": "Name Day",
       "nameZh": "命名日",
       "rarity": 5,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Ritual", "Remove Buffs"],
+      "roleTagsZh": ["辅助", "仪式", "驱散"],
       "head": "images/headicon_small/311801.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "0/4/5",
-      "psychubes": ["6:1556", "6:1503"]
+      "chart": null,
+      "psychubes": ["6:1556", "6:1503"],
+      "resonance": ["Survivability"]
     },
     "Narcissus": {
       "id": 3157,
       "name": "Narcissus",
+      "display": "Narcissus",
       "nameZh": "纳西索斯",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Ritual", "Support"],
+      "roleTagsZh": ["治疗", "仪式", "辅助"],
       "head": "images/headicon_small/315701.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1575", "6:1576"]
+      "chart": {
+        "label": "P3: Survivablity",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 7
+          },
+          {
+            "badge": "P2",
+            "val": 6
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 2
+          },
+          {
+            "badge": "P5",
+            "val": 13
+          }
+        ]
+      },
+      "psychubes": ["6:1575", "6:1576"],
+      "resonance": ["R10-15"]
     },
     "Nautika": {
       "id": 3120,
       "name": "Nautika",
+      "display": "Nautika",
       "nameZh": "诺谛卡",
       "rarity": 6,
       "afflatus": "Spirit",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Bloodtithe", "Channel"],
+      "roleTagsZh": ["输出", "薪血", "吟诵"],
       "head": "images/headicon_small/312001.png",
       "shape": "Plus shape",
       "pattern": "Stupefaction",
       "patternIcon": "images/shape_pattern/Plus shape/Stupefaction.png",
+      "patternColor": "#E6AE34",
       "portrait": "0/1/2/3/5",
-      "psychubes": ["6:1548", "6:1539"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 20
+          },
+          {
+            "badge": "P2",
+            "val": 16
+          },
+          {
+            "badge": "P3",
+            "val": 9
+          },
+          {
+            "badge": "P4",
+            "val": 2
+          },
+          {
+            "badge": "P5",
+            "val": 30
+          }
+        ]
+      },
+      "psychubes": ["6:1548", "6:1539"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Necrologist": {
       "id": 3037,
       "name": "Necrologist",
+      "display": "Necrologist",
       "nameZh": "讣告人",
       "rarity": 5,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Remove Buffs"],
+      "roleTagsZh": ["输出", "驱散"],
       "head": "images/headicon_small/303701.png",
       "shape": "T shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/T shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "1/5",
-      "psychubes": ["6:1556", "5:1436"]
+      "chart": null,
+      "psychubes": ["6:1556", "5:1436"],
+      "resonance": ["Output"]
     },
     "Nick Bottom": {
       "id": 3005,
       "name": "Nick Bottom",
+      "display": "Nick Bottom",
       "nameZh": "尼克·波顿",
       "rarity": 4,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support"],
+      "roleTagsZh": ["辅助"],
       "head": "images/headicon_small/300501.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Noire": {
       "id": 3111,
       "name": "Noire",
+      "display": "Noire",
       "nameZh": "菲林士多",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Ritual", "Control"],
+      "roleTagsZh": ["输出", "仪式", "控制"],
       "head": "images/headicon_small/311101.png",
       "shape": "T shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/T shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/3",
-      "psychubes": ["6:1543", "6:1546"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 9
+          },
+          {
+            "badge": "P2",
+            "val": 3
+          },
+          {
+            "badge": "P3",
+            "val": 25
+          },
+          {
+            "badge": "P4",
+            "val": 8
+          },
+          {
+            "badge": "P5",
+            "val": 13
+          }
+        ]
+      },
+      "psychubes": ["6:1543", "6:1546"],
+      "resonance": ["Optimized Setup", "Beginner"]
     },
     "NORA": {
       "id": 3151,
       "name": "NORA",
+      "display": "NORA",
       "nameZh": "诺拉",
       "rarity": 4,
       "afflatus": "Spirit",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "DPS"],
+      "roleTagsZh": ["辅助", "输出"],
       "head": "images/headicon_small/315101.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": ["6:1548"]
+      "chart": null,
+      "psychubes": ["6:1548"],
+      "resonance": ["Survivability"]
     },
     "Oliver Fog": {
       "id": 3018,
       "name": "Oliver Fog",
+      "display": "Oliver Fog",
       "nameZh": "雾行者",
       "rarity": 4,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Support"],
+      "roleTagsZh": ["输出", "辅助"],
       "head": "images/headicon_small/301801.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "ONiON": {
       "id": 3054,
       "name": "ONiON",
+      "display": "ONiON",
       "nameZh": "洋葱头",
       "rarity": 3,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/305401.png",
       "shape": "Plus shape",
       "pattern": "Hyperphrenia",
       "patternIcon": "images/shape_pattern/Plus shape/Hyperphrenia.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Paper Heron": {
       "id": 3141,
       "name": "Paper Heron",
+      "display": "Paper Heron",
       "nameZh": "鹭鸶剪",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": [
+        "DPS",
+        "Inspiration",
+        "Support",
+        "Array",
+        "Eureka"
+      ],
+      "roleTagsZh": ["输出", "启示", "辅助", "术阵", "灵光"],
       "head": "images/headicon_small/314101.png",
       "shape": "T shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/T shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1563", "6:1515"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 20
+          },
+          {
+            "badge": "P2",
+            "val": 35
+          },
+          {
+            "badge": "P3",
+            "val": 13
+          },
+          {
+            "badge": "P4",
+            "val": 12
+          },
+          {
+            "badge": "P5",
+            "val": 33
+          }
+        ]
+      },
+      "psychubes": ["6:1563", "6:1515"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Pavia": {
       "id": 3015,
       "name": "Pavia",
+      "display": "Pavia",
       "nameZh": "狼群",
       "rarity": 4,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/301501.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Output"]
     },
     "Perchta": {
       "id": 3159,
       "name": "Perchta",
+      "display": "Perchta",
       "nameZh": "佩施塔",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Heal", "Pursuit", "Support", "Remove Debuffs"],
+      "roleTagsZh": ["治疗", "洞知", "辅助", "净化"],
       "head": "images/headicon_small/315901.png",
       "shape": "U shape",
       "pattern": "Overindulgence",
       "patternIcon": "images/shape_pattern/U shape/Overindulgence.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": ["6:1547", "6:1580"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 12
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 1
+          },
+          {
+            "badge": "P5",
+            "val": 14
+          }
+        ]
+      },
+      "psychubes": ["6:1547", "6:1580"],
+      "resonance": ["R10-15"]
     },
     "Pickles": {
       "id": 3063,
       "name": "Pickles",
+      "display": "Pickles",
       "nameZh": "皮克勒斯",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Remove Buffs"],
+      "roleTagsZh": ["输出", "驱散"],
       "head": "images/headicon_small/306301.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2",
-      "psychubes": ["6:1556", "5:1443"]
+      "chart": null,
+      "psychubes": ["6:1556", "5:1443"],
+      "resonance": ["R10-11"]
     },
     "Pioneer": {
       "id": 3096,
       "name": "Pioneer",
+      "display": "Pioneer",
       "nameZh": "先驱者",
       "rarity": 3,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Shield", "Shift", "Support"],
+      "roleTagsZh": ["护盾", "位移", "辅助"],
       "head": "images/headicon_small/309601.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Poltergeist": {
       "id": 3046,
       "name": "Poltergeist",
+      "display": "Poltergeist",
       "nameZh": "吵闹鬼",
       "rarity": 4,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support"],
+      "roleTagsZh": ["辅助"],
       "head": "images/headicon_small/304601.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Rabies": {
       "id": 3042,
       "name": "Rabies",
+      "display": "Rabies",
       "nameZh": "爱宠",
       "rarity": 4,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Poison"],
+      "roleTagsZh": ["输出", "中毒"],
       "head": "images/headicon_small/304201.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Ramona": {
       "id": 3142,
       "name": "Ramona",
+      "display": "Ramona",
       "nameZh": "拉莫纳",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Poison", "Rewrite"],
+      "roleTagsZh": ["输出", "中毒", "改写"],
       "head": "images/headicon_small/314201.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1",
-      "psychubes": ["5:1434", "5:1430"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 25
+          },
+          {
+            "badge": "P2",
+            "val": 20
+          },
+          {
+            "badge": "P3",
+            "val": 1
+          },
+          {
+            "badge": "P4",
+            "val": 6
+          },
+          {
+            "badge": "P5",
+            "val": 31
+          }
+        ]
+      },
+      "psychubes": ["5:1434", "5:1430"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Recoleta": {
       "id": 3114,
       "name": "Recoleta",
+      "display": "Recoleta",
       "nameZh": "虚构集",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Ritual", "Support"],
+      "roleTagsZh": ["输出", "仪式", "辅助"],
       "head": "images/headicon_small/311401.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/4",
-      "psychubes": ["6:1544"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 8
+          },
+          {
+            "badge": "P3",
+            "val": 13
+          },
+          {
+            "badge": "P4",
+            "val": 12
+          },
+          {
+            "badge": "P5",
+            "val": 20
+          }
+        ]
+      },
+      "psychubes": ["6:1544"],
+      "resonance": ["R10-15"]
     },
     "Reed": {
       "id": 3138,
       "name": "Reed",
+      "display": "Reed",
       "nameZh": "芦草结",
       "rarity": 4,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support"],
+      "roleTagsZh": ["辅助"],
       "head": "images/headicon_small/313801.png",
       "shape": "T shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/T shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": ["5:1438"]
+      "chart": null,
+      "psychubes": ["5:1438"],
+      "resonance": ["Output"]
     },
     "Regulus": {
       "id": 3025,
       "name": "Regulus",
+      "display": "Regulus",
       "nameZh": "星锑",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/302501.png",
       "shape": "T shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/T shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1",
-      "psychubes": ["5:1444", "6:1547"]
+      "chart": null,
+      "psychubes": ["5:1444", "6:1547"],
+      "resonance": ["Inspiration", "Conduit"]
     },
     "Rhiannon": {
       "id": 3146,
       "name": "Rhiannon",
+      "display": "Rhiannon",
       "nameZh": "小瑞安侬",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "All-Rounder"],
+      "roleTagsZh": ["辅助", "百灵百验"],
       "head": "images/headicon_small/314601.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1568", "6:1575"]
+      "chart": {
+        "label": "Overall",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 8
+          },
+          {
+            "badge": "P2",
+            "val": 16
+          },
+          {
+            "badge": "P3",
+            "val": 9
+          },
+          {
+            "badge": "P4",
+            "val": 2
+          },
+          {
+            "badge": "P5",
+            "val": 20
+          }
+        ]
+      },
+      "psychubes": ["6:1568", "6:1575"],
+      "resonance": ["General", "Bloodtithe (Overindulgence)"]
     },
     "Rubuska": {
       "id": 3125,
       "name": "Rubuska",
+      "display": "Rubuska",
       "nameZh": "野树莓",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Heal", "Bloodtithe", "Support"],
+      "roleTagsZh": ["治疗", "薪血", "辅助"],
       "head": "images/headicon_small/312501.png",
       "shape": "U shape",
       "pattern": "Overindulgence",
       "patternIcon": "images/shape_pattern/U shape/Overindulgence.png",
+      "patternColor": "#62A771",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1556", "6:1541"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 12
+          },
+          {
+            "badge": "P3",
+            "val": 0
+          },
+          {
+            "badge": "P4",
+            "val": 3
+          },
+          {
+            "badge": "P5",
+            "val": 15
+          }
+        ]
+      },
+      "psychubes": ["6:1556", "6:1541"],
+      "resonance": ["R10-15"]
     },
     "Satsuki": {
       "id": 3038,
       "name": "Satsuki",
+      "display": "Satsuki",
       "nameZh": "五色月",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Control"],
+      "roleTagsZh": ["输出", "控制"],
       "head": "images/headicon_small/303801.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/5",
-      "psychubes": ["6:1509", "6:1504"]
+      "chart": null,
+      "psychubes": ["6:1509", "6:1504"],
+      "resonance": ["Output"]
     },
     "Schneider": {
       "id": 3029,
       "name": "Schneider",
+      "display": "Schneider",
       "nameZh": "斯奈德",
       "rarity": 5,
       "afflatus": "Beast",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": [],
+      "roleTagsZh": [],
       "head": "images/headicon_small/302901.png",
       "shape": "",
       "pattern": "",
       "patternIcon": "",
+      "patternColor": "#E5E7EB",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": []
     },
     "Semmelweis": {
       "id": 3088,
       "name": "Semmelweis",
+      "display": "Semmelweis",
       "nameZh": "塞梅尔维斯",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "HP Sacrifice", "Support", "Array"],
+      "roleTagsZh": ["输出", "燃血", "辅助", "术阵"],
       "head": "images/headicon_small/308801.png",
       "shape": "Z shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/Z shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1537"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 14
+          },
+          {
+            "badge": "P3",
+            "val": 11
+          },
+          {
+            "badge": "P4",
+            "val": 3
+          },
+          {
+            "badge": "P5",
+            "val": 11
+          }
+        ]
+      },
+      "psychubes": ["6:1537"],
+      "resonance": ["R10-15"]
     },
     "Sentinel": {
       "id": 3126,
       "name": "Sentinel",
+      "display": "Sentinel",
       "nameZh": "玛丽安娜",
       "rarity": 6,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Support", "Bloodtithe", "DPS", "Bullet"],
+      "roleTagsZh": ["辅助", "薪血", "输出", "子弹"],
       "head": "images/headicon_small/312601.png",
       "shape": "Z shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/Z shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "0/1/5",
-      "psychubes": ["6:1541", "5:1440"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 10
+          },
+          {
+            "badge": "P2",
+            "val": 6
+          },
+          {
+            "badge": "P3",
+            "val": 4
+          },
+          {
+            "badge": "P4",
+            "val": 3
+          },
+          {
+            "badge": "P5",
+            "val": 20
+          }
+        ]
+      },
+      "psychubes": ["6:1541", "5:1440"],
+      "resonance": ["R10-15"]
     },
     "Shamane": {
       "id": 3072,
       "name": "Shamane",
+      "display": "Shamane",
       "nameZh": "鬃毛沙砾",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Ritual", "Support"],
+      "roleTagsZh": ["输出", "仪式", "辅助"],
       "head": "images/headicon_small/307201.png",
       "shape": "Z shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Z shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1543", "6:1514"]
+      "chart": null,
+      "psychubes": ["6:1543", "6:1514"],
+      "resonance": ["R10-15"]
     },
     "Silverwing Eagle": {
       "id": 3154,
       "name": "Silverwing Eagle",
+      "display": "Silverwing Eagle",
       "nameZh": "银装小春雀儿",
       "rarity": 5,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Ritual", "Support", "Follow-Up"],
+      "roleTagsZh": ["输出", "仪式", "辅助", "追击"],
       "head": "images/headicon_small/315401.png",
       "shape": "T shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/T shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "5",
-      "psychubes": ["6:1521", "6:1543"]
+      "chart": null,
+      "psychubes": ["6:1521", "6:1543"],
+      "resonance": ["Output"]
     },
     "Sonetto": {
       "id": 3023,
       "name": "Sonetto",
+      "display": "Sonetto",
       "nameZh": "十四行诗",
       "rarity": 5,
       "afflatus": "Mineral",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Support", "Control"],
+      "roleTagsZh": ["输出", "辅助", "控制"],
       "head": "images/headicon_small/302301.png",
       "shape": "U shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/U shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "5",
-      "psychubes": ["5:1439", "5:1440"]
+      "chart": null,
+      "psychubes": ["5:1439", "5:1440"],
+      "resonance": ["Output"]
     },
     "Sotheby": {
       "id": 3009,
       "name": "Sotheby",
+      "display": "Sotheby",
       "nameZh": "苏芙比",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Heal", "Poison"],
+      "roleTagsZh": ["治疗", "中毒"],
       "head": "images/headicon_small/300901.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0",
-      "psychubes": ["5:1430", "5:1440"]
+      "chart": null,
+      "psychubes": ["5:1430", "5:1440"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Spathodea": {
       "id": 3073,
       "name": "Spathodea",
+      "display": "Spathodea",
       "nameZh": "可燃点",
       "rarity": 6,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Burn"],
+      "roleTagsZh": ["输出", "燃烧"],
       "head": "images/headicon_small/307301.png",
       "shape": "T shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/T shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/3/5",
-      "psychubes": ["6:1515", "6:1546"]
+      "chart": null,
+      "psychubes": ["6:1515", "6:1546"],
+      "resonance": ["Begginer", "Has Setup"]
     },
     "Sputnik": {
       "id": 3055,
       "name": "Sputnik",
+      "display": "Sputnik",
       "nameZh": "斯普特尼克",
       "rarity": 3,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Control"],
+      "roleTagsZh": ["输出", "控制"],
       "head": "images/headicon_small/305501.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Sweetheart": {
       "id": 3011,
       "name": "Sweetheart",
+      "display": "Sweetheart",
       "nameZh": "玛丽莲",
       "rarity": 5,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Control"],
+      "roleTagsZh": ["输出", "控制"],
       "head": "images/headicon_small/301101.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "1/5",
-      "psychubes": ["6:1504", "6:1509"]
+      "chart": null,
+      "psychubes": ["6:1504", "6:1509"],
+      "resonance": ["Output"]
     },
     "Tennant": {
       "id": 3043,
       "name": "Tennant",
+      "display": "Tennant",
       "nameZh": "坦南特",
       "rarity": 5,
       "afflatus": "Beast",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["Shield", "Support", "Bullet"],
+      "roleTagsZh": ["护盾", "辅助", "子弹"],
       "head": "images/headicon_small/304301.png",
       "shape": "Plus shape",
       "pattern": "Stupefaction",
       "patternIcon": "images/shape_pattern/Plus shape/Stupefaction.png",
+      "patternColor": "#E6AE34",
       "portrait": "0/4",
-      "psychubes": ["5:1440", "5:1439"]
+      "chart": null,
+      "psychubes": ["5:1440", "5:1439"],
+      "resonance": ["Output"]
     },
     "The Fool": {
       "id": 3012,
       "name": "The Fool",
+      "display": "The Fool",
       "nameZh": "弄臣",
       "rarity": 3,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS"],
+      "roleTagsZh": ["输出"],
       "head": "images/headicon_small/301201.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "The Twins": {
       "id": 3149,
       "name": "The Twins",
+      "display": "The Twins",
       "nameZh": "双生舞伶",
       "rarity": 6,
       "afflatus": "Mineral_Star",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Conduit"],
+      "roleTagsZh": ["输出", "术具"],
       "head": "images/headicon_small/314901.png",
       "shape": "Plus shape",
       "pattern": "Aspirational",
       "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1571", "6:1572"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 36
+          },
+          {
+            "badge": "P2",
+            "val": 38
+          },
+          {
+            "badge": "P3",
+            "val": 4
+          },
+          {
+            "badge": "P4",
+            "val": 11
+          },
+          {
+            "badge": "P5",
+            "val": 30
+          }
+        ]
+      },
+      "psychubes": ["6:1571", "6:1572"],
+      "resonance": ["R10-15"]
     },
     "Tooth Fairy": {
       "id": 3053,
       "name": "Tooth Fairy",
+      "display": "Tooth Fairy",
       "nameZh": "牙仙",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Support", "Remove Debuffs"],
+      "roleTagsZh": ["治疗", "辅助", "净化"],
       "head": "images/headicon_small/305301.png",
       "shape": "Plus shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Plus shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2/5",
-      "psychubes": ["6:1540", "5:1444"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 0
+          },
+          {
+            "badge": "P2",
+            "val": 14
+          },
+          {
+            "badge": "P3",
+            "val": 6
+          },
+          {
+            "badge": "P3",
+            "val": 3
+          },
+          {
+            "badge": "P5",
+            "val": 14
+          }
+        ]
+      },
+      "psychubes": ["6:1540", "5:1444"],
+      "resonance": ["R10-11"]
     },
     "TTT": {
       "id": 3033,
       "name": "TTT",
+      "display": "TTT",
       "nameZh": "TTT",
       "rarity": 4,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Control", "Remove Buffs"],
+      "roleTagsZh": ["输出", "控制", "驱散"],
       "head": "images/headicon_small/303301.png",
       "shape": "Z shape",
       "pattern": "",
       "patternIcon": "",
+      "patternColor": "#E5E7EB",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Tuesday": {
       "id": 3098,
       "name": "Tuesday",
+      "display": "Tuesday",
       "nameZh": "蓝手帕",
       "rarity": 6,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Poison", "Support", "Array"],
+      "roleTagsZh": ["输出", "中毒", "辅助", "术阵"],
       "head": "images/headicon_small/309801.png",
       "shape": "T shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/T shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0/2",
-      "psychubes": ["6:1575", "6:1533"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 20
+          },
+          {
+            "badge": "P2",
+            "val": 12
+          },
+          {
+            "badge": "P3",
+            "val": 20
+          },
+          {
+            "badge": "P4",
+            "val": 11
+          },
+          {
+            "badge": "P5",
+            "val": 10
+          }
+        ]
+      },
+      "psychubes": ["6:1575", "6:1533"],
+      "resonance": ["R10-15"]
     },
     "Twins Sleep": {
       "id": 3040,
       "name": "Twins Sleep",
+      "display": "Twins Sleep",
       "nameZh": "丽莎&路易斯",
       "rarity": 3,
       "afflatus": "Spirit",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Control"],
+      "roleTagsZh": ["辅助", "控制"],
       "head": "images/headicon_small/304001.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Ulrich": {
       "id": 3107,
       "name": "Ulrich",
+      "display": "Ulrich",
       "nameZh": "乌尔里希",
       "rarity": 6,
       "afflatus": "Intellect",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Dynamo", "Support", "Channel", "Array"],
+      "roleTagsZh": ["输出", "电能", "辅助", "吟诵", "术阵"],
       "head": "images/headicon_small/310701.png",
       "shape": "Plus shape",
       "pattern": "Elucidation",
       "patternIcon": "images/shape_pattern/Plus shape/Elucidation.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/3/5",
-      "psychubes": ["6:1539", "6:1537"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 25
+          },
+          {
+            "badge": "P2",
+            "val": 10
+          },
+          {
+            "badge": "P3",
+            "val": 14
+          },
+          {
+            "badge": "P4",
+            "val": 11
+          },
+          {
+            "badge": "P5",
+            "val": 18
+          }
+        ]
+      },
+      "psychubes": ["6:1539", "6:1537"],
+      "resonance": ["R10-15"]
     },
     "Ulu": {
       "id": 3076,
       "name": "Ulu",
+      "display": "Ulu",
       "nameZh": "和平乌鲁",
       "rarity": 5,
       "afflatus": "Mineral",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Burn", "Support"],
+      "roleTagsZh": ["输出", "燃烧", "辅助"],
       "head": "images/headicon_small/307601.png",
       "shape": "T shape",
       "pattern": "Hyper",
       "patternIcon": "images/shape_pattern/T shape/Hyper.png",
+      "patternColor": "#F67E26",
       "portrait": "0/5",
-      "psychubes": ["6:1556", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1556", "5:1440"],
+      "resonance": ["Survivability"]
     },
     "Vila": {
       "id": 3087,
       "name": "Вила",
+      "display": "Vila",
       "nameZh": "维拉",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Rank Up", "Support", "Remove Debuffs"],
+      "roleTagsZh": ["治疗", "升阶", "辅助", "净化"],
       "head": "images/headicon_small/308701.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "0/1/3",
-      "psychubes": ["6:1541", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1541", "5:1440"],
+      "resonance": ["R10-15"]
     },
     "Voyager": {
       "id": 3048,
       "name": "Voyager",
+      "display": "Voyager",
       "nameZh": "远旅",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "DPS", "Control"],
+      "roleTagsZh": ["辅助", "输出", "控制"],
       "head": "images/headicon_small/304801.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/5",
-      "psychubes": ["5:1444", "6:1547"]
+      "chart": null,
+      "psychubes": ["5:1444", "6:1547"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "White Rum": {
       "id": 3101,
       "name": "White Rum",
+      "display": "White Rum",
       "nameZh": "白朗姆",
       "rarity": 4,
       "afflatus": "Intellect",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Shift", "Control", "Channel"],
+      "roleTagsZh": ["输出", "位移", "控制", "吟诵"],
       "head": "images/headicon_small/310101.png",
       "shape": "U shape",
       "pattern": "Equanimity",
       "patternIcon": "images/shape_pattern/U shape/Equanimity.png",
+      "patternColor": "#62A771",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     },
     "Willow": {
       "id": 3104,
       "name": "Willow",
+      "display": "Willow",
       "nameZh": "笃笃骨",
       "rarity": 6,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Poison", "Channel"],
+      "roleTagsZh": ["输出", "中毒", "吟诵"],
       "head": "images/headicon_small/310401.png",
       "shape": "Z shape",
       "pattern": "Equibalance",
       "patternIcon": "images/shape_pattern/Z shape/Equibalance.png",
+      "patternColor": "#4A70B3",
       "portrait": "0/1/2",
-      "psychubes": ["6:1538", "5:1430"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 7
+          },
+          {
+            "badge": "P2",
+            "val": 40
+          },
+          {
+            "badge": "P3",
+            "val": 7
+          },
+          {
+            "badge": "P4",
+            "val": 15
+          },
+          {
+            "badge": "P5",
+            "val": 2
+          }
+        ]
+      },
+      "psychubes": ["6:1538", "5:1430"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "Windsong": {
       "id": 3077,
       "name": "Windsong",
+      "display": "Windsong",
       "nameZh": "北方哨歌",
       "rarity": 6,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["DPS", "Extra Action", "Eureka"],
+      "roleTagsZh": ["输出", "额外行动", "灵光"],
       "head": "images/headicon_small/307701.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0/1/2/5",
-      "psychubes": ["6:1521", "6:1539"]
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 16
+          },
+          {
+            "badge": "P2",
+            "val": 13
+          },
+          {
+            "badge": "P3",
+            "val": 5
+          },
+          {
+            "badge": "P4",
+            "val": 9
+          },
+          {
+            "badge": "P5",
+            "val": 10
+          }
+        ]
+      },
+      "psychubes": ["6:1521", "6:1539"],
+      "resonance": ["R10-11", "R12-15"]
     },
     "X": {
       "id": 3010,
       "name": "X",
+      "display": "X",
       "nameZh": "X",
       "rarity": 5,
       "afflatus": "Intellect",
       "dmgType": "Reality",
       "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Remove Buffs", "Control"],
+      "roleTagsZh": ["输出", "驱散", "控制"],
       "head": "images/headicon_small/301001.png",
       "shape": "Z shape",
       "pattern": "Genuinity",
       "patternIcon": "images/shape_pattern/Z shape/Genuinity.png",
+      "patternColor": "#F67E26",
       "portrait": "0",
-      "psychubes": ["6:1514", "6:1503"]
+      "chart": null,
+      "psychubes": ["6:1514", "6:1503"],
+      "resonance": ["Output"]
     },
     "Yenisei": {
       "id": 3082,
       "name": "Енисей",
+      "display": "Yenisei",
       "nameZh": "小叶尼塞",
       "rarity": 5,
       "afflatus": "Star",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Heal", "Immunity"],
+      "roleTagsZh": ["治疗", "免疫"],
       "head": "images/headicon_small/308201.png",
       "shape": "U shape",
       "pattern": "Overindulgence",
       "patternIcon": "images/shape_pattern/U shape/Overindulgence.png",
+      "patternColor": "#62A771",
       "portrait": "0/4",
-      "psychubes": ["6:1511", "5:1440"]
+      "chart": null,
+      "psychubes": ["6:1511", "5:1440"],
+      "resonance": ["Survivability"]
     },
     "Зима": {
       "id": 3013,
       "name": "Зима",
+      "display": "Зима",
       "nameZh": "冬",
       "rarity": 4,
       "afflatus": "Plant",
       "dmgType": "Mental",
       "dmgTypeZh": "精神创伤",
+      "roleTags": ["Support", "Control"],
+      "roleTagsZh": ["辅助", "控制"],
       "head": "images/headicon_small/301301.png",
       "shape": "T shape",
       "pattern": "Delirament",
       "patternIcon": "images/shape_pattern/T shape/Delirament.png",
+      "patternColor": "#F67E26",
       "portrait": "",
-      "psychubes": []
+      "chart": null,
+      "psychubes": [],
+      "resonance": ["Survivability"]
     }
   },
   "psychubes": {

@@ -209,3 +209,38 @@ export function infoRow(label, value) {
 export function dash() {
   return h("div", { display: "flex", fontSize: "22px", color: C.muted }, "—");
 }
+
+/**
+ * Satori only draws glyphs the bundled TTF files carry. An unknown codepoint makes it
+ * download a Google font at render time, and that request 400s — which fails the whole
+ * card (the notes already contain "⌽" bullets and "✦"). Every string the cards print
+ * goes through here: known decorative marks become ASCII, and any other character the
+ * fonts cannot draw is dropped instead of taking the card down.
+ *
+ * Be Vietnam Pro covers ASCII, Latin (incl. Vietnamese) and 2010–2027 punctuation;
+ * the Noto SC subset covers the CJK the roster and labels use.
+ */
+const GLYPH_MAP = {
+  "⌽": "",
+  "✦": "*",
+  "★": "*",
+  "☆": "*",
+  "✧": "",
+  "⋆": "",
+  "◇": "",
+  "◆": "",
+  "→": "->",
+  "⌁": "",
+};
+const GLYPH_OK =
+  /[\u0020-\u007e\u00a0-\u024f\u1e00-\u1eff\u2010-\u2027\u2030-\u205e\u3000-\u9fff\uff00-\uffef]/;
+
+export function safeText(value) {
+  const text = String(value ?? "");
+  let out = "";
+  for (const ch of text) {
+    if (GLYPH_MAP[ch] !== undefined) out += GLYPH_MAP[ch];
+    else if (GLYPH_OK.test(ch)) out += ch;
+  }
+  return out;
+}

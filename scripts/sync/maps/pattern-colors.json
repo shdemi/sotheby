@@ -1,0 +1,27 @@
+{
+  "_comment": "Colour of a resonance pattern name, mirrored from app.js PATTERN_COLOR_FAMILY / PATTERN_COLORS so the share card paints the same green/orange/blue/yellow. Only the generated og_index reads this; the app keeps its own copy (and lets the Styling modal override it).",
+  "families": {
+    "orange": "#F67E26",
+    "green": "#62A771",
+    "yellow": "#E6AE34",
+    "blue": "#4A70B3",
+    "placidity": "#E5E7EB"
+  },
+  "patterns": {
+    "Aspirational": "orange",
+    "Delirament": "orange",
+    "Elucidation": "orange",
+    "Genuinity": "orange",
+    "Hyper": "orange",
+    "Hyperphrenia": "orange",
+    "Inspire": "orange",
+    "Equanimity": "green",
+    "Mercy": "green",
+    "Overindulgence": "green",
+    "Prudentiality": "green",
+    "Quiescence": "green",
+    "Stupefaction": "yellow",
+    "Equibalance": "blue",
+    "Placidity": "placidity"
+  }
+}

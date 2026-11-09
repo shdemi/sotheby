@@ -14849,10 +14849,14 @@ function simBuildHtml(char) {
     renderBuildsDetail();
   }
 
-  // Trim in a detached node so no listener ever touches the modal's own copy.
+  // Trim in a detached node so no listener ever touches the modal's own copy. Skills and
+  // materials are the InfoBook's farming list, and the notes callout just repeats the
+  // portrait chart ("Recommended Portrait: 0/1/2/5"), so a share page shows the build.
   const holder = document.createElement("div");
   holder.innerHTML = html;
-  holder.querySelectorAll(".builds-share-btn, .char-skills-section, .char-mats-panel").forEach((el) => el.remove());
+  holder
+    .querySelectorAll(".builds-share-btn, .char-skills-section, .char-mats-panel, .build-notes-box")
+    .forEach((el) => el.remove());
 
   const accent = rarityColor(getCharacterRarity(canonical));
   // Sotheby keeps her easter-egg theme on the share page too.

@@ -47,6 +47,7 @@ function slim(char) {
   return {
     id: Number(char.id) || 0,
     name: char.name || "",
+    display: char.display || char.name || "",
     nameZh: char.nameZh || "",
     rarity: char.rarity || 0,
     afflatus: char.afflatus || "",
@@ -64,6 +65,25 @@ function slim(char) {
 /** Default skin id for a character (`<charId>01`). */
 export function defaultSkinId(charId) {
   return Number(charId) * 100 + 1;
+}
+
+/**
+ * The InfoBook rows only a character card prints (the team card never does). They are
+ * added after `slim`, so a team member payload stays small.
+ */
+function cardExtras(char) {
+  return {
+    roleTags: Array.isArray(char.roleTags) ? char.roleTags : [],
+    roleTagsZh: Array.isArray(char.roleTagsZh) ? char.roleTagsZh : [],
+    patternColor: char.patternColor || "",
+    chart: char.chart || null,
+    resonance: Array.isArray(char.resonance) ? char.resonance : [],
+  };
+}
+
+/** `slim` + the build rows the character card draws. */
+function characterCardRow(char) {
+  return char ? { ...slim(char), ...cardExtras(char) } : null;
 }
 
 /**
@@ -161,7 +181,7 @@ function compactCharacter(index, value) {
   const char = characterForId(index, parsed.charId);
   if (!char) return null;
   return {
-    ...slim(char),
+    ...characterCardRow(char),
     head: skinHead(parsed.skinId),
     skinId: parsed.skinId,
   };
@@ -181,7 +201,7 @@ export function normalizeSim(query = {}) {
 
   const character = members.length
     ? null
-    : compactCharacter(index, query.c) || slim(findCharacter(index, query.character));
+    : compactCharacter(index, query.c) || characterCardRow(findCharacter(index, query.character));
 
   return {
     lang,
@@ -234,7 +254,7 @@ export function simImageQuery(sim) {
  * dashes, the parchment team card, …) changes the picture without changing the payload,
  * and without the salt every link already posted would keep showing the old bitmap.
  */
-export const CARD_RENDER_VERSION = "2026-11-09";
+export const CARD_RENDER_VERSION = "2026-11-09b";
 
 export function simVersion(sim) {
   return crypto

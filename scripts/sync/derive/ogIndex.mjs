@@ -8,9 +8,11 @@
  *   head      <- ArcanistMap.live2d[0].id (the default skin = the small head icon)
  *   rarity    <- characters_by_rarity.json (bucket key)
  *   afflatus  <- characters_by_afflatus.json (bucket key)
- *   dmgType   <- character_profiles.json
+ *   dmgType   <- character_profiles.json (plus `roleTags`, the hero's role labels)
  *   shape     <- character_reso_shape.json (the resonance board shape)
- *   pattern / portrait / psychubes <- content/builds.json (class C, hand-authored)
+ *   pattern / portrait / psychubes / resonance <- content/builds.json (class C)
+ *   chart     <- content/progressions.json (the first Portrait Value chart)
+ *   patternColor <- scripts/sync/maps/pattern-colors.json (app.js PATTERN_COLORS)
  *
  * The pattern icon lives at `images/shape_pattern/<shape>/<pattern>.png`; the folder is
  * only meaningful when both halves are known, so the path is emitted empty otherwise and
@@ -21,7 +23,7 @@
  * `Thirty-seven`, is resolved by `global_name_transfer.json` in the app, not here).
  */
 import path from "node:path";
-import { CONTENT } from "../config.mjs";
+import { CONTENT, MAPS } from "../config.mjs";
 import { readJson, sortKeys } from "../util.mjs";
 
 const PATTERN_DIR = "images/shape_pattern";
@@ -33,6 +35,36 @@ function bucketMap(buckets) {
     for (const name of names) out.set(name, bucket);
   }
   return out;
+}
+
+/**
+ * First progression chart of a character, in the shape the share card prints.
+ *
+ * `content/progressions.json` has two shapes: a bare bar list (legacy, one untitled
+ * chart) and a list of `{ label, bars }` charts. The InfoBook shows every chart; a card
+ * has room for one, so the first one wins.
+ */
+function firstChart(raw) {
+  if (!Array.isArray(raw) || !raw.length) return null;
+  const isLegacy = raw.every((entry) => entry && typeof entry === "object" && !Array.isArray(entry.bars));
+  const charts = isLegacy
+    ? [{ label: "", bars: raw }]
+    : raw
+        .filter((chart) => chart && typeof chart === "object")
+        .map((chart) => ({
+          label: String(chart.label || "").trim(),
+          bars: Array.isArray(chart.bars) ? chart.bars.filter(Boolean) : [],
+        }))
+        .filter((chart) => chart.bars.length);
+  const chart = charts[0];
+  if (!chart) return null;
+  return {
+    label: chart.label,
+    bars: chart.bars.slice(0, 6).map((bar) => ({
+      badge: String(bar.badge || ""),
+      val: Math.max(0, Math.min(100, Number(bar.val) || 0)),
+    })),
+  };
 }
 
 export function ogIndex({ arcanists, profiles, rarity, afflatus, resoShape, psychubesData, transfer }) {
@@ -68,11 +100,34 @@ export function ogIndex({ arcanists, profiles, rarity, afflatus, resoShape, psyc
     builds = {};
   }
 
+  let progressions = {};
+  try {
+    progressions = readJson(path.join(CONTENT, "progressions.json")) || {};
+  } catch {
+    progressions = {};
+  }
+
+  let patternColors = { families: {}, patterns: {} };
+  try {
+    patternColors = readJson(path.join(MAPS, "pattern-colors.json")) || patternColors;
+  } catch {
+    patternColors = { families: {}, patterns: {} };
+  }
+  const patternColor = (pattern) => {
+    const family = patternColors.patterns?.[pattern] || "placidity";
+    return patternColors.families?.[family] || "";
+  };
+
   // `content/builds.json` is authored by display name; accept the game's English label
   // as an alias for the canonical key.
   const buildsByCanonical = {};
   for (const [key, value] of Object.entries(builds)) {
     buildsByCanonical[(transfer && transfer[key]) || key] = value;
+  }
+
+  const progressionsByCanonical = {};
+  for (const [key, value] of Object.entries(progressions)) {
+    progressionsByCanonical[(transfer && transfer[key]) || key] = value;
   }
 
   const characters = {};
@@ -91,18 +146,30 @@ export function ogIndex({ arcanists, profiles, rarity, afflatus, resoShape, psyc
 
     characters[name] = {
       id: entry.id,
+      // `nameEng` is the game's own label; it stays here because old links were written
+      // with it (`team=Six`). `display` is what the app prints: the roster name, with the
+      // game's label transferred for nine heroes and the Cyrillic ones (`Авксивий`).
       name: entry.nameEng || name,
+      display: (transfer && transfer[entry.nameEng]) || entry.nameEng || name,
       nameZh: entry.name || profile.nameZh || "",
       rarity: Number(rarityOf.get(name)) || 0,
       afflatus: afflatusOf.get(name) || "",
       dmgType: profile.dmgType || "",
       dmgTypeZh: profile.dmgTypeZh || "",
+      roleTags: Array.isArray(profile.roleTags) ? profile.roleTags : [],
+      roleTagsZh: Array.isArray(profile.roleTagsZh) ? profile.roleTagsZh : [],
       head: `images/headicon_small/${defaultSkin}.png`,
       shape,
       pattern,
       patternIcon: shape && pattern ? `${PATTERN_DIR}/${shape}/${pattern}.png` : "",
+      patternColor: patternColor(pattern),
       portrait: build.portrait || "",
+      // First progression chart: the portrait-value bars the InfoBook draws.
+      chart: firstChart(progressionsByCanonical[name]),
       psychubes: chubes,
+      // Resonance preset labels (the orange copy buttons); the card localises them
+      // through `reso.<label>` in content/i18n.json, like the InfoBook does.
+      resonance: build.resonance && typeof build.resonance === "object" ? Object.keys(build.resonance) : [],
     };
   }
 

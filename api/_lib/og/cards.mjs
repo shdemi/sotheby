@@ -8,138 +8,516 @@
  *
  * A missing URI is fine — every piece falls back to a text placeholder.
  */
-import { afflatusLabel, patternLabel, t } from "./labels.mjs";
-import {
-  C,
-  FONT,
-  P,
-  RARITY,
-  chip,
-  dash,
-  footer,
-  frame,
-  h,
-  header,
-  img,
-  infoRow,
-  kids,
-  portrait,
-  stars,
-} from "./theme.mjs";
+import { patternLabel, t } from "./labels.mjs";
+import { C, FONT, P, RARITY, footer, frame, h, header, img, kids, safeText } from "./theme.mjs";
 
-const PSYCHUBE_NAME_WIDTH = 176;
+/**
+ * The character card is the InfoBook's detail pane, not the dark brand sheet: the same
+ * `images/background.png` art, the `#B55829` modal frame, the Portrait Value bars and the
+ * two loadout panels. Colours and sizes are copied from the `.builds-*` / `.build-section`
+ * rules in styles.css so the Discord preview and the `/sim` page read as one design.
+ */
+const BUILD = {
+  ink: "#ECE5D9",
+  body: "#D6D1C8",
+  sub: "#B5B5B3",
+  frame: "#B55829",
+  accent: "#D05126",
+  panel: "rgba(0, 0, 0, 0.28)",
+  well: "rgba(0, 0, 0, 0.20)",
+  line: "rgba(255, 255, 255, 0.08)",
+  lineSoft: "rgba(255, 255, 255, 0.05)",
+  track: "rgba(255, 255, 255, 0.045)",
+  trackLine: "rgba(181, 181, 179, 0.30)",
+  divider: "rgba(255, 255, 255, 0.06)",
+};
 
-function psychubeBlock(name, src) {
-  return h("div", { display: "flex", alignItems: "center", marginRight: "16px" }, [
+/** Card geometry. The chart track is the only piece that has to be computed. */
+const CARD_H = 630;
+const CARD_PAD_X = 26;
+const CARD_PAD_TOP = 20;
+const CARD_PAD_BOTTOM = 24;
+const HERO_H = 84 + 16 + 1; // portrait + padding-bottom + hairline
+const GRID_MT = 18;
+const SECTION_CHROME_H = 14 * 2 + 11 + 12 + 12 * 2; // section padding, title, well gap, well padding
+const CHART_LABEL_H = 11 + 7 + 7 + 11; // value, gap, gap, badge
+const CHART_TRACK_W = 55;
+
+/** Row metrics inside the loadout wells, mirrored from `psychubeRow` / `resonanceBlock`. */
+const PSYCHUBE_ROW_H = 64;
+const PSYCHUBE_ROW_GAP = 20; // margin-top + padding-top on every row after the first
+const PATTERN_H = 44;
+const PRESET_MT = 14;
+const PRESET_H = 30;
+/** A hero with no build data gets a centred name card this tall instead of a thin strip. */
+const NO_BUILD_H = 320;
+
+/**
+ * A chart fills the fixed 630px sheet, but a build without one only has the two loadout
+ * panels. Those are natural-height in the InfoBook, so the sheet shortens to them instead
+ * of drawing two half-empty frames (85 of the 139 heroes have no progression chart).
+ * The estimate only has to be close: the panels are `flexGrow: 1`, so they absorb a few
+ * pixels of slack. A hero with no build at all (Schneider) gets a name card, not a 205px
+ * strip, and then the hero row is centred in it.
+ */
+export function characterCardHeight(char) {
+  if (char.chart && char.chart.bars.length) return CARD_H;
+  const chubes = Math.min(2, (char.psychubes || []).length);
+  const presets = Math.min(2, (char.resonance || []).length);
+  const sections = [];
+  if (chubes) {
+    sections.push(SECTION_CHROME_H + chubes * PSYCHUBE_ROW_H + (chubes - 1) * PSYCHUBE_ROW_GAP);
+  }
+  if (char.pattern || presets) {
+    sections.push(
+      SECTION_CHROME_H +
+        (char.pattern ? PATTERN_H : 0) +
+        (presets ? (char.pattern ? PRESET_MT : 0) + PRESET_H : 0),
+    );
+  }
+  if (!sections.length) return NO_BUILD_H;
+  const body = Math.max(...sections);
+  return 20 * 2 + CARD_PAD_TOP + CARD_PAD_BOTTOM + 2 + HERO_H + GRID_MT + body;
+}
+
+/**
+ * How tall the bar track is, so the five columns end exactly at the panel's bottom edge:
+ * whatever the hero and the right-hand loadout panels leave over. Every small label sets
+ * `lineHeight: 1` so those heights are exact and not font-metric guesses.
+ */
+function trackHeight() {
+  const content = CARD_H - 20 * 2 - CARD_PAD_TOP - CARD_PAD_BOTTOM - 2; // minus the frame border
+  return content - HERO_H - GRID_MT - SECTION_CHROME_H - CHART_LABEL_H;
+}
+
+/** `.build-section-title`: an orange tick and a small uppercase label. */
+function buildTitle(text) {
+  return h("div", { display: "flex", alignItems: "center" }, [
     kids(
-      src
-        ? img(src, { width: "56px", height: "56px", borderRadius: "10px", marginRight: "10px" })
-        : h(
-            "div",
-            {
-              display: "flex",
-              width: "56px",
-              height: "56px",
-              borderRadius: "10px",
-              background: C.empty,
-              marginRight: "10px",
-            },
-            "",
-          ),
-      h("div", { display: "flex", width: `${PSYCHUBE_NAME_WIDTH}px`, fontSize: "17px", lineHeight: 1.25 }, name),
+      h("div", {
+        display: "flex",
+        width: "3px",
+        height: "11px",
+        marginRight: "9px",
+        background: BUILD.accent,
+      }),
+      h(
+        "div",
+        {
+          display: "flex",
+          fontSize: "11px",
+          fontWeight: 700,
+          lineHeight: 1,
+          letterSpacing: "1.3px",
+          color: BUILD.sub,
+        },
+        String(safeText(text)).toUpperCase(),
+      ),
     ),
   ]);
 }
 
-function portraitPills(portrait) {
-  const values = String(portrait || "")
-    .split("/")
-    .map((v) => v.trim())
-    .filter(Boolean);
-  if (!values.length) return dash();
+/** `.build-section`: bordered dark panel with a ticked title and one inner well. */
+function buildSection(title, well, style = {}) {
   return h(
     "div",
-    { display: "flex", alignItems: "center" },
-    values.map((value) =>
+    {
+      display: "flex",
+      flexDirection: "column",
+      padding: "14px 16px",
+      border: `1px solid ${BUILD.line}`,
+      background: BUILD.panel,
+      flexShrink: 0,
+      ...style,
+    },
+    [buildTitle(title), h("div", { display: "flex", flexDirection: "column", marginTop: "12px", flexGrow: 1 }, well)],
+  );
+}
+
+/** Inner well shared by the chart, the psychubes and the resonance block. */
+function well(children, style = {}) {
+  return h(
+    "div",
+    {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      flexGrow: 1,
+      padding: "12px 14px",
+      background: BUILD.well,
+      border: `1px solid ${BUILD.lineSoft}`,
+      ...style,
+    },
+    children,
+  );
+}
+
+/** Five rarity diamonds; the site prints ✦, which satori cannot draw. */
+function rarityPips(rarity, accent) {
+  const count = Math.max(0, Math.min(6, Number(rarity) || 0));
+  return Array.from({ length: count }, (_, i) =>
+    h("div", {
+      display: "flex",
+      width: "9px",
+      height: "9px",
+      marginLeft: "11px",
+      background: accent,
+      transform: "rotate(45deg)",
+      flexShrink: 0,
+    }),
+  );
+}
+
+/**
+ * `.build-chart`: one column per portrait tier, value above, badge below, a fixed 0-100
+ * track between them so a 10% bar reads as a tenth of the height. A 0% bar is omitted,
+ * exactly like the InfoBook.
+ */
+function portraitChart(chart, accent, height) {
+  return h(
+    "div",
+    { display: "flex", alignItems: "flex-end" },
+    chart.bars.map((bar, i) => {
+      const val = Math.max(0, Math.min(100, Number(bar.val) || 0));
+      return h(
+        "div",
+        {
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          flexGrow: 1,
+          flexBasis: "0px",
+          marginLeft: i === 0 ? "0" : "18px",
+        },
+        kids(
+          h(
+            "div",
+            { display: "flex", fontSize: "11px", lineHeight: 1, color: BUILD.ink, marginBottom: "7px" },
+            `${val}%`,
+          ),
+          h(
+            "div",
+            {
+              display: "flex",
+              alignItems: "flex-end",
+              width: `${CHART_TRACK_W}px`,
+              height: `${height}px`,
+              background: BUILD.track,
+              borderBottom: `1px solid ${BUILD.trackLine}`,
+            },
+            val > 0
+              ? h("div", {
+                  display: "flex",
+                  width: `${CHART_TRACK_W}px`,
+                  height: `${Math.max(2, Math.round((height * val) / 100))}px`,
+                  background: accent,
+                })
+              : null,
+          ),
+          bar.badge
+            ? h(
+                "div",
+                {
+                  display: "flex",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  letterSpacing: "0.8px",
+                  color: BUILD.sub,
+                  marginTop: "7px",
+                },
+                safeText(bar.badge),
+              )
+            : null,
+        ),
+      );
+    }),
+  );
+}
+
+/** `.build-psychube`: art on the left, name on the right, a hairline between rows. */
+function psychubeRow(name, src, index) {
+  return h(
+    "div",
+    {
+      display: "flex",
+      alignItems: "center",
+      marginTop: index === 0 ? "0" : "10px",
+      paddingTop: index === 0 ? "0" : "10px",
+      borderTop: index === 0 ? "none" : `1px solid ${BUILD.divider}`,
+    },
+    kids(
+      src
+        ? img(src, { width: "54px", height: "64px", objectFit: "contain", marginRight: "12px" })
+        : h("div", {
+            display: "flex",
+            width: "54px",
+            height: "64px",
+            marginRight: "12px",
+            border: `1px dashed ${BUILD.trackLine}`,
+          }),
+      h("div", { display: "flex", flexGrow: 1, fontSize: "15px", lineHeight: 1.35, color: BUILD.ink }, safeText(name)),
+    ),
+  );
+}
+
+/** `.build-pattern` + `.build-resonance-btn`: the coloured pattern name and its presets. */
+function resonanceBlock(char, lang, art, wellStyle = {}) {
+  const pattern = char.pattern ? safeText(patternLabel(lang, char.pattern)) : "";
+  const color = char.patternColor || BUILD.ink;
+  const presets = char.resonance.slice(0, 2);
+
+  return well(
+    kids(
+      pattern
+        ? h(
+            "div",
+            { display: "flex", alignItems: "center" },
+            kids(
+              art.shape
+                ? img(art.shape, { width: "44px", height: "44px", objectFit: "contain", marginRight: "12px" })
+                : null,
+              h(
+                "div",
+                { display: "flex", fontSize: "16px", fontWeight: 700, letterSpacing: "0.4px", color },
+                pattern,
+              ),
+            ),
+          )
+        : null,
+      presets.length
+        ? h(
+            "div",
+            { display: "flex", alignItems: "center", marginTop: pattern ? "14px" : "0" },
+            presets.map((label, i) =>
+              h(
+                "div",
+                {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexGrow: 1,
+                  flexBasis: "0px",
+                  height: "30px",
+                  marginLeft: i === 0 ? "0" : "8px",
+                  padding: "0 10px",
+                  background: BUILD.accent,
+                  border: "1px solid #E9853F",
+                  color: "#FFFFFF",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "0.7px",
+                  overflow: "hidden",
+                },
+                safeText(t(lang, `reso.${label}`, label)).toUpperCase(),
+              ),
+            ),
+          )
+        : null,
+    ),
+    wellStyle,
+  );
+}
+
+export function characterCard({ char, lang, art }) {
+  const accent = RARITY[char.rarity] || BUILD.accent;
+  // Six heroes ship a Cyrillic `nameEng` ("Авксивий", "Зима") that the card's fonts cannot
+  // draw; the Chinese name is the readable fallback when the English one drops out.
+  const wanted = lang === "cn" ? char.nameZh || char.display || char.name : char.display || char.name;
+  const primary = safeText(wanted).trim() || safeText(char.nameZh) || String(char.id || "");
+  const chart = char.chart && char.chart.bars.length ? char.chart : null;
+
+  const chubeNames = char.psychubes.slice(0, 2).map((key) => {
+    const row = art.chubeNames?.[key];
+    if (!row) return key;
+    return safeText((lang === "cn" && row.zh) || row.en || row.zh || key);
+  });
+
+  const dmgLabel = safeText(
+    lang === "cn" ? char.dmgTypeZh || (char.dmgType === "Reality" ? "现实创伤" : "精神创伤") : char.dmgType,
+  );
+  const tags = (lang === "cn" && char.roleTagsZh.length ? char.roleTagsZh : char.roleTags)
+    .map((tag) => String(tag || "").replace(/<\/?nobr>/gi, "").trim())
+    .filter(Boolean)
+    .map((tag) => (lang !== "cn" && tag === "洞知" ? "Pursuit" : tag))
+    .slice(0, 4)
+    .map(safeText)
+    .filter(Boolean);
+
+  const hero = h(
+    "div",
+    {
+      display: "flex",
+      alignItems: "center",
+      flexShrink: 0,
+      paddingBottom: "16px",
+      borderBottom: `1px solid ${BUILD.line}`,
+    },
+    kids(
       h(
         "div",
         {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          width: "46px",
-          height: "46px",
-          marginRight: "10px",
-          borderRadius: "11px",
-          border: `2px solid ${C.gold}`,
-          color: C.gold,
-          fontSize: "23px",
-          fontWeight: 700,
+          width: "84px",
+          height: "84px",
+          flexShrink: 0,
+          marginRight: "16px",
+          background: "#2a2825",
+          border: `1px solid ${accent}`,
+          overflow: "hidden",
         },
-        value,
+        art.head
+          ? img(art.head, { width: "84px", height: "84px", objectFit: "cover" })
+          : h("div", { display: "flex", fontSize: "32px", color: BUILD.sub }, String(primary || "?").slice(0, 1)),
       ),
-    ),
-  );
-}
-
-function resonanceBlock(pattern, shape, shapeSrc, lang) {
-  if (!pattern) return dash();
-  return h("div", { display: "flex", alignItems: "center" }, [
-    kids(
-      shapeSrc ? img(shapeSrc, { width: "44px", height: "44px", marginRight: "12px" }) : null,
-      h("div", { display: "flex", flexDirection: "column" }, [
-        h("div", { display: "flex", fontSize: "25px", fontWeight: 700 }, patternLabel(lang, pattern)),
-        shape ? h("div", { display: "flex", fontSize: "16px", color: C.muted, marginTop: "2px" }, shape) : null,
-      ]),
-    ),
-  ]);
-}
-
-export function characterCard({ char, lang, art }) {
-  const primary = lang === "cn" ? char.nameZh || char.name : char.name;
-  const secondary = lang === "cn" ? char.name : char.nameZh;
-  const chubeNames = char.psychubes.map((key) => {
-    const row = art.chubeNames?.[key];
-    if (!row) return key;
-    return (lang === "cn" && row.zh) || row.en || row.zh || key;
-  });
-
-  const chips = kids(
-    char.afflatus ? chip(art.afflatus, afflatusLabel(lang, char.afflatus)) : null,
-    char.dmgType ? chip(null, lang === "cn" ? char.dmgTypeZh || char.dmgType : char.dmgType) : null,
-  );
-
-  return frame([
-    header(stars(char.rarity)),
-    h("div", { display: "flex", flex: 1, alignItems: "center", marginTop: "18px" }, [
-      portrait(art.head, 330, char.rarity, primary),
-      h("div", { display: "flex", flexDirection: "column", flex: 1, justifyContent: "center", marginLeft: "34px" }, [
-        h("div", { display: "flex", flexDirection: "column" }, [
-          h("div", { display: "flex", fontSize: "54px", fontWeight: 700, lineHeight: 1.05 }, primary),
-          secondary ? h("div", { display: "flex", fontSize: "25px", color: C.muted, marginTop: "6px" }, secondary) : null,
-        ]),
-        h("div", { display: "flex", alignItems: "center", marginTop: "16px" }, chips),
-        // A character with no recorded portrait tiers drops the row instead of printing a
-        // lone em dash, which reads like a broken card.
-        char.portrait ? infoRow(t(lang, "card.portrait", "Portrait"), portraitPills(char.portrait)) : null,
-        infoRow(
-          t(lang, "card.resonance", "Resonance"),
-          resonanceBlock(char.pattern, char.shape, art.shape, lang),
+      h("div", { display: "flex", flexDirection: "column", flexGrow: 1, minWidth: "0" }, [
+        h(
+          "div",
+          { display: "flex", alignItems: "center" },
+          kids(
+            h(
+              "div",
+              { display: "flex", fontSize: "34px", lineHeight: 1.1, color: BUILD.ink },
+              primary,
+            ),
+            rarityPips(char.rarity, accent),
+          ),
         ),
-        infoRow(
-          t(lang, "builds.psychubes", "Recommended Psychubes"),
-          char.psychubes.length
-            ? h(
+        h(
+          "div",
+          { display: "flex", alignItems: "center", marginTop: "10px" },
+          kids(
+            char.dmgType
+              ? h(
+                  "div",
+                  { display: "flex", alignItems: "center", marginRight: "10px" },
+                  kids(
+                    art.dmg
+                      ? img(art.dmg, { width: "14px", height: "14px", marginRight: "5px", objectFit: "contain" })
+                      : null,
+                    h("div", { display: "flex", fontSize: "12px", lineHeight: 1, color: BUILD.ink }, dmgLabel),
+                  ),
+                )
+              : null,
+            tags.map((tag) =>
+              h(
                 "div",
-                { display: "flex", alignItems: "center" },
-                char.psychubes.map((key, i) => psychubeBlock(chubeNames[i], art.chubes?.[i])),
-              )
-            : dash(),
+                { display: "flex", marginLeft: "8px", fontSize: "12px", lineHeight: 1, color: BUILD.body },
+                tag,
+              ),
+            ),
+          ),
         ),
       ]),
-    ]),
-    footer(lang === "cn" ? "Reverse: 1999 · 培养指南" : "Reverse: 1999 · Build Guide"),
-  ]);
+    ),
+  );
+
+  const sideSections = [];
+  // With a chart the panels sit in the right column and hug the top; without one the
+  // sheet is sized to them (`characterCardHeight`), so any slack is centred.
+  const rowAlign = chart ? "flex-start" : "center";
+  if (chubeNames.length) {
+    sideSections.push({
+      title: t(lang, "builds.psychubes", "Recommended Psychubes"),
+      body: well(chubeNames.map((name, i) => psychubeRow(name, art.chubes?.[i], i)), {
+        justifyContent: rowAlign,
+      }),
+    });
+  }
+  if (char.pattern || char.resonance.length) {
+    sideSections.push({
+      title: t(lang, "builds.resonance", "Resonance"),
+      body: resonanceBlock(char, lang, art, chart ? {} : { justifyContent: "center" }),
+    });
+  }
+
+  const chartSection = chart
+    ? buildSection(
+        t(lang, "builds.portrait", "Portrait Value"),
+        well(portraitChart(chart, accent, trackHeight()), { flexGrow: 0 }),
+        { flexGrow: 1.08, flexBasis: "0px" },
+      )
+    : null;
+
+  let grid;
+  if (chartSection) {
+    grid = h(
+      "div",
+      { display: "flex", alignItems: "stretch", marginTop: `${GRID_MT}px`, flexGrow: 1 },
+      kids(
+        chartSection,
+        sideSections.length
+          ? h(
+              "div",
+              {
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: 0.92,
+                flexBasis: "0px",
+                minWidth: "0",
+                marginLeft: "14px",
+              },
+              sideSections.map((section, i) =>
+                i === 0
+                  ? buildSection(section.title, section.body)
+                  : buildSection(section.title, section.body, { marginTop: "14px", flexGrow: 1 }),
+              ),
+            )
+          : null,
+      ),
+    );
+  } else if (sideSections.length) {
+    // No chart: the loadout panels share the row, like `.builds-grid.is-single` does. They
+    // take whatever the computed sheet height leaves (see `characterCardHeight`), so the
+    // card never draws two half-empty frames.
+    grid = h(
+      "div",
+      { display: "flex", alignItems: "stretch", marginTop: `${GRID_MT}px`, flexGrow: 1 },
+      sideSections.map((section, i) =>
+        buildSection(section.title, section.body, {
+          flexGrow: 1,
+          flexBasis: "0px",
+          marginLeft: i === 0 ? "0" : "14px",
+        }),
+      ),
+    );
+  } else {
+    // No build at all (Schneider): the hero row sits centred in a name card.
+    grid = null;
+  }
+
+  return h(
+    "div",
+    {
+      display: "flex",
+      width: "100%",
+      height: "100%",
+      padding: "20px",
+      backgroundImage: art.background ? `url("${art.background}")` : "none",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundColor: "#101010",
+      fontFamily: FONT,
+      color: BUILD.ink,
+    },
+    h(
+      "div",
+      {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: grid ? "flex-start" : "center",
+        width: "100%",
+        height: "100%",
+        padding: `${CARD_PAD_TOP}px ${CARD_PAD_X}px ${CARD_PAD_BOTTOM}px`,
+        border: `1px solid ${BUILD.frame}`,
+        borderRadius: "0 20px 0 0",
+        overflow: "hidden",
+      },
+      kids(hero, grid),
+    ),
+  );
 }
 
 /* ---- Team card: the exported PNG card (parchment), not the dark build sheet ---- */
@@ -303,8 +681,8 @@ function emptySlot(index) {
 }
 
 export function teamCard({ team, members, lang, art }) {
-  const title = team || t(lang, "og.teamBuild", "Team Build");
-  const count = t(lang, "og.members", "{n} members").replace("{n}", String(members.length));
+  const title = safeText(team || t(lang, "og.teamBuild", "Team Build"));
+  const count = safeText(t(lang, "og.members", "{n} members").replace("{n}", String(members.length)));
 
   const slots = [];
   for (let i = 0; i < 4; i += 1) {

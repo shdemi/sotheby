@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { normalizeSim, simDescription, simImageQuery, simTitle, simVersion } from "../../api/_lib/sim/params.mjs";
 import { findCharacter, findPsychube, parseList } from "../../api/_lib/og/resolve.mjs";
 import { afflatusLabel, normalizeLang, patternLabel, t } from "../../api/_lib/og/labels.mjs";
+import { characterCardHeight } from "../../api/_lib/og/cards.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
@@ -224,6 +225,19 @@ check("pattern label in cn", patternLabel("cn", "Elucidation") === "洞彻", pat
 check("unknown pattern falls back to the value", patternLabel("en", "Mystery") === "Mystery");
 check("normalizeLang rejects unknown languages", normalizeLang("de") === "en");
 check("t falls back to english", t("cn", "no.such.key", "fallback") === "fallback");
+
+/* ------------------------------------------------------------------ *
+ * Card height
+ * ------------------------------------------------------------------ */
+
+console.log("\n=== card height ===");
+const everyChar = Object.values(index.characters);
+const chartless = everyChar.filter((c) => !(c.chart && c.chart.bars.length));
+check("a chart fills the 630px sheet", everyChar.filter((c) => c.chart && c.chart.bars.length).every((c) => characterCardHeight(c) === 630));
+check("no chart shortens the sheet", chartless.every((c) => characterCardHeight(c) < 630));
+check("a build card keeps a usable height", chartless.every((c) => !((c.psychubes || []).length || c.pattern || (c.resonance || []).length) || characterCardHeight(c) >= 300));
+check("a hero with no build gets a name card", characterCardHeight({ psychubes: [], resonance: [] }) === 320);
+check("a chart wins over the empty build", characterCardHeight({ chart: { bars: [{ val: 1 }] }, psychubes: [], resonance: [] }) === 630);
 
 /* ------------------------------------------------------------------ *
  * Result

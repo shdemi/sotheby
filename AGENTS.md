@@ -741,7 +741,7 @@ PNG card. Two functions do the work:
 
 | Route | What it returns |
 |---|---|
-| `GET /api/og?…` | 1200x630 PNG (character card, team card, or the brand card) |
+| `GET /api/og?…` | 1200-wide PNG (character card, team card, or the brand card; 630 tall, or shorter for a character without a progression chart) |
 | `GET /sim?…` | the app shell with per-link `og:*` tags + `window.__SIM__` |
 
 Link scheme (both routes take the same parameters). The canonical, compact shape stores
@@ -796,11 +796,13 @@ The two views are **the app's own markup**, not a second design: the team view e
 `.team-card` / `.team-slots` / `.team-slot*` (the exact card the PNG export renders) straight
 on the page's `images/background.png`, and the character view calls `renderBuildsDetail()`
 and copies `#builds-detail` out — inside the InfoBook's own `.modal-card` frame
-(`.sim-build-card`) — dropping `.builds-share-btn`, `.char-skills-section` and
-`.char-mats-panel` so only the build shows. The toolbar is the app's `.top-controls` /
-`.header-*` / `.lang-switcher` / `.btn` markup with the middle cluster (search, Manage,
-JSON, Export PNG) left out. Keep new visuals in `styles.css` modal rules; do not add a
-parallel `/sim` look.
+(`.sim-build-card`) — dropping `.builds-share-btn`, `.char-skills-section`,
+`.char-mats-panel` and `.build-notes-box` so only the build shows. The notes callout is
+dropped because 105 of the 107 notes are just "Recommended Portrait: 0/1/2/5", which the
+chart already draws (only Charlie and Matilda carry prose). The toolbar is the app's
+`.top-controls` / `.header-*` / `.lang-switcher` / `.btn` markup with the middle cluster
+(search, Manage, JSON, Export PNG) left out. Keep new visuals in `styles.css` modal rules;
+do not add a parallel `/sim` look.
 
 **Share buttons.** Each team card's head carries an icon-only button
 (`.btn-team-share`, `images/random_icon/share_icon.png`) as does the InfoBook character
@@ -828,9 +830,21 @@ is 4 MB and the fonts alone are ~600 KB). 1.0.x crashes on Node 24
 - `api/_lib/og/cards.mjs` — the three card trees. The **team card is the parchment export
   card** (`P` palette in `theme.mjs`): one `.team-card`-style sheet with four slots of
   portrait + afflatus emblem + insight/Lv band + five portrait dashes + a side psychube,
-  `+` placeholders for empty slots and the site footer. The **character card stays dark**
-  (`C` palette), matching the InfoBook pane. `theme.mjs` also has palette, rarity colours,
-  `h()` / `img()` / `frame()`; `labels.mjs` — locale lookup from `content/i18n.json`.
+  `+` placeholders for empty slots and the site footer. The **character card is the
+  InfoBook's detail pane** (`BUILD` palette, same `images/background.png`, `#B55829`
+  frame): hero row (84px portrait, rarity diamonds, damage icon + role tags), the Portrait
+  Value bars, Recommended Psychubes and the Resonance panel with its orange preset
+  buttons. It is **1200x630 when a chart fills the sheet and shorter when it does not** —
+  `characterCardHeight()` returns the natural height of the two loadout panels for the 85
+  heroes without a progression chart, so the sheet is never half empty and the preview
+  keeps the `/sim` pane's proportions. `theme.mjs` also has palette, rarity colours,
+  `h()` / `img()` / `frame()` / `safeText()`; `labels.mjs` — locale lookup from
+  `content/i18n.json`.
+- `safeText()` runs on every string the cards print: it maps the site's decorative
+  codepoints (`✦ ★ ⌽ → …`) to ASCII and **drops anything the fonts cannot draw**, because
+  an unknown codepoint makes satori attempt a Google-font download that 400s and kills the
+  whole card. `builds.json` notes carry `⌽`/`✦`, and six heroes have a Cyrillic `nameEng`
+  (`Авксивий`, `Вила`, `Енисей`, `Зима`); the Chinese name is the fallback there.
 - Satori is **flexbox only**: no grid, no `box-shadow`, and every element with more than
   one child needs `display: flex`. Do not print `★` / `✦`: satori treats the codepoint as
   a missing glyph and tries a **dynamic Google-font download that 400s**. Rarity is drawn

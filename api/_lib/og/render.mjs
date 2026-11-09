@@ -16,14 +16,23 @@
 import { ImageResponse } from "@vercel/og";
 
 import { loadAll, ogFonts, ogIndex } from "./assets.mjs";
-import { characterCard, defaultCard, teamCard } from "./cards.mjs";
+import { characterCard, characterCardHeight, defaultCard, teamCard } from "./cards.mjs";
 import { normalizeSim } from "../sim/params.mjs";
 import { findCharacter } from "./resolve.mjs";
 
 const SHOWCASE = ["Lucy", "Jessica", "6", "Windsong"];
 
+/** The InfoBook pane sits on the same art as every modal. */
+const BACKGROUND = "images/background.png";
+
 function afflatusIcon(afflatus) {
   return afflatus ? `images/afflatus_icon/${afflatus}.png` : "";
+}
+
+function dmgIcon(dmgType) {
+  if (dmgType === "Reality") return "images/dmg_type_icon/reality_dmg.png";
+  if (dmgType === "Mental") return "images/dmg_type_icon/mental_dmg.png";
+  return "";
 }
 
 function insightIcon(insight) {
@@ -39,11 +48,11 @@ async function characterArt(index, char, origin) {
     chubeNames[key] = row ? { en: row.name || key, zh: row.nameZh || "" } : { en: key, zh: "" };
   }
 
-  const [head, afflatus, shape, ...chubes] = await loadAll(
-    [char.head, afflatusIcon(char.afflatus), char.patternIcon, ...chubeIcons],
+  const [background, dmg, head, afflatus, shape, ...chubes] = await loadAll(
+    [BACKGROUND, dmgIcon(char.dmgType), char.head, afflatusIcon(char.afflatus), char.patternIcon, ...chubeIcons],
     origin,
   );
-  return { head, afflatus, shape, chubes, chubeNames };
+  return { background, dmg, head, afflatus, shape, chubes, chubeNames };
 }
 
 async function teamArt(members, origin) {
@@ -92,7 +101,9 @@ export async function renderOg(input = {}) {
   const art = await characterArt(index, sim.character, origin);
   return new ImageResponse(characterCard({ char: sim.character, lang: locale, art }), {
     width: 1200,
-    height: 630,
+    // The sheet is 630 when the chart fills it; without one it shrinks to the two
+    // loadout panels, which is the height the InfoBook pane has on `/sim`.
+    height: characterCardHeight(sim.character),
     fonts: ogFonts(),
   });
 }

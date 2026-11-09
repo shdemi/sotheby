@@ -19,6 +19,17 @@ const CASES = [
   { file: "character-lucy-cn", params: { c: "308601", lang: "cn" } },
   { file: "character-lucy-vi", params: { c: "308601", lang: "vi" } },
   { file: "character-jessica-en", params: { c: "305601", lang: "en" } },
+  // The share link from the bug report: the InfoBook frame, chart and loadout panels.
+  { file: "character-rubuska-en", params: { c: "312503", lang: "en" } },
+  { file: "character-rubuska-vi", params: { c: "312503", lang: "vi" } },
+  // No progression chart: the sheet is only as tall as the two loadout panels.
+  { file: "character-charlie-en", params: { character: "Charlie", lang: "en" } },
+  // Chartless with the sparsest build there is (no psychubes, one preset).
+  { file: "character-alien-en", params: { c: "303401", lang: "en" } },
+  // Chartless with both panels full.
+  { file: "character-37-en", params: { c: "306601", lang: "en" } },
+  // No build data at all: a centred hero row in a shorter name card.
+  { file: "character-schneider-en", params: { c: "302901", lang: "en" } },
   // A head icon that shipped as WebP under a `.png` name (empty portrait once).
   { file: "character-perchta-vi", params: { c: "315901", lang: "vi" } },
   // Legacy name links keep rendering the same card.
