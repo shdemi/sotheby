@@ -1,0 +1,25 @@
+# Raw source checkouts are never deployed.
+githubfetch/
+ignore/
+Reverse-1999-CN-Asset/
+references/
+references2/
+testCodeChube/
+gnomon-research/
+
+# Dev-only tooling and test artifacts.
+node_modules/
+.playwright-mcp/
+editor/_test/
+scripts/
+*.log
+/*.png
+check-*.png
+editor/_test/*.png
+
+# Nested git checkout inside the asset cache.
+images/.git/
+
+# Local servers and docs that the static site never requests.
+serve.py
+CONTRIBUTING.md

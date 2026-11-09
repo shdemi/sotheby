@@ -10,7 +10,8 @@
     "sync": "node scripts/sync/index.mjs",
     "sync:verify": "node scripts/sync/verify.mjs",
     "sync:assets": "node scripts/sync/assets.mjs",
-    "sync:prune": "node scripts/sync/tools/prune-images.mjs"
+    "sync:prune": "node scripts/sync/tools/prune-images.mjs",
+    "codes:snapshot": "node scripts/codes/snapshot.mjs"
   },
   "devDependencies": {
     "playwright": "^1.49.0"

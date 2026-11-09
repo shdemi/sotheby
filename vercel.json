@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/codes.js": {
+      "maxDuration": 10,
+      "includeFiles": "data/promo_codes.json"
+    }
+  },
+  "headers": [
+    {
+      "source": "/data/promo_codes.json",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=300, stale-while-revalidate=3600" }]
+    }
+  ]
+}

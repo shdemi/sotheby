@@ -39,6 +39,9 @@ The rebuild splits that into a hub + routes. See §7 (phases).
    - `githubfetch/St-Pavlov-Foundation/re1999-data-main` (CN server)
    Images come from a third source, assets only:
    - `githubfetch/Myssal/Reverse-1999-CN-Asset`
+   The Fandom wiki (`reverse1999.fandom.com`, read-only) is the **one** allowed runtime
+   source, and only for promotional codes (§12). It never feeds `data/` other than
+   `data/promo_codes.json`.
 4. **No Kornblume.** It was a third-party data + image source; it is being removed.
 5. **No hand-numbered IDs.** Every object keyed by an id must use the **game id** from
    St-Pavlov (see §5 for the psychube re-key).
@@ -306,6 +309,12 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
     psychube_id.json  psychube_key_map.json  future_sight.json
     characters_mats_required.json  items.json  item_formulas.json
     psychubes_data.json      (legacy detail; re-derive in Phase 2)
+    promo_codes.json         snapshot of the Fandom page (§12)
+  api/                       Vercel Node functions
+    codes.js                 GET /api/codes + edge cache (§12)
+    _lib/wiki.mjs            the one outbound request
+    _lib/parse-codes.mjs     pure wikitext parser (unit-tested)
+  vercel.json .vercelignore  function config + upload exclusions
   content/                   HAND-AUTHORED (class C)
     builds.json rotations.json teams.json progressions.json
     guide_skills.json skill_glossary.json progression_costs.json
@@ -393,6 +402,10 @@ Do work on a branch, e.g. `rebuild-core`; keep `main` deployable.
 
 ## 8. Hosting & accounts notes
 
+- The site is deployed on **Vercel** (Phase 8 landed early, 2026-11-09). `vercel.json`
+  configures the one Node function, `api/codes.js`; `.vercelignore` keeps the raw
+  checkouts, test artifacts and `scripts/` out of the upload. `CNAME` is kept for the
+  GitHub Pages copy.
 - Discord OAuth2 cannot be done from a static page: the token exchange needs a
   `client_secret`, so it requires a backend/serverless function.
 - Clean `/u/<handle>` URLs require host rewrites — another reason for Phase 8.
@@ -421,6 +434,7 @@ npm run sync          # writes every generated file under data/
 npm run sync:verify   # asserts the invariants (rarity, psychubes, future sight, items)
 npm run sync:assets   # fills the images/ cache from Myssal (items, psychubes, heads, skills)
 npm run sync:prune    # reports unreachable art under images/ (--delete to remove)
+npm run codes:snapshot  # refreshes data/promo_codes.json from the Fandom wiki
 
 # Stages data (existing)
 node scripts/build_stages_data.mjs
@@ -664,3 +678,56 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   only 14 of the 30 shipped files).
 - `editor/`: keep. It reads/writes data over HTTP and exports a ZIP; after the rebuild it
   must point at `content/` for hand-authored files and stop offering generated files.
+
+---
+
+## 12. Promotional codes (`/api/codes`)
+
+The InfoBook **Codes** tab (`#builds-tab-codes`) lists only the codes the Fandom page
+still marks Active. This is the one feature that reads the internet at runtime.
+
+**Source.** `https://reverse1999.fandom.com/wiki/Promotional_Code` (CC BY-SA), read
+through `api.php?action=parse&prop=wikitext|revid&formatversion=2&origin=*`. The shared
+fetcher is `api/_lib/wiki.mjs` (browser UA, 8 s timeout, 2 attempts); the pure parser is
+`api/_lib/parse-codes.mjs` (no network, unit-tested).
+
+**Parser rules.**
+
+- Only `== Active ==` / `=== Permanent ===` / `=== Current ===` rows are kept; `Expired`
+  is ignored and duplicate codes (case-insensitive) are dropped.
+- A row is `|CODE<!-- Expires: date -->` followed by `{{Item Box|qty|name|rarity}}`
+  templates, which may share a line. Names inside `[[…]]` are unwrapped.
+- Expiry comments are hand-written and unreliable (`idk`, `??/??/2026`, `04/11/2026`).
+  The parser keeps `{ raw, iso, uncertain }` and only sets `iso` when the date is
+  unambiguous (ISO, or a slash date where one part is > 12). **Never hide a code
+  because its date cannot be read**; the UI shows "Expiry unknown (idk)" instead.
+- Seeing a code here does not prove it still redeems — the wiki lags the game sometimes.
+
+**Function.** `api/codes.js` returns `{ source, title, revid, fetchedAt, stale,
+permanent[], current[] }` with `Cache-Control: public, s-maxage=21600,
+stale-while-revalidate=86400`. This is the plain-function equivalent of ISR, **not ISR
+itself** (ISR is a Next.js feature and does not exist for Vercel Functions): the CDN
+serves the cached response for six hours, then serves it stale for a day while it
+revalidates. If Fandom is unreachable (Cloudflare can block datacenter IPs) the handler
+returns the committed snapshot with `s-maxage=300` and `stale: true`; only when that
+file is missing does it return 502.
+
+**Snapshot.** `npm run codes:snapshot` = fetch → parse → `data/promo_codes.json`
+(`scripts/codes/snapshot.mjs`), written with `writeJson` and skipped when `revid` and
+the rows are unchanged. It exists so `python serve.py` (no functions), the GitHub Pages
+copy and the function's error path all have data. Regenerate it instead of editing it.
+The app calls `/api/codes` first and falls back to `data/promo_codes.json` on any
+failure, so local development needs no Vercel CLI.
+
+**UI.** The tab is a mode tab next to Characters / Psychubes / Glossary
+(`#builds-tab-codes`, `renderCodesRail()` + `renderCodesDetail()` in `app.js`). The rail
+lists the active codes with an expiry badge; the detail pane shows the code with a Copy
+button (`guideCopyText`), its rewards as item stickers (`renderItemStickerHtml`), a
+`Permanent` / `Expires …` / `Expiry unknown` badge, and the CC BY-SA source link. The
+`data/promo_codes.json` file is added to the function bundle with
+`vercel.json → functions["api/codes.js"].includeFiles`.
+
+**Tests.** `editor/_test/codes.test.mjs` runs against
+`editor/_test/fixtures/promo-codes.wikitext`; it never touches the network. It covers
+section filtering, duplicate handling, reward parsing, every expiry shape and the
+snapshot shape.

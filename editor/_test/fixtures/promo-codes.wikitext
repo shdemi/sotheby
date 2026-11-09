@@ -1,0 +1,48 @@
+'''Promotional Codes''' refer to claimable prizes that are shared within the community and events.
+
+==Active==
+===Permanent===
+{| class="wikitable" style="text-align:center"
+|-
+|5YRBRF9
+| {{Item Box|19,999|Dust|3}} {{Item Box|3|Fine Insight Package|3}}
+|-
+|1999GIFT
+| {{Item Box|50|[[Clear Drop]]|6}}
+|-
+|}
+
+===Current===
+{| class="wikitable" style="text-align:center"
+|-
+|Typhonomachy<!-- Expires: ??/??/2026 -->
+|{{Item Box|30|Clear Drop|6}}{{Item Box|3|Moment of Dissonance|3}}
+|-
+|AquaticGames<!-- Expires: 14/12/2026 -->
+|{{Item Box|30|Clear Drop|6}}{{Item Box|2|Fine Insight Package|3}}
+|-
+|Fallingwater<!-- Expires: 04/11/2026 -->
+|{{Item Box|30|Clear Drop|6}}
+|-
+|GhostAlert<!-- Expires: idk -->
+|{{Item Box|30|Clear Drop|6}}
+|-
+|DesperateCounter<!-- Expires: ??/09/26 -->
+|{{Item Box|30|Clear Drop|6}}
+|-
+|Kymaion
+|{{Item Box|30|Clear Drop|6}}{{Item Box|1|Jar of Picrasma Candy|5}}
+|-
+|}
+
+==Expired==
+===2026===
+{| class="wikitable" style="text-align:center"
+|-
+|OldCode<!-- Expires: 01/01/2026 -->
+|{{Item Box|1|Dust|3}}
+|-
+|5YRBRF9
+|{{Item Box|1|Dust|3}}
+|-
+|}

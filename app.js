@@ -6763,7 +6763,7 @@ let characterSkillsData = {};
 let characterEuphoriasData = {};
 let skillGlossaryData = {};
 let psychubesDetailedData = {};
-let infoBookActiveTab = "characters"; // "characters" | "psychubes" | "items" | "glossary"
+let infoBookActiveTab = "characters"; // "characters" | "psychubes" | "items" | "glossary" | "codes"
 let selectedItemId = null;
 let selectedPsychubeKey = null;
 let selectedGlossaryKey = null;
@@ -9051,6 +9051,14 @@ function renderBuilds() {
     return;
   }
 
+  if (infoBookActiveTab === "codes") {
+    if (rarityGroup) rarityGroup.style.display = "none";
+    if (afflatusGroup) afflatusGroup.style.display = "none";
+    if (searchInput) searchInput.placeholder = t("codes.search") || "Search codes";
+    renderCodesRail();
+    return;
+  }
+
   if (infoBookActiveTab === "items") {
     if (rarityGroup) rarityGroup.style.display = "none";
     if (afflatusGroup) afflatusGroup.style.display = "none";
@@ -9639,6 +9647,267 @@ function renderGlossaryDetail() {
     kwEl.addEventListener("click", (e) => {
       e.stopPropagation();
       showTermPopover(kwEl, kwEl.dataset.term, null);
+    });
+  });
+}
+
+/* ---------------- InfoBook: promotional codes ---------------- */
+
+let promoCodeData = null;
+let promoCodeStatus = "idle"; // idle | loading | ready | error
+let promoCodeSelected = null;
+let promoCodeError = "";
+let promoCodesPromise = null;
+
+/** `permanent` and `current` flattened into one list, each row tagged. */
+function promoCodeEntries() {
+  if (!promoCodeData) return [];
+  const rows = [];
+  (promoCodeData.permanent || []).forEach((entry) => rows.push({ ...entry, permanent: true }));
+  (promoCodeData.current || []).forEach((entry) => rows.push({ ...entry, permanent: false }));
+  return rows;
+}
+
+function promoCodeDate(iso) {
+  if (!iso) return "";
+  const date = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return iso;
+  const locale = currentLang === "cn" ? "zh-CN" : currentLang === "vi" ? "vi-VN" : "en-US";
+  try {
+    return date.toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+  } catch {
+    return iso;
+  }
+}
+
+/** Badge text + tone for one row. Never hides a code on an unreadable date. */
+function promoExpiryBadge(entry) {
+  if (entry.permanent) return { label: t("codes.permanent"), kind: "permanent" };
+  const expires = entry.expires;
+  if (!expires) return { label: t("codes.expiresUncertain"), kind: "unknown" };
+  if (expires.uncertain || !expires.iso) {
+    return { label: `${t("codes.expiresUncertain")} (${expires.raw})`, kind: "unknown" };
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  return {
+    label: t("codes.expires", { date: promoCodeDate(expires.iso) || expires.raw }),
+    kind: expires.iso < today ? "expired" : "date",
+  };
+}
+
+function fetchJsonWithTimeout(url, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { signal: controller.signal, headers: { Accept: "application/json" } })
+    .then((res) => {
+      if (!res.ok) throw new Error(`${url} responded ${res.status}`);
+      return res.json();
+    })
+    .finally(() => clearTimeout(timer));
+}
+
+/**
+ * Loads the code list once. `/api/codes` is the live Vercel function; when it
+ * is missing (a plain `python serve.py` has no functions) or the wiki is down,
+ * the committed snapshot under `data/` answers instead.
+ */
+function ensurePromoCodes() {
+  if (promoCodeStatus === "ready" && promoCodeData) return Promise.resolve(promoCodeData);
+  if (promoCodeStatus === "loading" && promoCodesPromise) return promoCodesPromise;
+
+  promoCodeStatus = "loading";
+  promoCodeError = "";
+  promoCodesPromise = (async () => {
+    let data = null;
+    let error = null;
+    try {
+      data = await fetchJsonWithTimeout("/api/codes", 9000);
+    } catch (err) {
+      error = err;
+    }
+    const valid = data && (Array.isArray(data.permanent) || Array.isArray(data.current));
+    if (!valid) {
+      try {
+        const snapshot = await fetchJsonWithTimeout("data/promo_codes.json", 9000);
+        if (snapshot && (Array.isArray(snapshot.permanent) || Array.isArray(snapshot.current))) {
+          data = snapshot;
+        }
+      } catch (err) {
+        error = error || err;
+      }
+    }
+
+    if (data && (Array.isArray(data.permanent) || Array.isArray(data.current))) {
+      promoCodeData = data;
+      promoCodeStatus = "ready";
+      const entries = promoCodeEntries();
+      if (!promoCodeSelected || !entries.some((entry) => entry.code === promoCodeSelected)) {
+        promoCodeSelected = entries[0] ? entries[0].code : null;
+      }
+      return promoCodeData;
+    }
+
+    promoCodeStatus = "error";
+    promoCodeError = String((error && error.message) || error || "unknown error");
+    console.warn("Could not load promotional codes", error);
+    return null;
+  })();
+
+  return promoCodesPromise;
+}
+
+function renderCodesRail() {
+  const list = document.getElementById("builds-list");
+  const count = document.getElementById("builds-count");
+  if (!list) return;
+
+  if (promoCodeStatus === "idle") {
+    ensurePromoCodes().then(() => {
+      if (infoBookActiveTab === "codes") renderBuilds();
+    });
+  }
+
+  if (promoCodeStatus === "loading") {
+    if (count) count.textContent = "";
+    list.innerHTML = guideEmptyState("codes.loading");
+    renderCodesDetail();
+    return;
+  }
+
+  if (promoCodeStatus === "error") {
+    if (count) count.textContent = "";
+    list.innerHTML = guideEmptyState("codes.error");
+    renderCodesDetail();
+    return;
+  }
+
+  const searchInput = document.getElementById("builds-search");
+  const query = (searchInput ? searchInput.value : "").trim().toLowerCase();
+  const entries = promoCodeEntries().filter((entry) => {
+    if (!query) return true;
+    return (
+      entry.code.toLowerCase().includes(query) ||
+      (entry.rewards || []).some((reward) => String(reward.name || "").toLowerCase().includes(query))
+    );
+  });
+
+  if (count) count.textContent = t("codes.count", { n: entries.length });
+
+  if (!promoCodeSelected || !entries.some((entry) => entry.code === promoCodeSelected)) {
+    promoCodeSelected = entries[0] ? entries[0].code : null;
+  }
+
+  list.innerHTML = entries.length
+    ? entries
+        .map((entry) => {
+          const badge = promoExpiryBadge(entry);
+          return `
+            <button type="button" class="codes-row${entry.code === promoCodeSelected ? " is-active" : ""}" data-code="${escapeHtml(entry.code)}">
+              <span class="codes-row-code">${escapeHtml(entry.code)}</span>
+              <span class="codes-row-meta codes-badge-${badge.kind}">${escapeHtml(badge.label)}</span>
+            </button>`;
+        })
+        .join("")
+    : guideEmptyState("codes.empty");
+
+  list.querySelectorAll(".codes-row").forEach((row) => {
+    row.addEventListener("click", () => {
+      promoCodeSelected = row.dataset.code;
+      renderCodesRail();
+      showBuildsDetail();
+    });
+  });
+
+  renderCodesDetail();
+}
+
+function renderCodesDetail() {
+  const host = document.getElementById("builds-detail");
+  if (!host) return;
+
+  if (promoCodeStatus === "loading") {
+    host.innerHTML = guideEmptyState("codes.loading");
+    return;
+  }
+
+  if (promoCodeStatus === "error") {
+    host.innerHTML = `
+      <div class="codes-detail-card codes-detail-error">
+        <p class="codes-error-text">${escapeHtml(t("codes.error"))}</p>
+        <p class="codes-error-detail">${escapeHtml(promoCodeError)}</p>
+        <button type="button" class="btn btn-secondary btn-sm" id="codes-retry">${escapeHtml(t("codes.retry"))}</button>
+      </div>`;
+    const retry = host.querySelector("#codes-retry");
+    if (retry) {
+      retry.addEventListener("click", () => {
+        promoCodeStatus = "idle";
+        promoCodesPromise = null;
+        renderBuilds();
+      });
+    }
+    return;
+  }
+
+  const entry = promoCodeEntries().find((row) => row.code === promoCodeSelected);
+  if (!entry) {
+    host.innerHTML = guideEmptyState("codes.select");
+    return;
+  }
+
+  const badge = promoExpiryBadge(entry);
+  const rewards = Array.isArray(entry.rewards) ? entry.rewards : [];
+  const rewardsHtml = rewards.length
+    ? `<div class="codes-rewards-grid">${rewards
+        .map(
+          (reward) => `
+            <div class="codes-reward">
+              ${renderItemStickerHtml(reward.name, reward.qty)}
+              <span class="codes-reward-name">${escapeHtml(reward.name || "")}</span>
+            </div>`,
+        )
+        .join("")}</div>`
+    : `<p class="codes-empty-text">${escapeHtml(t("codes.noRewards"))}</p>`;
+
+  const staleBadge = promoCodeData && promoCodeData.stale
+    ? `<span class="codes-badge codes-badge-stale">${escapeHtml(t("codes.stale"))}</span>`
+    : "";
+  const updated = promoCodeData && promoCodeData.fetchedAt
+    ? `<span class="codes-updated">${escapeHtml(
+        t("codes.updated", { date: promoCodeDate(String(promoCodeData.fetchedAt).slice(0, 10)) }),
+      )}</span>`
+    : "";
+
+  host.innerHTML = `
+    <div class="codes-detail-card">
+      <div class="codes-detail-head">
+        <div class="codes-code-line">
+          <span class="codes-code">${escapeHtml(entry.code)}</span>
+          <button type="button" class="btn btn-secondary btn-sm codes-copy" data-copy="${escapeHtml(entry.code)}">${escapeHtml(t("codes.copy"))}</button>
+        </div>
+        <div class="codes-badges">
+          <span class="codes-badge codes-badge-${badge.kind}">${escapeHtml(badge.label)}</span>
+          ${staleBadge}
+        </div>
+      </div>
+      <div class="codes-rewards">
+        ${guideSectionHeader("codes.rewards")}
+        ${rewardsHtml}
+      </div>
+      <div class="codes-source">
+        <a href="${escapeHtml(promoCodeData?.source || "https://reverse1999.fandom.com/wiki/Promotional_Code")}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("codes.source"))}</a>
+        ${updated}
+      </div>
+    </div>`;
+
+  host.querySelectorAll(".codes-copy").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const ok = await guideCopyText(btn.dataset.copy || "");
+      btn.textContent = t(ok ? "codes.copied" : "codes.copyFailed");
+      btn.classList.toggle("is-copied", ok);
+      setTimeout(() => {
+        btn.textContent = t("codes.copy");
+        btn.classList.remove("is-copied");
+      }, 1600);
     });
   });
 }
@@ -11118,21 +11387,23 @@ function setupGuideListeners() {
       storageKey: "r1999_builds_rail_height_v1",
     });
 
-    // InfoBook mode switcher (Characters / Psychubes / Items / Glossary)
+    // InfoBook mode switcher (Characters / Psychubes / Items / Glossary / Codes)
     const btnTabChars = document.getElementById("builds-tab-characters");
     const btnTabPsychubes = document.getElementById("builds-tab-psychubes");
     const btnTabItems = document.getElementById("builds-tab-items");
     const btnTabGlossary = document.getElementById("builds-tab-glossary");
+    const btnTabCodes = document.getElementById("builds-tab-codes");
     const buildsSearchInput = document.getElementById("builds-search");
 
     const updateModeTabsUI = () => {
-      [btnTabChars, btnTabPsychubes, btnTabItems, btnTabGlossary].forEach((b) => {
+      [btnTabChars, btnTabPsychubes, btnTabItems, btnTabGlossary, btnTabCodes].forEach((b) => {
         if (b) b.classList.remove("is-active");
       });
       if (infoBookActiveTab === "characters" && btnTabChars) btnTabChars.classList.add("is-active");
       if (infoBookActiveTab === "psychubes" && btnTabPsychubes) btnTabPsychubes.classList.add("is-active");
       if (infoBookActiveTab === "items" && btnTabItems) btnTabItems.classList.add("is-active");
       if (infoBookActiveTab === "glossary" && btnTabGlossary) btnTabGlossary.classList.add("is-active");
+      if (infoBookActiveTab === "codes" && btnTabCodes) btnTabCodes.classList.add("is-active");
     };
 
     const selectMode = (mode) => {
@@ -11150,6 +11421,7 @@ function setupGuideListeners() {
     if (btnTabPsychubes) btnTabPsychubes.addEventListener("click", () => selectMode("psychubes"));
     if (btnTabItems) btnTabItems.addEventListener("click", () => selectMode("items"));
     if (btnTabGlossary) btnTabGlossary.addEventListener("click", () => selectMode("glossary"));
+    if (btnTabCodes) btnTabCodes.addEventListener("click", () => selectMode("codes"));
 
     document.querySelectorAll("#builds-rarity-group .filter-btn").forEach((btn) => {
       btn.addEventListener("click", () => {

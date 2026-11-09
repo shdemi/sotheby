@@ -10450,6 +10450,192 @@ body.guide-rail-resizing * {
   white-space: pre-wrap;
 }
 
+/* Promotional codes: rail rows */
+.codes-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #D5D3CF;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.codes-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.codes-row.is-active {
+  background: rgba(237, 125, 49, 0.15);
+  border-left: 3px solid #ED7D31;
+  color: #fff;
+}
+
+.codes-row-code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ECE5D9;
+  word-break: break-all;
+}
+
+.codes-row-meta {
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  color: #8f8a83;
+}
+
+/* Promotional codes: detail card */
+.codes-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.codes-detail-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.codes-code-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.codes-code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 28px;
+  letter-spacing: 1.5px;
+  color: #ECE5D9;
+  word-break: break-all;
+}
+
+.codes-copy.is-copied {
+  border-color: #ED7D31;
+  color: #ED7D31;
+}
+
+.codes-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.codes-badge {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: #3c3c3c;
+  color: #ECE5D9;
+}
+
+.codes-badge-permanent {
+  background: rgba(233, 196, 106, 0.16);
+  color: #E9C46A;
+}
+
+.codes-badge-date {
+  background: rgba(237, 125, 49, 0.16);
+  color: #ED9C63;
+}
+
+.codes-badge-unknown {
+  background: rgba(255, 255, 255, 0.06);
+  color: #8f8a83;
+}
+
+.codes-badge-expired {
+  background: rgba(224, 122, 95, 0.18);
+  color: #E07A5F;
+}
+
+.codes-badge-stale {
+  background: rgba(255, 255, 255, 0.06);
+  color: #8f8a83;
+  font-style: italic;
+}
+
+.codes-rewards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.codes-reward {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 68px;
+}
+
+.codes-reward-name {
+  font-size: 0.62rem;
+  line-height: 1.25;
+  color: #D5D3CF;
+  text-align: center;
+  word-break: break-word;
+}
+
+.codes-source {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+  color: #8f8a83;
+}
+
+.codes-source a {
+  color: #ED9C63;
+  text-decoration: none;
+}
+
+.codes-source a:hover {
+  text-decoration: underline;
+}
+
+.codes-empty-text {
+  font-size: 0.85rem;
+  color: #8f8a83;
+}
+
+.codes-detail-error {
+  align-items: flex-start;
+}
+
+.codes-error-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #ECE5D9;
+}
+
+.codes-error-detail {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #8f8a83;
+  word-break: break-word;
+}
+
 /* A narrow detail pane stacks the chart over the loadout cards. */
 @media (max-width: 980px) {
   .builds-grid { grid-template-columns: minmax(0, 1fr); }

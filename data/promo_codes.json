@@ -1,0 +1,400 @@
+{
+  "source": "https://reverse1999.fandom.com/wiki/Promotional_Code",
+  "title": "Promotional Code",
+  "revid": 106060,
+  "fetchedAt": "2026-11-09T15:23:39.855Z",
+  "permanent": [
+    {
+      "code": "5YRBRF9",
+      "rewards": [
+        {
+          "qty": 19999,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 19999,
+          "name": "Sharpodonty",
+          "rarity": 3
+        },
+        {
+          "qty": 3,
+          "name": "Fine Insight Package",
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "code": "1999GIFT",
+      "rewards": [
+        {
+          "qty": 50,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 19999,
+          "name": "Dust",
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "code": "GachaGaming1999",
+      "rewards": [
+        {
+          "qty": 1,
+          "name": "Picrasma Candy",
+          "rarity": 4
+        },
+        {
+          "qty": 1,
+          "name": "Fine Insight Casket",
+          "rarity": 3
+        },
+        {
+          "qty": 5,
+          "name": "Enlighten II",
+          "rarity": 3
+        },
+        {
+          "qty": 15000,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 3,
+          "name": "Moment of Dissonance",
+          "rarity": 3
+        }
+      ]
+    }
+  ],
+  "current": [
+    {
+      "code": "Typhonomachy",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 1,
+          "name": "Delicate Insight Casket",
+          "rarity": 4
+        },
+        {
+          "qty": 10000,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 3,
+          "name": "Moment of Dissonance",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "??/??/2026",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "AquaticGames",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 2,
+          "name": "Fine Insight Package",
+          "rarity": 3
+        },
+        {
+          "qty": 3,
+          "name": "Enlighten III",
+          "rarity": 4
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "14/12/2026",
+        "iso": "2026-12-14",
+        "uncertain": false
+      }
+    },
+    {
+      "code": "Kymaion",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 1,
+          "name": "Jar of Picrasma Candy",
+          "rarity": 5
+        },
+        {
+          "qty": 20000,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "code": "GhostAlert",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 3,
+          "name": "Enlighten III",
+          "rarity": 4
+        },
+        {
+          "qty": 20000,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "idk",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "Fallingwater",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 2,
+          "name": "MF Polarization",
+          "rarity": 4
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        },
+        {
+          "qty": 2,
+          "name": "Fine Insight Package",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "04/11/2026",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "ModernBuildings",
+      "rewards": [
+        {
+          "qty": 1,
+          "name": "Jar of Picrasma Candy",
+          "rarity": 5
+        },
+        {
+          "qty": 10,
+          "name": "Enlighten II",
+          "rarity": 3
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        },
+        {
+          "qty": 3,
+          "name": "Moment of Dissonance",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "04/11/2026",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "EndlessHorn",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 1,
+          "name": "Delicate Insight Casket",
+          "rarity": 4
+        },
+        {
+          "qty": 10000,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 3,
+          "name": "Moment of Dissonance",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "04/11/2026",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "EchoStone",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 3,
+          "name": "Enlighten III",
+          "rarity": 4
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        },
+        {
+          "qty": 2,
+          "name": "Fine Insight Package",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "idk",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "DaisyinRuins",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 1,
+          "name": "Jar of Picrasma Candy",
+          "rarity": 5
+        },
+        {
+          "qty": 20000,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "idk",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "EchoesofTime",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 2,
+          "name": "MF Polarization",
+          "rarity": 4
+        },
+        {
+          "qty": 20000,
+          "name": "Sharpodonty",
+          "rarity": 3
+        },
+        {
+          "qty": 2,
+          "name": "Fine Insight Package",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "idk",
+        "iso": null,
+        "uncertain": true
+      }
+    },
+    {
+      "code": "DesperateCounter",
+      "rewards": [
+        {
+          "qty": 30,
+          "name": "Clear Drop",
+          "rarity": 6
+        },
+        {
+          "qty": 1,
+          "name": "Delicate Insight Casket",
+          "rarity": 4
+        },
+        {
+          "qty": 10000,
+          "name": "Dust",
+          "rarity": 3
+        },
+        {
+          "qty": 3,
+          "name": "Moment of Dissonance",
+          "rarity": 3
+        }
+      ],
+      "expires": {
+        "raw": "??/09/26",
+        "iso": null,
+        "uncertain": true
+      }
+    }
+  ]
+}
