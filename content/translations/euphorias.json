@@ -1,6 +1,104 @@
 {
+  "300301": {
+    "vi": {
+      "ranks": {
+        "1": "Cường hóa [Circle of Life] với hiệu ứng bổ sung: nhận DMG Bonus +15%, Penetration Rate +15%, và hiệu ứng trở nên không thể bị xua tan.",
+        "2": "Cường hóa [Circle of Life] với hiệu ứng bổ sung: với mỗi 200 ATK của Druvis III, nhận thêm DMG Bonus +1%.",
+        "3": "Cường hóa [Circle of Life] với hiệu ứng bổ sung: tấn công kẻ địch đang ở trạng thái [Petrify] không xóa trạng thái [Petrify], và nhận thêm Penetration Rate +25% khi đánh mục tiêu đang ở trạng thái [Petrify].",
+        "4": "Cường hóa [Circle of Life] với hiệu ứng bổ sung: Nhận ATK bằng 7.5% Mental DEF của Druvis III."
+      }
+    }
+  },
+  "300302": {
+    "vi": {
+      "ranks": {
+        "1": "[Circle of Life] hiệu ứng mới: Khi tấn công, gây 1/2/3 cộng dồn [Firebud] (không thể bị xua tan) lên mục tiêu trúng đòn tùy theo hạng Incantation.",
+        "2": "[Firebud] hiệu ứng mới: Critical Resist Rate -15%. Critical DEF -30%. Với mỗi cộng dồn bổ sung, nhận thêm Critical Resist Rate -1.5% và Critical DEF -3%.",
+        "3": "Khi vào trận, nếu phe ta có ít nhất 3 đồng minh [Plant], cường hóa [Circle of Life]:\n[Circle of Life] trên đồng minh phía trước liền kề cấp thêm Penetration Rate +40%.\n[Circle of Life] trên đồng minh phía sau liền kề cấp thêm DMG Taken Reduction +30%.",
+        "4": "Khi vào trận, nếu phe ta có ít nhất 3 đồng minh [Plant], cường hóa [Circle of Life]:\nKhi [Firebud] phát nổ, với mỗi cộng dồn, toàn bộ phe ta nhận DMG Bonus +6%, duy trì 2 round."
+      }
+    }
+  },
+  "300401": {
+    "vi": {
+      "ranks": {
+        "1": "Khi tấn công, Critical Rate vượt mức được chuyển thành Critical DMG; sau khi bạo kích, bản thân nhận 1 cộng dồn [Intense Fervor]; khi thi triển Ultimate, tiêu hao toàn bộ cộng dồn [Intense Fervor] để nhận lượng Moxie tương đương.",
+        "2": "Khi Extra Action bạo kích, nhận 2 cộng dồn [Ceremonious].",
+        "3": "Khi [Aerial Maneuvers] bạo kích ở Incantation hạng 1/2/3, phát động 1 đòn đánh thêm gây 80%/120%/200% Reality DMG. Đòn đánh thêm này được tính là 1 Extra Action.",
+        "4": "Khi thi triển Ultimate, gây thêm 30% Reality DMG cho mỗi cộng dồn [Ceremonious] đang có; tối đa 15 cộng dồn được tính cho lượng bổ sung này."
+      }
+    }
+  },
+  "300402": {
+    "vi": {
+      "ranks": {
+        "1": "Incantation Might +5%; khi tấn công, Critical Rate vượt mức được chuyển thành Critical DMG.",
+        "2": "Khi bắt đầu round, nhận 1 [Pointed Bullet]. Khi bạo kích, có 50% xác suất nhận 1 [Pointed Bullet].",
+        "3": "Khi [Aerial Maneuvers] bạo kích ở Incantation hạng 1/2/3, phát động 1 đòn đánh thêm gây 80%/120%/200% Reality DMG. Đòn đánh thêm này được tính là 1 Extra Action.",
+        "4": "Sau khi [Pointed Bullet] được kích hoạt ít nhất 2 lần trong một round, nhận Incantation Might +20% khi tấn công trong phần còn lại của round đó."
+      }
+    }
+  },
+  "300701": {
+    "vi": {
+      "ranks": {
+        "1": "Khi vào trận, nhận 4 cộng dồn [Virtues] và 1 cộng dồn [Rousing Morale].\nKhi bắt đầu round, nếu A Knight có ít nhất 2 cộng dồn [Virtues], tiêu hao 2 cộng dồn [Virtues] để lập tức thi triển [After AD 778]. Đòn tấn công này được tính là Extra Action.",
+        "2": "[Justice] gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%). Đòn tấn công này nhận hiệu lực Ultimate Might với tỷ lệ 100%. Sau khi tấn công, nhận 8/10/12 cộng dồn [Ceremonious: Ultimate Might].\n[Glory] gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%). Đòn tấn công này nhận hiệu lực Ultimate Might với tỷ lệ 100%. Sau khi tấn công, nhận 8/10/12 cộng dồn [Ceremonious: Critical DMG].",
+        "3": "[After AD 778] gây thêm Reality DMG bằng (Reality DMG cơ bản ×60% × số kẻ địch). Khi chủ động thi triển, gây thêm Reality DMG bằng (Reality DMG cơ bản ×120% × số kẻ địch) và giúp A Knight nhận 1 cộng dồn [Virtues]. Mỗi kẻ địch bị [After AD 778] đánh bại, A Knight nhận 1 cộng dồn [Virtues].",
+        "4": "[Mercy]: Với mỗi 20% HP còn lại của kẻ địch (trước đây là mỗi 20% HP đã mất), A Knight nhận Critical Rate +8% khi tấn công chúng."
+      }
+    }
+  },
+  "300901": {
+    "vi": {
+      "ranks": {
+        "1": "[Cure] Cường hóa: Sau khi bị tấn công, nếu HP hiện tại của bản thân dưới 40%, hiệu ứng này được kích hoạt ngay và thời lượng giảm 1 round. Hiệu ứng này cũng trở nên có thể cộng dồn.\nNâng cấp Insight III của [Genius Lady]: [Cure] được cấp bởi [Concentrated Essence!] nhận thêm +1 round thời lượng.",
+        "2": "Khi vào trận, Sotheby nhận Healing Done +7% cho mỗi 1000 Max HP cô có.",
+        "3": "Khi vào trận, Sotheby nhận Poison DMG Bonus +2% cho mỗi 100 ATK cô có.",
+        "4": "Khi bắt đầu round, cấp 1 cộng dồn [Duality Potion] cho bản thân."
+      }
+    }
+  },
+  "302001": {
+    "vi": {
+      "ranks": {
+        "1": "Khi kết thúc round, nếu đơn vị này không bị tấn công trong round, nhận Moxie +1.",
+        "2": "Khi kết thúc round, gây 1 cộng dồn [Weakness] lên các đơn vị kẻ địch không tấn công đơn vị này trong round.",
+        "3": "Nhận thêm DMG Dealt +10% khi đánh kẻ địch đang có trạng thái [Stats Down], [Neg Status] hoặc [Control].",
+        "4": "Khi thi triển [Uninvited Reviewer], bản thân nhận Penetration Rate +30%. Ngay trước khi thi triển [Uninvited Reviewer], gây Critical DEF -20% lên mục tiêu, duy trì 2 round."
+      }
+    }
+  },
+  "302501": {
+    "vi": {
+      "ranks": {
+        "1": "Nhận Max Eureka +5. Khi bắt đầu round, nhận Eureka +4. Mỗi khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Khi vào trận, tích lũy 3 điểm [Inspiration]. Từ round 2 trở đi, khi bắt đầu mỗi round, tạo 1 Precast Incantation [Rock 'n' Roll Forever!].\nKhi vào trận, nhận [Restless Heart]. [Restless Heart] bị gỡ sau khi đánh trúng một đòn không bạo kích. Hiệu ứng nhận Moxie khi [Restless Heart] bị gỡ được thay bằng nhận 1 cộng dồn [Sturdiness] nếu đang ở [Restless Heart] khi bắt đầu round.",
+        "2": "Sau khi thi triển [Treat for the Ears] hoặc [Challenge for the Eyes], tiêu hao 2 Eureka và nhận số lần tấn công của [Impromptu Incantation] +1 trong round.",
+        "3": "[Sleepless Rave]: Cấp 8 điểm [Inspiration] cho [Impromptu Incantation] trong round.",
+        "4": "Khi bắt đầu round, gây trạng thái [Rockstar Spotlight] lên mục tiêu chính, duy trì 1 round, sau khi đồng minh phía trước liền kề thực hiện đòn tấn công của họ trong round."
+      }
+    }
+  },
   "302502": {
-    "version": "3.7"
+    "version": "3.7",
+    "vi": {
+      "ranks": {
+        "1": "Không còn tạo Incantation cơ bản hay Ultimate. Thi triển Incantation bằng cách kích hoạt [Conduit] bằng Energy.\nMoxie được thay bằng Harmonization.\n[Sleepless Rave]: [Riot and Roll] giờ mất 1 cộng dồn sau khi kích hoạt. Sau khi tấn công, chuyển sang [Treat for the Ears] nếu chỉ có 1 mục tiêu kẻ địch; nếu không, chuyển sang [Challenge for the Eyes].\n[Treat for the Ears] giờ gây Mental DMG bằng (Mental DMG cơ bản hạng 1 ×160%) và gây Moxie -1 khi bạo kích, tối đa 1 lần mỗi round.\n[Challenge for the Eyes] giờ gây Mental DMG bằng (Mental DMG cơ bản hạng 1 ×160%) lên 2 kẻ địch và gây Moxie -1 khi bạo kích, tối đa 1 lần mỗi round.",
+        "2": "[Listen to New Stuff] hiệu ứng Insight I được đổi thành: Khi bắt đầu round, bước vào trạng thái [Restless Heart].\n[Listen to New Stuff] hiệu ứng Insight III được đổi thành: Khi kết thúc round, nếu Regulus đang ở trạng thái [Restless Heart], cô nhận Harmonization +15. Khi vào trận, Regulus nhận Harmonization +65.\n[Restless Heart] hiệu ứng được đổi thành: Critical Rate +50%. Critical Rate vượt mức được chuyển thành Critical DMG. Bị gỡ sau khi một đòn tấn công không bạo kích.",
+        "3": "[Treat for the Ears] Hiệu ứng mới: Với mỗi cấp [Conduit Activation], gây thêm Mental DMG bằng (Mental DMG cơ bản hạng 1 ×32%) (tính tối đa 20 cấp).\n[Challenge for the Eyes] Hiệu ứng mới: Với mỗi cấp [Conduit Activation], gây thêm Mental DMG bằng (Mental DMG cơ bản hạng 1 ×32%) (tính tối đa 20 cấp).",
+        "4": "[Sleepless Rave] gây thêm Mental DMG bằng (Mental DMG cơ bản ×120%) và giúp Regulus tăng [Conduit Activation] thêm 1 cấp sau khi cô tấn công, cho đến hết round."
+      }
+    }
+  },
+  "303201": {
+    "vi": {
+      "ranks": {
+        "1": "Khi vào trận, Max Moxie +5.\n[Victorious General] gây thêm Reality DMG bằng 300% lượng Reality DMG bổ sung dựa trên Moxie ban đầu của [Victorious General].\n[Outdoor Superstar] gây thêm Reality DMG bằng 225% lượng Reality DMG bổ sung dựa trên Moxie ban đầu của [Victorious General].\n[Victorious General] và [Outdoor Superstar] nhận hiệu lực Ultimate Might với tỷ lệ 100%.",
+        "2": "Khi thi triển [Victorious General], nếu dưới 7 Moxie, nhận Moxie +1; nếu từ 7 Moxie trở lên, tiêu hao 2 Moxie để gây thêm 240%/360%/600% Reality DMG tùy theo hạng Incantation.",
+        "3": "Khi thi triển [Outdoor Superstar], nếu dưới 7 Moxie, nhận Moxie +1; nếu từ 7 Moxie trở lên, tiêu hao 2 Moxie để gây thêm 180%/270%/450% Reality DMG tùy theo hạng Incantation.",
+        "4": "[Reality Show Premiere] không còn tiêu hao Moxie. Nó giúp bản thân nhận trạng thái [Heaven's Bounty], duy trì 3 round."
+      }
+    }
   },
   "303202": {
     "nameEn": "Hanging by a Thread, Yet Full of Zest",
@@ -13,6 +111,44 @@
       "2": "[Victorious General]'s effect is enhanced: Deals additional Reality DMG equal to 100% of the base Reality DMG.\n[Outdoor Superstar]'s effect is enhanced: Deals additional Reality DMG equal to 100% of the base Reality DMG.",
       "3": "[Reality Show Premiere] gains a new effect: Deals additional Reality DMG equal to (self Thread Points x400% of the base Reality DMG).",
       "4": "[Hot Sauce Expert]'s Insight III gains a new effect: When entering battle, self Thread Points +3.\n[Reality Show Premiere] gains a new effect: If holding 4/5/6 Thread Points when cast, grants all allied characters 1/2/3 stack(s) of [Fortune]."
+    },
+    "vi": {
+      "ranks": {
+        "1": "Insight I của [Hot Sauce Expert] nhận hiệu ứng mới:\nMoxie được thay bằng Thread Point; các kỹ năng của bản thân nhận lợi ích dựa trên Moxie được đổi thành nhận lợi ích dựa trên Thread Point. Ultimate không còn chiếm Giới hạn rút Incantation.\nKhi bắt đầu round, tạo 1 [Thread: Heaven's Fortune] tại vị trí ngẫu nhiên không phải vị trí của bản thân (mỗi vị trí có thể tồn tại tối đa 4 Thread).\n[Victorious General] nhận hiệu ứng mới: Dịch chuyển bản thân về trước 1 vị trí sau khi thi triển.\n[Outdoor Superstar] nhận hiệu ứng mới: Dịch chuyển bản thân về sau 1 vị trí sau khi thi triển.",
+        "2": "Hiệu ứng của [Victorious General] được cường hóa: Gây thêm Reality DMG bằng 100% Reality DMG cơ bản.\nHiệu ứng của [Outdoor Superstar] được cường hóa: Gây thêm Reality DMG bằng 100% Reality DMG cơ bản.",
+        "3": "[Reality Show Premiere] nhận hiệu ứng mới: Gây thêm Reality DMG bằng (Thread Point của bản thân ×400% Reality DMG cơ bản).",
+        "4": "Insight III của [Hot Sauce Expert] nhận hiệu ứng mới: Khi vào trận, Thread Point của bản thân +3.\n[Reality Show Premiere] nhận hiệu ứng mới: Nếu đang có 4/5/6 Thread Point khi thi triển, cấp 1/2/3 cộng dồn [Fortune] cho toàn bộ nhân vật phe ta."
+      }
+    }
+  },
+  "303901": {
+    "vi": {
+      "ranks": {
+        "1": "Cường hóa Insight I của [Time to Work]: Khi bước vào [Exorcism Time], giúp Incantation ngoài cùng bên phải của đồng minh phía trước nhận rank +1. Khi bước vào [Break Time], cấp 1 cộng dồn [Sturdiness] cho đồng minh phía sau.",
+        "2": "Cường hóa [Exorcism Time]: Sau khi tấn công, gây ngẫu nhiên 1 trong các hiệu ứng sau lên mục tiêu: 1 cộng dồn [Rigidity], [Poison] duy trì 2 round, hoặc 5 cộng dồn [Burn].\n[Lily Nectar] còn cấp các hiệu ứng mới trên của [Exorcism Time] cho đồng minh.",
+        "3": "Cường hóa [Exorcism Time]: Khi kẻ địch đang chịu [Stats Down], [Neg Status] hoặc [Control], DMG Bonus tăng thêm 15%.\nCường hóa [Break Time]: Khi kẻ địch đang chịu [Stats Down], [Neg Status] hoặc [Control], DMG Taken Reduction tăng thêm 15%.",
+        "4": "Cường hóa [Scientific Ghost Buster]: Giúp bản thân nhận [Empower Incantation II], duy trì 2 round; với mỗi kẻ địch đang có [Neg Status] bị tấn công, cấp [Empower Incantation I] cho một đồng minh ngẫu nhiên, duy trì 2 round."
+      }
+    }
+  },
+  "303902": {
+    "vi": {
+      "ranks": {
+        "1": "Nhận Max Eureka +5. Khi bắt đầu round, nhận Eureka +4. Mỗi khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Khi vào trận, tích lũy 3 điểm [Inspiration].\nKhi Incantation của An-an Lee đi vào AP Area, tiêu hao càng nhiều Eureka càng tốt để tăng hạng Incantation của chúng (ưu tiên các Incantation đứng trước trong hàng chờ): tăng một Incantation từ hạng 1 lên 2 hoặc từ hạng 2 lên 3 tiêu hao 1 Eureka mỗi lần.\nKhi kẻ địch hoặc đồng minh vào trận, 1 [Wandering Spirit] sẽ xuất hiện bên cạnh họ. Khi người dùng đang trong trạng thái [Exorcism Time], bắt giữ [Wandering Spirit] ở phía kẻ địch/đồng minh (tối đa 12).\nKhi bắt đầu mỗi round, tích lũy điểm [Inspiration] bằng số [Wandering Spirit] đã bắt giữ.",
+        "2": "[Taoist Rune] Hiệu ứng mới: Ở hạng 1/2/3, giúp 3/4/5 đòn [Impromptu Incantation] đầu tiên trong round này nhận Incantation Might +(Reality DMG cơ bản của [Taoist Rune] hạng 3 ×15%) (thi triển lại Incantation này chỉ làm tăng số đòn được cường hóa).",
+        "3": "[Lily Nectar] Hiệu ứng mới: Cấp thêm DMG Bonus +(Reality DMG cơ bản của [Scientific Ghost Buster] ×20% - 60%). Thời lượng tăng thành 3 round.",
+        "4": "[Scientific Ghost Buster] Hiệu ứng mới: Cấp (số [Wandering Spirit] ×2) điểm [Inspiration] cho [Impromptu Incantation] trong round này. 5 đòn [Impromptu Incantation] đầu tiên trong round này nhận Incantation Might +(Reality DMG cơ bản của [Taoist Rune] hạng 3 ×15%) (thi triển lại hiệu ứng này chỉ làm tăng số đòn được cường hóa)."
+      }
+    }
+  },
+  "304101": {
+    "vi": {
+      "ranks": {
+        "1": "Nhận Max Eureka +5. Khi bắt đầu round, nhận Eureka +4. Mỗi khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Khi vào trận, tích lũy 3 điểm [Inspiration].\nSau khi thi triển [Work of Genius] hoặc [Attention Everyone], tiêu hao 2 Eureka để giúp [Impromptu Incantation] nhận Critical Rate +15% trong round. Nếu [Impromptu Incantation] có ít nhất 5 điểm [Inspiration], [Impromptu Incantation] nhận thêm Critical DMG +20%.",
+        "2": "Sau khi thi triển [Work of Genius] hoặc [Attention Everyone] và tiêu hao Eureka, nếu [Impromptu Incantation] có ít nhất 10 điểm Inspiration, [Impromptu Incantation] nhận thêm Critical DMG +30%.",
+        "3": "Sau khi thi triển [Instant of Prediction], cấp 8 điểm [Inspiration] và thêm Critical Rate +15% cho [Impromptu Incantation] trong round. Nếu [Impromptu Incantation] có ít nhất 10 điểm [Inspiration], [Impromptu Incantation] nhận thêm Critical DMG +50%.",
+        "4": "Sau khi thi triển [Instant of Prediction], nếu [Impromptu Incantation] có ít nhất 10 điểm Inspiration, [Impromptu Incantation] luôn bạo kích."
+      }
     }
   },
   "304102": {
@@ -26,6 +162,134 @@
       "2": "[The Proud Star]'s Insight III gains a new effect: If Beryl is present in the team, after Beryl actively casts [Blaze Through the Lens], Matilda additionally casts a rank 1 [Work of Genius].\n[Work of Genius]'s effect is enhanced: Deals additional Mental DMG equal to 200% of the base Mental DMG; if the target's [Halo] reaches 5/10/20/30 stacks, increases all allies' Critical Rate by 25%/50%/75%/100% for 3 rounds.",
       "3": "[The Proud Star]'s Insight III gains a new effect: If Beryl is present in the team, after Beryl actively casts [Nothing Unexpected], Matilda additionally casts a rank 1 [Attention Everyone].\n[Attention Everyone]'s effect is enhanced: Deals additional Mental DMG equal to 200% of the base Mental DMG; if the primary target's [Halo] reaches 5/10/20/30 stacks, increases self ATK by 15%/25%/50%/80% for 3 rounds.",
       "4": "[The Proud Star]'s Insight III gains a new effect: If Beryl is present in the team, after Beryl actively casts [A Shimmering Night], Matilda additionally casts [Instant of Prediction].\n[Instant of Prediction]'s effect is enhanced: Deals additional Mental DMG equal to 200% of the base Mental DMG; after attacking, inflicts [Deflection] on the target for 3 rounds."
+    },
+    "vi": {
+      "ranks": {
+        "1": "Insight I của [The Proud Star] nhận hiệu ứng mới: Mỗi khi kẻ địch bị gây [Burn] hoặc [Halo], tích lũy [Lingering Glow]; trước khi tấn công, Matilda gây 3 cộng dồn [Halo] lên mục tiêu.",
+        "2": "Insight III của [The Proud Star] nhận hiệu ứng mới: Nếu phe ta có Beryl, sau khi Beryl chủ động thi triển [Blaze Through the Lens], Matilda thi triển thêm [Work of Genius] hạng 1.\nHiệu ứng của [Work of Genius] được cường hóa: Gây thêm Mental DMG bằng 200% Mental DMG cơ bản; nếu [Halo] trên mục tiêu đạt 5/10/20/30 cộng dồn, giúp toàn bộ phe ta nhận Critical Rate +25%/50%/75%/100%, duy trì 3 round.",
+        "3": "Insight III của [The Proud Star] nhận hiệu ứng mới: Nếu phe ta có Beryl, sau khi Beryl chủ động thi triển [Nothing Unexpected], Matilda thi triển thêm [Attention Everyone] hạng 1.\nHiệu ứng của [Attention Everyone] được cường hóa: Gây thêm Mental DMG bằng 200% Mental DMG cơ bản; nếu [Halo] trên mục tiêu chính đạt 5/10/20/30 cộng dồn, giúp bản thân nhận ATK +15%/25%/50%/80%, duy trì 3 round.",
+        "4": "Insight III của [The Proud Star] nhận hiệu ứng mới: Nếu phe ta có Beryl, sau khi Beryl chủ động thi triển [A Shimmering Night], Matilda thi triển thêm [Instant of Prediction].\nHiệu ứng của [Instant of Prediction] được cường hóa: Gây thêm Mental DMG bằng 200% Mental DMG cơ bản; sau khi tấn công, gây [Deflection] lên mục tiêu, duy trì 3 round."
+      }
+    }
+  },
+  "304301": {
+    "vi": {
+      "ranks": {
+        "1": "[Beautiful Lie] Điều chỉnh Insight I: Sau khi vào trận, lập tức thi triển [A Bouquet of Galaxy] hạng 1 (kích hoạt tối đa 1 lần); khi bắt đầu các round lẻ, bản thân nhận 1 [Diamond Bullet].",
+        "2": "Khi thi triển [A Sincere Heart], với mỗi loại Bullet mà toàn bộ phe ta đang có, đòn tấn công gây thêm 40% Reality DMG, hiệu ứng này có thể gây thêm tối đa 200% Reality DMG.",
+        "3": "Sau khi đồng minh hành động, nếu đơn vị này đang giữ ít nhất 2 cộng dồn [Diamond Bullet], thi triển [A Shiny Diamond] hạng 1 (kích hoạt tối đa 1 lần mỗi round).",
+        "4": "Mỗi khi đơn vị này kích hoạt 2 [Diamond Bullet], lập tức thi triển [A Bouquet of Galaxy] hạng 1 (kích hoạt tối đa 1 lần mỗi round)."
+      }
+    }
+  },
+  "304701": {
+    "vi": {
+      "ranks": {
+        "1": "[Alchemy Ware]: Nếu mục tiêu có HP từ 50% trở xuống, hồi (ATK của người thi triển × Healing Multiplier) HP cho mục tiêu đó; nếu mục tiêu có HP trên 50%, mục tiêu đó nhận Shield có HP bằng (ATK của người thi triển × Healing Multiplier × 120%), duy trì 2 round.",
+        "2": "[Inherent Habit]: Khi thi triển, mất (HP hiện tại của bản thân ×10%) HP và gây Critical Resist Rate -30% cùng Critical DEF -40% lên mục tiêu, duy trì 2 round.",
+        "3": "Sau khi đồng minh bị tấn công, đơn vị này thi triển [Alchemy Ware] hạng 1 như một đòn đánh tiếp theo (mỗi round tối đa kích hoạt 2 lần);\nKhi thi triển [Alchemy Ware], khiến toàn bộ phe ta mất (HP hiện tại ×10%) HP; và nếu mục tiêu có HP từ 50% trở xuống, hồi thêm (HP đã mất của người thi triển ×25%) HP cho mục tiêu đó.",
+        "4": "[26 Secondary Reactions]: Khi thi triển, mất (HP hiện tại của bản thân ×20%) HP và gây thêm Genesis DMG bằng (HP đã mất của bản thân ×150%)."
+      }
+    }
+  },
+  "304801": {
+    "vi": {
+      "ranks": {
+        "1": "Nhận Max Eureka +5. Khi bắt đầu round, nhận Eureka +4. Mỗi khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Khi vào trận, tích lũy 3 điểm [Inspiration].\nVào các đòn tấn công lẻ (#1, #3, #5 ...) [Impromptu Incantation] tách ra và tấn công thêm một mục tiêu kẻ địch, với mức phạt Final DMG Dealt -70% lên mục tiêu đó.",
+        "2": "Sau khi thi triển [Starlight Sonata] hoặc [Concerto in D-fense], tiêu hao 2 Eureka để cấp số lần tấn công +1 cho [Impromptu Incantation] trong round, và đòn tấn công tách của [Impromptu Incantation] sẽ chọn thêm 1 mục tiêu kẻ địch khác.",
+        "3": "Sau khi vào trận, Moxie +5. Sau khi thi triển [Galaxy on the Strings], Moxie +1. Nếu mục tiêu đang ở trạng thái [Confusion], gây [Where the Stars Lead] lên mục tiêu, duy trì 3 round.",
+        "4": "[Galaxy on the Strings]: Điều kiện để gây thêm Mental DMG và để gây [Where the Stars Lead] được gỡ bỏ; cấp 8 điểm [Inspiration] cho [Impromptu Incantation] trong round."
+      }
+    }
+  },
+  "305101": {
+    "vi": {
+      "ranks": {
+        "1": "Sau khi tấn công, tiêu hao (Max HP của chính họ ×10%) HP của toàn bộ phe ta để gây thêm Genesis DMG bằng (tổng Max HP của cả đội ×7%) lên mục tiêu; nếu HP của một đồng minh đã dưới 50%, đồng minh đó không mất HP theo cách này.",
+        "2": "Khi vào trận, cấp thêm Max HP bằng (Max HP của Eternity ×5%) cho các đồng minh khác.",
+        "3": "Khi bắt đầu round, với mỗi 10% Max HP đã mất của một đồng minh, giúp đồng minh đó nhận DMG Taken -5%, cộng dồn tối đa 25%.",
+        "4": "Khi đồng minh tấn công, với mỗi 10% Max HP đã mất của đồng minh đó, đồng minh nhận Critical Rate +4% và Critical DMG +6% (cộng dồn tối đa 5 lần); nếu HP của đồng minh dưới 50%, Critical Rate vượt mức của đồng minh được chuyển thành Critical DMG."
+      }
+    }
+  },
+  "305102": {
+    "vi": {
+      "ranks": {
+        "1": "Mỗi khi đồng minh mất HP, tích lũy điểm [Bloodtithe]. Khi vào trận, nhận [Blood of Immortality]. Cường hóa [Blood of Immortality]: Khi bắt đầu round, tiêu hao (HP hiện tại ×20%) HP của toàn bộ phe ta; nếu có 10/20/30 điểm Bloodtithe, tiêu hao chúng để nâng cấp [Blood of Immortality]; ở hạng I/II/III, [Blood of Immortality] cấp Max HP +10/30/60%, và ATK +50/70/120 cho mỗi 1000 Max HP đang có.",
+        "2": "Khi [Blood of Immortality] đạt hạng II, [Vigor Handbag] [Vintage Handfan] cấp Moxie +1.",
+        "3": "Khi [Blood of Immortality] đạt hạng III, [Anecdotes in Exeter] chắc chắn bạo kích và gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%).",
+        "4": "Khi bắt đầu round, nếu [Blood of Immortality] đang ở hạng III, tiêu hao 10 điểm [Bloodtithe] để thi triển [Anecdotes in Exeter]."
+      }
+    }
+  },
+  "305201": {
+    "vi": {
+      "ranks": {
+        "1": "Khi thi triển [A New Wave], nếu mục tiêu đã có Shield, Shield của [A New Wave] được cộng dồn lên Shield hiện có đó; hiệu ứng cộng dồn này không vượt quá 200% giá trị tối đa Shield ban đầu.",
+        "2": "Khi đồng minh tấn công, đồng minh nhận Critical Rate +1% cho mỗi 300 giá trị Shield đang có.",
+        "3": "[A New Wave] nhận thêm tổng giá trị Shield +40%, và toàn bộ phe ta nhận Riposte DMG +25%.",
+        "4": "Khi đồng minh bị tấn công, lập tức thi triển [A New Wave] hạng 1 như một đòn đánh tiếp theo, kích hoạt tối đa 1 lần mỗi round; sau khi đồng minh Riposte tổng cộng 3 lần, thi triển [A New Wave] hạng 1 như một đòn đánh tiếp theo, kích hoạt tối đa 2 lần mỗi round."
+      }
+    }
+  },
+  "305301": {
+    "vi": {
+      "ranks": {
+        "1": "Nhận Max Eureka +5. Khi bắt đầu round, nhận Eureka +2. Mỗi khi đồng minh tiêu hao Eureka, tích lũy điểm [Inspiration]. Khi vào trận, tích lũy 5 điểm [Inspiration].\n[Baby Tooth Collector]: Chủ động thi triển Incantation không còn cấp [Baby Tooth]; thay vào đó, Tooth Fairy nhận 1 [Baby Tooth] cho mỗi 4 Eureka mà đồng minh tiêu hao. Khi bắt đầu round, Tooth Fairy giờ tiêu hao tối đa 5 [Baby Tooth]; với mỗi Baby Tooth tiêu hao, cấp DMG Dealt +4% cho 3 lần tấn công đầu tiên của [Impromptu Incantation] trong round và gây 1 cộng dồn [Decayed Tooth] lên toàn bộ kẻ địch.\n[Baby Tooth Collector III]: Mỗi khi một [Baby Tooth] bị tiêu hao, Tooth Fairy giờ hồi (HP đã mất ×5%) HP cho toàn bộ phe ta và cấp thêm 2 điểm [Inspiration] cho Impromptu Incantation trong round.",
+        "2": "[Empty Gums] Hiệu ứng mới: Không còn gây [Confusion] lên mục tiêu. Cấp [Continuous Action I], duy trì 1 round. Sau khi tấn công, Tooth Fairy tiêu hao 2 Eureka để cấp số lần tấn công +1 cho Impromptu Incantation trong round.",
+        "3": "[Lullaby] Hiệu ứng mới: Tiêu hao 2 Eureka để cấp DMG Dealt +20% cho Impromptu Incantation trong round.",
+        "4": "[Song for the Bad Tooth] Hiệu ứng mới: Sau khi tấn công, cấp 8 điểm [Inspiration] cho Impromptu Incantation trong round và gây [Neuralgia] lên mục tiêu, duy trì 1 round."
+      }
+    }
+  },
+  "305601": {
+    "vi": {
+      "ranks": {
+        "1": "Khi vào trận và khi kết thúc round, bản thân nhận 2 cộng dồn [Moss on Stone]; sau khi đồng minh chủ động thi triển và tấn công bằng Incantation, nếu mục tiêu chính đang ở trạng thái [Poison], bản thân nhận 1 cộng dồn [Moss on Stone].\nKhi bắt đầu round, nếu đang có 10 cộng dồn [Moss on Stone], thì ngay trước khi đơn vị này chủ động thi triển và tấn công bằng Incantation lần đầu trong round, gây thêm trạng thái [Petrify] lên mục tiêu chính, duy trì 1 round, và gỡ toàn bộ trạng thái [Moss on Stone] trên bản thân khi kết thúc round.\nTấn công kẻ địch đang ở trạng thái [Petrify] không xóa trạng thái [Petrify].",
+        "2": "[White Blankie]: Ở Incantation hạng 1/2/3, lượng Reality DMG bổ sung từ mỗi lần [Poison] được tăng thành 80%/120%/200%; và trạng thái [Petrify] được tính là 2 lần [Poison] bổ sung.",
+        "3": "Khi chủ động tấn công, nếu mục tiêu chính đang ở trạng thái [Petrify], đòn tấn công nhận Incantation Might +30%.",
+        "4": "Khi chủ động tấn công, nếu mục tiêu chính đang ở trạng thái [Petrify], đòn tấn công luôn bạo kích."
+      }
+    }
+  },
+  "305602": {
+    "vi": {
+      "ranks": {
+        "1": "Khi vào trận và khi bắt đầu mỗi 3 round (round 1, 3, 6, 9 ...), gây [Mycelium Mayhem] lên toàn bộ kẻ địch, duy trì 3 round.",
+        "2": "[Gaze From the Forest]: Sau khi đánh trúng mục tiêu, lập tức kích hoạt hiệu ứng [Poison] trên toàn bộ kẻ địch.",
+        "3": "Khi [White Blankie] hoặc [Good Friends] đánh trúng, gây 2 lần [Poison] lên mục tiêu trúng đòn, duy trì 2 round: khi kết thúc round, phải chịu Genesis DMG bằng (ATK của người thi triển ×30%). Khi kết thúc round, nếu kẻ địch có nhiều [Poison] nhất đang có ít nhất 5 lần [Poison], thi triển [White Blankie] hạng 1 lên kẻ địch có tỷ lệ HP cao nhất và nhận Moxie +1.",
+        "4": "Hiệu ứng [Mycelium Mayhem]: Poison DMG Taken +10%. Mỗi khi [Poison] được kích hoạt trên người mang, người thi triển gây 1 cộng dồn [Fungal Culture] lên người mang khi kết thúc round, duy trì 3 round. Khi mục tiêu bị gây [Mycelium Mayhem], với mỗi cộng dồn [Fungal Culture] mà mục tiêu đang có, gây 1 lần [Poison] lên mục tiêu, duy trì 2 round, gây Genesis DMG bằng (ATK của người thi triển ×30%) khi kết thúc round, sau đó gỡ [Fungal Culture] khỏi mục tiêu."
+      }
+    }
+  },
+  "306201": {
+    "vi": {
+      "ranks": {
+        "1": "Sau khi chủ động tấn công, gây 1 cộng dồn [Passion Drain] lên mục tiêu.",
+        "2": "[Top Student] Cường hóa: [Fixed Plan] giờ được cấp cho toàn bộ phe ta và cấp thêm hiệu ứng mới: Ultimate Critical Rate +6% và Ultimate Critical DMG +6%.",
+        "3": "[Ridiculous Eyewitness Testimony] Cường hóa: Với mỗi cộng dồn [Fixed Plan], gây thêm 50% Mental DMG.",
+        "4": "Khi vào trận, bản thân nhận Moxie +5. Moxie vượt mức của đồng minh được tạm thời lưu trữ. Khi kết thúc round, Moxie đã lưu trữ của mỗi nhân vật được dùng để bổ sung Moxie của chính họ nếu có thể. Mỗi nhân vật có thể lưu trữ tối đa 5 điểm Moxie theo cách này."
+      }
+    }
+  },
+  "306301": {
+    "vi": {
+      "ranks": {
+        "1": "Khi bắt đầu round, cấp 1 hiệu ứng ngẫu nhiên từ [Collection of Buffs] cho đồng minh phía trước liền kề, duy trì 2 round; nếu mục tiêu thuộc afflatus Mineral, cấp 2 hiệu ứng ngẫu nhiên thay thế.\nNếu đồng minh phía trước liền kề thuộc afflatus Mineral, sau khi bất kỳ đồng minh nào hành động, Pickles thi triển thêm [Hedonism Implement] hạng 2 để tấn công kẻ địch có tỷ lệ HP cao nhất (kích hoạt tối đa 1 lần mỗi round).",
+        "2": "Sau khi thi triển [Hedonism Implement], cấp thêm 1 cộng dồn [Rousing Morale] cho đồng minh phía trước liền kề.",
+        "3": "Khi bắt đầu round, nhận 1 cộng dồn [Clarified Topic].",
+        "4": "Sau khi thi triển [Thus Spoke Pickles], cấp Extra Action DMG Dealt +15% cho đồng minh phía trước liền kề, duy trì 2 round; nếu đồng minh cùng afflatus với Pickles, DMG Dealt được tăng thành +30%."
+      }
+    }
+  },
+  "306501": {
+    "vi": {
+      "ranks": {
+        "1": "[Perusal] Hiệu ứng mới: Sau khi một Incantation hạng 2/3 của phe ta được thi triển, Marcus nhận 1/2 cộng dồn [Life Experience]. Khi bắt đầu round, tiêu hao 1/2 cộng dồn [Life Experience] để tạo 1 Precast Incantation hạng 1/2 - Reading Class, sau đó tiêu hao 1/2 cộng dồn [Life Experience] để tạo 1 Precast Incantation hạng 1/2 - From the Lantern nếu vẫn còn [Life Experience].",
+        "2": "[Next Chapter]: Toàn bộ [Preparation · Marcus] nhận được đều trở thành Precast Incantation hạng 2 - Reading Class.\nKhi tấn công, tiêu hao 2 cộng dồn [Life Experience] để cường hóa hiệu ứng Incantation:\n[Reading Class]: Gây thêm Mental DMG bằng (Mental DMG cơ bản ×100%). Ở Incantation hạng 3, Penetration Rate +30%.\n[From the Lantern]: Gây thêm Mental DMG bằng (Mental DMG cơ bản ×100%). Nếu mục tiêu đang ở trạng thái [Annotate], gây thêm 90/120/225% Mental DMG.\n[Next Chapter]: Gây thêm Mental DMG bằng (Mental DMG cơ bản ×100%). Nếu mục tiêu đang ở trạng thái [Annotate], gây thêm 600% Mental DMG.",
+        "3": "Kẻ địch ở trạng thái [Annotate] không còn hồi Eureka cho Marcus khi chúng hành động. Thay vào đó, khi Marcus tấn công kẻ địch ở trạng thái [Annotate], Critical Rate vượt mức được chuyển thành Critical DMG, và hồi 1 Eureka cho Marcus.",
+        "4": "Khi kết thúc round, nếu đạt 8 cộng dồn [Life Experience], nhận [Continuous Action I], duy trì 1 round."
+      }
     }
   },
   "306601": {
@@ -46,6 +310,34 @@
       "p3": "[Kingdom of Geometry]: [Enlightenment] granted is increased to 3 stacks; the Eureka self gains is increased to 3; [Numeral Perception]'s ATK increase is increased to 24% of 37's ATK, with the cap increased to 600.\n[Triangulation]: At Incantation rank 1/2/3, the Mental DMG dealt is increased to 300%/450%/750%, and the additional Genesis DMG is increased to 100%/150%/250%.\n[Curve Mapping]: At Incantation rank 1/2/3, the Mental DMG dealt is increased to 160%/240%/400%, the additional Genesis DMG is increased to 100%/150%/250%, and it additionally grants 1 stack of [Sturdiness].",
       "p4": "[Calculation of Genesis]: [Supplementary Formula]'s Mental DMG dealt is increased to 600%; the additional Genesis DMG is increased to (self ATK x200%).\n[Triangulation], [Kingdom of Geometry]: [Enlightenment]'s effect of increasing Incantations' additional Genesis DMG is increased to 200%.",
       "p5": "[Kingdom of Geometry]: The Eureka self gains is increased to 4.\n[Calculation of Genesis]'s Perception Skill Set [Reductio ad Absurdum] is enhanced:\n[Perception Ability-1]: During [Full Pursuit], the decrease to all enemies' Perception DMG Taken Reduction becomes 100%, and the decrease to their overall DMG Taken Reduction becomes 100%;\n[Perception Incantation]'s Mental DMG dealt is increased to 1000%; [Dichotomy Paradox]'s coefficient is increased to 80%."
+    },
+    "vi": {
+      "ranks": {
+        "1": "[Calculation of Genesis] nhận hiệu ứng mới: Bản thân nhận Perception Skill Set [Reductio ad Absurdum]; khi vào trận, nhận [Eye of Perception] và lấp đầy 2 [Star Perception Point];\n[Supplementary Formula] nhận hiệu ứng mới: Lấp đầy 1 [Star Perception Point] (mỗi round tối đa kích hoạt 1 lần).",
+        "2": "Điều kiện nhận Eureka của [Calculation of Genesis] thay đổi từ \"sau khi bản thân thi triển Incantation / sau khi đồng minh khác thực hiện Extra Action\" thành \"sau khi bất kỳ nhân vật phe ta hành động\".",
+        "3": "[Triangulation] gây thêm Mental DMG/Genesis DMG bằng 100% giá trị cơ bản, và ở Incantation hạng 1/2/3, còn giúp bản thân nhận 1/1/2 cộng dồn [Enlightenment];\n[Curve Mapping] gây thêm Mental DMG/Genesis DMG bằng 100% giá trị cơ bản, và cấp [Sturdiness] cho toàn bộ phe ta;\n[Supplementary Formula] gây thêm Mental DMG/Genesis DMG bằng 150% giá trị cơ bản.",
+        "4": "[Numeral Perception] không còn là buff cộng dồn; nó trở thành lượng ATK tăng thêm bằng 20% ATK của 37, tối đa 500.\n[Numeral Perception] mà [Kingdom of Geometry] cấp cho toàn bộ phe ta kéo dài thành 2 round; nhận hiệu ứng mới: bản thân nhận [Continuous Action I], duy trì 2 round.\n[Calculation of Genesis] khi vào trận đổi phạm vi tăng Critical Rate sang toàn bộ phe ta, tăng thêm Critical Rate bằng 50% giá trị cơ bản, và nhận hiệu ứng mới: bản thân Moxie +3, giới hạn Eureka +5, và Ultimate của toàn bộ nhân vật [Perception] phe ta không còn chiếm Giới hạn rút Incantation."
+      }
+    }
+  },
+  "307001": {
+    "vi": {
+      "ranks": {
+        "1": "[Enchanted Strike] và [Mythical Meteors] gây thêm Mental DMG bằng (Mental DMG cơ bản ×40%).\n[Ultimate Perfection] gây thêm Mental DMG bằng (Mental DMG cơ bản ×40%).\nKhi chủ động thi triển, [Enchanted Strike] và [Mythical Meteors] được tính là đòn đánh tiếp theo.",
+        "2": "Khi vào trận, nhận số lượng [Saturn] tối đa.\n[Saturn]/[Saturn Divination] cấp thêm Critical Rate +(Penetration Rate ban đầu ×100%).\n[Mars]/[Mars Divination] cấp thêm DMG Bonus +(Leech Rate ban đầu ×100%).",
+        "3": "Mỗi khi Kaalaa Baunaa gỡ [Planet] bằng Incantation hoặc Ultimate, các hiệu ứng sau được kích hoạt.\nGỡ [Saturn] x1/2/3/4: Thi triển [Enchanted Strike] hạng 1/2/3/3 như một đòn đánh tiếp theo, gây thêm 80%/120%/160%/200% Mental DMG.\nGỡ [Mars] x1/2/3/4: Thi triển [Mythical Meteors] hạng 1/2/3/3 như một đòn đánh tiếp theo, gây thêm 50%/80%/120%/150% Mental DMG.\nGỡ [Full Moon] x1/2/3/4: Nhận 1/2/3/4 cộng dồn [Luminescence].",
+        "4": "[Starbending] Hiệu ứng mới:\nSau khi thi triển Ultimate, nhận 1 hiệu ứng dựa trên loại [Planet] có số lượng bị gỡ nhiều nhất.\nGỡ [Saturn] x1/2/3+: Khi bắt đầu round kế tiếp, tạo 1 Precast Incantation hạng 1/2/3: Enchanted Strike.\nGỡ [Mars] x1/2/3+: Khi bắt đầu round kế tiếp, tạo 1 Precast Incantation hạng 1/2/3: Mythical Meteors.\nGỡ [Full Moon] x1/2/3+: Nhận 1/2/3 cộng dồn [Full Moon Divination]."
+      }
+    }
+  },
+  "307201": {
+    "vi": {
+      "ranks": {
+        "1": "Sau khi đồng minh khác thi triển Ultimate, bản thân nhận 2 cộng dồn [Rippling Energy].",
+        "2": "Sau khi thi triển Ultimate, tiêu hao toàn bộ cộng dồn [Rippling Energy] nếu có; với mỗi 2 cộng dồn tiêu hao, cấp Moxie +1 cho một đồng minh ngẫu nhiên.",
+        "3": "Mỗi khi tiêu hao [Rippling Energy] để hồi Moxie +1 cho đồng minh, cấp thêm 5 cộng dồn [Ceremonious] cho mục tiêu.",
+        "4": "Sau khi đồng minh khác thi triển Ultimate, bản thân nhận thêm 1 cộng dồn [Rippling Energy]; ngay trước khi thi triển Ultimate, bản thân nhận 2 cộng dồn [Rippling Energy]."
+      }
     }
   },
   "307202": {
@@ -59,10 +351,196 @@
       "2": "[Apprentice's Dance]: the Reality DMG dealt is increased by an amount equal to 100% of the base Reality DMG; at Incantation rank 1, additionally grants self 1 stack of [Nature's Blessing].\n[Spirit Medium]: additionally increases all enemies' DMG Taken by 80%; the effects that increase all enemies' DMG Taken and reduce their Reality DEF and Mental DEF now last 3 rounds at Incantation rank 1/2.",
       "3": "[Inheritance of Wisdom]'s Insight III gains a new effect:\nWhen entering battle, increases the Thread Point limit of the ally in position 1 by 2, grants all allies Thread Points +2, and grants self Thread Points +3 additionally.\n[Edict of Atman]: the Reality DMG dealt is increased by an amount equal to 700% of the base Reality DMG; deals additional 1750% Reality DMG to the primary target; after attacking, shifts the ally in position 1 back one position at a time until they reach the rearmost position.",
       "4": "[Edict of Atman]: for every 1 Thread Point self holds, deals additional 800% Reality DMG to the primary target; when attacking, no longer increases Critical Rate against the primary target, and no longer converts excess Critical Rate into Critical DMG; gains a new effect: before attacking, grants all allies [Fertile Soil] for 3 rounds; after attacking, grants other allies Thread Points +1."
+    },
+    "vi": {
+      "ranks": {
+        "1": "Insight I của [Inheritance of Wisdom] nhận hiệu ứng mới:\nMoxie được thay bằng Thread Point; không còn nhận Ultimate; khi Thread Point của bản thân đạt từ 6 trở lên, tự động thi triển Ultimate khi kết thúc round; khi bắt đầu mỗi round, tạo 1 [Thread: Clear Sight] tại vị trí ngẫu nhiên không phải vị trí của bản thân (mỗi vị trí có thể tồn tại tối đa 4 Thread).\nHiệu ứng [Nature's Blessing] được đổi thành: sau khi thi triển Ultimate, tiêu hao 5 cộng dồn trạng thái này (tiêu hao toàn bộ cộng dồn còn lại nếu ít hơn), và hồi lượng Thread Point tương đương.\n[Edict of Atman] nhận hiệu ứng mới: sau khi tấn công, tiêu hao toàn bộ Thread Point của bản thân.\n[Apprentice's Dance] nhận hiệu ứng mới: sau khi tấn công, dịch chuyển bản thân về trước 1 vị trí.\n[Spirit Medium] nhận hiệu ứng mới: sau khi thi triển, dịch chuyển bản thân về sau 1 vị trí.",
+        "2": "[Apprentice's Dance]: Reality DMG gây ra được tăng thêm bằng 100% Reality DMG cơ bản; ở Incantation hạng 1, còn cấp thêm 1 cộng dồn [Nature's Blessing] cho bản thân.\n[Spirit Medium]: tăng thêm 80% DMG Taken của toàn bộ kẻ địch; các hiệu ứng tăng DMG Taken của toàn bộ kẻ địch và giảm Reality DEF, Mental DEF của chúng giờ duy trì 3 round ở Incantation hạng 1/2.",
+        "3": "Insight III của [Inheritance of Wisdom] nhận hiệu ứng mới:\nKhi vào trận, tăng giới hạn Thread Point của đồng minh ở vị trí 1 thêm 2, cấp Thread Point +2 cho toàn bộ phe ta, và cấp thêm Thread Point +3 cho bản thân.\n[Edict of Atman]: Reality DMG gây ra được tăng thêm bằng 700% Reality DMG cơ bản; gây thêm 1750% Reality DMG lên mục tiêu chính; sau khi tấn công, dịch chuyển đồng minh ở vị trí 1 về sau từng vị trí một cho đến khi họ đến vị trí cuối cùng.",
+        "4": "[Edict of Atman]: với mỗi 1 Thread Point bản thân đang có, gây thêm 800% Reality DMG lên mục tiêu chính; khi tấn công, không còn tăng Critical Rate khi đánh mục tiêu chính, và không còn chuyển Critical Rate vượt mức thành Critical DMG; nhận hiệu ứng mới: trước khi tấn công, cấp [Fertile Soil] cho toàn bộ phe ta, duy trì 3 round; sau khi tấn công, cấp Thread Point +1 cho các đồng minh khác."
+      }
+    }
+  },
+  "307301": {
+    "vi": {
+      "ranks": {
+        "1": "Tích lũy [Lingering Glow] (loại trừ lẫn nhau với [Bloodtithe]) mỗi khi kẻ địch bị gây [Burn] hoặc [Halo].\nKhi vào trận, gây 6 cộng dồn Burn lên toàn bộ kẻ địch.\nMỗi khi đồng minh gây [Burn], tích lũy [Lingering Glow] +100%. Giới hạn cộng dồn [Burn] của toàn bộ kẻ địch tăng thêm 15.",
+        "2": "[Exhilaration] được đổi thành: Khi thi triển Ultimate, Critical Rate +5% và ATK +3% (cộng dồn tối đa 10 lần, bị gỡ sau khi thi triển Ultimate).",
+        "3": "[Little Boxer]: Gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%). Critical DMG Bonus không còn cần [Preignition]. Sau khi tấn công, gây 2 cộng dồn [Burn] lên mục tiêu.\n[Flame Flower]: Spathodea không còn cần đòn bạo kích để gây Burn. Thay vào đó, cô gây 6 cộng dồn [Burn] lên mục tiêu trước khi tấn công.",
+        "4": "[Flame Within the Fire]: Với mỗi cộng dồn [Burn] trên mục tiêu, đòn tấn công này nhận Ultimate Might +2%. Với mỗi 10 điểm [Lingering Glow], đòn tấn công này gây thêm Reality DMG bằng (Reality DMG cơ bản ×5%).\nSpathodea có thể dự trữ tối đa 2 Moxie vượt mức (được bổ sung vào cuối round nếu có thể)."
+      }
+    }
+  },
+  "307401": {
+    "vi": {
+      "ranks": {
+        "1": "Khi bắt đầu round, nếu chưa nằm trong [Pulsing Field] ở bất kỳ cấp nào, triển khai [Pulsing Field Lv.1]. Sau khi đồng minh hành động, họ nhận 10 cộng dồn [Dynamo]. Khi kết thúc round, chuyển tối đa 20 cộng dồn [Dynamo] vào [Pulsing Field].",
+        "2": "Khi bắt đầu mỗi round, trồng 1 [Honey Fungus] và 1 [Ghost Fungus].",
+        "3": "Khi vào trận, nhận 10 cộng dồn [Dynamo].",
+        "4": "Khi thi triển [Protection to the Body] hoặc [Stimulus to the Mind] hạng 1/2/3, hiệu ứng mất HP hiện tại giảm cố định 10%.\n[Stimulus to the Mind]: Thời lượng [Shield] +1 round. Nếu mục tiêu đã có Shield, giá trị Shield mới được cộng dồn lên Shield hiện có, tối đa bằng (Max HP ×60%) HP.\nNhận [Amplified Surge]. Khi một nấm trưởng thành, kích hoạt một [Stacked Shield]."
+      }
+    }
+  },
+  "307402": {
+    "vi": {
+      "ranks": {
+        "1": "Mỗi khi đồng minh mất HP, tích lũy điểm [Bloodtithe].\nUltimate không còn cấp Eureka cho các đồng minh khác, thay vào đó cấp 6 điểm [Bloodtithe].\nKhi kết thúc round, nếu [Bloodtithe] từ 5 trở lên, với mỗi 1 nấm, hồi (HP đã mất của mục tiêu ×8%) HP cho các đồng minh khác, hiệu ứng này có thể bạo kích.",
+        "2": "Khi thi triển Incantation cơ bản, mất thêm (HP hiện tại của bản thân ×15%) HP, và số nấm được trồng tương ứng tăng thành 2.\n[Stimulus to the Mind] giờ được đổi thành Incantation hồi máu, hiệu ứng chuyển từ cấp Shield cho toàn bộ phe ta thành hồi HP cho toàn bộ phe ta với lượng bằng giá trị Shield đó.\nKhi thi triển [Stimulus to the Mind], tiêu hao 2 điểm [Bloodtithe] để giúp lần hành động đó nhận Healing Done +30%; và nếu HP của bản thân dưới 50%, giúp lần hành động đó nhận thêm Healing Done +30%.",
+        "3": "Khi thi triển Incantation cơ bản, nếu số nấm đã đạt tối đa, tiêu hao thêm 10% HP hiện tại của toàn bộ phe ta để giúp toàn bộ nấm lớn lên 1 lần.\nĐơn vị này nhận Healing Taken +20%.",
+        "4": "Khi một nấm trưởng thành, tích lũy 1 điểm [Bloodtithe] và hồi (HP đã mất của mục tiêu ×20%) HP cho toàn bộ phe ta, hiệu ứng này có thể bạo kích.\nKhi bắt đầu round, nếu [Bloodtithe] từ 15 trở lên, tiêu hao 1 điểm [Bloodtithe] và hồi (HP đã mất của mục tiêu ×20%) HP cho toàn bộ phe ta."
+      }
+    }
+  },
+  "307701": {
+    "vi": {
+      "ranks": {
+        "1": "[Interdisciplinary Research] Hiệu ứng mới: Với mỗi Eureka vượt mức nhận được, nhận 2 cộng dồn [Measure]. Ultimate không chiếm Giới hạn rút Incantation của phe ta.\n[Long Long Journey] Hiệu ứng mới: Gỡ toàn bộ cộng dồn [Measure] sau khi hành động.\n[Mapping] không còn cấp [Measure] dựa trên Eureka vượt mức.",
+        "2": "[[Practicability]] giờ gây thêm Mental DMG bằng (Mental DMG cơ bản ×100%).",
+        "3": "[Rehabilitation] giờ gây thêm Mental DMG bằng (Mental DMG cơ bản từ Eureka tiêu hao ×20%); khi tấn công, với mỗi cộng dồn [Measure], gây thêm Mental DMG bằng (Mental DMG cơ bản ×4%).",
+        "4": "Giới hạn cộng dồn của [Measure] tăng thành 55 và giới hạn thời lượng được gỡ bỏ."
+      }
+    }
+  },
+  "307901": {
+    "vi": {
+      "ranks": {
+        "1": "[Advocator of Knowledge]: Bộ sưu tập Debuff của [Discipline] giờ bao gồm Critical DEF -30%, Critical Resist Rate -20%, DMG Taken Reduction -20%, Reality DEF -20%, Mental DEF -20% và [Fracture II]. [Discipline] giờ gây 2/4/6 hiệu ứng, duy trì 2/3/4 round, ở Incantation hạng 1/2/3; nếu mục tiêu đang chịu toàn bộ hiệu ứng trong Bộ sưu tập Debuff, gây thêm 2/4/6 lần [Poison] lên mục tiêu, duy trì 2 round, và 3/6/9 cộng dồn [Burn]. Các hiệu ứng trước đây nằm trong Bộ sưu tập Debuff ([Blind] và [Mis-aim]) giờ được gây trước khi thi triển Ultimate, duy trì 2 round.",
+        "2": "[Advocator of Knowledge]: Bộ sưu tập Buff của [Duty] giờ bao gồm DMG Bonus +20%, Extra Action DMG Bonus +20%, Penetration Rate +20%, Incantation Might +30%, Ultimate Might +30% và Genesis DMG Dealt +30%. [Duty] giờ cấp 2/4/6 hiệu ứng, duy trì 2/3/4 round, ở hạng 1/2/3; Empower Incantation (không còn tiêu hao Eureka) giờ được cấp sau khi mục tiêu nhận đủ mọi hiệu ứng trong Bộ sưu tập Buff, và mục tiêu nhận Eureka +10 sau đó. Các hiệu ứng trước đây nằm trong Bộ sưu tập Buff (Mental DEF +15%, Reality DEF +15%, [Vitalize I] và [Ricochet I]) giờ được cấp khi bắt đầu mỗi round, duy trì 2 round.",
+        "3": "[The Revelation] giờ tiêu hao 6 Moxie để thi triển. Hiệu ứng mới: Khi vào trận, 6 nhận Max Moxie +1. Khi kết thúc round, 6 nhận Moxie +2.",
+        "4": "[The Revelation] giờ gây thêm lượng Mental DMG tăng thêm bằng (Mental DMG cơ bản ×100%) cho mỗi loại debuff trên mục tiêu, và số lần có thể tăng lượng sát thương này được nhân đôi."
+      }
+    }
+  },
+  "308101": {
+    "vi": {
+      "ranks": {
+        "1": "Hiệu ứng mới: Tích lũy [Lingering Glow] (loại trừ lẫn nhau với [Bloodtithe]) mỗi khi kẻ địch bị gây [Burn] hoặc [Halo].\n[Desired Freedom] giờ giảm cả Reality DEF và Mental DEF.",
+        "2": "[Choking on Blood] không còn cấp [Rousing Morale] cho toàn bộ phe ta. [Finale] không còn cấp [Power Burst] cho toàn bộ phe ta.\n[Interlude] Hiệu ứng mới: Khi bắt đầu round, cấp [Acciaccatura] cho toàn bộ phe ta, duy trì 1 round.\n[Finale] Hiệu ứng mới: Khi bắt đầu round, cấp [Appoggiatura] cho toàn bộ phe ta, duy trì 1 round.",
+        "3": "[Intermezzo] Hiệu ứng mới: Với mỗi cộng dồn [Burn] trên mục tiêu, đòn tấn công này nhận Incantation Might +1.5%, tính tối đa 30 cộng dồn [Burn]. Khi đạt từ 100/200/300 điểm [Lingering Glow] trở lên, đòn tấn công này nhận thêm Incantation Might +10%/20%/30%; khi đạt từ 300 điểm [Lingering Glow] trở lên, đòn tấn công này nhận Penetration Rate +30%.",
+        "4": "[Intermezzo] Hiệu ứng mới: Gây thêm 2% Reality DMG cho mỗi điểm [Lingering Glow]; khi đạt từ 150 điểm [Lingering Glow] trở lên, cấp Moxie +1.\n[Prelude], [Interlude] và [Finale] Hiệu ứng mới: 5%/10%/15% lượng điểm [Lingering Glow] bị tiêu hao khi bắt đầu round sẽ được tích lũy lại sau lần thi triển [Intermezzo] tiếp theo."
+      }
+    }
+  },
+  "308301": {
+    "vi": {
+      "ranks": {
+        "1": "Trạng thái [Tipsy] không còn bị gỡ sau khi bị Ultimate tấn công. Sau khi đồng minh khác thực hiện Extra Action, giúp bản thân nhận 1 cộng dồn [Liquor] và 1 cộng dồn [Sublime Flow].\nKhi [Sublime Flow] đạt cộng dồn tối đa, thi triển [Baijiu Ladle] sẽ thi triển trước một [Bottoms Up] cùng hạng trước khi bước vào trạng thái [Tipsy].",
+        "2": "Khi thi triển [Baijiu and Mayhem], với mỗi cộng dồn [Sublime Flow] đang có, nhận Ultimate Might +4%, tối đa +48%.\nSau khi thi triển [Baijiu and Mayhem], với mỗi cộng dồn [Sublime Flow] đang có, nhận 1 cộng dồn [Liquor].",
+        "3": "Khi nhận [Liquor] vào cuối round, cũng nhận lượng cộng dồn [Sublime Flow] tương đương.",
+        "4": "Sau khi thi triển [Baijiu Ladle] hạng 1/2/3, nhận 2/3/5 cộng dồn [Sublime Flow].\nSau khi đồng minh khác chủ động hành động, Jiu Niangzi tiêu hao một lượng ngẫu nhiên cộng dồn [Liquor] để thi triển [Bottoms Up], hiệu ứng này có thể kích hoạt tối đa 3 lần mỗi round."
+      }
+    }
+  },
+  "308401": {
+    "vi": {
+      "ranks": {
+        "1": "Max Eureka +5. [Array Maintenance] của [A Prophecy Told] trở thành tiêu hao Eureka.\nKhi kết thúc round, nếu đang trong [A Prophecy Told], không còn nhận Eureka +1. Lượng Eureka của Getian nhận được khi thi triển [I Shall Walk, Exist, and Know] đổi thành (số round thời lượng của Array ×2).\n[A Prophecy Told] nhận hiệu ứng bổ sung: Khi nhân vật Reality DMG tấn công, họ nhận thêm Ultimate Might +(số round thời lượng Array ban đầu ×13.5%).\n[Bone Reading] không còn tiêu hao Eureka để kích hoạt [Admonition], không còn bị gỡ do thiếu Eureka, và thời lượng được đặt thành 5 round. [Admonition] giờ được tính là Ultimate và gây thêm 100% Reality DMG.",
+        "2": "Khi vào trận, nhận Moxie +1. Khi kết thúc round, nếu đang trong [A Prophecy Told], nhận Moxie +1.",
+        "3": "Sau khi thi triển [Old Bones], thi triển thêm [Admonition] 1 lần. Lần [Admonition] này gây thêm Reality DMG bằng (Reality DMG của [Old Bones]).",
+        "4": "Khi Getian thi triển [Admonition] trong [A Prophecy Told], Critical Rate và Critical DMG nhận được từ [Bone Interpretor] được nhân đôi.\nKhi thi triển [I Shall Walk, Exist, and Know] trong [A Prophecy Told], thi triển thêm [Admonition] 1 lần. Reality DMG của lần [Admonition] này +700%."
+      }
+    }
+  },
+  "308601": {
+    "vi": {
+      "ranks": {
+        "1": "Khi bắt đầu round, nếu chưa nằm trong [Pulsing Field] ở bất kỳ cấp nào, triển khai [Pulsing Field Lv.1]. Sau khi thi triển một Incantation được cường hóa, chuyển tối đa 10 cộng dồn [Dynamo] vào [Pulsing Field].",
+        "2": "Khi vào trận, nhận 20 cộng dồn [Dynamo]. Sau khi cường hóa một Incantation, nhận 1 cộng dồn [Data Iteration].",
+        "3": "Nhận [Amplified Surge].",
+        "4": "Incantation được cường hóa không còn tiêu hao [Dynamo]. Không còn nhận [Dynamo] khi kẻ địch bị đánh bại. Khi đang trong [Pulsing Field], Incantation được cường hóa gây thêm Reality DMG bằng (Reality DMG của [Conservation of Energy] ×50/70/120%) tùy theo cấp của Array. Khi đang trong [Pulsing Field Lv.3], với mỗi cộng dồn [Dynamo] đang có, Incantation được cường hóa gây thêm 8% Reality DMG. Incantation được cường hóa nhận hiệu lực Ultimate Might với tỷ lệ 100%, và với mỗi cộng dồn [Data Iteration] đang có, tỷ lệ này tăng thêm 10%."
+      }
+    }
+  },
+  "308701": {
+    "vi": {
+      "ranks": {
+        "1": "Sau khi nhân vật đồng minh bị tấn công, nếu HP của họ dưới 70%, Vila thi triển [Wordless Song] hạng 1 lên họ, tối đa 2 lần mỗi round.",
+        "2": "Khi vào trận, Vila nhận Healing Done +7% cho mỗi 1000 Max HP cô có, và Moxie +1.",
+        "3": "[Rusalka] Hiệu ứng mới: Ultimate không có hạng do nhân vật Plant, Spirit và Intellect thi triển được tính là Incantation hạng 3. Khi ở trạng thái [Rusalka], Vila có thể nhận Ultimate. Khi bắt đầu round, nếu đang ở trạng thái [Rusalka], một Incantation ngẫu nhiên nhận rank +1.",
+        "4": "[Song of Inspiration] Hiệu ứng mới: Cấp [Song of Passion] cho mục tiêu và nhận Moxie +1. [Song of Generosity] và [Song of Passion] có thể được cấp cho nhiều mục tiêu."
+      }
+    }
+  },
+  "308801": {
+    "vi": {
+      "ranks": {
+        "1": "Mỗi khi đồng minh mất HP, tích lũy điểm [Bloodtithe].\nKhi vào trận, nhận Max HP +50% và cấp Max HP bằng (Max HP của Semmelweis ×10%) cho các đồng minh khác.",
+        "2": "[Effective Means] Cường hóa: DMG mà đồng minh trong trạng thái [Fresh Blood] gây ra được tăng thêm 10% và thời lượng trạng thái được cấp tăng thành 3 round.\nHiệu ứng [Fresh Blood] được đổi thành: Khi hành động, mất 10% HP hiện tại. Critical Rate +20%. Critical DMG +20%.",
+        "3": "Với mỗi 8 điểm [Bloodtithe] mà cả đội nhận được, bản thân nhận Moxie +1.\n[Truth Revealed] gây Reality DMG bằng (30% Max HP của bản thân thay vì ATK) cộng thêm 100% Reality DMG và cấp điểm [Bloodtithe] +2.",
+        "4": "[Blood Domain] Hiệu ứng bổ sung: Toàn bộ phe ta nhận Healing Taken +10%. Với mỗi 10% Max HP đã mất của đồng minh, họ nhận thêm Healing Taken +4% (tối đa 32%).\nKhi đang trong [Blood Domain], nếu [Bloodtithe] tối đa đạt 50/70, sau khi đồng minh hành động, họ mất 5% HP hiện tại và nhận Extra Action DMG Dealt +15%/30%. Nếu đồng minh có [Fresh Blood], họ nhận thêm Extra Action DMG Dealt +10%/20%."
+      }
     }
   },
   "309401": {
-    "version": "3.8"
+    "version": "3.8",
+    "vi": {
+      "ranks": {
+        "1": "Cường hóa hiệu ứng [Bodily Furnace]:\nKhi tấn công, giờ nhận thêm ATK +(ATK bonus cơ bản ×100%).\nThay đổi hiệu ứng [Bodily Furnace]:\nSau khi gây [Burn] thành công khi tấn công, nhận lượng cộng dồn [Burn] tương đương (vẫn kích hoạt khi gây cộng dồn vượt mức). Miễn nhiễm DMG [Burn]. Cộng dồn [Burn] của J không giảm khi hiệu ứng kích hoạt.\nThay đổi hiệu ứng [Bodily Furnace III]:\nKhi bắt đầu round, kích hoạt các hiệu ứng sau dựa trên số cộng dồn [Burn] của J (các hiệu ứng khác nhau có thể nhận nhiều lần):\nKhi có từ 10 cộng dồn [Burn] trở lên, giúp toàn bộ phe ta nhận DMG Taken Reduction +1% cho mỗi cộng dồn [Burn], duy trì 1 round.\nKhi có từ 20 cộng dồn [Burn] trở lên, thanh tẩy toàn bộ hiệu ứng [Neg Status] không phải [Burn] và 1 loại hiệu ứng [Stats Down] hoặc [Control] khỏi J, đồng thời thanh tẩy 1 loại hiệu ứng [Neg Status], [Stats Down] hoặc [Control] khỏi các đồng minh khác.\nKhi có từ 30 cộng dồn [Burn] trở lên, giúp toàn bộ phe ta nhận Riposte DMG Bonus +1% cho mỗi cộng dồn [Burn], duy trì 1 round.",
+        "2": "[Hardness Testing] không còn cấp DMG Dealt bonus cho toàn bộ phe ta, nhưng giờ gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%), gây 6 cộng dồn [Burn], và được tính là Riposte.",
+        "3": "[Over the Haight Street!] giờ gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%). Với mỗi cộng dồn [Burn] vượt mức trên mục tiêu chính, đòn tấn công này gây thêm Reality DMG bằng (Reality DMG bổ sung cơ bản ×500%). Sau khi tấn công, với mỗi cộng dồn [Burn] trên J, giúp toàn bộ phe ta nhận DMG Bonus +2.5%, duy trì 3 round.\n[Over the Haight Street!] không chiếm Giới hạn rút Incantation của phe ta.",
+        "4": "[Heat Treating] giờ cấp Shield có HP bằng (Hệ số Shield cơ bản ×150%); với mỗi cộng dồn [Burn] trên J, Hệ số Shield +5%. Nếu mục tiêu đã có Shield, giá trị Shield này được cộng dồn lên Shield hiện có của mục tiêu, tối đa bằng (ATK của J ×600%) HP.\n[Tempering] giờ gây thêm Reality DMG bằng (Reality DMG cơ bản ×900%) và không còn gây thêm Reality DMG dựa trên HP đã mất của J. Thay vào đó, nó gây thêm Reality DMG bằng (Reality DMG bổ sung cơ bản từ HP đã mất ×50%) cho mỗi cộng dồn [Burn] trên J. Sau khi tấn công, nhận Moxie +1 và cấp Shield có HP bằng (ATK của J ×90%) cho toàn bộ phe ta; với mỗi cộng dồn [Burn] trên J, Hệ số Shield +2%. Nếu mục tiêu đã có Shield, giá trị Shield này được cộng dồn lên Shield hiện có của mục tiêu, tối đa bằng (ATK của J ×600%) HP. Kéo dài thời lượng [Shield] của mỗi đồng minh lên 3 round. J có thể nhận Moxie và cấp Shield theo cách này tối đa 2 lần mỗi round."
+      }
+    }
+  },
+  "309501": {
+    "vi": {
+      "ranks": {
+        "1": "[Restless Souls]: Với mỗi Incantation hạng 2/3 trong AP Area, gây thêm 100%/200% Mental DMG, tối đa 1000%.\n[Restless Souls] hạng 3 Hiệu ứng mới: Sau khi tấn công, nhận [Preparation · Mercuria] và [Simplified Ritual].",
+        "2": "[Self-Focusing]: Thời lượng buff Critical Rate của toàn bộ phe ta tăng thành 3 round.\nHiệu ứng mới: Khi bắt đầu round, một Incantation ngẫu nhiên của bản thân nhận rank +1.",
+        "3": "[Morning Star for the Night] Hiệu ứng mới: Khi tấn công, với mỗi cộng dồn [Cosmic Energy], gây thêm Mental DMG bằng (Mental DMG cơ bản ×20%) và nhận Ultimate Might +3%.",
+        "4": "[Rank Up] Hiệu ứng mới: Khi tấn công bằng Incantation hạng 3:\nDMG Dealt +(DMG bonus nhận được từ [Cosmic Energy] hiện tại của Mercuria ×40%).\nNếu đang trong [Incantation Might Up], Incantation Might +(Incantation Might bonus nhận được từ [Cosmic Energy] hiện tại của Mercuria ×40%).\nNếu đang trong [Critical DMG Up], Critical DMG +(Critical DMG bonus từ [Cosmic Energy] của Mercuria ×40%)."
+      }
+    }
+  },
+  "309701": {
+    "vi": {
+      "ranks": {
+        "1": "Sau khi chủ động hành động, nhận 5 cộng dồn [Incantation Bullet].",
+        "2": "[Grave Digger] Hiệu ứng mới: Sau khi tấn công, giúp một Incantation ngẫu nhiên của bản thân nhận rank +1. Ở hạng 3, [Grave Digger] giúp thêm một Incantation ngẫu nhiên của bản thân nhận rank +1.",
+        "3": "[No Mark Unstruck] Hiệu ứng mới: Gây thêm Reality DMG bằng (Reality DMG cơ bản ×80%) lên mục tiêu nếu mục tiêu đang bị [Pinpointed].",
+        "4": "[Grave Digger] Hiệu ứng mới: Với mỗi rank trong AP Area (tính tối đa 10), [Grave Digger] gây thêm 50% Reality DMG, giúp bản thân nhận 1 cộng dồn [Ceremonious: Ultimate Might], và có 10% xác suất thi triển thêm một lần [Grave Digger]."
+      }
+    }
+  },
+  "309801": {
+    "vi": {
+      "ranks": {
+        "1": "[Please, Come On In] giờ gây thêm Genesis DMG bằng (Genesis DMG gốc dựa trên ATK của Tuesday và số lần [Poison] trên mục tiêu ×100%).\nTuesday giờ nhận Moxie +1 sau khi thi triển [Please, Come On In].",
+        "2": "[At Your Service] Hiệu ứng mới: Nhận thêm Moxie +2 khi vào trận. Ultimate không chiếm Giới hạn rút Incantation của phe ta.",
+        "3": "[In Mother's Arms] giờ gây thêm Critical Resist Rate -(giảm Critical Resist Rate gốc ×100%) lên mục tiêu đang ở trạng thái [Poison].\n[In Mother's Arms] giờ gây [Poison] DMG Taken +20% lên mục tiêu đang ở trạng thái [Poison].",
+        "4": "[At Your Service] giờ cấp Moxie +1 cho Tuesday và kéo dài thời lượng debuff từ [In Mother's Arms] trên toàn bộ kẻ địch thêm 1 round vào cuối round nếu [Horror Story Night] đang hoạt động."
+      }
+    }
+  },
+  "310001": {
+    "vi": {
+      "ranks": {
+        "1": "Hiệu ứng mới: Sau khi đồng minh [Bound] thực hiện Extra Action, mối ràng buộc giữa họ và Anjo Nala được cường hóa, cả hai nhận 1 cộng dồn [Harmonic Tapestry]. [Harmonic Tapestry] cộng dồn tối đa 8 lần. Hiệu ứng bổ sung theo loại ràng buộc:\nSpirit/Intellect [Mind and Flesh]: ATK +2%.\nBeast/Plant [Bone and Blood]: Ultimate Might +6%.\nStar/Mineral [Form and Phantom]: Extra Action DMG +10%.",
+        "2": "Hiệu ứng mới: Khi thi triển [Interwoven Dreams], lượng HP hiện tại phải tiêu hao giảm từ 50% xuống 15%. Khi ràng buộc được cường hóa, Anjo Nala nhận Moxie +1 và 2 cộng dồn [Ceremonious: Critical DMG] (thêm 4 cộng dồn [Ceremonious: Critical DMG] với [Bone and Blood]).",
+        "3": "[Interwoven Dreams] Hiệu ứng mới: Sau khi tấn công, nhận [The Final Sustain], duy trì 2 round: [Feast of Lust] và [Angel's Temptation] gây thêm Mental DMG bằng (Mental DMG cơ bản ×300%).",
+        "4": "Hiệu ứng mới: Khi có 8 cộng dồn [Harmonic Tapestry], [Interwoven Dreams] không còn tiêu hao AP và không chiếm Giới hạn rút Incantation của phe ta, đồng thời giúp nhận Moxie +2 sau khi thi triển. Hiệu ứng bổ sung cho Anjo Nala theo loại ràng buộc:\nSpirit/Intellect [Mind and Flesh]: [Feast of Lust] gây thêm 400% Mental DMG và rút ngắn 1 round thời gian channel của [Hymn].\nBeast/Plant [Bone and Blood]: [Interwoven Dreams] gây thêm Mental DMG bằng (Mental DMG cơ bản ×140%). Hiệu ứng cường hóa Ultimate Might của [Interwoven Dreams] được nhân đôi.\nStar/Mineral [Form and Phantom]: Khi tấn công bằng [Angel's Temptation], gây thêm Mental DMG bằng (Mental DMG cơ bản ×200%) và Critical Rate vượt mức được chuyển thành Critical DMG."
+      }
+    }
+  },
+  "310201": {
+    "vi": {
+      "ranks": {
+        "1": "[More Than Alchemy] Hiệu ứng mới: Gỡ toàn bộ Incantation cơ bản của Lopera khỏi Spelldock; với mỗi Incantation bị gỡ, tùy theo hạng của nó, nhận 4/6/10 cộng dồn [Flaming Bullet].",
+        "2": "[Double Backups] Hiệu ứng mới: Gây thêm Reality DMG bằng (Reality DMG cơ bản ×20%) và chắc chắn bạo kích.\n[Bull's Eye] Hiệu ứng mới: Gây thêm Reality DMG bằng (Reality DMG cơ bản ×20%) và chắc chắn bạo kích.",
+        "3": "[More Than Alchemy] Hiệu ứng mới: Nhận Moxie +1 sau khi hành động.",
+        "4": "[Crucible Arsenal]: Số loại Bullet được tăng lên 8. Hiệu ứng mới: Khi tấn công, với mỗi loại Bullet, DMG Dealt +5%, Incantation Might +5% và Ultimate Might +5%, tối đa 8 lần."
+      }
+    }
+  },
+  "310401": {
+    "vi": {
+      "ranks": {
+        "1": "[Hag's Bane] Hiệu ứng mới: [Poison] DMG Taken +5% (có thể cộng dồn); khi vượt giới hạn cộng dồn, các cộng dồn có ít round còn lại hơn sẽ bị gỡ trước.",
+        "2": "[Ancient Ritual] Hiệu ứng mới: Khi kết thúc round, với mỗi 2 cộng dồn [Hag's Bane] trên kẻ địch có nhiều cộng dồn [Hag's Bane] nhất, Willow nhận Moxie +1.",
+        "3": "[Hag's Bane] gây thêm Genesis DMG bằng (Genesis DMG gốc ×100%).",
+        "4": "[Ending Pose] Hiệu ứng mới: Nhận Moxie +3.\n[Hag's Steps] Hiệu ứng mới: Khi kết thúc round, nhận Moxie +2 nếu không channel [Ancient Ritual]."
+      }
+    }
   },
   "310701": {
     "nameEn": "Endless Recursion, a Flash of Inspiration",
@@ -75,6 +553,24 @@
       "2": "[Brown Noise] effect enhanced: if already in the [Frequency Analysis] status, its duration is extended by 3 rounds.\n[Frequency Analysis] effect enhanced: the cap of [Decryption Key] that can be injected is increased by 5; the trigger timing of the buff granted while channeling is changed to the end of the round, and its duration is increased by 1 round.",
       "3": "[The First Rhythm] [Surge Spike] effect enhanced: if [Structure Analysis] or [Frequency Analysis] holds 10 or more [Decryption Key] groups, consumes the excess; for each group consumed, allied [Dynamo] Reality-DMG characters deal additional Reality DMG equal to 90% of the base Reality DMG when attacking, for 2 rounds.",
       "4": "[The Sum of Infinity] effect adjusted: [Hyper Analysis] duration +2 rounds.\n[Hyper Analysis] effect enhanced: at the end of the round, if channeling, casts self's normal Incantations in the Incantation zone as much as possible; channeling no longer restricts actions."
+    },
+    "vi": {
+      "ranks": {
+        "1": "[The First Rhythm] [Amplified Surge] hiệu ứng được cường hóa: Moxie nhận ngay sau khi bước vào [Pulsing Field Lv.3] tăng thành 4.\n[Scanning Mode] hiệu ứng được cường hóa: nếu đã ở trạng thái [Structure Analysis], thời lượng được kéo dài thêm 3 round.\n[Structure Analysis] hiệu ứng được cường hóa: giới hạn [Decryption Key] có thể được nạp tăng thêm 5; thời điểm kích hoạt debuff được cấp trong khi channel đổi thành cuối round, và thời lượng được tăng thêm 1 round.",
+        "2": "[Brown Noise] hiệu ứng được cường hóa: nếu đã ở trạng thái [Frequency Analysis], thời lượng được kéo dài thêm 3 round.\n[Frequency Analysis] hiệu ứng được cường hóa: giới hạn [Decryption Key] có thể được nạp tăng thêm 5; thời điểm kích hoạt buff được cấp trong khi channel đổi thành cuối round, và thời lượng được tăng thêm 1 round.",
+        "3": "[The First Rhythm] [Surge Spike] hiệu ứng được cường hóa: nếu [Structure Analysis] hoặc [Frequency Analysis] đang giữ từ 10 nhóm [Decryption Key] trở lên, tiêu hao lượng vượt mức; với mỗi nhóm tiêu hao, các nhân vật Reality DMG [Dynamo] của phe ta gây thêm Reality DMG bằng 90% Reality DMG cơ bản khi tấn công, duy trì 2 round.",
+        "4": "[The Sum of Infinity] hiệu ứng được điều chỉnh: thời lượng [Hyper Analysis] +2 round.\n[Hyper Analysis] hiệu ứng được cường hóa: khi kết thúc round, nếu đang channel, thi triển càng nhiều Incantation thường của bản thân trong khu Incantation càng tốt; channel không còn hạn chế hành động."
+      }
+    }
+  },
+  "311001": {
+    "vi": {
+      "ranks": {
+        "1": "Khi đồng minh khác thực hiện Extra Action, Liang Yue nhận 1 cộng dồn [Ritual Dance], duy trì 2 round, tối đa 5 lần mỗi round.\n[Guardian's Resolve] Hiệu ứng mới: Cấp DMG Dealt +(hiệu ứng DMG Taken Reduction ban đầu ×100%). Cấp thêm Incantation Might +(hiệu ứng DMG Taken Reduction ban đầu ×50%) cho các đòn tấn công chịu ảnh hưởng của Incantation Might.\nDanh sách [Specified Selection] của [Arise, Qiangliang!] giờ bao gồm các hiệu ứng [Force Field].",
+        "2": "Khi thi triển [Bane of All Evil · Justice], [Peace Talon] được tính là [Justice Talon], và với mỗi [Justice Talon] tiêu hao, đòn tấn công này nhận ATK +0.5%.\nKhi thi triển [Bane of All Evil · Peace], [Justice Talon] được tính là [Peace Talon], và với mỗi [Peace Talon] tiêu hao, đòn tấn công này gây 1 cộng dồn [Evil Expelled] lên mục tiêu, duy trì 1 round.\nKhi thi triển [Bane of All Evil · Balance], với mỗi [Justice Talon]/[Peace Talon] tiêu hao, đòn tấn công này nhận Incantation Might +2%.\nKhi thi triển [Bane of All Evil], đòn tấn công này nhận Incantation Might +5% cho mỗi cộng dồn [Swift Resolve].",
+        "3": "[Call of Thunder: #0305] gây thêm 600% Reality DMG. [Arise, Qiangliang!] Hiệu ứng mới: Khi thi triển [Banish Evil] hoặc [Bless Life], nhận 1 cộng dồn [Ritual Dance], duy trì 2 round.",
+        "4": "Liang Yue không còn nhận được Ultimate; thay vào đó, cô tự động thi triển [Call of Thunder: #0305] khi bắt đầu round nếu có từ 5 Moxie trở lên. Khi thi triển [Call of Thunder: #0305] trong lúc [Arise, Qiangliang!] đang hoạt động, cấp thêm 1 round [Immunity] và [Guardian's Resolve] cho toàn bộ phe ta, nhận 2 cộng dồn [Swift Resolve], và giúp đòn tấn công này nhận Ultimate Might +100%.\n[Arise, Qiangliang!] Hiệu ứng mới: [Banish Evil] và [Bane of All Evil] gây thêm Reality DMG bằng (số round thời lượng cơ bản của [Arise, Qiangliang!] × Reality DMG cơ bản ×15%).\n[Ritual Dance] Hiệu ứng mới: Khi có 4 cộng dồn [Ritual Dance], [Banish Evil] được tính là Extra Action khi chủ động thi triển.\nKhi có 8 cộng dồn [Ritual Dance], lượng Reality DMG bổ sung của [Ritual Dance] được nhân đôi; [Banish Evil] và [Bane of All Evil] nhận thêm hiệu lực Incantation Might với tỷ lệ 40%."
+      }
     }
   },
   "311101": {
@@ -90,13 +586,47 @@
       "3": "[Climactic Moment] no longer consumes AP, and deals additional Mental DMG equal to 100% of the base Mental DMG;\n[Climactic Moment]'s Penetration Rate increase per 1 stack of [Neg Status] held by the target is changed to: Penetration Rate is increased per 1 type of [Neg Status] held, and the maximum Mental DMG increase based on the number of types of [Neg Status] held by the target is increased to 100% of the original base",
       "4": "[Climactic Moment] new effect: when recast 1 time in a single round, deals additional Mental DMG to all enemies equal to 50% of the base Mental DMG;\nwhen recast 2 times in a single round, deals additional Mental DMG to all enemies equal to 50% of the base Mental DMG, and for every 1 type of [Neg Status] the target holds, additionally increases Mental DMG/Penetration Rate by 50% of the original base;\nwhen recast 3 or more times in a single round, deals additional Mental DMG to all enemies equal to 100% of the base Mental DMG, and for every 1 type of [Neg Status] the target holds, additionally increases Mental DMG/Penetration Rate by 100% of the original base"
     },
-    "version": "3.9"
+    "version": "3.9",
+    "vi": {
+      "ranks": {
+        "1": "[Genius Idea] không còn cấp cơ hội thi triển lại Ultimate; đổi thành: khi bắt đầu mỗi round, nếu Moxie của bản thân đạt 5 và [Genius Idea] đạt số cộng dồn tiêu hao của Ultimate ban đầu, tiêu hao số cộng dồn đó và nhận 1 cộng dồn [Endless Inspiration] (kích hoạt tối đa 1 lần mỗi round); với mỗi 1 cộng dồn [Genius Idea] bản thân đang có, có xác suất cơ bản ban đầu để nhận thêm 1 cộng dồn [Endless Inspiration], tối đa 4 cộng dồn; nếu [Endless Inspiration] đã đạt giới hạn cộng dồn, [Genius Idea] không còn bị tiêu hao.",
+        "2": "[Miniature Set] hiệu ứng mới: Bản thân nhận Moxie +3 khi vào trận; khi đồng minh khác thi triển Ultimate, Noire nhận 1 cộng dồn [Scene Direction], giới hạn cộng dồn bằng giới hạn cộng dồn ban đầu của [Genius Idea].",
+        "3": "[Climactic Moment] không còn tiêu hao AP, và gây thêm Mental DMG bằng 100% Mental DMG cơ bản;\nLượng Penetration Rate tăng thêm của [Climactic Moment] cho mỗi 1 cộng dồn [Neg Status] mà mục tiêu đang có được đổi thành: Penetration Rate tăng thêm theo mỗi 1 loại [Neg Status] đang có, và lượng Mental DMG tăng thêm tối đa dựa trên số loại [Neg Status] mà mục tiêu đang có được tăng thành 100% lượng cơ bản ban đầu.",
+        "4": "[Climactic Moment] hiệu ứng mới: khi được thi triển lại 1 lần trong một round, gây thêm Mental DMG lên toàn bộ kẻ địch bằng 50% Mental DMG cơ bản;\nkhi được thi triển lại 2 lần trong một round, gây thêm Mental DMG lên toàn bộ kẻ địch bằng 50% Mental DMG cơ bản, và với mỗi 1 loại [Neg Status] mục tiêu đang có, tăng thêm Mental DMG/Penetration Rate bằng 50% lượng cơ bản ban đầu;\nkhi được thi triển lại từ 3 lần trở lên trong một round, gây thêm Mental DMG lên toàn bộ kẻ địch bằng 100% Mental DMG cơ bản, và với mỗi 1 loại [Neg Status] mục tiêu đang có, tăng thêm Mental DMG/Penetration Rate bằng 100% lượng cơ bản ban đầu."
+      }
+    }
+  },
+  "311401": {
+    "vi": {
+      "ranks": {
+        "1": "[Flood of Fiction] giờ áp dụng cho đồng minh có Moxie cao nhất, trừ Recoleta.\nHiệu ứng mới: Ultimate thi triển qua [Flood of Fiction] cấp gấp đôi số cộng dồn [Monomythic Narrative]/[Ensemble Narrative] và cấp Moxie +1 cho Recoleta.",
+        "2": "[Maze of Visceral Realism]: Gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%). Gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%) lên mục tiêu chính. Với mỗi Moxie tiêu hao thêm, nhận thêm Ultimate Might bằng (Ultimate Might cơ bản ×100%).",
+        "3": "[Monomythic Narrative]/[Ensemble Narrative] gây thêm Reality DMG bằng (Reality DMG cơ bản ×100%). Hiệu ứng mới: Khi thi triển [Maze of Visceral Realism], DMG Dealt +1%, tối đa 40 cộng dồn.",
+        "4": "[Spontaneous Writing]: Max Moxie Bonus tăng thành +8."
+      }
+    }
   },
   "311601": {
-    "version": "3.8"
+    "version": "3.8",
+    "vi": {
+      "ranks": {
+        "1": "Cường hóa hiệu ứng [Eternally Inquisitive]: Khi bắt đầu round, nếu đang có ít nhất 1 cộng dồn [Snake's Den], nhận Moxie +1, tiêu hao 1 cộng dồn [Snake's Den], và tạo một bản sao [Hiss!].",
+        "2": "[Ouroboros] Hiệu ứng mới: Sau khi tấn công, gây 1 hiệu ứng ngẫu nhiên từ [Collection of Debuffs] lên toàn bộ kẻ địch.\n[Infinite Recursion] Hiệu ứng mới: Sau khi thi triển, cấp [Stream of Consciousness] cho toàn bộ phe ta, duy trì 3 round.\nCường hóa hiệu ứng [Eternally Inquisitive]: Khi tấn công kẻ địch đang có [Serpentine Scales], sau khi Hissabeth nhận Moxie và gây [Rigidity] lên mục tiêu, cô gây thêm 2 hiệu ứng ngẫu nhiên từ [Collection of Debuffs] lên mục tiêu, duy trì 2 round.",
+        "3": "[Hiss!] giờ gây thêm Mental DMG bằng (Mental DMG cơ bản ×100%) và nhận hiệu lực Ultimate Might với tỷ lệ +30%/60%/100% ở hạng 1/2/3.",
+        "4": "[Experimental Rocketry] giờ gây thêm Mental DMG bằng (Mental DMG cơ bản ×20%) cho mỗi loại [Neg Status] trên mục tiêu (tính tối đa 10 loại); nếu có ít nhất 5 loại, đòn tấn công này nhận Penetration Rate +20% và nhận hiệu lực Ultimate Might với tỷ lệ +60%."
+      }
+    }
   },
   "312001": {
-    "version": "3.7"
+    "version": "3.7",
+    "vi": {
+      "ranks": {
+        "1": "[Whiteout Warning]: Sau khi bị tấn công trong trạng thái [Mother Spirit's Guidance], Nautika giờ nhận 2 cộng dồn [Higge].\n[No Longer Poles Apart]: Nautika giờ nhận 2 cộng dồn [Higge] sau khi hành động.\nMỗi cộng dồn [Higge] giờ cấp thêm DMG Bonus +1%.",
+        "2": "[Ice Core Drilling] giờ gây thêm 110% Reality DMG dựa trên Max HP.\n[Whiteout Warning] giờ gây Reality DMG bằng (số nhân vật có mặt ×75%).",
+        "3": "[Divine Yoik] Hiệu ứng mới: Khi tấn công, nhận Ultimate Might +15% nếu đồng thời ở trạng thái [Adversity I] và [Mother Spirit's Guidance].\n[Divine Yoik]: [A Thousand Scars] và [A Thousand Springs] giờ gây 115% Reality DMG dựa trên Max HP.",
+        "4": "[No Longer Poles Apart] Cường hóa: Không thể bị giảm xuống dưới 16% HP bởi hiệu ứng mất HP; khi vào trận, Nautika cấp giới hạn mất HP này cho toàn bộ đồng minh [Bloodtithe] khác.\n[No Longer Poles Apart]: [Mouth of the Mother] giờ gây thêm 115% Reality DMG dựa trên Max HP."
+      }
+    }
   },
   "312101": {
     "nameEn": "Blessings That Stay the Whole Journey Through",
@@ -111,7 +641,15 @@
       "3": "[Astray No More] effect enhanced: deals additional Reality DMG equal to 100% of the base Reality DMG; both active and riposte casts deal additional DMG and grant additional [Ceremonious: Critical DMG]\n[The Past Shattered] effect enhanced: if self is in [Continuous Action I] status before attacking, deals additional Reality DMG equal to 100% of the base Reality DMG; after attacking, inflicts 2 stacks of [Passion Drain] on the target",
       "4": "[The Future Reclaimed] effect modified:\nGains [Lightning Trigger] for 2 rounds\n[Lightning Trigger] effect modified:\nWhen an ally is attacked, Moldir counters with the corresponding rank of [The Past Shattered] (triggers once per round); at the start of the round, if not in [Doctrine] status, gains [Total Onslaught] for 1 round"
     },
-    "version": "3.9"
+    "version": "3.9",
+    "vi": {
+      "ranks": {
+        "1": "[To the \"Family\"] hiệu ứng được cường hóa:\nNếu có từ 10 cộng dồn [Readiness] trở lên, toàn bộ phe ta nhận [Assertiveness], duy trì 1 round.",
+        "2": "[To the \"Family\"] hiệu ứng được cường hóa:\n[Tactical Coordination]: Ultimate DMG cấp cho mỗi cộng dồn [Readiness] tăng thêm 20% lượng cơ bản;\n[Armament Enhancement]: Critical Rate được cấp tăng thêm 20% lượng cơ bản.",
+        "3": "[Astray No More] hiệu ứng được cường hóa: gây thêm Reality DMG bằng 100% Reality DMG cơ bản; cả khi chủ động thi triển lẫn khi Riposte đều gây thêm DMG và cấp thêm [Ceremonious: Critical DMG].\n[The Past Shattered] hiệu ứng được cường hóa: nếu bản thân đang ở trạng thái [Continuous Action I] trước khi tấn công, gây thêm Reality DMG bằng 100% Reality DMG cơ bản; sau khi tấn công, gây 2 cộng dồn [Passion Drain] lên mục tiêu.",
+        "4": "[The Future Reclaimed] hiệu ứng được điều chỉnh:\nNhận [Lightning Trigger], duy trì 2 round.\n[Lightning Trigger] hiệu ứng được điều chỉnh:\nKhi đồng minh bị tấn công, Moldir phản công bằng [The Past Shattered] cùng hạng (kích hoạt 1 lần mỗi round); khi bắt đầu round, nếu không ở trạng thái [Doctrine], nhận [Total Onslaught], duy trì 1 round."
+      }
+    }
   },
   "313401": {
     "nameEn": "A Moment of Shimmering Fate",
@@ -124,6 +662,14 @@
       "2": "[Clairvoyant Prism] gains new effects:\n[Emanation of Blue]: Consumes 3 stacks of [Vision]; when [Destined Doom] is cast this round, deals additional Mental DMG equal to 35% of the original base Mental DMG, up to 1/2/3 times at Incantation rank 1/2/3; and at the end of the round, self Moxie +1.\n[Emanation of Purple]: Extends [Foresight]'s duration by 1/1/2 round(s); consumes 3 stacks of [Vision]; when [Destined Doom] is cast this round, for every point of [Lingering Glow], deals additional Mental DMG equal to 100% of the original additional Mental DMG per point of [Lingering Glow], up to 1/2/3 times at Incantation rank 1/2/3, and at the end of the round, self Moxie +1.\n[Emanation of Green]: Consumes 3 stacks of [Vision]; when [Destined Doom] is cast this round at rank 1/2/3, deals additional Mental DMG equal to 150% of the original additional Mental DMG at rank 1/2/3, up to 1/2/3 times at Incantation rank 1/2/3, and at the end of the round, self Moxie +1.",
       "3": "[A Shimmering Night]'s Mental DMG dealt is increased, equal to 100% of the base Mental DMG, and gains a new effect: this attack is affected by 100% Incantation Might; when attacking, for every point of [Lingering Glow], deals an additional 2% Mental DMG; after attacking, self gains 10 stacks of [Vision].\n[Prism Mirror] gains a new effect: When entering battle, self gains 10 stacks of [Vision].",
       "4": "[Destined Doom]'s Mental DMG dealt is increased, equal to 20% of the base Mental DMG; for every stack of [Vision] held, this attack's ATK is increased by 0.2%, counting up to 20 stacks."
+    },
+    "vi": {
+      "ranks": {
+        "1": "Lượng cộng dồn [Vision] mà [Nothing Unexpected] cấp tăng thêm 100% lượng cơ bản ban đầu, và cấp [Foresight], duy trì 2 round.",
+        "2": "[Clairvoyant Prism] nhận hiệu ứng mới:\n[Emanation of Blue]: Tiêu hao 3 cộng dồn [Vision]; khi [Destined Doom] được thi triển trong round này, gây thêm Mental DMG bằng 35% Mental DMG cơ bản ban đầu, tối đa 1/2/3 lần ở Incantation hạng 1/2/3; và khi kết thúc round, bản thân Moxie +1.\n[Emanation of Purple]: Kéo dài thời lượng [Foresight] thêm 1/1/2 round; tiêu hao 3 cộng dồn [Vision]; khi [Destined Doom] được thi triển trong round này, với mỗi điểm [Lingering Glow], gây thêm Mental DMG bằng 100% lượng Mental DMG bổ sung ban đầu trên mỗi điểm [Lingering Glow], tối đa 1/2/3 lần ở Incantation hạng 1/2/3, và khi kết thúc round, bản thân Moxie +1.\n[Emanation of Green]: Tiêu hao 3 cộng dồn [Vision]; khi [Destined Doom] được thi triển trong round này ở hạng 1/2/3, gây thêm Mental DMG bằng 150% lượng Mental DMG bổ sung ban đầu ở hạng 1/2/3, tối đa 1/2/3 lần ở Incantation hạng 1/2/3, và khi kết thúc round, bản thân Moxie +1.",
+        "3": "Lượng Mental DMG mà [A Shimmering Night] gây ra được tăng thêm bằng 100% Mental DMG cơ bản, và nhận hiệu ứng mới: đòn tấn công này nhận ảnh hưởng từ Incantation Might với tỷ lệ 100%; khi tấn công, với mỗi điểm [Lingering Glow], gây thêm 2% Mental DMG; sau khi tấn công, bản thân nhận 10 cộng dồn [Vision].\n[Prism Mirror] nhận hiệu ứng mới: Khi vào trận, bản thân nhận 10 cộng dồn [Vision].",
+        "4": "Lượng Mental DMG mà [Destined Doom] gây ra được tăng thêm bằng 20% Mental DMG cơ bản; với mỗi cộng dồn [Vision] đang có, ATK của đòn tấn công này tăng thêm 0.2%, tính tối đa 20 cộng dồn."
+      }
     }
   }
 }

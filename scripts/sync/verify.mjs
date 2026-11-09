@@ -160,8 +160,10 @@ ok(
   euphoriaEntries.every((e) => e.ranks.every((r, i) => r.rank === i + 1) && e.ranks.length <= 5),
 );
 ok(
-  "euphoria rank text has all five languages",
-  euphoriaEntries.every((e) => e.ranks.every((r) => Object.keys(r.description).length === 5 && Object.values(r.description).every(Boolean))),
+  "euphoria rank text has all six languages",
+  euphoriaEntries.every((e) =>
+    e.ranks.every((r) => ["en", "zh", "tw", "jp", "kr", "vi"].every((lang) => Object.keys(r.description).includes(lang) && r.description[lang])),
+  ),
 );
 ok(
   "euphoria portraits are five tiers",
@@ -180,6 +182,32 @@ ok("character_skills ids are unique", new Set(skillEntries.map((entry) => entry.
 ok("character_skills has en/zh/vi character names", skillEntries.every((e) => e.nameEn && e.nameZh && e.nameVi));
 ok("character_skills drops the dummy arcanist", !skillKeys.includes("Machine D III"));
 ok("every skill has a name and an icon", allSkills.every((s) => s.nameEn && s.nameZh && s.nameVi && /^images\/skills\/\d+\.png$/.test(s.icon)));
+const perceptionCards = allSkills.filter((s) => Array.isArray(s.panels));
+ok(
+  "perception cards carry two translated ability panels",
+  perceptionCards.length === 3 &&
+    perceptionCards.every(
+      (s) =>
+        typeof s.perceptionCost === "number" &&
+        s.perceptionTag?.en &&
+        s.perceptionTag?.zh &&
+        s.perceptionTag?.vi &&
+        s.panels.length === 2 &&
+        s.panels.every(
+          (p) => p.label?.en && p.label?.zh && p.label?.vi && p.descEn && p.descZh && p.descVi,
+        ),
+    ),
+  `${perceptionCards.length} cards`,
+);
+ok(
+  "perception panels belong to 37, Huntsworn Lilya and Perchta",
+  JSON.stringify(
+    skillEntries
+      .filter((e) => e.skills.some((s) => Array.isArray(s.panels)))
+      .map((e) => e.id)
+      .sort((a, b) => a - b),
+  ) === JSON.stringify([3066, 3155, 3159]),
+);
 ok("every non-ultimate skill has ranks", allSkills.filter((s) => s.type !== "Ultimate").every((s) => Object.keys(s.ranks || {}).length > 0));
 ok("every rank has en/zh/vi text", allRanks.every((r) => r.id && r.descEn && r.descZh && r.descVi));
 ok("rank cost/harmonisation are numbers", allRanks.every((r) => (r.cost === undefined || typeof r.cost === "number") && (r.harmonization === undefined || typeof r.harmonization === "number")));

@@ -131,7 +131,7 @@ Keep these maps in `scripts/sync/maps/`.
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
 | `pattern_costs.json` | pattern → cost mapping (currently ships `{}`) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
-| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`) and `device-ranks.json` (frozen rank-id lists for The Twins) |
+| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards) and `device-ranks.json` (frozen rank-id lists for The Twins) |
 
 ### Class C — human-authored content (NOT derivable)
 
@@ -150,7 +150,7 @@ Owned by the project, not the game. Lives in `content/` after the rebuild.
 | `skill_glossary.json` | InfoBook glossary terms (editorial tags + popover text) |
 | `curation.json` | exclude/collab policy; the pipeline still emits `data/exclude_character.json` and `data/collab_character.json` from it |
 | `translations/psychubes.json` | English for CN-only psychubes + every Vietnamese psychube/amplification string |
-| `translations/euphorias.json` | English for CN-only Euphoria trees + the editorial `version` of each tree |
+| `translations/euphorias.json` | English for CN-only Euphoria trees, the editorial `version` of each tree, and every Vietnamese rank description (`vi.ranks`) |
 | `translations/skills.json` | English for CN-only skills/insights/portrays + every Vietnamese skill string + the collab weapon charts |
 | `translations/items.json` | every Vietnamese item string (description/usage/source) + the editorial `source` prose + English for CN-only items |
 
@@ -503,6 +503,12 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   point at a renamed skill — the generated text is correct, the legacy file was stale.
 - **CN-only rows carry literal Chinese instead of `language_*` keys**, so literal text is
   only accepted for `zh`; `tw/jp/kr` fall back to `"N/A"` rather than mislabeling Chinese.
+- **Vietnamese Euphoria text lives in the same overlay.** `content/translations/euphorias.json`
+  carries a `"vi": { "ranks": { "<rank>": "..." } }` block for every one of the 57 trees
+  (228 rank rows); `derive/euphorias.mjs` copies it to `description.vi`, so all six
+  languages are non-empty and `sync:verify` asserts that. Tree names stay English in VI
+  (proper nouns), so there is no `vi` name field. Portraits (25, five tiers on five heroes)
+  are not rendered by the app and carry no VI.
 - **`character_skills.json` is keyed by canonical roster name only.** The legacy file also
   stored raw aliases (`Joe`, `Six`, `Thirty-seven`, `Вила`, …) pointing at the same object;
   those were redundant because `resolveCharacterName()` maps them through
@@ -517,22 +523,63 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   skill effect, and an ultimate takes its negative value from `uniqueSkill_point`
   (`4#100` → `-100`). `scripts/apply_conduit_cost_harm.mjs` (hardcoded maps) is deleted.
 - **The legacy file invented slot-4 "Special" skills** for Regulus, Vila, Argus, Barbara,
-  Recoleta, Hissabeth, Ms. Stranger, Hedone, 37 and Huntsworn Lilya (including the bogus
-  ids `790001`/`790002`). Those rows are not in any game table and are gone. Only
-  game-declared specials remain: device `specialPowerSkill`, plus the hand-mapped
-  Rhiannon and Beryl entries in `scripts/sync/maps/skill-extras.json`.
-- **Two of those slot-4 cards were real, and are back through `skill-extras.json`.**
+  Recoleta, Hissabeth, Ms. Stranger, Hedone, 37 and Huntsworn Lilya (some pointing at the
+  nonexistent skill ids `790001`/`790002` — `790001` is only 37's card icon). Those rows
+  are not in any game table and are gone. Only game-declared specials remain: device
+  `specialPowerSkill`, plus the hand-mapped Rhiannon and Beryl entries in
+  `scripts/sync/maps/skill-extras.json`.
+- **Six of those slot-4 cards were real, and are back through `skill-extras.json`.**
   Ms. Stranger's special card is skill `31470131` — `[A Moth to a Flame]`, the only
   "Sovereign Incantation" (主格特殊咒语) in the game besides Beryl's three emanations —
   and Huntsworn Lilya's is `31550151` (`Shoot Down` / 击毁), her `[Full Pursuit]` pursuit
   skill. Both ids carry `showInBattle: 0` and are absent from `character.skill`, so no
-  table walks you to them: the map names them. The other eight were duplicates of
-  insight 0 (e.g. Hissabeth's "Experimental Payload" pointed at `31160141`
-  `Eternally Inquisitive`) with invented names and blurbs, so they stay deleted. A map
-  entry may carry `badge: { en, zh }` to force the card-type label the heuristic would
-  get wrong — `attribute` / `attributeZh` in the generated row — because
-  `[A Moth to a Flame]` is an omni ("Versatile" / 万能) card whose own name says nothing
-  about it.
+  table walks you to them: the map names them. Four more are base-kit cards the legacy
+  file had merely guessed at: Recoleta `31140151` (`Flood of Fiction`), Hissabeth
+  `31160101/102/103` (`Hiss!`), Vila `30870191` (`Song of Inspiration`) and Argus
+  `30970171/172/173` (`Grave Digger`, the only one that is an "Attack" card). All six
+  are `showInBattle: 0` too. A map entry may carry `badge: { en, zh }` to force the
+  card-type label the heuristic would get wrong — `attribute` / `attributeZh` in the
+  generated row — because `[A Moth to a Flame]` is an omni ("Versatile" / 万能) card
+  whose own name says nothing about it. Barbara's legacy "special" is still invented (a
+  duplicate of insight 0); Hedone's is real — the device's `specialPowerSkill` gives her the
+  Energy card `Flame Undying` (`31560182/183/184`), and by editorial choice only the rank-1
+  row ships (`"ranks": [31560182]`), so the app shows a single Energy card instead of three
+  star tiers of it.
+- **Lucy's `Conservation of Energy` is a one-rank card, not a three-rank one.**
+  `30860141/142/143` are the same rank-2 ascension incantation at portray 0, 1 and 4
+  (100/150/200% Reality DMG — P1 and P4 say exactly that), so
+  `skill-extras.json` ships only `30860141`. It is base kit: her Insight III passive casts
+  it, and every row carries `showInBattle: 0`, so only the map walks to it. Its card art
+  `760001.png` is Lucy's, not an item id.
+- **A Perception Incantation card carries ability panels.** 37 `3066`, Perchta `3159` and
+  Huntsworn Lilya `3155` sit their passives in separate CN skill rows, so their
+  `skill-extras.json` entries name them as `"abilities": [<id>, <id>]`
+  (37 `306601521/306601531`, Perchta `31590152/31590153`, Lilya `31550154/31550155`).
+  The generator copies them onto the skill row as `panels: [{ label, descEn, descZh,
+  descVi }, …]` and adds `perceptionTag` (`Perception Incantation` / `洞知咒语`) plus
+  `perceptionCost`, parsed from the base skill's `skill_effect.qtePowerCost` (`"2#N"` → N
+  Perception Points; 37 = 1, Perchta = 8, Lilya = 1). The game ships no EN text for these
+  CN rows, so EN and VI live in the per-hero overlay under
+  `skills["4|Special 1"].abilities["1"|"2"]`. `app.js` renders the card as three equal
+  side-by-side panels — the base incantation (with its cost tag) and one panel per
+  ability; there is no card-art column and no rank pips. Lilya's rank-1 text is trimmed
+  to the incantation line because the cost and her two pursuit abilities moved into the
+  panels.
+- **Euphoria-gated cards carry `requires`, and the E1/E2 switch is exclusive.** 37's
+  `306601511` (`Reductio ad Absurdum` / 归谬) and Regulus's two cards — `228101`
+  (`Rock 'n' Roll Forever!` / 摇滚永生！, tree 0) and `31447002`
+  (`Carbonation Explosion` / 碳酸释放, tree 1 `Rock 'n' Roar`) — carry
+  `"requires": { "euphoria": <tree index>, "rank": N }` (index into that hero's
+  `character_euphorias.json` array). Regulus has two facets, so his Conduit card is the
+  E2 one: its `rank` is the E-button that reveals it, not the facet level the game uses
+  (the device and its `specialPowerSkill` ship with facet level 1). `app.js` hides gated
+  cards until a button is pressed and shows only the cards whose `rank` matches the
+  active button, never the lower ones. `790001` is a real icon id (37's card art), not
+  one of the invented ones.
+- **Brume's four "sets" are really three.** `character.skill` spells Calculated Path as
+  `…,313501112#313501122,313501132` — the rank-3 row sits in its own comma group. The
+  ids step evenly and both groups share a name key, so `mergeSetRanks()` folds that
+  trailing single-rank group back into the set it continues; Set D no longer exists.
 - **The Twins' rank ids are frozen in `scripts/sync/maps/device-ranks.json`.** Their
   `character.skill` and the device's per-tier `skill1`/`skill2` disagree, so the base
   skill id is expanded to its three/five rank variants from that map.

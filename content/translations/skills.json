@@ -1439,10 +1439,18 @@
         "artVi": "Hãy để ánh sao và những nốt nhạc mở tiệc đêm nay, ta là vua của chúng!"
       },
       "4|Special 1": {
-        "nameVi": "Rock ‘n’ Roll",
+        "nameVi": "Rock 'n' Roll Forever!",
         "ranks": {
           "1": {
-            "descVi": "Chiêu rock đặc biệt."
+            "descVi": "Cấp điểm [Inspiration] cao nhất trong số các Incantation không được chọn ở round trước cho [Impromptu Incantation]."
+          }
+        }
+      },
+      "4|Special 2": {
+        "nameVi": "Carbonation Explosion",
+        "ranks": {
+          "1": {
+            "descVi": "Star Energy +2. Tăng [Conduit Activation] thêm 2 cấp trong round này."
           }
         }
       }
@@ -4432,6 +4440,16 @@
             "descEn": "Mass attack. Deals 800% Mental DMG to all enemies. After attacking, grants self 1 stack of [Dichotomy Paradox].\nStrengthened by Euphoria: the DMG rises to 900% at E2 and 1000% at E5.",
             "descVi": "Tấn công diện rộng. Gây 800% Mental DMG lên toàn bộ kẻ địch. Sau khi tấn công, trao cho bản thân 1 cộng dồn [Dichotomy Paradox].\nĐược cường hóa bởi Euphoria: DMG tăng lên 900% ở E2 và 1000% ở E5."
           }
+        },
+        "abilities": {
+          "1": {
+            "descEn": "During [Full Pursuit], all enemies' Perception DMG Taken Reduction -40% and DMG Taken Reduction -40%; after another ally casts a Perception Incantation, there is a 40% chance for 37 to gain 1 stack of [Return to Origin]; each failure increases the chance by 30%, and the bonus chance is cleared on success.",
+            "descVi": "Trong [Full Pursuit], giảm 40% Perception DMG Taken Reduction và 40% DMG Taken Reduction của toàn bộ kẻ địch; sau khi đồng minh khác thi triển Perception Incantation, có 40% xác suất giúp 37 nhận 1 cộng dồn [Return to Origin], mỗi lần không thành công tăng thêm 30% xác suất, xác suất cộng thêm được xóa khi thành công."
+          },
+          "2": {
+            "descEn": "After 37 casts a Perception Incantation, Moxie +1.",
+            "descVi": "Sau khi 37 thi triển Perception Incantation, Moxie +1."
+          }
         }
       }
     },
@@ -5633,6 +5651,14 @@
         "nameVi": "A Step Forward",
         "descVi": "Tự cường hóa. Tiến vào [Pragmatist], duy trì 2 round. Nhận 1 cộng dồn [Data Iteration]. Nạp 2 [Charged Ammunition].",
         "artVi": "Bằng cách thay đổi chính mình, ta có sức mạnh thay đổi thế giới."
+      },
+      "4|Special 1": {
+        "nameVi": "Conservation of Energy",
+        "ranks": {
+          "1": {
+            "descVi": "Tấn công diện rộng. Gây 100% Reality DMG lên toàn bộ kẻ địch. Tiêu hao 10 cộng dồn [Dynamo] để đòn tấn công này nhận Penetration Rate +50%; đòn tấn công này được tính là Incantation hạng 2."
+          }
+        }
       }
     },
     "insights": {
@@ -5708,6 +5734,14 @@
         "nameVi": "Bright Prospect",
         "descVi": "Buff diện rộng. Xua tan toàn bộ trạng thái [Stats Down], [Neg Status] và [Control] khỏi toàn bộ phe ta, sau đó trao trạng thái [Rusalka] cho bản thân, duy trì 3 round; chuyển [Song of Generosity] hiện có của đồng minh thành [Song of Passion] và làm mới thời lượng của nó. Không thể nhận Ultimate khi đang ở trạng thái [Rusalka].",
         "artVi": "Tất cả chúng ta đều tin chắc rằng đó không chỉ là một khát vọng xa vời."
+      },
+      "4|Special 1": {
+        "nameVi": "Song of Inspiration",
+        "ranks": {
+          "1": {
+            "descVi": "Cấp Moxie +1 và Eureka +1 cho một mục tiêu."
+          }
+        }
       }
     },
     "insights": {
@@ -6238,7 +6272,13 @@
         "nameVi": "Grave Digger",
         "ranks": {
           "1": {
-            "descVi": "Tấn công đơn mục tiêu. Gây 100% Reality DMG; sau khi tấn công, giúp một Incantation ngẫu nhiên của bản thân nhận rank +1."
+            "descVi": "Tấn công đơn mục tiêu. Gây 100% Reality DMG."
+          },
+          "2": {
+            "descVi": "Tấn công đơn mục tiêu. Gây 150% Reality DMG và giúp bản thân nhận Moxie +1."
+          },
+          "3": {
+            "descVi": "Tấn công đơn mục tiêu. Gây 300% Reality DMG và giúp bản thân nhận Moxie +1. Đòn tấn công này luôn bạo kích."
           }
         }
       }
@@ -7522,10 +7562,10 @@
         "artVi": "Một mớ thi từ khó hiểu, khó quên mà cũng chẳng thể nào nhớ nổi."
       },
       "4|Special 1": {
-        "nameVi": "Poetic Metaphor",
+        "nameVi": "Flood of Fiction",
         "ranks": {
           "1": {
-            "descVi": "Kỹ năng bổ sung đặc biệt."
+            "descVi": "Giúp đồng minh có Moxie cao nhất tiêu hao toàn bộ Moxie hiện có để thi triển Ultimate, sau đó hồi lại lượng Moxie đã tiêu hao.\n(Ultimate này không được tính là Extra Action, và lượng Moxie hồi lại không vượt quá lượng Moxie cần để thi triển Ultimate đó)."
           }
         }
       }
@@ -7680,10 +7720,16 @@
         "artVi": "Sẵn sàng bị bắn vào vũ trụ chưa? Bắt đầu đếm ngược ..."
       },
       "4|Special 1": {
-        "nameVi": "Experimental Payload",
+        "nameVi": "Hiss!",
         "ranks": {
           "1": {
-            "descVi": "Kỹ năng nạp tải đặc biệt."
+            "descVi": "Tấn công đơn mục tiêu. Gây 50% Mental DMG. Gây 1 cộng dồn [Serpentine Scales]. Hiệu ứng này được tính là Ultimate.\nIncantation này là [Sovereign Incantation]."
+          },
+          "2": {
+            "descVi": "Tấn công đơn mục tiêu. Gây 100% Mental DMG. Gây 2 cộng dồn [Serpentine Scales] và nhận Moxie +1. Hiệu ứng này được tính là Ultimate.\nIncantation này là [Sovereign Incantation]."
+          },
+          "3": {
+            "descVi": "Tấn công đơn mục tiêu. Gây 250% Mental DMG. Gây 4 cộng dồn [Serpentine Scales] và nhận Moxie +2. Hiệu ứng này được tính là Ultimate.\nIncantation này là [Sovereign Incantation]."
           }
         }
       }
@@ -9043,13 +9089,8 @@
           "2": {
             "descVi": "Self Channel. Nhận 15 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
             "artVi": "Hôm nay cô ấy vô cùng phấn chấn, vị khách quen ngồi sau chỉ huy và quát tháo liên hồi."
-          }
-        }
-      },
-      "1|Set D": {
-        "nameVi": "Calculated Path",
-        "ranks": {
-          "1": {
+          },
+          "3": {
             "descVi": "Self Channel. Nhận 20 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
             "artVi": "Hôm nay cô ấy vô cùng phấn chấn, vị khách quen ngồi sau chỉ huy, quát tháo, còn sai khiến cả sấm sét."
           }
@@ -10409,8 +10450,18 @@
         "nameVi": "Shoot Down",
         "ranks": {
           "1": {
-            "descEn": "Pursuit Skill:\nConsumes 1 [Star Pursuit Point]. 1-target attack. Deals 900% Reality DMG, Critical DMG +60% when attacking.\nPursuit Ability:\nDuring [Full Pursuit], every 2 actions self takes, the 3rd action becomes a Mass attack, dealing 2000% Reality DMG to all enemies, Critical DMG +80% when attacking;\nBefore exiting the [Full Pursuit] phase, self can perform an additional finishing attack, dealing 3000% Reality DMG to all enemies, Critical DMG +100% when attacking; for every action taken by all allies during this phase, this attack deals an additional 150% Reality DMG;\nExits the [Full Pursuit] phase after this attack.",
-            "descVi": "Pursuit Skill:\nTiêu hao 1 [Star Pursuit Point]. Tấn công đơn mục tiêu. Gây 900% Reality DMG, Critical DMG +60% khi tấn công.\nPursuit Ability:\nTrong [Full Pursuit], cứ mỗi 2 hành động của bản thân, hành động thứ 3 sẽ trở thành tấn công diện rộng, gây 2000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +80% khi tấn công;\nTrước khi rời khỏi giai đoạn [Full Pursuit], bản thân có thể thực hiện thêm 1 đòn kết liễu, gây 3000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +100% khi tấn công; với mỗi hành động mà toàn bộ phe ta thực hiện trong giai đoạn này, đòn tấn công này gây thêm 150% Reality DMG;\nSau đòn tấn công này, rời khỏi giai đoạn [Full Pursuit]."
+            "descEn": "1-target attack. Deals 900% Reality DMG, Critical DMG +60% when attacking.",
+            "descVi": "Tấn công đơn mục tiêu. Gây 900% Reality DMG, Critical DMG +60% khi tấn công."
+          }
+        },
+        "abilities": {
+          "1": {
+            "descEn": "During the [Full Pursuit] phase, every 2 actions self takes, the 3rd action becomes a Mass attack, dealing 2000% Reality DMG to all enemies, Critical DMG +80% when attacking.",
+            "descVi": "Trong giai đoạn [Full Pursuit], cứ mỗi 2 hành động của bản thân, hành động thứ 3 trở thành tấn công diện rộng, gây 2000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +80% khi tấn công."
+          },
+          "2": {
+            "descEn": "Before exiting the [Full Pursuit] phase, self can perform an additional finishing attack, dealing 3000% Reality DMG to all enemies, Critical DMG +100% when attacking; for every action taken by all allies during this phase, this attack deals an additional 150% Reality DMG.\nExits the [Full Pursuit] phase after this attack.",
+            "descVi": "Trước khi rời khỏi giai đoạn [Full Pursuit], bản thân có thể thực hiện thêm 1 đòn kết liễu, gây 3000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +100% khi tấn công; với mỗi hành động của toàn bộ phe ta trong giai đoạn này, đòn tấn công này gây thêm 150% Reality DMG.\nSau đòn tấn công này, rời khỏi giai đoạn [Full Pursuit]."
           }
         }
       }
@@ -10883,6 +10934,16 @@
           "1": {
             "descEn": "Mass attack. Deals 500% Reality DMG to all enemies. If this removed 8 stacks of [Vengeance Clue], grants self 8 stacks of [Vengeance Sated] after attacking.",
             "descVi": "Tấn công diện rộng. Gây 500% Reality DMG lên toàn bộ kẻ địch. Nếu lần này đã loại bỏ 8 cộng dồn [Vengeance Clue], sau khi tấn công sẽ trao cho bản thân 8 cộng dồn [Vengeance Sated]."
+          }
+        },
+        "abilities": {
+          "1": {
+            "descEn": "After any ally casts a Perception Incantation, Perchta grants herself 1 stack of [Vengeance Clue]; upon entering the [Full Pursuit] phase, Perchta grants herself 8 stacks of [Vengeance Clue].",
+            "descVi": "Sau khi bất kỳ đồng minh nào thi triển Perception Incantation, Perchta trao cho bản thân 1 cộng dồn [Vengeance Clue]; khi bước vào giai đoạn [Full Pursuit], Perchta trao cho bản thân 8 cộng dồn [Vengeance Clue]."
+          },
+          "2": {
+            "descEn": "During the [Full Pursuit] phase, after the total number of actions taken by the team reaches 5/7, all allies' Perception DMG Bonus +15%/30%; cleared upon exiting [Full Pursuit].",
+            "descVi": "Trong giai đoạn [Full Pursuit], sau khi tổng số hành động của toàn bộ phe ta đạt 5/7 lần, Perception DMG Bonus của toàn bộ phe ta tăng 15%/30%; xóa khi rời khỏi [Full Pursuit]."
           }
         }
       }

@@ -233,6 +233,9 @@ export function characterEuphorias() {
           if (!value && lang === "en") value = extra.ranks?.[String(row.level)] || "";
           description[lang] = value || "N/A";
         }
+        // Vietnamese is hand-authored (the game has no vi locale); empty falls
+        // back to English in the app.
+        description.vi = extra.vi?.ranks?.[String(row.level)] || "";
         return { rank: row.level, description };
       });
 

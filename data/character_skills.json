@@ -273,6 +273,38 @@
             "artEn": "",
             "artZh": ""
           }
+        },
+        "perceptionCost": 1,
+        "perceptionTag": {
+          "en": "Perception Incantation",
+          "zh": "洞知咒语",
+          "vi": "Perception Incantation"
+        },
+        "panels": [
+          {
+            "label": {
+              "en": "Perception Ability-1",
+              "zh": "洞知能力-1",
+              "vi": "Perception Ability-1"
+            },
+            "descEn": "During [Full Pursuit], all enemies' Perception DMG Taken Reduction -40% and DMG Taken Reduction -40%; after another ally casts a Perception Incantation, there is a 40% chance for 37 to gain 1 stack of [Return to Origin]; each failure increases the chance by 30%, and the bonus chance is cleared on success.",
+            "descZh": "【弱点洞穿】期间，令敌方全体洞知受创减免降低40%，受创减免降低40%；其余友方施放洞知咒语后有40%概率使37获得1层【复归原点】，每次未成功会令概率增加30%，成功后清空额外概率",
+            "descVi": "Trong [Full Pursuit], giảm 40% Perception DMG Taken Reduction và 40% DMG Taken Reduction của toàn bộ kẻ địch; sau khi đồng minh khác thi triển Perception Incantation, có 40% xác suất giúp 37 nhận 1 cộng dồn [Return to Origin], mỗi lần không thành công tăng thêm 30% xác suất, xác suất cộng thêm được xóa khi thành công."
+          },
+          {
+            "label": {
+              "en": "Perception Ability-2",
+              "zh": "洞知能力-2",
+              "vi": "Perception Ability-2"
+            },
+            "descEn": "After 37 casts a Perception Incantation, Moxie +1.",
+            "descZh": "自身施放洞知咒语后，使自身激情+1",
+            "descVi": "Sau khi 37 thi triển Perception Incantation, Moxie +1."
+          }
+        ],
+        "requires": {
+          "euphoria": 0,
+          "rank": 1
         }
       }
     ],
@@ -1537,6 +1569,43 @@
         "artEn": "Your fear confirms it: you are fully aware of what you've done.",
         "artZh": "你的恐惧恰恰证实：你对自己犯下的事心知肚明。",
         "artVi": "Nỗi sợ của ngươi đã chứng thực điều đó: ngươi hoàn toàn biết mình đã làm gì."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
+        "nameEn": "Grave Digger",
+        "nameZh": "落葬枪声",
+        "nameVi": "Grave Digger",
+        "icon": "images/skills/30970141.png",
+        "ranks": {
+          "1": {
+            "id": 30970171,
+            "descEn": "1-target attack. Deals 100% Reality DMG.",
+            "descZh": "单体攻击，造成100%现实创伤",
+            "descVi": "Tấn công đơn mục tiêu. Gây 100% Reality DMG.",
+            "artEn": "",
+            "artZh": ""
+          },
+          "2": {
+            "id": 30970172,
+            "descEn": "1-target attack. Deals 150% Reality DMG and gains Moxie +1 for self.",
+            "descZh": "单体攻击，造成150%现实创伤，自身激情+1",
+            "descVi": "Tấn công đơn mục tiêu. Gây 150% Reality DMG và giúp bản thân nhận Moxie +1.",
+            "artEn": "",
+            "artZh": ""
+          },
+          "3": {
+            "id": 30970173,
+            "descEn": "1-target attack. Deals 300% Reality DMG and gains Moxie +1 for self. This attack is always a critical hit.",
+            "descZh": "单体攻击，造成300%现实创伤，自身激情+1，本次攻击必定暴击",
+            "descVi": "Tấn công đơn mục tiêu. Gây 300% Reality DMG và giúp bản thân nhận Moxie +1. Đòn tấn công này luôn bạo kích.",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -3401,19 +3470,8 @@
             "artEn": "She's in great spirits today, with the regular passenger calling the shots and cracking the whip.",
             "artZh": "她今日兴致勃勃，副驾驶狂风大作。",
             "artVi": "Hôm nay cô ấy vô cùng phấn chấn, vị khách quen ngồi sau chỉ huy và quát tháo liên hồi."
-          }
-        }
-      },
-      {
-        "slot": 1,
-        "subSlot": "Set D",
-        "type": "Incantation",
-        "nameEn": "Calculated Path",
-        "nameZh": "长途规划",
-        "nameVi": "Calculated Path",
-        "icon": "images/skills/31350121.png",
-        "ranks": {
-          "1": {
+          },
+          "3": {
             "id": 313501132,
             "descEn": "Self channel. Gains 20 stacks of [Thermoelectric Conversion]. Enters the [Prismatic Power] status for 1 round.",
             "descZh": "自我吟诵，使自身获得20层【热电效应】，进入【宝石蓄能】状态1回合",
@@ -8366,22 +8424,6 @@
             "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 2 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 1 điểm Energy [Flame Undying], tối đa tích lũy 4 điểm, sau đó dừng nung chảy; lưu trữ tối đa 7 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
             "artEn": "",
             "artZh": ""
-          },
-          "2": {
-            "id": 31560183,
-            "descEn": "At the end of each round, smelts up to 3 unused basic Energy cards in the Spelldock, prioritizing lower-value basic Energy first; each 1 point of Energy smelted accumulates 1 point of [Flame Undying] Energy, up to 6 accumulated points, after which it stops smelting; stores up to 10 points; upon use, gains the accumulated amount of Mineral Energy.\nStarts in a locked state and cannot be used; once at least 1 point has accumulated, it unlocks and becomes usable; does not count against the team's Incantation Draw Limit, and does not consume AP.",
-            "descZh": "每回合结束时，熔炼至多3张咒语区未使用的普通交感能量，优先熔炼能量较低的普通交感能量，每熔炼1点交感能量可累积1点【复燃再燃】的能量，累积熔炼6点能量后不再熔炼，至多保存10点能量，使用后获得累积数量的岩交感能量；\n初始处于未解锁状态，不可使用，当累积熔炼1点能量及以上时，解锁变为可使用，不占己方咒语获取数量上限，不消耗行动点",
-            "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 3 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 1 điểm Energy [Flame Undying], tối đa tích lũy 6 điểm, sau đó dừng nung chảy; lưu trữ tối đa 10 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
-            "artEn": "",
-            "artZh": ""
-          },
-          "3": {
-            "id": 31560184,
-            "descEn": "At the end of each round, smelts up to 3 unused basic Energy cards in the Spelldock, prioritizing lower-value basic Energy first; each 1 point of Energy smelted accumulates 2 points of [Flame Undying] Energy, up to 8 points smelted, after which it stops smelting; stores up to 12 points; upon use, gains the accumulated amount of Mineral Energy.\nStarts in a locked state and cannot be used; once at least 1 point has accumulated, it unlocks and becomes usable; does not count against the team's Incantation Draw Limit, and does not consume AP.",
-            "descZh": "每回合结束时，熔炼至多3张咒语区未使用的普通交感能量，优先熔炼能量较低的普通交感能量，每熔炼1点交感能量可累积2点【复燃再燃】的能量，累积熔炼8点能量后不再熔炼，至多保存12点能量，使用后获得累积数量的岩交感能量；\n初始处于未解锁状态，不可使用，当累积熔炼1点能量及以上时，解锁变为可使用，不占己方咒语获取数量上限，不消耗行动点",
-            "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 3 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 2 điểm Energy [Flame Undying], nung chảy tối đa 8 điểm, sau đó dừng nung chảy; lưu trữ tối đa 12 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
-            "artEn": "",
-            "artZh": ""
           }
         }
       }
@@ -8552,6 +8594,43 @@
         "artEn": "Ready to be blasted into outer space? Initiating countdown ...",
         "artZh": "3,2,1——准备好回归宇宙基本粒子了吗！",
         "artVi": "Sẵn sàng bị bắn vào vũ trụ chưa? Bắt đầu đếm ngược ..."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
+        "nameEn": "Hiss!",
+        "nameZh": "嘶嘶！",
+        "nameVi": "Hiss!",
+        "icon": "images/skills/31160141.png",
+        "ranks": {
+          "1": {
+            "id": 31160101,
+            "descEn": "1-target attack. Deals 50% Mental DMG. Inflicts 1 stack of [Serpentine Scales]. This effect counts as an Ultimate.\nThis incantation is a [Sovereign Incantation].",
+            "descZh": "单体攻击，造成50%精神创伤，施加1层【石棉鳞片】（视为至终的仪式）；\n该咒语是【主格特殊咒语】",
+            "descVi": "Tấn công đơn mục tiêu. Gây 50% Mental DMG. Gây 1 cộng dồn [Serpentine Scales]. Hiệu ứng này được tính là Ultimate.\nIncantation này là [Sovereign Incantation].",
+            "artEn": "",
+            "artZh": ""
+          },
+          "2": {
+            "id": 31160102,
+            "descEn": "1-target attack. Deals 100% Mental DMG. Inflicts 2 stacks of [Serpentine Scales] and gains Moxie +1. This effect counts as an Ultimate.\nThis incantation is a [Sovereign Incantation].",
+            "descZh": "单体攻击，造成100%精神创伤，施加2层【石棉鳞片】，获得1点激情（视为至终的仪式）；\n该咒语是【主格特殊咒语】",
+            "descVi": "Tấn công đơn mục tiêu. Gây 100% Mental DMG. Gây 2 cộng dồn [Serpentine Scales] và nhận Moxie +1. Hiệu ứng này được tính là Ultimate.\nIncantation này là [Sovereign Incantation].",
+            "artEn": "",
+            "artZh": ""
+          },
+          "3": {
+            "id": 31160103,
+            "descEn": "1-target attack. Deals 250% Mental DMG. Inflicts 4 stacks of [Serpentine Scales] and gains Moxie +2. This effect counts as an Ultimate.\nThis incantation is a [Sovereign Incantation].",
+            "descZh": "单体攻击，造成250%精神创伤，施加4层【石棉鳞片】，获得2点激情（视为至终的仪式）；\n该咒语是【主格特殊咒语】",
+            "descVi": "Tấn công đơn mục tiêu. Gây 250% Mental DMG. Gây 4 cộng dồn [Serpentine Scales] và nhận Moxie +2. Hiệu ứng này được tính là Ultimate.\nIncantation này là [Sovereign Incantation].",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -8884,13 +8963,41 @@
         "ranks": {
           "1": {
             "id": 31550151,
-            "descEn": "Pursuit Skill:\nConsumes 1 [Star Pursuit Point]. 1-target attack. Deals 900% Reality DMG, Critical DMG +60% when attacking.\nPursuit Ability:\nDuring [Full Pursuit], every 2 actions self takes, the 3rd action becomes a Mass attack, dealing 2000% Reality DMG to all enemies, Critical DMG +80% when attacking;\nBefore exiting the [Full Pursuit] phase, self can perform an additional finishing attack, dealing 3000% Reality DMG to all enemies, Critical DMG +100% when attacking; for every action taken by all allies during this phase, this attack deals an additional 150% Reality DMG;\nExits the [Full Pursuit] phase after this attack.",
+            "descEn": "1-target attack. Deals 900% Reality DMG, Critical DMG +60% when attacking.",
             "descZh": "单体攻击，造成900%现实创伤，攻击时暴击创伤提升60%",
-            "descVi": "Pursuit Skill:\nTiêu hao 1 [Star Pursuit Point]. Tấn công đơn mục tiêu. Gây 900% Reality DMG, Critical DMG +60% khi tấn công.\nPursuit Ability:\nTrong [Full Pursuit], cứ mỗi 2 hành động của bản thân, hành động thứ 3 sẽ trở thành tấn công diện rộng, gây 2000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +80% khi tấn công;\nTrước khi rời khỏi giai đoạn [Full Pursuit], bản thân có thể thực hiện thêm 1 đòn kết liễu, gây 3000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +100% khi tấn công; với mỗi hành động mà toàn bộ phe ta thực hiện trong giai đoạn này, đòn tấn công này gây thêm 150% Reality DMG;\nSau đòn tấn công này, rời khỏi giai đoạn [Full Pursuit].",
+            "descVi": "Tấn công đơn mục tiêu. Gây 900% Reality DMG, Critical DMG +60% khi tấn công.",
             "artEn": "",
             "artZh": ""
           }
-        }
+        },
+        "perceptionCost": 1,
+        "perceptionTag": {
+          "en": "Perception Incantation",
+          "zh": "洞知咒语",
+          "vi": "Perception Incantation"
+        },
+        "panels": [
+          {
+            "label": {
+              "en": "Perception Ability-1",
+              "zh": "洞知能力-1",
+              "vi": "Perception Ability-1"
+            },
+            "descEn": "During the [Full Pursuit] phase, every 2 actions self takes, the 3rd action becomes a Mass attack, dealing 2000% Reality DMG to all enemies, Critical DMG +80% when attacking.",
+            "descZh": "【弱点洞穿】阶段内，自身每行动2次，第3次行动变为群体攻击，对敌方全体造成2000%现实创伤，攻击时暴击创伤提升80%；",
+            "descVi": "Trong giai đoạn [Full Pursuit], cứ mỗi 2 hành động của bản thân, hành động thứ 3 trở thành tấn công diện rộng, gây 2000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +80% khi tấn công."
+          },
+          {
+            "label": {
+              "en": "Perception Ability-2",
+              "zh": "洞知能力-2",
+              "vi": "Perception Ability-2"
+            },
+            "descEn": "Before exiting the [Full Pursuit] phase, self can perform an additional finishing attack, dealing 3000% Reality DMG to all enemies, Critical DMG +100% when attacking; for every action taken by all allies during this phase, this attack deals an additional 150% Reality DMG.\nExits the [Full Pursuit] phase after this attack.",
+            "descZh": "在退出【弱点洞穿】阶段前，自身能够额外发动一次终结攻击，对敌方全体造成3000%现实创伤，攻击时暴击创伤提升100%，本次阶段内己方全体每行动1次，额外造成150%现实创伤；\n攻击后退出【弱点洞穿】阶段",
+            "descVi": "Trước khi rời khỏi giai đoạn [Full Pursuit], bản thân có thể thực hiện thêm 1 đòn kết liễu, gây 3000% Reality DMG lên toàn bộ kẻ địch, Critical DMG +100% khi tấn công; với mỗi hành động của toàn bộ phe ta trong giai đoạn này, đòn tấn công này gây thêm 150% Reality DMG.\nSau đòn tấn công này, rời khỏi giai đoạn [Full Pursuit]."
+          }
+        ]
       }
     ],
     "insights": [
@@ -12361,6 +12468,27 @@
         "artEn": "By changing ourselves, we have the power to change the world.",
         "artZh": "改造自我，改造世界。",
         "artVi": "Bằng cách thay đổi chính mình, ta có sức mạnh thay đổi thế giới."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
+        "nameEn": "Conservation of Energy",
+        "nameZh": "动能守恒",
+        "nameVi": "Conservation of Energy",
+        "icon": "images/skills/760001.png",
+        "ranks": {
+          "1": {
+            "id": 30860141,
+            "descEn": "Mass attack. Deals 100% Reality DMG to all enemies. Consume 10 stacks of [Dynamo] to grant Penetration Rate +50% to this attack; this attack is considered a rank 2 incantation.",
+            "descZh": "群体攻击，对敌方全体造成100%的现实创伤；消耗10层【电能】，本次攻击穿透率提升50%；此咒语为2阶咒语",
+            "descVi": "Tấn công diện rộng. Gây 100% Reality DMG lên toàn bộ kẻ địch. Tiêu hao 10 cộng dồn [Dynamo] để đòn tấn công này nhận Penetration Rate +50%; đòn tấn công này được tính là Incantation hạng 2.",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -16567,7 +16695,35 @@
             "artEn": "",
             "artZh": ""
           }
-        }
+        },
+        "perceptionCost": 8,
+        "perceptionTag": {
+          "en": "Perception Incantation",
+          "zh": "洞知咒语",
+          "vi": "Perception Incantation"
+        },
+        "panels": [
+          {
+            "label": {
+              "en": "Perception Ability-1",
+              "zh": "洞知能力-1",
+              "vi": "Perception Ability-1"
+            },
+            "descEn": "After any ally casts a Perception Incantation, Perchta grants herself 1 stack of [Vengeance Clue]; upon entering the [Full Pursuit] phase, Perchta grants herself 8 stacks of [Vengeance Clue].",
+            "descZh": "任意友方释放洞知咒语后，佩施塔赋予自身1层【复仇线索】；进入【弱点洞穿】阶段时，佩施塔赋予自身8层【复仇线索】",
+            "descVi": "Sau khi bất kỳ đồng minh nào thi triển Perception Incantation, Perchta trao cho bản thân 1 cộng dồn [Vengeance Clue]; khi bước vào giai đoạn [Full Pursuit], Perchta trao cho bản thân 8 cộng dồn [Vengeance Clue]."
+          },
+          {
+            "label": {
+              "en": "Perception Ability-2",
+              "zh": "洞知能力-2",
+              "vi": "Perception Ability-2"
+            },
+            "descEn": "During the [Full Pursuit] phase, after the total number of actions taken by the team reaches 5/7, all allies' Perception DMG Bonus +15%/30%; cleared upon exiting [Full Pursuit].",
+            "descZh": "【弱点洞穿】阶段内，己方全体累计行动次数达到5/7次后，己方全体洞知创伤加成提升15%/30%，退出【弱点洞穿】时清空",
+            "descVi": "Trong giai đoạn [Full Pursuit], sau khi tổng số hành động của toàn bộ phe ta đạt 5/7 lần, Perception DMG Bonus của toàn bộ phe ta tăng 15%/30%; xóa khi rời khỏi [Full Pursuit]."
+          }
+        ]
       }
     ],
     "insights": [
@@ -17513,6 +17669,27 @@
         "artEn": "A jumble of verses that defy understanding, unforgettable yet impossible to remember.",
         "artZh": "一团无人能懂的诗节，无从忆起也无法忘记。",
         "artVi": "Một mớ thi từ khó hiểu, khó quên mà cũng chẳng thể nào nhớ nổi."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
+        "nameEn": "Flood of Fiction",
+        "nameZh": "虚构故事集",
+        "nameVi": "Flood of Fiction",
+        "icon": "images/skills/31140151.png",
+        "ranks": {
+          "1": {
+            "id": 31140151,
+            "descEn": "Make the ally with the highest Moxie consume all their current Moxie to cast an ultimate, then recover the consumed Moxie.\n(This ultimate does not count as an extra action, and the recovered Moxie cannot exceed the Moxie required to cast the ultimate).",
+            "descZh": "使激情最高的己方角色消耗当前激情释放至终的仪式，并回复其消耗的激情\n（该至终的仪式不视为额外行动，回复的激情总量不超过释放该至终的仪式所需的激情总量）",
+            "descVi": "Giúp đồng minh có Moxie cao nhất tiêu hao toàn bộ Moxie hiện có để thi triển Ultimate, sau đó hồi lại lượng Moxie đã tiêu hao.\n(Ultimate này không được tính là Extra Action, và lượng Moxie hồi lại không vượt quá lượng Moxie cần để thi triển Ultimate đó).",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [
@@ -17831,6 +18008,56 @@
         "artEn": "Let the starlight and musical notes party tonight, I am their king!",
         "artZh": "星光和音符狂欢着，今夜，我是它们的国王！",
         "artVi": "Hãy để ánh sao và những nốt nhạc mở tiệc đêm nay, ta là vua của chúng!"
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
+        "nameEn": "Rock 'n' Roll Forever!",
+        "nameZh": "摇滚永生！",
+        "nameVi": "Rock 'n' Roll Forever!",
+        "icon": "images/skills/228101.png",
+        "ranks": {
+          "1": {
+            "id": 228101,
+            "descEn": "Grants the highest [Inspiration] points among the unselected incantations from last round to [Impromptu Incantation].",
+            "descZh": "为本回合的【即兴咒语】计入上个回合未打出咒语中的【启示】数量最多咒语的【启示】数量",
+            "descVi": "Cấp điểm [Inspiration] cao nhất trong số các Incantation không được chọn ở round trước cho [Impromptu Incantation].",
+            "artEn": "",
+            "artZh": ""
+          }
+        },
+        "requires": {
+          "euphoria": 0,
+          "rank": 1
+        }
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 2",
+        "type": "Special",
+        "attribute": "Energy",
+        "attributeZh": "交感",
+        "nameEn": "Carbonation Explosion",
+        "nameZh": "碳酸释放",
+        "nameVi": "Carbonation Explosion",
+        "icon": "images/skills/30250141.png",
+        "ranks": {
+          "1": {
+            "id": 31447002,
+            "descEn": "Star Energy +2. Increases [Conduit Activation] by 2 levels for the round.",
+            "descZh": "星交感能量+2，使本回合【术具唤起】等级提升2",
+            "descVi": "Star Energy +2. Tăng [Conduit Activation] thêm 2 cấp trong round này.",
+            "artEn": "",
+            "artZh": ""
+          }
+        },
+        "requires": {
+          "euphoria": 1,
+          "rank": 2
+        }
       }
     ],
     "insights": [
@@ -21677,6 +21904,27 @@
         "artEn": "We all firmly believe that it is not just an unattainable aspiration.",
         "artZh": "那并非梦幻泡影，你我如此坚信。",
         "artVi": "Tất cả chúng ta đều tin chắc rằng đó không chỉ là một khát vọng xa vời."
+      },
+      {
+        "slot": 4,
+        "subSlot": "Special 1",
+        "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
+        "nameEn": "Song of Inspiration",
+        "nameZh": "鼓舞之歌",
+        "nameVi": "Song of Inspiration",
+        "icon": "images/skills/30870141.png",
+        "ranks": {
+          "1": {
+            "id": 30870191,
+            "descEn": "Grant Moxie +1 and Eureka +1 to a target.",
+            "descZh": "使单体目标激情+1，灵光+1",
+            "descVi": "Cấp Moxie +1 và Eureka +1 cho một mục tiêu.",
+            "artEn": "",
+            "artZh": ""
+          }
+        }
       }
     ],
     "insights": [

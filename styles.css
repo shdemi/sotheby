@@ -6717,6 +6717,7 @@ body.team-resizing * {
   color: #B5B5B3;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -8812,6 +8813,17 @@ body.guide-rail-resizing * {
   box-shadow: 0 2px 8px rgba(237, 125, 49, 0.35);
 }
 
+/* Euphoria switch that reveals E1/E2-gated skill cards */
+.uttu-euphoria-bar-label {
+  padding: 0 4px 0 8px;
+  font-family: var(--mono-font);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(236, 229, 217, 0.55);
+}
+
 /* Card Selection Strip */
 .uttu-cards-strip {
   display: flex;
@@ -9043,6 +9055,93 @@ body.guide-rail-resizing * {
   line-height: 1.6;
   color: #272525;
   white-space: pre-line;
+}
+
+/* Perception Incantation cards (37, Perchta, Huntsworn Lilya): three equal
+   panels — the base incantation and one panel per Perception Ability. */
+.uttu-skill-panels {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.uttu-skill-panel {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(50, 60, 52, 0.28);
+  border-radius: 2px;
+}
+
+.uttu-skill-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.uttu-skill-panel-label {
+  display: inline-block;
+  font-family: var(--mono-font);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #f3ede3;
+  background: #313b33;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.uttu-skill-panel-desc {
+  flex: 1 1 auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #272525;
+  white-space: pre-line;
+}
+
+.uttu-skill-panel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(39, 37, 37, 0.18);
+}
+
+.uttu-skill-panel-foot-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.uttu-skill-panel-cost {
+  font-size: 0.7rem;
+  color: #5f574f;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.uttu-skill-panel-cost .uttu-cost-diamond {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .uttu-skill-panels {
+    flex-wrap: wrap;
+  }
+
+  .uttu-skill-panel {
+    flex: 1 1 calc(50% - 6px);
+  }
 }
 
 /* Inheritance / Insights Board */
@@ -11856,11 +11955,6 @@ body.guide-rail-resizing * {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-/* When the words cannot be set large enough to read (thumbnail zoom, or a card
-   squeezed narrow), the ribbon keeps its ink and drops them instead of printing
-   a clip. Colour alone still tells the kinds apart. */
-.rot-card > .rot-tag-plate.is-wordless > .rot-tag-plate-text { display: none; }
 
 /* When both tags sit on one card the plaque drops clear of the badge. */
 .rot-card.has-badge > .rot-tag-plate.is-plaque { top: calc(27px * var(--rot-scale, 1)); }

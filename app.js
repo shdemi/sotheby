@@ -7256,6 +7256,8 @@ let charSkillsActiveTab = "skills"; // "skills" | "weapons" | "insights" | "port
 let charSkillSelectedIdx = 0; // Index of selected skill card
 let charSkillSelectedRank = 3; // Selected rank for active skill (1, 2, or 3)
 let charSkillsActiveStance = null; // Active stance for multi-form characters (e.g. "Base", "Bendith", "Set A")
+let charSkillsEuphoriaRank = 0; // 0 = hide Euphoria-gated cards; N = show cards unlocked up to EN
+let charSkillsEuphoriaChar = null; // Character the Euphoria switch belongs to
 let charWeaponsSelectedIdx = 0; // Index of selected weapon for Collab chars (Ezio / Kassandra)
 let charEzioPrimary = "venetian-falchion"; // "venetian-falchion" | "condottiero-war-hammer" | "captain-s-sword"
 let charEzioSecondary = "channeled-cinquedea"; // "channeled-cinquedea" | "butcher-knife" | "sultan-s-knife"
@@ -7448,6 +7450,14 @@ function pickLocalizedDesc(obj) {
   if (currentLang === "vi" && (obj.descVi || obj.descVI)) return obj.descVi || obj.descVI;
   if (currentLang === "cn" && (obj.descZh || obj.descZH || obj.descCn)) return obj.descZh || obj.descZH || obj.descCn;
   return obj.descEn || obj.descEN || obj.descZh || obj.descVi || "";
+}
+
+/** A panel label carried by the data (`label: { en, zh, vi }`). */
+function pickLocalizedLabel(label) {
+  if (!label) return "";
+  if (currentLang === "vi") return label.vi || label.en || label.zh || "";
+  if (currentLang === "cn") return label.zh || label.en || "";
+  return label.en || label.zh || "";
 }
 
 function formatSkillKeywords(text) {
@@ -7737,6 +7747,16 @@ function renderCharacterSkillsSection(name) {
     const rawList = skillInfo.skills || [];
     const availableStances = getCharacterStances(rawList);
 
+    // Euphoria-gated cards (e.g. 37's [Reductio ad Absurdum]) stay hidden until
+    // the reader turns on the E1/E2 switch that unlocks them.
+    if (charSkillsEuphoriaChar !== canonicalName) {
+      charSkillsEuphoriaChar = canonicalName;
+      charSkillsEuphoriaRank = 0;
+    }
+    const euphoriaRanks = [...new Set(rawList.filter((s) => s.requires).map((s) => Number(s.requires.rank) || 1))].sort((a, b) => a - b);
+    if (!euphoriaRanks.includes(charSkillsEuphoriaRank)) charSkillsEuphoriaRank = 0;
+    const gatedList = rawList.filter((s) => !s.requires || Number(s.requires.rank) === charSkillsEuphoriaRank);
+
     if (availableStances.length > 0) {
       if (!charSkillsActiveStance || !availableStances.includes(charSkillsActiveStance)) {
         charSkillsActiveStance = availableStances[0];
@@ -7745,7 +7765,7 @@ function renderCharacterSkillsSection(name) {
       charSkillsActiveStance = null;
     }
 
-    const list = availableStances.length > 0 ? getSkillsForStance(rawList, charSkillsActiveStance) : rawList;
+    const list = availableStances.length > 0 ? getSkillsForStance(gatedList, charSkillsActiveStance) : gatedList;
 
     if (!list.length) {
       mainBodyHtml = `<p class="hint">No skill details available.</p>`;
@@ -7767,6 +7787,28 @@ function renderCharacterSkillsSection(name) {
               </button>
             `
               )
+              .join("")}
+          </div>
+        `;
+      }
+
+      // Euphoria switch: E1/E2 reveal the cards that Euphoria unlocks
+      let euphoriaBarHtml = "";
+      if (euphoriaRanks.length > 0) {
+        const euphoriaName = (index) => {
+          const tree = heroEuphoriaList?.[index];
+          if (!tree) return "";
+          return isCn ? tree.name?.zh || tree.name?.en || "" : tree.name?.en || tree.name?.zh || "";
+        };
+        euphoriaBarHtml = `
+          <div class="uttu-stance-bar uttu-euphoria-bar">
+            <span class="uttu-euphoria-bar-label">${isCn ? "狂想" : "Euphoria"}</span>
+            ${euphoriaRanks
+              .map((rank) => {
+                const gate = rawList.find((s) => Number(s.requires?.rank) === rank)?.requires || {};
+                const title = euphoriaName(Number(gate.euphoria) || 0);
+                return `<button type="button" class="uttu-stance-btn ${charSkillsEuphoriaRank === rank ? "is-active" : ""}" data-skill-euphoria="${rank}" title="${escapeHtml(title)}">E${rank}</button>`;
+              })
               .join("")}
           </div>
         `;
@@ -7874,9 +7916,60 @@ function renderCharacterSkillsSection(name) {
         ? (isCn ? "至终仪式" : "Ultimate")
         : `${attrBadge}${subSlotTag}`;
 
+      // Perception Incantation cards split their detail board into three equal
+      // panels: the base incantation plus one panel per Perception Ability.
+      const hasPerceptionPanels =
+        !isUlt && Array.isArray(currentSkill.panels) && currentSkill.panels.length > 0;
+      const costLabelText = isCn ? "消耗" : currentLang === "vi" ? "Tiêu hao" : "Cost";
+      const pointLabelText = isCn ? "洞知点" : "Perception Point";
+      const perceptionCostHtml =
+        typeof currentSkill.perceptionCost === "number"
+          ? `<span class="uttu-skill-panel-cost">${costLabelText} ${pointLabelText} <span class="uttu-cost-diamond">◆</span> ×${currentSkill.perceptionCost}</span>`
+          : "";
+      const abilityPanelsHtml = hasPerceptionPanels
+        ? currentSkill.panels
+            .map(
+              (panel) => `
+            <div class="uttu-skill-panel">
+              <div class="uttu-skill-panel-head">
+                <span class="uttu-skill-panel-label">${escapeHtml(pickLocalizedLabel(panel.label))}</span>
+              </div>
+              <div class="uttu-skill-panel-desc">${formatSkillKeywords(pickLocalizedDesc(panel))}</div>
+            </div>
+          `,
+            )
+            .join("")
+        : "";
+
+      const perceptionPanelsHtml = `
+        <div class="uttu-skill-panels">
+          <div class="uttu-skill-panel">
+            <div class="uttu-skill-panel-desc">${formatSkillKeywords(activeDesc)}</div>
+            ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}
+            <div class="uttu-skill-panel-foot">
+              <span class="uttu-skill-panel-foot-left">
+                <span class="uttu-skill-panel-label">${escapeHtml(pickLocalizedLabel(currentSkill.perceptionTag))}</span>
+                ${perceptionCostHtml}
+              </span>
+            </div>
+          </div>
+          ${abilityPanelsHtml}
+        </div>
+      `;
+
+      const standardDetailHtml = `
+        <div class="uttu-skill-info-head">
+          <h3 class="uttu-skill-title">${escapeHtml(skillNameText)}</h3>
+          <span class="uttu-skill-type-tag">${escapeHtml(typeTag)}</span>
+        </div>
+        ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}
+        <div class="uttu-skill-body-desc">${formatSkillKeywords(activeDesc)}</div>
+      `;
+
       mainBodyHtml = `
         <div class="uttu-skills-showcase">
           ${stanceBarHtml}
+          ${euphoriaBarHtml}
           <!-- Top Card Selection Strip -->
           <div class="uttu-cards-strip">${cardsStripHtml}</div>
 
@@ -7884,12 +7977,7 @@ function renderCharacterSkillsSection(name) {
           <div class="uttu-detail-board">
             ${rankSelectorHtml}
             ${conduitStatsHtml}
-            <div class="uttu-skill-info-head">
-              <h3 class="uttu-skill-title">${escapeHtml(skillNameText)}</h3>
-              <span class="uttu-skill-type-tag">${escapeHtml(typeTag)}</span>
-            </div>
-            ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}
-            <div class="uttu-skill-body-desc">${formatSkillKeywords(activeDesc)}</div>
+            ${hasPerceptionPanels ? perceptionPanelsHtml : standardDetailHtml}
           </div>
         </div>
       `;
@@ -8514,6 +8602,18 @@ function setupCharacterSkillsListeners(host) {
   host.querySelectorAll("[data-skill-stance]").forEach((btn) => {
     btn.addEventListener("click", () => {
       charSkillsActiveStance = btn.dataset.skillStance;
+      charSkillSelectedIdx = 0;
+      charSkillSelectedRank = 3;
+      refreshSkillsPanel();
+    });
+  });
+
+  // Euphoria switch (E1, E2, …) for cards the tree unlocks
+  host.querySelectorAll("[data-skill-euphoria]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const rank = Number(btn.dataset.skillEuphoria);
+      if (Number.isNaN(rank)) return;
+      charSkillsEuphoriaRank = charSkillsEuphoriaRank === rank ? 0 : rank;
       charSkillSelectedIdx = 0;
       charSkillSelectedRank = 3;
       refreshSkillsPanel();
@@ -10424,7 +10524,6 @@ function fitRotationTagPlates(root = document) {
     const card = plate.parentElement;
     if (!text || !card) continue;
     plate.style.fontSize = "";
-    plate.classList.remove("is-wordless");
     // Measure the words themselves against the ribbon's content box. Integer
     // `scrollWidth` rounds down, so a label a fraction of a pixel too wide still
     // painted an ellipsis while the fit pass called it fine.
@@ -10440,20 +10539,13 @@ function fitRotationTagPlates(root = document) {
       return words() <= room - 0.5;
     };
     let size = parseFloat(getComputedStyle(plate).fontSize) || 12;
-    // At thumbnail zoom the words cannot reach the 7px floor, and an ellipsis at
-    // 6px is noise: the ribbon keeps its ink and drops the words instead.
-    if (size < 7) {
-      plate.classList.add("is-wordless");
-      continue;
-    }
-    // Stop at 7px: below that the words stop reading.
-    while (size > 7 && !fits()) {
+    // Shrink until the words fit. The label is never dropped: at thumbnail zoom
+    // it keeps its (small) type, and a very narrow card falls back to the
+    // ribbon's ellipsis. A tag without its name would tell the reader nothing.
+    while (size > 4 && !fits()) {
       size -= 0.5;
       plate.style.fontSize = `${size}px`;
     }
-    // A narrow card can still be short at the floor: drop the words rather than
-    // print half of them.
-    if (!fits()) plate.classList.add("is-wordless");
   }
 }
 

@@ -38,6 +38,19 @@ const BRACKETS = {
 
 const PLACEHOLDER = /▩(\d+)%s/g;
 
+/**
+ * Panel chrome on a Perception Incantation card (37, Perchta, Huntsworn Lilya).
+ * The wording is the glossary vocabulary (`Perception Incantation`,
+ * `Perception Ability-1/-2`); VI keeps the English game terms.
+ */
+const PERCEPTION_LABELS = {
+  tag: { en: "Perception Incantation", zh: "洞知咒语", vi: "Perception Incantation" },
+  panels: {
+    1: { en: "Perception Ability-1", zh: "洞知能力-1", vi: "Perception Ability-1" },
+    2: { en: "Perception Ability-2", zh: "洞知能力-2", vi: "Perception Ability-2" },
+  },
+};
+
 /** CN-only rows store literal Chinese instead of a `language_*` key. */
 function isLiteral(key) {
   return key !== undefined && key !== null && String(key) !== "" && !String(key).startsWith("language_");
@@ -109,6 +122,34 @@ function resolve(value, nameFor, lang) {
 /** First id of a `#`/`|` list (`31490171#31492171|…` -> `31490171`). */
 function firstId(value) {
   return String(value || "").split("|")[0].split("#")[0];
+}
+
+/**
+ * Folds a trailing single-rank group back into the incantation set it continues.
+ *
+ * Brume's `character.skill` spells Calculated Path as
+ * `…,313501112#313501122,313501132` — the rank-3 row sits in its own comma
+ * group. The ids step evenly and the game gives both groups the same name, so
+ * that extra "Set D" is really Set C's third rank.
+ */
+function mergeSetRanks(groups, nameOf) {
+  const merged = [];
+  for (const ids of groups) {
+    const prev = merged[merged.length - 1];
+    const step = prev && prev.length > 1 ? prev[1] - prev[0] : 0;
+    if (
+      prev &&
+      ids.length === 1 &&
+      step > 0 &&
+      ids[0] - prev[prev.length - 1] === step &&
+      nameOf(prev[0]) === nameOf(ids[0])
+    ) {
+      prev.push(ids[0]);
+      continue;
+    }
+    merged.push([...ids]);
+  }
+  return merged;
 }
 
 /** Hand-authored Vietnamese and CN-only English, plus the collab weapon charts. */
@@ -226,10 +267,10 @@ export function characterSkills() {
    *   heuristic with (e.g. Ms. Stranger's special card is a "Versatile" card even
    *   though its own name says nothing about it).
    */
-  function incantation(slot, subSlot, type, rankIds, ctx, skillOverlay, badge = {}) {
+  function incantation(slot, subSlot, type, rankIds, ctx, skillOverlay, badge = {}, abilities = []) {
     const first = skills.get(rankIds[0]);
     const inner = { ...ctx, skillOverlay };
-    return {
+    const item = {
       slot,
       subSlot,
       type,
@@ -241,6 +282,28 @@ export function characterSkills() {
       icon: first?.icon ? `images/skills/${first.icon}.png` : "",
       ranks: buildRanks(rankIds, inner),
     };
+
+    // A Perception Incantation card carries its extra ability panels and the
+    // number of Perception Points it spends (`qtePowerCost` = "2#<n>").
+    if (abilities.length) {
+      const baseEffect = effects.get(first?.skillEffect);
+      const cost = String(baseEffect?.qtePowerCost || "").split("#")[1];
+      if (cost !== undefined && cost !== "") item.perceptionCost = Number(cost);
+      item.perceptionTag = PERCEPTION_LABELS.tag;
+      item.panels = abilities.map((sid, index) => {
+        const row = skills.get(sid);
+        const effect = row ? effects.get(row.skillEffect) : null;
+        const own = skillOverlay.abilities?.[String(index + 1)] || {};
+        return {
+          label: PERCEPTION_LABELS.panels[index + 1],
+          descEn: gameText("en", effect?.desc, ctx.nameEn, ctx.names.en) || own.descEn || "",
+          descZh: gameText("zh", effect?.desc, ctx.nameZh, ctx.names.zh) || own.descZh || "",
+          descVi: own.descVi || "",
+        };
+      });
+    }
+
+    return item;
   }
 
   function ultimate(rankIds, ctx, skillOverlay, char) {
@@ -370,10 +433,15 @@ export function characterSkills() {
       for (const [groupIndex, group] of skillStr.split("|").filter(Boolean).entries()) {
         const subGroups = group.split(",").filter(Boolean);
         const slot = Number(subGroups[0].split("#")[0]) || (groupIndex === 0 ? 1 : 2);
-        subGroups.forEach((subGroup, subIndex) => {
-          const parts = subGroup.split("#").filter(Boolean);
-          const rankIds = (subIndex === 0 ? parts.slice(1) : parts).map(Number);
-          const subSlot = subGroups.length > 1 ? `Set ${String.fromCharCode(65 + subIndex)}` : "";
+        const sets = mergeSetRanks(
+          subGroups.map((subGroup, subIndex) => {
+            const parts = subGroup.split("#").filter(Boolean);
+            return (subIndex === 0 ? parts.slice(1) : parts).map(Number);
+          }),
+          (sid) => skills.get(sid)?.name || "",
+        );
+        sets.forEach((rankIds, subIndex) => {
+          const subSlot = sets.length > 1 ? `Set ${String.fromCharCode(65 + subIndex)}` : "";
           entry.skills.push(incantation(slot, subSlot, "Incantation", rankIds, ctx, skillOverlay(slot, subSlot)));
         });
       }
@@ -383,8 +451,19 @@ export function characterSkills() {
       }
 
       for (const extraSkill of extras[id] || []) {
-        const { slot, subSlot, type, ranks, badge } = extraSkill;
-        entry.skills.push(incantation(slot, subSlot, type, ranks, ctx, skillOverlay(slot, subSlot), badge));
+        const { slot, subSlot, type, ranks, badge, requires, abilities } = extraSkill;
+        const item = incantation(
+          slot,
+          subSlot,
+          type,
+          ranks,
+          ctx,
+          skillOverlay(slot, subSlot),
+          badge,
+          abilities,
+        );
+        if (requires) item.requires = requires;
+        entry.skills.push(item);
       }
     }
 
