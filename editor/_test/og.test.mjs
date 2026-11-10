@@ -161,6 +161,20 @@ check("no character payload in default mode", fallback.character === null);
 check("unknown language falls back to en", normalizeSim({ lang: "xx" }).lang === "en");
 check("language is case-insensitive", normalizeSim({ lang: "CN" }).lang === "cn");
 
+const rotation = normalizeSim({ r: "huntsman-lilya-w-rhiannon", lang: "vi" });
+check("mode is rotation", rotation.mode === "rotation", rotation.mode);
+check(
+  "rotation identity is carried",
+  rotation.rotation.id === "huntsman-lilya-w-rhiannon" &&
+    rotation.rotation.name === "Huntsman Lilya w/ Rhiannon",
+  JSON.stringify(rotation.rotation),
+);
+check("unknown rotation falls back to the brand card", normalizeSim({ r: "nope" }).mode === "default");
+check(
+  "a team link still wins over a stray rotation id",
+  normalizeSim({ t: "308601", r: "huntsman-lilya-w-rhiannon" }).mode === "team",
+);
+
 const longName = normalizeSim({ team: "Lucy", name: "x".repeat(80), lang: "en" });
 check("team name is capped at 40 chars", longName.name.length === 40, longName.name.length);
 
@@ -196,6 +210,11 @@ const charQuery = new URLSearchParams(simImageQuery(character));
 check("character query names the skin", charQuery.get("c") === "308601", charQuery.get("c"));
 check("character query has no team", !charQuery.has("t") && !charQuery.has("team"));
 
+const rotationQuery = new URLSearchParams(simImageQuery(rotation));
+check("rotation query names the preset", rotationQuery.get("r") === "huntsman-lilya-w-rhiannon", rotationQuery.get("r"));
+check("rotation query carries the language", rotationQuery.get("lang") === "vi", rotationQuery.toString());
+check("rotation query has no team", !rotationQuery.has("t") && !rotationQuery.has("team") && !rotationQuery.has("c"));
+
 const version = simVersion(team);
 check("version is ten hex chars", /^[0-9a-f]{10}$/.test(version), version);
 check("version is stable for the same payload", simVersion(normalizeSim({ team: "Lucy,Jessica,6,Windsong", chubes: "6:1527,6:1504,6:1545,6:1539", name: "FUA Hypercarry", lang: "en" })) === version);
@@ -208,6 +227,7 @@ check("team title uses the given name", simTitle(team) === "FUA Hypercarry", sim
 check("untitled team falls back to the label", simTitle(normalizeSim({ team: "Lucy", lang: "en" })) === "Team Build", simTitle(normalizeSim({ team: "Lucy", lang: "en" })));
 check("character title uses the english name", simTitle(character) === "Lucy", simTitle(character));
 check("cn character title uses the chinese name", simTitle(normalizeSim({ character: "Lucy", lang: "cn" })) === "露西", simTitle(normalizeSim({ character: "Lucy", lang: "cn" })));
+check("rotation title uses the preset name", simTitle(rotation) === "Huntsman Lilya w/ Rhiannon", simTitle(rotation));
 
 const TAGLINE_EN = "Suitcase. With information. R1999.";
 const TAGLINE_VI = "Suitcase. Có thông tin. R1999.";
@@ -215,6 +235,8 @@ const TAGLINE_CN = "手提箱 · 有资料 · R1999";
 
 check("team description is the site tagline", simDescription(team) === TAGLINE_EN, simDescription(team));
 check("character description is the site tagline", simDescription(character) === TAGLINE_VI, simDescription(character));
+check("rotation description is the site tagline", simDescription(rotation) === TAGLINE_VI, simDescription(rotation));
+check("a rotation link does not print its plan", !/Perchta|Rhiannon|rounds/i.test(simDescription(rotation)), simDescription(rotation));
 check("a team link does not list its members", !/members|Lucy/.test(simDescription(team)), simDescription(team));
 check("a character link does not print its build", !/Portrait|Resonance|Psychubes|R10-11/.test(simDescription(character)), simDescription(character));
 check("cn description uses the chinese tagline", simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })) === TAGLINE_CN, simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })));

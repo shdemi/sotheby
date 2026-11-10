@@ -737,9 +737,10 @@ snapshot shape.
 
 ## 13. Share images (`/api/og`) and share pages (`/sim`)
 
-A team build or a character build can be shared as a link. **Since 2026-11-09 the link
-preview is deliberately plain**: no generated image, no build summary — Discord shows the
-same title + "Suitcase. With information. R1999." snippet as any other page of the site.
+A team build, a character build or a skill rotation can be shared as a link. **Since
+2026-11-09 the link preview is deliberately plain**: no generated image, no build summary —
+Discord shows the same title + "Suitcase. With information. R1999." snippet as any other
+page of the site.
 The card renderer is still deployed (and still what `scripts/og/render.mjs` uses for local
 previews) but **nothing links to it any more**; re-enabling cards means putting the four
 `og:image*` / `twitter:image` tags back in `api/sim.js` and `index.html`.
@@ -755,6 +756,7 @@ Link scheme (both routes take the same parameters). The canonical, compact shape
 ```
 /sim?t=308601-3-60-5-1527,305601-3-60,307901-3-60,307701-3-60&name=FUA&lang=en
 /sim?c=308601&lang=vi
+/sim?r=huntsman-lilya-w-rhiannon&lang=en
 ```
 
 - A team member is `<skinId>-<insight>-<level>-<portrait>-<chubeGameId>`; **trailing zero
@@ -764,6 +766,9 @@ Link scheme (both routes take the same parameters). The canonical, compact shape
   accepted and expands to the default skin.
 - A psychube is the bare game id (`1527`, not `6:1527`); the id is unique across
   rarities, so `findPsychube()` maps it back to its `<rarity>:<id>` key.
+- A rotation is `r=<presetId>` from `content/rotations.json`. The link carries the id,
+  not the plan, so updating a preset updates every shared link. The client resolves the
+  full rotation from its own copy; an unknown id falls back to the plain brand page.
 - Unknown ids are **dropped** (a dropped member takes its psychube with it) so a stale
   link still renders. An empty team slot is skipped entirely rather than kept as a gap.
 - `lang` is written by both share buttons so the title/description a crawler caches and the
@@ -811,7 +816,15 @@ and copies `#builds-detail` out — inside the InfoBook's own `.modal-card` fram
 (`.sim-build-card`) — dropping `.builds-share-btn`, `.char-skills-section`,
 `.char-mats-panel` and `.build-notes-box` so only the build shows. The notes callout is
 dropped because 105 of the 107 notes are just "Recommended Portrait: 0/1/2/5", which the
-chart already draws (only Charlie and Matilda carry prose). The toolbar is the app's
+chart already draws (only Charlie and Matilda carry prose). The rotation view reuses
+`rotationPlanHtml()` — the same hero, team, notes and rounds the Rotations modal draws —
+inside `.sim-rotation-card`, with its own share button left out. The rounds **size
+slider stays**: it only changes how the cards are drawn, and it is wired by the same
+`wireRotationPlan()` the modal uses. The card frame is transparent — the page already
+paints the wallpaper (`.sim-view::before`), so the plan sits straight on it and only the
+section rows carry a surface — but the border, corner radius and glow of
+`.archetype-modal-card` stay.
+The toolbar is the app's
 `.top-controls` / `.header-*` / `.lang-switcher` / `.btn` markup with the middle cluster
 (search, Manage, JSON, Export PNG) left out. Keep new visuals in `styles.css` modal rules;
 do not add a parallel `/sim` look.
@@ -821,7 +834,8 @@ master-detail flow, so `.builds-body .builds-detail` is `display: none` until th
 carries `.is-detail` — which `/sim` never sets (there is no rail to come back from). The
 share pane was therefore **blank on a phone**. `.sim-build-card .builds-detail
 { display: flex }` sits after that media query on purpose (same specificity, later in the
-file) and keeps the copied pane visible at every width.
+file) and keeps the copied pane visible at every width. The rotations modal has the same
+master-detail rule, so `.sim-rotation-card .rotations-detail` repeats the override.
 
 The wallpaper is painted on `.sim-view::before` (`position: fixed` + `inset: 0`), the same
 trick as the app's `body::before`, **not** as `background-attachment: fixed` on the
@@ -832,11 +846,14 @@ keeps the negative layer above the panel colour and below the shell.
 
 **Share buttons.** Each team card's head carries an icon-only button
 (`.btn-team-share`, `images/random_icon/share_icon.png`) as does the InfoBook character
-build hero (`.builds-share-btn`). Both call `copyShareLink()` → `guideCopyText()` and
-flash green/red for 1.2s, since there is no text label. `simShareUrlForTeam()` builds
+build hero (`.builds-share-btn`) and the rotation plan hero (`.rot-share-btn`, the same
+`.builds-share-btn` art). All call `copyShareLink()` → `guideCopyText()` and
+flash green/red for 1.2s, since there is no text label.
+`simShareUrlForTeam()` builds
 `/sim?t=<skinId>-<insight>-<level>-<portrait>-<chube>,…&name=…&lang=…` from the roster + slot
-data (skin id is the equipped skin, or `01` when skins are hidden), and
-`simShareUrlForCharacter()` builds `/sim?c=<skinId>&lang=…`. Both append the current
+data (skin id is the equipped skin, or `01` when skins are hidden),
+`simShareUrlForCharacter()` builds `/sim?c=<skinId>&lang=…`, and
+`simShareUrlForRotation()` builds `/sim?r=<presetId>&lang=…`. All append the current
 language. The export PNG sheet hides the share button (`.team-export-sheet .btn-team-share`).
 
 **Caching.** `/sim` answers with `s-maxage=300` (five minutes), so a title or description
@@ -931,7 +948,7 @@ case, so both parsers stay rendered.
 - `functions["api/og.js"].includeFiles`: `data/og_index.json`, `content/i18n.json`,
   `assets/og/**`.
 - `functions["api/sim.js"].includeFiles`: `index.html`, `data/og_index.json`,
-  `content/i18n.json` — no fonts, since it no longer renders a card.
+  `content/i18n.json`, `content/rotations.json` — no fonts, since it no longer renders a card.
 - `images/**` is **not** bundled; `/api/og` fetches art over HTTP.
 
 Paths are anchored to the module (`import.meta.url`), not to `process.cwd()`, so the same
@@ -939,7 +956,7 @@ code resolves `/var/task/...` in the bundle and the repo checkout in tests.
 
 **Tests.** `editor/_test/og.test.mjs` (wired into `npm test`) covers `parseList`, the
 name/psychube resolvers (EN, CN, case-insensitive, bare game id, unknown), `normalizeSim`
-in all three modes and both link shapes, compact round-tripping, chube alignment,
+in all four modes and every link shape, compact round-tripping, chube alignment,
 truncation, name sanitising, `langExplicit`, the canonical image query, the content hash,
 the title/description strings and the label fallbacks. It never renders a PNG; satori's
 WASM is not a unit-test dependency.

@@ -11619,6 +11619,18 @@ body.guide-rail-resizing * {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* The title and the share button share one line; the tags stay under both. */
+.rot-hero-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rot-hero-head .rot-hero-name {
+  min-width: 0;
+}
+
 .rot-hero-name {
   margin: 0;
   font-family: 'Amiri', var(--serif-font);
@@ -12825,6 +12837,42 @@ body.sim-mode {
    in the file, so it wins at every width. */
 .sim-build-card .builds-detail {
   display: flex;
+}
+
+/* Rotation plan --------------------------------------------------------
+   `.sim-rotation-card` is the rotations modal's own frame around a single plan.
+   It releases the modal's fixed height so the page scrolls as a whole, and it
+   keeps the detail pane visible at phone width (the modal hides it until its
+   body carries `.is-detail`, which a rail-less share page never sets). */
+
+.sim-rotation-card {
+  width: 100%;
+  max-width: 1180px;
+  height: auto;
+  max-height: none;
+  margin: 0 auto;
+  /* The page already paints the wallpaper behind everything (`.sim-view::before`), so
+     the frame keeps its border but adds no surface of its own: the plan sits straight on
+     the page. The rows inside carry their own translucent bands, which is what keeps them
+     readable. Border, corner radius and glow still come from `.archetype-modal-card`. */
+  background: none !important;
+}
+
+.sim-rotation-card .rotations-body,
+.sim-rotation-card .rotations-detail {
+  overflow: visible;
+}
+
+.sim-rotation-card .rotations-detail {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+/* The modal's orange section spine; the share page has no `#rotations-card`. */
+.sim-rotation-card .rot-block > .archetype-section-header {
+  border-left-color: #E09532;
+  background:
+    linear-gradient(90deg, rgba(94, 69, 36, 0.4) 0%, rgba(0, 0, 0, 0.4) 45%, rgba(0, 0, 0, 0.4) 100%);
 }
 
 /* Small screens ------------------------------------------------------- */

@@ -4,6 +4,7 @@
  *   compact (what the app now copies):
  *     /sim?t=308601-3-60-5-1527,302801-3-60-0-1504&name=FUA&lang=en
  *     /sim?c=308601&lang=vi
+ *     /sim?r=huntsman-lilya-w-rhiannon&lang=en
  *
  *   legacy (still accepted, so links already posted keep working):
  *     /sim?team=Lucy,Jessica,6,Windsong&chubes=6:1527,6:1504,6:1579,6:1500&name=FUA&lang=en
@@ -22,12 +23,48 @@
  * of failing, so a link keeps working after a roster change.
  */
 import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { ogIndex } from "../og/assets.mjs";
 import { normalizeLang, t } from "../og/labels.mjs";
 import { findCharacter, findPsychube, parseList } from "../og/resolve.mjs";
 
 export const MAX_MEMBERS = 4;
+
+// Anchored to the module (repo checkout and /var/task behave the same). The rotations
+// file is the bundled preset list the page itself reads, so a shared link always shows
+// the current plan rather than a stale copy baked into the URL.
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+
+let rotations = null;
+
+function rotationPresets() {
+  if (!rotations) {
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "rotations.json"), "utf8"));
+      rotations = Array.isArray(data.rotations) ? data.rotations : [];
+    } catch {
+      // A missing file must not break a team or character link.
+      rotations = [];
+    }
+  }
+  return rotations;
+}
+
+/** The named preset, reduced to what the title and canonical query need. */
+function findRotation(id) {
+  const raw = Array.isArray(id) ? id[0] : id;
+  const wanted = String(raw || "").trim();
+  if (!wanted) return null;
+  const preset = rotationPresets().find((row) => row && row.id === wanted);
+  if (!preset) return null;
+  return {
+    id: String(preset.id),
+    name: String(preset.name || preset.id || ""),
+  };
+}
 
 /** `id -> character row`, built once per process from the generated index. */
 let characterByNumericId = null;
@@ -202,14 +239,24 @@ export function normalizeSim(query = {}) {
   const character = members.length
     ? null
     : compactCharacter(index, query.c) || characterCardRow(findCharacter(index, query.character));
+  // A rotation link names a bundled preset. The client resolves the full plan from its
+  // own copy of `content/rotations.json`, so the payload stays just the identity.
+  const rotation = members.length || character ? null : findRotation(query.r);
 
   return {
     lang,
     langExplicit,
     name: String(query.name || "").replace(/[\u0000-\u001f]/g, "").trim().slice(0, 40),
-    mode: members.length ? "team" : character ? "character" : "default",
+    mode: members.length
+      ? "team"
+      : character
+        ? "character"
+        : rotation
+          ? "rotation"
+          : "default",
     members,
     character,
+    rotation,
   };
 }
 
@@ -241,6 +288,8 @@ export function simImageQuery(sim) {
     if (sim.name) params.set("name", sim.name);
   } else if (sim.mode === "character") {
     params.set("c", String(sim.character.skinId || defaultSkinId(sim.character.id)));
+  } else if (sim.mode === "rotation") {
+    params.set("r", sim.rotation.id);
   }
   // The language is part of the card, so it is part of the cache key too.
   if (sim.lang && sim.langExplicit) params.set("lang", sim.lang);
@@ -271,6 +320,9 @@ export function simTitle(sim) {
   }
   if (sim.mode === "character") {
     return lang === "cn" ? sim.character.nameZh || sim.character.name : sim.character.name;
+  }
+  if (sim.mode === "rotation") {
+    return sim.rotation.name || sim.rotation.id;
   }
   return "Sotheby's Mansion";
 }

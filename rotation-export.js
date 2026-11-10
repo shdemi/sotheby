@@ -1182,7 +1182,7 @@
     // The plan, not the modal chrome around it.
     clone
       .querySelectorAll(
-        ".archetype-modal-header, .rotations-browse, .guide-rail-resizer, .rot-scale-control"
+        ".archetype-modal-header, .rotations-browse, .guide-rail-resizer, .rot-scale-control, .rot-share-btn"
       )
       .forEach((el) => {
         el.style.display = "none";

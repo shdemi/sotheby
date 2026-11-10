@@ -85,7 +85,7 @@ export async function renderOg(input = {}) {
   const locale = sim.lang;
   const origin = input.origin || "";
 
-  if (sim.mode === "default") {
+  if (sim.mode !== "team" && sim.mode !== "character") {
     const heads = await loadAll(
       SHOWCASE.map((n) => findCharacter(index, n)?.head).filter(Boolean),
       origin,

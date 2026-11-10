@@ -1,5 +1,5 @@
 /**
- * GET /sim — the share page for a team build or a character build.
+ * GET /sim — the share page for a team build, a character build or a skill rotation.
  *
  * Crawlers (Discord, Twitter/X, Reddit) do not run JavaScript, so the page they fetch has
  * to carry its own `<head>`. This function serves the normal `index.html` shell with two

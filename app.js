@@ -11030,16 +11030,12 @@ function fitRotationTuningNotes(root = document) {
   }
 }
 
-function renderRotationsDetail() {
-  const host = document.getElementById("rotations-detail");
-  if (!host) return;
-
-  const rotation = rotationEntry(rotationsSelected);
-  if (!rotation) {
-    host.innerHTML = guideEmptyState("rotations.select");
-    return;
-  }
-
+/**
+ * The plan markup: hero, team, notes and rounds. The modal and the `/sim` share page
+ * draw the same block, so a shared rotation is literally the plan the modal shows.
+ * The share page drops the share button — nothing there is re-shareable.
+ */
+function rotationPlanHtml(rotation, { share = true } = {}) {
   const members = rotationMembers(rotation);
   const rounds = rotationRounds(rotation);
   const archetypes = rotationArchetypes(rotation);
@@ -11164,9 +11160,28 @@ function renderRotationsDetail() {
        </div>`
     : roundsHtml;
 
-  host.innerHTML = `
+  const roundsHeader = guideSectionHeader(
+    "rotations.rounds",
+    `<div class="rot-scale-control">
+       <span class="rot-scale-label">Size:</span>
+       <input type="range" class="rot-scale-slider" id="rot-rounds-scale-slider" min="0.4" max="1.2" step="0.05" value="${rotationRoundsScale}" title="Rounds scale" />
+       <span class="rot-scale-val" id="rot-rounds-scale-val">${Math.round(rotationRoundsScale * 100)}%</span>
+       <button type="button" class="rot-scale-reset" id="rot-rounds-scale-reset" title="Reset scale">100%</button>
+     </div>`
+  );
+
+  return `
     <div class="rot-hero">
-      <h3 class="rot-hero-name">${escapeHtml(rotation.name || rotation.id || "")}</h3>
+      <div class="rot-hero-head">
+        <h3 class="rot-hero-name">${escapeHtml(rotation.name || rotation.id || "")}</h3>
+        ${
+          share
+            ? `<button type="button" class="builds-share-btn rot-share-btn" data-rot-share title="${escapeHtml(
+                t("rotations.share")
+              )}" aria-label="${escapeHtml(t("rotations.share"))}"><img src="images/random_icon/share_icon.png" alt="" /></button>`
+            : ""
+        }
+      </div>
       ${
         archetypes.length
           ? `<div class="rot-hero-tags">${archetypes
@@ -11191,23 +11206,43 @@ function renderRotationsDetail() {
     }
 
     <section class="rot-block">
-      ${guideSectionHeader(
-        "rotations.rounds",
-        `<div class="rot-scale-control">
-           <span class="rot-scale-label">Size:</span>
-           <input type="range" class="rot-scale-slider" id="rot-rounds-scale-slider" min="0.4" max="1.2" step="0.05" value="${rotationRoundsScale}" title="Rounds scale" />
-           <span class="rot-scale-val" id="rot-rounds-scale-val">${Math.round(rotationRoundsScale * 100)}%</span>
-           <button type="button" class="rot-scale-reset" id="rot-rounds-scale-reset" title="Reset scale">100%</button>
-         </div>`
-      )}
+      ${roundsHeader}
       ${roundsBodyHtml}
     </section>
   `;
+}
 
+function renderRotationsDetail() {
+  const host = document.getElementById("rotations-detail");
+  if (!host) return;
+
+  const rotation = rotationEntry(rotationsSelected);
+  if (!rotation) {
+    host.innerHTML = guideEmptyState("rotations.select");
+    return;
+  }
+
+  host.innerHTML = rotationPlanHtml(rotation);
+  wireRotationPlan(host, rotation);
+}
+
+/**
+ * Wires one rendered plan: the stored scale, the share button, the size slider and the
+ * re-fit passes. The modal hands in its rotation so the button can build a link; the
+ * `/sim` page renders with `share: false` and passes `null`.
+ */
+function wireRotationPlan(host, rotation) {
   // Apply current scale to the container
   const roundsBlock = host.querySelector(".rot-rounds-body") || host.querySelector(".rot-rounds-column");
   if (roundsBlock) {
     roundsBlock.style.setProperty("--rot-scale", String(rotationRoundsScale));
+  }
+
+  const shareBtn = host.querySelector("[data-rot-share]");
+  if (shareBtn && rotation) {
+    shareBtn.addEventListener("click", () =>
+      copyShareLink(shareBtn, simShareUrlForRotation(rotation), t("rotations.share")),
+    );
   }
 
   const slider = host.querySelector("#rot-rounds-scale-slider");
@@ -11280,6 +11315,13 @@ window.addEventListener("resize", () => {
     fitRotationTagPlates();
     drawRotationConnectors();
     drawRoundNoteRail();
+  }
+  // A shared rotation is outside that modal, so it gets its own redraw.
+  const sim = document.getElementById("sim-view");
+  if (sim) {
+    fitRotationTagPlates(sim);
+    drawRotationConnectors(sim);
+    drawRoundNoteRail(sim);
   }
 });
 
@@ -14420,7 +14462,13 @@ const SIM_MAX_MEMBERS = 4;
 function isSimPage() {
   if (window.__SIM__ && typeof window.__SIM__ === "object") return true;
   const params = new URLSearchParams(window.location.search);
-  return params.has("t") || params.has("c") || params.has("team") || params.has("character");
+  return (
+    params.has("t") ||
+    params.has("c") ||
+    params.has("r") ||
+    params.has("team") ||
+    params.has("character")
+  );
 }
 
 /* ---- Compact link ids -------------------------------------------------
@@ -14534,6 +14582,15 @@ function simShareUrlForCharacter(name) {
   const params = new URLSearchParams();
   if (skinId) params.set("c", String(skinId));
   else if (canonical) params.set("character", canonical);
+  params.set("lang", currentLang);
+  return `${window.location.origin}/sim?${params.toString()}`;
+}
+
+/** Share link for a rotation: the bundled preset id, so the link never goes stale. */
+function simShareUrlForRotation(rotation) {
+  const presetId = rotation && (rotation.presetId || rotation.id);
+  const params = new URLSearchParams();
+  if (presetId) params.set("r", String(presetId));
   params.set("lang", currentLang);
   return `${window.location.origin}/sim?${params.toString()}`;
 }
@@ -14679,6 +14736,21 @@ function simNormalizeInjectedCharacter(char) {
 }
 
 /**
+ * A rotation link names a preset id. The local `content/rotations.json` copy is what
+ * draws the plan, so an injected server payload (id + name) is expanded here; if the
+ * preset is gone the identity still gives the page its title.
+ */
+function simRotationPayload(value) {
+  const id = typeof value === "string" ? value : value && value.id;
+  const preset = id ? rotationPresetById(String(id).trim()) : null;
+  if (preset) return preset;
+  if (value && typeof value === "object" && value.id) {
+    return { id: String(value.id), name: String(value.name || value.id) };
+  }
+  return null;
+}
+
+/**
  * The share payload, normalised to one shape whether it came from `window.__SIM__`
  * or from the query string (`python serve.py` has no serverless function).
  */
@@ -14690,6 +14762,7 @@ function readSimParams() {
       .filter(Boolean)
       .slice(0, SIM_MAX_MEMBERS);
     const character = members.length ? null : simNormalizeInjectedCharacter(injected.character);
+    const rotation = members.length || character ? null : simRotationPayload(injected.rotation);
     return {
       // A link copied by the app names its language; one without it follows the
       // visitor's own setting.
@@ -14698,9 +14771,16 @@ function readSimParams() {
           ? injected.lang
           : currentLang,
       name: String(injected.name || ""),
-      mode: members.length ? "team" : character ? "character" : "default",
+      mode: members.length
+        ? "team"
+        : character
+          ? "character"
+          : rotation
+            ? "rotation"
+            : "default",
       members,
       character,
+      rotation,
     };
   }
 
@@ -14734,13 +14814,21 @@ function readSimParams() {
     : params.get("c")
       ? simCharacterFromCompact(params.get("c"))
       : simCharacterFromToken(params.get("character"));
+  const rotation = members.length || character ? null : simRotationPayload(params.get("r"));
 
   return {
     lang: SUPPORTED_LANGS.includes(params.get("lang")) ? params.get("lang") : currentLang,
     name: String(params.get("name") || "").replace(/[\u0000-\u001f]/g, "").trim().slice(0, 40),
-    mode: members.length ? "team" : character ? "character" : "default",
+    mode: members.length
+      ? "team"
+      : character
+        ? "character"
+        : rotation
+          ? "rotation"
+          : "default",
     members,
     character,
+    rotation,
   };
 }
 
@@ -14879,6 +14967,29 @@ function setupSimBuildListeners(view) {
   });
 }
 
+/**
+ * The rotation plan in the modal's own frame. The list and the share button are left
+ * out: the page shows one plan and the toolbar owns the only action. The size slider
+ * stays, because it only changes how the cards are drawn.
+ */
+function simRotationHtml(rotation) {
+  return `
+    <div class="modal-card archetype-modal-card rotations-modal-card sim-rotation-card">
+      <div class="rotations-body sim-rotations-body">
+        <div class="rotations-detail sim-rotations-detail">${rotationPlanHtml(rotation, {
+          share: false,
+        })}</div>
+      </div>
+    </div>`;
+}
+
+/** Same wiring as the modal, minus the share button the page does not render. */
+function setupSimRotationListeners(view) {
+  const host = view.querySelector(".sim-rotation-card");
+  if (!host) return;
+  wireRotationPlan(host, null);
+}
+
 /** Draws the share page over the app; the app itself keeps running underneath. */
 function renderSimView(sim) {
   const previous = document.getElementById("sim-view");
@@ -14886,19 +14997,32 @@ function renderSimView(sim) {
 
   const teamTitle = sim.name || t("og.teamBuild");
   const charTitle = sim.mode === "character" ? simDisplayName(sim.character) : "";
-  const title = sim.mode === "team" ? teamTitle : sim.mode === "character" ? charTitle : "Sotheby's Mansion";
+  const rotationTitle =
+    sim.mode === "rotation" ? sim.rotation.name || sim.rotation.id || "" : "";
+  const title =
+    sim.mode === "team"
+      ? teamTitle
+      : sim.mode === "character"
+        ? charTitle
+        : sim.mode === "rotation"
+          ? rotationTitle
+          : "Sotheby's Mansion";
   const kicker =
     sim.mode === "team"
       ? `Reverse: 1999 · ${t("og.teamBuild")}`
       : sim.mode === "character"
         ? `Reverse: 1999 · ${t("sim.character")}`
-        : "Reverse: 1999";
+        : sim.mode === "rotation"
+          ? `Reverse: 1999 · ${t("sim.rotation")}`
+          : "Reverse: 1999";
 
   let body = "";
   if (sim.mode === "team") {
     body = simTeamCardHtml(sim);
   } else if (sim.mode === "character") {
     body = simBuildHtml(sim.character);
+  } else if (sim.mode === "rotation") {
+    body = simRotationHtml(sim.rotation);
   } else {
     body = `
       <section class="sim-hero sim-hero-default">
@@ -14953,6 +15077,7 @@ function renderSimView(sim) {
   // Give the copy of the switcher the same sliding highlight the app header has.
   setupSlidingThumbs();
   if (sim.mode === "character") setupSimBuildListeners(view);
+  if (sim.mode === "rotation") setupSimRotationListeners(view);
 
   view.querySelectorAll("[data-sim-lang]").forEach((button) => {
     button.addEventListener("click", async () => {
