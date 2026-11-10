@@ -10,16 +10,22 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      # v5 of both actions runs on Node 24; v4 is retired (Node 20 GitHub runner
+      # deprecation, 2025-09-19) and every run printed a forced-upgrade warning.
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          # Same major as local development and the Vercel functions.
+          node-version: 24
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run data editor & regression tests
+        # The browser-composite half of the icon suite is skipped when `ignore/`
+        # is absent (it is not committed), so CI runs the offline checks only.
         run: npm test
