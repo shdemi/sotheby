@@ -43,12 +43,7 @@
         ]
       },
       "psychubes": ["5:1444", "6:1545"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "AfAkLUQmVC0UJAQoASoAJCFBIDxgQEBCQUgyREM="
-        }
-      ]
+      "resonance": ["Output"]
     },
     "37": {
       "id": 3066,
@@ -75,16 +70,7 @@
       "portrait": "0/2/4",
       "chart": null,
       "psychubes": ["6:1579", "6:1539"],
-      "resonance": [
-        {
-          "label": "Portrait 0",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
-        },
-        {
-          "label": "Portrait 1+",
-          "code": "APQjSDY0FTRFJlQqBDxgPAA5EDogLBJCQERCRkM"
-        }
-      ]
+      "resonance": ["Portrait 0", "Portrait 1+"]
     },
     "A Knight": {
       "id": 3007,
@@ -105,12 +91,7 @@
       "portrait": "0/1",
       "chart": null,
       "psychubes": ["6:1514", "6:1546"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "AfAkLUQmVC0UJAQoUSpQOAI5ACYQQDBCMUQz"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Aleph": {
       "id": 3113,
@@ -155,12 +136,7 @@
         ]
       },
       "psychubes": ["6:1545", "6:1515"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AvgkNEQoVDQUJAQ4AjkAPGA8UCYQQDBCMUQz"
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "Alexios": {
       "id": 3122,
@@ -181,12 +157,7 @@
       "portrait": "5",
       "chart": null,
       "psychubes": ["6:1546", "6:1514"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "AliEn T": {
       "id": 3034,
@@ -207,12 +178,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "An-an Lee": {
       "id": 3039,
@@ -233,12 +199,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["5:1444", "5:1445"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AvgkNEQoVDQUJAQ4AjkAPGA8UEAwQjFEM0EQSCI="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Anjo Nala": {
       "id": 3100,
@@ -289,16 +250,7 @@
         ]
       },
       "psychubes": ["6:1539", "6:1536"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "kNEQoVCoENBU4AjkAJhBAMDxgQjFGMzxQ"
-        },
-        {
-          "label": "R12-15",
-          "code": "AvAkNEQoVCoENBU4AjkAJhBAMDxgQkBFMkVCRVI="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "APPLe": {
       "id": 3028,
@@ -319,12 +271,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ADQRJQA5AjsTNAWoJC1ELUItQCZQPDA8Yw"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Argus": {
       "id": 3097,
@@ -369,12 +316,7 @@
         ]
       },
       "psychubes": ["6:1530", "6:1521"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AjRV8CQlRDQEJwU4IjxgPFA7MCwCLBBEAEUB"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Avgust": {
       "id": 3078,
@@ -395,12 +337,7 @@
       "portrait": "0/2/5",
       "chart": null,
       "psychubes": ["5:1439", "5:1440"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "APAkJAQlQC0UMEU5QjtTRFFMUkxiPAA8EDQiNCA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Baby Blue": {
       "id": 3016,
@@ -421,12 +358,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["5:1437", "5:1440"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Balloon Party": {
       "id": 3024,
@@ -447,12 +379,7 @@
       "portrait": "0/3",
       "chart": null,
       "psychubes": ["5:1440", "6:1556"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "APwVMSMxEiUALAE8AzxDNFU0UzhBOTBIYExhTFBIQA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Barbara": {
       "id": 3099,
@@ -473,12 +400,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["6:1547", "5:1440"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Barcarola": {
       "id": 3108,
@@ -523,12 +445,7 @@
         ]
       },
       "psychubes": ["6:1540", "5:1444"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AvgkNAU0VSsEJUQ4AjkAPGA8UCYQQDBCMUQz"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Beryl": {
       "id": 3134,
@@ -578,16 +495,7 @@
         ]
       },
       "psychubes": ["6:1515", "6:1558"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AvQkOEU6BCkFK0Q0AjQAPCA8MClCRFJAQEJQ"
-        },
-        {
-          "label": "R12-15",
-          "code": "AvQkOEU6BCkFK0Q0AjQAPCApQkJRQFBFMkVARTA="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Bette": {
       "id": 3045,
@@ -608,12 +516,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKAkQUVBFUIBOgM6MyZUJAQ8YD0gNEE0IUgATBBMAQ"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Bkornblume": {
       "id": 3020,
@@ -634,12 +537,7 @@
       "portrait": "0/2/5",
       "chart": null,
       "psychubes": ["6:1509", "5:1440"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "AEAASBE0AiQELRTwJC1EJlRFYEFSJEFBQCghKiA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Blonney": {
       "id": 3060,
@@ -660,12 +558,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["5:1432", "6:1510"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Brimley": {
       "id": 3106,
@@ -686,12 +579,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["5:1439", "5:1440"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "AD0GPQX8RTFTMUIxMTtQNANDIzQgOAFAAExATFA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Brume": {
       "id": 3135,
@@ -736,16 +624,7 @@
         ]
       },
       "psychubes": ["6:1539", "6:1559"],
-      "resonance": [
-        {
-          "label": "DPS",
-          "code": "AfAkOAI5ADQVKgQ0RChUPGA8UEAwQjFEMyYQ"
-        },
-        {
-          "label": "With Corvus",
-          "code": "AfAkLUQmVC0UJAQoUSpQJwJAAEIBPEBFMjQg"
-        }
-      ]
+      "resonance": ["DPS", "With Corvus"]
     },
     "Buddy Fairchild": {
       "id": 3115,
@@ -766,12 +645,7 @@
       "portrait": "5",
       "chart": null,
       "psychubes": ["6:1546", "6:1514"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Bunny Bunny": {
       "id": 3014,
@@ -792,12 +666,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "AEAASBE0AiQELRSgJC1EJlRFYEFSJEFBQCghKiA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Centurion": {
       "id": 3032,
@@ -818,16 +687,7 @@
       "portrait": "0/1",
       "chart": null,
       "psychubes": ["6:1544", "5:1447"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "APQkK0Q4RToEKQU0AjQAPCA8MClCQFBCUUVA"
-        },
-        {
-          "label": "R12-15",
-          "code": "APQkK0Q4RToEKQU0AjQAPCApQjwwLUBEUEVh"
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Charlie": {
       "id": 3017,
@@ -848,12 +708,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": ["6:1526", "6:1510"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ADQRJQA5AjsTNAX4JC9EL0IvQCZQPDA8Yw"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Charon": {
       "id": 3128,
@@ -898,16 +753,7 @@
         ]
       },
       "psychubes": ["6:1554", "6:1537"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ATQCNAA8IDwwO1E6QCRB/BUqBEAkQlVEREhkQEU="
-        },
-        {
-          "label": "Survivability",
-          "code": "BfwlNFU0UzwDPBM6JDgiMAEyECdBRFBMAEwCMjA="
-        }
-      ]
+      "resonance": ["Output", "Survivability"]
     },
     "Cheng Heguang": {
       "id": 3137,
@@ -952,12 +798,7 @@
         ]
       },
       "psychubes": ["6:1575", "5:1444"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "BfAkNEQoVDQVKgQ8YDgCOQA8UCYQQDBCMUQz"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Click": {
       "id": 3049,
@@ -978,12 +819,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["6:1514", "6:1510"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Coppélia": {
       "id": 3144,
@@ -1028,12 +864,7 @@
         ]
       },
       "psychubes": ["6:1515", "6:1570"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "BPQkOEUrRDoEKQU8ADwQKSJAUEJRRFMlIDQx"
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "Cornerstone": {
       "id": 3140,
@@ -1078,16 +909,7 @@
         ]
       },
       "psychubes": ["6:1521", "6:1574"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AfAkNEQoVDQVKgQ4AjkAPGA8UEAwQjFEM0EQSCI="
-        },
-        {
-          "label": "R12-15",
-          "code": "AfAkNEQoVDQVKgQ4AjxgPFBAMEIxRDM5AEQQRSE="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Corvus": {
       "id": 3132,
@@ -1132,16 +954,7 @@
         ]
       },
       "psychubes": ["6:1521", "6:1539"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "BPQkOEUrRDoEKQUkASYAKSItIEEwQUJFYkFQSFE="
-        },
-        {
-          "label": "R12-15",
-          "code": "BPQkOEUrRDoEKQUkASYAKSItIEEwQUJFYkVgRVA="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Cristallo": {
       "id": 3031,
@@ -1162,12 +975,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Darley Clatter": {
       "id": 3050,
@@ -1188,12 +996,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Desert Flannel": {
       "id": 3075,
@@ -1214,12 +1017,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["6:1549", "5:1440"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APAkJwUkAyZULURAE0AQQhFIAkUAPDA8QCpQKFE"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Diggers": {
       "id": 3064,
@@ -1240,12 +1038,7 @@
       "portrait": "0/4",
       "chart": null,
       "psychubes": ["6:1510", "6:1504"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APAkJwU0BDwAPBAwRTozO1MlIiZQNCBMQExSSFFIQQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Dikke": {
       "id": 3022,
@@ -1266,12 +1059,7 @@
       "portrait": "0/4",
       "chart": null,
       "psychubes": ["6:1510", "5:1440"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "APAkLRQtREAQQVRDBUhmOQI7ETxgPFA0MjQwSAFMAA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Door": {
       "id": 3059,
@@ -1292,12 +1080,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKAkQUVBFUIBOgM6MyZUJAQ8YD0gNEE0IUgATBBMAQ"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Drake": {
       "id": 3158,
@@ -1342,16 +1125,7 @@
         ]
       },
       "psychubes": ["6:1560", "6:1578"],
-      "resonance": [
-        {
-          "label": "R10",
-          "code": "AvAkNEQoVDQVKgQ4AjkAQDA8YEIxRVAnMkEQSCI="
-        },
-        {
-          "label": "R11-15",
-          "code": "AvAkNEQoVDQVKgQ4AjkAQDA8YEIxRVAnMiYQ"
-        }
-      ]
+      "resonance": ["R10", "R11-15"]
     },
     "Druvis III": {
       "id": 3003,
@@ -1372,12 +1146,7 @@
       "portrait": "0/1",
       "chart": null,
       "psychubes": ["5:1438", "5:1440"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "APAkNFUlRDQEJwU4AjkAPGA8UEAwQjFBEEQzSCI="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Eagle": {
       "id": 3006,
@@ -1398,12 +1167,7 @@
       "portrait": "5",
       "chart": null,
       "psychubes": ["6:1521", "6:1543"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUEpCQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Enigma": {
       "id": 3143,
@@ -1448,12 +1212,7 @@
         ]
       },
       "psychubes": ["6:1537", "6:1567"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "ATxj/DU6NDwCOAVBFDQSNDJAUjAgMABBQEwBRWA="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Erick": {
       "id": 3058,
@@ -1474,12 +1233,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Eternity": {
       "id": 3051,
@@ -1500,12 +1254,7 @@
       "portrait": "0/1",
       "chart": null,
       "psychubes": ["6:1555", "6:1556"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "APAkLUQtFCZUKFEqUDgCOQA8QDwwRQRIEEggTCFMIkQG"
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "Everecho": {
       "id": 3145,
@@ -1550,12 +1299,7 @@
         ]
       },
       "psychubes": ["6:1573", "6:1556"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfwlNFU0UzwDPBM6JCtAOQBBEEUwQRJDMjBBTEI="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Ezio Auditore": {
       "id": 3123,
@@ -1606,20 +1350,7 @@
         ]
       },
       "psychubes": ["6:1551", "5:1434"],
-      "resonance": [
-        {
-          "label": "Poison",
-          "code": "APQkOAU4RStENFI0UCgxQAQrAz8CPRBDAEYh"
-        },
-        {
-          "label": "Follow-Up Attack",
-          "code": "APQkOAU4RSUEK0QoUSpQPEA+MCQBQRJBAEcg"
-        },
-        {
-          "label": "Ultimate",
-          "code": "APQkOAU4RSUEK0QoUSpQNDI0MC0RQRBDAkUA"
-        }
-      ]
+      "resonance": ["Poison", "Follow-Up Attack", "Ultimate"]
     },
     "Ezra": {
       "id": 3074,
@@ -1640,12 +1371,7 @@
       "portrait": "0/2/5",
       "chart": null,
       "psychubes": ["6:1537", "5:1440"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "APQkOEU4BStEJQQ8QDwwSCBIIUwQTAAoUSpQJAFFEUUi"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Fatutu": {
       "id": 3109,
@@ -1690,12 +1416,7 @@
         ]
       },
       "psychubes": ["6:1541", "6:1556"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "APgkNFUlRDQFKwQ4AjkAPGA8UEAwQjFEM0EQTCI="
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "Flutterpage": {
       "id": 3105,
@@ -1746,12 +1467,7 @@
         ]
       },
       "psychubes": ["6:1575", "6:1547"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "BTgFPGI8AjRDNBNEQEUwSCBIIUwQTAA4RfQkJTIwASdA"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Getian": {
       "id": 3084,
@@ -1772,12 +1488,7 @@
       "portrait": "0/1/3/5",
       "chart": null,
       "psychubes": ["6:1537", "5:1446"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfgkLUQtQi1APGM8MDQFOxM5AjQRRBBFACZQ"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Glyndŵr": {
       "id": 3163,
@@ -1798,12 +1509,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": ["6:1549"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUEpCQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Hedone": {
       "id": 3156,
@@ -1848,12 +1554,7 @@
         ]
       },
       "psychubes": ["5:1443", "6:1570"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "BfAkOAI5ADxgPFA0VSVENAQnBS0hJjFEEEQw"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Hissabeth": {
       "id": 3116,
@@ -1898,12 +1599,7 @@
         ]
       },
       "psychubes": ["6:1546", "6:1545"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfQkOEUrRCkFOgQ8ADwQNCI0IClCQFBCUUVA"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Horropedia": {
       "id": 3061,
@@ -1924,12 +1620,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["6:1544", "6:1510"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Huntsworn Lilya": {
       "id": 3155,
@@ -1975,22 +1666,10 @@
       },
       "psychubes": ["6:1577", "6:1526"],
       "resonance": [
-        {
-          "label": "R10  + P0 37",
-          "code": "BPQkOEUrRDoEKQUkASYAKSJAUEJRRFMtIEEwSEI="
-        },
-        {
-          "label": "R15 + P0 37",
-          "code": "BDhFK0Q6BCkFJAEmACkiLSD0JDRQQTBIQkViRVI="
-        },
-        {
-          "label": "R10 + P1 37",
-          "code": "BPQkOEU4BTwCPGI0EzRDLwArQEEiSDBBEEgxREFEQg=="
-        },
-        {
-          "label": "R15 + P1 37",
-          "code": "BPQkOEU4BTwCPGI0EzRDLQAmECUyRTBFQEVQSGBIYQ=="
-        }
+        "R10  + P0 37",
+        "R15 + P0 37",
+        "R10 + P1 37",
+        "R15 + P1 37"
       ]
     },
     "Igor": {
@@ -2036,16 +1715,7 @@
         ]
       },
       "psychubes": ["6:1562", "6:1546"],
-      "resonance": [
-        {
-          "label": "Family",
-          "code": "AfQkOEUrRDoEKQU0AjQAPCA8MClCQFBCUUVA"
-        },
-        {
-          "label": "With Flutterpage",
-          "code": "AfQkK0Q4RTgFJQQoUSpQJwIsAUAAQSBAMkhDRUA="
-        }
-      ]
+      "resonance": ["Family", "With Flutterpage"]
     },
     "Isolde": {
       "id": 3081,
@@ -2090,12 +1760,7 @@
         ]
       },
       "psychubes": ["6:1560", "6:1565"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AvAkNEQoVCoENBU4AjkAPGA8UEEiQRAmMUQw"
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "J": {
       "id": 3094,
@@ -2140,12 +1805,7 @@
         ]
       },
       "psychubes": ["6:1549", "6:1521"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "BfAkOAI5ADREKFQ0FSoEQFBCUURTPDA8QEEQSCI="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Jessica": {
       "id": 3056,
@@ -2166,16 +1826,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["5:1434", "6:1504"],
-      "resonance": [
-        {
-          "label": "R10-15 (Petrify)",
-          "code": "AC1ALUQ8YzQF+CQ7EzkCPDAvQigQRFBFYTQA"
-        },
-        {
-          "label": "R10-15 (Poison)",
-          "code": "A/gkNAUrBDgCOQA8YDxQQRA0VSVEQSJFQkAwSEE="
-        }
-      ]
+      "resonance": ["R10-15 (Petrify)", "R10-15 (Poison)"]
     },
     "Jiu Niangzi": {
       "id": 3083,
@@ -2220,16 +1871,7 @@
         ]
       },
       "psychubes": ["6:1521", "6:1539"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AvAkNEQoVCoENBU4AjkAJhBAMDxgQkBFMkBCSFM="
-        },
-        {
-          "label": "R12-15",
-          "code": "AvAkNEQoVCoENBU4AjkAJhBAMDxgQkBFMkVCRVI="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "John Titor": {
       "id": 3036,
@@ -2250,12 +1892,7 @@
       "portrait": "0/1/2/5",
       "chart": null,
       "psychubes": ["6:1531", "6:1523"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Kaalaa Baunaa": {
       "id": 3070,
@@ -2276,12 +1913,7 @@
       "portrait": "0/1",
       "chart": null,
       "psychubes": ["6:1521", "6:1539"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AvAkNEQoVCoENBU4AjkAPGAmEEAwQjFEMzxQ"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Kakania": {
       "id": 3080,
@@ -2326,12 +1958,7 @@
         ]
       },
       "psychubes": ["6:1548", "6:1528"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AvwlPGM8UzMEMwIxAEgWSAA6JDQiNCAlQjhATGBMQA=="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Kanjira": {
       "id": 3071,
@@ -2352,12 +1979,7 @@
       "portrait": "1",
       "chart": null,
       "psychubes": ["6:1510", "6:1504"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APAkJwUoVCogNEQ0BDxgPFA7MDgiQgJAAEgCSBE"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Kassandra": {
       "id": 3124,
@@ -2408,12 +2030,7 @@
         ]
       },
       "psychubes": ["6:1575", "5:1444"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfQkOEUrRCkFOgQ8YDQwNDI8UCcCLAFEEEUA"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Kiperina": {
       "id": 3117,
@@ -2458,12 +2075,7 @@
         ]
       },
       "psychubes": ["6:1547", "6:1515"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfwlNFU0BTxhPAEoQipBOyM5EkEAQCBCIURASGA="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "La Source": {
       "id": 3030,
@@ -2484,12 +2096,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Lady by the Lake": {
       "id": 3136,
@@ -2510,12 +2117,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKgkJAQwRTQUPAA8EDQgJSI6MztTRFFGUEhSSEFMYkxA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Leilani": {
       "id": 3035,
@@ -2536,12 +2138,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Liang Yue": {
       "id": 3110,
@@ -2586,16 +2183,7 @@
         ]
       },
       "psychubes": ["6:1542", "6:1515"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AvQkK0Q4RToEKQUpAiRRJlBCEUAQRQA0MkAwSEE="
-        },
-        {
-          "label": "R12-15",
-          "code": "AvQkK0Q4RToEKQUpAiRRJlBCEUAQRQA0MkVARTA="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Lilya": {
       "id": 3004,
@@ -2616,12 +2204,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["6:1526", "6:1521"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfQkK0QpBToEPAA8EDQiKUI4RTQgRFBFYS1A"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Loggerhead": {
       "id": 3112,
@@ -2642,12 +2225,7 @@
       "portrait": "0/3/4/5",
       "chart": null,
       "psychubes": ["5:1440", "6:1508"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "APgkJAQwRTQUPAA8EDQgJSI6MztTRFFGUEhSSEFMYkxA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Lopera": {
       "id": 3102,
@@ -2698,16 +2276,7 @@
         ]
       },
       "psychubes": ["6:1537", "6:1549"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "BPQkK0Q4RToEKQUoUSpQPAA8EEVARUI0IDQi"
-        },
-        {
-          "label": "R12-15",
-          "code": "4RToEKQUoUSpQNCA8ADwQRUBFQkUyTCJMIw=="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Lorelei": {
       "id": 3091,
@@ -2728,12 +2297,7 @@
       "portrait": "1/3/5",
       "chart": null,
       "psychubes": ["5:1440", "5:1432"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Lorentz Butterfly": {
       "id": 3139,
@@ -2778,16 +2342,7 @@
         ]
       },
       "psychubes": ["6:1565", "6:1561"],
-      "resonance": [
-        {
-          "label": "Attack",
-          "code": "APQkOEUrRCkFOgQ0AjQAPCA8MEBAQlBAQkViSFM="
-        },
-        {
-          "label": "Survivability",
-          "code": "APQkOAUlBDpEJ0U8ADwQNCI0IDBBRFNFQkxATFBIYEhh"
-        }
-      ]
+      "resonance": ["Attack", "Survivability"]
     },
     "Lucy": {
       "id": 3086,
@@ -2832,16 +2387,7 @@
         ]
       },
       "psychubes": ["6:1527", "6:1515"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AThFK0Q0MjQwPGA8UDoEKQUpAvQkRQBAEEIR"
-        },
-        {
-          "label": "R12-15",
-          "code": "AfQkOEUrRDxAPDA0UDRSOgQpBSkCLQBGEEUh"
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Marcus": {
       "id": 3065,
@@ -2886,12 +2432,7 @@
         ]
       },
       "psychubes": ["6:1524", "6:1504"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "APgkLUQmVCwFLDIlBDgCKgBCUjsQQVBDQEUwSDI="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Marsha": {
       "id": 3127,
@@ -2941,12 +2482,7 @@
         ]
       },
       "psychubes": ["6:1549", "6:1560"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "BfAkOAI5ADxgPFBAMEIxQRBMIkQzNEQoVDQVKgQ="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Matilda": {
       "id": 3041,
@@ -2967,12 +2503,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": ["6:1509", "6:1510"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Medicine Pocket": {
       "id": 3047,
@@ -2993,12 +2524,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["6:1541", "6:1556"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfwlNFU0UzwDPBM6JDkAKFArMEEQMBJBMkQx"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Melania": {
       "id": 3062,
@@ -3019,12 +2545,7 @@
       "portrait": "0/2/5",
       "chart": null,
       "psychubes": ["6:1549", "6:1556"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfAkOQA4AiYQPEA8MChRKlAlRCcFNAQ0VQ=="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Mercuria": {
       "id": 3095,
@@ -3069,12 +2590,7 @@
         ]
       },
       "psychubes": ["6:1515", "6:1575"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AThFK0Q0MjQwPGA8UDoEKQUpAvQkRQBAEEIR"
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "Mesmer Jr.": {
       "id": 3057,
@@ -3095,12 +2611,7 @@
       "portrait": "0/1/2/5",
       "chart": null,
       "psychubes": ["6:1531", "6:1523"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Moldir": {
       "id": 3121,
@@ -3145,12 +2656,7 @@
         ]
       },
       "psychubes": ["6:1549", "5:1445"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfAkOAI5ACoENBUoVDREPGA8UCYQQDBCMUQz"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Mondlicht": {
       "id": 3026,
@@ -3171,12 +2677,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Mr. Duncan": {
       "id": 3103,
@@ -3197,12 +2698,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["6:1521", "6:1509"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Ms. Moissan": {
       "id": 3044,
@@ -3223,12 +2719,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Ms. NewBabel": {
       "id": 3052,
@@ -3249,12 +2740,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["5:1439"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AzwANAQ9BjkROhAxMDFBNFMnRTA0/SMmUA=="
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "Ms. Radio": {
       "id": 3027,
@@ -3275,12 +2761,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Ms. Stranger": {
       "id": 3147,
@@ -3325,16 +2806,7 @@
         ]
       },
       "psychubes": ["6:1515", "6:1569"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AfQkOEUrRDoEKQU0AjQAPCA8MClCQFBCUUVA"
-        },
-        {
-          "label": "R12-15",
-          "code": "AfQkOEUrRDoEKQU0AjQAPCA8MClCLUBEUEVh"
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Name Day": {
       "id": 3118,
@@ -3355,12 +2827,7 @@
       "portrait": "0/4/5",
       "chart": null,
       "psychubes": ["6:1556", "6:1503"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Narcissus": {
       "id": 3157,
@@ -3405,12 +2872,7 @@
         ]
       },
       "psychubes": ["6:1575", "6:1576"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfwlNFU0UzwDPBM6JDkAMBIwEEEyQTBAUExhRFI="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Nautika": {
       "id": 3120,
@@ -3455,16 +2917,7 @@
         ]
       },
       "psychubes": ["6:1548", "6:1539"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AzhFOAUlBCtEKFEqUCcCLAE8QPQkRBBIAEgBPDA="
-        },
-        {
-          "label": "R12-15",
-          "code": "AzhFOAUlBCtEKFEqUCcCLAE8QPQkRBBIAEgBRTBFMg=="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Necrologist": {
       "id": 3037,
@@ -3485,12 +2938,7 @@
       "portrait": "1/5",
       "chart": null,
       "psychubes": ["6:1556", "5:1436"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APgkLAUtREFUSGY5AzsSNDI0MDxgPFBCAUEQTAFIAA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Nick Bottom": {
       "id": 3005,
@@ -3511,12 +2959,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Noire": {
       "id": 3111,
@@ -3561,16 +3004,7 @@
         ]
       },
       "psychubes": ["6:1543", "6:1546"],
-      "resonance": [
-        {
-          "label": "Optimized Setup",
-          "code": "AfgkPGA4AjkALSE0BTRVJUQrBDxQRBBEMEExSEM="
-        },
-        {
-          "label": "Beginner",
-          "code": "AfgkLUQmVCwFJQQ0AjQAPCAsMihRQFBAMUQw"
-        }
-      ]
+      "resonance": ["Optimized Setup", "Beginner"]
     },
     "NORA": {
       "id": 3151,
@@ -3591,12 +3025,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": ["6:1548"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Oliver Fog": {
       "id": 3018,
@@ -3617,12 +3046,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ACZQoCQmVCQELxQtRDlAOEI8ADwQNCI0IA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "ONiON": {
       "id": 3054,
@@ -3643,12 +3067,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKQkOEU4BTxiPDA0QzQRJQQlACkCKkAxUA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Paper Heron": {
       "id": 3141,
@@ -3699,16 +3118,7 @@
         ]
       },
       "psychubes": ["6:1563", "6:1515"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "A/gkNEQoVDQUJAQ4AjkAPGA8UEAwQjFEM0EQSCI="
-        },
-        {
-          "label": "R12-15",
-          "code": "A/gkNEQoVDQUOAI5ADxgPFBAMEIxRDNBEEgiRQREBg=="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Pavia": {
       "id": 3015,
@@ -3729,12 +3139,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "AKgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Perchta": {
       "id": 3159,
@@ -3779,12 +3184,7 @@
         ]
       },
       "psychubes": ["6:1547", "6:1580"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AvwlNFU0UzwDPBM6JDkAMBIwEDAwTENIMkhCTFImUA=="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Pickles": {
       "id": 3063,
@@ -3805,12 +3205,7 @@
       "portrait": "0/2",
       "chart": null,
       "psychubes": ["6:1556", "5:1443"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "APAkLUQtFCQEOAI5ACYQJlQoUSpQQDBCMUQz"
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "Pioneer": {
       "id": 3096,
@@ -3831,12 +3226,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKwlMTMxIjEgPBM8AzRVNFM6ADhBK0BMQUgSTAJIAQ"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Poltergeist": {
       "id": 3046,
@@ -3857,12 +3247,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Rabies": {
       "id": 3042,
@@ -3883,12 +3268,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQRJQA5AjsTNAWoJC1ELUItQCZQPDA8Yw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Ramona": {
       "id": 3142,
@@ -3933,16 +3313,7 @@
         ]
       },
       "psychubes": ["5:1434", "5:1430"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "BPQkOEUrRCkFOgQ0AjQAPCA8MEBQQlFFQClC"
-        },
-        {
-          "label": "R12-15",
-          "code": "BPQkOEUrRCkFOgQ0AjQAPCBFQClCRTBFMkBQQlE="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Recoleta": {
       "id": 3114,
@@ -3987,12 +3358,7 @@
         ]
       },
       "psychubes": ["6:1544"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AfQkOEU8MDxANFI0UCtEOgQpBUAQQhFDAkgjRQA="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Reed": {
       "id": 3138,
@@ -4013,12 +3379,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": ["5:1438"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Regulus": {
       "id": 3025,
@@ -4039,16 +3400,7 @@
       "portrait": "0/1",
       "chart": null,
       "psychubes": ["5:1444", "6:1547"],
-      "resonance": [
-        {
-          "label": "Inspiration",
-          "code": "APgkLUQmVCwFJQQ0MDQyPFA8YC0AKQJEEEUh"
-        },
-        {
-          "label": "Conduit",
-          "code": "AvgkPGA8UDQFOxM5Ai0ALCFCMkEQRDA0RChU"
-        }
-      ]
+      "resonance": ["Inspiration", "Conduit"]
     },
     "Rhiannon": {
       "id": 3146,
@@ -4093,16 +3445,7 @@
         ]
       },
       "psychubes": ["6:1568", "6:1575"],
-      "resonance": [
-        {
-          "label": "General",
-          "code": "AfwlNFU0UzwDPBM6JDgiQwEwMUgiQVElIERQQQA="
-        },
-        {
-          "label": "Bloodtithe (Overindulgence)",
-          "code": "AvwlNFU0UzwDPBM6JDgiMAEwEDAwJlBIUkhCTAJMAA=="
-        }
-      ]
+      "resonance": ["General", "Bloodtithe (Overindulgence)"]
     },
     "Rubuska": {
       "id": 3125,
@@ -4147,12 +3490,7 @@
         ]
       },
       "psychubes": ["6:1556", "6:1541"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AvwlMQQxAjEASABIFjxjPFM6JDgiTCI0IDRATGAnQQ=="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Satsuki": {
       "id": 3038,
@@ -4173,12 +3511,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["6:1509", "6:1504"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACUALAFAMEIxKlAoUUQzQhJIAzgFOEUrRCUE9CQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Schneider": {
       "id": 3029,
@@ -4244,12 +3577,7 @@
         ]
       },
       "psychubes": ["6:1537"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "APAkLUQmVC0UJAQoUSpQOgA7ETxAPDBIE0gDTAFMAg=="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Sentinel": {
       "id": 3126,
@@ -4294,12 +3622,7 @@
         ]
       },
       "psychubes": ["6:1541", "5:1440"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "BPAkLUQmVC0UJAQoUSpQOAI5ADxAPDBIIUgiTBBMIA=="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Shamane": {
       "id": 3072,
@@ -4320,12 +3643,7 @@
       "portrait": "0/2/5",
       "chart": null,
       "psychubes": ["6:1543", "6:1514"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "APAkNEQoVDQVKgQ4AjkAJhAnMjxgLDElMA=="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Silverwing Eagle": {
       "id": 3154,
@@ -4346,12 +3664,7 @@
       "portrait": "5",
       "chart": null,
       "psychubes": ["6:1521", "6:1543"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APgkJQQmVCwFLUQ5AToAKBE8MC1AQVBCUkVC"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Sonetto": {
       "id": 3023,
@@ -4372,12 +3685,7 @@
       "portrait": "5",
       "chart": null,
       "psychubes": ["5:1439", "5:1440"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APwlNFU0BTxhPFElQCQCOiQ4Ei0AQTJCIEggSBA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Sotheby": {
       "id": 3009,
@@ -4398,16 +3706,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["5:1430", "5:1440"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "BfAkNEQ0FShUKgQ8YDxQOQA4AkEQSCJAMEIxRDM="
-        },
-        {
-          "label": "R12-15",
-          "code": "APAkNEQoVDQVKgQ8YDxQQDBCMUQzRBBFITgCOQA="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Spathodea": {
       "id": 3073,
@@ -4428,16 +3727,7 @@
       "portrait": "0/3/5",
       "chart": null,
       "psychubes": ["6:1515", "6:1546"],
-      "resonance": [
-        {
-          "label": "Begginer",
-          "code": "APgkLUQmVCwFJQQ8ADwQKFEsMkAiQFBFQDQg"
-        },
-        {
-          "label": "Has Setup",
-          "code": "APgkNEQoVDQUJAQ4AjkAPGA8UCYQQDBCMUQz"
-        }
-      ]
+      "resonance": ["Begginer", "Has Setup"]
     },
     "Sputnik": {
       "id": 3055,
@@ -4458,12 +3748,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Sweetheart": {
       "id": 3011,
@@ -4484,12 +3769,7 @@
       "portrait": "1/5",
       "chart": null,
       "psychubes": ["6:1504", "6:1509"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APQkK0Q4RTgFJQQkAS8RKFEqUDQyRABDIEEw"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Tennant": {
       "id": 3043,
@@ -4510,12 +3790,7 @@
       "portrait": "0/4",
       "chart": null,
       "psychubes": ["5:1440", "5:1439"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "APQkOEU4BTwCPGI0QzQTKxIrECkAJUAsQQ"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "The Fool": {
       "id": 3012,
@@ -4536,12 +3811,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "The Twins": {
       "id": 3149,
@@ -4586,12 +3856,7 @@
         ]
       },
       "psychubes": ["6:1571", "6:1572"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "BPQkJQQnRTgFOkQ0ADQCPCA8MClCLUBEUEVh"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Tooth Fairy": {
       "id": 3053,
@@ -4636,12 +3901,7 @@
         ]
       },
       "psychubes": ["6:1540", "5:1444"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "APQkOAU4RTRDNBM8YikAKxBAQEJBRWA8AisS"
-        }
-      ]
+      "resonance": ["R10-11"]
     },
     "TTT": {
       "id": 3033,
@@ -4662,12 +3922,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKAkJwUlRDRVNAQ8YDxQOzA4IjERJRBFAUwDTAA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Tuesday": {
       "id": 3098,
@@ -4712,12 +3967,7 @@
         ]
       },
       "psychubes": ["6:1575", "6:1533"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "A/gkNEQ0FDgCOQA8YDxQQDBCMSYQRjMkBChU"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Twins Sleep": {
       "id": 3040,
@@ -4738,12 +3988,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Ulrich": {
       "id": 3107,
@@ -4788,12 +4033,7 @@
         ]
       },
       "psychubes": ["6:1539", "6:1537"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "AThFK0Q0MjQwPGA8UDoEKQUpAvQkRQBAEEIR"
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Ulu": {
       "id": 3076,
@@ -4814,12 +4054,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["6:1556", "5:1440"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "APgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Vila": {
       "id": 3087,
@@ -4840,12 +4075,7 @@
       "portrait": "0/1/3",
       "chart": null,
       "psychubes": ["6:1541", "5:1440"],
-      "resonance": [
-        {
-          "label": "R10-15",
-          "code": "ADok/CU0VTRTPAM8EzkAMBAwMEFQMBJBMkxiTFI="
-        }
-      ]
+      "resonance": ["R10-15"]
     },
     "Voyager": {
       "id": 3048,
@@ -4866,16 +4096,7 @@
       "portrait": "0/5",
       "chart": null,
       "psychubes": ["5:1444", "6:1547"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AvAkLUQtFCZUJAQkITogKFEqUDsxQABCAUQD"
-        },
-        {
-          "label": "R12-15",
-          "code": "AvAkLUQmVC0UJAQoUSpQQABCAUUgJwJFMEVANDI="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "White Rum": {
       "id": 3101,
@@ -4896,12 +4117,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0WtIw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Willow": {
       "id": 3104,
@@ -4946,16 +4162,7 @@
         ]
       },
       "psychubes": ["6:1538", "5:1430"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "BTREKFQ0FSoEPGA8UPAkQDBCMUQzOAI5AEEQSCI="
-        },
-        {
-          "label": "R12-15",
-          "code": "BTREKFQ0FSoEPGA8UPAkQDBCMUQzOAI5AEQQRSE="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "Windsong": {
       "id": 3077,
@@ -5000,16 +4207,7 @@
         ]
       },
       "psychubes": ["6:1521", "6:1539"],
-      "resonance": [
-        {
-          "label": "R10-11",
-          "code": "AvAkNEQoVDQVKgQ4AjkAPGA8UEAwQjFEM0EQSCI="
-        },
-        {
-          "label": "R12-15",
-          "code": "AvAkNEQoVDQVKgQ4AjkAPGA8UEAwQjFEM0QQRSE="
-        }
-      ]
+      "resonance": ["R10-11", "R12-15"]
     },
     "X": {
       "id": 3010,
@@ -5030,12 +4228,7 @@
       "portrait": "0",
       "chart": null,
       "psychubes": ["6:1514", "6:1503"],
-      "resonance": [
-        {
-          "label": "Output",
-          "code": "ACZQ8CQmVCQELxQtRDlAOEI8ADwQNCI0IA"
-        }
-      ]
+      "resonance": ["Output"]
     },
     "Yenisei": {
       "id": 3082,
@@ -5056,12 +4249,7 @@
       "portrait": "0/4",
       "chart": null,
       "psychubes": ["6:1511", "5:1440"],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "ADQEPwY8ADkROhAxMCZQMUEwNDRTJ0X9Iw"
-        }
-      ]
+      "resonance": ["Survivability"]
     },
     "Зима": {
       "id": 3013,
@@ -5082,12 +4270,7 @@
       "portrait": "",
       "chart": null,
       "psychubes": [],
-      "resonance": [
-        {
-          "label": "Survivability",
-          "code": "AKgkMRQqBDtEOjM8YzwgJAEmADRRNDFEQExgTDA"
-        }
-      ]
+      "resonance": ["Survivability"]
     }
   },
   "psychubes": {

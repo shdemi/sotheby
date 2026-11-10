@@ -132,8 +132,8 @@ check("compact character carries the skin", compactChar.character.skinId === 308
 check("compact character uses the skin art", compactChar.character.head === "images/headicon_small/308601.png");
 check("compact character keeps the build data", compactChar.character.portrait === "0/1/3/5");
 check(
-  "resonance presets carry the label and the code",
-  compactChar.character.resonance.every((preset) => preset.label && preset.code),
+  "resonance presets are preset labels",
+  compactChar.character.resonance.every((label) => typeof label === "string" && label),
   JSON.stringify(compactChar.character.resonance),
 );
 
@@ -209,14 +209,16 @@ check("untitled team falls back to the label", simTitle(normalizeSim({ team: "Lu
 check("character title uses the english name", simTitle(character) === "Lucy", simTitle(character));
 check("cn character title uses the chinese name", simTitle(normalizeSim({ character: "Lucy", lang: "cn" })) === "露西", simTitle(normalizeSim({ character: "Lucy", lang: "cn" })));
 
-const teamDescription = simDescription(team);
-check("team description counts members", teamDescription.startsWith("4 members"), teamDescription);
-check("team description lists the names", teamDescription.includes("Lucy, Jessica, Six, Windsong"), teamDescription);
-check("cn team description uses chinese names", simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })).includes("露西, 6"), simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })));
-check("character description prints the resonance codes", /^R10-11: [A-Za-z0-9+/=]+ · R12-15: [A-Za-z0-9+/=]+$/.test(simDescription(character)), simDescription(character));
-check("character description drops the old build summary", !/Portrait|Resonance:|Psychubes/.test(simDescription(character)), simDescription(character));
-check("an empty resonance gives no description", simDescription({ ...character, character: { ...character.character, resonance: [] } }) === "");
-check("default description is the site tagline", simDescription(normalizeSim({})) === "Suitcase. With information. R1999.", simDescription(normalizeSim({})));
+const TAGLINE_EN = "Suitcase. With information. R1999.";
+const TAGLINE_VI = "Suitcase. Có thông tin. R1999.";
+const TAGLINE_CN = "手提箱 · 有资料 · R1999";
+
+check("team description is the site tagline", simDescription(team) === TAGLINE_EN, simDescription(team));
+check("character description is the site tagline", simDescription(character) === TAGLINE_VI, simDescription(character));
+check("a team link does not list its members", !/members|Lucy/.test(simDescription(team)), simDescription(team));
+check("a character link does not print its build", !/Portrait|Resonance|Psychubes|R10-11/.test(simDescription(character)), simDescription(character));
+check("cn description uses the chinese tagline", simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })) === TAGLINE_CN, simDescription(normalizeSim({ team: "Lucy,6", lang: "cn" })));
+check("default description is the site tagline", simDescription(normalizeSim({})) === TAGLINE_EN, simDescription(normalizeSim({})));
 
 /* ------------------------------------------------------------------ *
  * Labels

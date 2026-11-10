@@ -321,9 +321,9 @@ ok(
   ogChars.filter(([name]) => builds[name]).every(([name, c]) => !builds[name].pattern || c.pattern === builds[name].pattern),
 );
 ok(
-  "og_index resonance presets carry a label and a code",
-  ogChars.every(([, c]) => (c.resonance || []).every((p) => p && p.label && p.code)),
-  ogChars.flatMap(([n, c]) => (c.resonance || []).filter((p) => !p || !p.label || !p.code).map(() => n)).join(","),
+  "og_index resonance presets are labels",
+  ogChars.every(([, c]) => (c.resonance || []).every((label) => typeof label === "string" && label)),
+  ogChars.flatMap(([n, c]) => (c.resonance || []).filter((label) => typeof label !== "string" || !label).map(() => n)).join(","),
 );
 
 // ---- misc -------------------------------------------------------------------

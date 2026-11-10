@@ -68,15 +68,13 @@ function firstChart(raw) {
 }
 
 /**
- * `content/builds.json` `resonance` is `{ "<preset label>": "<import code>" }`. The card
- * needs the label, the description needs the code, so both are kept. Rows without a usable
- * code are dropped: an empty pair would print as "R10-11: " in the share text.
+ * `content/builds.json` `resonance` is `{ "<preset label>": "<import code>" }`. Only the
+ * labels reach the card (the orange preset buttons); the code itself is copied in the app
+ * from `builds.json`, so it is not shipped here.
  */
 function resonancePresets(raw) {
   if (!raw || typeof raw !== "object") return [];
-  return Object.entries(raw)
-    .filter(([label, code]) => label && typeof code === "string" && code.trim())
-    .map(([label, code]) => ({ label, code: code.trim() }));
+  return Object.keys(raw).filter(Boolean);
 }
 
 export function ogIndex({ arcanists, profiles, rarity, afflatus, resoShape, psychubesData, transfer }) {
@@ -179,9 +177,8 @@ export function ogIndex({ arcanists, profiles, rarity, afflatus, resoShape, psyc
       // First progression chart: the portrait-value bars the InfoBook draws.
       chart: firstChart(progressionsByCanonical[name]),
       psychubes: chubes,
-      // Resonance presets. `label` is the orange copy button's text (localised through
-      // `reso.<label>` in content/i18n.json, like the InfoBook does); `code` is the import
-      // string itself, which the share description prints instead of restating the card.
+      // Resonance preset labels (the orange copy buttons); the card localises them
+      // through `reso.<label>` in content/i18n.json, like the InfoBook does.
       resonance: resonancePresets(build.resonance),
     };
   }

@@ -2,12 +2,16 @@
  * GET /sim — the share page for a team build or a character build.
  *
  * Crawlers (Discord, Twitter/X, Reddit) do not run JavaScript, so the page they fetch has
- * to carry the Open Graph tags itself. This function serves the normal `index.html` shell
- * with three injections:
+ * to carry its own `<head>`. This function serves the normal `index.html` shell with two
+ * injections:
  *
- *   1. `<title>` + description rewritten for the shared build
- *   2. `og:*` / `twitter:*` tags pointing at `/api/og` (content-addressed by `v`)
- *   3. `window.__SIM__` — the parsed payload, so `app.js` renders the same build
+ *   1. `<title>` for the shared build, plus the plain site description
+ *   2. `window.__SIM__` — the parsed payload, so `app.js` renders the same build
+ *
+ * There is deliberately **no** `og:image` and no build summary: the owner dropped the
+ * generated card on 2026-11-09, so a shared link previews like any other page of the site
+ * (title + "Suitcase. With information. R1999."). `/api/og` still exists for local
+ * previews (`scripts/og/render.mjs`), but nothing links to it any more.
  *
  * `vercel.json` rewrites `/sim` here. `serve.py` maps `/sim` to `index.html` for local
  * development, where `app.js` reads the query string itself.
@@ -16,14 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import {
-  normalizeSim,
-  simDescription,
-  simImageQuery,
-  simTitle,
-  simVersion,
-} from "./_lib/sim/params.mjs";
-import { characterCardHeight } from "./_lib/og/cards.mjs";
+import { normalizeSim, simDescription, simImageQuery, simTitle } from "./_lib/sim/params.mjs";
 
 // The bundle root, so `index.html` resolves whether the function runs from the repo
 // checkout (tests, local `vercel dev`) or from /var/task.
@@ -38,37 +35,20 @@ const esc = (value) =>
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 
-function metaTags(sim, origin, canonicalUrl, fullTitle) {
+function metaTags(sim, canonicalUrl, fullTitle) {
   const description = simDescription(sim);
-  const image = `${origin}/api/og?${simImageQuery(sim)}&v=${simVersion(sim)}`;
-  // A character without a progression chart renders a shorter sheet; the tags have to say
-  // so, otherwise Discord crops the card to a 630px box.
-  const imageHeight = sim.mode === "character" ? characterCardHeight(sim.character) : 630;
-
-  // A character with no resonance preset has nothing useful to say here, and an empty
-  // description tag makes Discord show a blank line, so the tags are dropped entirely.
-  const descriptionTags = description
-    ? [
-        `<meta name="description" content="${esc(description)}" />`,
-        `<meta property="og:description" content="${esc(description)}" />`,
-        `<meta name="twitter:description" content="${esc(description)}" />`,
-      ]
-    : [];
 
   return [
-    ...descriptionTags,
+    `<meta name="description" content="${esc(description)}" />`,
     `<link rel="canonical" href="${esc(canonicalUrl)}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="Sotheby's Mansion" />`,
     `<meta property="og:title" content="${esc(fullTitle)}" />`,
+    `<meta property="og:description" content="${esc(description)}" />`,
     `<meta property="og:url" content="${esc(canonicalUrl)}" />`,
-    `<meta property="og:image" content="${esc(image)}" />`,
-    `<meta property="og:image:width" content="1200" />`,
-    `<meta property="og:image:height" content="${imageHeight}" />`,
-    `<meta property="og:image:alt" content="${esc(simTitle(sim))}" />`,
-    `<meta name="twitter:card" content="summary_large_image" />`,
+    `<meta name="twitter:card" content="summary" />`,
     `<meta name="twitter:title" content="${esc(fullTitle)}" />`,
-    `<meta name="twitter:image" content="${esc(image)}" />`,
+    `<meta name="twitter:description" content="${esc(description)}" />`,
   ].join("\n    ");
 }
 
@@ -104,7 +84,7 @@ export default async function handler(req, res) {
 
   html = html
     .replace(/<title>[^<]*<\/title>/, `<title>${esc(fullTitle)}</title>`)
-    .replace(BASE_BLOCK, `    ${metaTags(sim, origin, canonicalUrl, fullTitle)}`)
+    .replace(BASE_BLOCK, `    ${metaTags(sim, canonicalUrl, fullTitle)}`)
     .replace(
       '<script src="app.js"></script>',
       `<script>window.__SIM__ = ${payload};</script>\n  <script src="app.js"></script>`,

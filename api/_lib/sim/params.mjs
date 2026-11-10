@@ -275,22 +275,16 @@ export function simTitle(sim) {
   return "Sotheby's Mansion";
 }
 
+/**
+ * The link preview line, deliberately the same for every share and the home page.
+ *
+ * It used to summarise the build (member list, portrait tiers, resonance code) and the
+ * image used to be a rendered card. The owner dropped both on 2026-11-09: a shared link
+ * should look like a plain site link in Discord, so this returns the tagline and nothing
+ * else. `sim.mode` is ignored on purpose — keep it that way.
+ */
 export function simDescription(sim) {
   const { lang } = sim;
-
-  if (sim.mode === "team") {
-    const names = sim.members.map((m) => (lang === "cn" ? m.nameZh || m.name : m.name));
-    const count = t(lang, "og.members", "{n} members").replace("{n}", String(names.length));
-    return `${count} · ${names.join(", ")} — ${t(lang, "og.teamBuild", "Team Build")}, R1999.`;
-  }
-
-  if (sim.mode === "character") {
-    // Discord prints this single line under the title, and the card already draws the
-    // portrait tiers, the pattern and the chubes. What the card cannot carry is the long
-    // resonance import string, so the description is just `<preset>: <code>` pairs.
-    return sim.character.resonance.map((preset) => `${preset.label}: ${preset.code}`).join(" · ");
-  }
-
   return lang === "cn"
     ? "手提箱 · 有资料 · R1999"
     : lang === "vi"

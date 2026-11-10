@@ -737,13 +737,17 @@ snapshot shape.
 
 ## 13. Share images (`/api/og`) and share pages (`/sim`)
 
-A team build or a character build can be shared as a link whose preview is a generated
-PNG card. Two functions do the work:
+A team build or a character build can be shared as a link. **Since 2026-11-09 the link
+preview is deliberately plain**: no generated image, no build summary — Discord shows the
+same title + "Suitcase. With information. R1999." snippet as any other page of the site.
+The card renderer is still deployed (and still what `scripts/og/render.mjs` uses for local
+previews) but **nothing links to it any more**; re-enabling cards means putting the four
+`og:image*` / `twitter:image` tags back in `api/sim.js` and `index.html`.
 
 | Route | What it returns |
 |---|---|
-| `GET /api/og?…` | 1200-wide PNG (character card, team card, or the brand card; 630 tall, or shorter for a character without a progression chart) |
-| `GET /sim?…` | the app shell with per-link `og:*` tags + `window.__SIM__` |
+| `GET /api/og?…` | 1200-wide PNG (character card, team card, or the brand card; 630 tall, or shorter for a character without a progression chart). Direct hits still work; no page references it |
+| `GET /sim?…` | the app shell with `<title>`, the plain description, and `window.__SIM__` |
 
 Link scheme (both routes take the same parameters). The canonical, compact shape stores
 **game ids**, so a link is short and never goes stale on a rename:
@@ -762,12 +766,12 @@ Link scheme (both routes take the same parameters). The canonical, compact shape
   rarities, so `findPsychube()` maps it back to its `<rarity>:<id>` key.
 - Unknown ids are **dropped** (a dropped member takes its psychube with it) so a stale
   link still renders. An empty team slot is skipped entirely rather than kept as a gap.
-- `lang` is written by both share buttons, so the card Discord caches and the page the
-  visitor lands on are the same language; the switcher on the page rewrites it in the URL.
-  It stays optional: a hand-written link without it gets `en` tags for crawlers and the
-  visitor's saved language on the page (`normalizeSim` reports `langExplicit`).
+- `lang` is written by both share buttons so the title/description a crawler caches and the
+  page the visitor lands on are the same language; the switcher on the page rewrites it in
+  the URL. It stays optional: a hand-written link without it gets `en` tags for crawlers and
+  the visitor's saved language on the page (`normalizeSim` reports `langExplicit`).
 
-The **legacy** shape is still parsed, because Discord caches an OG image by URL forever:
+The **legacy** shape is still parsed, so links already posted keep working:
 
 ```
 /sim?team=Lucy,Jessica,6,Windsong&chubes=6:1527,6:1504,6:1545,6:1539&name=FUA&lang=en
@@ -786,13 +790,12 @@ not run JavaScript. `api/sim.js` therefore loads `index.html` from disk and inje
 between `<!-- og:base -->` and `<!-- /og:base -->`; the function **replaces that block**,
 so a crawler never sees two `og:title` / description tags.
 
-**The description.** The character card already draws the portrait tiers, the pattern and
-the chubes, so the one line Discord prints under the title is the thing the card cannot
-carry: the **resonance import code**. `simDescription()` prints `"<preset>: <code>"` pairs
-joined by ` · ` (`R10-11: AThFK0Q0… · R12-15: AfQkOEUr…`), straight from
-`content/builds.json` → `og_index.resonance` (`[{ label, code }]`). A hero with no preset
-gets **no description tags at all** rather than a blank line. Team links keep the member
-count + names line.
+**The preview is plain — on purpose.** `simDescription()` returns the site tagline for
+every mode (`Suitcase. With information. R1999.`, translated for `vi`/`cn`); team links do
+not list members and character links do not print the build. There is **no `og:image`** in
+either `api/sim.js` or `index.html`, so Discord renders title + description only. Keep it
+that way unless the owner asks for cards again: the tags are the switch, the renderer is
+still there.
 
 **The client view.** `app.js` `renderSimView()` draws a fixed overlay (`#sim-view`,
 `body.sim-mode`) over the app, so one page serves both the crawler and the visitor. It
@@ -836,12 +839,13 @@ data (skin id is the equipped skin, or `01` when skins are hidden), and
 `simShareUrlForCharacter()` builds `/sim?c=<skinId>&lang=…`. Both append the current
 language. The export PNG sheet hides the share button (`.team-export-sheet .btn-team-share`).
 
-**Caching.** Discord caches an OG image by URL forever, so the share URL appends
-`&v=<sha1, first 10 hex, of "<CARD_RENDER_VERSION>:<canonical query>">`. `/api/og` then
-answers with `Cache-Control: public, s-maxage=31536000, stale-while-revalidate=604800`:
-the URL only changes when the payload **or the renderer** does. Bump
-`CARD_RENDER_VERSION` in `api/_lib/sim/params.mjs` with any card-layout change, otherwise
-links that were already posted keep resolving to the old bitmap. `/sim` uses `s-maxage=300`.
+**Caching.** `/sim` answers with `s-maxage=300` (five minutes), so a title or description
+fix reaches Discord after one revalidation. `/api/og` — which no page references any more —
+still uses the content-addressed scheme it always had: `&v=<sha1, first 10 hex, of
+"<CARD_RENDER_VERSION>:<canonical query>">` with `s-maxage=31536000`, because Discord caches
+an OG image by URL forever. `simVersion()` / `CARD_RENDER_VERSION` in
+`api/_lib/sim/params.mjs` are kept for that endpoint and its tests; `/sim` no longer appends
+`v`, so nothing there needs a bump when card layout changes.
 
 **The renderer.** `@vercel/og` 0.6.8 on the **Node runtime** (not Edge: the Edge bundle cap
 is 4 MB and the fonts alone are ~600 KB). 1.0.x crashes on Node 24
@@ -898,16 +902,16 @@ the psychube names or the `i18n.json` card labels change — the subset is built
 (`og.*`, `card.portrait`, `card.resonance`, `builds.psychubes`, `afflatus.*`, `pattern.*`).
 A missing glyph renders as tofu, not as an error.
 
-**Data.** `data/og_index.json` (~150 KB) is generated by `scripts/sync/derive/ogIndex.mjs`
+**Data.** `data/og_index.json` (~130 KB) is generated by `scripts/sync/derive/ogIndex.mjs`
 and joins, once, what a card prints: `ArcanistMap` (id + default-skin head icon),
 `characters_by_rarity` / `characters_by_afflatus` (buckets), `character_profiles`
 (`dmgType`), `character_reso_shape` (board shape), `content/builds.json` (pattern,
-portrait, recommended psychubes, and `resonance` as `[{ label, code }]` — the label is the
-orange preset button, the code is the share description) and `psychubes_data` (name +
-icon). Characters are keyed by **canonical roster name** — `ArcanistMap` ships the game's
-own label (`Six`, `Thirty-seven`), which is resolved through the `character_profiles` id.
-`sync:verify` asserts the roster/psychube counts, the head paths, the pattern icons, the
-resonance presets and that every recommended chube resolves to a key.
+portrait, recommended psychubes, and the `resonance` preset **labels** — the codes stay in
+`builds.json`) and `psychubes_data` (name + icon). Characters are keyed by **canonical
+roster name** — `ArcanistMap` ships the game's own label (`Six`, `Thirty-seven`), which is
+resolved through the `character_profiles` id. `sync:verify` asserts the roster/psychube
+counts, the head paths, the pattern icons, the resonance preset labels and that every
+recommended chube resolves to a key.
 
 **Local development.**
 
@@ -926,8 +930,9 @@ case, so both parsers stay rendered.
 - `rewrites`: `/sim` → `/api/sim`.
 - `functions["api/og.js"].includeFiles`: `data/og_index.json`, `content/i18n.json`,
   `assets/og/**`.
-- `functions["api/sim.js"].includeFiles`: the same plus `index.html`.
-- `images/**` is **not** bundled; the function fetches art over HTTP.
+- `functions["api/sim.js"].includeFiles`: `index.html`, `data/og_index.json`,
+  `content/i18n.json` — no fonts, since it no longer renders a card.
+- `images/**` is **not** bundled; `/api/og` fetches art over HTTP.
 
 Paths are anchored to the module (`import.meta.url`), not to `process.cwd()`, so the same
 code resolves `/var/task/...` in the bundle and the repo checkout in tests.
