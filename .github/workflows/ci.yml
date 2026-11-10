@@ -25,6 +25,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # `npm ci` installs the playwright package but not its browser, and the ui/rotation
+      # suites call chromium.launch() directly instead of skipping, so without this the
+      # run dies on `Executable doesn't exist`.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Run data editor & regression tests
         # The browser-composite half of the icon suite is skipped when `ignore/`
         # is absent (it is not committed), so CI runs the offline checks only.
