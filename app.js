@@ -1263,7 +1263,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes] = await Promise.all([
+    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes, codeRewardsRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/future_sight.json").catch(() => null),
@@ -1292,6 +1292,7 @@ async function initApp() {
       fetch("content/skill_glossary.json").catch(() => null),
       fetch("data/psychubes_data.json").catch(() => null),
       fetch("data/psychube_key_map.json").catch(() => null),
+      fetch("data/code_reward_index.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1455,6 +1456,7 @@ async function initApp() {
       euphoriasData: await readJson(charEuphoriasRes),
       glossaryData: await readJson(skillGlossaryRes),
       psychubesDetail: await readJson(psychubesDataRes),
+      codeRewards: await readJson(codeRewardsRes),
     });
     loadRotationList();
     buildCredits(await readJson(creditsRes));
@@ -6765,6 +6767,7 @@ function removeRotationEntry(uid) {
 
 /* ---------------- InfoBook Data Stores ---------------- */
 let itemsData = [];
+let codeRewardIndex = {};
 let itemFormulasData = {};
 let charactersMatsData = {};
 let characterProfilesData = {};
@@ -6782,8 +6785,9 @@ let psychubeDetailAmp = 1;
 let itemSearchQuery = "";
 let itemCategoryFilter = "all";
 
-function buildInfoBookData({ items, formulas, matsRequired, profiles, patternCosts, skillsData, euphoriasData, glossaryData, psychubesDetail }) {
+function buildInfoBookData({ items, formulas, matsRequired, profiles, patternCosts, skillsData, euphoriasData, glossaryData, psychubesDetail, codeRewards }) {
   if (Array.isArray(items)) itemsData = items;
+  if (codeRewards && typeof codeRewards === "object") codeRewardIndex = codeRewards;
   if (formulas && typeof formulas === "object") itemFormulasData = formulas;
   if (matsRequired && typeof matsRequired === "object") charactersMatsData = matsRequired;
   if (profiles && typeof profiles === "object") characterProfilesData = profiles;
@@ -6800,7 +6804,19 @@ function buildInfoBookData({ items, formulas, matsRequired, profiles, patternCos
 function getItemByName(name) {
   if (!name) return null;
   const n = String(name).trim().toLowerCase();
-  return itemsData.find((it) => it.name.toLowerCase() === n) || null;
+  const item = itemsData.find((it) => String(it.name || "").toLowerCase() === n);
+  if (item) return item;
+  // Promo-code rewards can name things that have no `data/items.json` row
+  // (stamina candy, EXP-fodder psychubes); see `data/code_reward_index.json`.
+  const extra = codeRewardIndex[n];
+  if (!extra) return null;
+  return {
+    id: extra.id,
+    name: extra.name,
+    icon: extra.icon,
+    // Same rarity frame the Items tab draws (`rare + 1`, so 2..6).
+    border: extra.rarity ? `images/items/border/${extra.rarity}.webp` : "",
+  };
 }
 
 function formatMaterialQuantity(quantity) {

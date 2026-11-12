@@ -327,6 +327,19 @@ ok(
 );
 
 // ---- misc -------------------------------------------------------------------
+// ---- code rewards -----------------------------------------------------------
+// The Codes tab resolves a wiki reward name against `items.json`, then against
+// this index (stamina candy, EXP-fodder psychubes). Both the art and the names
+// must be there, or the reward sticker renders as bare text.
+const codeRewards = read("code_reward_index.json");
+const codeRewardEntries = Object.entries(codeRewards);
+ok("code_reward_index is keyed by lowercased name", codeRewardEntries.every(([key, row]) => key === row.name.toLowerCase()));
+ok("code_reward_index rows carry an icon", codeRewardEntries.every(([, row]) => /^images\/code_items\/.+\.png$/.test(row.icon)));
+const codeRewardIcons = codeRewardEntries.filter(([, row]) => !isRealBitmap(row.icon)).map(([, row]) => row.name);
+ok("every code reward icon exists", codeRewardIcons.length === 0, codeRewardIcons.join(","));
+const codeRewardsNamed = ["picrasma candy", "jar of picrasma candy", "enlighten ii", "enlighten iii"];
+ok("code_reward_index covers the known gaps", codeRewardsNamed.every((name) => codeRewards[name]), codeRewardsNamed.filter((n) => !codeRewards[n]).join(","));
+
 ok("global_name_transfer has no self-maps", Object.entries(transfer).every(([k, v]) => k !== v));
 ok("_meta has both versions", !!meta.globalVersion && !!meta.cnVersion, `${meta.globalVersion} / ${meta.cnVersion}`);
 

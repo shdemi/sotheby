@@ -15,6 +15,10 @@
  *                  -> images/headicon_small/<skinId>.png
  *   skills     content/guide_skills.json  singlebg/fight/skill/<name>.png
  *                  -> images/skills/<name>.png
+ *   code items data/code_reward_index.json
+ *                                       singlebg/propitem/prop/<icon|id>.png   (power items)
+ *                                       singlebg/equipment/icon/<icon|id>.png  (EXP-fodder psychubes)
+ *                  -> images/code_items/<key>.png
  *
  * Rows whose art Myssal does not ship are reported, not invented: the app skips
  * the `<img>` (items), has no skin entry (heads), or keeps the editorial icon
@@ -30,6 +34,7 @@ import path from "node:path";
 import { CONTENT, OUT, ROOT, SRC } from "./config.mjs";
 import { readJson } from "./util.mjs";
 import { table } from "./sources.mjs";
+import { codeItemAssets } from "./derive/codeRewards.mjs";
 
 const check = process.argv.includes("--check");
 
@@ -133,6 +138,7 @@ const groups = [
   ["psychubes", psychubeAssets()],
   ["heads", headAssets()],
   ["skills", skillAssets()],
+  ["code items", codeItemAssets()],
 ];
 
 for (const [name, assets] of groups) {

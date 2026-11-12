@@ -115,6 +115,7 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `global_name_transfer.json` | `character.json → nameEng` + the canonical roster name | maps the game's own English label → canonical key whenever they differ |
 | `ArcanistMap.json` | `character.json`, `skin.json` (global + CN) + global `language_*` | **derived**: 139 entries / 431 skins, ascending by game id; one entry per canonical name (CN APPLe `3999` folds into `3028`); the dummy `9998` and the Myssal-only URL fields are not emitted (§4) |
 | `future_sight.json` | `diff(CN, global)` on characters, equips, skins, destiny | **verified**: 6 CN-only characters + 10 psychubes |
+| `code_reward_index.json` | `power_item.json` + `equip.json` (`rare <= 3`) + global `language_*` | **derived**: the reward names the Codes tab cannot resolve through `items.json` (stamina candy, EXP-fodder psychubes like Enlighten II/III). Keyed by lowercased name; art copied to `images/code_items/` |
 | `stages/*.json` | `chapter.json`, `episode.json`, `battle.json`, `monster*.json`, `tower_permanent_episode.json`, `activity128_*.json` (CN) | already produced by `scripts/build_stages_data.mjs` |
 
 `characters_by_afflatus` caveat: `career` is the primary afflatus key
@@ -207,6 +208,7 @@ art is downloaded:
 | Psychubes | 119 (3 without art) | `equipment/icon/` | `images/psychube_icon/<rarity>/<id>.png` |
 | Character heads | 431 (8 without art) | `headicon_small/` | `images/headicon_small/<skinId>.png` |
 | Skill cards | 456 (7 without art) | `fight/skill/` | `images/skills/<name>.png` |
+| Code-reward items | 19 | `propitem/prop/` (power items), `equipment/icon/` (EXP fodder) | `images/code_items/<key>.png` |
 
 CN 113.0.1421 landed ahead of the Myssal art sweep (that checkout is already at its
 remote HEAD, 2026-09-28), so a few assets had to be added by hand: Perchta's three skill
@@ -299,7 +301,7 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
     _meta.json               { globalVersion, cnVersion, generatedAt, sources[] }
     global_name_transfer.json  name_map.json
     characters_by_rarity.json  characters_by_afflatus.json
-    psychube_id.json  psychube_key_map.json  future_sight.json
+    psychube_id.json  psychube_key_map.json  future_sight.json  code_reward_index.json
     characters_mats_required.json  items.json  item_formulas.json
     psychubes_data.json      detail rows; regenerate with `npm run sync`
     character_skills.json  character_euphorias.json  skill_glossary.json
@@ -739,6 +741,13 @@ button (`guideCopyText`), its rewards as item stickers (`renderItemStickerHtml`)
 `Permanent` / `Expires …` / `Expiry unknown` badge, and the CC BY-SA source link. The
 `data/promo_codes.json` file is added to the function bundle with
 `vercel.json → functions["api/codes.js"].includeFiles`.
+
+A reward name is resolved by `getItemByName()` against `data/items.json`; when it misses,
+the function falls back to `data/code_reward_index.json` (generated, §3), which covers the
+two families that table never holds: `power_item` stamina candy ("Picrasma Candy", "Jar of
+Picrasma Candy") and EXP-fodder psychubes ("Enlighten II/III", `equip.rare <= 3`). Their art
+is copied to `images/code_items/` by `npm run sync:assets`, and `npm run sync:verify` asserts
+every index icon is a real PNG/JPEG and that the four known gaps still resolve.
 
 **Tests.** `editor/_test/codes.test.mjs` runs against
 `editor/_test/fixtures/promo-codes.wikitext`; it never touches the network. It covers

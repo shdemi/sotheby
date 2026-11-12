@@ -1,0 +1,135 @@
+{
+  "bow": {
+    "id": "equip-1307",
+    "name": "Bow",
+    "icon": "images/code_items/equip-1307.png",
+    "kind": "psychube",
+    "rarity": 4
+  },
+  "cheering": {
+    "id": "equip-1204",
+    "name": "Cheering",
+    "icon": "images/code_items/equip-1204.png",
+    "kind": "psychube",
+    "rarity": 3
+  },
+  "covet": {
+    "id": "equip-1308",
+    "name": "Covet",
+    "icon": "images/code_items/equip-1308.png",
+    "kind": "psychube",
+    "rarity": 4
+  },
+  "enlighten i": {
+    "id": "equip-1002",
+    "name": "Enlighten I",
+    "icon": "images/code_items/equip-1002.png",
+    "kind": "psychube",
+    "rarity": 2
+  },
+  "enlighten ii": {
+    "id": "equip-1003",
+    "name": "Enlighten II",
+    "icon": "images/code_items/equip-1003.png",
+    "kind": "psychube",
+    "rarity": 3
+  },
+  "enlighten iii": {
+    "id": "equip-1004",
+    "name": "Enlighten III",
+    "icon": "images/code_items/equip-1004.png",
+    "kind": "psychube",
+    "rarity": 4
+  },
+  "fatuous": {
+    "id": "equip-1206",
+    "name": "Fatuous",
+    "icon": "images/code_items/equip-1206.png",
+    "kind": "psychube",
+    "rarity": 3
+  },
+  "fleeting memory": {
+    "id": "equip-999",
+    "name": "Fleeting Memory",
+    "icon": "images/code_items/equip-999.png",
+    "kind": "psychube",
+    "rarity": 2
+  },
+  "flourishing": {
+    "id": "equip-1202",
+    "name": "Flourishing",
+    "icon": "images/code_items/equip-1202.png",
+    "kind": "psychube",
+    "rarity": 3
+  },
+  "jar of picrasma candy": {
+    "id": "power-100201",
+    "name": "Jar of Picrasma Candy",
+    "icon": "images/code_items/power-100201.png",
+    "kind": "power",
+    "rarity": 5
+  },
+  "loss": {
+    "id": "equip-1203",
+    "name": "Loss",
+    "icon": "images/code_items/equip-1203.png",
+    "kind": "psychube",
+    "rarity": 3
+  },
+  "meek": {
+    "id": "equip-1310",
+    "name": "Meek",
+    "icon": "images/code_items/equip-1310.png",
+    "kind": "psychube",
+    "rarity": 4
+  },
+  "navigating": {
+    "id": "equip-1306",
+    "name": "Navigating",
+    "icon": "images/code_items/equip-1306.png",
+    "kind": "psychube",
+    "rarity": 4
+  },
+  "numb": {
+    "id": "equip-1205",
+    "name": "Numb",
+    "icon": "images/code_items/equip-1205.png",
+    "kind": "psychube",
+    "rarity": 3
+  },
+  "picrasma candy": {
+    "id": "power-100101",
+    "name": "Picrasma Candy",
+    "icon": "images/code_items/power-100101.png",
+    "kind": "power",
+    "rarity": 4
+  },
+  "picrasma gummy": {
+    "id": "power-30",
+    "name": "Picrasma Gummy",
+    "icon": "images/code_items/power-30.png",
+    "kind": "power",
+    "rarity": 4
+  },
+  "picrasma sweets": {
+    "id": "power-31",
+    "name": "Picrasma Sweets",
+    "icon": "images/code_items/power-31.png",
+    "kind": "power",
+    "rarity": 4
+  },
+  "slighted": {
+    "id": "equip-1201",
+    "name": "Slighted",
+    "icon": "images/code_items/equip-1201.png",
+    "kind": "psychube",
+    "rarity": 3
+  },
+  "venomous": {
+    "id": "equip-1309",
+    "name": "Venomous",
+    "icon": "images/code_items/equip-1309.png",
+    "kind": "psychube",
+    "rarity": 4
+  }
+}

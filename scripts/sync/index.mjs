@@ -25,6 +25,7 @@ import { arcanistMap } from "./derive/arcanistMap.mjs";
 import { collabCharacters, excludeCharacters } from "./derive/curation.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
 import { ogIndex } from "./derive/ogIndex.mjs";
+import { codeRewardIndex } from "./derive/codeRewards.mjs";
 
 const argOut = (() => {
   const i = process.argv.indexOf("--out");
@@ -84,6 +85,7 @@ const files = {
   "psychube_key_map.json": psychubeKeyMap(),
   "psychubes_data.json": chubeDetails,
   "future_sight.json": futureSight(),
+  "code_reward_index.json": codeRewardIndex(),
   "og_index.json": ogIndex({
     arcanists,
     profiles,
