@@ -569,7 +569,7 @@
     "releasePatch": "3.9",
     "icon": "images/psychube_icon/6/1576.png",
     "descZh": "踏足一片粗砺，涉历一汪清凉，\n不止息的步伐啊，奔跑、奔跑，\n直到心声甚于潮声汹涌。\n追逐一场愿景，捉摸一个自我，\n掌心拢着命运的涟漪，怦咚、怦咚，\n应许地近在眼前。",
-    "descEn": "Treading upon rough grit, wading through cool shallows,\nSteps unceasing—running, ever running,\nUntil the voice within roars fiercer than the pounding surf.\nChasing a vision, grasping for the self,\nHer palm cupping the ripples of destiny, thumping, thumping,\nThe promised land lies right before her eyes.",
+    "descEn": "Treading the sharp stone, braving the cold spray,\nCeaseless are her footsteps, she runs on and on—\nUntil the pulse in her chest drowns out the surging sea.\n\nChasing a distant dream, reaching for herself,\nRestless are fate's ripples, they beat on and on—\nUntil the gaze of her eyes meets the promised shore.",
     "descVi": "Bước trên sỏi đá gồ ghề, lội qua vùng nước nông mát lạnh,\nNhững bước chân không ngừng—chạy mãi, chạy mãi,\nCho đến khi tiếng nói trong lòng gào thét dữ dội hơn cả sóng vỗ.\nĐuổi theo một viễn ảnh, nắm bắt lấy chính mình,\nLòng bàn tay nàng ôm lấy gợn sóng vận mệnh, thình thịch, thình thịch,\nMiền đất hứa đã ở ngay trước mắt.",
     "baseStats": {
       "atk": 360,
@@ -647,31 +647,31 @@
       {
         "level": 1,
         "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{12%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{8%}，持续3回合",
-        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{12%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{8%} to all allies for 3 rounds.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, gains Healing Done +{12%}. After the carrier casts an Ultimate, if the carrier is holding a [Force Field], all allies gain Ultimate Might +{8%} for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{12%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{8%}, duy trì 3 round."
       },
       {
         "level": 2,
         "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{15%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{10%}，持续3回合",
-        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{15%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{10%} to all allies for 3 rounds.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, gains Healing Done +{15%}. After the carrier casts an Ultimate, if the carrier is holding a [Force Field], all allies gain Ultimate Might +{10%} for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{15%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{10%}, duy trì 3 round."
       },
       {
         "level": 3,
         "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{18%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{12%}，持续3回合",
-        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{18%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{12%} to all allies for 3 rounds.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, gains Healing Done +{18%}. After the carrier casts an Ultimate, if the carrier is holding a [Force Field], all allies gain Ultimate Might +{12%} for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{18%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{12%}, duy trì 3 round."
       },
       {
         "level": 4,
         "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{21%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{14%}，持续3回合",
-        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{21%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{14%} to all allies for 3 rounds.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, gains Healing Done +{21%}. After the carrier casts an Ultimate, if the carrier is holding a [Force Field], all allies gain Ultimate Might +{14%} for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{21%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{14%}, duy trì 3 round."
       },
       {
         "level": 5,
         "descZh": "进入战斗时，若记忆者灵感为【兽】，使记忆者治疗率提升{24%}；记忆者释放仪式后，若记忆者持有【力场】，己方全体仪式威力提升{16%}，持续3回合",
-        "descEn": "When entering battle, if the carrier is a [Beast] character, Healing Done +{24%}.\nAfter the carrier casts an Ultimate, if the carrier holds a [Force Field], grants Ultimate Might +{16%} to all allies for 3 rounds.",
+        "descEn": "When entering battle, if the carrier is a [Beast] character, gains Healing Done +{24%}. After the carrier casts an Ultimate, if the carrier is holding a [Force Field], all allies gain Ultimate Might +{16%} for 3 rounds.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Beast], Healing Done +{24%}.\nSau khi người trang bị thi triển Ultimate, nếu đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Ultimate Might +{16%}, duy trì 3 round."
       }
     ]
@@ -687,7 +687,7 @@
     "releasePatch": "3.9",
     "icon": "images/psychube_icon/6/1575.png",
     "descZh": "一簇不熄的火，搭上弓弦与心弦。\n其间的记忆远比岩浆炽热，\n流经累世宿命，迫使晚霞鲜红。\n这色彩宣读，\n而世界恭肃着等待，\n倏然一声嗡鸣，我的誓言将如此应验。",
-    "descEn": "An unyielding flame draws back upon both bowstring and heartstrings.\nThe memories within burn hotter than molten magma,\nFlowing through lifetimes of destiny to stain the dusk blood-red.\nThis hue proclaims,\nWhile the world waits in solemn silence—\nA sudden, vibrating hum, and thus shall my vow be fulfilled.",
+    "descEn": "An undying flame, riding the bowstring and the heartstring.\nThe memories within are far hotter than magma.\nFlowing through the fate of countless lives, forcing the sunset into vivid red.\nThis color proclaims,\nand the world waits solemnly.\nSuddenly, a hum, and so my vow will be fulfilled.",
     "descVi": "Ngọn lửa bất khuất căng mình trên cả dây cung lẫn dây lòng.\nNhững ký ức bên trong cháy bỏng hơn cả dung nham nóng chảy,\nChảy qua bao kiếp vận mệnh để nhuộm hoàng hôn thành sắc máu.\nSắc màu ấy cất lời,\nTrong khi thế gian lặng lẽ chờ đợi—\nMột tiếng ngân rung chợt vang, và lời thề của ta sẽ thành hiện thực.",
     "baseStats": {
       "atk": 380,
@@ -765,31 +765,31 @@
       {
         "level": 1,
         "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{8%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{1.5%}，可叠加8层",
-        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{8%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{1.5%} to all allies, stacking up to 8 times.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, gains DMG Dealt +{8%}. When an ally attacks, if the carrier is holding a [Force Field], all allies gain Critical DMG +{1.5%}, stackable up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{8%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{1.5%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 2,
         "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{10%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{1.8%}，可叠加8层",
-        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{10%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{1.8%} to all allies, stacking up to 8 times.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, gains DMG Dealt +{10%}. When an ally attacks, if the carrier is holding a [Force Field], all allies gain Critical DMG +{1.8%}, stackable up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{10%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{1.8%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 3,
         "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{12%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{2.2%}，可叠加8层",
-        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{12%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{2.2%} to all allies, stacking up to 8 times.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, gains DMG Dealt +{12%}. When an ally attacks, if the carrier is holding a [Force Field], all allies gain Critical DMG +{2.2%}, stackable up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{12%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{2.2%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 4,
         "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{14%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{2.6%}，可叠加8层",
-        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{14%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{2.6%} to all allies, stacking up to 8 times.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, gains DMG Dealt +{14%}. When an ally attacks, if the carrier is holding a [Force Field], all allies gain Critical DMG +{2.6%}, stackable up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{14%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{2.6%}, cộng dồn tối đa 8 lần."
       },
       {
         "level": 5,
         "descZh": "进入战斗时，若记忆者为【术具】角色，造成伤害提升{16%}；全体己方攻击时，若记忆者持有【力场】，己方全体暴击创伤提升{3%}，可叠加8层",
-        "descEn": "When entering battle, if the carrier is a [Conduit] character, DMG Dealt +{16%}.\nWhen all allies attack, if the carrier holds a [Force Field], grants Critical DMG +{3%} to all allies, stacking up to 8 times.",
+        "descEn": "When entering battle, if the carrier is a [Conduit] character, gains DMG Dealt +{16%}. When an ally attacks, if the carrier is holding a [Force Field], all allies gain Critical DMG +{3%}, stackable up to 8 times.",
         "descVi": "Khi vào trận, nếu người trang bị là nhân vật [Conduit], DMG Dealt +{16%}.\nKhi toàn bộ phe ta tấn công, nếu người trang bị đang sở hữu [Force Field], giúp toàn bộ phe ta nhận Critical DMG +{3%}, cộng dồn tối đa 8 lần."
       }
     ]
@@ -9212,7 +9212,7 @@
     "releasePatch": "3.9",
     "icon": "images/psychube_icon/5/1450.png",
     "descZh": "滋长着、逃窜着，又隐入夜色的帷幕，\n狡黠的逸闻啊！\n聚光灯妆点的，一方银幕上、千万道视线下——\n瞧，它的真实与声名同样鲜亮。",
-    "descEn": "Burgeoning, fleeing, then vanishing behind the night's curtain—\nO cunning and elusive anecdote!\nAdorned by the limelight, upon the silver screen, before ten thousand gazes—\nLook, its truth shines just as brilliantly as its fame.",
+    "descEn": "It breeds, it flees, it slips behind the curtain of night—\nOh, what a cunning, elusive scoop!\nYet bathed in the spotlight, framed on the screen, beneath countless watchful eyes—\nAh, the naked truth burns just as bright as the headline!",
     "descVi": "Nảy nở, chạy trốn, rồi biến mất sau tấm màn đêm—\nÔi giai thoại ranh mãnh và khó nắm bắt!\nĐược ánh đèn sân khấu tô điểm, trên màn bạc, trước muôn ngàn ánh mắt—\nHãy nhìn xem, sự thật của nó rạng rỡ chẳng kém gì danh tiếng.",
     "baseStats": {
       "atk": 360,
@@ -9290,31 +9290,31 @@
       {
         "level": 1,
         "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{20%}，若目标当前生命低于30%则造成伤害提升额外提升{20%}",
-        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{20%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{20%}.",
+        "descEn": "When the carrier attacks, gains DMG Dealt +{20%} if the target is below 50% HP; gains another DMG Dealt +{20%} if the target is below 30% HP.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{20%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{20%}."
       },
       {
         "level": 2,
         "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{25%}，若目标当前生命低于30%则造成伤害提升额外提升{25%}",
-        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{25%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{25%}.",
+        "descEn": "When the carrier attacks, gains DMG Dealt +{25%} if the target is below 50% HP; gains another DMG Dealt +{25%} if the target is below 30% HP.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{25%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{25%}."
       },
       {
         "level": 3,
         "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{30%}，若目标当前生命低于30%则造成伤害提升额外提升{30%}",
-        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{30%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{30%}.",
+        "descEn": "When the carrier attacks, gains DMG Dealt +{30%} if the target is below 50% HP; gains another DMG Dealt +{30%} if the target is below 30% HP.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{30%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{30%}."
       },
       {
         "level": 4,
         "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{35%}，若目标当前生命低于30%则造成伤害提升额外提升{35%}",
-        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{35%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{35%}.",
+        "descEn": "When the carrier attacks, gains DMG Dealt +{35%} if the target is below 50% HP; gains another DMG Dealt +{35%} if the target is below 30% HP.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{35%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{35%}."
       },
       {
         "level": 5,
         "descZh": "记忆者攻击时，若目标当前生命低于50%造成伤害提升{40%}，若目标当前生命低于30%则造成伤害提升额外提升{40%}",
-        "descEn": "When the carrier attacks, if the target's current HP is below 50%, DMG Dealt +{40%}. If the target's current HP is below 30%, DMG Dealt is additionally increased by +{40%}.",
+        "descEn": "When the carrier attacks, gains DMG Dealt +{40%} if the target is below 50% HP; gains another DMG Dealt +{40%} if the target is below 30% HP.",
         "descVi": "Khi người trang bị tấn công, nếu HP hiện tại của mục tiêu dưới 50%, DMG Dealt +{40%}. Nếu HP hiện tại của mục tiêu dưới 30%, DMG Dealt tăng thêm +{40%}."
       }
     ]

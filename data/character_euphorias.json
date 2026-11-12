@@ -2209,7 +2209,7 @@
             "zh": "使用【钟型摆动】1/2/3阶触发暴击时，追加1次80%/120%/200%现实创伤的攻击，该追击视为1次额外行动",
             "tw": "使用【鐘型擺動】1/2/3階觸發暴擊時，追加1次80%/120%/200%現實創傷的攻擊，該追擊視為1次額外行動",
             "jp": "ランク1/2/3【ベルスウィング】でクリティカルが発生すると、それぞれ追加で80%/120%/200%のリアルダメージを1回与える。この追撃は1回の追加行動とみなされる。",
-            "kr": "[흔들리는 벨] 1/2/3단계를 사용해 치명타 발동 시 80%/120%/200%의 현실 피해 공격 1회 추가, 해당 추가 공격은 추가 행동으로 간주",
+            "kr": "[흔들리는 벨] 1/2/3단계를 사용해 치명타 발동 시 80%/120%/200%의 현실 피해 공격 1회 추가, 해당 추격은 추가 행동으로 간주",
             "vi": "Khi [Aerial Maneuvers] bạo kích ở Incantation hạng 1/2/3, phát động 1 đòn đánh thêm gây 80%/120%/200% Reality DMG. Đòn đánh thêm này được tính là 1 Extra Action."
           }
         },
@@ -2284,7 +2284,7 @@
             "zh": "使用【钟型摆动】1/2/3阶触发暴击时，追加1次80%/120%/200%现实创伤的攻击，该追击视为1次额外行动",
             "tw": "使用【鐘型擺動】1/2/3階觸發暴擊時，追加1次80%/120%/200%現實創傷的攻擊，該追擊視為1次額外行動",
             "jp": "ランク1/2/3【ベルスウィング】でクリティカルが発生すると、それぞれ追加で80%/120%/200%のリアルダメージを1回与える。この追撃は1回の追加行動とみなされる。",
-            "kr": "[흔들리는 벨] 1/2/3단계를 사용해 치명타 발동 시 80%/120%/200%의 현실 피해 공격 1회 추가, 해당 추가 공격은 추가 행동으로 간주",
+            "kr": "[흔들리는 벨] 1/2/3단계를 사용해 치명타 발동 시 80%/120%/200%의 현실 피해 공격 1회 추가, 해당 추격은 추가 행동으로 간주",
             "vi": "Khi [Aerial Maneuvers] bạo kích ở Incantation hạng 1/2/3, phát động 1 đòn đánh thêm gây 80%/120%/200% Reality DMG. Đòn đánh thêm này được tính là 1 Extra Action."
           }
         },
@@ -2921,12 +2921,12 @@
       "name": {
         "en": "Blessings That Stay the Whole Journey Through",
         "zh": "祝福长伴于归途",
-        "tw": "N/A",
-        "jp": "N/A",
-        "kr": "N/A"
+        "tw": "祝福長伴於歸途",
+        "jp": "旅路に絶えぬ祝福を",
+        "kr": "돌아가는 모든 길에 늘 축복이 함께하기를"
       },
       "id": 312101,
-      "tags": ["Ritual", "Support"],
+      "tags": ["Ultimate", "Support"],
       "materials": [
         {
           "id": 620103,
@@ -2949,44 +2949,44 @@
         {
           "rank": 1,
           "description": {
-            "en": "[To the \"Family\"] effect enhanced:\nIf at no less than 10 stacks of [Readiness], all allies gain [Assertiveness] for 1 round",
+            "en": "[To the \"Family\"] Effect Enhancement:\nIf Moldir has at least 10 stacks of [Readiness], grants [Assertiveness] to all allies for 1 round.",
             "zh": "【致“家人”】效果强化：\n若至少拥有10层【战备】，使己方全体获得【主见】，持续1回合",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【致“家人”】效果強化：\n若至少擁有10層【戰備】，使己方全體獲得【主見】，持續1回合",
+            "jp": "【「家族」のために】の効果強化：\n【戦備】が10スタック以上の場合、味方全員に1ターンの【決起】を付与する。",
+            "kr": "[‘가족’에게]효과 강화:\n[전투 태세] 10스택 이상 보유한 경우 모든 아군이 [주관] 획득, 1턴간 지속",
             "vi": "[To the \"Family\"] hiệu ứng được cường hóa:\nNếu có từ 10 cộng dồn [Readiness] trở lên, toàn bộ phe ta nhận [Assertiveness], duy trì 1 round."
           }
         },
         {
           "rank": 2,
           "description": {
-            "en": "[To the \"Family\"] effect enhanced:\n[Tactical Coordination]: the Ultimate DMG provided per stack of [Readiness] is increased by 20% of the base value;\n[Armament Enhancement]: the Critical Rate provided is increased by 20% of the base value",
+            "en": "[To the \"Family\"] Effect Enhancement:\nThe Ultimate DMG granted by each stack of [Readiness] through [Tactical Coordination] is increased by 20% of its base value.\nThe Critical Rate bonus granted by [Armament Enhancement] is increased by 20% of its base value.",
             "zh": "【致“家人”】效果强化：\n【战备部署】每层【战备】提供的仪式伤害提升基于基础数值的20%；\n【武装整修】提供的暴击率提升基于基础数值的20%",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【致“家人”】效果強化：\n【戰備部署】每層【戰備】提供的儀式傷害提升基於基礎數值的20%；\n【武裝整修】提供的暴擊率提升基於基礎數值的20%",
+            "jp": "【「家族」のために】の効果強化：\n【戦備駐屯】によるアルティメットの与ダメージ上昇効果が元の1.2倍になる。\n【武装整備】によるクリティカル率上昇効果が元の1.2倍になる。",
+            "kr": "[‘가족’에게]효과 강화:\n[전투 태세 구축]의 [전투 태세] 스택당 적용되는 술식 피해 증가 수치가 기본 수치의 20%만큼 증가.\n[무장 정비]로 적용되는 치명타율 증가 수치가 기본 수치의 20%만큼 증가",
             "vi": "[To the \"Family\"] hiệu ứng được cường hóa:\n[Tactical Coordination]: Ultimate DMG cấp cho mỗi cộng dồn [Readiness] tăng thêm 20% lượng cơ bản;\n[Armament Enhancement]: Critical Rate được cấp tăng thêm 20% lượng cơ bản."
           }
         },
         {
           "rank": 3,
           "description": {
-            "en": "[Astray No More] effect enhanced: deals additional Reality DMG equal to 100% of the base Reality DMG; both active and riposte casts deal additional DMG and grant additional [Ceremonious: Critical DMG]\n[The Past Shattered] effect enhanced: if self is in [Continuous Action I] status before attacking, deals additional Reality DMG equal to 100% of the base Reality DMG; after attacking, inflicts 2 stacks of [Passion Drain] on the target",
+            "en": "[Astray No More] Effect Enhancement: Deals an additional (base Reality DMG x100%) Reality DMG. Both active casts and riposte casts deal additional DMG and grant additional [Ceremonious: Critical DMG].\n[The Past Shattered] Effect Enhancement: Before attacking, if in the [Continuous Action I] status, deals an additional (base Reality DMG x100%) Reality DMG. After attacking, inflicts 2 stacks of [Passion Drain] on the target.",
             "zh": "【不再迷失的归途者】效果强化：额外造成相当于基础现实创伤100%的现实创伤；主动释放和反击释放均可造成额外伤害和施加额外的【礼仪：暴击创伤】\n【将过往摧毁】效果强化：攻击前若自身处于【连续行动Ⅰ】状态则额外造成相当于基础现实创伤100%的现实创伤；攻击后赋予目标2层【激情萃取】",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【不再迷失的歸途者】效果強化：額外造成相當於基礎現實創傷100%的現實創傷；主動釋放和反擊釋放均可造成額外傷害和施加額外的【禮儀：暴擊創傷】\n【將過往摧毀】效果強化：攻擊前若自身處於【連續行動Ⅰ】狀態則額外造成相當於基礎現實創傷100%的現實創傷；攻擊後賦予目標2層【激情萃取】",
+            "jp": "【迷わぬ帰路】に効果追加：追加リアルダメージと追加の【礼儀・CRダメージ】の付与条件が削除され、自ら発動・反撃で発動のいずれでも発生する。追加で同量のリアルダメージを与える。\n【過去に決別する】に効果追加：攻撃前に自身が【連続行動Ⅰ】状態の場合、追加で同量のリアルダメージを与える。攻撃後、対象に付与する【MPドレイン】が2スタックになる。",
+            "kr": "[길을 찾은 귀로자]효과 강화: 추가로 기본 현실 피해 100%만큼 현실 피해를 줌. 직접 시전 및 반격 시전 모두 추가 피해를 주고 추가로 [예의: 치명타 피해] 부여\n[무너진 과거]효과 강화: 공격 전 자신이 [연속 행동Ⅰ] 상태인 경우 추가로 기본 현실 피해 100%만큼 현실 피해를 줌. 공격 후 목표에게 [열정 추출] 2스택 부여",
             "vi": "[Astray No More] hiệu ứng được cường hóa: gây thêm Reality DMG bằng 100% Reality DMG cơ bản; cả khi chủ động thi triển lẫn khi Riposte đều gây thêm DMG và cấp thêm [Ceremonious: Critical DMG].\n[The Past Shattered] hiệu ứng được cường hóa: nếu bản thân đang ở trạng thái [Continuous Action I] trước khi tấn công, gây thêm Reality DMG bằng 100% Reality DMG cơ bản; sau khi tấn công, gây 2 cộng dồn [Passion Drain] lên mục tiêu."
           }
         },
         {
           "rank": 4,
           "description": {
-            "en": "[The Future Reclaimed] effect modified:\nGains [Lightning Trigger] for 2 rounds\n[Lightning Trigger] effect modified:\nWhen an ally is attacked, Moldir counters with the corresponding rank of [The Past Shattered] (triggers once per round); at the start of the round, if not in [Doctrine] status, gains [Total Onslaught] for 1 round",
+            "en": "[The Future Reclaimed] Effect Adjustment:\nGains [Lightning Trigger] for 2 rounds.\n[Lightning Trigger] Effect Adjustments:\nAfter any ally is attacked, Moldir ripostes with the corresponding rank of [The Past Shattered] (triggers once per round). At the start of the round, if not in [Doctrine] status, gains [Total Onslaught] for 1 round.",
             "zh": "【将明日弥合】效果修改：\n使自身获得【闪击】，持续2回合\n【闪击】效果修改：\n任意己方受到攻击后，莫莉德尔使用对应等阶【将过往摧毁】进行反击（每回合触发1次）；回合开始时若不处于【教条】状态下，使自身获得【攻坚】，持续1回合",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【將明日彌合】效果修改：\n使自身獲得【閃擊】，持續2回合\n【閃擊】效果修改：\n任意己方受到攻擊後，莫莉德爾使用對應等階【將過往摧毀】進行反擊（每回合觸發1次）；回合開始時若不處於【教條】狀態下，使自身獲得【攻堅】，持續1回合",
+            "jp": "【明日を取り戻す】の効果変更：\n自身が2ターンの【奇襲】を獲得する。\n【奇襲】の効果変更：\n任意の味方キャラが攻撃を受けると、モルダーは対応するランクの【過去に決別する】で反撃する（1ターンにつき最大1回まで発動）。ターン開始時、【教条】状態ではない場合、自身が1ターンの【強襲】を獲得する。",
+            "kr": "[되찾은 내일]효과 변경:\n자신이 [섬광 공격] 획득, 2턴간 지속\n[섬광 공격] 효과 변경:\n아군이 공격받은 후 몰디르가 해당 등급의 [무너진 과거]를 사용해 반격(턴당 1회 발동). 턴 시작 시 [교리] 상태가 아닌 경우 자신이 [난관 돌파] 획득, 1턴간 지속",
             "vi": "[The Future Reclaimed] hiệu ứng được điều chỉnh:\nNhận [Lightning Trigger], duy trì 2 round.\n[Lightning Trigger] hiệu ứng được điều chỉnh:\nKhi đồng minh bị tấn công, Moldir phản công bằng [The Past Shattered] cùng hạng (kích hoạt 1 lần mỗi round); khi bắt đầu round, nếu không ở trạng thái [Doctrine], nhận [Total Onslaught], duy trì 1 round."
           }
         }
@@ -3152,14 +3152,14 @@
   "Noire": [
     {
       "name": {
-        "en": "This Is the Best Take",
+        "en": "This is the Best Take",
         "zh": "此为最佳镜次",
-        "tw": "N/A",
-        "jp": "N/A",
-        "kr": "N/A"
+        "tw": "此為最佳鏡次",
+        "jp": "最高のテイクが撮れた",
+        "kr": "최고의 테이크는 바로 지금"
       },
       "id": 311101,
-      "tags": ["Ritual", "Neg Status"],
+      "tags": ["Ultimate", "Neg Status"],
       "materials": [
         {
           "id": 620103,
@@ -3182,44 +3182,44 @@
         {
           "rank": 1,
           "description": {
-            "en": "[Genius Idea] no longer gives the Ultimate a chance to be recast; changed to: at the start of each round, if self's Moxie reaches 5 and [Genius Idea] reaches the original Ultimate's consumption stack count, consumes that stack count and gains 1 stack of [Endless Inspiration] (triggers at most once per round); for every 1 stack of [Genius Idea] self holds, has the original base chance to gain 1 additional stack of [Endless Inspiration], up to a maximum of 4 stacks; if [Endless Inspiration] has reached its stack limit, [Genius Idea] is no longer consumed",
+            "en": "[Genius Idea] no longer grants the Ultimate a chance to recast. Instead, at the start of each round, if Moxie is at 5 and the number of [Genius Idea] stacks has reached the amount originally consumed by the Ultimate, consumes that many stacks and gains 1 stack of [Endless Inspiration] (triggers up to 1 time per round). For each stack of [Genius Idea] held, there is the original base chance to gain 1 additional stack of [Endless Inspiration] (stackable up to 4 times). If [Endless Inspiration] is already at its stack limit, no stacks are consumed.",
             "zh": "【鬼才灵感】不再使至终的仪式有概率重复释放，改为：每回合开始时，若自身激情到达5点，且【鬼才灵感】到达原至终的仪式消耗层数，则消耗原层数，获得1层【思如涌泉】，每回合至多触发1次，自身每持有1层【鬼才灵感】，有原基础概率重复获得1层【思如涌泉】，至多叠加4层，若【思如涌泉】已到达层数上限，则不再消耗",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【鬼才靈感】不再使至終的儀式有機率重複釋放，改為：每回合開始時，若自身激情到達5點，且【鬼才靈感】到達原至終的儀式消耗層數，則消耗原層數，獲得1層【思如湧泉】，每回合至多觸發1次，自身每持有1層【鬼才靈感】，有原基礎機率重複獲得1層【思如湧泉】，至多疊加4層，若【思如湧泉】已到達層數上限，則不再消耗",
+            "jp": "【鬼才の着想】の効果変更：アルティメットの確率再発動がなくなる。毎ターン開始時、自身のMPが5に達し、【鬼才の着想】が元の消費スタック数に達している場合、そのスタック数を消費し、【湧き出る着想】を1スタック獲得する（1ターンにつき最大1回まで発動）。さらに自身の【鬼才の着想】1スタックにつき、元の基礎確率で【湧き出る着想】を1スタック獲得する（最大4スタック）。【湧き出る着想】が最大スタックの場合、この効果が発動しなくなる。",
+            "kr": "[귀재의 영감] 최종 술식이 더 이상 일정 확률로 중복 시전되지 않고 다음과 같이 변경됨. 턴 시작 시마다 자신의 열정이 5포인트 및 [귀재의 영감]이 기존 최종 술식에 소모되는 스택 수에 도달한 경우 기존 스택을 소모해 [샘솟는 발상] 1스택 획득, 턴당 최대 1회 발동, 자신이 보유한 [귀재의 영감] 1스택당 기존 기본 확률로 [샘솟는 발상] 1스택 중복 획득, 최대 4스택 중첩, [샘솟는 발상]이 스택 최대치에 도달한 경우 더 이상 소모하지 않음",
             "vi": "[Genius Idea] không còn cấp cơ hội thi triển lại Ultimate; đổi thành: khi bắt đầu mỗi round, nếu Moxie của bản thân đạt 5 và [Genius Idea] đạt số cộng dồn tiêu hao của Ultimate ban đầu, tiêu hao số cộng dồn đó và nhận 1 cộng dồn [Endless Inspiration] (kích hoạt tối đa 1 lần mỗi round); với mỗi 1 cộng dồn [Genius Idea] bản thân đang có, có xác suất cơ bản ban đầu để nhận thêm 1 cộng dồn [Endless Inspiration], tối đa 4 cộng dồn; nếu [Endless Inspiration] đã đạt giới hạn cộng dồn, [Genius Idea] không còn bị tiêu hao."
           }
         },
         {
           "rank": 2,
           "description": {
-            "en": "[Miniature Set] new effect: Moxie +3 for self when entering battle; when another ally casts an Ultimate, Noire gains 1 stack of [Scene Direction], up to a stack limit equal to the original stack limit of [Genius Idea]",
+            "en": "[Miniature Set] New Effect: When entering battle, Moxie +3. When another ally casts an Ultimate, Noire gains 1 stack of [Scene Direction], with a stack limit equal to the original stack limit of [Genius Idea].",
             "zh": "【微缩片场】新增效果：进入战斗时，自身激情+3；其他友方释放至终的仪式时，菲林士多可获得1层【场面调度】,至多叠加层数上限等同于原【鬼才灵感】层数上限",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【微縮片場】新增效果：進入戰鬥時，自身激情+3；其他友方釋放至終的儀式時，菲林士多可獲得1層【場面調度】,至多疊加層數上限等同於原【鬼才靈感】層數上限",
+            "jp": "【ミニチュア撮影】に効果追加：バトル開始時、自身のMP+3。味方がアルティメットを発動すると、ノワールが【ミザンセーヌ】を1スタック獲得する（スタック数上限は元の【鬼才の着想】と同じ）。",
+            "kr": "[축소 촬영장]추가 효과: 전투 진입 시 자신의 열정 +3. 다른 아군이 최종 술식 시전 시 누아르가 [미장센] 1스택 획득, 최대 중첩 스택 상한은 기존 [귀재의 영감] 스택 상한과 동일",
             "vi": "[Miniature Set] hiệu ứng mới: Bản thân nhận Moxie +3 khi vào trận; khi đồng minh khác thi triển Ultimate, Noire nhận 1 cộng dồn [Scene Direction], giới hạn cộng dồn bằng giới hạn cộng dồn ban đầu của [Genius Idea]."
           }
         },
         {
           "rank": 3,
           "description": {
-            "en": "[Climactic Moment] no longer consumes AP, and deals additional Mental DMG equal to 100% of the base Mental DMG;\n[Climactic Moment]'s Penetration Rate increase per 1 stack of [Neg Status] held by the target is changed to: Penetration Rate is increased per 1 type of [Neg Status] held, and the maximum Mental DMG increase based on the number of types of [Neg Status] held by the target is increased to 100% of the original base",
+            "en": "[Climactic Moment] no longer costs AP and deals an additional (base Mental DMG x100%) Mental DMG.\n[Climactic Moment]'s Penetration Rate increased for each stack of [Neg Status] on a target is changed to: For each type of [Neg Status] effect on a target, this attack gains a Penetration Rate bonus against the target, and the maximum value of additional Mental DMG dealt based on the number of [Neg Status] types on the target is doubled.",
             "zh": "【戏剧性时刻】不再消耗行动点，且造成额外精神创伤，相当于基础精神创伤的100%；\n【戏剧性时刻】目标每持有1层【状态异常】提升的穿透率，改为：每持有1种【状态异常】提升穿透率，且根据目标持有【状态异常】种数至多提升的精神创伤提升至原基础的100%",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【戲劇性時刻】不再消耗行動點，且造成額外精神創傷，相當於基礎精神創傷的100%；\n【戲劇性時刻】目標每持有1層【狀態異常】提升的穿透率，改為：每持有1種【狀態異常】提升穿透率，且根據目標持有【狀態異常】種數至多提升的精神創傷提升至原基礎的100%",
+            "jp": "【ドラマチックタイム】は行動回数を消費せず、追加で同量のメンタルダメージを与える。\n【ドラマチックタイム】対象の【状態異常】の種類数に応じた追加メンタルダメージの上限が元の2倍となる。対象の【状態異常】のスタック数に応じた貫通率上昇効果が、対象の【状態異常】の種類数に応じて発生するようになる。",
+            "kr": "[극적인 순간]더 이상 행동 횟수를 소모하지 않으며 추가 정신 피해를 줌, 기본 정신 피해의 100%에 해당.\n[극적인 순간]목표가 보유한 [상태 이상] 1스택당 증가하는 방어 무시율이 다음과 같이 변경됨. 보유한 [상태 이상] 1가지당 방어 무시율 증가, 목표가 보유한 [상태 이상] 종류 개수에 따라 최대로 증가하는 정신 피해가 기존 기본 수치의 100%로 증가",
             "vi": "[Climactic Moment] không còn tiêu hao AP, và gây thêm Mental DMG bằng 100% Mental DMG cơ bản;\nLượng Penetration Rate tăng thêm của [Climactic Moment] cho mỗi 1 cộng dồn [Neg Status] mà mục tiêu đang có được đổi thành: Penetration Rate tăng thêm theo mỗi 1 loại [Neg Status] đang có, và lượng Mental DMG tăng thêm tối đa dựa trên số loại [Neg Status] mà mục tiêu đang có được tăng thành 100% lượng cơ bản ban đầu."
           }
         },
         {
           "rank": 4,
           "description": {
-            "en": "[Climactic Moment] new effect: when recast 1 time in a single round, deals additional Mental DMG to all enemies equal to 50% of the base Mental DMG;\nwhen recast 2 times in a single round, deals additional Mental DMG to all enemies equal to 50% of the base Mental DMG, and for every 1 type of [Neg Status] the target holds, additionally increases Mental DMG/Penetration Rate by 50% of the original base;\nwhen recast 3 or more times in a single round, deals additional Mental DMG to all enemies equal to 100% of the base Mental DMG, and for every 1 type of [Neg Status] the target holds, additionally increases Mental DMG/Penetration Rate by 100% of the original base",
+            "en": "[Climactic Moment] New Effect: When recast 1 time in a single round, deals an additional (original base Mental DMG x50%) Mental DMG to all enemies.\nWhen recast 2 times in a single round, deals an additional (original base Mental DMG x50%) Mental DMG to all enemies. For each type of [Neg Status] on a target, additionally increases the original base Mental DMG and Penetration Rate by 50% against the target.\nWhen recast 3 or more times in a single round, deals an additional (original base Mental DMG x100%) Mental DMG to all enemies. For each type of [Neg Status] on a target, additionally increases the original base Mental DMG and Penetration Rate by 100% against the target.",
             "zh": "【戏剧性时刻】新增效果：单回合重复释放1次时，对敌方全体额外造成原基础精神创伤50%的精神创伤；\n单回合重复释放2次时，对敌方全体额外造成原基础精神创伤50%的精神创伤，目标每持有1种【状态异常】，额外提升原基础精神创伤和穿透率的50%；\n单回合重复释放3次及以上时，对敌方全体额外造成原基础精神创伤100%的精神创伤，目标每持有1种【状态异常】，额外提升原基础精神创伤/穿透率100%的精神创伤/穿透率",
-            "tw": "N/A",
-            "jp": "N/A",
-            "kr": "N/A",
+            "tw": "【戲劇性時刻】新增效果：單回合重複釋放1次時，對敵方全體額外造成原基礎精神創傷50%的精神創傷；\n單回合重複釋放2次時，對敵方全體額外造成原基礎精神創傷50%的精神創傷，目標每持有1種【狀態異常】，額外提升原基礎精神創傷和穿透率的50%；\n單回合重複釋放3次及以上時，對敵方全體額外造成原基礎精神創傷100%的精神創傷，目標每持有1種【狀態異常】，額外提升原基礎精神創傷/穿透率100%的精神創傷/穿透率",
+            "jp": "【ドラマチックタイム】に効果追加：1ターン中の2度目の発動時、敵全員に追加で元のダメージの50%分のメンタルダメージを与える。\n1ターン中の3度目の発動時、敵全員に追加で元のダメージの50%分のメンタルダメージを与え、対象の【状態異常】1種類につき、メンタルダメージと貫通率がそれぞれ追加で元の数値の50%分アップする。\n1ターン中の4度目以降の発動時、敵全員に追加で元のダメージの100%分のメンタルダメージを与え、対象の【状態異常】1種類につき、メンタルダメージと貫通率がそれぞれ追加で元の数値の100%分アップする。",
+            "kr": "[극적인 순간]추가 효과: 단일 턴에 1회 중복 시전 시 모든 적군에게 추가로 기존의 기본 정신 피해 50%만큼 정신 피해를 줌.\n단일 턴에 2회 중복 시전 시 모든 적군에게 추가로 기존의 기본 정신 피해 50%만큼 정신 피해를 주고 목표가 보유한 [상태 이상] 1가지당 추가로 기존의 기본 정신 피해 및 방어 무시율 50% 증가.\n단일 턴에 3회 이상 중복 시전 시 모든 적군에게 추가로 기존의 기본 정신 피해 100%만큼 정신 피해를 주고 목표가 보유한 [상태 이상] 1가지당 추가로 기존의 기본 정신 피해/방어 무시율 100%만큼 정신 피해/방어 무시율 증가",
             "vi": "[Climactic Moment] hiệu ứng mới: khi được thi triển lại 1 lần trong một round, gây thêm Mental DMG lên toàn bộ kẻ địch bằng 50% Mental DMG cơ bản;\nkhi được thi triển lại 2 lần trong một round, gây thêm Mental DMG lên toàn bộ kẻ địch bằng 50% Mental DMG cơ bản, và với mỗi 1 loại [Neg Status] mục tiêu đang có, tăng thêm Mental DMG/Penetration Rate bằng 50% lượng cơ bản ban đầu;\nkhi được thi triển lại từ 3 lần trở lên trong một round, gây thêm Mental DMG lên toàn bộ kẻ địch bằng 100% Mental DMG cơ bản, và với mỗi 1 loại [Neg Status] mục tiêu đang có, tăng thêm Mental DMG/Penetration Rate bằng 100% lượng cơ bản ban đầu."
           }
         }

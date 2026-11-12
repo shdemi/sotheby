@@ -764,10 +764,15 @@ try {
     check("manual mode makes the substitutes pickable", manual.pickable > 0, String(manual.pickable));
 
     // Promote Rhiannon into the slot that offers her as a substitute. Find the
-    // slot index once manual mode has made the chips pickable.
+    // Isolde slot specifically: several presets offer Rhiannon, and which of them
+    // are visible depends on the Future Sight filter.
     const slotIndex = await page.evaluate(() => {
       const slots = [...document.querySelectorAll(".preset-slot")];
-      return slots.findIndex((s) => [...s.querySelectorAll(".preset-sub.is-pickable")].some((c) => /Rhiannon/.test(c.title)));
+      return slots.findIndex(
+        (s) =>
+          /^Isolde/.test(s.querySelector(".preset-member")?.title || "") &&
+          [...s.querySelectorAll(".preset-sub.is-pickable")].some((c) => /Rhiannon/.test(c.title))
+      );
     });
     check("the fixture exposes a Rhiannon substitute", slotIndex >= 0, String(slotIndex));
 

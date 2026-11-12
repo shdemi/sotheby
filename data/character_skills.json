@@ -8314,10 +8314,10 @@
         "ranks": {
           "1": {
             "id": 31560111,
-            "descEn": "[Interval]\n1-target attack, deals 500% Reality DMG; while holding [Blazing Glory], this attack deals an additional 500% Reality DMG, and increases Mineral Energy by 2.",
+            "descEn": "[Interval]\n1-target attack. Deals 500% Reality DMG. While in [Blazing Glory], this attack deals an additional 500% Reality DMG and grants Mineral Energy +2.",
             "descZh": "【损耗】\n单体攻击，造成500%现实创伤，持有【赫赫之光】时，本次攻击额外造成500%现实创伤，并使岩交感能量+2",
             "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
-            "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
+            "artEn": "One must temper gold within the flames to achieve the purest victory.",
             "artZh": "需在烈火中与黄金较量，以获得品质纯正的胜利。",
             "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính.",
             "cost": 0,
@@ -8336,10 +8336,10 @@
         "ranks": {
           "1": {
             "id": 31560121,
-            "descEn": "[Interval]\nMass attack, deals 350% Reality DMG to all enemies; after attacking, inflicts [Seared] on the targets for 4 rounds.",
+            "descEn": "[Interval]\nMass attack. Deals 350% Reality DMG to all enemies. After attacking, inflicts [Seared] on the targets for 4 rounds.",
             "descZh": "【损耗】\n群体攻击，对敌方全体造成350%现实创伤，攻击后赋予目标【熔岩伤痕】，持续4回合",
             "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
-            "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
+            "artEn": "Her proud arrow transcends both oracles and fate.",
             "artZh": "穿透神谕与命运，她的箭镞足够骄傲。",
             "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn.",
             "cost": 2,
@@ -8350,14 +8350,14 @@
       {
         "slot": 3,
         "type": "Ultimate",
-        "nameEn": "The Thirteenth Feat",
+        "nameEn": "The Thirteenth Labor",
         "nameZh": "第十三项壮举",
         "nameVi": "The Thirteenth Feat",
         "icon": "images/skills/31560131.png",
-        "descEn": "[Switch: At Full Draw]\nMass attack, deals 800% Reality DMG to all enemies, and deals additional [Static Genesis DMG] to the primary target equal to 100% of [Aesthetic of Might], while dealing 50% [Static Genesis DMG] to non-primary targets. If [Flame Undying] is not held in the Spelldock at attack time, generates 1 [Flame Undying] in the Spelldock; otherwise, this attack deals an additional 800% Reality DMG. After attacking, grants self 1 stack of [Conduit Calibration II], and clears the recorded value of [Aesthetic of Might].",
+        "descEn": "[Switch: At Full Draw]\nMass attack. Deals 800% Reality DMG to all enemies, plus ([Absolute Prowess] x100%) [Static Genesis DMG] to the main target and ([Absolute Prowess] x50%) [Static Genesis DMG] to all other targets. When attacking, if [Flame Undying] is not in the Spelldock, generates 1 [Flame Undying]; otherwise, this attack deals an additional 800% Reality DMG. After attacking, gains 1 stack of [Conduit Calibration II] and clears all [Absolute Prowess] points.",
         "descZh": "【流转：金镞所向】\n群体攻击，对敌方全体造成800%的现实创伤，并对主目标额外造成【力量美学】100%的【稳态本源创伤】，对非主目标额外造成【力量美学】50%【稳态本源创伤】；攻击时若咒语区未持有【复燃再燃】，则在咒语区生成1张【复燃再燃】；否则本次攻击额外造成800%的现实创伤；攻击后赋予自身1层【术具调谐Ⅱ】，并清空【力量美学】的记录值",
         "descVi": "[Switch: At Full Draw]\nTấn công diện rộng, gây 800% Reality DMG lên toàn bộ kẻ địch, đồng thời gây thêm [Static Genesis DMG] lên mục tiêu chính bằng 100% [Aesthetic of Might], trong khi gây 50% [Static Genesis DMG] lên các mục tiêu không phải mục tiêu chính. Nếu lúc tấn công không có [Flame Undying] trong Spelldock, tạo 1 [Flame Undying] trong Spelldock; nếu không, đòn tấn công này gây thêm 800% Reality DMG. Sau khi tấn công, cấp cho bản thân 1 cộng dồn [Conduit Calibration II], và xóa giá trị đã ghi nhận của [Aesthetic of Might].",
-        "artEn": "For the next celebration, the sun should rise once again.",
+        "artEn": "For the next celebration, the sun must rise once again.",
         "artZh": "为了下一场庆贺，太阳理应再升起一次。",
         "artVi": "Cho lễ hội kế tiếp, mặt trời nên mọc lên một lần nữa.",
         "harmonization": -100
@@ -8375,7 +8375,7 @@
         "ranks": {
           "1": {
             "id": 31560182,
-            "descEn": "At the end of each round, smelts up to 2 unused basic Energy cards in the Spelldock, prioritizing lower-value basic Energy first; each 1 point of Energy smelted accumulates 1 point of [Flame Undying] Energy, up to 4 accumulated points, after which it stops smelting; stores up to 7 points; upon use, gains the accumulated amount of Mineral Energy.\nStarts in a locked state and cannot be used; once at least 1 point has accumulated, it unlocks and becomes usable; does not count against the team's Incantation Draw Limit, and does not consume AP.",
+            "descEn": "At the end of the round, smelts up to 2 unused basic Energy cards in the Spelldock, prioritizing basic Energy cards providing the fewest Energy. For each Energy on the smelted Energy cards, [Flame Undying] stores 1 Energy; Flame Undying stops smelting after storing 4 Energy and can store up to 7 Energy. When used, Flame Undying grants Mineral Energy equal to the amount of stored Energy.\nFlame Undying starts locked and cannot be used until it stores at least 1 Energy. Flame Undying does not take up the allied Incantation Limit and does not consume AP.",
             "descZh": "每回合结束时，熔炼至多2张咒语区未使用的普通交感能量，优先熔炼能量较低的普通交感能量，每熔炼1点交感能量可累积1点【复燃再燃】的能量，累积熔炼4点能量后不再熔炼，至多保存7点能量，使用后获得累积数量的岩交感能量；\n初始处于未解锁状态，不可使用，当累积熔炼1点能量及以上时，解锁变为可使用，不占己方咒语获取数量上限，不消耗行动点",
             "descVi": "Khi kết thúc mỗi round, nung chảy tối đa 2 thẻ Energy cơ bản chưa sử dụng trong Spelldock, ưu tiên Energy cơ bản có giá trị thấp trước; mỗi 1 điểm Energy được nung chảy tích lũy 1 điểm Energy [Flame Undying], tối đa tích lũy 4 điểm, sau đó dừng nung chảy; lưu trữ tối đa 7 điểm; khi sử dụng, nhận được lượng Mineral Energy đã tích lũy.\nBắt đầu ở trạng thái khóa và không thể sử dụng; khi đã tích lũy ít nhất 1 điểm, sẽ mở khóa và có thể sử dụng; không chiếm Giới hạn rút Incantation của phe ta và không tiêu hao AP.",
             "artEn": "",
@@ -8390,34 +8390,34 @@
         "nameEn": "Precognition",
         "nameZh": "先觉",
         "nameVi": "Precognition",
-        "descEn": "Does not gain regular Incantations or Ultimates; activates [Conduits] using Resonance Energy to cast Incantations. Moxie is replaced by Harmonization.\nUpon entering battle, generates 1 card of [Flame Undying] in the Spelldock and gains [Aesthetic of Might].",
+        "descEn": "Does not gain basic incantations or Ultimates. Casts incantations by activating a [Conduit] with Energy instead. Replaces Moxie with Harmonization.\nWhen entering battle, generates 1 [Flame Undying] in the Spelldock and gains [Absolute Prowess].",
         "descZh": "不会获得普通咒语与至终的仪式，通过交感能量发动【术具】释放咒语；激情点替换为同调值\n进入战斗时，在咒语区生成1张【复燃再燃】，并获得【力量美学】",
         "descVi": "Không nhận Incantation hay Ultimate thông thường; kích hoạt [Conduits] bằng Resonance Energy để thi triển Incantation. Moxie được thay thế bằng Harmonization.\nKhi vào trận, tạo 1 thẻ [Flame Undying] trong Spelldock và nhận [Aesthetic of Might]."
       },
       {
         "insight": 1,
-        "nameEn": "Pride of the Ever-Victorious",
+        "nameEn": "Victory Incarnate",
         "nameZh": "常胜者的矜高",
         "nameVi": "Pride of the Ever-Victorious",
-        "descEn": "When [Flame Undying] smelts Resonance Energy, grants self [Blazing Glory] for 3 rounds.\nThe [Flame Undying] generated upon entering battle has an initial accumulation of 2 Resonance Energy.",
+        "descEn": "Whenever [Flame Undying] smelts Energy, gains [Blazing Glory] for 3 rounds.\nThe [Flame Undying] generated when entering battle starts with 2 stored Energy.",
         "descZh": "【复燃再燃】熔炼交感能量时，使自身获得【赫赫之光】，持续3回合\n进入战斗时生成的【复燃再燃】，初始累积2点交感能量",
         "descVi": "Khi [Flame Undying] nung chảy Resonance Energy, cấp cho bản thân [Blazing Glory], duy trì 3 round.\n[Flame Undying] được tạo ra khi vào trận có sẵn 2 Resonance Energy tích lũy ban đầu."
       },
       {
         "insight": 2,
-        "nameEn": "Pride of the Ever-Victorious II",
+        "nameEn": "Victory Incarnate II",
         "nameZh": "常胜者的矜高Ⅱ",
         "nameVi": "Pride of the Ever-Victorious II",
-        "descEn": "When entering battle, DMG Dealt +8%.",
+        "descEn": "DMG Dealt +8% when entering battle.",
         "descZh": "进入战斗时，造成伤害提升8%",
         "descVi": "Khi vào trận, DMG Dealt +8%."
       },
       {
         "insight": 3,
-        "nameEn": "Pride of the Ever-Victorious III",
+        "nameEn": "Victory Incarnate III",
         "nameZh": "常胜者的矜高Ⅲ",
         "nameVi": "Pride of the Ever-Victorious III",
-        "descEn": "When entering battle, Hedone gains Harmonization +75.\nWhen any ally activates a Conduit, for every 1 point of Energy consumed by that Conduit, increases Hedone's Harmonization by 1.",
+        "descEn": "When entering battle, Hedone gains Harmonization +75.\nWhenever an ally activates a Conduit, for each Energy consumed by the Conduit, Hedone gains Harmonization +1.",
         "descZh": "进入战斗时，赫多涅使自身同调值+75；\n己方全体发动术具时，该术具每消耗1点能量，使赫多涅同调值+1",
         "descVi": "Khi vào trận, Hedone nhận Harmonization +75.\nKhi bất kỳ đồng minh nào kích hoạt Conduit, với mỗi 1 điểm Energy mà Conduit đó tiêu hao, Harmonization của Hedone tăng thêm 1."
       }
@@ -8425,31 +8425,31 @@
     "portrays": [
       {
         "level": 1,
-        "descEn": "[Flame Undying] At the end of each round, the number of unused basic Energy cards in the Spelldock that can be smelted is increased to up to 3 cards, the smeltable Energy that can be accumulated is increased to 6 points, and the maximum Energy stored is increased to 10 points. [Pride of the Ever-Victorious] The [Flame Undying] generated when entering battle has its initial recorded Energy increased to 4 points; self Harmonization gained is increased to 30; 1 [Mineral Energy I] in the deck has the Mineral Energy it grants increased to 2 points.",
+        "descEn": "[Flame Undying] now smelts up to 3 unused basic Energy cards in the Spelldock at the end of the round, stops smelting after storing 6 Energy, and can store up to 10 Energy. [Precognition]: The [Flame Undying] generated when entering battle now starts with 4 stored Energy.  and  now grant Harmonization +30. 1 copy of [Mineral Energy I] now grants Mineral Energy +2.",
         "descZh": "【复燃再燃】每回合结束时，熔炼咒语区未使用的普通交感能量提升至至多3张，可累积熔炼的能量提升至6点，至多保存的能量提升至10点；【先觉】进入战斗时生成的【复燃再燃】，初始记录的交感能量提升至4点；使自身获得同调值提升至30；卡组中1张【岩交感能量Ⅰ】获得岩交感能量提升至2",
         "descVi": "[Flame Undying] Khi kết thúc mỗi round, số thẻ Energy cơ bản chưa dùng trong Spelldock có thể nung chảy tăng thành tối đa 3 thẻ, Energy có thể nung chảy tích lũy tăng thành 6 điểm, và Energy lưu trữ tối đa tăng thành 10 điểm. [Pride of the Ever-Victorious] [Flame Undying] tạo ra khi vào trận có Energy ghi nhận ban đầu tăng thành 4 điểm; Harmonization bản thân nhận được tăng thành 30; 1 [Mineral Energy I] trong bộ bài có Mineral Energy cấp ra tăng thành 2 điểm."
       },
       {
         "level": 2,
-        "descEn": "[Pride of the Ever-Victorious] Upon entering battle, self Harmonization gained is increased to 100; [Blazing Glory] Conduit Might is increased to 20%, and the DMG Bonus upper limit is increased to 75%; 2 [Mineral Energy I] in the deck have the Mineral Energy they grant increased to 2 points.",
+        "descEn": "[Precognition]: When entering battle, Hedone now gains Harmonization +100. [Blazing Glory] now grants Conduit Might +20% and up to DMG Bonus +75%. 2 copies of [Mineral Energy I] now grant Mineral Energy +2.",
         "descZh": "【先觉】进入战斗时，使自身获得同调值提升至100；【赫赫之光】术具威力提升至20%，创伤加成上限提升至75%；卡组中2张【岩交感能量Ⅰ】获得岩交感能量提升至2",
         "descVi": "[Pride of the Ever-Victorious] Khi vào trận, Harmonization bản thân nhận được tăng thành 100; Conduit Might của [Blazing Glory] tăng thành 20%, và giới hạn trên DMG Bonus tăng thành 75%; 2 [Mineral Energy I] trong bộ bài có Mineral Energy cấp ra tăng thành 2 điểm."
       },
       {
         "level": 3,
-        "descEn": "[Forged in Glory] Reality DMG dealt increased to 800%; while holding [Blazing Glory], Mineral Energy gained increased to 3 points.",
+        "descEn": "now deals 800% Reality DMG and grants Mineral Energy +3 while in [Blazing Glory].",
         "descZh": "造成的现实创伤提升至800%，持有【赫赫之光】时，获得的岩交感能量提升至3",
         "descVi": "[Forged in Glory] Reality DMG gây ra tăng thành 800%; trong khi đang có [Blazing Glory], Mineral Energy nhận được tăng thành 3 điểm."
       },
       {
         "level": 4,
-        "descEn": "[The Thirteenth Feat] Reality DMG dealt increased to 1200%; [At Full Draw] [Seared] now increases DMG Dealt by 16% when attacked by a Conduit.",
+        "descEn": "[The Thirteenth Labor] now deals 1200% Reality DMG. : When an enemy afflicted with [Seared] is attacked by a Conduit, the attack now gains DMG Dealt +16%.",
         "descZh": "【第十三项壮举】造成的现实创伤提升至1200%；【熔岩伤痕】受到术具攻击时，使本次攻击造成伤害提升至16%",
         "descVi": "[The Thirteenth Feat] Reality DMG gây ra tăng thành 1200%; [At Full Draw] [Seared] giờ giúp tăng DMG Dealt thêm 16% khi bị Conduit tấn công."
       },
       {
         "level": 5,
-        "descEn": "[Flame Undying] Each 1 point of Energy smelted now accumulates [Flame Undying] Energy increased to 2 points, maximum accumulated smelted Energy increased to 8 points, and maximum stored Energy increased to 12 points. [Precognition] [Flame Undying] generated on battle entry has its initial recorded Energy increased to 6 points. [Aesthetic of Might] records damage dealt by allies' Incantations increased to 18%, and when target has [Seared], additional recorded value is increased to 18%. 2 [Mineral Energy II] in the deck grant Mineral Energy increased to 3 points.",
+        "descEn": "[Flame Undying] now stores 2 Energy for each Energy on the smelted Energy cards. [Flame Undying] now stops smelting after storing 8 Energy and can store up to 12 Energy. [Precognition]: The [Flame Undying] generated when entering battle now starts with 6 stored Energy. [Absolute Prowess] now records 18% of DMG dealt to enemies by allied incantations, and if a target is afflicted with [Seared], [Absolute Prowess] now records an additional 18%. 2 copies of [Mineral Energy II] now grant Mineral Energy +3.",
         "descZh": "【复燃再燃】每熔炼1点交感能量可累积【复燃再燃】的能量提升至2，可累积熔炼的能量提升至8点，至多保存的能量提升至12点；【先觉】进入战斗时生成的【复燃再燃】，初始记录的交感能量提升至6点；【力量美学】记录己方角色咒语对敌方造成过的伤害提升至18%，目标持有【熔岩伤痕】时，【力量美学】额外记录值提升至18%；卡组中2张【岩交感能量Ⅱ】获得岩交感能量提升至3",
         "descVi": "[Flame Undying] Mỗi 1 điểm Energy nung chảy giờ tích lũy Energy của [Flame Undying] tăng thành 2 điểm, Energy nung chảy tích lũy tối đa tăng thành 8 điểm, và Energy lưu trữ tối đa tăng thành 12 điểm. [Precognition] [Flame Undying] tạo ra khi vào trận có Energy ghi nhận ban đầu tăng thành 6 điểm. [Aesthetic of Might] giá trị sát thương do Incantation của đồng minh ghi nhận tăng thành 18%, và khi mục tiêu có [Seared], giá trị ghi nhận bổ sung tăng thành 18%. 2 [Mineral Energy II] trong bộ bài cấp Mineral Energy tăng thành 3 điểm."
       }
@@ -13711,7 +13711,7 @@
         "nameZh": "不再迷失的归途者",
         "nameVi": "Astray No More",
         "icon": "images/skills/31210131.png",
-        "descEn": "Mass attack. Deals 400% Reality DMG to all enemies. Grants 6 stacks of [Ceremonious: Critical DMG] to all allies.\nWhen actively launched, this attack deals 300% additional Reality DMG to all enemies.\nWhen launched as a riposte, for every 4 stacks of [Readiness], grants 1 additional stacks of [Ceremonious: Critical DMG] to all allies; gains [Doctrine] to self for 2 rounds.",
+        "descEn": "Mass attack. Deals 400% Reality DMG to all enemies. Grants 6 stacks of [Ceremonious: Critical DMG] to all allies.\nWhen actively cast, this attack deals 300% additional Reality DMG to all enemies.\nWhen cast as a riposte, for every 4 stacks of [Readiness], grants 1 additional stacks of [Ceremonious: Critical DMG] to all allies; gains [Doctrine] to self for 2 rounds.",
         "descZh": "群体攻击，对敌方全体造成400%现实创伤，使己方全体获得6层【礼仪：暴击创伤】；\n若主动释放，额外对敌方全体造成300%现实创伤；\n若反击释放，当前每有4层【战备】，额外使己方全体获得1层【礼仪：暴击创伤】；使自身获得【教条】，持续2回合",
         "descVi": "Tấn công diện rộng. Gây 400% Reality DMG lên toàn bộ kẻ địch. Cấp 6 cộng dồn [Ceremonious: Critical DMG] cho toàn bộ phe ta.\nKhi chủ động phát động, đòn tấn công này gây thêm 300% Reality DMG lên toàn bộ kẻ địch.\nKhi phát động dưới dạng Riposte, với mỗi 4 cộng dồn [Readiness], cấp thêm 1 cộng dồn [Ceremonious: Critical DMG] cho toàn bộ phe ta; bản thân nhận [Doctrine], duy trì 2 round.",
         "artEn": "With countless rivers and roads stretched behind her, she walks towards the only destination that matters — home.",
@@ -13775,7 +13775,7 @@
       },
       {
         "level": 5,
-        "descEn": "[Astray No More]: When actively launched, additional Reality DMG dealt to all enemies is increased to 600%. [Doctrine]'s Ultimate Might is increased to 30%.",
+        "descEn": "[Astray No More]: When actively cast, additional Reality DMG dealt to all enemies is increased to 600%. [Doctrine]'s Ultimate Might is increased to 30%.",
         "descZh": "【不再迷失的归途者】若主动释放，额外对敌方全体造成现实创伤提升至600%，【教条】仪式威力提升至30%",
         "descVi": "[Astray No More]: Khi chủ động phát động, Reality DMG cộng thêm gây lên toàn bộ kẻ địch tăng thành 600%. Ultimate Might của [Doctrine] tăng thành 30%."
       }
@@ -14914,28 +14914,28 @@
         "ranks": {
           "1": {
             "id": 31570111,
-            "descEn": "1-target attack, deals 200% Mental DMG, inflicts the target 2 stacks of [Tidal Tempo], lasting 2 rounds; when actively used, inflicts the target 1 stack of [Passion Drain].",
+            "descEn": "1-target attack. Deals 200% Mental DMG. Inflicts 2 stacks of [Tidal Tempo] on the target for 2 rounds.\nWhen actively cast, inflicts 1 stack of [Passion Drain] on the target.",
             "descZh": "单体攻击，造成200%精神创伤，赋予目标2层【海浪节奏】，持续2回合；\n主动使用时，赋予目标1层【激情萃取】",
             "descVi": "Tấn công đơn mục tiêu, gây 200% Mental DMG, gây 2 cộng dồn [Tidal Tempo] lên mục tiêu, duy trì 2 round; khi chủ động sử dụng, gây 1 cộng dồn [Passion Drain] lên mục tiêu.",
-            "artEn": "Life is more than a tranquil spring.",
+            "artEn": "Life isn't limited to the tranquil spring.",
             "artZh": "生活不止在平静的泉中。",
             "artVi": "Cuộc đời không chỉ là một dòng suối lặng yên."
           },
           "2": {
             "id": 31570112,
-            "descEn": "1-target attack, deals 300% Mental DMG, inflicts the target 3 stacks of [Tidal Tempo], lasting 2 rounds; when actively used, inflicts the target 1 stack of [Passion Drain].",
+            "descEn": "1-target attack. Deals 300% Mental DMG. Inflicts 3 stacks of [Tidal Tempo] on the target for 2 rounds.\nWhen actively cast, inflicts 1 stack of [Passion Drain] on the target.",
             "descZh": "单体攻击，造成300%精神创伤，赋予目标3层【海浪节奏】，持续2回合；\n主动使用时，赋予目标1层【激情萃取】",
             "descVi": "Tấn công đơn mục tiêu, gây 300% Mental DMG, gây 3 cộng dồn [Tidal Tempo] lên mục tiêu, duy trì 2 round; khi chủ động sử dụng, gây 1 cộng dồn [Passion Drain] lên mục tiêu.",
-            "artEn": "Life is more than a tranquil spring; she was the first to dive into the waves.",
+            "artEn": "Life isn't limited to the tranquil spring; she took the initiative to leap into the waves.",
             "artZh": "生活不止在平静的泉中，她率先跃入浪涛。",
             "artVi": "Cuộc đời không chỉ là một dòng suối lặng yên; cô là người đầu tiên lao mình vào những con sóng."
           },
           "3": {
             "id": 31570113,
-            "descEn": "1-target attack, deals 500% Mental DMG, inflicts the target 5 stacks of [Tidal Tempo], lasting 2 rounds; when actively used, inflicts the target 1 stack of [Passion Drain].",
+            "descEn": "1-target attack. Deals 500% Mental DMG. Inflicts 5 stacks of [Tidal Tempo] on the target for 2 rounds.\nWhen actively cast, inflicts 1 stack of [Passion Drain] on the target.",
             "descZh": "单体攻击，造成500%精神创伤，赋予目标5层【海浪节奏】，持续2回合；\n主动使用时，赋予目标1层【激情萃取】",
             "descVi": "Tấn công đơn mục tiêu, gây 500% Mental DMG, gây 5 cộng dồn [Tidal Tempo] lên mục tiêu, duy trì 2 round; khi chủ động sử dụng, gây 1 cộng dồn [Passion Drain] lên mục tiêu.",
-            "artEn": "Life is more than a tranquil spring; she was the first to dive into the waves, just as the oracle proclaimed.",
+            "artEn": "Life isn't limited to the tranquil spring; she took the initiative to leap into the waves, as the oracle foretold.",
             "artZh": "生活不止在平静的泉中，她率先跃入浪涛，正如神谕所说的那样。",
             "artVi": "Cuộc đời không chỉ là một dòng suối lặng yên; cô là người đầu tiên lao mình vào những con sóng, đúng như lời sấm truyền."
           }
@@ -14952,28 +14952,28 @@
         "ranks": {
           "1": {
             "id": 31570121,
-            "descEn": "Mass Heal, recovers HP for all allies equal to the caster's ATK x160%; this heal additionally adds [Ripple] equal to 20% of the heal amount. If self is in [Zero-Proof Revelry], dispels 1 instance each of [Neg Status]/[Stats Down] from the whole team.",
+            "descEn": "Mass heal. Recovers (the user's ATK x160%) HP for all allies. This instance of healing grants an additional 20% [Ripple] value.\nIf in the [Zero-Proof Revelry] status, dispels 1 type of [Neg Status] or [Stats Down] effect from all allies.",
             "descZh": "群体治疗，使己方全体回复使用者攻击*160%的生命，本次治疗额外添加20%的【涟漪】\n若自身处于【无酒精畅饮】状态，驱散己方全体1种【状态异常】【属性削弱】",
             "descVi": "Hồi máu diện rộng, hồi phục HP cho toàn bộ phe ta bằng (ATK của người thi triển ×160%); lượng hồi máu này còn bổ sung [Ripple] bằng 20% lượng hồi máu. Nếu bản thân đang ở [Zero-Proof Revelry], xua tan 1 hiệu ứng [Neg Status]/[Stats Down] mỗi loại khỏi toàn bộ phe ta.",
-            "artEn": "The ripple is small.",
+            "artEn": "That ripple is small.",
             "artZh": "那涟漪很小。",
             "artVi": "Gợn sóng thật nhỏ."
           },
           "2": {
             "id": 31570122,
-            "descEn": "Mass Heal, recovers HP for all allies equal to the caster's ATK x200%; this heal additionally adds [Ripple] equal to 20% of the heal amount. If self is in [Zero-Proof Revelry], dispels 1 instance each of [Neg Status]/[Stats Down] from the whole team.",
+            "descEn": "Mass heal. Recovers (the user's ATK x200%) HP for all allies. This instance of healing grants an additional 20% [Ripple] value.\nIf in the [Zero-Proof Revelry] status, dispels 1 type of [Neg Status] or [Stats Down] effect from all allies.",
             "descZh": "群体治疗，使己方全体回复使用者攻击*200%的生命，本次治疗额外添加20%的【涟漪】\n若自身处于【无酒精畅饮】状态，驱散己方全体1种【状态异常】【属性削弱】",
             "descVi": "Hồi máu diện rộng, hồi phục HP cho toàn bộ phe ta bằng (ATK của người thi triển ×200%); lượng hồi máu này còn bổ sung [Ripple] bằng 20% lượng hồi máu. Nếu bản thân đang ở [Zero-Proof Revelry], xua tan 1 hiệu ứng [Neg Status]/[Stats Down] mỗi loại khỏi toàn bộ phe ta.",
-            "artEn": "The ripple is small, yet it reflects all of her.",
+            "artEn": "That ripple is small, yet it reflects her in her entirety.",
             "artZh": "那涟漪很小，但映照着她的全部。",
             "artVi": "Gợn sóng thật nhỏ, nhưng phản chiếu trọn vẹn con người cô."
           },
           "3": {
             "id": 31570123,
-            "descEn": "Mass Heal, recovers HP for all allies equal to the caster's ATK x360%; this heal additionally adds [Ripple] equal to 20% of the heal amount. If self is in [Zero-Proof Revelry], dispels 1 instance each of [Neg Status]/[Stats Down] from the whole team.",
+            "descEn": "Mass heal. Recovers (the user's ATK x360%) HP for all allies. This instance of healing grants an additional 20% [Ripple] value.\nIf in the [Zero-Proof Revelry] status, dispels 1 type of [Neg Status] or [Stats Down] effect from all allies.",
             "descZh": "群体治疗，使己方全体回复使用者攻击*360%的生命，本次治疗额外添加20%的【涟漪】\n若自身处于【无酒精畅饮】状态，驱散己方全体1种【状态异常】【属性削弱】",
             "descVi": "Hồi máu diện rộng, hồi phục HP cho toàn bộ phe ta bằng (ATK của người thi triển ×360%); lượng hồi máu này còn bổ sung [Ripple] bằng 20% lượng hồi máu. Nếu bản thân đang ở [Zero-Proof Revelry], xua tan 1 hiệu ứng [Neg Status]/[Stats Down] mỗi loại khỏi toàn bộ phe ta.",
-            "artEn": "The ripple is small, yet it reflects all of her, along with her small ambitions and the world.",
+            "artEn": "That ripple is small, yet it reflects her in her entirety, along with her tiny ambitions and her world.",
             "artZh": "那涟漪很小，但映照着她的全部，连同小小的野心和世界。",
             "artVi": "Gợn sóng thật nhỏ, nhưng phản chiếu trọn vẹn con người cô, cùng những hoài bão nhỏ bé và cả thế giới."
           }
@@ -14986,10 +14986,10 @@
         "nameZh": "泉水宁芙的冒险",
         "nameVi": "Her Odyssean Quest",
         "icon": "images/skills/31570131.png",
-        "descEn": "Self-buff, enters [Zero-Proof Revelry], lasting 3 rounds.",
+        "descEn": "Self buff. Enters the [Zero-Proof Revelry] status for 3 rounds.",
         "descZh": "自我增强，进入【无酒精畅饮】状态，持续3回合",
         "descVi": "Tự cường hóa, tiến vào [Zero-Proof Revelry], duy trì 3 round.",
-        "artEn": "Before setting out, why not down a cup? It helps against the blazing sun, the dry earth, and a sea too vast to cross.",
+        "artEn": "Why not have a drink before you go? It'll help against the glaring sun, desolate land, and vast ocean.",
         "artZh": "上路前不妨痛饮一杯，这有助于对抗烈日、干燥陆地和过于辽阔的海洋。",
         "artVi": "Trước khi lên đường, sao không uống một chén? Nó giúp chống lại mặt trời chói chang, đất đai khô cằn, và biển cả mênh mông khó vượt."
       }
@@ -15000,22 +15000,22 @@
         "nameEn": "Precognition",
         "nameZh": "先觉",
         "nameVi": "Precognition",
-        "descEn": "After Narcissus heals any target, she additionally adds [Ripple] to the target equal to 20% of the heal amount, up to a maximum of self ATK on entry x150%.\nWhen an ally holding [Ripple] releases an Ultimate attack, their Critical Rate/Critical DMG is increased by 20%/60%.",
+        "descEn": "After Narcissus heals any target, she additionally grants (HP healed x20%) [Ripple] value to the target. The maximum value of [Ripple] is equal to Narcissus's ATK when entering battle x150%.\nWhenever an ally with [Ripple] attacks with an Ultimate, their attack gains Critical Rate +20% and Critical DMG +60%.",
         "descZh": "纳西索斯在为任意目标治疗后，额外为目标添加等同于治疗值20%的【涟漪】，【涟漪】上限为自身入场时攻击*150%；\n持有【涟漪】的己方，释放至终的仪式攻击时，暴击率/暴击创伤提升20%/60%",
         "descVi": "Sau khi Narcissus hồi máu cho bất kỳ mục tiêu nào, cô còn bổ sung [Ripple] lên mục tiêu với giá trị bằng 20% lượng hồi máu, tối đa bằng (ATK của bản thân khi vào trận ×150%).\nKhi đồng minh đang sở hữu [Ripple] thi triển Ultimate, Critical Rate/Critical DMG của họ tăng thêm 20%/60%."
       },
       {
         "insight": 1,
-        "nameEn": "Narcissus Inflorescence",
+        "nameEn": "Trumpet of Victory",
         "nameZh": "水仙花序",
         "nameVi": "Narcissus Inflorescence",
-        "descEn": "After any ally releases an Ultimate, Narcissus recovers HP for the whole team equal to (Moxie consumed by that Ultimate x self ATK x20%) (if no Moxie is consumed, regarded as consuming 1 point; cannot Crit).\nWhile Narcissus is under [Zero-Proof Revelry], all allies are immune to [Control] up to 4 times each round; at the end of the allies' round, Narcissus grants self 2 stacks of [Oracle's Riddle] and increases self Moxie by 1.",
+        "descEn": "After any ally casts an Ultimate, Narcissus recovers (Narcissus's ATK x20%) HP for all allies per Moxie consumed by the Ultimate (Ultimates that do not consume Moxie count as having consumed 1 Moxie; this healing cannot crit).\nWhile Narcissus is in the [Zero-Proof Revelry] status, she can prevent up to 4 [Control] effects inflicted on all allies each round, and at the end of the allied round, she gains 2 stacks of [Oracle's Riddle] and Moxie +1.",
         "descZh": "任意己方释放至终的仪式后，纳西索斯为己方全体回复该次至终的仪式消耗激情数*自身攻击*20%的生命（若不消耗激情则视为消耗1点，无法暴击）；\n纳西索斯处于【无酒精畅饮】状态时，己方全体每回合至多免疫4次【控制】，己方回合结束时纳西索斯赋予自身2层【未解的神谕】，并使自身激情+1",
         "descVi": "Sau khi bất kỳ đồng minh nào thi triển Ultimate, Narcissus hồi HP cho toàn bộ phe ta bằng (Moxie mà Ultimate đó tiêu hao × ATK của bản thân ×20%) (nếu không tiêu hao Moxie, tính như đã tiêu hao 1 điểm; không thể bạo kích).\nKhi Narcissus đang ở trạng thái [Zero-Proof Revelry], toàn bộ phe ta miễn nhiễm [Control] tối đa 4 lần mỗi round; khi kết thúc round của phe ta, Narcissus cấp cho bản thân 2 cộng dồn [Oracle's Riddle] và tăng Moxie của bản thân thêm 1."
       },
       {
         "insight": 2,
-        "nameEn": "Narcissus Inflorescence II",
+        "nameEn": "Trumpet of Victory II",
         "nameZh": "水仙花序Ⅱ",
         "nameVi": "Narcissus Inflorescence II",
         "descEn": "Healing Done +10% when entering battle.",
@@ -15024,10 +15024,10 @@
       },
       {
         "insight": 3,
-        "nameEn": "Narcissus Inflorescence III",
+        "nameEn": "Trumpet of Victory III",
         "nameZh": "水仙花序Ⅲ",
         "nameVi": "Narcissus Inflorescence III",
-        "descEn": "When entering battle, Narcissus increases self Moxie by 4.\nWhile self is on the field, the whole team's Ultimates do not occupy Incantation quota, DMG Taken Reduction +30%, and the team's overflowing Moxie is temporarily stored. At round end, if that character has empty Moxie capacity, it is replenished (each character can store up to 5 Moxie).",
+        "descEn": "When entering battle, Narcissus gains Moxie +4.\nWhile Narcissus is present, all allied Ultimates do not take up the allied Incantation Limit, all allies gain DMG Taken Reduction +30%, and all allies can reserve up to 5 excess Moxie (replenished at the end of the round if applicable).",
         "descZh": "进入战斗时，纳西索斯使自身激情+4；\n自身在场时，己方全体至终的仪式不占咒语获取数量上限，受创减免+30%，己方全体溢出的激情会被临时储存，回合结束时若该角色激情空余时补充，每个角色最多储存5点激情；",
         "descVi": "Khi vào trận, Narcissus tăng Moxie của bản thân thêm 4.\nKhi bản thân còn trên sân, Ultimate của toàn bộ phe ta không chiếm hạn mức Incantation, DMG Taken Reduction +30%, và lượng Moxie tràn của phe ta được tạm thời lưu trữ. Khi kết thúc round, nếu nhân vật đó còn chỗ trống Moxie, sẽ được bổ sung (mỗi nhân vật chỉ có thể lưu trữ tối đa 5 Moxie)."
       }
@@ -15035,31 +15035,31 @@
     "portrays": [
       {
         "level": 1,
-        "descEn": "[Her Odyssean Quest] [Zero-Proof Revelry]'s duration is increased to 4 rounds, base Ultimate Might is increased to 40%, and additional Ultimate Might is increased to 2% per point of Moxie; [Narcissus Inflorescence] Moxie increased upon entering battle is raised to 5.",
+        "descEn": "[Her Odyssean Quest]: [Zero-Proof Revelry] now lasts 4 rounds and grants Ultimate Might +40% at base, plus an additional Ultimate Might +2% for each Moxie consumed.\n[Trumpet of Victory]: When entering battle, now gains Moxie +5.",
         "descZh": "【泉水宁芙的冒险】【无酒精畅饮】持续回合数提升至4，基础仪式威力提升至40%，额外仪式威力提升至每点激情2%；\n【水仙花序】进入战斗时增加的激情提升至5点",
         "descVi": "[Her Odyssean Quest] Thời lượng của [Zero-Proof Revelry] tăng thành 4 round, Ultimate Might cơ bản tăng thành 40%, và Ultimate Might bổ sung tăng thành 2% mỗi điểm Moxie; [Narcissus Inflorescence] Moxie tăng thêm khi vào trận được nâng lên 5."
       },
       {
         "level": 2,
-        "descEn": "[Narcissus Inflorescence] for allies holding [Ripple], when they release an Ultimate attack, Critical Rate/Critical DMG is increased to 30%/80%; after an ally releases an Ultimate, Narcissus's heal for the whole team is increased to (Moxie consumed by that Ultimate x self ATK x30%).",
+        "descEn": "[Precognition]: Whenever an ally with [Ripple] attacks with an Ultimate, their attack now gains Critical Rate +30% and Critical DMG +80%.\nAfter any ally casts an Ultimate, Narcissus now recovers (Narcissus's ATK x30%) HP for all allies per Moxie consumed by the Ultimate.",
         "descZh": "【先觉】持有【涟漪】的己方释放至终的仪式时，暴击率/暴击创伤提升30%/80%；\n己方释放至终的仪式后，纳西索斯对己方全体的治疗提升至仪式消耗激情数*自身攻击*30%",
         "descVi": "[Narcissus Inflorescence] Với đồng minh đang có [Ripple], khi họ thi triển đòn Ultimate, Critical Rate/Critical DMG tăng thành 30%/80%; sau khi đồng minh thi triển Ultimate, lượng hồi máu của Narcissus cho toàn bộ phe ta tăng thành (Moxie mà Ultimate đó tiêu hao × ATK của bản thân ×30%)."
       },
       {
         "level": 3,
-        "descEn": "[Narcissus Inflorescence] the proportion of [Ripple] added after self heals is increased to 30% of the heal amount, and the maximum [Ripple] is increased to self ATK on entry x200%; when incoming damage is greater than or equal to current [Ripple], the reduction effect is increased to 40%.",
+        "descEn": "[Precognition]: After Narcissus heals any target, she now grants (HP healed x30%) [Ripple] value to the target. The maximum value of [Ripple] is now equal to Narcissus's ATK when entering battle x200%.\n[Ripple] now grants DMG Taken -40% when the holder is about to take DMG greater than or equal to the [Ripple] value.",
         "descZh": "【先觉】自身治疗后添加【涟漪】的比例提升至治疗值的30%，【涟漪】上限提升至自身入场时攻击*200%；\n【涟漪】即将受到的伤害大于等于当前【涟漪】值时，减免效果提升至40%",
         "descVi": "[Narcissus Inflorescence] Tỷ lệ [Ripple] được cộng thêm sau khi bản thân hồi máu tăng thành 30% lượng hồi máu, và [Ripple] tối đa tăng thành ATK của bản thân khi vào trận ×200%; khi sát thương nhận vào lớn hơn hoặc bằng [Ripple] hiện có, hiệu ứng giảm sát thương tăng thành 40%."
       },
       {
         "level": 4,
-        "descEn": "[Fists and Fins] [Tidal Tempo]: for every 1 point of Moxie Narcissus and her allies consume via an Ultimate during the round, the Genesis DMG dealt is increased to Narcissus's ATK x22.5% x stacks; [Go Go Daffodil] at rank 1/2/3, the healing coefficient is increased to 200%/250%/450%.",
+        "descEn": "[Fists and Fins]: [Tidal Tempo] now deals (Narcissus's ATK x22.5%) Genesis DMG per stack for each Moxie consumed by Narcissus's and her allies' Ultimates.\n[Go Go Daffodil] now recovers (Narcissus's ATK x200%/250%/450%) HP at rank 1/2/3.",
         "descZh": "【拳头与掌蹼】【海浪节奏】纳西索斯和她的友方每通过至终的仪式消耗1点激情，造成的本源创伤提升至纳西索斯攻击*22.5%*层数；\n【水仙啦啦队】在1/2/3阶时，治疗系数提升至200%/250%/450%",
         "descVi": "[Fists and Fins] [Tidal Tempo]: với mỗi 1 điểm Moxie mà Narcissus và đồng minh tiêu hao qua Ultimate trong round, Genesis DMG gây ra tăng thành ATK của Narcissus ×22.5% × số cộng dồn; [Go Go Daffodil] ở Incantation hạng 1/2/3, hệ số hồi máu tăng thành 200%/250%/450%."
       },
       {
         "level": 5,
-        "descEn": "[Her Odyssean Quest] [Zero-Proof Revelry] base Ultimate Might is increased to 50%, and additional Ultimate Might is increased to 2.5% per point of Moxie; [Narcissus Inflorescence] for allies holding [Ripple], when they release an Ultimate attack, Critical Rate/Critical DMG is increased to 40%/100%.",
+        "descEn": "[Her Odyssean Quest]: [Zero-Proof Revelry] now grants Ultimate Might +50% at base, plus an additional Ultimate Might +2.5% for each Moxie consumed.\n[Precognition]: Whenever an ally with [Ripple] attacks with an Ultimate, their attack now gains Critical Rate +40% and Critical DMG +100%.",
         "descZh": "【泉水宁芙的冒险】【无酒精畅饮】基础仪式威力提升至50%，额外仪式威力提升至每点激情2.5%；\n【先觉】持有【涟漪】的己方释放至终的仪式时，暴击率/暴击创伤提升40%/100%",
         "descVi": "[Her Odyssean Quest] Ultimate Might cơ bản của [Zero-Proof Revelry] tăng thành 50%, và Ultimate Might bổ sung tăng thành 2.5% mỗi điểm Moxie; [Narcissus Inflorescence] với đồng minh đang có [Ripple], khi họ thi triển đòn Ultimate, Critical Rate/Critical DMG tăng thành 40%/100%."
       }
@@ -15750,8 +15750,8 @@
       },
       {
         "level": 3,
-        "descEn": "[Miniature Set III]: [Genius Idea]'s stack limit is increased to 12.",
-        "descZh": "【微缩片场Ⅲ】【鬼才灵感】的层数上限提升至12层",
+        "descEn": "[Miniature Set]: [Genius Idea]'s stack limit is increased to 12.",
+        "descZh": "【微缩片场】【鬼才灵感】的层数上限提升至12层",
         "descVi": "[Miniature Set III]: Giới hạn cộng dồn của [Genius Idea] tăng thành 12."
       },
       {
@@ -16929,7 +16929,7 @@
         "ranks": {
           "1": {
             "id": 30960111,
-            "descEn": "1-target attack. Deals 200% Mental DMG, then shifts self 1 position forward.",
+            "descEn": "1-target attack. Deals 200% Mental DMG, then shifts 1 position forward.",
             "descZh": "单体攻击，对目标造成200%精神创伤，之后使自身向前位移1位",
             "descVi": "Tấn công đơn mục tiêu. Gây 200% Mental DMG, sau đó bản thân tiến lên 1 vị trí.",
             "artEn": "A foundational concept.",
@@ -16938,7 +16938,7 @@
           },
           "2": {
             "id": 30960112,
-            "descEn": "1-target attack. Deals 300% Mental DMG, then shifts self 2 positions forward.",
+            "descEn": "1-target attack. Deals 300% Mental DMG, then shifts 2 positions forward.",
             "descZh": "单体攻击，对目标造成300%精神创伤，之后使自身向前位移2位",
             "descVi": "Tấn công đơn mục tiêu. Gây 300% Mental DMG, sau đó bản thân tiến lên 2 vị trí.",
             "artEn": "A foundational concept in the world of commerce.",
@@ -16947,7 +16947,7 @@
           },
           "3": {
             "id": 30960113,
-            "descEn": "1-target attack. Deals 500% Mental DMG, then shifts self 3 positions forward.",
+            "descEn": "1-target attack. Deals 500% Mental DMG, then shifts 3 positions forward.",
             "descZh": "单体攻击，对目标造成500%精神创伤，之后使自身向前位移3位",
             "descVi": "Tấn công đơn mục tiêu. Gây 500% Mental DMG, sau đó bản thân tiến lên 3 vị trí.",
             "artEn": "A foundational concept in the world of commerce, relevant both to shopping malls and street.",
@@ -16967,7 +16967,7 @@
         "ranks": {
           "1": {
             "id": 30960121,
-            "descEn": "Self counter. Grants [Taunt], Reality DEF +25%, and Mental DEF +25% to self for 2 rounds, then shifts self 1 position backward.",
+            "descEn": "Self counter. Gains [Taunt], Reality DEF +25%, and Mental DEF +25% for 2 rounds, then shifts 1 position backward.",
             "descZh": "自我反制，使自身获得【嘲讽】，现实防御、精神防御提升25%，持续2回合，之后使自身向后位移1位",
             "descVi": "Counter bản thân. Cấp cho bản thân [Taunt], Reality DEF +25% và Mental DEF +25%, duy trì 2 round, sau đó bản thân lùi lại 1 vị trí.",
             "artEn": "A savvy entrepreneur will accompany the customer as they leave.",
@@ -16976,7 +16976,7 @@
           },
           "2": {
             "id": 30960122,
-            "descEn": "Self counter. Grants [Taunt], Reality DEF +30%, and Mental DEF +30% to self for 2 rounds, then shifts self 2 positions backward.",
+            "descEn": "Self counter. Gains [Taunt], Reality DEF +30%, and Mental DEF +30% for 2 rounds, then shifts 2 positions backward.",
             "descZh": "自我反制，使自身获得【嘲讽】，现实防御、精神防御提升30%，持续2回合，之后使自身向后位移2位",
             "descVi": "Counter bản thân. Cấp cho bản thân [Taunt], Reality DEF +30% và Mental DEF +30%, duy trì 2 round, sau đó bản thân lùi lại 2 vị trí.",
             "artEn": "A savvy entrepreneur will accompany the customer as they leave, even if no deal is made.",
@@ -16985,7 +16985,7 @@
           },
           "3": {
             "id": 30960123,
-            "descEn": "Self counter. Grants [Taunt], Reality DEF +35%, and Mental DEF +35% to self for 3 rounds, then shifts self 3 position backward.",
+            "descEn": "Self counter. Gains [Taunt], Reality DEF +35%, and Mental DEF +35% for 3 rounds, then shifts 3 positions backward.",
             "descZh": "自我反制，使自身获得【嘲讽】，现实防御、精神防御提升35%，持续3回合，之后使自身向后位移3位",
             "descVi": "Counter bản thân. Cấp cho bản thân [Taunt], Reality DEF +35% và Mental DEF +35%, duy trì 3 round, sau đó bản thân lùi lại 3 vị trí.",
             "artEn": "A savvy entrepreneur will accompany the customer as they leave; \"no deal\" simply means that a deal has not yet been made.",
@@ -19135,7 +19135,7 @@
           },
           "2": {
             "id": 30720112,
-            "descEn": "1-target attack. Deals 250% Reality DMG and grants the caster 1 stack of [Nature's Blessing].",
+            "descEn": "1-target attack. Deals 250% Reality DMG and gains 1 stack of [Nature's Blessing].",
             "descZh": "单体攻击，造成250%现实创伤，赋予自身1层【自然的庇护】",
             "descVi": "Tấn công đơn mục tiêu. Gây 250% Reality DMG và giúp người thi triển nhận 1 cộng dồn [Nature's Blessing].",
             "artEn": "He learned this dance where the snow melted, and is determined to teach it to you.",
@@ -19144,7 +19144,7 @@
           },
           "3": {
             "id": 30720113,
-            "descEn": "1-target attack. Deals 450% Reality DMG and grants the caster 1 stack of [Nature's Blessing].",
+            "descEn": "1-target attack. Deals 450% Reality DMG and gains 1 stack of [Nature's Blessing].",
             "descZh": "单体攻击，造成450%现实创伤，赋予自身1层【自然的庇护】",
             "descVi": "Tấn công đơn mục tiêu. Gây 450% Reality DMG và giúp người thi triển nhận 1 cộng dồn [Nature's Blessing].",
             "artEn": "He learned this dance where the snow melted, and is determined to teach it to you without reservation.",
@@ -22033,7 +22033,7 @@
         "ranks": {
           "1": {
             "id": 31010111,
-            "descEn": "Deals 80% Reality DMG to all enemies, then shifts self 1 position backward.",
+            "descEn": "Deals 80% Reality DMG to all enemies, then shifts 1 position backward.",
             "descZh": "对敌方全体造成80%现实伤害，之后自身向后位移1位",
             "descVi": "Gây 80% Reality DMG lên toàn bộ kẻ địch, sau đó bản thân lùi lại 1 vị trí.",
             "artEn": "Take aim—and fire!",
@@ -22042,7 +22042,7 @@
           },
           "2": {
             "id": 31010112,
-            "descEn": "Deals 120% Reality DMG to all enemies, then shifts self 1 position backward.",
+            "descEn": "Deals 120% Reality DMG to all enemies, then shifts 1 position backward.",
             "descZh": "对敌方全体造成120%现实伤害，之后自身向后位移1位",
             "descVi": "Gây 120% Reality DMG lên toàn bộ kẻ địch, sau đó bản thân lùi lại 1 vị trí.",
             "artEn": "Take aim—and fire! Make sure to cover your ears!",
@@ -22051,7 +22051,7 @@
           },
           "3": {
             "id": 31010113,
-            "descEn": "Deals 200% Reality DMG to all enemies, then shifts self 1 position backward.",
+            "descEn": "Deals 200% Reality DMG to all enemies, then shifts 1 position backward.",
             "descZh": "对敌方全体造成200%现实伤害，之后自身向后位移1位",
             "descVi": "Gây 200% Reality DMG lên toàn bộ kẻ địch, sau đó bản thân lùi lại 1 vị trí.",
             "artEn": "Take aim—and fire! Make sure to cover your ears! Too late, oops!",
@@ -22119,7 +22119,7 @@
         "nameEn": "Privateering License",
         "nameZh": "私掠许可",
         "nameVi": "Privateering License",
-        "descEn": "When receiving a shift effect, for every position shifted backward, gain 1 stack of [Rousing Morale], for every position shifted forward, gain 1 stack of [Sturdiness].",
+        "descEn": "When shifting, for each position shifted backward, gains 1 stack of [Rousing Morale], and for each position shifted forward, gains 1 stack of [Sturdiness].",
         "descZh": "受到位移时，每向后位移1位，赋予自身1层【激昂】，每向前位移1位，赋予自身1层【坚固】",
         "descVi": "Khi nhận hiệu ứng dịch chuyển, với mỗi vị trí bị dịch về phía sau, nhận 1 cộng dồn [Rousing Morale]; với mỗi vị trí bị dịch về phía trước, nhận 1 cộng dồn [Sturdiness]."
       },
