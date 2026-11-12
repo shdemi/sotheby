@@ -7281,9 +7281,15 @@ function setupCharacterMatsListeners(host) {
 let charSkillsActiveTab = "skills"; // "skills" | "weapons" | "insights" | "portrays" | "euphoria"
 let charSkillSelectedIdx = 0; // Index of selected skill card
 let charSkillSelectedRank = 3; // Selected rank for active skill (1, 2, or 3)
+// Rank picked inside each cast option of an Adaptive card (Brume / Nautika), keyed by
+// the option's ★1 skill id — each option has its own ★1/★2/★3 picker.
+let charSkillAdaptiveRanks = {};
 let charSkillsActiveStance = null; // Active stance for multi-form characters (e.g. "Base", "Bendith", "Set A")
 let charSkillsEuphoriaRank = 0; // 0 = hide Euphoria-gated cards; N = show cards unlocked up to EN
 let charSkillsEuphoriaChar = null; // Character the Euphoria switch belongs to
+// Reinforce switch (Lucy): 0 = base card, 1 = its reinforced text (初始 / 升华).
+let charSkillsReinforceLevel = 0;
+let charSkillsReinforceChar = null; // Character the Reinforce switch belongs to
 let charWeaponsSelectedIdx = 0; // Index of selected weapon for Collab chars (Ezio / Kassandra)
 let charEzioPrimary = "venetian-falchion"; // "venetian-falchion" | "condottiero-war-hammer" | "captain-s-sword"
 let charEzioSecondary = "channeled-cinquedea"; // "channeled-cinquedea" | "butcher-knife" | "sultan-s-knife"
@@ -7364,13 +7370,31 @@ function getSkillsForStance(skills, activeStance) {
   });
 }
 
+// The Adaptive card's own line names the rank it casts at ("Choose 1 out of rank 1 [A]
+// and [B]"), but each option panel has its own ★ picker, so that token is dropped.
+function stripSkillRankMention(text) {
+  return String(text || "")
+    .replace(/\brank\s*\d+\s*/gi, "")
+    .replace(/\s*hạng\s*\d+\s*/gi, " ")
+    .replace(/\s*\d+\s*阶\s*/g, "")
+    .replace(/\s+([.,;:!?])/g, "$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 function getSkillBadgeText(sk, isCn = false, rank = 1) {
   if (sk.type === "Ultimate") {
     return isCn ? "至终" : "Ultimate";
   }
 
-  // Explicit attribute override if specified
-  if (sk.attribute) return isCn && sk.attributeZh ? sk.attributeZh : sk.attribute;
+  // Explicit attribute override if specified. A single rank can be relabelled on its
+  // own (Click's S1 is Attack at ★1 but Debuff at ★2), and then that rank wins.
+  const rankObj = sk.ranks ? (sk.ranks[rank] || sk.ranks["1"] || Object.values(sk.ranks)[0] || {}) : sk;
+  const attribute = (rankObj && rankObj.attribute) || sk.attribute;
+  if (attribute) {
+    const attributeZh = (rankObj && rankObj.attributeZh) || sk.attributeZh;
+    return isCn && attributeZh ? attributeZh : attribute;
+  }
 
   const nameEn = (sk.nameEn || "").toLowerCase();
   const nameZh = sk.nameZh || "";
@@ -7390,8 +7414,7 @@ function getSkillBadgeText(sk, isCn = false, rank = 1) {
     return isCn ? "万能" : "Versatile";
   }
 
-  // Inspect specific rank description (or fallback to rank 1 or main skill)
-  const rankObj = sk.ranks ? (sk.ranks[rank] || sk.ranks["1"] || Object.values(sk.ranks)[0] || {}) : sk;
+  // Inspect specific rank description
   const descEn = (rankObj.descEn || sk.descEn || "").toLowerCase();
   const descZh = rankObj.descZh || sk.descZh || "";
 
@@ -7410,7 +7433,7 @@ function getSkillBadgeText(sk, isCn = false, rank = 1) {
     descZh.includes("回复")
   ) {
     if (!descEn.includes("deals") && !descEn.includes("attack") && !descZh.includes("攻击") && !descZh.includes("创伤")) {
-      return isCn ? "治疗" : "Heal";
+      return isCn ? "治疗" : "Health";
     }
   }
 
@@ -7783,6 +7806,16 @@ function renderCharacterSkillsSection(name) {
     if (!euphoriaRanks.includes(charSkillsEuphoriaRank)) charSkillsEuphoriaRank = 0;
     const gatedList = rawList.filter((s) => !s.requires || Number(s.requires.rank) === charSkillsEuphoriaRank);
 
+    // Reinforce (Lucy): the game shows the incantation in two states only, 初始 (Base)
+    // and 升华 (Reinforce). The generator stores the reinforced rank set on the card
+    // (`reinforce: { ranks }`), so this is only a view switch.
+    if (charSkillsReinforceChar !== canonicalName) {
+      charSkillsReinforceChar = canonicalName;
+      charSkillsReinforceLevel = 0;
+    }
+    const hasReinforce = rawList.some((s) => s.reinforce?.ranks);
+    if (!hasReinforce) charSkillsReinforceLevel = 0;
+
     if (availableStances.length > 0) {
       if (!charSkillsActiveStance || !availableStances.includes(charSkillsActiveStance)) {
         charSkillsActiveStance = availableStances[0];
@@ -7799,6 +7832,13 @@ function renderCharacterSkillsSection(name) {
       if (charSkillSelectedIdx >= list.length) charSkillSelectedIdx = 0;
       const currentSkill = list[charSkillSelectedIdx];
       const isUlt = currentSkill.type === "Ultimate";
+      // When the Reinforce switch is on, a card's text comes from its reinforced rank
+      // set instead of the base one; the strip keeps the same card.
+      const reinforceRanks =
+        charSkillsReinforceLevel > 0 && currentSkill.reinforce?.ranks
+          ? currentSkill.reinforce.ranks
+          : null;
+      const viewSkill = reinforceRanks ? { ...currentSkill, ranks: reinforceRanks } : currentSkill;
 
       // Stance switcher bar if character has multiple skill stances (e.g. Rhiannon, The Twins, Nautika)
       let stanceBarHtml = "";
@@ -7840,6 +7880,20 @@ function renderCharacterSkillsSection(name) {
         `;
       }
 
+      // Reinforce switch (Lucy): the incantation has two states, 初始 (Base) and
+      // 升华 (Reinforce). It only swaps the text of the cards that carry a reinforced
+      // rank set, so the strip stays at 4 cards. No leading label: the two buttons
+      // already say what the switch is.
+      let reinforceBarHtml = "";
+      if (hasReinforce) {
+        reinforceBarHtml = `
+          <div class="uttu-stance-bar uttu-reinforce-bar">
+            <button type="button" class="uttu-stance-btn ${charSkillsReinforceLevel === 0 ? "is-active" : ""}" data-skill-reinforce="0">${isCn ? "初始" : currentLang === "vi" ? "Gốc" : "Base"}</button>
+            <button type="button" class="uttu-stance-btn ${charSkillsReinforceLevel === 1 ? "is-active" : ""}" data-skill-reinforce="1">${isCn ? "升华" : currentLang === "vi" ? "Cường hóa" : "Reinforce"}</button>
+          </div>
+        `;
+      }
+
       // Selector card strip at top
       const cardsStripHtml = list
         .map((sk, idx) => {
@@ -7868,21 +7922,29 @@ function renderCharacterSkillsSection(name) {
       let activeDesc = "";
       let activeArt = "";
 
+      // Adaptive cards (Brume / Nautika) are one card whose variants are chosen when
+      // casting ("choose 1 out of [A] and [B]"). The card itself has no ★ selector;
+      // each option panel carries its own ★1/★2/★3 picker instead.
+      const adaptiveOptions =
+        !isUlt && Array.isArray(currentSkill.adaptiveOptions) ? currentSkill.adaptiveOptions : [];
+
       if (isUlt) {
-        activeDesc = pickLocalizedDesc(currentSkill);
-        activeArt = isCn ? currentSkill.artZh || currentSkill.artEn : currentSkill.artEn || currentSkill.artZh;
-      } else if (currentSkill.ranks) {
-        const availableRanks = Object.keys(currentSkill.ranks).map(Number).sort((a, b) => a - b);
+        const ultRank = reinforceRanks?.["1"] || currentSkill;
+        activeDesc = pickLocalizedDesc(ultRank);
+        activeArt = isCn ? ultRank.artZh || ultRank.artEn : ultRank.artEn || ultRank.artZh;
+        if (!activeArt) activeArt = isCn ? currentSkill.artZh || currentSkill.artEn : currentSkill.artEn || currentSkill.artZh;
+      } else if (viewSkill.ranks) {
+        const availableRanks = Object.keys(viewSkill.ranks).map(Number).sort((a, b) => a - b);
         if (!availableRanks.includes(charSkillSelectedRank)) {
           charSkillSelectedRank = availableRanks[availableRanks.length - 1] || 1;
         }
 
-        if (availableRanks.length > 1) {
+        if (availableRanks.length > 1 && !adaptiveOptions.length) {
           rankSelectorHtml = `
             <div class="uttu-rank-selector">
               ${availableRanks
                 .map((rk) => {
-                  const rkObj = currentSkill.ranks[rk];
+                  const rkObj = viewSkill.ranks[rk];
                   const isRkActive = rk === charSkillSelectedRank;
                   return `
                     <div class="uttu-rank-card-col ${isRkActive ? "is-active" : ""}" data-rank-num="${rk}">
@@ -7898,14 +7960,17 @@ function renderCharacterSkillsSection(name) {
           `;
         }
 
-        const chosenRank = currentSkill.ranks[charSkillSelectedRank] || currentSkill.ranks[1] || {};
+        const chosenRank = adaptiveOptions.length
+          ? viewSkill.ranks["1"] || {}
+          : viewSkill.ranks[charSkillSelectedRank] || viewSkill.ranks["1"] || {};
         activeDesc = pickLocalizedDesc(chosenRank);
         activeArt = isCn ? chosenRank.artZh || chosenRank.artEn : chosenRank.artEn || chosenRank.artZh;
+        if (adaptiveOptions.length) activeDesc = stripSkillRankMention(activeDesc);
       }
 
       const chosenRankObj = isUlt
-        ? currentSkill
-        : (currentSkill.ranks ? (currentSkill.ranks[charSkillSelectedRank] || currentSkill.ranks[1] || {}) : currentSkill);
+        ? reinforceRanks?.["1"] || currentSkill
+        : (viewSkill.ranks ? (viewSkill.ranks[charSkillSelectedRank] || viewSkill.ranks[1] || {}) : viewSkill);
 
       let conduitStatsHtml = "";
       const hasCost = chosenRankObj.cost !== undefined;
@@ -7913,6 +7978,10 @@ function renderCharacterSkillsSection(name) {
       if (hasCost || hasHarm) {
         const costLabel = isCn ? "消耗" : "Cost";
         const harmLabel = isCn ? "同调" : "Harmonization";
+        // The game prints Cost as a spend, so its number always carries the minus
+        // sign (-0, -2, -3) even though `fight_device` stores it as a positive.
+        const costValue = Number(chosenRankObj.cost);
+        const costText = Number.isFinite(costValue) ? `-${Math.abs(costValue)}` : `${chosenRankObj.cost}`;
         const harmVal = chosenRankObj.harmonization;
         const harmSign = typeof harmVal === "number" && harmVal > 0 ? `+${harmVal}` : `${harmVal}`;
         const harmClass = typeof harmVal === "number" && harmVal < 0 ? "is-negative" : "is-positive";
@@ -7920,13 +7989,15 @@ function renderCharacterSkillsSection(name) {
           <div class="uttu-conduit-metrics">
             ${hasCost ? `
               <div class="uttu-conduit-metric u-cost">
-                <span class="uttu-metric-label">${costLabel}:</span>
-                <span class="uttu-metric-value">${chosenRankObj.cost} <span class="uttu-cost-diamond">◆</span></span>
+                <span class="uttu-metric-label">${costLabel}</span>
+                <img class="uttu-conduit-cost" src="images/random_icon/costDiamond.png" alt="" aria-hidden="true" />
+                <span class="uttu-metric-value">${costText}</span>
               </div>
             ` : ""}
             ${hasHarm ? `
               <div class="uttu-conduit-metric u-harm ${harmClass}">
-                <span class="uttu-metric-label">${harmLabel}:</span>
+                <span class="uttu-metric-label">${harmLabel}</span>
+                <span class="uttu-conduit-harm" aria-hidden="true"></span>
                 <span class="uttu-metric-value">${harmSign}</span>
               </div>
             ` : ""}
@@ -7935,12 +8006,77 @@ function renderCharacterSkillsSection(name) {
       }
 
       const skillNameText = isCn ? currentSkill.nameZh || currentSkill.nameEn : currentSkill.nameEn || currentSkill.nameZh;
-      const subSlotTag = currentSkill.subSlot ? ` · ${currentSkill.subSlot}` : "";
+      // "Special 1" / "Special 2" is just the generator's sub-slot for a hero's extra
+      // cards, not something the game prints next to the card type.
+      const subSlotRaw = (currentSkill.subSlot || "").trim();
+      const subSlotTag = subSlotRaw && !/^special\s*\d*$/i.test(subSlotRaw) ? ` · ${subSlotRaw}` : "";
       const currentRankNum = isUlt ? 1 : charSkillSelectedRank;
-      const attrBadge = getSkillBadgeText(currentSkill, isCn, currentRankNum);
+      const attrBadge = getSkillBadgeText(viewSkill, isCn, currentRankNum);
       const typeTag = isUlt
         ? (isCn ? "至终仪式" : "Ultimate")
         : `${attrBadge}${subSlotTag}`;
+
+      // Adaptive cards (Brume / Nautika) are one card whose variants the game lets you
+      // pick when casting ("choose 1 out of [A] and [B]"). Instead of a Set A/B/C stance
+      // bar the board stacks one panel per option, and each panel has its own ★1/★2/★3
+      // picker with the option's card art — exactly what the game shows on tap.
+      const adaptiveOptionKey = (opt) => String(opt.ranks?.["1"]?.id || opt.nameEn || "");
+      const adaptiveOptionRank = (opt) => {
+        const available = Object.keys(opt.ranks || { 1: {} }).map(Number).sort((a, b) => a - b);
+        const chosen = Number(charSkillAdaptiveRanks[adaptiveOptionKey(opt)]);
+        return available.includes(chosen) ? chosen : available[available.length - 1] || 1;
+      };
+      const adaptiveOptionPickerHtml = (opt) => {
+        const key = adaptiveOptionKey(opt);
+        const selectedRank = adaptiveOptionRank(opt);
+        const available = Object.keys(opt.ranks || { 1: {} }).map(Number).sort((a, b) => a - b);
+        return available
+          .map(
+            (rk) => `
+            <button type="button" class="uttu-skill-option-rank ${rk === selectedRank ? "is-active" : ""}" data-adaptive-opt="${escapeHtml(key)}" data-rank-num="${rk}">
+              <span class="rot-card">
+                <img class="rot-card-art" src="${escapeHtml(opt.icon || "")}" alt="" />
+              </span>
+              <span class="uttu-rank-pill">${"★".repeat(rk)}</span>
+            </button>
+          `,
+          )
+          .join("");
+      };
+      const adaptiveOptionDescHtml = (opt) => {
+        const selectedRank = adaptiveOptionRank(opt);
+        const optRank = opt.ranks ? opt.ranks[selectedRank] || opt.ranks["1"] || {} : opt;
+        return `<div class="uttu-skill-panel-desc">${formatSkillKeywords(pickLocalizedDesc(optRank))}</div>`;
+      };
+      const adaptiveOptionsHtml = adaptiveOptions.length
+        ? `<div class="uttu-skill-panels is-stacked">
+          ${adaptiveOptions
+            .map((opt) => {
+              const optName = isCn ? opt.nameZh || opt.nameEn || "" : opt.nameEn || opt.nameZh || "";
+              const optTag = getSkillBadgeText(opt, isCn, adaptiveOptionRank(opt));
+              return `
+            <div class="uttu-skill-panel uttu-skill-panel-option">
+              <div class="uttu-skill-panel-head">
+                <span class="uttu-skill-panel-label">${escapeHtml(optName)}</span>
+                <span class="uttu-skill-option-tag">${escapeHtml(optTag)}</span>
+              </div>
+              <div class="uttu-skill-option-picker">${adaptiveOptionPickerHtml(opt)}</div>
+              ${adaptiveOptionDescHtml(opt)}
+            </div>
+          `;
+            })
+            .join("")}
+        </div>`
+        : "";
+      const adaptiveDetailHtml = `
+        <div class="uttu-skill-info-head">
+          <h3 class="uttu-skill-title">${escapeHtml(skillNameText)}</h3>
+          <span class="uttu-skill-type-tag">${escapeHtml(typeTag)}</span>
+        </div>
+        ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}
+        <div class="uttu-skill-body-desc">${formatSkillKeywords(activeDesc)}</div>
+        ${adaptiveOptionsHtml}
+      `;
 
       // Perception Incantation cards split their detail board into three equal
       // panels: the base incantation plus one panel per Perception Ability.
@@ -7950,7 +8086,7 @@ function renderCharacterSkillsSection(name) {
       const pointLabelText = isCn ? "洞知点" : "Perception Point";
       const perceptionCostHtml =
         typeof currentSkill.perceptionCost === "number"
-          ? `<span class="uttu-skill-panel-cost">${costLabelText} ${pointLabelText} <span class="uttu-cost-diamond">◆</span> ×${currentSkill.perceptionCost}</span>`
+          ? `<span class="uttu-skill-panel-cost">${costLabelText} ${pointLabelText} <img class="uttu-skill-perception-icon" src="images/random_icon/costPerceptionPoint.png" alt="" /> ×${currentSkill.perceptionCost}</span>`
           : "";
       const abilityPanelsHtml = hasPerceptionPanels
         ? currentSkill.panels
@@ -7968,7 +8104,7 @@ function renderCharacterSkillsSection(name) {
         : "";
 
       const perceptionPanelsHtml = `
-        <div class="uttu-skill-panels">
+        <div class="uttu-skill-panels is-stacked">
           <div class="uttu-skill-panel">
             <div class="uttu-skill-panel-desc">${formatSkillKeywords(activeDesc)}</div>
             ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}
@@ -7996,6 +8132,7 @@ function renderCharacterSkillsSection(name) {
         <div class="uttu-skills-showcase">
           ${stanceBarHtml}
           ${euphoriaBarHtml}
+          ${reinforceBarHtml}
           <!-- Top Card Selection Strip -->
           <div class="uttu-cards-strip">${cardsStripHtml}</div>
 
@@ -8003,7 +8140,7 @@ function renderCharacterSkillsSection(name) {
           <div class="uttu-detail-board">
             ${rankSelectorHtml}
             ${conduitStatsHtml}
-            ${hasPerceptionPanels ? perceptionPanelsHtml : standardDetailHtml}
+            ${hasPerceptionPanels ? perceptionPanelsHtml : adaptiveOptions.length ? adaptiveDetailHtml : standardDetailHtml}
           </div>
         </div>
       `;
@@ -8490,21 +8627,34 @@ function renderCharacterSkillsSection(name) {
     }
   } else if (charSkillsActiveTab === "insights") {
     const list = skillInfo.insights || [];
+    const insightName = (ins) => {
+      if (currentLang === "vi" && ins.nameVi) return ins.nameVi;
+      return isCn ? ins.nameZh || ins.nameEn : ins.nameEn || ins.nameZh;
+    };
+    const roman = ["I", "II", "III", "IV"];
+    // The Inheritance name is the Insight I title; Insight II/III only append a numeral
+    // to it, so that one title heads the whole board and each row is labelled by level.
+    const baseInsight = list.find((ins) => Number(ins.insight) === 1) || list[0];
+    const inheritanceName = baseInsight ? insightName(baseInsight) : "";
+
     const listHtml = list.length
       ? list
           .map((ins) => {
-            const insLabel = ins.insight === 0 ? (isCn ? "先觉" : "Precognition") : `Insight ${ins.insight}`;
-            const nameText = isCn ? ins.nameZh || ins.nameEn : ins.nameEn || ins.nameZh;
+            const insightNo = Math.min(3, Math.max(0, Number(ins.insight) || 0));
+            const insLabel =
+              insightNo === 0
+                ? insightName(ins)
+                : `${isCn ? "洞悉" : "Insight"} ${roman[insightNo - 1] || insightNo}`;
             const desc = pickLocalizedDesc(ins);
-            const iconSrc = `images/insight_icon_dark/I${Math.min(3, Math.max(0, ins.insight))}.png`;
+            const iconSrc = `images/insight_icon_dark/I${insightNo}.png`;
 
             return `
               <div class="uttu-insight-row">
                 <div class="uttu-insight-badge-col">
-                  <img src="${iconSrc}" alt="${insLabel}" class="uttu-insight-icon" />
+                  <img src="${iconSrc}" alt="${escapeHtml(insLabel)}" class="uttu-insight-icon" />
                 </div>
                 <div class="uttu-insight-content">
-                  <span class="uttu-insight-name">${escapeHtml(nameText)}</span>
+                  <div class="uttu-insight-tag">[${escapeHtml(insLabel)}]</div>
                   <div class="uttu-insight-desc">${formatSkillKeywords(desc)}</div>
                 </div>
               </div>
@@ -8515,7 +8665,10 @@ function renderCharacterSkillsSection(name) {
 
     mainBodyHtml = `
       <div class="uttu-insights-board">
-        ${listHtml}
+        ${inheritanceName ? `<div class="uttu-insight-head"><span class="uttu-insight-title">${escapeHtml(inheritanceName)}</span></div>` : ""}
+        <div class="uttu-insight-list">
+          ${listHtml}
+        </div>
       </div>
     `;
   } else if (charSkillsActiveTab === "portrays") {
@@ -8536,6 +8689,9 @@ function renderCharacterSkillsSection(name) {
 
     mainBodyHtml = `
       <div class="uttu-portrays-board">
+        <div class="uttu-portrays-head">
+          <span class="uttu-portrays-title">${isCn ? "塑造信息" : "Portrait Info"}</span>
+        </div>
         <div class="uttu-portrays-list">
           ${listHtml}
         </div>
@@ -8646,6 +8802,16 @@ function setupCharacterSkillsListeners(host) {
     });
   });
 
+  // Reinforce switch (Base / Reinforce I…III) — swaps the selected card's text
+  host.querySelectorAll("[data-skill-reinforce]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const level = Number(btn.dataset.skillReinforce);
+      if (Number.isNaN(level)) return;
+      charSkillsReinforceLevel = level;
+      refreshSkillsPanel();
+    });
+  });
+
   // Card selector in strip
   host.querySelectorAll(".uttu-skill-card-item").forEach((cardEl) => {
     cardEl.addEventListener("click", () => {
@@ -8666,6 +8832,17 @@ function setupCharacterSkillsListeners(host) {
         charSkillSelectedRank = rk;
         refreshSkillsPanel();
       }
+    });
+  });
+
+  // ★ picker inside an Adaptive card's option panel — one per cast option
+  host.querySelectorAll(".uttu-skill-option-rank").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.adaptiveOpt;
+      const rk = Number(btn.dataset.rankNum);
+      if (!key || Number.isNaN(rk)) return;
+      charSkillAdaptiveRanks[key] = rk;
+      refreshSkillsPanel();
     });
   });
 

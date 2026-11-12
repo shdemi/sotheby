@@ -1,0 +1,219 @@
+{
+  "3006": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3009": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } }
+  ],
+  "3010": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Attack", "zh": "攻击" }, "3": { "en": "Attack", "zh": "攻击" } } }
+  ],
+  "3011": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3013": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Buff", "zh": "增益" } }
+  ],
+  "3014": [
+    { "slot": 2, "subSlot": "", "ranks": { "2": { "en": "Debuff", "zh": "减益" }, "3": { "en": "Debuff", "zh": "减益" } } }
+  ],
+  "3016": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Debuff", "zh": "减益" }, "3": { "en": "Debuff", "zh": "减益" } } }
+  ],
+  "3017": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3018": [
+    { "slot": 2, "subSlot": "", "ranks": { "1": { "en": "Buff", "zh": "增益" } } }
+  ],
+  "3020": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3022": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } }
+  ],
+  "3030": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } }
+  ],
+  "3031": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Debuff", "zh": "减益" }, "3": { "en": "Debuff", "zh": "减益" } } },
+    { "slot": 2, "subSlot": "", "ranks": { "1": { "en": "Buff", "zh": "增益" } } }
+  ],
+  "3033": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Attack", "zh": "攻击" }, "3": { "en": "Attack", "zh": "攻击" } } }
+  ],
+  "3038": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Debuff", "zh": "减益" }, "3": { "en": "Debuff", "zh": "减益" } } }
+  ],
+  "3040": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" }, "ranks": { "1": { "en": "Attack", "zh": "攻击" } } }
+  ],
+  "3041": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Debuff", "zh": "减益" }, "3": { "en": "Debuff", "zh": "减益" } } }
+  ],
+  "3042": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3046": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" }, "ranks": { "1": { "en": "Attack", "zh": "攻击" } } }
+  ],
+  "3047": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } }
+  ],
+  "3049": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Debuff", "zh": "减益" }, "3": { "en": "Debuff", "zh": "减益" } } }
+  ],
+  "3051": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3053": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } }
+  ],
+  "3054": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3056": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3057": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Attack", "zh": "攻击" }, "3": { "en": "Attack", "zh": "攻击" } } },
+    { "slot": 2, "subSlot": "", "ranks": { "3": { "en": "Buff", "zh": "增益" } } }
+  ],
+  "3058": [
+    { "slot": 1, "subSlot": "", "ranks": { "2": { "en": "Debuff", "zh": "减益" }, "3": { "en": "Debuff", "zh": "减益" } } }
+  ],
+  "3061": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3071": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3074": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3076": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3079": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Buff", "zh": "增益" } }
+  ],
+  "3080": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Buff", "zh": "增益" } }
+  ],
+  "3081": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3084": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3087": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } }
+  ],
+  "3091": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3094": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3098": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3099": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3100": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3104": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3112": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3114": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3118": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Buff", "zh": "增益" } }
+  ],
+  "3120": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Adaptive", "zh": "自适应" } }
+  ],
+  "3121": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3124": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3127": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Buff", "zh": "增益" } }
+  ],
+  "3128": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3132": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3134": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 4, "subSlot": "Blue", "badge": { "en": "Versatile", "zh": "万能" } },
+    { "slot": 4, "subSlot": "Green", "badge": { "en": "Versatile", "zh": "万能" } },
+    { "slot": 4, "subSlot": "Purple", "badge": { "en": "Versatile", "zh": "万能" } }
+  ],
+  "3135": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Adaptive", "zh": "自适应" } }
+  ],
+  "3136": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3138": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Buff", "zh": "增益" } }
+  ],
+  "3139": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3140": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3142": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3144": [
+    { "slot": 4, "subSlot": "Special 1", "badge": { "en": "Energy", "zh": "交感" } }
+  ],
+  "3145": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } },
+    { "slot": 4, "subSlot": "Special 1", "badge": { "en": "Energy", "zh": "交感" } }
+  ],
+  "3147": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3154": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3155": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Attack", "zh": "攻击" } }
+  ],
+  "3156": [
+    { "slot": 2, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ],
+  "3157": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Health", "zh": "治疗" } }
+  ],
+  "3158": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } },
+    { "slot": 2, "subSlot": "", "badge": { "en": "Buff", "zh": "增益" } }
+  ],
+  "3159": [
+    { "slot": 1, "subSlot": "", "badge": { "en": "Debuff", "zh": "减益" } }
+  ]
+}

@@ -79,11 +79,14 @@
             "artZh": "他常与人解惑，出于义务，出于真理。",
             "artVi": "Người thường giải đáp những hoài nghi cho kẻ khác, vì bổn phận và vì chân lý."
           }
-        }
+        },
+        "attribute": "Buff",
+        "attributeZh": "增益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30790131,
         "nameEn": "The Revelation",
         "nameZh": "亘古亘今的启示",
         "nameVi": "The Revelation",
@@ -243,6 +246,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30660131,
         "nameEn": "Kingdom of Geometry",
         "nameZh": "数与几何的王国",
         "nameVi": "Kingdom of Geometry",
@@ -455,6 +459,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30070131,
         "nameEn": "After AD 778",
         "nameZh": "公元七七八年后",
         "nameVi": "After AD 778",
@@ -614,6 +619,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31130131,
         "nameEn": "Reflections of Omniscience",
         "nameZh": "全知全能的映射",
         "nameVi": "Reflections of Omniscience",
@@ -773,6 +779,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31220131,
         "nameEn": "Sun of Fear",
         "nameZh": "恐惧烧灼之日",
         "nameVi": "Sun of Fear",
@@ -941,6 +948,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30340131,
         "nameEn": "Future Interstellar War: Prelude",
         "nameZh": "未来星际大战·序",
         "nameVi": "Future Interstellar War: Prelude",
@@ -1091,6 +1099,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30390131,
         "nameEn": "Scientific Ghost Buster",
         "nameZh": "新科学捉鬼专家",
         "nameVi": "Scientific Ghost Buster",
@@ -1207,7 +1216,9 @@
             "artZh": "她不知何为节制，餐食已在眼前，大快朵颐理所当然。",
             "artVi": "Cô chẳng biết tiết chế, nuốt trọn đam mê và tình yêu không chút dè dặt, hoàn toàn đắm chìm trong bữa tiệc của mình."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -1250,6 +1261,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31000131,
         "nameEn": "Interwoven Dreams",
         "nameZh": "坠入美梦尽头",
         "nameVi": "Interwoven Dreams",
@@ -1409,6 +1421,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30280131,
         "nameEn": "Insignificant Achievements",
         "nameZh": "一些微小的成就",
         "nameVi": "Insignificant Achievements",
@@ -1559,6 +1572,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30970131,
         "nameEn": "No Mark Unstruck",
         "nameZh": "线索牵引准星",
         "nameVi": "No Mark Unstruck",
@@ -1755,6 +1769,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30780131,
         "nameEn": "One Stroke After Another",
         "nameZh": "一笔，又一画",
         "nameVi": "One Stroke After Another",
@@ -1860,7 +1875,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 200% Mental DMG. Gây Mental DEF -25% lên mục tiêu trúng đòn, duy trì 2 round.",
             "artEn": "Ding dong. Ding dong. We don't lack guests here.",
             "artZh": "叮咚，叮咚。这里从不缺客人。",
-            "artVi": "Ding dong. Ding dong. Ở đây chúng ta không thiếu khách."
+            "artVi": "Ding dong. Ding dong. Ở đây chúng ta không thiếu khách.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           },
           "3": {
             "id": 30160113,
@@ -1869,7 +1886,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 350% Mental DMG. Gây Mental DEF -35% lên mục tiêu trúng đòn, duy trì 3 round.",
             "artEn": "Ding dong. Ding dong. They're all waiting for you, waiting for you.",
             "artZh": "叮咚，叮咚。他们都在等你。等着你。",
-            "artVi": "Ding dong. Ding dong. Tất cả đều đang đợi ngươi, đợi ngươi."
+            "artVi": "Ding dong. Ding dong. Tất cả đều đang đợi ngươi, đợi ngươi.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           }
         }
       },
@@ -1914,6 +1933,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30160131,
         "nameEn": "Tea with Friends",
         "nameZh": "好朋友与茶话会",
         "nameVi": "Tea with Friends",
@@ -2073,6 +2093,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30240131,
         "nameEn": "Good Kids, Bad Adults",
         "nameZh": "好孩子、坏大人",
         "nameVi": "Good Kids, Bad Adults",
@@ -2189,7 +2210,9 @@
             "artZh": "未愈合的伤痕在梦中持续疼痛，仿佛羔羊正将它来回舔舐。",
             "artVi": "Những vết sẹo chưa lành ám ảnh bạn từng khoảnh khắc, ngay cả trong giấc mơ, như thể có những chiếc răng vô hình luôn gặm nhấm."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -2232,6 +2255,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30990131,
         "nameEn": "Another Jump This Way",
         "nameZh": "向此处、向此处",
         "nameVi": "Another Jump This Way",
@@ -2391,6 +2415,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31080131,
         "nameEn": "Sea Breeze Serenade",
         "nameZh": "海风交响诗",
         "nameVi": "Sea Breeze Serenade",
@@ -2507,7 +2532,9 @@
             "artZh": "无中有着无限的光，我们从地面仰望，直至双目化为水晶。",
             "artVi": "Ánh sáng vô tận dâng lên từ hư vô; chúng ta ngước nhìn trong niềm tôn kính cho đến khi đôi mắt hóa thành pha lê."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -2550,6 +2577,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31340131,
         "nameEn": "A Shimmering Night",
         "nameZh": "波光粼粼之夜",
         "nameVi": "A Shimmering Night",
@@ -2594,7 +2622,9 @@
             "artEn": "",
             "artZh": ""
           }
-        }
+        },
+        "attribute": "Versatile",
+        "attributeZh": "万能"
       },
       {
         "slot": 4,
@@ -2629,7 +2659,9 @@
             "artEn": "",
             "artZh": ""
           }
-        }
+        },
+        "attribute": "Versatile",
+        "attributeZh": "万能"
       },
       {
         "slot": 4,
@@ -2664,7 +2696,9 @@
             "artEn": "",
             "artZh": ""
           }
-        }
+        },
+        "attribute": "Versatile",
+        "attributeZh": "万能"
       }
     ],
     "insights": [
@@ -2823,6 +2857,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30450131,
         "nameEn": "Every Audition",
         "nameZh": "每一次的选角",
         "nameVi": "Every Audition",
@@ -2930,7 +2965,9 @@
             "artZh": "她似乎不愿以此伤人，但仍可借此防身。",
             "artVi": "Làm tổn thương người khác không phải ý định của nàng, nhưng tự bảo vệ mình thì có."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 2,
@@ -2973,6 +3010,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30200131,
         "nameEn": "Uninvited Reviewer",
         "nameZh": "不请自来的点评者",
         "nameVi": "Uninvited Reviewer",
@@ -3132,6 +3170,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30600131,
         "nameEn": "Bloody Movie",
         "nameZh": "粉浆电影",
         "nameVi": "Bloody Movie",
@@ -3291,6 +3330,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31060131,
         "nameEn": "Giddy Up, Mate!",
         "nameZh": "我们走！伙计！",
         "nameVi": "Giddy Up, Mate!",
@@ -3373,7 +3413,7 @@
     "skills": [
       {
         "slot": 1,
-        "subSlot": "Set A",
+        "subSlot": "",
         "type": "Incantation",
         "nameEn": "Left-Hand Steering",
         "nameZh": "左手舵",
@@ -3404,83 +3444,85 @@
             "artEn": "",
             "artZh": ""
           }
-        }
-      },
-      {
-        "slot": 1,
-        "subSlot": "Set B",
-        "type": "Incantation",
-        "nameEn": "Improvised Detour",
-        "nameZh": "即兴之旅",
-        "nameVi": "Improvised Detour",
-        "icon": "images/skills/31350111.png",
-        "ranks": {
-          "1": {
-            "id": 313501111,
-            "descEn": "1-target attack. Deals 200% Mental DMG. After attacking, gains [Crystalline Discharge] for 3 rounds.",
-            "descZh": "单体攻击，造成200%精神创伤；攻击后赋予自身【晶体压电】，持续3回合",
-            "descVi": "Tấn công đơn mục tiêu. Gây 200% Mental DMG. Sau khi tấn công, nhận [Crystalline Discharge], duy trì 3 round.",
-            "artEn": "She's in a good mood today.",
-            "artZh": "她今日心情不错。",
-            "artVi": "Hôm nay tâm trạng cô ấy thật tốt."
+        },
+        "adaptiveOptions": [
+          {
+            "slot": 1,
+            "type": "Incantation",
+            "nameEn": "Improvised Detour",
+            "nameZh": "即兴之旅",
+            "nameVi": "Improvised Detour",
+            "icon": "images/skills/31350111.png",
+            "ranks": {
+              "1": {
+                "id": 313501111,
+                "descEn": "1-target attack. Deals 200% Mental DMG. After attacking, gains [Crystalline Discharge] for 3 rounds.",
+                "descZh": "单体攻击，造成200%精神创伤；攻击后赋予自身【晶体压电】，持续3回合",
+                "descVi": "Tấn công đơn mục tiêu. Gây 200% Mental DMG. Sau khi tấn công, nhận [Crystalline Discharge], duy trì 3 round.",
+                "artEn": "She's in a good mood today.",
+                "artZh": "她今日心情不错。",
+                "artVi": "Hôm nay tâm trạng cô ấy thật tốt."
+              },
+              "2": {
+                "id": 313501121,
+                "descEn": "1-target attack. Deals 300% Mental DMG. After attacking, gains [Crystalline Discharge] for 3 rounds.",
+                "descZh": "单体攻击，造成300%精神创伤；攻击后赋予自身【晶体压电】，持续3回合",
+                "descVi": "Tấn công đơn mục tiêu. Gây 300% Mental DMG. Sau khi tấn công, nhận [Crystalline Discharge], duy trì 3 round.",
+                "artEn": "She's in a good mood today, with cheerful singing drifting from the back seat.",
+                "artZh": "她今日心情不错，后座回荡着歌谣。",
+                "artVi": "Hôm nay tâm trạng cô ấy thật tốt, tiếng hát vui vẻ vọng ra từ ghế sau."
+              },
+              "3": {
+                "id": 313501131,
+                "descEn": "1-target attack. Deals 500% Mental DMG. After attacking, gains [Crystalline Discharge] for 3 rounds.",
+                "descZh": "单体攻击，造成500%精神创伤；攻击后赋予自身【晶体压电】，持续3回合",
+                "descVi": "Tấn công đơn mục tiêu. Gây 500% Mental DMG. Sau khi tấn công, nhận [Crystalline Discharge], duy trì 3 round.",
+                "artEn": "She's in a good mood today, with cheerful singing drifting from the back seat—and a generous tip to boot.",
+                "artZh": "她今日心情不错，后座回荡着歌谣，还有慷慨的小费。",
+                "artVi": "Hôm nay tâm trạng cô ấy thật tốt, tiếng hát vui vẻ vọng ra từ ghế sau—lại còn được boa hậu hĩnh nữa."
+              }
+            }
           },
-          "2": {
-            "id": 313501121,
-            "descEn": "1-target attack. Deals 300% Mental DMG. After attacking, gains [Crystalline Discharge] for 3 rounds.",
-            "descZh": "单体攻击，造成300%精神创伤；攻击后赋予自身【晶体压电】，持续3回合",
-            "descVi": "Tấn công đơn mục tiêu. Gây 300% Mental DMG. Sau khi tấn công, nhận [Crystalline Discharge], duy trì 3 round.",
-            "artEn": "She's in a good mood today, with cheerful singing drifting from the back seat.",
-            "artZh": "她今日心情不错，后座回荡着歌谣。",
-            "artVi": "Hôm nay tâm trạng cô ấy thật tốt, tiếng hát vui vẻ vọng ra từ ghế sau."
-          },
-          "3": {
-            "id": 313501131,
-            "descEn": "1-target attack. Deals 500% Mental DMG. After attacking, gains [Crystalline Discharge] for 3 rounds.",
-            "descZh": "单体攻击，造成500%精神创伤；攻击后赋予自身【晶体压电】，持续3回合",
-            "descVi": "Tấn công đơn mục tiêu. Gây 500% Mental DMG. Sau khi tấn công, nhận [Crystalline Discharge], duy trì 3 round.",
-            "artEn": "She's in a good mood today, with cheerful singing drifting from the back seat—and a generous tip to boot.",
-            "artZh": "她今日心情不错，后座回荡着歌谣，还有慷慨的小费。",
-            "artVi": "Hôm nay tâm trạng cô ấy thật tốt, tiếng hát vui vẻ vọng ra từ ghế sau—lại còn được boa hậu hĩnh nữa."
+          {
+            "slot": 1,
+            "type": "Incantation",
+            "nameEn": "Calculated Path",
+            "nameZh": "长途规划",
+            "nameVi": "Calculated Path",
+            "icon": "images/skills/31350121.png",
+            "ranks": {
+              "1": {
+                "id": 313501112,
+                "descEn": "Self channel. Gains 10 stacks of [Thermoelectric Conversion]. Enters the [Prismatic Power] status for 1 round.",
+                "descZh": "自我吟诵，使自身获得10层【热电效应】，进入【宝石蓄能】状态1回合",
+                "descVi": "Self Channel. Nhận 10 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
+                "artEn": "She's in great spirits today.",
+                "artZh": "她今日兴致勃勃。",
+                "artVi": "Hôm nay cô ấy vô cùng phấn chấn."
+              },
+              "2": {
+                "id": 313501122,
+                "descEn": "Self channel. Gains 15 stacks of [Thermoelectric Conversion]. Enters the [Prismatic Power] status for 1 round.",
+                "descZh": "自我吟诵，使自身获得15层【热电效应】，进入【宝石蓄能】状态1回合",
+                "descVi": "Self Channel. Nhận 15 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
+                "artEn": "She's in great spirits today, with the regular passenger calling the shots and cracking the whip.",
+                "artZh": "她今日兴致勃勃，副驾驶狂风大作。",
+                "artVi": "Hôm nay cô ấy vô cùng phấn chấn, vị khách quen ngồi sau chỉ huy và quát tháo liên hồi."
+              },
+              "3": {
+                "id": 313501132,
+                "descEn": "Self channel. Gains 20 stacks of [Thermoelectric Conversion]. Enters the [Prismatic Power] status for 1 round.",
+                "descZh": "自我吟诵，使自身获得20层【热电效应】，进入【宝石蓄能】状态1回合",
+                "descVi": "Self Channel. Nhận 20 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
+                "artEn": "She's in great spirits today, with the regular passenger calling the shots, cracking the whip, and commanding thunder and lightning.",
+                "artZh": "她今日兴致勃勃，副驾驶狂风大作，按里数计价的闪电！",
+                "artVi": "Hôm nay cô ấy vô cùng phấn chấn, vị khách quen ngồi sau chỉ huy, quát tháo, còn sai khiến cả sấm sét."
+              }
+            }
           }
-        }
-      },
-      {
-        "slot": 1,
-        "subSlot": "Set C",
-        "type": "Incantation",
-        "nameEn": "Calculated Path",
-        "nameZh": "长途规划",
-        "nameVi": "Calculated Path",
-        "icon": "images/skills/31350121.png",
-        "ranks": {
-          "1": {
-            "id": 313501112,
-            "descEn": "Self channel. Gains 10 stacks of [Thermoelectric Conversion]. Enters the [Prismatic Power] status for 1 round.",
-            "descZh": "自我吟诵，使自身获得10层【热电效应】，进入【宝石蓄能】状态1回合",
-            "descVi": "Self Channel. Nhận 10 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
-            "artEn": "She's in great spirits today.",
-            "artZh": "她今日兴致勃勃。",
-            "artVi": "Hôm nay cô ấy vô cùng phấn chấn."
-          },
-          "2": {
-            "id": 313501122,
-            "descEn": "Self channel. Gains 15 stacks of [Thermoelectric Conversion]. Enters the [Prismatic Power] status for 1 round.",
-            "descZh": "自我吟诵，使自身获得15层【热电效应】，进入【宝石蓄能】状态1回合",
-            "descVi": "Self Channel. Nhận 15 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
-            "artEn": "She's in great spirits today, with the regular passenger calling the shots and cracking the whip.",
-            "artZh": "她今日兴致勃勃，副驾驶狂风大作。",
-            "artVi": "Hôm nay cô ấy vô cùng phấn chấn, vị khách quen ngồi sau chỉ huy và quát tháo liên hồi."
-          },
-          "3": {
-            "id": 313501132,
-            "descEn": "Self channel. Gains 20 stacks of [Thermoelectric Conversion]. Enters the [Prismatic Power] status for 1 round.",
-            "descZh": "自我吟诵，使自身获得20层【热电效应】，进入【宝石蓄能】状态1回合",
-            "descVi": "Self Channel. Nhận 20 cộng dồn [Thermoelectric Conversion]. Tiến vào trạng thái [Prismatic Power], duy trì 1 round.",
-            "artEn": "She's in great spirits today, with the regular passenger calling the shots, cracking the whip, and commanding thunder and lightning.",
-            "artZh": "她今日兴致勃勃，副驾驶狂风大作，按里数计价的闪电！",
-            "artVi": "Hôm nay cô ấy vô cùng phấn chấn, vị khách quen ngồi sau chỉ huy, quát tháo, còn sai khiến cả sấm sét."
-          }
-        }
+        ],
+        "attribute": "Adaptive",
+        "attributeZh": "自适应"
       },
       {
         "slot": 2,
@@ -3523,6 +3565,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31350131,
         "nameEn": "Thrown Into Heroics",
         "nameZh": "壮举皆因形势所迫",
         "nameVi": "Thrown Into Heroics",
@@ -3691,6 +3734,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31150131,
         "nameEn": "The Nutcracker Super Squad",
         "nameZh": "极地松子先遣队",
         "nameVi": "The Nutcracker Super Squad",
@@ -3834,7 +3878,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 250% Reality DMG. Gây [Nasty Wound] lên mục tiêu trúng đòn, duy trì 2 round.",
             "artEn": "This is the scheduled meal time, as it should be.",
             "artZh": "内部规定了进食时间，理所当然。",
-            "artVi": "Đây là giờ ăn đã được định sẵn, đúng như lẽ phải."
+            "artVi": "Đây là giờ ăn đã được định sẵn, đúng như lẽ phải.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           },
           "3": {
             "id": 30140123,
@@ -3843,13 +3889,16 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 400% Reality DMG. Gây [Nasty Wound] lên mục tiêu trúng đòn, duy trì 3 round.",
             "artEn": "This is the scheduled meal time, but some children may need more.",
             "artZh": "内部规定了进食时间，也许某些孩子需要的更多一点。",
-            "artVi": "Đây là giờ ăn đã được định sẵn, nhưng vài đứa trẻ có thể cần nhiều hơn."
+            "artVi": "Đây là giờ ăn đã được định sẵn, nhưng vài đứa trẻ có thể cần nhiều hơn.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           }
         }
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30140131,
         "nameEn": "Bunny Medal Cert",
         "nameZh": "兔女郎勋章证明",
         "nameVi": "Bunny Medal Cert",
@@ -4000,6 +4049,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30320131,
         "nameEn": "Reality Show Premiere",
         "nameZh": "真人秀火热开场",
         "nameVi": "Reality Show Premiere",
@@ -4116,7 +4166,9 @@
             "artZh": "我已准备好了改变，慢着，只是准备对吧？",
             "artVi": "Ta đã sẵn sàng thay đổi. Khoan, đợi đã. Đây chỉ là bước chuẩn bị thôi, đúng chứ?"
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 2,
@@ -4159,6 +4211,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30170131,
         "nameEn": "I Stand Alone on the Stage",
         "nameZh": "我独立于剧场之上",
         "nameVi": "I Stand Alone on the Stage",
@@ -4275,7 +4328,9 @@
             "artZh": "致梦想的终结，致坎坷的旅程，我眼前空无一物。",
             "artVi": "Giấc mơ tuổi trẻ chết tại đây, trên con đường vô vọng, đôi mắt người lính đờ đẫn, vô hồn."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -4318,6 +4373,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31280131,
         "nameEn": "New Blooms of Life",
         "nameZh": "纵使虞美人盛开",
         "nameVi": "New Blooms of Life",
@@ -4477,6 +4533,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31370131,
         "nameEn": "Thus the Night Is Calm",
         "nameZh": "故而得此良夜",
         "nameVi": "Thus the Night Is Calm",
@@ -4582,7 +4639,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 250% Mental DMG. Khiến mục tiêu trúng đòn rơi vào trạng thái [Blind], duy trì 1 round.",
             "artEn": "He witnessed the bombardment, before the chaos arrived.",
             "artZh": "他目睹了轰鸣，在混乱到来以前。",
-            "artVi": "Anh đã chứng kiến cuộc oanh kích, trước khi hỗn loạn ập đến."
+            "artVi": "Anh đã chứng kiến cuộc oanh kích, trước khi hỗn loạn ập đến.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           },
           "3": {
             "id": 30490113,
@@ -4591,7 +4650,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 400% Mental DMG. Khiến mục tiêu trúng đòn rơi vào trạng thái [Blind], duy trì 2 round.",
             "artEn": "He witnessed the bombardment, before the chaos arrived. That's all.",
             "artZh": "他目睹了轰鸣，在混乱到来以前，仅仅如此。",
-            "artVi": "Anh đã chứng kiến cuộc oanh kích, trước khi hỗn loạn ập đến. Chỉ có thế."
+            "artVi": "Anh đã chứng kiến cuộc oanh kích, trước khi hỗn loạn ập đến. Chỉ có thế.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           }
         }
       },
@@ -4636,6 +4697,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30490131,
         "nameEn": "A Picture at a Price",
         "nameZh": "昂贵的好照片",
         "nameVi": "A Picture at a Price",
@@ -4763,6 +4825,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31440131,
         "nameEn": "Song Etched Into Her Form",
         "nameZh": "雕于躯壳的唱名",
         "nameVi": "Song Etched Into Her Form",
@@ -4792,7 +4855,9 @@
             "artEn": "",
             "artZh": ""
           }
-        }
+        },
+        "attribute": "Energy",
+        "attributeZh": "交感"
       }
     ],
     "insights": [
@@ -4908,7 +4973,9 @@
             "artZh": "形式为功能服务。牢记它，领悟它，实践它。",
             "artVi": "Hình thức tuân theo chức năng. Hãy nhớ lấy, hiểu lấy và đem vào thực hành."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 2,
@@ -4951,6 +5018,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31400141,
         "nameEn": "Today Builds Tomorrow",
         "nameZh": "展望，奠基于此",
         "nameVi": "Today Builds Tomorrow",
@@ -5076,7 +5144,9 @@
             "artZh": "针尖穿过灵魂，钢铁隐没于皮肉，黎明仍在渺渺前方。",
             "artVi": "Một mũi kim xuyên qua miền sâu tĩnh lặng của linh hồn—trái tim mềm mại, lớp vỏ thép, bình thản chờ đợi bình minh."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -5119,6 +5189,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31320131,
         "nameEn": "Sewn into Forever",
         "nameZh": "将飞逝缝入永恒",
         "nameVi": "Sewn into Forever",
@@ -5233,7 +5304,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 200% Reality DMG. Khiến mục tiêu trúng đòn nhận Reality DEF -25%, duy trì 2 round.",
             "artEn": "She's used to such great pain.",
             "artZh": "她早已习惯如此剧痛。",
-            "artVi": "Nàng đã quen với những nỗi đau lớn đến vậy."
+            "artVi": "Nàng đã quen với những nỗi đau lớn đến vậy.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           },
           "3": {
             "id": 30310113,
@@ -5242,7 +5315,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 350% Reality DMG. Khiến mục tiêu trúng đòn nhận Reality DEF -35%, duy trì 3 round.",
             "artEn": "She's used to such great pain that feels like glass cutting through the flesh.",
             "artZh": "她早已习惯如此剧痛，犹如玻璃划开肌肤。",
-            "artVi": "Nàng đã quen với những nỗi đau lớn đến vậy, nỗi đau như thủy tinh cứa vào da thịt."
+            "artVi": "Nàng đã quen với những nỗi đau lớn đến vậy, nỗi đau như thủy tinh cứa vào da thịt.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           }
         }
       },
@@ -5262,7 +5337,9 @@
             "descVi": "Buff diện rộng. Gây 1 cộng dồn [Sturdiness] lên toàn bộ phe ta. Reality DEF và Mental DEF của họ +10%, duy trì 2 round.",
             "artEn": "She closed the book.",
             "artZh": "她合上书页。",
-            "artVi": "Nàng khép cuốn sách lại."
+            "artVi": "Nàng khép cuốn sách lại.",
+            "attribute": "Buff",
+            "attributeZh": "增益"
           },
           "2": {
             "id": 30310122,
@@ -5287,6 +5364,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30310131,
         "nameEn": "This Is Radiotherapy",
         "nameZh": "注意放射性疗法",
         "nameVi": "This Is Radiotherapy",
@@ -5437,6 +5515,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30500131,
         "nameEn": "Great Inspirer",
         "nameZh": "始祖的金牌鼓舞",
         "nameVi": "Great Inspirer",
@@ -5587,6 +5666,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30750131,
         "nameEn": "Beep Beep Bop Bop, Plappy!",
         "nameZh": "哔哔啵啵，波拉比！",
         "nameVi": "Beep Beep Bop Bop, Plappy!",
@@ -5746,6 +5826,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30640131,
         "nameEn": "Sweet Dreams for You",
         "nameZh": "合上眼，美梦将至",
         "nameVi": "Sweet Dreams for You",
@@ -5900,11 +5981,14 @@
             "artZh": "难得的规矩行为，为更弱者。",
             "artVi": "Một hành động hiếm hoi nằm trong khuôn khổ quy tắc, vì những kẻ yếu."
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30220131,
         "nameEn": "Maverick Judge",
         "nameZh": "出格的审判官",
         "nameVi": "Maverick Judge",
@@ -6064,6 +6148,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30590131,
         "nameEn": "To the Universe in the Alley",
         "nameZh": "致巷中宇宙",
         "nameVi": "To the Universe in the Alley",
@@ -6171,7 +6256,9 @@
             "artZh": "往昔的幻影，今日的谎言，一一斩断。",
             "artVi": "Bóng ma của quá khứ, lời dối trá của hiện tại—cắt đứt từng thứ một."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -6209,11 +6296,14 @@
             "artZh": "批判，反叛，连自己也可以背叛，唯独无法背叛真实。",
             "artVi": "Phê phán, nổi loạn, phản bội cả chính mình—nhưng không bao giờ phản bội sự thật."
           }
-        }
+        },
+        "attribute": "Buff",
+        "attributeZh": "增益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31580131,
         "nameEn": "Whither My Heart?",
         "nameZh": "我心何往",
         "nameVi": "Whither My Heart?",
@@ -6382,6 +6472,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30030131,
         "nameEn": "Silence in the Woods",
         "nameZh": "林间，静默将至",
         "nameVi": "Silence in the Woods",
@@ -6498,7 +6589,9 @@
             "artZh": "先辈的力量透过往日之物传递，它总在重要的时刻到来，未曾缺席。",
             "artVi": "Sức mạnh tổ tiên được truyền lại qua di vật luôn xuất hiện vào những thời khắc then chốt, luôn là vậy."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 2,
@@ -6541,6 +6634,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30060131,
         "nameEn": "Between Superficiality and Reality",
         "nameZh": "表象与真实之间",
         "nameVi": "Between Superficiality and Reality",
@@ -6691,6 +6785,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31430131,
         "nameEn": "The Riddle and the Answer",
         "nameZh": "世界的谜题与谜底",
         "nameVi": "The Riddle and the Answer",
@@ -6805,7 +6900,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 200% Reality DMG. Khiến mục tiêu trúng đòn nhận Critical Resist Rate và Critical DEF -25%, duy trì 1 round.",
             "artEn": "An aged axe serving the hands of some rebellious child in most of the time.",
             "artZh": "一柄年长的斧头，大多数时候追随某双叛逆的稚手。",
-            "artVi": "Một chiếc rìu cũ kỹ, phần lớn thời gian nằm trong tay một đứa trẻ nổi loạn nào đó."
+            "artVi": "Một chiếc rìu cũ kỹ, phần lớn thời gian nằm trong tay một đứa trẻ nổi loạn nào đó.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           },
           "3": {
             "id": 30580113,
@@ -6814,7 +6911,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 300% Reality DMG. Khiến mục tiêu trúng đòn nhận Critical Resist Rate và Critical DEF -30%, duy trì 1 round.",
             "artEn": "An aged axe serving the hands of some rebellious child in most of the time. Sometimes it weighs more than a thousand pounds.",
             "artZh": "一柄年长的斧头，大多数时候追随某双叛逆的稚手，偶尔重逾千斤。",
-            "artVi": "Một chiếc rìu cũ kỹ, phần lớn thời gian nằm trong tay một đứa trẻ nổi loạn nào đó. Đôi khi nó nặng hơn cả ngàn cân."
+            "artVi": "Một chiếc rìu cũ kỹ, phần lớn thời gian nằm trong tay một đứa trẻ nổi loạn nào đó. Đôi khi nó nặng hơn cả ngàn cân.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           }
         }
       },
@@ -6859,6 +6958,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30580131,
         "nameEn": "Glory to the Jarl",
         "nameZh": "荣耀归于维京主",
         "nameVi": "Glory to the Jarl",
@@ -6966,7 +7066,9 @@
             "artZh": "她已见过了许多，当然也包括手提包造型的发展史。",
             "artVi": "Cô đã thấy quá nhiều, dĩ nhiên là bao gồm cả lịch sử của những chiếc ví."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -7009,6 +7111,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30510131,
         "nameEn": "Anecdotes in Exeter",
         "nameZh": "埃克塞特的奇闻",
         "nameVi": "Anecdotes in Exeter",
@@ -7131,11 +7234,14 @@
             "cost": 0,
             "harmonization": 10
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31450131,
         "nameEn": "Echoes' Embrace",
         "nameZh": "于回忆中重逢",
         "nameVi": "Echoes' Embrace",
@@ -7165,7 +7271,9 @@
             "artEn": "",
             "artZh": ""
           }
-        }
+        },
+        "attribute": "Energy",
+        "attributeZh": "交感"
       }
     ],
     "insights": [
@@ -7324,6 +7432,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31230131,
         "nameEn": "Branding of Faith",
         "nameZh": "信仰烙下之时",
         "nameVi": "Branding of Faith",
@@ -7553,7 +7662,9 @@
             "artZh": "他呵护有加，为你的世界带来斑斓的彩。",
             "artVi": "Anh ấy quan tâm sâu sắc và mang vẻ đẹp đến cuộc sống của ngươi."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -7596,6 +7707,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30740131,
         "nameEn": "Compassion All-Round",
         "nameZh": "全方面关怀",
         "nameVi": "Compassion All-Round",
@@ -7755,6 +7867,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31090131,
         "nameEn": "Proverb of the Sea",
         "nameZh": "海风于此告诫",
         "nameVi": "Proverb of the Sea",
@@ -7914,6 +8027,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31050131,
         "nameEn": "A Dream That Never Grows Old",
         "nameZh": "长不大的梦想",
         "nameVi": "A Dream That Never Grows Old",
@@ -8030,7 +8144,9 @@
             "artZh": "因于种族的天赋，别好奇缘由，更别好奇来历。",
             "artVi": "Đây là kết quả của thiên phú. Đừng hỏi nguyên do, đừng hỏi nguồn cội."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -8073,6 +8189,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30840131,
         "nameEn": "I Shall Walk, Exist, and Know",
         "nameZh": "我行，我在，故我见",
         "nameVi": "I Shall Walk, Exist, and Know",
@@ -8232,6 +8349,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31630131,
         "nameEn": "Fight for Extra Treats",
         "nameZh": "为加餐而战",
         "nameVi": "Fight for Extra Treats",
@@ -8345,11 +8463,14 @@
             "cost": 2,
             "harmonization": 20
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31560131,
         "nameEn": "The Thirteenth Labor",
         "nameZh": "第十三项壮举",
         "nameVi": "The Thirteenth Feat",
@@ -8540,6 +8661,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31160131,
         "nameEn": "Experimental Rocketry",
         "nameZh": "0维爆炸的模拟",
         "nameVi": "Experimental Rocketry",
@@ -8731,11 +8853,14 @@
             "artZh": "它令你眼花缭乱，难以捕捉，就在此时。",
             "artVi": "Nó làm chói mắt, quá nhanh để có thể bắt kịp trong khoảnh khắc này."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30610131,
         "nameEn": "Twins' Play",
         "nameZh": "双胞胎诡计",
         "nameVi": "Twins' Play",
@@ -8852,7 +8977,9 @@
             "artZh": "胆子再大点，提速，提速！打破纪录！",
             "artVi": "Táo bạo hơn, tăng tốc, tăng tốc! Phá vỡ kỷ lục đi!"
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 2,
@@ -8895,6 +9022,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31550131,
         "nameEn": "Try This Move!",
         "nameZh": "试试杀手锏",
         "nameVi": "Try This Move!",
@@ -9112,6 +9240,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30920151,
         "nameEn": "Galloping Across the Underworld",
         "nameZh": "蹄声巡弋于冥界",
         "nameVi": "Galloping Across the Underworld",
@@ -9237,7 +9366,9 @@
             "artZh": "步音与歌声，在舞台上兜转，台下无处落脚。",
             "artVi": "Ta hát và xoay tròn trên sân khấu, bởi ngoài sân khấu, chẳng đâu là chỗ của ta."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -9280,6 +9411,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30810131,
         "nameEn": "Choking on Blood",
         "nameZh": "等血液涌上咽喉",
         "nameVi": "Choking on Blood",
@@ -9396,7 +9528,9 @@
             "artZh": "实战机会，向来难得，谁先来试试自己的腿骨硬度？",
             "artVi": "Một cơ hội để thử nó trong trận chiến thực sự thật khó tìm. Vậy ai muốn lên trước?"
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -9439,6 +9573,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30940131,
         "nameEn": "Over the Haight Street!",
         "nameZh": "飞跃海特街！",
         "nameVi": "Over the Haight Street!",
@@ -9593,11 +9728,14 @@
             "artZh": "她与它们一同玩耍，另一位主演长期缺席。",
             "artVi": "Cô diễn cùng họ. Vai chính còn lại đã biến mất từ rất lâu rồi."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30560131,
         "nameEn": "Gaze From the Forest",
         "nameZh": "凝视来自深林之中",
         "nameVi": "Gaze From the Forest",
@@ -9757,6 +9895,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30830131,
         "nameEn": "Baijiu and Mayhem",
         "nameZh": "酒与之外的事故",
         "nameVi": "Baijiu and Mayhem",
@@ -9916,6 +10055,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30360131,
         "nameEn": "65,536 Bytes",
         "nameZh": "六五五三六字节",
         "nameVi": "65,536 Bytes",
@@ -10066,6 +10206,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30700131,
         "nameEn": "Ultimate Perfection",
         "nameZh": "独一的圆满",
         "nameVi": "Ultimate Perfection",
@@ -10220,11 +10361,14 @@
             "artZh": "内视镜——微尘——星星们……",
             "artVi": "Chiếc ống nội soi, lớp bụi, những vì sao ..."
           }
-        }
+        },
+        "attribute": "Buff",
+        "attributeZh": "增益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30800131,
         "nameEn": "Id, Ego, and Superego",
         "nameZh": "本我，自我，超我",
         "nameVi": "Id, Ego, and Superego",
@@ -10341,7 +10485,9 @@
             "artZh": "原谅她吧，毒症并非她的本意……兜售解药才是。",
             "artVi": "Hãy tha thứ cho cô ấy. Cô ấy không cố ý hạ độc... Cô ấy chỉ muốn bán thuốc giải."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -10384,6 +10530,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30710131,
         "nameEn": "Song of Wandering",
         "nameZh": "流浪之歌与舞",
         "nameVi": "Song of Wandering",
@@ -10500,7 +10647,9 @@
             "artZh": "一阵啸吼的西风，从奥德修斯的故乡吹来，往双王的土地而去。",
             "artVi": "Một cơn gió tây gào thét, thổi từ quê hương của Odysseus về phía vùng đất của hai vị vua."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -10538,11 +10687,14 @@
             "artZh": "她的肩上挂着银弓与箭袋，箭矢琅琅作响，让不善者在箭下偿还眼泪。",
             "artVi": "Trên vai cô là cây cung bạc và ống tên, những mũi tên khẽ va vào nhau leng keng. Kẻ ác sẽ phải trả nợ bằng nước mắt trước những mũi tên của cô."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31240103,
         "nameEn": "Rush Assassination",
         "nameZh": "急速刺杀",
         "nameVi": "Rush Assassination",
@@ -10833,6 +10985,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31170131,
         "nameEn": "Reach for the Stars",
         "nameZh": "星空或可企及",
         "nameVi": "Reach for the Stars",
@@ -10987,11 +11140,14 @@
             "artZh": "她总以否定作答，但这并不绝对。",
             "artVi": "Nàng luôn đáp lại bằng lời từ chối, nhưng vẫn có ngoại lệ."
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30300131,
         "nameEn": "Another Version of the Legend",
         "nameZh": "另一版本的传说",
         "nameVi": "Another Version of the Legend",
@@ -11099,7 +11255,9 @@
             "artZh": "在遥远的春日，去打碎与弥合，去发现世界。",
             "artVi": "Vào một ngày xuân xa xôi, thế giới đã mở ra trước mắt, vỡ tan, rồi tái sinh lần nữa."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -11142,6 +11300,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31360131,
         "nameEn": "What She Bears and Beyond",
         "nameZh": "她于框中所见",
         "nameVi": "What She Bears and Beyond",
@@ -11301,6 +11460,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30350131,
         "nameEn": "Hawaiian Archery",
         "nameZh": "夏威夷弓箭艺术",
         "nameVi": "Hawaiian Archery",
@@ -11451,6 +11611,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31100131,
         "nameEn": "Call of Thunder: #0305",
         "nameZh": "雷电急call-0305",
         "nameVi": "Call of Thunder: #0305",
@@ -11610,6 +11771,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30040131,
         "nameEn": "A Small Trick",
         "nameZh": "一点小花招",
         "nameVi": "A Small Trick",
@@ -11726,7 +11888,9 @@
             "artZh": "二十世纪的荣光在此，她检阅收藏，津津有味。",
             "artVi": "Vinh quang của thế kỷ 20 đã đến, và cô say sưa ngắm nhìn rồi sưu tầm."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -11769,6 +11933,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31120131,
         "nameEn": "Cinema Binge",
         "nameZh": "无差别鉴赏会",
         "nameVi": "Cinema Binge",
@@ -11928,6 +12093,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31020131,
         "nameEn": "More Than Alchemy",
         "nameZh": "杂学炼金术",
         "nameVi": "More Than Alchemy",
@@ -12044,7 +12210,9 @@
             "artZh": "是谁在歌唱，是谁在窥望？嘘——",
             "artVi": "Ai đang hát? Ai đang nhìn tôi? Suỵt ..."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -12087,6 +12255,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30910131,
         "nameEn": "A Drifting Song",
         "nameZh": "歌儿正漂流",
         "nameVi": "A Drifting Song",
@@ -12203,7 +12372,9 @@
             "artZh": "燃烧60毫克的底火，扳机使蝶翼震颤，未来的一切从此改变。",
             "artVi": "Đốt cháy 60 miligam thuốc mồi, khơi lên cái vỗ cánh của một con bướm, và tương lai vĩnh viễn đổi thay."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -12246,6 +12417,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31390131,
         "nameEn": "The Unstable Dynamical System",
         "nameZh": "动力系统不可预测",
         "nameVi": "The Unstable Dynamical System",
@@ -12371,6 +12543,34 @@
             "artZh": "以投石索为起点，我们击发火枪，向更高远的星空。",
             "artVi": "Mọi chuyện bắt đầu từ một chiếc ná. Rồi chúng ta bắn ra những viên đạn. Giờ đây, chúng ta phóng thẳng vào vũ trụ."
           }
+        },
+        "reinforce": {
+          "ranks": {
+            "1": {
+              "id": 30861111,
+              "descEn": "Mass attack. Deals Reality DMG to 2 enemies: 220% to the main target and 110% to the secondary target. Consume 5 stacks of [Dynamo] to deal Reality DMG +60% for this attack.",
+              "descZh": "群体攻击，对2名敌方造成现实创伤，对主目标造成220%现实创伤，对副目标造成110%现实创伤；消耗5层【电能】，本次攻击额外造成60%现实创伤",
+              "descVi": "Tấn công diện rộng. Gây Reality DMG lên 2 kẻ địch: 220% lên mục tiêu chính và 110% lên mục tiêu phụ. Tiêu hao 5 cộng dồn [Dynamo] để gây Reality DMG +60% cho đòn tấn công này.",
+              "artEn": "It all started with a sling.",
+              "artZh": "以投石索为起点。"
+            },
+            "2": {
+              "id": 30861112,
+              "descEn": "Mass attack. Deals Reality DMG to 2 enemies: 330% to the main target and 165% to the secondary target. Consume 5 stacks of [Dynamo] to deal Reality DMG +90% for this attack.",
+              "descZh": "群体攻击，对2名敌方造成现实创伤，对主目标造成330%现实创伤，对副目标造成165%现实创伤；消耗5层【电能】，本次攻击额外造成90%现实创伤",
+              "descVi": "Tấn công diện rộng. Gây Reality DMG lên 2 kẻ địch: 330% lên mục tiêu chính và 165% lên mục tiêu phụ. Tiêu hao 5 cộng dồn [Dynamo] để gây Reality DMG +90% cho đòn tấn công này.",
+              "artEn": "It all started with a sling. Then we shot bullets.",
+              "artZh": "以投石索为起点，我们击发火枪。"
+            },
+            "3": {
+              "id": 30861113,
+              "descEn": "Mass attack. Deals Reality DMG to 2 enemies: 550% to the main target and 275% to the secondary target. Consume 5 stacks of [Dynamo] to deal Reality DMG +150% for this attack.",
+              "descZh": "群体攻击，对2名敌方造成现实创伤，对主目标造成550%现实创伤，对副目标造成275%现实创伤；消耗5层【电能】，本次攻击额外造成150%现实创伤",
+              "descVi": "Tấn công diện rộng. Gây Reality DMG lên 2 kẻ địch: 550% lên mục tiêu chính và 275% lên mục tiêu phụ. Tiêu hao 5 cộng dồn [Dynamo] để gây Reality DMG +150% cho đòn tấn công này.",
+              "artEn": "It all started with a sling. Then we shot bullets. Now, we're blasting off into space.",
+              "artZh": "以投石索为起点，我们击发火枪，向更高远的星空。"
+            }
+          }
         }
       },
       {
@@ -12409,11 +12609,40 @@
             "artZh": "在血管中奔走，在轮齿间流淌，永不停歇。",
             "artVi": "Nó chảy trong huyết quản của chúng ta. Nó luân chuyển giữa những bánh răng. Nó chưa từng ngừng tiến bước."
           }
+        },
+        "reinforce": {
+          "ranks": {
+            "1": {
+              "id": 30861121,
+              "descEn": "Mass attack. Deals 150% Reality DMG plus (own ATK x80%) Genesis DMG to 2 enemies. Consume 5 stacks of [Dynamo] to either attack 1 additional target, or deal Reality DMG +40% if less than 3 enemies are present.",
+              "descZh": "群体攻击，对2名敌方造成150%现实创伤；额外附加自身攻击*80%的本源创伤；消耗5层【电能】，额外攻击1个目标，若目标不足3个，本次攻击额外造成40%现实创伤",
+              "descVi": "Tấn công diện rộng. Gây 150% Reality DMG cộng (ATK bản thân x80%) Genesis DMG lên 2 kẻ địch. Tiêu hao 5 cộng dồn [Dynamo] để hoặc tấn công thêm 1 mục tiêu, hoặc gây Reality DMG +40% nếu có ít hơn 3 kẻ địch.",
+              "artEn": "It runs through our veins.",
+              "artZh": "在血管中奔走。"
+            },
+            "2": {
+              "id": 30861122,
+              "descEn": "Mass attack. Deals 225% Reality DMG plus (own ATK x120%) Genesis DMG to 2 enemies. Consume 5 stacks of [Dynamo] to either attack 1 additional target, or deal Reality DMG +60% if less than 3 enemies are present.",
+              "descZh": "群体攻击，对2名敌方造成225%现实创伤；额外附加自身攻击*120%的本源创伤；消耗5层【电能】，额外攻击1个目标，若目标不足3个，本次攻击额外造成60%现实创伤",
+              "descVi": "Tấn công diện rộng. Gây 225% Reality DMG cộng (ATK bản thân x120%) Genesis DMG lên 2 kẻ địch. Tiêu hao 5 cộng dồn [Dynamo] để hoặc tấn công thêm 1 mục tiêu, hoặc gây Reality DMG +60% nếu có ít hơn 3 kẻ địch.",
+              "artEn": "It runs through our veins. It flows among gears.",
+              "artZh": "在血管中奔走，在轮齿间流淌。"
+            },
+            "3": {
+              "id": 30861123,
+              "descEn": "Mass attack. Deals 375% Reality DMG plus (own ATK x200%) Genesis DMG to 2 enemies. Consume 5 stacks of [Dynamo] to either attack 1 additional target, or deal Reality DMG +100% if less than 3 enemies are present.",
+              "descZh": "群体攻击，对2名敌方造成375%现实创伤；额外附加自身攻击*200%的本源创伤；消耗5层【电能】，额外攻击1个目标，若目标不足3个，本次攻击额外造成100%现实创伤",
+              "descVi": "Tấn công diện rộng. Gây 375% Reality DMG cộng (ATK bản thân x200%) Genesis DMG lên 2 kẻ địch. Tiêu hao 5 cộng dồn [Dynamo] để hoặc tấn công thêm 1 mục tiêu, hoặc gây Reality DMG +100% nếu có ít hơn 3 kẻ địch.",
+              "artEn": "It runs through our veins. It flows between the gears. It never ceases to advance.",
+              "artZh": "在血管中奔走，在轮齿间流淌，永不停歇。"
+            }
+          }
         }
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30860131,
         "nameEn": "A Step Forward",
         "nameZh": "前进的一阶",
         "nameVi": "A Step Forward",
@@ -12423,7 +12652,19 @@
         "descVi": "Tự cường hóa. Tiến vào [Pragmatist], duy trì 2 round. Nhận 1 cộng dồn [Data Iteration]. Nạp 2 [Charged Ammunition].",
         "artEn": "By changing ourselves, we have the power to change the world.",
         "artZh": "改造自我，改造世界。",
-        "artVi": "Bằng cách thay đổi chính mình, ta có sức mạnh thay đổi thế giới."
+        "artVi": "Bằng cách thay đổi chính mình, ta có sức mạnh thay đổi thế giới.",
+        "reinforce": {
+          "ranks": {
+            "1": {
+              "id": 30861131,
+              "descEn": "Self buff. Enters [Pragmatist] for 2 rounds. Gains 1 stack of [Data Iteration]. Loads 2 [Overcharged Ammunition]. Gains Moxie +1.",
+              "descZh": "自我增强，获得【实用主义】，持续2回合；获得1层【数据迭代】；装备2颗【过充能弹】；使自身激情+1",
+              "descVi": "Tự cường hóa. Tiến vào [Pragmatist], duy trì 2 round. Nhận 1 cộng dồn [Data Iteration]. Nạp 2 [Overcharged Ammunition]. Nhận Moxie +1.",
+              "artEn": "By changing ourselves, we have the power to change the world.",
+              "artZh": "改造自我，改造世界。"
+            }
+          }
+        }
       },
       {
         "slot": 4,
@@ -12443,6 +12684,18 @@
             "descVi": "Tấn công diện rộng. Gây 100% Reality DMG lên toàn bộ kẻ địch. Tiêu hao 10 cộng dồn [Dynamo] để đòn tấn công này nhận Penetration Rate +50%; đòn tấn công này được tính là Incantation hạng 2.",
             "artEn": "",
             "artZh": ""
+          }
+        },
+        "reinforce": {
+          "ranks": {
+            "1": {
+              "id": 30861141,
+              "descEn": "Mass attack. Deals 100% Reality DMG to all enemies and 50% additional Reality DMG to targets below 50% HP; this attack ignores Dodge and does not trigger Reflect or Riposte. Consume 10 stacks of [Dynamo] to grant Penetration Rate +50% to this attack; this attack is considered a rank 2 incantation.",
+              "descZh": "群体攻击，对敌方全体造成100%的现实创伤；若目标当前生命低于50%，则额外造成50%现实创伤；本次攻击无视闪避，不会触发反弹、反击；消耗10层【电能】，本次攻击穿透率提升50%；此咒语为2阶咒语",
+              "descVi": "Tấn công diện rộng. Gây 100% Reality DMG lên toàn bộ kẻ địch và 50% Reality DMG bổ sung lên mục tiêu có HP dưới 50%; đòn tấn công này bỏ qua Dodge và không kích hoạt Reflect hay Riposte. Tiêu hao 10 cộng dồn [Dynamo] để đòn tấn công này nhận Penetration Rate +50%; đòn tấn công này được tính là Incantation hạng 2.",
+              "artEn": "",
+              "artZh": ""
+            }
           }
         }
       }
@@ -12594,6 +12847,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30650131,
         "nameEn": "Next Chapter",
         "nameZh": "向更远处回望",
         "nameVi": "Next Chapter",
@@ -12710,7 +12964,9 @@
             "artZh": "她鲜少挥剑，除了必要的反击——让敌人“安静”，也让自己“平静”。",
             "artVi": "Cô chỉ dùng cây dùi cui chiến hào khi thật cần thiết—để khiến kẻ thù im lặng và tâm trí mình lắng xuống."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -12748,11 +13004,14 @@
             "artZh": "她立下誓约，苦痛之外的全部，亦一并承担。",
             "artVi": "Cô đã thề sẽ gánh chịu tất cả—cả nỗi đau."
           }
-        }
+        },
+        "attribute": "Buff",
+        "attributeZh": "增益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31270131,
         "nameEn": "Violence Begets Violence",
         "nameZh": "赠与暴力的谏言",
         "nameVi": "Violence Begets Violence",
@@ -12867,7 +13126,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 250% Mental DMG. Sau khi tấn công, gây 1 cộng dồn [Confusion] lên mục tiêu, duy trì 1 round.",
             "artEn": "An outstanding piece of work, as praised by the people.",
             "artZh": "出类拔萃的习作，人们交口称誉。",
-            "artVi": "Một tác phẩm xuất sắc, được người đời ca ngợi."
+            "artVi": "Một tác phẩm xuất sắc, được người đời ca ngợi.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           },
           "3": {
             "id": 30410113,
@@ -12876,7 +13137,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 450% Mental DMG. Sau khi tấn công, gây 1 cộng dồn [Confusion] lên mục tiêu, duy trì 1 round.",
             "artEn": "An outstanding piece of work. Yet she showed no sign of joy as there was something better out there.",
             "artZh": "出类拔萃的习作，因为更耀眼的存在，她并无悦色。",
-            "artVi": "Một tác phẩm xuất sắc. Vậy mà cô chẳng hề tỏ ra vui mừng, bởi ngoài kia còn có thứ tốt hơn."
+            "artVi": "Một tác phẩm xuất sắc. Vậy mà cô chẳng hề tỏ ra vui mừng, bởi ngoài kia còn có thứ tốt hơn.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           }
         }
       },
@@ -12921,6 +13184,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30410131,
         "nameEn": "Instant of Prediction",
         "nameZh": "一瞬洞见的预示",
         "nameVi": "Instant of Prediction",
@@ -13037,7 +13301,9 @@
             "artZh": "人们时而称之为“疯病的孩子”，当然，此种说法仍显保守。",
             "artVi": "Đôi khi người ta gọi chúng là \"đứa trẻ điên\", và dĩ nhiên, cách gọi ấy vẫn chưa đủ điên như chúng."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -13075,11 +13341,14 @@
             "artZh": "此物仅能储存在特殊容器之中，譬如马氏安瓿，譬如肉体。",
             "artVi": "Thứ này chỉ có thể được cất giữ trong một vật chứa đặc biệt, như ống ampoule Sao Hỏa, hoặc một cơ thể sống."
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30470131,
         "nameEn": "26 Secondary Reactions",
         "nameZh": "二十六项次生反应",
         "nameVi": "26 Secondary Reactions",
@@ -13239,6 +13508,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30620131,
         "nameEn": "Ridiculous Eyewitness Testimony",
         "nameZh": "荒唐的目击证词",
         "nameVi": "Ridiculous Eyewitness Testimony",
@@ -13398,6 +13668,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30950131,
         "nameEn": "Morning Star for the Night",
         "nameZh": "赠予夜的晨星",
         "nameVi": "Morning Star for the Night",
@@ -13503,7 +13774,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 250% Mental DMG và xóa bỏ toàn bộ trạng thái [Stats Up] cùng [Pos Status] trên mục tiêu.",
             "artEn": "This control measure is only for the hyper-excited and those out of control.",
             "artZh": "此收治方法仅适于陷入亢奋者、难以自持者。",
-            "artVi": "Biện pháp khống chế này chỉ dành cho những kẻ hưng phấn quá độ và những kẻ mất kiểm soát."
+            "artVi": "Biện pháp khống chế này chỉ dành cho những kẻ hưng phấn quá độ và những kẻ mất kiểm soát.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           },
           "3": {
             "id": 30570113,
@@ -13512,7 +13785,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 450% Mental DMG và xóa bỏ toàn bộ trạng thái [Stats Up] cùng [Pos Status] trên mục tiêu.",
             "artEn": "This control measure is only for the hyper-excited and those out of control, in most cases.",
             "artZh": "此收治方法仅适于陷入亢奋者、难以自持者，通常而言。",
-            "artVi": "Biện pháp khống chế này chỉ dành cho những kẻ hưng phấn quá độ và những kẻ mất kiểm soát, trong phần lớn trường hợp."
+            "artVi": "Biện pháp khống chế này chỉ dành cho những kẻ hưng phấn quá độ và những kẻ mất kiểm soát, trong phần lớn trường hợp.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           }
         }
       },
@@ -13550,13 +13825,16 @@
             "descVi": "Buff diện rộng. Toàn bộ phe ta nhận Mental DEF +20%, duy trì 2 round, và gây 2 cộng dồn [Stabilize] lên họ.",
             "artEn": "A chain for stabilizing one's mental status. You'd better hope it works.",
             "artZh": "一种枷锁，用以稳固情绪，你最好期待它行之有效。",
-            "artVi": "Một sợi xích để ổn định trạng thái tinh thần. Tốt nhất là ngươi nên cầu mong nó hiệu quả."
+            "artVi": "Một sợi xích để ổn định trạng thái tinh thần. Tốt nhất là ngươi nên cầu mong nó hiệu quả.",
+            "attribute": "Buff",
+            "attributeZh": "增益"
           }
         }
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30570131,
         "nameEn": "Artificial Somnambulism Therapy",
         "nameZh": "人工梦游疗法",
         "nameVi": "Artificial Somnambulism Therapy",
@@ -13664,7 +13942,9 @@
             "artZh": "瞄准、射击，弹壳已尽数抛出，而雪原空无一人。",
             "artVi": "Ngắm và bóp cò—băng đạn vơi cạn, và trên cánh đồng tuyết chẳng còn một bóng người."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -13707,6 +13987,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31210131,
         "nameEn": "Astray No More",
         "nameZh": "不再迷失的归途者",
         "nameVi": "Astray No More",
@@ -13866,6 +14147,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30260131,
         "nameEn": "More Deadly than the Big Bad Wolves",
         "nameZh": "比大坏狼更可怕",
         "nameVi": "More Deadly than the Big Bad Wolves",
@@ -14016,6 +14298,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31030131,
         "nameEn": "A Veteran's Regards",
         "nameZh": "一位老兵的致意",
         "nameVi": "A Veteran's Regards",
@@ -14175,6 +14458,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30440131,
         "nameEn": "Unique Tools",
         "nameZh": "与众不同的工具们",
         "nameVi": "Unique Tools",
@@ -14325,6 +14609,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30520131,
         "nameEn": "The Future Is Near",
         "nameZh": "未来，近在咫尺",
         "nameVi": "The Future Is Near",
@@ -14484,6 +14769,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30270131,
         "nameEn": "A Bit of Truth Unveiled",
         "nameZh": "掀开真实一角",
         "nameVi": "A Bit of Truth Unveiled",
@@ -14629,11 +14915,14 @@
             "artZh": "灯亮了，她飞向光，照见了空荡荡的躯壳。",
             "artVi": "Bóng đèn tỏa sáng khi cô ấy bay về phía ánh sáng, soi rọi thân xác trống rỗng của cô."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31470141,
         "nameEn": "Implanted Memories",
         "nameZh": "非自愿铭记",
         "nameVi": "Implanted Memories",
@@ -14818,11 +15107,14 @@
             "artZh": "骨头的内里，字与词的雕塑，转瞬即逝的造物。",
             "artVi": "Ý định thật thường bị che giấu sau những lời đường mật. Bạn có nhìn thấu được không?"
           }
-        }
+        },
+        "attribute": "Buff",
+        "attributeZh": "增益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31180131,
         "nameEn": "Etched in Snow",
         "nameZh": "镌刻于雪上的",
         "nameVi": "Etched in Snow",
@@ -14939,7 +15231,9 @@
             "artZh": "生活不止在平静的泉中，她率先跃入浪涛，正如神谕所说的那样。",
             "artVi": "Cuộc đời không chỉ là một dòng suối lặng yên; cô là người đầu tiên lao mình vào những con sóng, đúng như lời sấm truyền."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -14977,11 +15271,14 @@
             "artZh": "那涟漪很小，但映照着她的全部，连同小小的野心和世界。",
             "artVi": "Gợn sóng thật nhỏ, nhưng phản chiếu trọn vẹn con người cô, cùng những hoài bão nhỏ bé và cả thế giới."
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31570131,
         "nameEn": "Her Odyssean Quest",
         "nameZh": "泉水宁芙的冒险",
         "nameVi": "Her Odyssean Quest",
@@ -15111,7 +15408,7 @@
       },
       {
         "slot": 2,
-        "subSlot": "Set A",
+        "subSlot": "",
         "type": "Incantation",
         "nameEn": "Gates of Horn and Ivory",
         "nameZh": "象牙或犄角之门",
@@ -15145,87 +15442,90 @@
             "artZh": "前进的笃信，温暖的庇佑。",
             "artVi": "Chắc chắn từ trước. Ấm áp trong chốn bình yên."
           }
-        }
-      },
-      {
-        "slot": 2,
-        "subSlot": "Set B",
-        "type": "Incantation",
-        "nameEn": "Martyr of the Abyss",
-        "nameZh": "献身于裂隙",
-        "nameVi": "Martyr of the Abyss",
-        "icon": "images/skills/31200223.png",
-        "ranks": {
-          "1": {
-            "id": 31200161,
-            "descEn": "1-target attack. Depletes (Current HP x20%) HP from all characters (not higher than 20% of the user's Max HP). Grants [Adversity I] to all allies for 3 rounds. Deals (number of characters x50%) Reality DMG based on 10% of the user's Max HP instead of ATK.",
-            "descZh": "单体攻击，使场上所有单位失去当前生命的20%（失去生命不会超过使用者最大生命的20%）；使己方全体获得【逆境Ⅰ】，持续3回合；之后对敌方单体以自身最大生命*10%替代攻击造成场上单位数量*50%的现实创伤",
-            "descVi": "Tấn công đơn mục tiêu. Rút (HP hiện tại ×20%) HP của toàn bộ nhân vật (không vượt quá 20% Max HP của người thi triển). Giúp toàn bộ phe ta nhận [Adversity I], duy trì 3 round. Gây Reality DMG bằng (số nhân vật ×50%) dựa trên 10% Max HP của người thi triển thay vì ATK.",
-            "artEn": "Dive into the darkness.",
-            "artZh": "跃入黑暗吧。",
-            "artVi": "Lao mình vào bóng tối."
+        },
+        "adaptiveOptions": [
+          {
+            "slot": 2,
+            "type": "Incantation",
+            "nameEn": "Weaver of Light",
+            "nameZh": "编织于光中",
+            "nameVi": "Weaver of Light",
+            "icon": "images/skills/31200222.png",
+            "ranks": {
+              "1": {
+                "id": 31200151,
+                "descEn": "Self counter. Enters [Mother Spirit's Guidance] status for 3 rounds. Gains DMG Taken -10% for 3 rounds.",
+                "descZh": "自我反制，进入【地母加护】状态，持续3回合；使自身受到伤害降低10%，持续3回合",
+                "descVi": "Counter bản thân. Tiến vào trạng thái [Mother Spirit's Guidance], duy trì 3 round. Nhận DMG Taken -10%, duy trì 3 round.",
+                "artEn": "Do you see the light?",
+                "artZh": "远方故乡的炉火。",
+                "artVi": "Ngươi có thấy ánh sáng không?"
+              },
+              "2": {
+                "id": 31200152,
+                "descEn": "Self counter. Enters [Mother Spirit's Guidance] status for 3 rounds. Gains DMG Taken -15% for 3 rounds.",
+                "descZh": "自我反制，进入【地母加护】状态，持续3回合；使自身受到伤害降低15%，持续3回合",
+                "descVi": "Counter bản thân. Tiến vào trạng thái [Mother Spirit's Guidance], duy trì 3 round. Nhận DMG Taken -15%, duy trì 3 round.",
+                "artEn": "Do you see the light? It comes from a distant home.",
+                "artZh": "那是远方故乡的炉火，人们在光下编织童话。",
+                "artVi": "Ngươi có thấy ánh sáng không? Nó đến từ một mái nhà xa xôi."
+              },
+              "3": {
+                "id": 31200153,
+                "descEn": "Self counter. Enters [Mother Spirit's Guidance] status for 3 rounds. Gains DMG Taken -25% for 3 rounds.",
+                "descZh": "自我反制，进入【地母加护】状态，持续3回合；使自身受到伤害降低25%，持续3回合",
+                "descVi": "Counter bản thân. Tiến vào trạng thái [Mother Spirit's Guidance], duy trì 3 round. Nhận DMG Taken -25%, duy trì 3 round.",
+                "artEn": "Do you see the light? It comes from a distant home, weaving dreams into your reality.",
+                "artZh": "那是远方故乡的炉火……人们于光下编织童话，在美梦中安眠。",
+                "artVi": "Ngươi có thấy ánh sáng không? Nó đến từ một mái nhà xa xôi, dệt những giấc mơ vào thực tại của ngươi."
+              }
+            }
           },
-          "2": {
-            "id": 31200162,
-            "descEn": "1-target attack. Depletes (Current HP x30%) HP from all characters (not higher than 30% of the user's Max HP). Grants [Adversity I] to all allies for 3 rounds. Deals (number of characters x50%) Reality DMG based on 15% of the user's Max HP instead of ATK.",
-            "descZh": "单体攻击，使场上所有单位失去当前生命的30%（失去生命不会超过使用者最大生命的30%）；使己方全体获得【逆境Ⅰ】，持续3回合；之后对敌方单体以自身最大生命*15%替代攻击造成场上单位数量*50%的现实创伤",
-            "descVi": "Tấn công đơn mục tiêu. Rút (HP hiện tại ×30%) HP của toàn bộ nhân vật (không vượt quá 30% Max HP của người thi triển). Giúp toàn bộ phe ta nhận [Adversity I], duy trì 3 round. Gây Reality DMG bằng (số nhân vật ×50%) dựa trên 15% Max HP của người thi triển thay vì ATK.",
-            "artEn": "Dive into the darkness. Be not afraid.",
-            "artZh": "跃入黑暗吧，伴着激烈的心跳。",
-            "artVi": "Lao mình vào bóng tối. Đừng sợ hãi."
-          },
-          "3": {
-            "id": 31200163,
-            "descEn": "1-target attack. Depletes (Current HP x50%) HP from all characters (not higher than 50% of the user's Max HP). Grants [Adversity I] to all allies for 3 rounds. Deals (number of characters x50%) Reality DMG based on 25% of the user's Max HP instead of ATK.",
-            "descZh": "单体攻击，使场上所有单位失去当前生命的50%（失去生命不会超过使用者最大生命的50%）；使己方全体获得【逆境Ⅰ】，持续3回合；之后对敌方单体以自身最大生命*25%替代攻击造成场上单位数量*50%的现实创伤",
-            "descVi": "Tấn công đơn mục tiêu. Rút (HP hiện tại ×50%) HP của toàn bộ nhân vật (không vượt quá 50% Max HP của người thi triển). Giúp toàn bộ phe ta nhận [Adversity I], duy trì 3 round. Gây Reality DMG bằng (số nhân vật ×50%) dựa trên 25% Max HP của người thi triển thay vì ATK.",
-            "artEn": "Dive into the darkness and give in to the whispers that seek you out.",
-            "artZh": "跃入黑暗吧，追逐耳边回响的絮语。",
-            "artVi": "Lao mình vào bóng tối, buông thả theo những lời thì thầm đang tìm đến ngươi."
+          {
+            "slot": 2,
+            "type": "Incantation",
+            "nameEn": "Martyr of the Abyss",
+            "nameZh": "献身于裂隙",
+            "nameVi": "Martyr of the Abyss",
+            "icon": "images/skills/31200223.png",
+            "ranks": {
+              "1": {
+                "id": 31200161,
+                "descEn": "1-target attack. Depletes (Current HP x20%) HP from all characters (not higher than 20% of the user's Max HP). Grants [Adversity I] to all allies for 3 rounds. Deals (number of characters x50%) Reality DMG based on 10% of the user's Max HP instead of ATK.",
+                "descZh": "单体攻击，使场上所有单位失去当前生命的20%（失去生命不会超过使用者最大生命的20%）；使己方全体获得【逆境Ⅰ】，持续3回合；之后对敌方单体以自身最大生命*10%替代攻击造成场上单位数量*50%的现实创伤",
+                "descVi": "Tấn công đơn mục tiêu. Rút (HP hiện tại ×20%) HP của toàn bộ nhân vật (không vượt quá 20% Max HP của người thi triển). Giúp toàn bộ phe ta nhận [Adversity I], duy trì 3 round. Gây Reality DMG bằng (số nhân vật ×50%) dựa trên 10% Max HP của người thi triển thay vì ATK.",
+                "artEn": "Dive into the darkness.",
+                "artZh": "跃入黑暗吧。",
+                "artVi": "Lao mình vào bóng tối."
+              },
+              "2": {
+                "id": 31200162,
+                "descEn": "1-target attack. Depletes (Current HP x30%) HP from all characters (not higher than 30% of the user's Max HP). Grants [Adversity I] to all allies for 3 rounds. Deals (number of characters x50%) Reality DMG based on 15% of the user's Max HP instead of ATK.",
+                "descZh": "单体攻击，使场上所有单位失去当前生命的30%（失去生命不会超过使用者最大生命的30%）；使己方全体获得【逆境Ⅰ】，持续3回合；之后对敌方单体以自身最大生命*15%替代攻击造成场上单位数量*50%的现实创伤",
+                "descVi": "Tấn công đơn mục tiêu. Rút (HP hiện tại ×30%) HP của toàn bộ nhân vật (không vượt quá 30% Max HP của người thi triển). Giúp toàn bộ phe ta nhận [Adversity I], duy trì 3 round. Gây Reality DMG bằng (số nhân vật ×50%) dựa trên 15% Max HP của người thi triển thay vì ATK.",
+                "artEn": "Dive into the darkness. Be not afraid.",
+                "artZh": "跃入黑暗吧，伴着激烈的心跳。",
+                "artVi": "Lao mình vào bóng tối. Đừng sợ hãi."
+              },
+              "3": {
+                "id": 31200163,
+                "descEn": "1-target attack. Depletes (Current HP x50%) HP from all characters (not higher than 50% of the user's Max HP). Grants [Adversity I] to all allies for 3 rounds. Deals (number of characters x50%) Reality DMG based on 25% of the user's Max HP instead of ATK.",
+                "descZh": "单体攻击，使场上所有单位失去当前生命的50%（失去生命不会超过使用者最大生命的50%）；使己方全体获得【逆境Ⅰ】，持续3回合；之后对敌方单体以自身最大生命*25%替代攻击造成场上单位数量*50%的现实创伤",
+                "descVi": "Tấn công đơn mục tiêu. Rút (HP hiện tại ×50%) HP của toàn bộ nhân vật (không vượt quá 50% Max HP của người thi triển). Giúp toàn bộ phe ta nhận [Adversity I], duy trì 3 round. Gây Reality DMG bằng (số nhân vật ×50%) dựa trên 25% Max HP của người thi triển thay vì ATK.",
+                "artEn": "Dive into the darkness and give in to the whispers that seek you out.",
+                "artZh": "跃入黑暗吧，追逐耳边回响的絮语。",
+                "artVi": "Lao mình vào bóng tối, buông thả theo những lời thì thầm đang tìm đến ngươi."
+              }
+            }
           }
-        }
-      },
-      {
-        "slot": 2,
-        "subSlot": "Set C",
-        "type": "Incantation",
-        "nameEn": "Weaver of Light",
-        "nameZh": "编织于光中",
-        "nameVi": "Weaver of Light",
-        "icon": "images/skills/31200222.png",
-        "ranks": {
-          "1": {
-            "id": 31200151,
-            "descEn": "Self counter. Enters [Mother Spirit's Guidance] status for 3 rounds. Gains DMG Taken -10% for 3 rounds.",
-            "descZh": "自我反制，进入【地母加护】状态，持续3回合；使自身受到伤害降低10%，持续3回合",
-            "descVi": "Counter bản thân. Tiến vào trạng thái [Mother Spirit's Guidance], duy trì 3 round. Nhận DMG Taken -10%, duy trì 3 round.",
-            "artEn": "Do you see the light?",
-            "artZh": "远方故乡的炉火。",
-            "artVi": "Ngươi có thấy ánh sáng không?"
-          },
-          "2": {
-            "id": 31200152,
-            "descEn": "Self counter. Enters [Mother Spirit's Guidance] status for 3 rounds. Gains DMG Taken -15% for 3 rounds.",
-            "descZh": "自我反制，进入【地母加护】状态，持续3回合；使自身受到伤害降低15%，持续3回合",
-            "descVi": "Counter bản thân. Tiến vào trạng thái [Mother Spirit's Guidance], duy trì 3 round. Nhận DMG Taken -15%, duy trì 3 round.",
-            "artEn": "Do you see the light? It comes from a distant home.",
-            "artZh": "那是远方故乡的炉火，人们在光下编织童话。",
-            "artVi": "Ngươi có thấy ánh sáng không? Nó đến từ một mái nhà xa xôi."
-          },
-          "3": {
-            "id": 31200153,
-            "descEn": "Self counter. Enters [Mother Spirit's Guidance] status for 3 rounds. Gains DMG Taken -25% for 3 rounds.",
-            "descZh": "自我反制，进入【地母加护】状态，持续3回合；使自身受到伤害降低25%，持续3回合",
-            "descVi": "Counter bản thân. Tiến vào trạng thái [Mother Spirit's Guidance], duy trì 3 round. Nhận DMG Taken -25%, duy trì 3 round.",
-            "artEn": "Do you see the light? It comes from a distant home, weaving dreams into your reality.",
-            "artZh": "那是远方故乡的炉火……人们于光下编织童话，在美梦中安眠。",
-            "artVi": "Ngươi có thấy ánh sáng không? Nó đến từ một mái nhà xa xôi, dệt những giấc mơ vào thực tại của ngươi."
-          }
-        }
+        ],
+        "attribute": "Adaptive",
+        "attributeZh": "自适应"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31200131,
         "nameEn": "Divine Yoik",
         "nameZh": "神圣之尤伊克",
         "nameVi": "Divine Yoik",
@@ -15385,6 +15685,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30370131,
         "nameEn": "Whispers of the Deceased",
         "nameZh": "逝者们的低语",
         "nameVi": "Whispers of the Deceased",
@@ -15544,6 +15845,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30050131,
         "nameEn": "Forest Eulogy",
         "nameZh": "森林的悼词",
         "nameVi": "Forest Eulogy",
@@ -15694,6 +15996,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31110131,
         "nameEn": "Climactic Moment",
         "nameZh": "戏剧性时刻",
         "nameVi": "Climactic Moment",
@@ -15853,6 +16156,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31510131,
         "nameEn": "Obsessive Love",
         "nameZh": "无比狂烈的爱",
         "nameVi": "Obsessive Love",
@@ -15978,7 +16282,9 @@
             "descVi": "Buff diện rộng. Gây 1 cộng dồn [Sturdiness] lên toàn bộ phe ta. Reality DEF và Mental DEF của họ +10%, duy trì 2 round.",
             "artEn": "One will hear the bell of the campanile.",
             "artZh": "钟声将从远方高楼传来。",
-            "artVi": "Người ta sẽ nghe thấy tiếng chuông tháp."
+            "artVi": "Người ta sẽ nghe thấy tiếng chuông tháp.",
+            "attribute": "Buff",
+            "attributeZh": "增益"
           },
           "2": {
             "id": 30180122,
@@ -16003,6 +16309,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30180131,
         "nameEn": "Meaningless as Expected",
         "nameZh": "意料之中的无用功",
         "nameVi": "Meaningless as Expected",
@@ -16110,7 +16417,9 @@
             "artZh": "耳晕目眩，头昏脑沉，理解真实的代价颇高。",
             "artVi": "Mắt hoa, tai ù, đầu choáng váng. Cái giá để hiểu được sự thật không hề nhỏ."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 2,
@@ -16153,6 +16462,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30540131,
         "nameEn": "Frequent Phenomena",
         "nameZh": "怪现象时有发生",
         "nameVi": "Frequent Phenomena",
@@ -16303,6 +16613,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31410131,
         "nameEn": "A Paper Craft Legion",
         "nameZh": "一纸化五军",
         "nameVi": "A Paper Craft Legion",
@@ -16471,6 +16782,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30150131,
         "nameEn": "Nosier Than Me",
         "nameZh": "比我更吵的家伙们",
         "nameVi": "Nosier Than Me",
@@ -16578,7 +16890,9 @@
             "artZh": "故事里的公主最终拾起武器，将寒光指向仇敌。",
             "artVi": "Cuối cùng, công chúa trong câu chuyện nhặt lấy vũ khí, hướng ánh thép lạnh về phía kẻ thù."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -16621,6 +16935,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31590131,
         "nameEn": "Through Waking and Surviving",
         "nameZh": "历经苏醒与幸存",
         "nameVi": "Through Waking and Surviving",
@@ -16685,9 +17000,9 @@
     "insights": [
       {
         "insight": 0,
-        "nameEn": "Foreknowledge",
+        "nameEn": "Precognition",
         "nameZh": "先觉",
-        "nameVi": "Foreknowledge",
+        "nameVi": "Precognition",
         "descEn": "Gains [Eye of Perception] upon entering battle. Perchta grants herself [\"Seven Friends\"] and [\"Seven Friends' Ward\"].\nWhile [\"Seven Friends\"] is present, after [\"Seven Friends' Ward\"] takes effect and is removed, Perchta grants herself [\"Seven Friends' Ward\"] again at the start of the round 3 rounds later.",
         "descZh": "进入战斗后获得【洞知眼】，佩施塔赋予自身【“七友人”】与【“七友人守护”】；\n【“七友人”】存在期间，【“七友人守护”】生效而被移除后，佩施塔在3回合后的回合开始时再次赋予自身【“七友人守护”】",
         "descVi": "Nhận [Eye of Perception] sau khi vào trận. Perchta thi triển [\"Seven Friends\"] và [\"Seven Friends' Ward\"] lên bản thân.\nTrong thời gian [\"Seven Friends\"] tồn tại, sau khi [\"Seven Friends' Ward\"] phát huy hiệu lực và bị loại bỏ, Perchta thi triển lại [\"Seven Friends' Ward\"] lên bản thân vào đầu round 3 round sau."
@@ -16838,6 +17153,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30630131,
         "nameEn": "Thus Spoke Pickles",
         "nameZh": "皮克勒斯如是说",
         "nameVi": "Thus Spoke Pickles",
@@ -16997,6 +17313,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30960131,
         "nameEn": "Bridge the Gap",
         "nameZh": "一处窗扇或桥梁",
         "nameVi": "Bridge the Gap",
@@ -17122,7 +17439,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 200% Mental DMG.",
             "artEn": "A piece of advice.",
             "artZh": "一份忠告。",
-            "artVi": "Một lời khuyên."
+            "artVi": "Một lời khuyên.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           },
           "2": {
             "id": 30460122,
@@ -17142,11 +17461,14 @@
             "artZh": "一份忠告，别忽略她，也别注意她。",
             "artVi": "Một lời khuyên: đừng lờ cô ấy đi, cũng đừng nhìn cô ấy."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30460131,
         "nameEn": "The Sun Is Not Gentle",
         "nameZh": "阳光并不温柔",
         "nameVi": "The Sun Is Not Gentle",
@@ -17254,7 +17576,9 @@
             "artZh": "他曾致力于此症的研究，结果显而易见。",
             "artVi": "Anh từng dốc lòng nghiên cứu căn bệnh này, và ngươi có thể thấy kết quả."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 2,
@@ -17297,6 +17621,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30420131,
         "nameEn": "Dedicated Straw Doctor",
         "nameZh": "敬业的稻草医生",
         "nameVi": "Dedicated Straw Doctor",
@@ -17404,7 +17729,9 @@
             "artZh": "旧房客不愿意走，新房客就无法安住，此处并非亡者居所。",
             "artVi": "Người chết vẫn nán lại và gây rắc rối cho người sống, nhưng rốt cuộc họ cũng phải ra đi."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -17442,11 +17769,14 @@
             "artZh": "太过执着的家伙，无法听进劝告，那只好遵循现世的物理法则。",
             "artVi": "Những kẻ cố chấp chẳng chịu lắng nghe, vậy thì đến lúc phải dùng cách cứng rắn rồi."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31420131,
         "nameEn": "For the Peace of Both Worlds",
         "nameZh": "还两个世界安眠",
         "nameVi": "For the Peace of Both Worlds",
@@ -17572,7 +17902,9 @@
             "artZh": "别停止书写，记录你看到的，大陆上的幽灵与真实。",
             "artVi": "Cứ tiếp tục viết những gì bạn đã chứng kiến trong sự hòa quyện giữa ảo ảnh và hiện thực trên vùng đất ấy."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -17615,6 +17947,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31140131,
         "nameEn": "Maze of Visceral Realism",
         "nameZh": "下现实主义迷宫",
         "nameVi": "Maze of Visceral Realism",
@@ -17790,11 +18123,14 @@
             "artZh": "记下这一刻，然后翻页，待下一个我回望。",
             "artVi": "Ghi lại khoảnh khắc này, rồi lật sang trang mới; để tôi của sau này có thể lấy đó làm tham khảo."
           }
-        }
+        },
+        "attribute": "Buff",
+        "attributeZh": "增益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31380131,
         "nameEn": "A Reed's Longing",
         "nameZh": "一苇之所如",
         "nameVi": "A Reed's Longing",
@@ -17954,6 +18290,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30250131,
         "nameEn": "Sleepless Rave",
         "nameZh": "狂欢与不眠夜",
         "nameVi": "Sleepless Rave",
@@ -18205,6 +18542,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31460131,
         "nameEn": "Chirping Chorus",
         "nameZh": "唱予无忧之诗",
         "nameVi": "Chirping Chorus",
@@ -18215,27 +18553,6 @@
         "artEn": "And thus Annwn's blessing descended, from the eternal beyond to the carefree depths.",
         "artZh": "而后安温降下护佑，从永恒的彼端、自无忧的深处。",
         "artVi": "Và thế là phước lành của Annwn giáng xuống, từ cõi vĩnh hằng xa xăm đến tận đáy sâu vô ưu."
-      },
-      {
-        "slot": 4,
-        "subSlot": "Feast Call",
-        "type": "Special",
-        "attribute": "Versatile",
-        "attributeZh": "万能",
-        "nameEn": "Feast Call",
-        "nameZh": "虫虫黑莓唤回术",
-        "nameVi": "Feast Call",
-        "icon": "images/skills/31460131.png",
-        "ranks": {
-          "1": {
-            "id": 31460181,
-            "descEn": "Mass attack. Deals 1500% Mental DMG to all enemies. For each stack of [Rapport] held, deals an additional 150% Mental DMG. This attack is always considered to be of a Stronger Afflatus.",
-            "descZh": "群体攻击，对敌方全体造成1500%的精神创伤，每拥有1层【灵犀】，额外造成150%的精神创伤，本次攻击任何灵感都视为克制",
-            "descVi": "Tấn công diện rộng. Gây 1500% Mental DMG lên toàn bộ kẻ địch. Với mỗi cộng dồn [Rapport] đang có, gây thêm 150% Mental DMG. Đòn tấn công này luôn được tính là thuộc Afflatus mạnh hơn.",
-            "artEn": "",
-            "artZh": ""
-          }
-        }
       }
     ],
     "insights": [
@@ -18394,6 +18711,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31250131,
         "nameEn": "All Hail Rubuska the First",
         "nameZh": "胜利属于“野树莓一世”！",
         "nameVi": "All Hail Rubuska the First",
@@ -18508,7 +18826,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 220% Mental DMG. Gây 1 cộng dồn [Rigidity] lên mục tiêu trúng đòn.",
             "artEn": "The thief has been captured and would never steal again.",
             "artZh": "贼已束手，不再行偷窃之事。",
-            "artVi": "Tên trộm đã bị bắt và sẽ không bao giờ trộm cắp nữa."
+            "artVi": "Tên trộm đã bị bắt và sẽ không bao giờ trộm cắp nữa.",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           },
           "3": {
             "id": 30380113,
@@ -18517,7 +18837,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 330% Mental DMG. Gây 2 cộng dồn [Rigidity] lên mục tiêu trúng đòn.",
             "artEn": "The thief has been captured, but why are we still losing money?",
             "artZh": "贼已束手，钱财为何仍不翼而飞？",
-            "artVi": "Tên trộm đã bị bắt, nhưng sao chúng ta vẫn mất tiền?"
+            "artVi": "Tên trộm đã bị bắt, nhưng sao chúng ta vẫn mất tiền?",
+            "attribute": "Debuff",
+            "attributeZh": "减益"
           }
         }
       },
@@ -18562,6 +18884,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30380131,
         "nameEn": "Walk Down the Sakura",
         "nameZh": "樱花落于漫步之间",
         "nameVi": "Walk Down the Sakura",
@@ -18721,6 +19044,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30290131,
         "nameEn": "Darkness United",
         "nameZh": "团结的黑色国度",
         "nameVi": "Darkness United",
@@ -18880,6 +19204,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30880131,
         "nameEn": "And So It Rises Again",
         "nameZh": "如此升起，升起",
         "nameVi": "And So It Rises Again",
@@ -19039,6 +19364,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31260131,
         "nameEn": "Infernal Mercy",
         "nameZh": "垂怜之下皆沉默",
         "nameVi": "Infernal Mercy",
@@ -19198,6 +19524,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30720131,
         "nameEn": "Edict of Atman",
         "nameZh": "万物之灵的旨意",
         "nameVi": "Edict of Atman",
@@ -19314,7 +19641,9 @@
             "artZh": "无需弹壳弹头，没有硝烟与弹道，导师常夸她很有做杀手的天赋。",
             "artVi": "Một thứ vũ khí không có đạn, không có khói, cũng không có đường bay; người thầy của cô thường nói cô có thiên phú giết chóc."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -19352,11 +19681,14 @@
             "artZh": "圈选范围，倒数三下，红光亮起时记得保持微笑。",
             "artVi": "Xác định chính xác mục tiêu, đếm ngược từ ba, và nhớ mỉm cười khi đèn đỏ vụt tắt."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31540131,
         "nameEn": "Energy Transfer Theory",
         "nameZh": "能量转移学",
         "nameVi": "Energy Transfer Theory",
@@ -19516,6 +19848,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30230131,
         "nameEn": "Unrestricted Chant",
         "nameZh": "规章之外的咏叹诗",
         "nameVi": "Unrestricted Chant",
@@ -19632,7 +19965,9 @@
             "artZh": "危险大多藏在爬行者的齿间，但总有例外，瓶中之物更为致命。",
             "artVi": "Hiểm nguy thường ẩn trong hàm răng của lũ côn trùng bò lê, nhưng luôn có ngoại lệ. Thật ra, thứ bị đóng kín trong chai mới nguy hiểm hơn nhiều."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -19670,11 +20005,14 @@
             "artZh": "药效并不由剂量决定，原始配方仍有提升空间，只需一滴即可。",
             "artVi": "Hiệu lực không do liều lượng quyết định. Công thức gốc vẫn còn chỗ để cải thiện. Chỉ cần dùng 1 giọt."
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30090131,
         "nameEn": "Mix Them All Up!",
         "nameZh": "把它们统统混合！",
         "nameVi": "Mix Them All Up!",
@@ -19834,6 +20172,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30730131,
         "nameEn": "Flame Within the Fire",
         "nameZh": "火于之火",
         "nameVi": "Flame Within the Fire",
@@ -19993,6 +20332,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30550131,
         "nameEn": "NDA Keeper",
         "nameZh": "保密协议恪守者",
         "nameVi": "NDA Keeper",
@@ -20138,11 +20478,14 @@
             "artZh": "他们身处风暴之中，却从未想过离开，也许每个人都有沉溺的理由。",
             "artVi": "Họ đang ở trong tâm bão, nhưng chưa từng cố gắng rời đi. Có lẽ ai cũng có lý do để cố chấp."
           }
-        }
+        },
+        "attribute": "Attack",
+        "attributeZh": "攻击"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30110131,
         "nameEn": "A Good Dream Tonight",
         "nameZh": "今夜，一场好梦",
         "nameVi": "A Good Dream Tonight",
@@ -20302,6 +20645,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30430131,
         "nameEn": "A Sincere Heart",
         "nameZh": "一颗真诚的心",
         "nameVi": "A Sincere Heart",
@@ -20461,6 +20805,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30120131,
         "nameEn": "Unexpected and Improvised",
         "nameZh": "预告外的即兴演出",
         "nameVi": "Unexpected and Improvised",
@@ -20623,6 +20968,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31490151,
         "nameEn": "Technological Breakthrough",
         "nameZh": "尤里卡时刻",
         "nameVi": "Technological Breakthrough",
@@ -20787,7 +21133,9 @@
             "artZh": "铁锈味蔓延在口中，它们尖啸着离去。",
             "artVi": "Vị gỉ sét len xuống cổ họng. Chúng thét lên rồi chạy trốn khỏi tầm mắt."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -20825,11 +21173,14 @@
             "artZh": "此为天籁展现时，小小牙贼蠢蠢欲动。",
             "artVi": "Trong đêm tối mịt mùng, những âm thanh huy hoàng của tự nhiên bao quanh. Kẻ trộm răng nhỏ bé đã sẵn sàng ra tay."
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30530131,
         "nameEn": "Song for the Bad Tooth",
         "nameZh": "坏齿舞曲",
         "nameVi": "Song for the Bad Tooth",
@@ -20935,7 +21286,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 250% Mental DMG và xóa bỏ toàn bộ [Counter] trên mục tiêu.",
             "artEn": "Hackers usually hack into devices through the internet.",
             "artZh": "骇客们常常通过网络入侵。",
-            "artVi": "Hacker thường xâm nhập thiết bị qua internet."
+            "artVi": "Hacker thường xâm nhập thiết bị qua internet.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           },
           "3": {
             "id": 30330113,
@@ -20944,7 +21297,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 450% Mental DMG và xóa bỏ toàn bộ [Counter] trên mục tiêu.",
             "artEn": "Hackers hack into devices through the internet and many other channels.",
             "artZh": "骇客们常常通过网络入侵，从各种意义上。",
-            "artVi": "Hacker xâm nhập thiết bị qua internet và nhiều kênh khác."
+            "artVi": "Hacker xâm nhập thiết bị qua internet và nhiều kênh khác.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           }
         }
       },
@@ -20989,6 +21344,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30330131,
         "nameEn": "Unplug It, Now!",
         "nameZh": "快，拔掉电源",
         "nameVi": "Unplug It, Now!",
@@ -21096,7 +21452,9 @@
             "artZh": "一颗恐惧的种子，生根、抽芽，被满足地端详。",
             "artVi": "Một hạt giống của nỗi sợ, được gieo thật sâu và nuôi dưỡng đầy thích thú."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -21139,6 +21497,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30980131,
         "nameEn": "Please, Come On In",
         "nameZh": "请进、请进",
         "nameVi": "Please, Come On In",
@@ -21235,7 +21594,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 200% Mental DMG.",
             "artEn": "Watch your back.",
             "artZh": "当心后面。",
-            "artVi": "Coi chừng sau lưng."
+            "artVi": "Coi chừng sau lưng.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           },
           "2": {
             "id": 30400112,
@@ -21255,7 +21616,9 @@
             "artZh": "当心后面，当心永远没法出局！",
             "artVi": "Coi chừng sau lưng, nếu không ngươi sẽ không bao giờ rời khỏi ván chơi này!"
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -21298,6 +21661,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30400131,
         "nameEn": "Good Children Sleep Well",
         "nameZh": "好孩子们入梦乡",
         "nameVi": "Good Children Sleep Well",
@@ -21448,6 +21812,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31070131,
         "nameEn": "The Sum of Infinity",
         "nameZh": "无限运算的总和",
         "nameVi": "The Sum of Infinity",
@@ -21602,11 +21967,14 @@
             "artZh": "诉说炽热的火，难免无可忘怀——第一颗火花的诞生。",
             "artVi": "Câu chuyện về ngọn lửa cháy rực, khắc mãi vào ký ức—sự ra đời của tia lửa đầu tiên."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30760131,
         "nameEn": "Indomitable Fire, Scorching Heart",
         "nameZh": "不灭的火，滚烫的心",
         "nameVi": "Indomitable Fire, Scorching Heart",
@@ -21761,11 +22129,14 @@
             "artZh": "我们何以涂抹世界？——不，朋友，以掌心相交的温热。",
             "artVi": "Có thể dùng gì để vẽ lên tấm toan mang tên thế giới của chúng ta? Có lẽ không phải một công cụ hữu hình, mà là hơi ấm sinh ra giữa đôi bàn tay chúng ta."
           }
-        }
+        },
+        "attribute": "Health",
+        "attributeZh": "治疗"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30870131,
         "nameEn": "Bright Prospect",
         "nameZh": "那遥远的，光明的",
         "nameVi": "Bright Prospect",
@@ -21946,6 +22317,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30480131,
         "nameEn": "Galaxy on the Strings",
         "nameZh": "琴弦上的星系",
         "nameVi": "Galaxy on the Strings",
@@ -22105,6 +22477,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31010131,
         "nameEn": "Boundless Sea, Limitless Sky",
         "nameZh": "驶向大海？驶向天空！",
         "nameVi": "Boundless Sea, Limitless Sky",
@@ -22212,7 +22585,9 @@
             "artZh": "祝你优雅而美丽，享受众星捧月，不必似我一样。",
             "artVi": "Mong bạn trở thành hiện thân của sự thanh lịch và vẻ đẹp. Mong những vì sao luôn nâng niu bạn. Mong bạn tránh được số phận như tôi."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 2,
@@ -22250,11 +22625,14 @@
             "artZh": "小小感冒，女巫保佑你，愿你早日解脱。",
             "artVi": "Chỉ là hơi lạnh một chút, do mụ phù thủy ban tặng. Mong nỗi đau của bạn sớm chấm dứt."
           }
-        }
+        },
+        "attribute": "Debuff",
+        "attributeZh": "减益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 31040131,
         "nameEn": "In the Fire, In the Shadow",
         "nameZh": "于火中，于影中",
         "nameVi": "In the Fire, In the Shadow",
@@ -22414,6 +22792,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30770131,
         "nameEn": "Long Long Journey",
         "nameZh": "更漫长的漫长",
         "nameVi": "Long Long Journey",
@@ -22519,7 +22898,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 250% Reality DMG và xóa toàn bộ trạng thái [Stats Up] cùng [Pos Status] khỏi mục tiêu.",
             "artEn": "They found balance in separation.",
             "artZh": "他们在分离中找到了平衡。",
-            "artVi": "Họ đã tìm thấy sự cân bằng trong chia ly."
+            "artVi": "Họ đã tìm thấy sự cân bằng trong chia ly.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           },
           "3": {
             "id": 30100113,
@@ -22528,7 +22909,9 @@
             "descVi": "Tấn công đơn mục tiêu. Gây 450% Reality DMG và xóa toàn bộ trạng thái [Stats Up] cùng [Pos Status] khỏi mục tiêu.",
             "artEn": "They found balance in separation, just like the poles of a magnet.",
             "artZh": "他们在分离中找到了平衡，如同磁的两极。",
-            "artVi": "Họ đã tìm thấy sự cân bằng trong chia ly, như hai cực của một thỏi nam châm."
+            "artVi": "Họ đã tìm thấy sự cân bằng trong chia ly, như hai cực của một thỏi nam châm.",
+            "attribute": "Attack",
+            "attributeZh": "攻击"
           }
         }
       },
@@ -22573,6 +22956,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30100131,
         "nameEn": "Minimalism and Maximalism",
         "nameZh": "极简与繁复之间",
         "nameVi": "Minimalism and Maximalism",
@@ -22732,6 +23116,7 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30820131,
         "nameEn": "The Rapids Know All",
         "nameZh": "湍流知晓一切",
         "nameVi": "The Rapids Know All",
@@ -22886,11 +23271,14 @@
             "artZh": "文字记录于残缺的羊皮纸灰烬上，而诗篇长留于世。",
             "artVi": "Dòng chữ được viết trên tấm da dê rách nát và cháy sém, nhưng thiên sử thi sẽ trường tồn mãi mãi."
           }
-        }
+        },
+        "attribute": "Buff",
+        "attributeZh": "增益"
       },
       {
         "slot": 3,
         "type": "Ultimate",
+        "id": 30130131,
         "nameEn": "Poem, Island, Breeze",
         "nameZh": "诗，远岛，风",
         "nameVi": "Poem, Island, Breeze",

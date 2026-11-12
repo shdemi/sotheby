@@ -175,9 +175,48 @@ export function characterSkills() {
   const replaces = mergedById("character_rank_replace");
   const passives = mergedByHeroLevel("skill_passive_level");
   const portrays = mergedByHeroLevel("skill_ex_level");
+  // A Reinforce upgrade (Lucy) replaces a card with a stronger one; the game ships a
+  // single step per card (`30860111` -> `30861111`), not a tier list.
+  const breaklevels = ["cn", "global"].flatMap((server) => table(server, "hero_upgrade_breaklevel"));
+  const upgradeOptions = mergedById("hero_upgrade_options");
   const extras = tryReadJson(path.join(MAPS, "skill-extras.json")) || {};
+  // Cards the game labels differently from the heuristic in `app.js`
+  // `getSkillBadgeText()`. Keyed by hero id, matched on the built card's slot.
+  const badges = tryReadJson(path.join(MAPS, "skill-badges.json")) || {};
+  // Cards whose variants are cast options instead of separate stance cards.
+  const adaptive = tryReadJson(path.join(MAPS, "adaptive.json")) || {};
   const singleRank = new Set(tryReadJson(path.join(MAPS, "single-rank.json")) || []);
   const content = overlay();
+
+  /**
+   * `<base skill id> -> reinforced skill id` from `hero_upgrade_breaklevel`.
+   *
+   * `hero_upgrade_breaklevel` is not Reinforce-only: it also maps Rhiannon's base cards
+   * onto her Bendith stance (`31460111` -> `31460211`). `hero_upgrade_options` is the
+   * Reinforce table, so only the heroes it mentions (Lucy) are considered. The table also
+   * carries two parallel copies of the same chain (`30863211` -> `30863111`,
+   * `30865211` -> `30865111`) whose source ids are duplicates of the base card, so only
+   * rows starting from the card's real id (the `01` family) are the in-game step.
+   */
+  const reinforceHeroes = new Set();
+  for (const row of upgradeOptions.values()) {
+    const ids = [row.replaceSkillGroup1, row.replaceSkillGroup2, row.replaceBigSkill, row.showSkillId]
+      .filter(Boolean)
+      .flatMap((value) => String(value).split(/[|#]/))
+      .filter(Boolean);
+    for (const raw of ids) {
+      const sid = String(raw);
+      if (sid.length === 8) reinforceHeroes.add(Number(sid.slice(0, 4)));
+    }
+  }
+
+  const upgradeTarget = new Map();
+  for (const row of breaklevels) {
+    const from = String(row.skillId || "");
+    if (from.length !== 8 || from.slice(4, 6) !== "01") continue;
+    if (!reinforceHeroes.has(Number(from.slice(0, 4)))) continue;
+    if (row.upgradeSkillId) upgradeTarget.set(Number(from), Number(row.upgradeSkillId));
+  }
 
   /** `<skillId> -> harmonisation cost` from the device's `skill1`/`skill2` fields. */
   const costs = new Map();
@@ -327,6 +366,7 @@ export function characterSkills() {
     const item = {
       slot: 3,
       type: "Ultimate",
+      id: rankIds[0],
       nameEn: localized("en", row?.name) || skillOverlay.nameEn || "",
       nameZh: localized("zh", row?.name) || skillOverlay.nameZh || "",
       nameVi: skillOverlay.nameVi || "",
@@ -511,6 +551,61 @@ export function characterSkills() {
     }
 
     if (Array.isArray(extra.weapons) && extra.weapons.length) entry.weapons = extra.weapons;
+
+    // Adaptive cards (Brume, Nautika): the game ships one card whose variants are picked
+    // when casting ("choose 1 out of [A] and [B]"), not cards the reader switches between
+    // with a stance tab. Fold the variants into the adaptive card as `adaptiveOptions` and
+    // drop them from the strip, so the hero has no Set A/B/C bar; `app.js` draws them as
+    // panels under the base text.
+    const baseId = (s) => Number(Object.values(s.ranks || {})[0]?.id) || 0;
+    for (const { card: cardId, options } of adaptive[id] || []) {
+      const card = entry.skills.find((s) => baseId(s) === cardId);
+      if (!card) continue;
+      const optionCards = options.map((oid) => entry.skills.find((s) => baseId(s) === oid)).filter(Boolean);
+      if (!optionCards.length) continue;
+      card.adaptiveOptions = optionCards.map(({ subSlot, ...rest }) => rest);
+      card.subSlot = "";
+      entry.skills = entry.skills.filter((s) => !optionCards.includes(s));
+    }
+
+    // Pin the card-type label the heuristic would get wrong. Matched on the built
+    // card's slot (+ sub-slot), so this patches a card instead of adding one. `badge`
+    // covers every rank; `ranks` overrides one rank at a time, because the game relabels
+    // a card when a later rank adds an effect (Click's S1 is Attack at ★1, Debuff at ★2).
+    for (const { slot, subSlot = "", badge, ranks } of badges[id] || []) {
+      const card = entry.skills.find((s) => s.slot === slot && (s.subSlot || "") === subSlot);
+      if (!card) continue;
+      if (badge?.en) {
+        card.attribute = badge.en;
+        if (badge.zh) card.attributeZh = badge.zh;
+      }
+      for (const [rank, rankBadge] of Object.entries(ranks || {})) {
+        const row = card.ranks?.[rank];
+        if (!row || !rankBadge?.en) continue;
+        row.attribute = rankBadge.en;
+        if (rankBadge.zh) row.attributeZh = rankBadge.zh;
+      }
+    }
+
+    // Reinforce (Lucy). `hero_upgrade_breaklevel` maps each card onto its reinforced
+    // version, so the whole state is a second rank set on the same card. `app.js` draws
+    // a Base / Reinforce switch and swaps the text in place; no extra card is added.
+    if (upgradeTarget.size) {
+      for (const card of entry.skills) {
+        const baseIds = card.ranks
+          ? Object.keys(card.ranks)
+              .map(Number)
+              .sort((a, b) => a - b)
+              .map((rk) => Number(card.ranks[rk].id))
+          : [Number(card.id)];
+        if (!baseIds[0]) continue;
+        const ids = baseIds.map((sid) => upgradeTarget.get(sid));
+        if (!ids.every((sid) => sid && skills.has(sid))) continue;
+        // Vietnamese lives in the overlay under `<hero>.reinforce.<slot>.ranks`.
+        const tierOverlay = extra.reinforce?.[String(card.slot)] || {};
+        card.reinforce = { ranks: buildRanks(ids, { ...ctx, skillOverlay: tierOverlay }) };
+      }
+    }
 
     // Cards read left to right as S1, S2, Ultimate, Special. The build loop above
     // emits each stance block in the order the hero's `skill` string lists them and

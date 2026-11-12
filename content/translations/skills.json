@@ -5691,6 +5691,48 @@
       "5": {
         "descVi": "[The First Push]: Mức tăng ATK của [Data Iteration] tăng thành 8%, và số cộng dồn tối đa tăng thành 6; và mỗi khi đồng minh nhận 1 Moxie hoặc Eureka, số cộng dồn [Dynamo] nhận được tăng thành 2."
       }
+    },
+    "reinforce": {
+      "1": {
+        "ranks": {
+          "1": {
+            "descVi": "Tấn công diện rộng. Gây Reality DMG lên 2 kẻ địch: 220% lên mục tiêu chính và 110% lên mục tiêu phụ. Tiêu hao 5 cộng dồn [Dynamo] để gây Reality DMG +60% cho đòn tấn công này."
+          },
+          "2": {
+            "descVi": "Tấn công diện rộng. Gây Reality DMG lên 2 kẻ địch: 330% lên mục tiêu chính và 165% lên mục tiêu phụ. Tiêu hao 5 cộng dồn [Dynamo] để gây Reality DMG +90% cho đòn tấn công này."
+          },
+          "3": {
+            "descVi": "Tấn công diện rộng. Gây Reality DMG lên 2 kẻ địch: 550% lên mục tiêu chính và 275% lên mục tiêu phụ. Tiêu hao 5 cộng dồn [Dynamo] để gây Reality DMG +150% cho đòn tấn công này."
+          }
+        }
+      },
+      "2": {
+        "ranks": {
+          "1": {
+            "descVi": "Tấn công diện rộng. Gây 150% Reality DMG cộng (ATK bản thân x80%) Genesis DMG lên 2 kẻ địch. Tiêu hao 5 cộng dồn [Dynamo] để hoặc tấn công thêm 1 mục tiêu, hoặc gây Reality DMG +40% nếu có ít hơn 3 kẻ địch."
+          },
+          "2": {
+            "descVi": "Tấn công diện rộng. Gây 225% Reality DMG cộng (ATK bản thân x120%) Genesis DMG lên 2 kẻ địch. Tiêu hao 5 cộng dồn [Dynamo] để hoặc tấn công thêm 1 mục tiêu, hoặc gây Reality DMG +60% nếu có ít hơn 3 kẻ địch."
+          },
+          "3": {
+            "descVi": "Tấn công diện rộng. Gây 375% Reality DMG cộng (ATK bản thân x200%) Genesis DMG lên 2 kẻ địch. Tiêu hao 5 cộng dồn [Dynamo] để hoặc tấn công thêm 1 mục tiêu, hoặc gây Reality DMG +100% nếu có ít hơn 3 kẻ địch."
+          }
+        }
+      },
+      "3": {
+        "ranks": {
+          "1": {
+            "descVi": "Tự cường hóa. Tiến vào [Pragmatist], duy trì 2 round. Nhận 1 cộng dồn [Data Iteration]. Nạp 2 [Overcharged Ammunition]. Nhận Moxie +1."
+          }
+        }
+      },
+      "4": {
+        "ranks": {
+          "1": {
+            "descVi": "Tấn công diện rộng. Gây 100% Reality DMG lên toàn bộ kẻ địch và 50% Reality DMG bổ sung lên mục tiêu có HP dưới 50%; đòn tấn công này bỏ qua Dodge và không kích hoạt Reflect hay Riposte. Tiêu hao 10 cộng dồn [Dynamo] để đòn tấn công này nhận Penetration Rate +50%; đòn tấn công này được tính là Incantation hạng 2."
+          }
+        }
+      }
     }
   },
   "3087": {
@@ -10894,8 +10936,8 @@
     },
     "insights": {
       "0": {
-        "nameEn": "Foreknowledge",
-        "nameVi": "Foreknowledge",
+        "nameEn": "Precognition",
+        "nameVi": "Precognition",
         "descEn": "Gains [Eye of Perception] upon entering battle. Perchta grants herself [\"Seven Friends\"] and [\"Seven Friends' Ward\"].\nWhile [\"Seven Friends\"] is present, after [\"Seven Friends' Ward\"] takes effect and is removed, Perchta grants herself [\"Seven Friends' Ward\"] again at the start of the round 3 rounds later.",
         "descVi": "Nhận [Eye of Perception] sau khi vào trận. Perchta thi triển [\"Seven Friends\"] và [\"Seven Friends' Ward\"] lên bản thân.\nTrong thời gian [\"Seven Friends\"] tồn tại, sau khi [\"Seven Friends' Ward\"] phát huy hiệu lực và bị loại bỏ, Perchta thi triển lại [\"Seven Friends' Ward\"] lên bản thân vào đầu round 3 round sau."
       },

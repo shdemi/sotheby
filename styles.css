@@ -8934,6 +8934,11 @@ body.guide-rail-resizing * {
   color: rgba(236, 229, 217, 0.55);
 }
 
+/* Reinforce switch (Lucy): Base / Reinforce, swaps a card's text in place */
+.uttu-reinforce-bar {
+  border-color: rgba(237, 125, 49, 0.35);
+}
+
 /* Card Selection Strip */
 .uttu-cards-strip {
   display: flex;
@@ -9036,13 +9041,12 @@ body.guide-rail-resizing * {
 .uttu-conduit-metric {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 6px 14px;
   border: 1px solid rgba(50, 60, 52, 0.35);
   background: rgba(0, 0, 0, 0.03);
   border-radius: 2px;
-  min-width: 140px;
-  justify-content: space-between;
+  min-width: 0;
 }
 
 .uttu-metric-label {
@@ -9061,21 +9065,37 @@ body.guide-rail-resizing * {
 }
 
 .uttu-conduit-metric.u-cost .uttu-metric-value {
-  color: #a84e2a;
-}
-
-.uttu-cost-diamond {
-  color: #9b6b3e;
-  font-size: 1.05rem;
-  line-height: 1;
+  color: #DD3838;
 }
 
 .uttu-conduit-metric.u-harm.is-positive .uttu-metric-value {
-  color: #1f7b58;
+  color: #60A566;
 }
 
 .uttu-conduit-metric.u-harm.is-negative .uttu-metric-value {
-  color: #c0392b;
+  color: #60A566;
+}
+
+/* Conduit markers. The game marks Cost with its diamond glyph (cropped from the
+   game) and Harmonization with a skewed chip; the value itself sits to the right
+   of the shape, so the chip is an empty decorative plate. */
+.uttu-conduit-cost {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  object-fit: contain;
+}
+
+.uttu-conduit-harm {
+  --badge-color: #fddf7a;
+  display: inline-block;
+  width: 28px;
+  height: 12px;
+  flex: none;
+  background: var(--badge-color);
+  transform: skewX(-24deg);
+  filter: drop-shadow(1px 1px 1.5px rgba(0, 0, 0, 0.28));
 }
 
 .uttu-rank-card-col {
@@ -9139,6 +9159,20 @@ body.guide-rail-resizing * {
   text-transform: uppercase;
   background: #313b33;
   padding: 3px 10px;
+  border-radius: 2px;
+}
+
+/* Cast option of an Adaptive card (Brume / Nautika): same plate as the card tag,
+   one step down since it sits in a panel head next to the option's name. */
+.uttu-skill-option-tag {
+  flex: none;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #313b33;
+  padding: 2px 8px;
   border-radius: 2px;
 }
 
@@ -9215,6 +9249,62 @@ body.guide-rail-resizing * {
   white-space: pre-line;
 }
 
+/* Adaptive card options (Brume / Nautika): one panel per cast option, each with the
+   option's own card art and the text for the rank selected above. */
+.uttu-skill-panels.is-stacked {
+  flex-direction: column;
+}
+
+.uttu-skill-panel-option {
+  flex-direction: column;
+  gap: 10px;
+}
+
+.uttu-skill-panels.is-stacked > .uttu-skill-panel {
+  flex: none;
+}
+
+/* Each option carries its own ★1/★2/★3 picker (card art + pips), so the two cast
+   choices are upgraded independently — as in the game. */
+.uttu-skill-option-picker {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.uttu-skill-option-rank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  opacity: 0.62;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.uttu-skill-option-rank:hover {
+  opacity: 0.9;
+}
+
+.uttu-skill-option-rank.is-active {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.uttu-skill-option-rank .rot-card {
+  height: 62px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.uttu-skill-option-rank.is-active .rot-card {
+  outline: 2px solid #a84e2a;
+  outline-offset: 2px;
+}
+
 .uttu-skill-panel-foot {
   display: flex;
   align-items: center;
@@ -9240,8 +9330,12 @@ body.guide-rail-resizing * {
   gap: 4px;
 }
 
-.uttu-skill-panel-cost .uttu-cost-diamond {
-  font-size: 0.9rem;
+/* Perception Point cost: the game's own icon, cropped, sits before the amount. */
+.uttu-skill-perception-icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  object-fit: contain;
 }
 
 @media (max-width: 900px) {
@@ -9256,6 +9350,7 @@ body.guide-rail-resizing * {
 
 /* Inheritance / Insights Board */
 .uttu-insights-board {
+  --uttu-insight-icon: 28px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -9266,15 +9361,58 @@ body.guide-rail-resizing * {
   color: #332f2a;
 }
 
-.uttu-insight-row {
+/* Inheritance name (the Insight I title) heads the whole tree as in-game dark badge.
+   The Portray tab reuses the same badge for its "Portrait Info" heading. */
+.uttu-insight-head {
   display: flex;
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(50, 60, 52, 0.18);
+  margin-bottom: 2px;
+}
+
+.uttu-insight-title,
+.uttu-portrays-title {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  border-radius: 2px;
+  background: #313B33;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #E7DBCB;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.uttu-insight-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.uttu-insight-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 4px 0 6px 0;
+}
+
+/* Faded spine joining one insight icon to the next (no more row separators).
+   It sits exactly on the icon column's centre line and keeps a 7px gap above and
+   below every icon. */
+.uttu-insight-row:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--uttu-insight-icon) / 2);
+  transform: translateX(-50%);
+  top: calc(4px + var(--uttu-insight-icon) + 7px);
+  bottom: 3px;
+  width: 1.5px;
+  background: #C7BBB3;
+  pointer-events: none;
 }
 
 .uttu-insight-row:last-child {
-  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .uttu-insight-badge-col {
@@ -9283,25 +9421,41 @@ body.guide-rail-resizing * {
   align-items: center;
   justify-content: flex-start;
   flex: none;
-  width: 44px;
-  padding-top: 2px;
+  width: var(--uttu-insight-icon);
+  padding-top: 0;
 }
 
 .uttu-insight-icon {
-  width: 32px;
-  height: 32px;
+  width: var(--uttu-insight-icon);
+  height: var(--uttu-insight-icon);
   object-fit: contain;
+  display: block;
 }
 
-.uttu-insight-name {
+.uttu-insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* The label is nudged down by half the icon's extra height so its text stays
+   centred against the icon without the line box eating the gap above the text. */
+.uttu-insight-tag {
+  align-self: flex-start;
+  margin-top: calc((var(--uttu-insight-icon) - 1.2em) / 2);
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 0.96rem;
-  font-weight: 700;
-  color: #313B33;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: #3b3a36;
 }
 
 .uttu-insight-desc {
-  font-size: 0.82rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.88rem;
   line-height: 1.55;
   color: #272525;
   white-space: pre-line;
@@ -9311,12 +9465,18 @@ body.guide-rail-resizing * {
 .uttu-portrays-board {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
   background: var(--team-card-bg);
   border: 1.1px solid rgba(50, 60, 52, 0.45);
   padding: 16px 18px;
   border-radius: 2px;
   color: #332f2a;
+}
+
+.uttu-portrays-head {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
 }
 
 .uttu-portrays-list {
@@ -11082,24 +11242,28 @@ body.guide-rail-resizing * {
 
   /* Inheritance and Portray typography and width */
   .uttu-insight-row {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    gap: 8px;
-    padding: 10px 0;
+    gap: 10px;
+    padding: 4px 0 6px 0;
   }
   .uttu-insight-badge-col {
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    width: 100%;
+    width: var(--uttu-insight-icon);
     padding-top: 0;
   }
   .uttu-insight-content {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+  }
+  .uttu-insight-tag {
+    font-size: 0.88rem;
+    line-height: 1.2;
   }
   .uttu-insight-desc {
     width: 100%;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
   }
   .uttu-portray-row {
     flex-direction: column;

@@ -136,7 +136,7 @@ Keep these maps in `scripts/sync/maps/`.
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
 | `pattern_costs.json` | pattern → cost mapping (currently ships `{}`) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
-| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards) and `single-rank.json` (heroes whose Conduit incantations ship one rank: The Twins, Hedone) |
+| `character_skills.json` | `skill-extras.json` (Rhiannon's two Bendith cards, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards), `skill-badges.json` (card-type overrides), `adaptive.json` (cards whose variants are cast options instead of stance cards: Brume S1, Nautika S2) and `single-rank.json` (heroes whose Conduit incantations ship one rank: The Twins, Hedone) |
 
 ### Class C — human-authored content (NOT derivable)
 
@@ -537,6 +537,13 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   device's `skill1`/`skill2` entries; `harmonization` is the `60292#<n>` behaviour on the
   skill effect, and an ultimate takes its negative value from `uniqueSkill_point`
   (`4#100` → `-100`). `scripts/apply_conduit_cost_harm.mjs` (hardcoded maps) is deleted.
+  The app shows both in the skills detail board only, as label → shape → number:
+  Cost is the game's own diamond icon (`images/random_icon/costDiamond.png`, 34×34
+  RGBA cropped from the game) and its value always carries the minus the game prints
+  (`-0`, `-2`, `-3`) even though the table stores it positive; Harmonization is an
+  empty skewed chip (`#fddf7a`) followed by a signed value. Numbers are `#DD3838` for
+  Cost and `#60A566` for Harmonization (both signs). Nothing is drawn on the card art
+  itself.
 - **The legacy file invented slot-4 "Special" skills** for Regulus, Vila, Argus, Barbara,
   Recoleta, Hissabeth, Ms. Stranger, Hedone, 37 and Huntsworn Lilya (some pointing at the
   nonexistent skill ids `790001`/`790002` — `790001` is only 37's card icon). Those rows
@@ -560,6 +567,12 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   Energy card `Flame Undying` (`31560182/183/184`), and by editorial choice only the rank-1
   row ships (`"ranks": [31560182]`), so the app shows a single Energy card instead of three
   star tiers of it.
+- **Rhiannon ships no Feast Call card.** `31460181` (`Feast Call` / 祝宴) used to sit in
+  `skill-extras.json` as her Conduit special; the owner had it dropped on 2026-11-11, so
+  her extras entry now carries only the two `Bendith` cards and the Arcane Skills strip
+  reads S1, S2, Ultimate in both stances. The game casts it from the queue, not from a
+  card the player picks. Its `4|Feast Call` Vietnamese overlay in
+  `content/translations/skills.json` is kept (unused) rather than deleted with the card.
 - **Lucy's `Conservation of Energy` is a one-rank card, not a three-rank one.**
   `30860141/142/143` are the same rank-2 ascension incantation at portray 0, 1 and 4
   (100/150/200% Reality DMG — P1 and P4 say exactly that), so
@@ -591,22 +604,61 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   cards until a button is pressed and shows only the cards whose `rank` matches the
   active button, never the lower ones. `790001` is a real icon id (37's card art), not
   one of the invented ones.
+- **Reinforce is a view switch on the card, not a second card (Lucy).** The game shows
+  an incantation in two states, 初始 (Base) and 升华 (Reinforce), and `hero_upgrade_options`
+  is the table that says which heroes own the system (only Lucy). `hero_upgrade_breaklevel`
+  then maps each base skill id onto its reinforced one (`30860111` → `30861111`), so
+  `derive/skills.mjs` attaches `reinforce: { ranks }` to every card of a listed hero (the
+  ultimate needs `id` on its row for this). Two filters keep the table's other rows out:
+  `hero_upgrade_breaklevel` also carries Rhiannon's Bendith stance (`31460111` → `31460211`,
+  already a stance tab) and two parallel copies of Lucy's chain (`30863211` → `30863111`,
+  `30865211` → `30865111`) whose source ids are duplicates of the base card. Only the
+  chain starting from the card's real id (the `01` family) is the in-game step. `app.js`
+  draws a Base / Reinforce bar next to the Euphoria switch (`charSkillsReinforceLevel`,
+  0/1, reset per hero), keeps the 4-card strip and the ★ selector, and swaps the
+  description of every card that carries a reinforced set. These rows are global, so
+  Vietnamese sits in `content/translations/skills.json` under
+  `<hero>.reinforce.<slot>.ranks.<n>.descVi`.
 - **Cards are emitted slot-ascending (S1, S2, Ultimate, Special).** The build loop walks
   `character.skill` group by group and then appends the hand-mapped `skill-extras` rows, so
   a stance hero would otherwise list its ultimate first and its base S1/S2 last once the
   stance filter drops the other block. `skills.mjs` stable-sorts `entry.skills` by `slot`
-  at the end, which keeps each stance's cards in order (`Rhiannon`: S1, S2, Ultimate,
-  Feast Call in both Base and Bendith) and moves The Twins' rows to S1 Set A/B, S2 Set A/B
+  at the end, which keeps each stance's cards in order (`Rhiannon`: S1, S2, Ultimate in
+  both Base and Bendith) and moves The Twins' rows to S1 Set A/B, S2 Set A/B
   without changing what either stance shows.
 - **A card's type label is a heuristic plus a hand override.** `getSkillBadgeText()` in
-  `app.js` guesses from the name and the rank-1 text; `skill-extras.json` `badge` pins the
-  ones it gets wrong, and the generator copies it to `attribute` / `attributeZh`. Rhiannon's
-  Bendith S1 is `Debuff` / `减益` (its text opens with "Mass attack") and Feast Call is
-  `Versatile` / `万能`.
+  `app.js` guesses from the name and the rank-1 text, and gets it wrong often: it only reads
+  the rank-1 wording, so a card whose debuff arrives at ★2 or whose text merely *mentions*
+  a status ("[Counter] status", "channeling state") lands in the wrong bucket. The game's own
+  `skill_effect.showTag` is the reference (`1`/`2` Attack, `3` Debuff, `4` Buff, `5` Counter,
+  `6` Health, `9` Channel, `11` Versatile, `14` Energy — the label is **Health** / 治疗, not
+  "Heal"; empty on 107 legacy rows and mixed on
+  Blonney S2 / Marcus S2 / Yenisei S1) — it agreed with all 16 badges confirmed against the
+  game by hand, so the mismatches were pinned from it. `skill-extras.json` `badge` pins a card
+  the map *adds*, and `maps/skill-badges.json` patches one the loop already built (matched on
+  slot + sub-slot: 83 cards over 67 heroes, of which 25 pin a single rank, because the game
+  relabels a card when a later rank adds an effect — Click's S1 is Attack at ★1 and Debuff
+  at ★2). Both copy to `attribute` / `attributeZh`, and `app.js` `getSkillBadgeText()`
+  prefers `ranks[rank].attribute` over the card's own. Five
+  known "mismatches" are deliberate: Cornerstone S1 and Desert Flannel S1 stay `Counter`,
+  Huntsworn Lilya S1 stays `Channel`, and Horropedia S2 / Jessica S2 stay as they are — the
+  owner confirmed all five against the game, so `showTag` loses to the eye there.
 - **Brume's four "sets" are really three.** `character.skill` spells Calculated Path as
   `…,313501112#313501122,313501132` — the rank-3 row sits in its own comma group. The
   ids step evenly and both groups share a name key, so `mergeSetRanks()` folds that
   trailing single-rank group back into the set it continues; Set D no longer exists.
+- **An Adaptive card picks its variant when cast, so it has no stance bar.** Brume's S1
+  (`31350111`) and Nautika's S2 (`31200121`) are one card whose text says "choose 1 out of
+  [A] and [B]"; the variants (`313501111`/`313501112`, `31200151`/`31200161`) are not
+  stances the reader flips between, so `scripts/sync/maps/adaptive.json` names the card and
+  its option ids. `derive/skills.mjs` then moves them onto the card as `adaptiveOptions`
+  (each keeps its own `ranks`, so every option has its own ★1/★2/★3 rows), drops them from
+  the strip and clears the card's `subSlot`. `app.js` renders one panel per option under the
+  base text, each with its own art + ★ picker (`charSkillAdaptiveRanks`, keyed by the
+  option's ★1 skill id) — which is exactly what the game shows on tap. The card's own type
+  label is pinned to `Adaptive` / 自适应 in `maps/skill-badges.json`, and the base line
+  loses the redundant "rank N" token via `stripSkillRankMention()` because the picker
+  already says it.
 - **A device field is a stance, not a slot.** `fight_device.skill1` is the first incantation
   set and `skill2` the second, and each `|` part inside one field is a card of that set
   (slot 1, slot 2, …). That is why The Twins read as "Set A: Atomic Fusion, Polymeric Ray"
