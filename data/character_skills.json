@@ -18123,6 +18123,28 @@
         }
       },
       {
+        "slot": 1,
+        "subSlot": "Bendith",
+        "type": "Incantation",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
+        "nameEn": "Babble-Gabble · Bendith",
+        "nameZh": "囫囵囵咒·加护",
+        "nameVi": "Babble-Gabble · Bendith",
+        "icon": "images/skills/31460112.png",
+        "ranks": {
+          "1": {
+            "id": 31460211,
+            "descEn": "Mass attack. Deals 400% Mental DMG to all enemies. Before attacking, consumes 1 stack of [Attunement] to gain ATK +12% for 3 rounds. After attacking, inflicts Critical DEF -15% on all enemies for 3 rounds; when an enemy is attacked, for each stack of [Rapport] Rhiannon has, inflicts an additional Critical DEF -3% (up to an additional -15%).",
+            "descZh": "群体攻击，对敌方全体造成400%精神创伤；攻击前消耗1层【默契同调】，使自身攻击提升12%，持续3回合；攻击后，使敌方全体暴击防御降低15%，且敌方受击时重新计算，小瑞安侬每有1层【灵犀】额外降低3%（最多额外降低15%），持续3回合",
+            "descVi": "Tấn công diện rộng. Gây 400% Mental DMG lên toàn bộ kẻ địch. Trước khi tấn công, tiêu hao 1 cộng dồn [Attunement] để nhận ATK +12%, duy trì 3 round. Sau khi tấn công, gây Critical DEF -15% lên toàn bộ kẻ địch, duy trì 3 round; khi kẻ địch bị tấn công, với mỗi cộng dồn [Rapport] mà Rhiannon có, gây thêm Critical DEF -3% (tăng thêm tối đa -15%).",
+            "artEn": "She's anxious.",
+            "artZh": "容易紧张。",
+            "artVi": "Cô ấy lo lắng."
+          }
+        }
+      },
+      {
         "slot": 2,
         "subSlot": "",
         "type": "Incantation",
@@ -18161,40 +18183,6 @@
         }
       },
       {
-        "slot": 3,
-        "type": "Ultimate",
-        "nameEn": "Chirping Chorus",
-        "nameZh": "唱予无忧之诗",
-        "nameVi": "Chirping Chorus",
-        "icon": "images/skills/31460141.png",
-        "descEn": "Mass buff. Grants [Adar Llwch Gwin] to all other allies for 3 rounds. Gains [Bendith] for 4 rounds.",
-        "descZh": "群体增强，使其他友方获得【尘酿鹰】，持续3回合；并使自身获得【加护】，持续4回合",
-        "descVi": "Buff diện rộng. Cấp [Adar Llwch Gwin] cho toàn bộ đồng minh khác, duy trì 3 round. Bản thân nhận [Bendith], duy trì 4 round.",
-        "artEn": "And thus Annwn's blessing descended, from the eternal beyond to the carefree depths.",
-        "artZh": "而后安温降下护佑，从永恒的彼端、自无忧的深处。",
-        "artVi": "Và thế là phước lành của Annwn giáng xuống, từ cõi vĩnh hằng xa xăm đến tận đáy sâu vô ưu."
-      },
-      {
-        "slot": 1,
-        "subSlot": "Bendith",
-        "type": "Incantation",
-        "nameEn": "Babble-Gabble · Bendith",
-        "nameZh": "囫囵囵咒·加护",
-        "nameVi": "Babble-Gabble · Bendith",
-        "icon": "images/skills/31460112.png",
-        "ranks": {
-          "1": {
-            "id": 31460211,
-            "descEn": "Mass attack. Deals 400% Mental DMG to all enemies. Before attacking, consumes 1 stack of [Attunement] to gain ATK +12% for 3 rounds. After attacking, inflicts Critical DEF -15% on all enemies for 3 rounds; when an enemy is attacked, for each stack of [Rapport] Rhiannon has, inflicts an additional Critical DEF -3% (up to an additional -15%).",
-            "descZh": "群体攻击，对敌方全体造成400%精神创伤；攻击前消耗1层【默契同调】，使自身攻击提升12%，持续3回合；攻击后，使敌方全体暴击防御降低15%，且敌方受击时重新计算，小瑞安侬每有1层【灵犀】额外降低3%（最多额外降低15%），持续3回合",
-            "descVi": "Tấn công diện rộng. Gây 400% Mental DMG lên toàn bộ kẻ địch. Trước khi tấn công, tiêu hao 1 cộng dồn [Attunement] để nhận ATK +12%, duy trì 3 round. Sau khi tấn công, gây Critical DEF -15% lên toàn bộ kẻ địch, duy trì 3 round; khi kẻ địch bị tấn công, với mỗi cộng dồn [Rapport] mà Rhiannon có, gây thêm Critical DEF -3% (tăng thêm tối đa -15%).",
-            "artEn": "She's anxious.",
-            "artZh": "容易紧张。",
-            "artVi": "Cô ấy lo lắng."
-          }
-        }
-      },
-      {
         "slot": 2,
         "subSlot": "Bendith",
         "type": "Incantation",
@@ -18215,9 +18203,25 @@
         }
       },
       {
+        "slot": 3,
+        "type": "Ultimate",
+        "nameEn": "Chirping Chorus",
+        "nameZh": "唱予无忧之诗",
+        "nameVi": "Chirping Chorus",
+        "icon": "images/skills/31460141.png",
+        "descEn": "Mass buff. Grants [Adar Llwch Gwin] to all other allies for 3 rounds. Gains [Bendith] for 4 rounds.",
+        "descZh": "群体增强，使其他友方获得【尘酿鹰】，持续3回合；并使自身获得【加护】，持续4回合",
+        "descVi": "Buff diện rộng. Cấp [Adar Llwch Gwin] cho toàn bộ đồng minh khác, duy trì 3 round. Bản thân nhận [Bendith], duy trì 4 round.",
+        "artEn": "And thus Annwn's blessing descended, from the eternal beyond to the carefree depths.",
+        "artZh": "而后安温降下护佑，从永恒的彼端、自无忧的深处。",
+        "artVi": "Và thế là phước lành của Annwn giáng xuống, từ cõi vĩnh hằng xa xăm đến tận đáy sâu vô ưu."
+      },
+      {
         "slot": 4,
         "subSlot": "Feast Call",
         "type": "Special",
+        "attribute": "Versatile",
+        "attributeZh": "万能",
         "nameEn": "Feast Call",
         "nameZh": "虫虫黑莓唤回术",
         "nameVi": "Feast Call",
@@ -20551,28 +20555,6 @@
         }
       },
       {
-        "slot": 2,
-        "subSlot": "Set A",
-        "type": "Incantation",
-        "nameEn": "Polymeric Ray",
-        "nameZh": "聚合射线",
-        "nameVi": "Polymeric Ray",
-        "icon": "images/skills/31490112.png",
-        "ranks": {
-          "1": {
-            "id": 31490121,
-            "descEn": "Mass attack. Deals 540% Reality DMG to all enemies. This attack only counts as a Mineral Afflatus attack. When attacking, for each Mineral Energy consumed by all allied [Conduit] this round, deals an additional 90% Reality DMG; if at least 6 Mineral Energy has been consumed this round, this effect increases to 180% Reality DMG for each Mineral Energy consumed.",
-            "descZh": "群体攻击，仅造成岩灵感克制效果，对敌方全体造成540%现实创伤；攻击时根据本回合所有【术具】已消耗的岩交感能量提升现实创伤，每消耗1点提升90%现实创伤，若已消耗的岩交感能量达到6点及以上时，每消耗1点提升180%现实创伤",
-            "descVi": "Tấn công diện rộng. Gây 540% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 90% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 180% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
-            "artEn": "Like children taking their first steps, we stumble forth toward a beautiful future.",
-            "artZh": "从零开始蹒跚起步，向着美好的未来前进，像儿时一样雀跃欢呼。",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
-            "cost": 3,
-            "harmonization": 8
-          }
-        }
-      },
-      {
         "slot": 1,
         "subSlot": "Set B",
         "type": "Incantation",
@@ -20590,6 +20572,28 @@
             "artZh": "舷窗外的地球清晰可见，星星是触手可及的冰冷，故乡是否早已改变？",
             "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?",
             "cost": 0,
+            "harmonization": 8
+          }
+        }
+      },
+      {
+        "slot": 2,
+        "subSlot": "Set A",
+        "type": "Incantation",
+        "nameEn": "Polymeric Ray",
+        "nameZh": "聚合射线",
+        "nameVi": "Polymeric Ray",
+        "icon": "images/skills/31490112.png",
+        "ranks": {
+          "1": {
+            "id": 31490121,
+            "descEn": "Mass attack. Deals 540% Reality DMG to all enemies. This attack only counts as a Mineral Afflatus attack. When attacking, for each Mineral Energy consumed by all allied [Conduit] this round, deals an additional 90% Reality DMG; if at least 6 Mineral Energy has been consumed this round, this effect increases to 180% Reality DMG for each Mineral Energy consumed.",
+            "descZh": "群体攻击，仅造成岩灵感克制效果，对敌方全体造成540%现实创伤；攻击时根据本回合所有【术具】已消耗的岩交感能量提升现实创伤，每消耗1点提升90%现实创伤，若已消耗的岩交感能量达到6点及以上时，每消耗1点提升180%现实创伤",
+            "descVi": "Tấn công diện rộng. Gây 540% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 90% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 180% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
+            "artEn": "Like children taking their first steps, we stumble forth toward a beautiful future.",
+            "artZh": "从零开始蹒跚起步，向着美好的未来前进，像儿时一样雀跃欢呼。",
+            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
+            "cost": 3,
             "harmonization": 8
           }
         }

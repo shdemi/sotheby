@@ -512,6 +512,13 @@ export function characterSkills() {
 
     if (Array.isArray(extra.weapons) && extra.weapons.length) entry.weapons = extra.weapons;
 
+    // Cards read left to right as S1, S2, Ultimate, Special. The build loop above
+    // emits each stance block in the order the hero's `skill` string lists them and
+    // appends the hand-mapped cards afterwards, so a stance hero (Rhiannon) would
+    // otherwise put the ultimate first and the base stance's S1/S2 last. Sorting by
+    // slot is stable, so cards that share a slot keep their stance order.
+    entry.skills.sort((a, b) => a.slot - b.slot);
+
     out[name] = entry;
   }
 

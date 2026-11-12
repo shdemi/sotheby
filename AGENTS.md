@@ -591,6 +591,18 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   cards until a button is pressed and shows only the cards whose `rank` matches the
   active button, never the lower ones. `790001` is a real icon id (37's card art), not
   one of the invented ones.
+- **Cards are emitted slot-ascending (S1, S2, Ultimate, Special).** The build loop walks
+  `character.skill` group by group and then appends the hand-mapped `skill-extras` rows, so
+  a stance hero would otherwise list its ultimate first and its base S1/S2 last once the
+  stance filter drops the other block. `skills.mjs` stable-sorts `entry.skills` by `slot`
+  at the end, which keeps each stance's cards in order (`Rhiannon`: S1, S2, Ultimate,
+  Feast Call in both Base and Bendith) and moves The Twins' rows to S1 Set A/B, S2 Set A/B
+  without changing what either stance shows.
+- **A card's type label is a heuristic plus a hand override.** `getSkillBadgeText()` in
+  `app.js` guesses from the name and the rank-1 text; `skill-extras.json` `badge` pins the
+  ones it gets wrong, and the generator copies it to `attribute` / `attributeZh`. Rhiannon's
+  Bendith S1 is `Debuff` / `减益` (its text opens with "Mass attack") and Feast Call is
+  `Versatile` / `万能`.
 - **Brume's four "sets" are really three.** `character.skill` spells Calculated Path as
   `…,313501112#313501122,313501132` — the rank-3 row sits in its own comma group. The
   ids step evenly and both groups share a name key, so `mergeSetRanks()` folds that

@@ -114,7 +114,8 @@
       "slot": 1,
       "subSlot": "Bendith",
       "type": "Incantation",
-      "ranks": [31460211]
+      "ranks": [31460211],
+      "badge": { "en": "Debuff", "zh": "减益" }
     },
     {
       "slot": 2,
@@ -126,7 +127,8 @@
       "slot": 4,
       "subSlot": "Feast Call",
       "type": "Special",
-      "ranks": [31460181]
+      "ranks": [31460181],
+      "badge": { "en": "Versatile", "zh": "万能" }
     }
   ],
   "3147": [
