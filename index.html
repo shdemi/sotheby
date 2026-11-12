@@ -25,6 +25,16 @@
   <link rel="stylesheet" href="styles.css" />
   <!-- html2canvas for exporting high quality screenshot -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!-- Vercel Web Analytics. This page is plain HTML with no Next.js build step, so it
+       uses the HTML install rather than `import { Analytics } from
+       "@vercel/analytics/next"` (that entry point only resolves inside a Next app).
+       `/_vercel/insights/script.js` is served by the Vercel edge once Web Analytics is
+       enabled for the project; anywhere else the request just 404s, so `python serve.py`
+       and the GitHub Pages copy stay silent. Custom events: window.va("event", { name }). -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <!-- Shared pattern tooltip (custom, replaces the native title bubble) -->

@@ -412,6 +412,16 @@ rebuild, so the list jumps from 3 to 6.
   configures the one Node function, `api/codes.js`; `.vercelignore` keeps the raw
   checkouts, test artifacts and `scripts/` out of the upload. `CNAME` is kept for the
   GitHub Pages copy.
+- **Web Analytics is the HTML install, not the npm package.** This page has no Next.js
+  build step, so `@vercel/analytics/next` cannot resolve; `index.html` instead queues
+  through `window.va` and loads `/_vercel/insights/script.js` (deferred, last in
+  `<head>`). Vercel serves that file only once Analytics is enabled for the project —
+  every other host, including `python serve.py` and GitHub Pages, just 404s it and the
+  page carries on. Custom events are `window.va("event", { name: "…" })`.
+- **A force-push does not re-point production.** Vercel ties the production alias to the
+  deployment it built; rewinding `main` onto a commit it has already built creates no new
+  deployment, so the site keeps serving the newer build. Redeploy/promote that commit in
+  the dashboard, or push a new commit (any new SHA, even `--allow-empty`) to force a build.
 - Discord OAuth2 cannot be done from a static page: the token exchange needs a
   `client_secret`, so it requires a backend/serverless function.
 - Clean `/u/<handle>` URLs require host rewrites — another reason for Phase 8.
