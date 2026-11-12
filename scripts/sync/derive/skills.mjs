@@ -19,6 +19,16 @@
  * has a device but its `character.skill` is already the full kit, so it uses the
  * normal path (the device is still consulted for `cost`).
  *
+ * A device field is a stance, not a slot: `skill1` is the first set and `skill2`
+ * the second, and each `|` part inside one field is a card of that set (slot 1,
+ * slot 2, …). The Twins' `skill1` therefore reads as "Set A: Atomic Fusion,
+ * Polymeric Ray" and `skill2` as "Set B: Extreme Overclocking, Balancé Across
+ * the Stars". Devices with one part per field (Coppélia, Everecho) have no
+ * stance at all, so their parts stay slot 1 / slot 2.
+ *
+ * Conduit incantations have **one rank**: the game never upgrades them, so the
+ * card shows its base numbers and no ★ selector.
+ *
  * Rank text embeds skill names as `▩N%s` with the same mapping as Euphoria:
  *   0 insight passive, 1 first incantation, 2 second incantation, 3 ultimate.
  * Placeholders are resolved per language instead of being deleted.
@@ -166,7 +176,6 @@ export function characterSkills() {
   const passives = mergedByHeroLevel("skill_passive_level");
   const portrays = mergedByHeroLevel("skill_ex_level");
   const extras = tryReadJson(path.join(MAPS, "skill-extras.json")) || {};
-  const deviceRanks = tryReadJson(path.join(MAPS, "device-ranks.json")) || {};
   const content = overlay();
 
   /** `<skillId> -> harmonisation cost` from the device's `skill1`/`skill2` fields. */
@@ -402,18 +411,23 @@ export function characterSkills() {
         String(device.skill2 || "").includes("|"));
 
     if (deviceStances) {
-      const parseSlot = (value, slot) => {
-        const parts = String(value || "").split("|").filter(Boolean);
-        return parts.map((part, index) => {
+      const parts = (value) => String(value || "").split("|").filter(Boolean);
+      const set1 = parts(device.skill1);
+      const set2 = parts(device.skill2);
+      /** True when the device's two fields are stances instead of slot 1 / slot 2. */
+      const multiSet = set1.length > 1 || set2.length > 1;
+
+      const parseSet = (set, setIndex) => {
+        const subSlot = multiSet ? `Set ${String.fromCharCode(65 + setIndex)}` : "";
+        return set.map((part, index) => {
           const sid = Number(part.split("#")[0]);
-          const rankIds = deviceRanks[id]?.[sid] || [sid];
-          const subSlot = parts.length > 1 ? `Set ${String.fromCharCode(65 + index)}` : "";
-          return incantation(slot, subSlot, "Incantation", rankIds, ctx, skillOverlay(slot, subSlot));
+          const slot = multiSet ? index + 1 : setIndex + 1;
+          return incantation(slot, subSlot, "Incantation", [sid], ctx, skillOverlay(slot, subSlot));
         });
       };
 
-      entry.skills.push(...parseSlot(device.skill1, 1));
-      entry.skills.push(...parseSlot(device.skill2, 2));
+      entry.skills.push(...parseSet(set1, 0));
+      entry.skills.push(...parseSet(set2, 1));
 
       const ultId = Number(device.uniqueSkill) || ch.exSkill;
       if (ultId && skills.has(ultId)) {

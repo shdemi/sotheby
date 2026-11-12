@@ -10118,47 +10118,23 @@
           "1": {
             "descVi": "[Interval]\nTự cường hóa. Mineral Energy +4.",
             "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung."
-          },
-          "2": {
-            "descVi": "[Interval]\nTự cường hóa. Mineral Energy +4.",
-            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung."
-          },
-          "3": {
-            "descVi": "[Interval]\nTự cường hóa. Mineral Energy +6.",
-            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung."
           }
         }
       },
-      "1|Set B": {
+      "2|Set A": {
         "nameVi": "Polymeric Ray",
         "ranks": {
           "1": {
             "descVi": "Tấn công diện rộng. Gây 540% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 90% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 180% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
             "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp."
-          },
-          "2": {
-            "descVi": "Tấn công diện rộng. Gây 702% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 117% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 234% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp."
-          },
-          "3": {
-            "descVi": "Tấn công diện rộng. Gây 864% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 144% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 288% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp."
           }
         }
       },
-      "2|Set A": {
+      "1|Set B": {
         "nameVi": "Extreme Overclocking",
         "ranks": {
           "1": {
             "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +20% và Critical DMG +40%, duy trì 1 round.",
-            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?"
-          },
-          "2": {
-            "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +20% và Critical DMG +40%, duy trì 1 round.",
-            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?"
-          },
-          "3": {
-            "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +30% và Critical DMG +60%, duy trì 1 round.",
             "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?"
           }
         }
@@ -10168,14 +10144,6 @@
         "ranks": {
           "1": {
             "descVi": "Tấn công diện rộng. Gây 270% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 45% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 90% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
-            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa."
-          },
-          "2": {
-            "descVi": "Tấn công diện rộng. Gây 351% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 58.5% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 117% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
-            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa."
-          },
-          "3": {
-            "descVi": "Tấn công diện rộng. Gây 432% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 72% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 144% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
             "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa."
           }
         }

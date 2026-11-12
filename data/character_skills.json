@@ -20591,34 +20591,12 @@
             "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung.",
             "cost": 0,
             "harmonization": 8
-          },
-          "2": {
-            "id": 31492111,
-            "descEn": "[Interval]\nSelf buff. Mineral Energy +4.",
-            "descZh": "【损耗】\n自我增强，立刻获得4点岩交感能量",
-            "descVi": "[Interval]\nTự cường hóa. Mineral Energy +4.",
-            "artEn": "In a beautiful, faraway place, dewdrops glitter in the morning light, leaving you with a sense of longing.",
-            "artZh": "有声音来自美好远方，黎明时刻含晨露，绚烂前景令人心驰神往。",
-            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung.",
-            "cost": 0,
-            "harmonization": 20
-          },
-          "3": {
-            "id": 31494111,
-            "descEn": "[Interval]\nSelf buff. Mineral Energy +6.",
-            "descZh": "【损耗】\n自我增强，立刻获得6点岩交感能量",
-            "descVi": "[Interval]\nTự cường hóa. Mineral Energy +6.",
-            "artEn": "In a beautiful, faraway place, dewdrops glitter in the morning light, leaving you with a sense of longing.",
-            "artZh": "有声音来自美好远方，黎明时刻含晨露，绚烂前景令人心驰神往。",
-            "artVi": "Ở một nơi xa xôi và tươi đẹp, những giọt sương lấp lánh trong ánh ban mai, để lại trong lòng người một nỗi nhớ nhung.",
-            "cost": 0,
-            "harmonization": 20
           }
         }
       },
       {
-        "slot": 1,
-        "subSlot": "Set B",
+        "slot": 2,
+        "subSlot": "Set A",
         "type": "Incantation",
         "nameEn": "Polymeric Ray",
         "nameZh": "聚合射线",
@@ -20635,34 +20613,12 @@
             "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
             "cost": 3,
             "harmonization": 8
-          },
-          "2": {
-            "id": 31492121,
-            "descEn": "Mass attack. Deals 702% Reality DMG to all enemies. This attack only counts as a Mineral Afflatus attack. When attacking, for each Mineral Energy consumed by all allied [Conduit] this round, deals an additional 117% Reality DMG; if at least 6 Mineral Energy has been consumed this round, this effect increases to 234% Reality DMG for each Mineral Energy consumed.",
-            "descZh": "群体攻击，仅造成岩灵感克制效果，对敌方全体造成702%现实创伤；攻击时根据本回合所有【术具】已消耗的岩交感能量提升现实创伤，每消耗1点提升117%现实创伤，若已消耗的岩交感能量达到6点及以上时，每消耗1点提升234%现实创伤",
-            "descVi": "Tấn công diện rộng. Gây 702% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 117% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 234% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
-            "artEn": "Like children taking their first steps, we stumble forth toward a beautiful future.",
-            "artZh": "从零开始蹒跚起步，向着美好的未来前进，像儿时一样雀跃欢呼。",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
-            "cost": 3,
-            "harmonization": 10
-          },
-          "3": {
-            "id": 31493121,
-            "descEn": "Mass attack. Deals 864% Reality DMG to all enemies. This attack only counts as a Mineral Afflatus attack. When attacking, for each Mineral Energy consumed by all allied [Conduit] this round, deals an additional 144% Reality DMG; if at least 6 Mineral Energy has been consumed this round, this effect increases to 288% Reality DMG for each Mineral Energy consumed.",
-            "descZh": "群体攻击，仅造成岩灵感克制效果，对敌方全体造成864%现实创伤；攻击时根据本回合所有【术具】已消耗的岩交感能量提升现实创伤，每消耗1点提升144%现实创伤，若已消耗的岩交感能量达到6点及以上时，每消耗1点提升288%现实创伤",
-            "descVi": "Tấn công diện rộng. Gây 864% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Mineral. Khi tấn công, với mỗi Mineral Energy mà toàn bộ [Conduit] phe ta đã tiêu hao trong round này, gây thêm 144% Reality DMG; nếu trong round này đã tiêu hao ít nhất 6 Mineral Energy, hiệu ứng này tăng thành 288% Reality DMG cho mỗi Mineral Energy đã tiêu hao.",
-            "artEn": "Like children taking their first steps, we stumble forth toward a beautiful future.",
-            "artZh": "从零开始蹒跚起步，向着美好的未来前进，像儿时一样雀跃欢呼。",
-            "artVi": "Như những đứa trẻ chập chững bước đầu, chúng ta vấp ngã mà bước tới, hướng về một tương lai tươi đẹp.",
-            "cost": 3,
-            "harmonization": 10
           }
         }
       },
       {
-        "slot": 2,
-        "subSlot": "Set A",
+        "slot": 1,
+        "subSlot": "Set B",
         "type": "Incantation",
         "nameEn": "Extreme Overclocking",
         "nameZh": "解限超频",
@@ -20679,28 +20635,6 @@
             "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?",
             "cost": 0,
             "harmonization": 8
-          },
-          "2": {
-            "id": 31492131,
-            "descEn": "[Interval]\nSelf buff. Gains Critical Rate +20% and Critical DMG +40% for 1 round.",
-            "descZh": "【损耗】\n自我增强，使自身暴击率提升20%，暴击创伤提升40%，持续1回合",
-            "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +20% và Critical DMG +40%, duy trì 1 round.",
-            "artEn": "The Earth floats outside the cabin window, and the stars lie within our reach, but has our homeland already changed?",
-            "artZh": "舷窗外的地球清晰可见，星星是触手可及的冰冷，故乡是否早已改变？",
-            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?",
-            "cost": 0,
-            "harmonization": 20
-          },
-          "3": {
-            "id": 31494131,
-            "descEn": "[Interval]\nSelf buff. Gains Critical Rate +30% and Critical DMG +60% for 1 round.",
-            "descZh": "【损耗】\n自我增强，使自身暴击率提升30%，暴击创伤提升60%，持续1回合",
-            "descVi": "[Interval]\nTự cường hóa. Nhận Critical Rate +30% và Critical DMG +60%, duy trì 1 round.",
-            "artEn": "The Earth floats outside the cabin window, and the stars lie within our reach, but has our homeland already changed?",
-            "artZh": "舷窗外的地球清晰可见，星星是触手可及的冰冷，故乡是否早已改变？",
-            "artVi": "Trái Đất lơ lửng ngoài khung cửa khoang tàu, những vì sao ở ngay trong tầm tay, nhưng quê hương ta liệu đã đổi thay?",
-            "cost": 0,
-            "harmonization": 20
           }
         }
       },
@@ -20723,28 +20657,6 @@
             "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa.",
             "cost": 1,
             "harmonization": 5
-          },
-          "2": {
-            "id": 31492141,
-            "descEn": "Mass attack. Deals 351% Reality DMG to all enemies. This attack only counts as a Star Afflatus attack. When attacking, for each time this [Conduit] has attacked this round, deals an additional 58.5% Reality DMG; if this [Conduit] has attacked at least 4 times this round, this effect increases to 117% Reality DMG for each time the [Conduit] has attacked.",
-            "descZh": "群体攻击，仅造成星灵感克制效果，对敌方全体造成351%现实创伤；攻击时根据本回合该【术具】的攻击次数提升现实创伤，每1次提升58.5%现实创伤，若攻击次数达到4及以上时，每1次提升117%现实创伤",
-            "descVi": "Tấn công diện rộng. Gây 351% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 58.5% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 117% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
-            "artEn": "A dream devoid of rockets, a dream outside our cold universe, a simple dream of lush grass beyond the door.",
-            "artZh": "梦里没有火箭轰鸣，梦不到这冷冽宇宙，只有门旁青草盎然。",
-            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa.",
-            "cost": 1,
-            "harmonization": 6
-          },
-          "3": {
-            "id": 31493141,
-            "descEn": "Mass attack. Deals 432% Reality DMG to all enemies. This attack only counts as a Star Afflatus attack. When attacking, for each time this [Conduit] has attacked this round, deals an additional 72% Reality DMG; if this [Conduit] has attacked at least 4 times this round, this effect increases to 144% Reality DMG for each time the [Conduit] has attacked.",
-            "descZh": "群体攻击，仅造成星灵感克制效果，对敌方全体造成432%现实创伤；攻击时根据本回合该【术具】的攻击次数提升现实创伤，每1次提升72%现实创伤，若攻击次数达到4及以上时，每1次提升144%现实创伤",
-            "descVi": "Tấn công diện rộng. Gây 432% Reality DMG lên toàn bộ kẻ địch. Đòn tấn công này chỉ được tính là đòn tấn công Afflatus Star. Khi tấn công, với mỗi lần [Conduit] này đã tấn công trong round này, gây thêm 72% Reality DMG; nếu [Conduit] này đã tấn công ít nhất 4 lần trong round này, hiệu ứng này tăng thành 144% Reality DMG cho mỗi lần [Conduit] đã tấn công.",
-            "artEn": "A dream devoid of rockets, a dream outside our cold universe, a simple dream of lush grass beyond the door.",
-            "artZh": "梦里没有火箭轰鸣，梦不到这冷冽宇宙，只有门旁青草盎然。",
-            "artVi": "Một giấc mơ không có tên lửa, một giấc mơ nằm ngoài vũ trụ lạnh lẽo của chúng ta, một giấc mơ giản đơn về thảm cỏ xanh mướt sau cánh cửa.",
-            "cost": 1,
-            "harmonization": 6
           }
         }
       },

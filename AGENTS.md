@@ -135,7 +135,7 @@ Keep these maps in `scripts/sync/maps/`.
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
 | `pattern_costs.json` | pattern → cost mapping (currently ships `{}`) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
-| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards) and `device-ranks.json` (frozen rank-id lists for The Twins) |
+| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards) |
 
 ### Class C — human-authored content (NOT derivable)
 
@@ -593,9 +593,17 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   `…,313501112#313501122,313501132` — the rank-3 row sits in its own comma group. The
   ids step evenly and both groups share a name key, so `mergeSetRanks()` folds that
   trailing single-rank group back into the set it continues; Set D no longer exists.
-- **The Twins' rank ids are frozen in `scripts/sync/maps/device-ranks.json`.** Their
-  `character.skill` and the device's per-tier `skill1`/`skill2` disagree, so the base
-  skill id is expanded to its three/five rank variants from that map.
+- **A device field is a stance, not a slot.** `fight_device.skill1` is the first incantation
+  set and `skill2` the second, and each `|` part inside one field is a card of that set
+  (slot 1, slot 2, …). That is why The Twins read as "Set A: Atomic Fusion, Polymeric Ray"
+  and "Set B: Extreme Overclocking, Balancé Across the Stars" — the pairs are stances, not
+  slots. A device with one part per field (Coppélia, Everecho) has no stance at all, so its
+  parts stay slot 1 / slot 2. `scripts/sync/maps/device-ranks.json` is gone: it used to
+  expand The Twins' ids into ★1/★2/★3 variant rows with numbers the game does not ship.
+- **Conduit incantations have exactly one rank.** The Twins' cards are never upgraded (their
+  scaling comes from portrays, not from ★), so each card carries only `ranks["1"]` and the
+  app draws no ★ selector. Their portrays still quote the rank-2/3 numbers because that is
+  what P2/P3 unlock — the card itself stays at its base value.
 - **Do not strip `<1>`/`<2>`/`<i>` from skill text.** Those are game markers (they tell
   repeated portray lines apart) and the app renders them as HTML. `cleanGame()` mirrors
   the legacy cleaner rather than calling `stripMarkup()` on descriptions.
