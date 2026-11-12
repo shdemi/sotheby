@@ -1531,6 +1531,17 @@ function psychubeIconUrl(key) {
   return c ? c.iconUrl : "";
 }
 
+/**
+ * InfoBook psychube detail art: `images/equip_defaulticon/<id>.png`, copied from
+ * Myssal `singlebg/equip_defaulticon` by `npm run sync:assets`. It is the wide
+ * illustration (276x228) the game's psychube detail screen shows, whereas
+ * `p.icon` is the 180x214 board icon (the same art with the rarity line along the
+ * bottom). The rail keeps `p.icon` — this is the detail pane only.
+ */
+function psychubeDetailArt(p) {
+  return p && p.id ? `images/equip_defaulticon/${p.id}.png` : (p && p.icon) || "";
+}
+
 function buildPsychubeData(data) {
   psychubeDb = {};
   psychubeOrder = [];
@@ -7501,6 +7512,18 @@ function pickLocalizedDesc(obj) {
   return obj.descEn || obj.descEN || obj.descZh || obj.descVi || "";
 }
 
+/**
+ * The flavour line under a card's text (`skill.desc_art` in the game tables, carried as
+ * `artEn` / `artZh` / `artVi`). Vietnamese is an overlay like the description, so without
+ * this the `vi` UI printed the English line.
+ */
+function pickLocalizedArt(obj) {
+  if (!obj) return "";
+  if (currentLang === "vi" && obj.artVi) return obj.artVi;
+  if (currentLang === "cn") return obj.artZh || obj.artEn || obj.artVi || "";
+  return obj.artEn || obj.artZh || obj.artVi || "";
+}
+
 /** A panel label carried by the data (`label: { en, zh, vi }`). */
 function pickLocalizedLabel(label) {
   if (!label) return "";
@@ -7931,8 +7954,8 @@ function renderCharacterSkillsSection(name) {
       if (isUlt) {
         const ultRank = reinforceRanks?.["1"] || currentSkill;
         activeDesc = pickLocalizedDesc(ultRank);
-        activeArt = isCn ? ultRank.artZh || ultRank.artEn : ultRank.artEn || ultRank.artZh;
-        if (!activeArt) activeArt = isCn ? currentSkill.artZh || currentSkill.artEn : currentSkill.artEn || currentSkill.artZh;
+        activeArt = pickLocalizedArt(ultRank);
+        if (!activeArt) activeArt = pickLocalizedArt(currentSkill);
       } else if (viewSkill.ranks) {
         const availableRanks = Object.keys(viewSkill.ranks).map(Number).sort((a, b) => a - b);
         if (!availableRanks.includes(charSkillSelectedRank)) {
@@ -7951,7 +7974,7 @@ function renderCharacterSkillsSection(name) {
                       <div class="rot-card">
                         <img class="rot-card-art" src="${escapeHtml(currentSkill.icon || "")}" alt="" />
                       </div>
-                      <span class="uttu-rank-pill">${"★".repeat(rk)}</span>
+                      <span class="uttu-rank-pill">${"✦".repeat(rk)}</span>
                     </div>
                   `;
                 })
@@ -7964,7 +7987,7 @@ function renderCharacterSkillsSection(name) {
           ? viewSkill.ranks["1"] || {}
           : viewSkill.ranks[charSkillSelectedRank] || viewSkill.ranks["1"] || {};
         activeDesc = pickLocalizedDesc(chosenRank);
-        activeArt = isCn ? chosenRank.artZh || chosenRank.artEn : chosenRank.artEn || chosenRank.artZh;
+        activeArt = pickLocalizedArt(chosenRank);
         if (adaptiveOptions.length) activeDesc = stripSkillRankMention(activeDesc);
       }
 
@@ -8037,7 +8060,7 @@ function renderCharacterSkillsSection(name) {
               <span class="rot-card">
                 <img class="rot-card-art" src="${escapeHtml(opt.icon || "")}" alt="" />
               </span>
-              <span class="uttu-rank-pill">${"★".repeat(rk)}</span>
+              <span class="uttu-rank-pill">${"✦".repeat(rk)}</span>
             </button>
           `,
           )
@@ -8046,7 +8069,13 @@ function renderCharacterSkillsSection(name) {
       const adaptiveOptionDescHtml = (opt) => {
         const selectedRank = adaptiveOptionRank(opt);
         const optRank = opt.ranks ? opt.ranks[selectedRank] || opt.ranks["1"] || {} : opt;
-        return `<div class="uttu-skill-panel-desc">${formatSkillKeywords(pickLocalizedDesc(optRank))}</div>`;
+        // Every cast option carries its own flavour line (the game's `desc_art`), and it
+        // changes per ✦ rank, so each panel prints its own above the description — the
+        // same order the plain cards use. Brume's base card ships no `desc_art` at all, so
+        // S1 reads from the options only.
+        const optArt = pickLocalizedArt(optRank);
+        return `${optArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(optArt)}</div>` : ""}
+          <div class="uttu-skill-panel-desc">${formatSkillKeywords(pickLocalizedDesc(optRank))}</div>`;
       };
       const adaptiveOptionsHtml = adaptiveOptions.length
         ? `<div class="uttu-skill-panels is-stacked">
@@ -8106,8 +8135,8 @@ function renderCharacterSkillsSection(name) {
       const perceptionPanelsHtml = `
         <div class="uttu-skill-panels is-stacked">
           <div class="uttu-skill-panel">
-            <div class="uttu-skill-panel-desc">${formatSkillKeywords(activeDesc)}</div>
             ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}
+            <div class="uttu-skill-panel-desc">${formatSkillKeywords(activeDesc)}</div>
             <div class="uttu-skill-panel-foot">
               <span class="uttu-skill-panel-foot-left">
                 <span class="uttu-skill-panel-label">${escapeHtml(pickLocalizedLabel(currentSkill.perceptionTag))}</span>
@@ -9605,7 +9634,7 @@ function renderPsychubeDetail() {
     <div class="psychube-detail-card">
       <div class="psychube-detail-hero">
         <div class="psychube-detail-icon-wrap">
-          <img src="${escapeHtml(p.icon)}" alt="${escapeHtml(displayName)}" class="psychube-detail-img" />
+          <img src="${escapeHtml(psychubeDetailArt(p))}" alt="${escapeHtml(displayName)}" class="psychube-detail-img" />
         </div>
         <div class="psychube-detail-info">
           <h3 class="psychube-detail-name">${escapeHtml(displayName)}</h3>

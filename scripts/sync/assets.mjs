@@ -3,7 +3,7 @@
  *
  *   node scripts/sync/assets.mjs [--check]
  *
- * Four groups, each driven by a generated `data/` file (or the hand-authored
+ * Five groups, each driven by a generated `data/` file (or the hand-authored
  * `content/guide_skills.json`) so the cache only holds art the app can show:
  *
  *   items      data/items.json         singlebg/propitem/prop/<icon|id>.png
@@ -11,6 +11,9 @@
  *                  -> images/items/icon/<id>.png
  *   psychubes  data/psychube_id.json   singlebg/equipment/icon/<icon|id>.png
  *                  -> images/psychube_icon/<rarity>/<id>.png
+ *   psychube detail  data/psychube_id.json
+ *                                      singlebg/equip_defaulticon/<icon|id>.png
+ *                  -> images/equip_defaulticon/<id>.png
  *   heads      data/ArcanistMap.json   singlebg/headicon_small/<skinId>.png
  *                  -> images/headicon_small/<skinId>.png
  *   skills     content/guide_skills.json  singlebg/fight/skill/<name>.png
@@ -97,6 +100,24 @@ function psychubeAssets() {
 }
 
 /**
+ * Psychube detail art, one flat folder. `images/equip_defaulticon/<id>.png` is the
+ * wide illustration the game's psychube detail screen shows; the rail keeps the
+ * 180x214 board icon written by `psychubeAssets()`.
+ */
+function psychubeDetailAssets() {
+  const book = readJson(path.join(OUT, "psychube_id.json"));
+  const ids = new Set();
+  for (const list of Object.values(book)) {
+    for (const entry of list) ids.add(Number(entry.id));
+  }
+  return [...ids].map((id) => ({
+    id,
+    dest: path.join("images", "equip_defaulticon", `${id}.png`),
+    source: pick(DIRS.equipmentDefault, [id]),
+  }));
+}
+
+/**
  * Character heads. The app renders one per skin of `data/ArcanistMap.json`
  * (and skips skin ids longer than six digits, which are concept rows), so the
  * map's skin ids are the whole head set.
@@ -136,6 +157,7 @@ function skillAssets() {
 const groups = [
   ["items", itemAssets()],
   ["psychubes", psychubeAssets()],
+  ["psychube detail", psychubeDetailAssets()],
   ["heads", headAssets()],
   ["skills", skillAssets()],
   ["code items", codeItemAssets()],

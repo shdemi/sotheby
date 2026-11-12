@@ -15,10 +15,10 @@
  *      so a prefix that appears nowhere cannot be reached.
  *
  *   2. Generated cache — `images/items`, `images/psychube_icon`,
- *      `images/headicon_small`, `images/skills` and `images/arcanists/euphoria`
- *      hold art keyed by game id. Their needed set comes from the same generated
- *      data `assets.mjs` reads, plus every literal reference found in the
- *      corpus; anything else in them is a stale download.
+ *      `images/equip_defaulticon`, `images/headicon_small`, `images/skills` and
+ *      `images/arcanists/euphoria` hold art keyed by game id. Their needed set
+ *      comes from the same generated data `assets.mjs` reads, plus every literal
+ *      reference found in the corpus; anything else in them is a stale download.
  *
  * Two directories are deliberately left whole:
  *   - `images/dungeon/` is stage art. `data/stages/*.json` references it and
@@ -116,6 +116,15 @@ function psychubeNeeded() {
   return need;
 }
 
+/** Psychube detail art: one flat folder named by `data/psychube_id.json`. */
+function psychubeDetailNeeded() {
+  const need = new Set();
+  for (const list of Object.values(readJson(path.join(OUT, "psychube_id.json")))) {
+    for (const entry of list) need.add(`images/equip_defaulticon/${entry.id}.png`);
+  }
+  return need;
+}
+
 /** Character heads: one per ArcanistMap skin (the app skips ids over six digits). */
 function headNeeded() {
   const need = new Set();
@@ -180,6 +189,7 @@ function shapeNeeded() {
 const CACHES = [
   { dir: "images/items", needed: itemNeeded },
   { dir: "images/psychube_icon", needed: psychubeNeeded },
+  { dir: "images/equip_defaulticon", needed: psychubeDetailNeeded },
   { dir: "images/headicon_small", needed: headNeeded },
   { dir: "images/skills", needed: skillNeeded },
   { dir: "images/arcanists/euphoria", needed: euphoriaNeeded },

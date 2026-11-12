@@ -198,7 +198,7 @@ by ascending game id and only carries fields something reads, so the Myssal
 mapping file is no longer a data source — only `images/` comes from that repo.
 
 `scripts/sync/assets.mjs` owns the cache (`npm run sync:assets`, `--check` to
-report). It copies four groups, each keyed by game id and each driven by a
+report). It copies six groups, each keyed by game id and each driven by a
 generated `data/` file (skills by `content/guide_skills.json`) so only showable
 art is downloaded:
 
@@ -206,9 +206,17 @@ art is downloaded:
 |---|---|---|---|
 | Items + currencies | 425 | `propitem/prop/`, `currencyitem/` | `images/items/icon/<id>.png` |
 | Psychubes | 119 (3 without art) | `equipment/icon/` | `images/psychube_icon/<rarity>/<id>.png` |
+| Psychube detail art | 119 | `equip_defaulticon/` (276x228) | `images/equip_defaulticon/<id>.png` |
 | Character heads | 431 (8 without art) | `headicon_small/` | `images/headicon_small/<skinId>.png` |
 | Skill cards | 456 (7 without art) | `fight/skill/` | `images/skills/<name>.png` |
 | Code-reward items | 19 | `propitem/prop/` (power items), `equipment/icon/` (EXP fodder) | `images/code_items/<key>.png` |
+
+`images/equip_defaulticon/` is the **detail pane only**: the InfoBook psychube detail
+hero (`psychubeDetailArt()` in `app.js`) loads it because it is the wide illustration
+the game's own psychube screen shows. The psychube **rail** keeps `p.icon`
+(`images/psychube_icon/`), the 180x214 board icon. The folder is flat, keyed by game
+id, and refreshed by `npm run sync:assets`; `npm run sync:prune` trims it to the 119
+ids `data/psychube_id.json` names.
 
 CN 113.0.1421 landed ahead of the Myssal art sweep (that checkout is already at its
 remote HEAD, 2026-09-28), so a few assets had to be added by hand: Perchta's three skill
@@ -240,8 +248,9 @@ Signature art is not copied: nothing in the app reads it.
   folder cannot be reached. This is what retired `attribute/`, `bossrush/`,
   `fight/`, `headicon_middle/`, `headicon_monster/` and `arcanists/misc/`.
 - **stale cache files** — the generated caches (`items`, `psychube_icon`,
-  `headicon_small`, `skills`, `arcanists/euphoria`, `shape_pattern`) are reduced to
-  the set the data names, plus any literal reference found in the repo.
+  `equip_defaulticon`, `headicon_small`, `skills`, `arcanists/euphoria`,
+  `shape_pattern`) are reduced to the set the data names, plus any literal
+  reference found in the repo.
 
 It is idempotent (a second run reports zero) and refuses to prune a file that its
 own needed set names. `images/dungeon/` is left whole on purpose: `data/stages/*.json`

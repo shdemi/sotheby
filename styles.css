@@ -10458,7 +10458,7 @@ body.guide-rail-resizing * {
 
 .psychube-detail-icon-wrap {
   position: relative;
-  width: 80px;
+  width: 116px;
   height: 96px;
   flex: none;
 }
@@ -11169,7 +11169,7 @@ body.guide-rail-resizing * {
   .psychube-detail-icon-wrap {
     grid-column: 1;
     grid-row: 1 / span 2;
-    width: 50px;
+    width: 72px;
     height: 60px;
   }
 

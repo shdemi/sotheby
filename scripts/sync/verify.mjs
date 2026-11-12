@@ -73,6 +73,13 @@ ok(
   chubeEntries.every((e) => fs.existsSync(path.join(OUT, "..", "images", "psychube_icon", e.rarity, `${e.id}.png`))),
   chubeEntries.filter((e) => !fs.existsSync(path.join(OUT, "..", "images", "psychube_icon", e.rarity, `${e.id}.png`))).map((e) => e.key).join(","),
 );
+// The InfoBook detail hero loads `images/equip_defaulticon/<id>.png` (§4), a different
+// drawing from the board icon above, so presence is its own invariant.
+ok(
+  "every psychube has detail art",
+  chubeEntries.every((e) => fs.existsSync(path.join(OUT, "..", "images", "equip_defaulticon", `${e.id}.png`))),
+  chubeEntries.filter((e) => !fs.existsSync(path.join(OUT, "..", "images", "equip_defaulticon", `${e.id}.png`))).map((e) => e.key).join(","),
+);
 
 if (details) {
   const missing = chubeEntries.filter((e) => !details[e.key]).map((e) => e.key);
