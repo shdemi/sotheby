@@ -8132,7 +8132,13 @@ function renderCharacterSkillsSection(name) {
             .join("")
         : "";
 
+      // The panels replace the plain body, so the head has to be repeated here or
+      // a Perception card would show no name and no type tag at all.
       const perceptionPanelsHtml = `
+        <div class="uttu-skill-info-head">
+          <h3 class="uttu-skill-title">${escapeHtml(skillNameText)}</h3>
+          <span class="uttu-skill-type-tag">${escapeHtml(typeTag)}</span>
+        </div>
         <div class="uttu-skill-panels is-stacked">
           <div class="uttu-skill-panel">
             ${activeArt ? `<div class="uttu-skill-flavor"><span class="uttu-flavor-symbol">Φ</span> ${escapeHtml(activeArt)}</div>` : ""}

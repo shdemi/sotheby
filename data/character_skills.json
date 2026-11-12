@@ -16953,9 +16953,9 @@
         "type": "Special",
         "attribute": "Attack",
         "attributeZh": "攻击",
-        "nameEn": "Black Forest",
+        "nameEn": "“Schwarzwald”",
         "nameZh": "“黑森林”",
-        "nameVi": "Black Forest",
+        "nameVi": "“Schwarzwald”",
         "icon": "images/skills/790003.png",
         "ranks": {
           "1": {
@@ -17038,15 +17038,15 @@
     "portrays": [
       {
         "level": 1,
-        "descEn": "Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Incantation]: the Perception Point cost is reduced to 6, the [Vengeance Clue] cap is reduced to 6 stacks, [Vengeance Sated]'s DMG Bonus is increased to 20%, and its Penetration Rate is increased to 15%.\n[Perception Ability-1]: When entering the [Full Pursuit] phase, the [Vengeance Clue] stacks Perchta grants herself become 6.\n[Perception Ability-2]: After all allies' total action count reaches 5/7, all allies' Perception DMG Bonus increases to 20%/40%.",
+        "descEn": "Perception Skill Set [“Schwarzwald”] enhanced:\n[Perception Incantation]: the Perception Point cost is reduced to 6, the [Vengeance Clue] cap is reduced to 6 stacks, [Vengeance Sated]'s DMG Bonus is increased to 20%, and its Penetration Rate is increased to 15%.\n[Perception Ability-1]: When entering the [Full Pursuit] phase, the [Vengeance Clue] stacks Perchta grants herself become 6.\n[Perception Ability-2]: After all allies' total action count reaches 5/7, all allies' Perception DMG Bonus increases to 20%/40%.",
         "descZh": "洞知技能组【“黑森林”】强化：\n【洞知咒语】洞知点消耗降低至6，【复仇线索】上限降低至6层，【雪恨】创伤加成提升至20%，穿透率提升至15%；\n【洞知能力-1】进入【弱点洞穿】阶段时，佩施塔赋予自身【复仇线索】层数变为6层；\n【洞知能力-2】己方全体累计行动次数达到5/7次后，己方全体洞知创伤加成提升至20%/40%",
-        "descVi": "Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Incantation]: tiêu hao Perception Point giảm còn 6, giới hạn [Vengeance Clue] giảm còn 6 cộng dồn, DMG Bonus của [Vengeance Sated] tăng lên 20%, Penetration Rate tăng lên 15%.\n[Perception Ability-1]: Khi tiến vào giai đoạn [Full Pursuit], số cộng dồn [Vengeance Clue] mà Perchta thi triển lên bản thân trở thành 6.\n[Perception Ability-2]: Sau khi tổng số lần hành động của toàn bộ phe ta đạt 5/7 lần, Perception DMG Bonus của toàn bộ phe ta tăng lên 20%/40%."
+        "descVi": "Perception Skill Set [“Schwarzwald”] được cường hóa:\n[Perception Incantation]: tiêu hao Perception Point giảm còn 6, giới hạn [Vengeance Clue] giảm còn 6 cộng dồn, DMG Bonus của [Vengeance Sated] tăng lên 20%, Penetration Rate tăng lên 15%.\n[Perception Ability-1]: Khi tiến vào giai đoạn [Full Pursuit], số cộng dồn [Vengeance Clue] mà Perchta thi triển lên bản thân trở thành 6.\n[Perception Ability-2]: Sau khi tổng số lần hành động của toàn bộ phe ta đạt 5/7 lần, Perception DMG Bonus của toàn bộ phe ta tăng lên 20%/40%."
       },
       {
         "level": 2,
-        "descEn": "[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 35%, DMG Bonus increased to 35%.\n[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 4/6.",
+        "descEn": "[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 35%, DMG Bonus increased to 35%.\n[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 4/6.",
         "descZh": "【历经苏醒与幸存】【圆满结局】暴击创伤提升至35%，创伤加成提升至35%；\n【真实童话Ⅲ】洞知技能组【“黑森林”】强化：\n【洞知能力-2】提供增益的行动次数条件变为4/6次后",
-        "descVi": "[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 35%, DMG Bonus tăng lên 35%.\n[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 4/6."
+        "descVi": "[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 35%, DMG Bonus tăng lên 35%.\n[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 4/6."
       },
       {
         "level": 3,
@@ -17062,9 +17062,9 @@
       },
       {
         "level": 5,
-        "descEn": "[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 3/5, and all allies' Perception DMG Bonus increases to 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 50%, DMG Bonus increased to 50%.",
+        "descEn": "[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 3/5, and all allies' Perception DMG Bonus increases to 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 50%, DMG Bonus increased to 50%.",
         "descZh": "【真实童话Ⅲ】洞知技能组【“黑森林”】强化：\n【洞知能力-2】提供增益的行动次数条件变为3/5次后，己方全体洞知创伤加成提升至25%/50%\n【历经苏醒与幸存】【圆满结局】暴击创伤提升至50%，创伤加成提升至50%",
-        "descVi": "[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 3/5, Perception DMG Bonus của toàn bộ phe ta tăng lên 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 50%, DMG Bonus tăng lên 50%."
+        "descVi": "[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 3/5, Perception DMG Bonus của toàn bộ phe ta tăng lên 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 50%, DMG Bonus tăng lên 50%."
       }
     ]
   },

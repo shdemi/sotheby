@@ -768,9 +768,12 @@ body::before {
   filter: brightness(1.6);
 }
 
-/* Search fields carry the magnifier icon */
-#filter-search,
-#roster-search {
+/* Every search field carries the magnifier icon — the toolbar's own search is the
+   reference look. The Suitcase rename field draws a different glyph and the level
+   number input (`input.search-input`, dynamically created) is not a search box, so
+   both are excluded. The `:not(#…)` keeps the left gutter from being wiped by the
+   narrower-viewport rules that set a shorthand `padding` on some of these fields. */
+.search-input:not(#input-board-title):not([type="number"]) {
   background-image: url("images/random_icon/search_icon.png");
   background-repeat: no-repeat;
   background-position: 9px center;
@@ -4270,12 +4273,18 @@ body::before {
 
 /* Chubes manager: full 180x214 art, no tile border (a corner badge marks selection).
    Scoped to the psychube grid — the Characters tab keeps the compact bordered tile. */
+/* The tile shrinks with its grid column so narrow viewports (where the grid
+   drops to minmax(62px, 1fr)) never let a fixed-width tile spill over its
+   neighbour. 84px stays the cap on wide layouts. */
 #chubes-grid-list .roster-char-item {
-  width: 84px;
+  width: 100%;
+  max-width: 84px;
+  min-width: 0;
 }
 
 #chubes-grid-list .roster-avatar-box {
-  width: 84px;
+  width: 100%;
+  max-width: 84px;
   height: auto;
   aspect-ratio: 180 / 214;
   background: transparent;

@@ -10914,8 +10914,8 @@
         "artVi": "Một câu chuyện trước giờ đi ngủ chưa từng ai kể, khác với mọi câu chuyện cổ tích có hậu mà bạn từng biết."
       },
       "4|Special 1": {
-        "nameEn": "Black Forest",
-        "nameVi": "Black Forest",
+        "nameEn": "“Schwarzwald”",
+        "nameVi": "“Schwarzwald”",
         "ranks": {
           "1": {
             "descEn": "Mass attack. Deals 500% Reality DMG to all enemies. If this removed 8 stacks of [Vengeance Clue], grants self 8 stacks of [Vengeance Sated] after attacking.",
@@ -10962,12 +10962,12 @@
     },
     "portrays": {
       "1": {
-        "descEn": "Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Incantation]: the Perception Point cost is reduced to 6, the [Vengeance Clue] cap is reduced to 6 stacks, [Vengeance Sated]'s DMG Bonus is increased to 20%, and its Penetration Rate is increased to 15%.\n[Perception Ability-1]: When entering the [Full Pursuit] phase, the [Vengeance Clue] stacks Perchta grants herself become 6.\n[Perception Ability-2]: After all allies' total action count reaches 5/7, all allies' Perception DMG Bonus increases to 20%/40%.",
-        "descVi": "Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Incantation]: tiêu hao Perception Point giảm còn 6, giới hạn [Vengeance Clue] giảm còn 6 cộng dồn, DMG Bonus của [Vengeance Sated] tăng lên 20%, Penetration Rate tăng lên 15%.\n[Perception Ability-1]: Khi tiến vào giai đoạn [Full Pursuit], số cộng dồn [Vengeance Clue] mà Perchta thi triển lên bản thân trở thành 6.\n[Perception Ability-2]: Sau khi tổng số lần hành động của toàn bộ phe ta đạt 5/7 lần, Perception DMG Bonus của toàn bộ phe ta tăng lên 20%/40%."
+        "descEn": "Perception Skill Set [“Schwarzwald”] enhanced:\n[Perception Incantation]: the Perception Point cost is reduced to 6, the [Vengeance Clue] cap is reduced to 6 stacks, [Vengeance Sated]'s DMG Bonus is increased to 20%, and its Penetration Rate is increased to 15%.\n[Perception Ability-1]: When entering the [Full Pursuit] phase, the [Vengeance Clue] stacks Perchta grants herself become 6.\n[Perception Ability-2]: After all allies' total action count reaches 5/7, all allies' Perception DMG Bonus increases to 20%/40%.",
+        "descVi": "Perception Skill Set [“Schwarzwald”] được cường hóa:\n[Perception Incantation]: tiêu hao Perception Point giảm còn 6, giới hạn [Vengeance Clue] giảm còn 6 cộng dồn, DMG Bonus của [Vengeance Sated] tăng lên 20%, Penetration Rate tăng lên 15%.\n[Perception Ability-1]: Khi tiến vào giai đoạn [Full Pursuit], số cộng dồn [Vengeance Clue] mà Perchta thi triển lên bản thân trở thành 6.\n[Perception Ability-2]: Sau khi tổng số lần hành động của toàn bộ phe ta đạt 5/7 lần, Perception DMG Bonus của toàn bộ phe ta tăng lên 20%/40%."
       },
       "2": {
-        "descEn": "[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 35%, DMG Bonus increased to 35%.\n[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 4/6.",
-        "descVi": "[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 35%, DMG Bonus tăng lên 35%.\n[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 4/6."
+        "descEn": "[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 35%, DMG Bonus increased to 35%.\n[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 4/6.",
+        "descVi": "[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 35%, DMG Bonus tăng lên 35%.\n[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 4/6."
       },
       "3": {
         "descEn": "[Foreknowledge] [\"Seven Friends\"] HP increased to 180% of Perchta's Max HP.\n[The Fruit of Life] at rank 1/2/3: healing to all allies is increased to 30/35/40% of her Max HP, and healing to [\"Seven Friends\"] is increased to 30/35/40% of her Max HP.\n[Through Waking and Surviving]: healing to [\"Seven Friends\"] is increased to 100% of Perchta's Max HP.",
@@ -10978,8 +10978,8 @@
         "descVi": "[The Revenge Act] ở bậc 1/2/3: mức tăng hệ số DMG của [Cleave] trở thành 10/15/25%; Genesis DMG nền của [Cleave] tăng lên 30% Max HP của Perchta, và hệ số có thể tăng tối đa đến 250%.\n[Through Waking and Surviving]: mức tăng hệ số DMG của [Cleave] trở thành 45%, lượng DMG kích hoạt tăng lên 300% hệ số hiện tại."
       },
       "5": {
-        "descEn": "[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 3/5, and all allies' Perception DMG Bonus increases to 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 50%, DMG Bonus increased to 50%.",
-        "descVi": "[The True Fairy Tale III] Perception Skill Set [\"Black Forest\"] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 3/5, Perception DMG Bonus của toàn bộ phe ta tăng lên 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 50%, DMG Bonus tăng lên 50%."
+        "descEn": "[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] enhanced:\n[Perception Ability-2]: The action count required to grant the buff becomes 3/5, and all allies' Perception DMG Bonus increases to 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG increased to 50%, DMG Bonus increased to 50%.",
+        "descVi": "[The True Fairy Tale III] Perception Skill Set [“Schwarzwald”] được cường hóa:\n[Perception Ability-2]: số lần hành động cần để cấp buff trở thành 3/5, Perception DMG Bonus của toàn bộ phe ta tăng lên 25%/50%.\n[Through Waking and Surviving] [Happy Ending]: Critical DMG tăng lên 50%, DMG Bonus tăng lên 50%."
       }
     }
   },
