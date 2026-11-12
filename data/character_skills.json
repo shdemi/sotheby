@@ -8322,28 +8322,6 @@
             "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính.",
             "cost": 0,
             "harmonization": 20
-          },
-          "2": {
-            "id": 31560112,
-            "descEn": "[Interval]\n1-target attack, deals 500% Reality DMG; while holding [Blazing Glory], this attack deals an additional 500% Reality DMG, and increases Mineral Energy by 2.",
-            "descZh": "【损耗】\n单体攻击，造成500%现实创伤，持有【赫赫之光】时，本次攻击额外造成500%现实创伤，并使岩交感能量+2",
-            "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
-            "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
-            "artZh": "需在烈火中与黄金较量，以获得品质纯正的胜利。",
-            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính.",
-            "cost": 0,
-            "harmonization": 30
-          },
-          "3": {
-            "id": 31560113,
-            "descEn": "[Interval]\n1-target attack, deals 500% Reality DMG; while holding [Blazing Glory], this attack deals an additional 500% Reality DMG, and increases Mineral Energy by 2.",
-            "descZh": "【损耗】\n单体攻击，造成500%现实创伤，持有【赫赫之光】时，本次攻击额外造成500%现实创伤，并使岩交感能量+2",
-            "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
-            "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
-            "artZh": "需在烈火中与黄金较量，以获得品质纯正的胜利。",
-            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính.",
-            "cost": 0,
-            "harmonization": 30
           }
         }
       },
@@ -8366,28 +8344,6 @@
             "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn.",
             "cost": 2,
             "harmonization": 20
-          },
-          "2": {
-            "id": 31560122,
-            "descEn": "[Interval]\nMass attack, deals 350% Reality DMG to all enemies; after attacking, inflicts [Seared] on the targets for 4 rounds.",
-            "descZh": "【损耗】\n群体攻击，对敌方全体造成350%现实创伤，攻击后赋予目标【熔岩伤痕】，持续4回合",
-            "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
-            "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
-            "artZh": "穿透神谕与命运，她的箭镞足够骄傲。",
-            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn.",
-            "cost": 2,
-            "harmonization": 30
-          },
-          "3": {
-            "id": 31560123,
-            "descEn": "[Interval]\nMass attack, deals 350% Reality DMG to all enemies; after attacking, inflicts [Seared] on the targets for 4 rounds.",
-            "descZh": "【损耗】\n群体攻击，对敌方全体造成350%现实创伤，攻击后赋予目标【熔岩伤痕】，持续4回合",
-            "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
-            "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
-            "artZh": "穿透神谕与命运，她的箭镞足够骄傲。",
-            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn.",
-            "cost": 2,
-            "harmonization": 30
           }
         }
       },

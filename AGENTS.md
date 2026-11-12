@@ -135,7 +135,7 @@ Keep these maps in `scripts/sync/maps/`.
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
 | `pattern_costs.json` | pattern → cost mapping (currently ships `{}`) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
-| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards) |
+| `character_skills.json` | `skill-extras.json` (Rhiannon's Bendith/Feast Call, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards) and `single-rank.json` (heroes whose Conduit incantations ship one rank: The Twins, Hedone) |
 
 ### Class C — human-authored content (NOT derivable)
 
@@ -600,10 +600,14 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   slots. A device with one part per field (Coppélia, Everecho) has no stance at all, so its
   parts stay slot 1 / slot 2. `scripts/sync/maps/device-ranks.json` is gone: it used to
   expand The Twins' ids into ★1/★2/★3 variant rows with numbers the game does not ship.
-- **Conduit incantations have exactly one rank.** The Twins' cards are never upgraded (their
-  scaling comes from portrays, not from ★), so each card carries only `ranks["1"]` and the
-  app draws no ★ selector. Their portrays still quote the rank-2/3 numbers because that is
-  what P2/P3 unlock — the card itself stays at its base value.
+- **Conduit incantations have exactly one rank.** The Twins' and Hedone's cards are never
+  upgraded (their scaling comes from portrays, not from ★), so each card carries only
+  `ranks["1"]` and the app draws no ★ selector. The game does ship ★2/★3 rows for both
+  heroes, but they repeat the ★1 text verbatim — only the Harmonization number moves
+  (The Twins 8→20, Hedone 20→30) — so the list lives in
+  `scripts/sync/maps/single-rank.json` and `incantation()` keeps just the first id.
+  Their portrays still quote the rank-2/3 numbers because that is what P2/P3 unlock —
+  the card itself stays at its base value.
 - **Do not strip `<1>`/`<2>`/`<i>` from skill text.** Those are game markers (they tell
   repeated portray lines apart) and the app renders them as HTML. `cleanGame()` mirrors
   the legacy cleaner rather than calling `stripMarkup()` on descriptions.

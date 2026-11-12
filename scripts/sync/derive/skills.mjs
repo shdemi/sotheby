@@ -176,6 +176,7 @@ export function characterSkills() {
   const passives = mergedByHeroLevel("skill_passive_level");
   const portrays = mergedByHeroLevel("skill_ex_level");
   const extras = tryReadJson(path.join(MAPS, "skill-extras.json")) || {};
+  const singleRank = new Set(tryReadJson(path.join(MAPS, "single-rank.json")) || []);
   const content = overlay();
 
   /** `<skillId> -> harmonisation cost` from the device's `skill1`/`skill2` fields. */
@@ -265,6 +266,7 @@ export function characterSkills() {
   /** Common context for one hero: names plus the overlay row for a given skill. */
   function context(charId, ch, entry) {
     return {
+      charId: String(charId),
       nameEn: entry.nameEn,
       nameZh: entry.nameZh,
       names: { en: slotNames(charId, "en"), zh: slotNames(charId, "zh") },
@@ -279,6 +281,9 @@ export function characterSkills() {
   function incantation(slot, subSlot, type, rankIds, ctx, skillOverlay, badge = {}, abilities = []) {
     const first = skills.get(rankIds[0]);
     const inner = { ...ctx, skillOverlay };
+    // A Conduit incantation has a single rank: the game ships the ★2/★3 rows with
+    // the same text (only the Harmonization changes), so the card shows one value.
+    const shown = singleRank.has(ctx.charId) ? rankIds.slice(0, 1) : rankIds;
     const item = {
       slot,
       subSlot,
@@ -289,7 +294,7 @@ export function characterSkills() {
       nameZh: localized("zh", first?.name) || skillOverlay.nameZh || "",
       nameVi: skillOverlay.nameVi || "",
       icon: first?.icon ? `images/skills/${first.icon}.png` : "",
-      ranks: buildRanks(rankIds, inner),
+      ranks: buildRanks(shown, inner),
     };
 
     // A Perception Incantation card carries its extra ability panels and the

@@ -10497,18 +10497,6 @@
             "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
             "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
             "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính."
-          },
-          "2": {
-            "descEn": "[Interval]\n1-target attack, deals 500% Reality DMG; while holding [Blazing Glory], this attack deals an additional 500% Reality DMG, and increases Mineral Energy by 2.",
-            "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
-            "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
-            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính."
-          },
-          "3": {
-            "descEn": "[Interval]\n1-target attack, deals 500% Reality DMG; while holding [Blazing Glory], this attack deals an additional 500% Reality DMG, and increases Mineral Energy by 2.",
-            "descVi": "[Interval]\nTấn công đơn mục tiêu, gây 500% Reality DMG; khi đang có [Blazing Glory], đòn tấn công này gây thêm 500% Reality DMG và tăng Mineral Energy thêm 2.",
-            "artEn": "One must contend with gold in the blaze to obtain genuine victory.",
-            "artVi": "Phải tranh đấu với vàng trong lửa cháy mới giành được thắng lợi chân chính."
           }
         }
       },
@@ -10517,18 +10505,6 @@
         "nameVi": "At Full Draw",
         "ranks": {
           "1": {
-            "descEn": "[Interval]\nMass attack, deals 350% Reality DMG to all enemies; after attacking, inflicts [Seared] on the targets for 4 rounds.",
-            "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
-            "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
-            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn."
-          },
-          "2": {
-            "descEn": "[Interval]\nMass attack, deals 350% Reality DMG to all enemies; after attacking, inflicts [Seared] on the targets for 4 rounds.",
-            "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
-            "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
-            "artVi": "Xuyên qua lời sấm truyền và số phận, mũi tên của cô mang theo niềm kiêu hãnh trọn vẹn."
-          },
-          "3": {
             "descEn": "[Interval]\nMass attack, deals 350% Reality DMG to all enemies; after attacking, inflicts [Seared] on the targets for 4 rounds.",
             "descVi": "[Interval]\nTấn công diện rộng, gây 350% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, thi triển [Seared] lên các mục tiêu, duy trì 4 round.",
             "artEn": "Piercing through oracles and fate, her arrowhead possesses ample pride.",
