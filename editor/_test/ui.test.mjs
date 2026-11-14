@@ -1709,13 +1709,14 @@ try {
   }
 
   /* ------------------------------------------------------------------ *
-   * 10c. Planner (character progression)
+   * 10c. Planner (character plan and farm route)
    * ------------------------------------------------------------------ */
 
-  console.log("\n=== Planner: character progression ===");
+  console.log("\n=== Planner: character plan and farm route ===");
   {
     await page.evaluate(() => {
       localStorage.removeItem("r1999_planner_characters_v1");
+      localStorage.removeItem("r1999_planner_activity_v1");
       // The modal reopens on the tab it was left on, and the section above left it
       // on Event — start this half from a clean slate so Character is the default.
       localStorage.removeItem("r1999_planner_tab_v1");
@@ -1727,588 +1728,659 @@ try {
 
     // Quantities live in `data-qty` (the badge prints a compact "894k", the way the
     // InfoBook's own item sticker does), so read the exact figure.
-    const readMats = (sel) =>
-      page.evaluate((s) => {
+    const readBill = (scope) =>
+      page.evaluate((selector) => {
         const out = {};
-        for (const card of document.querySelectorAll(`${s} .planner-mat`)) {
+        for (const card of document.querySelectorAll(`${selector} .planner-mat`)) {
           out[card.dataset.item] = Number(card.dataset.qty || 0);
         }
         return out;
-      }, sel);
-    const norm = (obj) => JSON.stringify(Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0])));
-    const setField = (id, value) =>
+      }, scope);
+    const normBill = (obj) =>
+      JSON.stringify(Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0])));
+    const sumBill = (...maps) => {
+      const acc = {};
+      for (const map of maps) for (const [key, value] of Object.entries(map)) acc[key] = (acc[key] || 0) + value;
+      return acc;
+    };
+    const pickName = (name) =>
+      page.evaluate((n) => document.querySelector(`#planner-picker-grid [data-pick="${n}"]`).click(), name);
+    const selectChar = (name) =>
+      page.evaluate((n) => document.querySelector(`#planner-char-rail [data-char="${n}"]`).click(), name);
+    const setField = (field, value) =>
       page.evaluate(
-        ([fieldId, v]) => {
-          const el = document.getElementById(fieldId);
+        ([f, v]) => {
+          const el = document.querySelector(`#planner-char-detail select[data-field="${f}"]`);
           el.value = String(v);
           el.dispatchEvent(new Event("change", { bubbles: true }));
         },
-        [id, value]
+        [field, value]
       );
-    const searchPicker = async (query) => {
-      await page.evaluate((q) => {
-        const input = document.getElementById("planner-picker-search");
-        input.value = q;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-      }, query);
-      await page.waitForTimeout(200);
+    const waitForRoute = async () => {
+      await page.waitForFunction(() => !!document.getElementById("planner-farm-stamina"), null, {
+        timeout: 25000,
+      });
+      await page.waitForTimeout(120);
     };
 
-    const emptyPane = await page.evaluate(() => ({
-      charVisible: !document.getElementById("planner-pane-character").hidden,
-      eventVisible: !document.getElementById("planner-pane-event").hidden,
-      railEmpty: (document.querySelector(".planner-rail-empty")?.textContent || "").trim(),
-      railTiles: document.querySelectorAll(".planner-char-tile").length,
-      goalCards: document.querySelectorAll("#planner-goal .planner-mat").length,
-      goalAvatars: document.querySelectorAll("#planner-goal .planner-goal-avatar").length,
-      goalText: (document.getElementById("planner-goal").textContent || "").replace(/\s+/g, " ").trim(),
-      paneText: (document.getElementById("planner-pane-character").textContent || "").trim(),
-    }));
+    const empty = await page.evaluate(() => {
+      const rail = document.getElementById("planner-char-rail");
+      const farm = document.getElementById("planner-farm");
+      return {
+        charVisible: !document.getElementById("planner-pane-character").hidden,
+        eventVisible: !document.getElementById("planner-pane-event").hidden,
+        railEmpty: (rail.querySelector(".planner-rail-empty")?.textContent || "").trim(),
+        tiles: rail.querySelectorAll(".planner-char-tile").length,
+        hint: document.getElementById("planner-rail-hint").textContent.trim(),
+        count: document.getElementById("planner-char-count").textContent.trim(),
+        farm: farm.textContent.replace(/\s+/g, " ").trim(),
+        hasStamina: !!document.getElementById("planner-farm-stamina"),
+        activity: document.getElementById("planner-activity-value").textContent.trim(),
+        buttons: ["planner-char-add", "planner-goal-btn", "planner-char-clear", "planner-activity-btn"].every(
+          (id) => !!document.getElementById(id)
+        ),
+        sheets: [...document.querySelectorAll("#planner-pane-character .planner-sheet")].map((s) => s.hidden),
+      };
+    });
     check(
       "the Character tab is the one that opens",
-      emptyPane.charVisible && !emptyPane.eventVisible,
-      JSON.stringify(emptyPane)
+      empty.charVisible && !empty.eventVisible,
+      JSON.stringify(empty)
     );
     check(
       "an empty plan says so instead of drawing an empty grid",
-      emptyPane.railTiles === 0 && emptyPane.goalCards === 0 && !!emptyPane.railEmpty && !!emptyPane.paneText,
-      JSON.stringify(emptyPane)
+      empty.tiles === 0 && !!empty.railEmpty && empty.hint === "" && empty.count === "",
+      JSON.stringify(empty)
     );
-    // The Goal band on an empty plan is its title and nothing else — no
-    // "0 arcanists", no "add one" prompt.
     check(
-      "the empty Goal band is just its title",
-      emptyPane.goalAvatars === 0 && emptyPane.goalText.length <= 12,
-      JSON.stringify(emptyPane)
+      "the farm route starts empty",
+      /Nothing left to farm/.test(empty.farm) && !empty.hasStamina,
+      empty.farm
+    );
+    check(
+      "the toolbar carries the stamina setting, Add, Goal and Reset",
+      empty.buttons && empty.activity === "240",
+      JSON.stringify(empty)
+    );
+    check(
+      "every panel starts closed",
+      empty.sheets.length === 4 && empty.sheets.every(Boolean),
+      JSON.stringify(empty.sheets)
     );
 
-    check(
-      "the picker starts closed",
-      (await page.evaluate(() => document.getElementById("planner-picker").hidden)) === true
-    );
+    // ---- the picker ------------------------------------------------------
     await page.evaluate(() => document.getElementById("planner-char-add").click());
     await page.waitForTimeout(300);
     const picker = await page.evaluate(() => {
-      const el = document.getElementById("planner-picker");
-      const tiles = [...el.querySelectorAll("[data-pick]")];
+      const sheet = document.getElementById("planner-picker");
+      const grid = document.getElementById("planner-picker-grid");
+      const tile = grid.querySelector("[data-pick]");
+      const box = sheet.getBoundingClientRect();
+      const pane = document.getElementById("planner-pane-character").getBoundingClientRect();
       return {
-        hidden: el.hidden,
-        width: Math.round(el.getBoundingClientRect().width),
-        paneWidth: Math.round(document.getElementById("planner-pane-character").getBoundingClientRect().width),
-        tiles: tiles.length,
-        broken: tiles.filter((t) => {
-          const img = t.querySelector("img");
-          return img && img.naturalWidth === 0;
-        }).length,
-        named: tiles.filter((t) =>
-          (t.querySelector(".roster-char-name")?.textContent || "").trim()
-        ).length,
-        // The picker is built out of the Manage modal's own pieces.
-        rosterTiles: tiles.filter((t) => t.classList.contains("roster-char-item")).length,
-        boxes: tiles.filter((t) => t.querySelector(".roster-avatar-box")).length,
-        avatars: tiles.filter((t) => t.querySelector(".roster-avatar-box .roster-avatar-img")).length,
-        searchIsManage: !!el.querySelector(".roster-toolbar .search-input"),
-        rarityChips: el.querySelectorAll(".filter-btn-group .filter-btn").length,
+        open: !sheet.hidden,
+        covers: Math.abs(box.width - pane.width) < 2 && Math.abs(box.height - pane.height) < 2,
+        tiles: grid.querySelectorAll("[data-pick]").length,
+        manageStyle:
+          !!tile.querySelector(".roster-avatar-box") &&
+          !!tile.querySelector(".roster-avatar-img") &&
+          !!tile.querySelector(".roster-char-name"),
+        search: !!document.getElementById("planner-picker-search"),
+        chips: document.querySelectorAll("#planner-picker-rarity .filter-btn").length,
       };
     });
-    check("the add button opens the picker", picker.hidden === false, JSON.stringify(picker));
-    check("the picker covers the tab it belongs to", picker.width === picker.paneWidth, JSON.stringify(picker));
-    check("it lists the whole roster", picker.tiles > 100, String(picker.tiles));
     check(
-      "every tile draws a head icon and a name",
-      picker.broken === 0 && picker.named === picker.tiles,
+      "Add arcanist opens a lightbox over the whole tab",
+      picker.open && picker.covers,
       JSON.stringify(picker)
     );
     check(
-      "the tiles are the Manage modal's roster tiles",
-      // Eight roster heads have no art in the asset cache, so the box is the
-      // requirement and the image is the common case.
-      picker.rosterTiles === picker.tiles &&
-        picker.boxes === picker.tiles &&
-        picker.avatars >= picker.tiles - 8,
-      JSON.stringify(picker)
-    );
-    check(
-      "the picker carries Manage's search box and rarity chips",
-      picker.searchIsManage && picker.rarityChips === 5,
+      "it lists the whole roster as Manage-style tiles",
+      picker.tiles > 100 && picker.manageStyle && picker.search && picker.chips === 5,
       JSON.stringify(picker)
     );
 
-    // The rarity chips narrow the grid, and pressing one again widens it back.
-    const byRarity = await page.evaluate(() => {
-      const grid = document.getElementById("planner-picker-grid");
-      const count = () => grid.querySelectorAll("[data-pick]").length;
-      const chip = (r) => document.querySelector(`#planner-picker-rarity .filter-btn[data-rarity="${r}"]`);
-      const all = count();
-      chip("6").click();
-      const six = count();
-      const sixNames = [...grid.querySelectorAll("[data-pick]")].slice(0, 5).map((t) => t.dataset.pick);
-      chip("5").click();
-      const sixFive = count();
-      chip("6").click();
-      chip("5").click();
-      const back = count();
-      return { all, six, sixFive, back, sixNames, active: !!document.querySelector("#planner-picker-rarity .filter-btn.active") };
+    await page.evaluate(() => {
+      const input = document.getElementById("planner-picker-search");
+      input.value = "lucy";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.waitForTimeout(200);
+    const searched = await page.evaluate(() =>
+      [...document.querySelectorAll("#planner-picker-grid [data-pick]")].map((el) => el.dataset.pick)
+    );
+    check(
+      "the search box narrows the grid to one arcanist",
+      searched.length === 1 && /^lucy$/i.test(searched[0]),
+      JSON.stringify(searched)
+    );
+    await page.evaluate(() => {
+      const input = document.getElementById("planner-picker-search");
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
     });
     await page.waitForTimeout(150);
+    const rarity = await page.evaluate(() => {
+      const grid = document.getElementById("planner-picker-grid");
+      const chip = document.querySelector('#planner-picker-rarity .filter-btn[data-rarity="6"]');
+      const all = grid.querySelectorAll("[data-pick]").length;
+      chip.click();
+      const narrowed = grid.querySelectorAll("[data-pick]").length;
+      const active = chip.classList.contains("active");
+      chip.click();
+      return { all, narrowed, active, back: grid.querySelectorAll("[data-pick]").length };
+    });
     check(
-      "a rarity chip narrows the picker",
-      byRarity.six > 0 && byRarity.six < byRarity.all && byRarity.sixFive > byRarity.six,
-      JSON.stringify(byRarity)
-    );
-    check(
-      "pressing the chips off restores the whole roster",
-      byRarity.back === byRarity.all && !byRarity.active,
-      JSON.stringify(byRarity)
+      "a rarity chip narrows the grid and pressing it again widens it",
+      rarity.narrowed > 0 &&
+        rarity.narrowed < rarity.all &&
+        rarity.active &&
+        rarity.back === rarity.all,
+      JSON.stringify(rarity)
     );
 
-    await searchPicker("lucy");
-    const searched = await page.evaluate(() =>
-      [...document.querySelectorAll("#planner-picker [data-pick]")].map((t) => t.dataset.pick)
-    );
-    check("the picker searches the roster", searched.includes("Lucy"), JSON.stringify(searched.slice(0, 6)));
+    // Backdrop press closes it, the way every other lightbox does.
+    const backdrop = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-picker");
+      sheet.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      return sheet.hidden;
+    });
+    check("a press on the backdrop closes the picker", backdrop);
 
-    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Lucy"]').click());
+    // ---- add one arcanist ------------------------------------------------
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(250);
+    await pickName("Lucy");
     await page.waitForTimeout(400);
     const added = await page.evaluate(() => {
-      const selects = [...document.querySelectorAll("#planner-char-detail .planner-field-select")];
-      const cs = selects.length ? getComputedStyle(selects[0]) : null;
+      const rail = document.getElementById("planner-char-rail");
+      const tile = rail.querySelector(".planner-char-tile");
+      const detail = document.getElementById("planner-char-detail");
+      const head = detail.querySelector(".planner-char-head");
       return {
-        pickerHidden: document.getElementById("planner-picker").hidden,
-        rail: document.querySelectorAll(".planner-char-tile").length,
-        selected: document.querySelectorAll(".planner-char-tile.is-selected").length,
-        name: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
-        portrait: document.querySelector(".planner-char-portrait")?.naturalWidth || 0,
-        selects: selects.length,
-        appearance: cs ? cs.appearance || cs.webkitAppearance : "",
-        caret: cs ? /svg/.test(cs.backgroundImage) : false,
+        pickerClosed: document.getElementById("planner-picker").hidden,
+        editorOpen: !document.getElementById("planner-char-editor").hidden,
+        title: document.getElementById("planner-editor-title").textContent.trim(),
+        tiles: rail.querySelectorAll(".planner-char-tile").length,
+        grid: getComputedStyle(rail).display,
+        iconOnly:
+          !!tile.querySelector("img") &&
+          !tile.querySelector(".planner-char-tile-name") &&
+          tile.textContent.trim() === "",
+        selected: tile.classList.contains("is-selected"),
+        headIcon: !!head?.querySelector("img"),
+        hint: document.getElementById("planner-rail-hint").textContent.trim(),
+        count: document.getElementById("planner-char-count").textContent.trim(),
       };
     });
-    check("picking an arcanist closes the picker", added.pickerHidden === true, JSON.stringify(added));
     check(
-      "it joins the rail and opens its detail pane",
-      added.rail === 1 && added.selected === 1 && added.name === "Lucy" && added.portrait > 0,
+      "picking an arcanist closes the picker and opens its panel",
+      added.pickerClosed && added.editorOpen && /^Lucy$/.test(added.title),
       JSON.stringify(added)
     );
     check(
-      "the pane carries four from → to controls",
-      added.selects === 8,
-      `${added.selects} selects`
+      "the plan is a grid of head icons and nothing else",
+      added.grid === "grid" && added.tiles === 1 && added.iconOnly && added.selected && added.headIcon,
+      JSON.stringify(added)
     );
     check(
-      "the controls are the modal's own select",
-      added.appearance === "none" && added.caret === true,
+      "the rail hint and the count follow the plan",
+      /right-click/.test(added.hint) && /^1\b/.test(added.count),
       JSON.stringify(added)
     );
 
-    const detailMats = await readMats("#planner-char-detail");
-    const goalMats = await readMats("#planner-goal");
-    const matArt = await page.evaluate(() => {
-      const imgs = [...document.querySelectorAll("#planner-char-detail .planner-mat-art img")];
-      return { count: imgs.length, broken: imgs.filter((i) => i.naturalWidth === 0).length };
-    });
-    check("the arcanist gets a bill", Object.keys(detailMats).length > 0, Object.keys(detailMats).join(","));
-    check("every quantity on it is positive", Object.values(detailMats).every((n) => n > 0), JSON.stringify(detailMats));
-    check(
-      "levelling costs are on the bill",
-      !!detailMats.Dust && !!detailMats.Sharpodonty,
-      Object.keys(detailMats).join(",")
-    );
-    check("every material draws its art", matArt.count > 0 && matArt.broken === 0, JSON.stringify(matArt));
-    check(
-      "the goal bar repeats a single arcanist's bill",
-      norm(goalMats) === norm(detailMats),
-      JSON.stringify({ goalMats, detailMats })
-    );
-
-    // Frequency picks a resonance pattern. The five tiles are the arcanist's own
-    // board (`talent_style`), each named and drawn with its own glyph, and a
-    // pick must bill exactly `pattern_costs.json`'s row for that pattern.
-    const patternData = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "pattern_costs.json"), "utf8"));
-    const freqUi = await page.evaluate(() => {
-      const tiles = [...document.querySelectorAll("#planner-char-detail .planner-freq-tile")];
+    const editor = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const cards = [...detail.querySelectorAll(".planner-mat")];
+      const first = cards[0];
+      const sticker = first?.querySelector(".planner-mat-sticker");
       return {
-        count: tiles.length,
-        names: tiles.map((t) => (t.querySelector(".planner-freq-name")?.textContent || "").trim()),
-        glyphs: tiles.map((t) => {
-          const img = t.querySelector("img");
-          return img ? { src: img.getAttribute("src"), ok: img.naturalWidth > 0 } : null;
-        }),
-        label: (document.querySelector("#planner-char-detail .planner-freq-row")?.closest(".planner-field")
-          ?.querySelector(".planner-field-label")?.textContent || "").trim(),
+        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
+        caret: getComputedStyle(detail.querySelector("select[data-field]")).backgroundImage,
+        quickGoal: !!document.getElementById("planner-quick-goal"),
+        remove: detail.querySelectorAll("[data-remove]").length,
+        euphoria: detail.querySelectorAll("[data-euphoria]").length,
+        patterns: detail.querySelectorAll("[data-pattern]").length,
+        glyphs: [...detail.querySelectorAll("[data-pattern] img")].map((img) => img.getAttribute("src")),
+        cards: cards.length,
+        noName: !detail.querySelector(".planner-mat-name"),
+        sticker: !!first?.querySelector(".item-sticker-img") && !!first?.querySelector(".item-sticker-border"),
+        size: sticker ? Math.round(sticker.getBoundingClientRect().width) : 0,
+        badge: first?.querySelector(".item-sticker-qty")?.textContent.trim() || "",
+        qty: Number(first?.dataset.qty || 0),
       };
     });
-    check("the arcanist gets five pattern tiles", freqUi.count === 5, JSON.stringify(freqUi));
     check(
-      "every tile is named and drawn with a real glyph",
-      freqUi.names.every(Boolean) && freqUi.glyphs.every((g) => g && g.ok && /images\/shape_pattern\//.test(g.src)),
-      JSON.stringify(freqUi),
+      "the panel opens on level 1 / Insight 0, built to the arcanist's cap",
+      editor.fields.join(",") ===
+        "curInsight=0,goalInsight=3,curLevel=1,goalLevel=60,curReso=0,goalReso=10,curMastery=0,goalMastery=0",
+      JSON.stringify(editor.fields)
     );
     check(
-      "the tiles are the arcanist's own board",
-      norm(freqUi.names) === norm(Object.keys(patternData.Lucy)),
-      JSON.stringify({ ui: freqUi.names, data: Object.keys(patternData.Lucy) }),
+      "its from→to controls are the dressed-up native selects",
+      /^url\(/.test(editor.caret) && editor.quickGoal && editor.remove === 1,
+      JSON.stringify(editor)
     );
     check(
-      "the picker reads as a resonance pattern, not a bare number",
-      /pattern|调频|Mẫu/i.test(freqUi.label) && !/\d/.test(freqUi.names.join("")),
-      JSON.stringify({ label: freqUi.label, names: freqUi.names }),
+      "the five resonance patterns draw their own glyphs",
+      editor.patterns === 5 &&
+        editor.glyphs.length === 5 &&
+        editor.glyphs.every((src) => src && /images\/shape_pattern\//.test(src)),
+      JSON.stringify(editor.glyphs)
+    );
+    check(
+      "the bill is a wall of item stickers with no name and no card box",
+      editor.cards > 10 && editor.noName && editor.sticker && editor.size >= 55 && editor.size <= 65,
+      JSON.stringify(editor)
+    );
+    check(
+      "the quantity badge is the compact form and data-qty the exact one",
+      /k|m/.test(editor.badge) && editor.qty > 10000 && String(editor.qty) !== editor.badge,
+      `${editor.badge} / ${editor.qty}`
     );
 
-    const patternName = freqUi.names[0];
-    const patternBill = patternData.Lucy[patternName];
-    await page.evaluate(() =>
-      document.querySelector("#planner-char-detail .planner-freq-tile").click()
-    );
-    await page.waitForTimeout(350);
-    const withPattern = await readMats("#planner-char-detail");
-    const patternDelta = {};
-    for (const mat of Object.keys(withPattern)) {
-      const delta = withPattern[mat] - (detailMats[mat] || 0);
-      if (delta) patternDelta[mat] = delta;
-    }
-    const expectedDelta = Object.fromEntries(patternBill.map((m) => [m.material, m.quantity]));
+    // ---- quick goal, and a plan whose current state is its goal ----------
+    const quick = await page.evaluate(() => {
+      document.getElementById("planner-quick-goal").click();
+      const detail = document.getElementById("planner-char-detail");
+      return [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`);
+    });
     check(
-      "picking a pattern bills that pattern",
-      norm(patternDelta) === norm(expectedDelta),
-      JSON.stringify({ expectedDelta, patternDelta }),
-    );
-    // Clicking the same tile again must take that bill back off.
-    await page.evaluate(() =>
-      document.querySelector("#planner-char-detail .planner-freq-tile").click()
-    );
-    await page.waitForTimeout(350);
-    check(
-      "unpicking it takes the bill back off",
-      norm(await readMats("#planner-char-detail")) === norm(detailMats),
-      JSON.stringify(await readMats("#planner-char-detail")),
-    );
-
-    const defaults = await page.evaluate(() => ({
-      curInsight: document.getElementById("planner-f-curInsight").value,
-      curLevel: document.getElementById("planner-f-curLevel").value,
-      goalInsight: document.getElementById("planner-f-goalInsight").value,
-      goalLevel: document.getElementById("planner-f-goalLevel").value,
-      goalReso: document.getElementById("planner-f-goalReso").value,
-    }));
-    check(
-      "a new plan starts at Lv.1 Insight 0 and ends at the cap",
-      defaults.curInsight === "0" &&
-        defaults.curLevel === "1" &&
-        defaults.goalInsight === "3" &&
-        defaults.goalLevel === "60",
-      JSON.stringify(defaults)
-    );
-
-    // The Quick goal button is the usual "this arcanist can fight now"
-    // breakpoint: 5★/6★ stop at Insight III Lv.30 with a full R10 board.
-    await page.evaluate(() => document.getElementById("planner-quick-goal").click());
-    await page.waitForTimeout(300);
-    const quick = await page.evaluate(() => ({
-      insight: document.getElementById("planner-f-goalInsight").value,
-      level: document.getElementById("planner-f-goalLevel").value,
-      reso: document.getElementById("planner-f-goalReso").value,
-      mats: document.querySelectorAll("#planner-char-detail .planner-mat").length,
-    }));
-    check(
-      "quick goal is the usual breakpoint (Insight III Lv.30 R10)",
-      quick.insight === "3" && quick.level === "30" && quick.reso === "10",
+      "Quick goal lands on the can-fight-now breakpoint",
+      quick.includes("goalInsight=3") && quick.includes("goalLevel=30") && quick.includes("goalReso=10"),
       JSON.stringify(quick)
     );
-    check("it still leaves a bill to farm", quick.mats > 0, JSON.stringify(quick));
 
-    // Walking the current state up to the goal must empty the bill: the costs
-    // are differences between two states, not a fixed package.
-    const goalState = await page.evaluate(() => ({
-      insight: document.getElementById("planner-f-goalInsight").value,
-      level: document.getElementById("planner-f-goalLevel").value,
-      reso: document.getElementById("planner-f-goalReso").value,
-    }));
-    await setField("planner-f-curInsight", goalState.insight);
-    await page.waitForTimeout(150);
-    await setField("planner-f-curLevel", goalState.level);
-    await page.waitForTimeout(150);
-    await setField("planner-f-goalLevel", goalState.level);
-    await page.waitForTimeout(150);
-    await setField("planner-f-curReso", goalState.reso);
-    await page.waitForTimeout(300);
-    const settled = await readMats("#planner-char-detail");
-    const settledGoal = await readMats("#planner-goal");
+    const sameState = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const set = (field, value) => {
+        const el = detail.querySelector(`select[data-field="${field}"]`);
+        el.value = String(value);
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      set("curInsight", 3);
+      set("curLevel", 30);
+      set("curReso", 10);
+      return {
+        cards: detail.querySelectorAll(".planner-mat").length,
+        bill: detail.querySelector(".planner-mat-grid")?.textContent.trim() || "",
+        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
+      };
+    });
     check(
-      "a plan with nothing left to farm has no bill",
-      Object.keys(settled).length === 0 && Object.keys(settledGoal).length === 0,
-      JSON.stringify(settled)
+      "a plan whose current state is its goal bills nothing",
+      sameState.cards === 0 && sameState.bill === "",
+      JSON.stringify(sameState)
     );
 
-    // Put the arcanist back at square one: the goal never moves down, so the
-    // bill has to come back.
-    await setField("planner-f-curLevel", 1);
-    await page.waitForTimeout(150);
-    await setField("planner-f-curInsight", 0);
-    await page.waitForTimeout(300);
+    const picks = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const before = detail.querySelectorAll(".planner-mat").length;
+      detail.querySelector("[data-euphoria]").click();
+      const withEuphoria = detail.querySelectorAll(".planner-mat").length;
+      const euphoriaActive = !!detail.querySelector("[data-euphoria].is-active");
+      detail.querySelector("[data-pattern]").click();
+      const withPattern = detail.querySelectorAll(".planner-mat").length;
+      const patternActive = !!detail.querySelector("[data-pattern].is-active");
+      return { before, withEuphoria, withPattern, euphoriaActive, patternActive };
+    });
+    check(
+      "a picked Euphoria facet and resonance pattern add their own bill",
+      picks.before === 0 &&
+        picks.withEuphoria > 0 &&
+        picks.withPattern > picks.withEuphoria &&
+        picks.euphoriaActive &&
+        picks.patternActive,
+      JSON.stringify(picks)
+    );
+
+    // Step the current state back down so the route has something to pay for.
+    const stepped = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const set = (field, value) => {
+        const el = detail.querySelector(`select[data-field="${field}"]`);
+        el.value = String(value);
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      set("curInsight", 0);
+      set("curLevel", 1);
+      set("curReso", 0);
+      return {
+        cards: detail.querySelectorAll(".planner-mat").length,
+        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
+      };
+    });
     check(
       "stepping the current state back down grows the bill again",
-      Object.keys(await readMats("#planner-char-detail")).length > 0
+      stepped.cards > 10 && stepped.fields.includes("curInsight=0") && stepped.fields.includes("curReso=0"),
+      JSON.stringify(stepped)
     );
 
-    const savedRaw = await page.evaluate(() => localStorage.getItem("r1999_planner_characters_v1"));
-    check("the plan is saved locally", /"chars":\[\{/.test(String(savedRaw)), String(savedRaw).slice(0, 120));
+    // ---- the farm route --------------------------------------------------
+    await page.evaluate(() => plannerCloseSheets());
+    await waitForRoute();
+    const route = await page.evaluate(() => {
+      const host = document.getElementById("planner-farm");
+      const cards = [...host.querySelectorAll(".planner-farm-card")];
+      const farmed = cards.filter((card) => !card.classList.contains("is-craft"));
+      const crafted = cards.filter((card) => card.classList.contains("is-craft"));
+      const heads = [...host.querySelectorAll(".archetype-section-title span")].map((el) => el.textContent);
+      const total = Number(
+        (document.getElementById("planner-farm-stamina").textContent || "").replace(/[^\d]/g, "")
+      );
+      const daysText = document.getElementById("planner-farm-days").textContent;
+      const days = Number(((daysText.match(/[\d.,]+/) || ["0"])[0] || "0").replace(",", "."));
+      return {
+        total,
+        days,
+        heads,
+        cards: cards.length,
+        farmed: farmed.length,
+        crafted: crafted.length,
+        runs: cards.every((card) => Number(card.dataset.runs) >= 1),
+        drops: farmed.every((card) => card.querySelectorAll(".planner-farm-drop").length > 0),
+        craftSharpo: crafted.every((card) => !!card.querySelector(".planner-farm-sharpo img")),
+        shop: host.querySelectorAll(".planner-farm-shop-row").length,
+        shopStamina: [...host.querySelectorAll(".planner-farm-shop-row")].every(
+          (row) => row.dataset.stamina !== undefined
+        ),
+        shopNames: [...host.querySelectorAll(".planner-farm-shop-name")].map((el) => el.textContent),
+      };
+    });
+    check(
+      "the route prices the whole bill in stamina",
+      route.total > 0 && route.cards > 5 && route.farmed > 4 && route.runs && route.drops,
+      JSON.stringify({ total: route.total, cards: route.cards, farmed: route.farmed, runs: route.runs, drops: route.drops })
+    );
+    check(
+      "a crafted material shows its Sharpodonty fee instead of drops",
+      route.crafted === 0 || route.craftSharpo,
+      JSON.stringify({ crafted: route.crafted, sharpo: route.craftSharpo })
+    );
+    {
+      // The stage groups come first, then the two shops the route cannot buy
+      // with stamina: the picked Euphoria facet is what puts Reveries there.
+      const shops = ["Oneiric Shop", "Reveries"].map((name) => route.heads.indexOf(name)).filter((i) => i > 0);
+      const stages = ["Resources", "Insight materials", "Stages"]
+        .map((name) => route.heads.indexOf(name))
+        .filter((i) => i > 0);
+      check(
+        "it groups the stages the way the game does, then the shops",
+        route.heads[0] === "Farm route" &&
+          stages.length === 3 &&
+          shops.length === 2 &&
+          Math.min(...shops) > Math.max(...stages),
+        JSON.stringify(route.heads)
+      );
+    }
+    check(
+      "the days are the total over the stamina a day is worth",
+      Math.abs(route.days - route.total / 240) <= 0.06,
+      `${route.days} vs ${route.total} / 240`
+    );
+    check(
+      "oneiric-only materials are listed with their stamina, not farmed",
+      route.shop > 0 && route.shopStamina && route.shopNames.every((name) => !!name),
+      JSON.stringify(route.shopNames)
+    );
+    check(
+      "every farmed material resolves to real art",
+      await page.evaluate(() =>
+        [...document.querySelectorAll("#planner-farm .planner-farm-drop .item-sticker-img")].every(
+          (img) => img.complete && img.naturalWidth > 0
+        )
+      )
+    );
 
+    // ---- activity settings ----------------------------------------------
+    const parseDays = (text) => Number(((String(text).match(/[\d.,]+/) || ["0"])[0] || "0").replace(",", "."));
+
+    const activity = await page.evaluate(() => {
+      document.getElementById("planner-activity-btn").click();
+      const sheet = document.getElementById("planner-activity-sheet");
+      const cost = document.getElementById("planner-activity-cost");
+      const out = {
+        open: !sheet.hidden,
+        switches: sheet.querySelectorAll(".planner-switch").length,
+        perDay: document.getElementById("planner-activity-perday").textContent.trim(),
+        costHidden: cost.hidden,
+        refills: document.getElementById("planner-set-refills").value,
+        daysBefore: document.getElementById("planner-farm-days").textContent,
+      };
+      const roar = document.getElementById("planner-set-roaring");
+      roar.checked = true;
+      roar.dispatchEvent(new Event("change", { bubbles: true }));
+      out.afterRoar = {
+        perDay: document.getElementById("planner-activity-perday").textContent.trim(),
+        toolbar: document.getElementById("planner-activity-value").textContent.trim(),
+        days: document.getElementById("planner-farm-days").textContent,
+      };
+      const refills = document.getElementById("planner-set-refills");
+      refills.value = "2";
+      refills.dispatchEvent(new Event("change", { bubbles: true }));
+      out.afterRefills = {
+        perDay: document.getElementById("planner-activity-perday").textContent.trim(),
+        cost: cost.textContent.trim(),
+        costHidden: cost.hidden,
+        toolbar: document.getElementById("planner-activity-value").textContent.trim(),
+      };
+      out.stored = JSON.parse(localStorage.getItem("r1999_planner_activity_v1") || "null");
+      return out;
+    });
+    check(
+      "the activity panel holds the four switches and a per-day figure",
+      activity.open && activity.switches === 4 && /240/.test(activity.perDay) && activity.refills === "0",
+      JSON.stringify(activity)
+    );
+    check(
+      "with no refills there is no Clear Drops line to read",
+      activity.costHidden,
+      JSON.stringify(activity)
+    );
+    check(
+      "Roaring Month pays 60 more a day and shortens the route",
+      /300/.test(activity.afterRoar.perDay) &&
+        activity.afterRoar.toolbar === "300" &&
+        parseDays(activity.afterRoar.days) < parseDays(activity.daysBefore),
+      JSON.stringify({ before: activity.daysBefore, after: activity.afterRoar.days })
+    );
+    check(
+      "refills add 100 a day each and price themselves in Clear Drops",
+      /500/.test(activity.afterRefills.perDay) &&
+        activity.afterRefills.toolbar === "500" &&
+        /150/.test(activity.afterRefills.cost) &&
+        !activity.afterRefills.costHidden,
+      JSON.stringify(activity.afterRefills)
+    );
+    check(
+      "the settings are saved locally",
+      activity.stored?.roaringMonth === true && activity.stored?.refills === 2,
+      JSON.stringify(activity.stored)
+    );
+    await page.evaluate(() => document.querySelector('#planner-activity-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
+
+    // ---- the Goal lightbox ----------------------------------------------
+    const lucyBill = await (async () => {
+      await selectChar("Lucy");
+      await page.waitForTimeout(250);
+      return readBill("#planner-char-detail");
+    })();
+    const goalOne = await page.evaluate(() => {
+      document.getElementById("planner-goal-btn").click();
+      const sheet = document.getElementById("planner-goal-sheet");
+      return { open: !sheet.hidden, cards: document.querySelectorAll("#planner-goal .planner-mat").length };
+    });
+    const goalOneBill = await readBill("#planner-goal");
+    check(
+      "Goal opens the whole plan's bill",
+      goalOne.open && goalOne.cards === Object.keys(lucyBill).length && normBill(goalOneBill) === normBill(lucyBill),
+      JSON.stringify({ cards: goalOne.cards, expected: Object.keys(lucyBill).length })
+    );
+    await page.evaluate(() => document.querySelector('#planner-goal-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
+
+    // ---- two arcanists ---------------------------------------------------
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(250);
+    await pickName("Jessica");
+    await page.waitForTimeout(400);
+    const jessBill = await readBill("#planner-char-detail");
+    await page.evaluate(() => {
+      if (!document.getElementById("planner-char-editor").hidden) plannerCloseSheets();
+    });
+    const twoTiles = await page.evaluate(() => ({
+      tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+      count: document.getElementById("planner-char-count").textContent.trim(),
+    }));
+    check(
+      "a second arcanist joins the grid",
+      twoTiles.tiles === 2 && /^2\b/.test(twoTiles.count),
+      JSON.stringify(twoTiles)
+    );
+    const goalTwo = await page.evaluate(() => {
+      document.getElementById("planner-goal-btn").click();
+      return document.querySelectorAll("#planner-goal .planner-mat").length;
+    });
+    const goalTwoBill = await readBill("#planner-goal");
+    check(
+      "the Goal bill is both arcanists summed",
+      normBill(goalTwoBill) === normBill(sumBill(lucyBill, jessBill)) && goalTwo > goalOne.cards,
+      JSON.stringify({ goal: Object.keys(goalTwoBill).length, expected: Object.keys(sumBill(lucyBill, jessBill)).length })
+    );
+    await page.evaluate(() => document.querySelector('#planner-goal-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
+
+    // ---- right-click leaves an arcanist out ------------------------------
+    const disabled = await page.evaluate(() => {
+      const tile = document.querySelector('#planner-char-rail [data-char="Jessica"]');
+      tile.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
+      const styles = getComputedStyle(document.querySelector('#planner-char-rail [data-char="Jessica"]'));
+      return {
+        off: document.querySelector('#planner-char-rail [data-char="Jessica"]').classList.contains("is-disabled"),
+        opacity: Number(styles.opacity),
+        grayscale: /grayscale/.test(styles.filter),
+        stillThere: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+        goal: (() => {
+          document.getElementById("planner-goal-btn").click();
+          const out = {};
+          for (const card of document.querySelectorAll("#planner-goal .planner-mat")) {
+            out[card.dataset.item] = Number(card.dataset.qty || 0);
+          }
+          document.querySelector('#planner-goal-sheet [data-sheet]').click();
+          return out;
+        })(),
+      };
+    });
+    check(
+      "right-click dims the tile but keeps it in the grid",
+      disabled.off && disabled.opacity < 0.5 && disabled.grayscale && disabled.stillThere === 2,
+      JSON.stringify(disabled)
+    );
+    check(
+      "a disabled arcanist drops out of the Goal bill",
+      normBill(disabled.goal) === normBill(lucyBill),
+      JSON.stringify({ goal: Object.keys(disabled.goal).length, expected: Object.keys(lucyBill).length })
+    );
+    const reEnabled = await page.evaluate(() => {
+      const tile = document.querySelector('#planner-char-rail [data-char="Jessica"]');
+      tile.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
+      document.getElementById("planner-goal-btn").click();
+      const out = {};
+      for (const card of document.querySelectorAll("#planner-goal .planner-mat")) {
+        out[card.dataset.item] = Number(card.dataset.qty || 0);
+      }
+      document.querySelector('#planner-goal-sheet [data-sheet]').click();
+      return out;
+    });
+    check(
+      "right-clicking it again puts it back in",
+      normBill(reEnabled) === normBill(sumBill(lucyBill, jessBill)),
+      JSON.stringify({ goal: Object.keys(reEnabled).length })
+    );
+
+    // ---- the plan survives a reload --------------------------------------
     await page.reload({ waitUntil: "networkidle" });
     await page.waitForTimeout(1400);
     await page.evaluate(() => document.getElementById("btn-planner").click());
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(700);
     const restored = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      selected: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
-      mats: document.querySelectorAll("#planner-char-detail .planner-mat").length,
-      goalLevel: document.getElementById("planner-f-goalLevel").value,
-    }));
-    check(
-      "the plan survives a reload",
-      restored.rail === 1 && restored.selected === "Lucy" && restored.mats > 0 && restored.goalLevel === "30",
-      JSON.stringify(restored)
-    );
-
-    // A second arcanist joins the plan, and the Goal bar becomes their sum.
-    await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(250);
-    await searchPicker("jessica");
-    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Jessica"]').click());
-    await page.waitForTimeout(400);
-    const twoUp = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      avatars: [...document.querySelectorAll("#planner-goal .planner-goal-avatar")].map(
-        (a) => a.dataset.char
+      tiles: [...document.querySelectorAll("#planner-char-rail .planner-char-tile")].map(
+        (el) => el.dataset.char
       ),
-      broken: [...document.querySelectorAll("#planner-goal .planner-goal-avatar img")].filter(
-        (i) => i.naturalWidth === 0
-      ).length,
-    }));
-    check("a second arcanist joins the rail", twoUp.rail === 2, JSON.stringify(twoUp));
-    // The Goal header is the plan as head icons — no "2 arcanists" text.
-    check(
-      "the goal header carries one avatar per arcanist",
-      twoUp.avatars.length === 2 && twoUp.avatars.includes("Lucy") && twoUp.avatars.includes("Jessica"),
-      JSON.stringify(twoUp)
-    );
-    check("every goal avatar draws its head icon", twoUp.broken === 0, JSON.stringify(twoUp));
-
-    const names = await page.evaluate(() =>
-      [...document.querySelectorAll(".planner-char-tile")].map((t) => t.dataset.char)
-    );
-    const perChar = {};
-    for (const name of names) {
-      await page.evaluate((n) => document.querySelector(`.planner-char-tile[data-char="${n}"]`).click(), name);
-      await page.waitForTimeout(250);
-      perChar[name] = await readMats("#planner-char-detail");
-    }
-    const summed = {};
-    for (const list of Object.values(perChar)) {
-      for (const [item, qty] of Object.entries(list)) summed[item] = (summed[item] || 0) + qty;
-    }
-    const goalTwo = await readMats("#planner-goal");
-    check(
-      "the goal bar is every arcanist's bill added up",
-      norm(summed) === norm(goalTwo),
-      JSON.stringify({ summed, goalTwo })
-    );
-
-    // Pressing a Goal head icon opens that arcanist, exactly like the rail.
-    const viaGoal = await page.evaluate(() => {
-      const avatar = document.querySelector('#planner-goal .planner-goal-avatar[data-char="Jessica"]');
-      avatar.click();
-      return {
-        selected: document.querySelector("#planner-char-detail .planner-char-name")?.textContent.trim(),
-        railSelected: document.querySelector(".planner-char-tile.is-selected")?.dataset.char,
-        goalSelected: document.querySelector(".planner-goal-avatar.is-selected")?.dataset.char,
-      };
-    });
-    await page.waitForTimeout(250);
-    const viaGoalMats = await readMats("#planner-char-detail");
-    check(
-      "a goal avatar opens that arcanist",
-      viaGoal.selected === "Jessica" &&
-        viaGoal.railSelected === "Jessica" &&
-        viaGoal.goalSelected === "Jessica",
-      JSON.stringify(viaGoal)
-    );
-    check(
-      "and the detail pane now bills that arcanist",
-      norm(viaGoalMats) === norm(perChar.Jessica),
-      JSON.stringify({ detail: viaGoalMats, expected: perChar.Jessica })
-    );
-
-    const align = await page.evaluate(() => {
-      const rows = new Map();
-      for (const card of document.querySelectorAll("#planner-goal .planner-mat")) {
-        const top = Math.round(card.getBoundingClientRect().top);
-        const list = rows.get(top) || { heights: [], qtys: [] };
-        list.heights.push(Math.round(card.getBoundingClientRect().height));
-        list.qtys.push(Math.round(card.querySelector(".planner-mat-qty").getBoundingClientRect().bottom));
-        rows.set(top, list);
-      }
-      const list = [...rows.values()];
-      return {
-        rows: list.length,
-        uneven: list.filter((r) => new Set(r.heights).size > 1).length,
-        unevenQty: list.filter((r) => new Set(r.qtys).size > 1).length,
-      };
-    });
-    check("material cards on a row share one height", align.uneven === 0, JSON.stringify(align));
-    check("their quantities line up", align.unevenQty === 0, JSON.stringify(align));
-
-    const beforeRemove = await page.evaluate(() => {
-      const count = document.querySelectorAll(".planner-char-tile").length;
-      document.querySelector(".planner-char-remove").click();
-      return count;
-    });
-    await page.waitForTimeout(300);
-    const afterRemove = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      selected: document.querySelectorAll(".planner-char-tile.is-selected").length,
-      name: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
-    }));
-    check(
-      "removing an arcanist drops only that one",
-      afterRemove.rail === beforeRemove - 1,
-      JSON.stringify({ beforeRemove, afterRemove })
-    );
-    check(
-      "the pane falls back to the next arcanist",
-      afterRemove.selected === 1 && !!afterRemove.name,
-      JSON.stringify(afterRemove)
-    );
-
-    await page.evaluate(() => document.getElementById("planner-char-clear").click());
-    await page.waitForTimeout(300);
-    const cleared = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      goalCards: document.querySelectorAll("#planner-goal .planner-mat").length,
+      disabled: document.querySelectorAll("#planner-char-rail .planner-char-tile.is-disabled").length,
+      activity: document.getElementById("planner-activity-value").textContent.trim(),
       saved: localStorage.getItem("r1999_planner_characters_v1"),
     }));
-    check("reset empties the plan", cleared.rail === 0 && cleared.goalCards === 0, JSON.stringify(cleared));
-    check("it clears the saved plan too", /"chars":\[\]/.test(String(cleared.saved)), String(cleared.saved).slice(0, 80));
-
-    // The two tabs are panes of one body, not two modals: switching to Event and
-    // back must leave the plan where it was, and an open picker cannot follow the
-    // reader into the other tab.
-    await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(250);
-    await searchPicker("lucy");
-    await page.evaluate(() => {
-      document.getElementById("planner-tab-event").click();
-      return document.getElementById("planner-picker").hidden;
-    });
-    await page.waitForTimeout(350);
-    const tabbed = await page.evaluate(() => ({
-      pickerHidden: document.getElementById("planner-picker").hidden,
-      charHidden: document.getElementById("planner-pane-character").hidden,
-      eventHidden: document.getElementById("planner-pane-event").hidden,
-      eventCards: document.querySelectorAll("#planner-sections .planner-card").length,
-    }));
     check(
-      "leaving the tab closes the picker",
-      tabbed.pickerHidden && tabbed.charHidden && !tabbed.eventHidden,
-      JSON.stringify(tabbed)
+      "the plan and its activity settings come back after a reload",
+      restored.tiles.length === 2 &&
+        restored.disabled === 0 &&
+        restored.activity === "500" &&
+        /"enabled":true/.test(String(restored.saved)),
+      JSON.stringify(restored)
     );
-    check("the Event tab is still the shop", tabbed.eventCards > 0, JSON.stringify(tabbed));
-    await page.evaluate(() => document.getElementById("planner-tab-character").click());
-    await page.waitForTimeout(350);
-    const backToChar = await page.evaluate(() => ({
-      charHidden: document.getElementById("planner-pane-character").hidden,
-      eventHidden: document.getElementById("planner-pane-event").hidden,
-      pickerHidden: document.getElementById("planner-picker").hidden,
-    }));
+    await waitForRoute();
     check(
-      "coming back lands on the Character tab again",
-      !backToChar.charHidden && backToChar.eventHidden && backToChar.pickerHidden,
-      JSON.stringify(backToChar)
+      "and the route is solved again without a press",
+      await page.evaluate(() => {
+        const total = Number(
+          (document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")
+        );
+        return total > 0;
+      })
     );
 
-    // The Character tab is translated like the rest of the modal.
-    await page.evaluate(() => {
-      plannerChars = [];
-      plannerCharSelected = "";
-      plannerAddCharacter("Lucy");
+    // ---- Chinese ---------------------------------------------------------
+    const cnChar = await page.evaluate(async () => {
+      document.querySelector('.lang-btn[data-lang="cn"]').click();
+      await new Promise((r) => setTimeout(r, 500));
+      return {
+        tab: document.getElementById("planner-tab-character").textContent.trim(),
+        add: document.getElementById("planner-char-add").textContent.trim(),
+        goal: document.getElementById("planner-goal-btn").textContent.trim(),
+        hint: document.getElementById("planner-rail-hint").textContent.trim(),
+        title: document.querySelector("#planner-farm .archetype-section-title span").textContent,
+        total: document.querySelector(".planner-farm-total-label").textContent,
+        activity: document.getElementById("planner-activity-perday").textContent.trim(),
+        item: document.querySelector("#planner-goal .planner-mat")?.dataset.item || "",
+      };
     });
-    await page.waitForTimeout(300);
-    await page.evaluate(() => setLanguage("cn"));
-    await page.waitForTimeout(800);
-    const cnChar = await page.evaluate(() => ({
-      tab: document.getElementById("planner-tab-character").textContent.trim(),
-      add: document.getElementById("planner-char-add").textContent.trim(),
-      goal: (document.querySelector("#planner-goal .archetype-section-title")?.textContent || "").trim(),
-      mats: (document.querySelector(".planner-char-mats-head .archetype-section-title")?.textContent || "").trim(),
-      placeholder: document.getElementById("planner-picker-search").placeholder,
-      item: (document.querySelector("#planner-goal .planner-mat-name")?.textContent || "").trim(),
-    }));
     check(
       "the Character tab is translated",
-      cnChar.tab !== "Character" &&
-        /[\u4e00-\u9fff]/.test(cnChar.tab + cnChar.add + cnChar.goal + cnChar.mats + cnChar.placeholder + cnChar.item),
+      /[\u4e00-\u9fff]/.test(cnChar.tab + cnChar.add + cnChar.goal + cnChar.hint + cnChar.title + cnChar.total + cnChar.activity),
       JSON.stringify(cnChar)
     );
-    await page.evaluate(() => setLanguage("en"));
-    await page.waitForTimeout(600);
-    await page.evaluate(() => {
-      plannerChars = [];
-      plannerCharSelected = "";
-      plannerSaveChars();
-      renderPlannerCharacter();
+    await page.evaluate(async () => {
+      document.querySelector('.lang-btn[data-lang="en"]').click();
+      await new Promise((r) => setTimeout(r, 400));
     });
-    await page.waitForTimeout(200);
 
-    // Phones: the rail becomes a strip on top, the controls one column, and the
-    // Goal bar keeps its own band under the detail instead of scrolling away.
-    await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(250);
-    await searchPicker("lucy");
-    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Lucy"]').click());
-    await page.waitForTimeout(400);
+    // ---- phones ----------------------------------------------------------
     await page.setViewportSize({ width: 390, height: 780 });
     await page.waitForTimeout(400);
     const phone = await page.evaluate(() => {
       const rail = document.getElementById("planner-char-rail");
-      const body = rail.closest(".planner-char-body");
-      const detail = document.getElementById("planner-char-detail");
-      const goal = document.getElementById("planner-goal");
-      const controls = document.querySelector(".planner-char-controls");
+      const column = rail.closest(".planner-char-scroll");
+      const card = document.querySelector(".planner-farm-card");
+      const sheet = document.getElementById("planner-activity-sheet");
       return {
-        bodyDir: getComputedStyle(body).flexDirection,
-        railDir: getComputedStyle(rail).flexDirection,
-        sameColumn: Math.abs(rail.getBoundingClientRect().left - detail.getBoundingClientRect().left) < 2,
-        goalBelow: goal.getBoundingClientRect().top >= detail.getBoundingClientRect().bottom - 1,
-        cols: getComputedStyle(controls).gridTemplateColumns.split(" ").length,
+        railGrid: getComputedStyle(rail).display === "grid",
+        railColumns: getComputedStyle(rail).gridTemplateColumns.split(" ").length,
+        oneScroller: getComputedStyle(column).overflowY === "auto",
+        cardFits: card ? card.getBoundingClientRect().width <= window.innerWidth : true,
+        sheetFixed: getComputedStyle(sheet).position === "fixed",
+        sideways: document.documentElement.scrollWidth <= window.innerWidth + 1,
       };
     });
     check(
-      "the rail moves above the detail on a phone",
-      phone.bodyDir === "column" && phone.sameColumn && phone.railDir === "row",
+      "a phone keeps the icon grid and a single scrolling column",
+      phone.railGrid && phone.railColumns >= 2 && phone.oneScroller && phone.cardFits && phone.sideways,
       JSON.stringify(phone)
     );
-    check("the goal bar stays under the detail", phone.goalBelow, JSON.stringify(phone));
-    check("the controls stack to one column", phone.cols === 1, JSON.stringify(phone));
-
-    // The Goal head icons survive the phone width, and the picker's search box,
-    // rarity chips and Manage-style grid still fit without scrolling sideways.
-    const phoneGoal = await page.evaluate(() => {
-      const goal = document.getElementById("planner-goal");
-      const avatars = [...goal.querySelectorAll(".planner-goal-avatar")];
-      return {
-        count: avatars.length,
-        inside: avatars.every((a) => a.getBoundingClientRect().right <= goal.getBoundingClientRect().right + 1),
-        head: Math.round(goal.querySelector(".planner-goal-head").getBoundingClientRect().height),
-      };
-    });
-    check(
-      "the goal avatars fit the phone band",
-      phoneGoal.count === 1 && phoneGoal.inside,
-      JSON.stringify(phoneGoal)
-    );
-
+    check("the panels are real lightboxes on a phone", phone.sheetFixed, JSON.stringify(phone));
     await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(300);
     const phonePicker = await page.evaluate(() => {
       const picker = document.getElementById("planner-picker");
       const grid = document.getElementById("planner-picker-grid");
@@ -2333,8 +2405,31 @@ try {
       JSON.stringify(phonePicker)
     );
     check("the phone grid never scrolls sideways", !phonePicker.sideways, JSON.stringify(phonePicker));
-    await page.evaluate(() => document.getElementById("planner-picker-close").click());
+    await page.evaluate(() => document.querySelector('#planner-picker [data-sheet]').click());
     await page.waitForTimeout(200);
+
+    // ---- reset -----------------------------------------------------------
+    const cleared = await page.evaluate(() => {
+      document.getElementById("planner-char-clear").click();
+      return {
+        tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+        railEmpty: (document.querySelector(".planner-rail-empty")?.textContent || "").trim(),
+        count: document.getElementById("planner-char-count").textContent.trim(),
+        farm: document.getElementById("planner-farm").textContent.replace(/\s+/g, " ").trim(),
+        sheets: [...document.querySelectorAll("#planner-pane-character .planner-sheet")].every((s) => s.hidden),
+        saved: localStorage.getItem("r1999_planner_characters_v1"),
+      };
+    });
+    check(
+      "Reset empties the plan and closes every panel",
+      cleared.tiles === 0 && !!cleared.railEmpty && cleared.count === "" && cleared.sheets,
+      JSON.stringify(cleared)
+    );
+    check(
+      "and it clears the saved plan too",
+      /"chars":\[\]/.test(String(cleared.saved)),
+      String(cleared.saved).slice(0, 80)
+    );
 
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.waitForTimeout(300);
