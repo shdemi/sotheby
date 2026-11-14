@@ -43,13 +43,12 @@
   <div id="tier-count-tooltip" class="pattern-tooltip tier-count-tooltip" aria-hidden="true"></div>
   <!-- Background image -->
   <img src="images/background.png" alt="" class="bg-image" style="position: fixed; inset: 0; width: 100%; height: 100%; z-index: -9999; object-fit: cover; pointer-events: none;">
-  <!-- Floating Controls & Toolbar -->
-  <header class="top-controls no-export" id="top-controls">
-    <!-- Primary Bar (Always visible) -->
-    <div class="header-primary-bar">
-      <!-- Row 1: Brand & Logo -->
-      <div class="header-brand-row">
-        <div class="app-brand">
+  <!-- Global Top Navigator (Kornblume-inspired, Victorian aesthetic) -->
+  <header class="global-navbar top-controls no-export" id="top-controls">
+    <div class="navbar-container">
+      <!-- Left: Brand & Navigation Links (All on the left side) -->
+      <div class="navbar-left">
+        <div class="navbar-brand">
           <div class="app-brand-icon-box" id="btn-web-icon" title="View Icon" style="cursor: pointer;">
             <img src="images/web_icon.png" alt="Icon" class="app-brand-icon" />
           </div>
@@ -57,52 +56,111 @@
             <img src="images/sotheby_mansion.webp" alt="Sotheby's Mansion" class="app-logo-img" id="app-logo-img" />
           </div>
         </div>
+
+        <nav class="navbar-nav" id="navbar-nav">
+          <button type="button" class="nav-link" id="btn-team" title="Team Building" data-i18n-title="toolbar.team">
+            <img src="images/random_icon/Team_icon.png" alt="" class="nav-icon" />
+            <span data-i18n="toolbar.teams">Teams</span>
+          </button>
+          <button type="button" class="nav-link" id="btn-rotations" title="Skill Rotations" data-i18n-title="rotations.title">
+            <img src="images/random_icon/Rotation_icon.png" alt="" class="nav-icon" />
+            <span data-i18n="toolbar.rotations">Rotations</span>
+          </button>
+          <button type="button" class="nav-link" id="btn-planner" title="Planner" data-i18n-title="toolbar.planner">
+            <img src="images/random_icon/planner.svg" alt="" class="nav-icon" />
+            <span data-i18n="toolbar.planner">Planner</span>
+          </button>
+          <button type="button" class="nav-link" id="btn-builds" title="InfoBook" data-i18n-title="builds.title">
+            <img src="images/random_icon/Guide_icon.png" alt="" class="nav-icon" />
+            <span data-i18n="toolbar.builds">InfoBook</span>
+          </button>
+        </nav>
       </div>
 
-      <!-- Controls Row A: Search, Manage, JSON, Export PNG (one cluster) -->
-      <div class="header-actions-row">
-        <div class="header-search-wrap">
-          <input type="text" id="filter-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
-        </div>
-        <button class="btn btn-secondary" id="btn-manage-all" title="Manage characters and psychubes" data-i18n-title="toolbar.manage">
-          <span data-i18n="toolbar.manage">Manage</span>
-        </button>
-        <button class="btn btn-secondary" id="btn-json" title="Import or export JSON" data-i18n-title="toolbar.json">
+      <!-- Right Utility Actions -->
+      <div class="navbar-right">
+        <!-- Quick JSON Action -->
+        <button type="button" class="btn btn-secondary btn-icon-tool" id="btn-json" title="Import or export JSON" data-i18n-title="toolbar.json">
           <span data-i18n="toolbar.json">JSON</span>
         </button>
-        <button class="btn btn-primary" id="btn-export-image" title="Export clean image as PNG" data-i18n-title="toolbar.exportPng">
-          <span data-i18n="toolbar.exportPng">Export PNG</span>
-        </button>
-      </div>
 
-      <!-- Controls Row B: Language, Roster Stats & Tools Button -->
-      <div class="header-stats-row">
-        <div class="lang-switcher lang-switcher-header" id="lang-switcher-header" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-lang="cn">CN</button>
-          <button type="button" class="lang-btn" data-lang="vi">VI</button>
-          <button type="button" class="lang-btn active" data-lang="en">EN</button>
-        </div>
+        <!-- Roster Crew Stats -->
         <div class="stat-badge-wrap">
-          <span class="stat-badge" id="roster-stat" style="cursor: pointer;">Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" /></span>
+          <span class="stat-badge" id="roster-stat" style="cursor: pointer;">
+            Crew 0/0 <img src="images/random_icon/vertin_crew_icon.png" alt="Crew" class="roster-stat-icon" />
+          </span>
         </div>
-        <button type="button" class="btn btn-secondary btn-tools-toggle" id="btn-tools-toggle" title="More Tools & Settings" aria-expanded="false">
-          <span class="toggle-text"><span data-i18n="toolbar.menu">Menu</span></span>
-          <span class="toggle-icon">&#9662;</span>
-        </button>
+
+        <!-- Language Dropdown (single button, dropdown on click; sits right of Crew) -->
+        <div class="lang-dropdown-wrap" id="lang-dropdown-wrap">
+          <button type="button" class="btn btn-secondary lang-dropdown-btn" id="lang-dropdown-btn" aria-haspopup="true" aria-expanded="false" title="Change Language">
+            <span id="lang-current-label">English</span>
+            <span id="lang-current-short" aria-hidden="true">EN</span>
+            <span class="dropdown-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="lang-dropdown-menu" id="lang-dropdown-menu" role="menu">
+            <button type="button" class="lang-dropdown-item lang-btn active" data-lang="en" role="menuitem">English</button>
+            <button type="button" class="lang-dropdown-item lang-btn" data-lang="vi" role="menuitem">Tiếng Việt</button>
+            <button type="button" class="lang-dropdown-item lang-btn" data-lang="cn" role="menuitem">简体中文</button>
+          </div>
+        </div>
+
+        <!-- Menu: a small dropdown for the nav links on narrow screens -->
+        <div class="navbar-menu-wrap" id="navbar-menu-wrap">
+          <button type="button" class="navbar-hamburger" id="btn-tools-toggle" title="Menu" data-i18n-title="toolbar.menu" aria-label="Menu" aria-haspopup="true" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </button>
+          <div class="navbar-menu" id="navbar-menu" role="menu">
+            <button type="button" class="navbar-menu-item" id="drawer-nav-team" role="menuitem">
+              <img src="images/random_icon/Team_icon.png" alt="" class="nav-icon" />
+              <span data-i18n="toolbar.teams">Teams</span>
+            </button>
+            <button type="button" class="navbar-menu-item" id="drawer-nav-rotations" role="menuitem">
+              <img src="images/random_icon/Rotation_icon.png" alt="" class="nav-icon" />
+              <span data-i18n="toolbar.rotations">Rotations</span>
+            </button>
+            <button type="button" class="navbar-menu-item" id="drawer-nav-planner" role="menuitem">
+              <img src="images/random_icon/planner.svg" alt="" class="nav-icon" />
+              <span data-i18n="toolbar.planner">Planner</span>
+            </button>
+            <button type="button" class="navbar-menu-item" id="drawer-nav-builds" role="menuitem">
+              <img src="images/random_icon/Guide_icon.png" alt="" class="nav-icon" />
+              <span data-i18n="toolbar.builds">InfoBook</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+  </header>
 
-    <!-- Secondary Tools Panel (Collapsible drawer on mobile, integrated toolbar row on desktop) -->
-    <div class="header-secondary-tools" id="header-secondary-tools">
-      <!-- Filters (Ownership & Rarity) sit above the tool buttons -->
-      <div class="secondary-tools-group tools-filters-group">
+  <!-- Main Showcase Board & Dedicated Sub-toolbar (Evenly Aligned) -->
+  <main class="showcase-wrapper" id="showcase-wrapper">
+    <!-- Mainboard Sub-toolbar (Dedicated to Mainboard Suitcase) -->
+    <div class="mainboard-toolbar no-export" id="mainboard-toolbar">
+      <!-- Appearance, then Manage, then the search field -->
+      <div class="mainboard-lead-group">
+        <button type="button" class="btn btn-secondary btn-icon-tool mainboard-icon-btn" id="btn-appearance" title="Appearance (Options, Styling, Tiers)" data-i18n-title="toolbar.appearance" aria-label="Appearance" data-i18n-aria-label="toolbar.appearance">
+          <img src="images/random_icon/appearance.png" alt="" class="mainboard-icon-img" />
+        </button>
+        <button type="button" class="btn btn-secondary btn-icon-tool mainboard-icon-btn" id="btn-manage-all" title="Manage characters and psychubes" data-i18n-title="toolbar.manage" aria-label="Manage" data-i18n-aria-label="toolbar.manage">
+          <img src="images/random_icon/options.png" alt="" class="mainboard-icon-img" />
+        </button>
+      </div>
+
+      <!-- Search Wrap -->
+      <div class="mainboard-search-wrap">
+        <input type="text" id="filter-search" class="search-input" data-i18n-placeholder="toolbar.search" placeholder="Search Characters" />
+      </div>
+
+      <!-- Filters: Ownership & Rarity -->
+      <div class="mainboard-filters-group">
         <div class="filter-btn-group" id="filter-ownership-group">
           <button type="button" class="filter-btn active" data-ownership="all"><span data-i18n="filter.all">All</span></button>
           <button type="button" class="filter-btn" data-ownership="owned"><span data-i18n="filter.owned">Owned</span></button>
           <button type="button" class="filter-btn" data-ownership="unowned"><span data-i18n="filter.unowned">Unowned</span></button>
         </div>
-
-        <div class="filter-group-separator" aria-hidden="true"></div>
 
         <div class="filter-btn-group" id="filter-rarity-group">
           <button type="button" class="filter-btn" data-rarity="6">✦6</button>
@@ -113,47 +171,15 @@
         </div>
       </div>
 
-      <!-- Right cluster: tool buttons + language switcher (the switcher only
-           shows once the Menu button takes over on narrow screens) -->
-      <div class="tools-buttons-row">
-        <div class="secondary-tools-group tools-config-group">
-          <button type="button" class="btn btn-secondary btn-icon-tool" id="btn-options" title="Display Options" aria-label="Display Options" data-i18n-aria-label="toolbar.options">
-            <span data-i18n="toolbar.options">Options</span><img src="images/random_icon/options.png" alt="" class="btn-tool-icon" />
-          </button>
-          <button type="button" class="btn btn-secondary btn-icon-tool" id="btn-customize" title="Customize Colors & Typography" aria-label="Styling" data-i18n-aria-label="toolbar.styling">
-            <span data-i18n="toolbar.styling">Styling</span><img src="images/random_icon/vertin_hat.png" alt="" class="btn-tool-icon" />
-          </button>
-          <button type="button" class="btn btn-secondary btn-icon-tool" id="btn-listing" title="Customize Tier Listing" aria-label="Tiers" data-i18n-aria-label="toolbar.tiers">
-            <span data-i18n="toolbar.tiers">Tiers</span><img src="images/random_icon/tiers.png" alt="" class="btn-tool-icon" />
-          </button>
-        </div>
-
-        <div class="secondary-tools-group tools-data-group">
-          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-team" title="Team Building" data-i18n-title="toolbar.team" aria-label="Team Building" data-i18n-aria-label="toolbar.team">
-            <span data-i18n="toolbar.teams">Teams</span><img src="images/random_icon/Team_icon.png" alt="" class="btn-team-icon" />
-          </button>
-          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-rotations" title="Skill Rotations" data-i18n-title="rotations.title" aria-label="Skill Rotations" data-i18n-aria-label="rotations.title">
-            <span data-i18n="toolbar.rotations">Rotations</span><img src="images/random_icon/Rotation_icon.png" alt="" class="btn-team-icon" />
-          </button>
-          <button type="button" class="btn btn-secondary btn-team btn-icon-tool" id="btn-builds" title="InfoBook" data-i18n-title="builds.title" aria-label="InfoBook" data-i18n-aria-label="builds.title">
-            <span data-i18n="toolbar.builds">InfoBook</span><img src="images/random_icon/Guide_icon.png" alt="" class="btn-team-icon" />
-          </button>
-        </div>
-
-        <!-- Language switcher: only shows once the Menu button takes over. -->
-        <div class="secondary-tools-group tools-lang-group">
-          <div class="lang-switcher" id="lang-switcher" role="group" aria-label="Language">
-            <button type="button" class="lang-btn" data-lang="cn">CN</button>
-            <button type="button" class="lang-btn" data-lang="vi">VI</button>
-            <button type="button" class="lang-btn active" data-lang="en">EN</button>
-          </div>
-        </div>
+      <!-- Mainboard Actions -->
+      <div class="mainboard-actions-group">
+        <button type="button" class="btn btn-primary mainboard-icon-btn" id="btn-export-image" title="Export clean image as PNG" data-i18n-title="toolbar.exportPng" aria-label="Export PNG" data-i18n-aria-label="toolbar.exportPng">
+          <img src="images/random_icon/export.png" alt="" class="mainboard-icon-img" />
+        </button>
       </div>
     </div>
-  </header>
 
-  <!-- Main Showcase Board (This whole container will be captured in PNG export) -->
-  <main class="showcase-wrapper">
+    <!-- Main Showcase Board (Captured in PNG export) -->
     <div id="showcase-board" class="showcase-board">
       <div class="board-header">
         <span class="board-title" id="board-title-label">Suitcase</span>
@@ -307,14 +333,34 @@
     </div>
   </div>
 
-  <!-- Options Modal -->
-  <div id="options-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card archetype-modal-card" style="max-width: 440px;">
+  <!-- Appearance Modal (Consolidates Options, Styling, and Tiers with 3 tabs) -->
+  <div id="appearance-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card appearance-modal-card">
       <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title" data-i18n="modal.displayOptions">Display Options</h2>
-        <button class="modal-close" id="options-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        <h2 class="archetype-modal-title"><span data-i18n="toolbar.appearance">Appearance</span></h2>
+        <button class="modal-close" id="appearance-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        <!-- Fallback buttons for listener safety -->
+        <button id="options-btn-close" style="display: none;" aria-hidden="true"></button>
+        <button id="customize-btn-close" style="display: none;" aria-hidden="true"></button>
+        <button id="listing-btn-close" style="display: none;" aria-hidden="true"></button>
       </div>
-      <div class="modal-body archetype-modal-body">
+
+      <!-- Appearance Tabs (Matching manage-tabs in other modals) -->
+      <div class="manage-tabs appearance-tabs" role="tablist" aria-label="Appearance">
+        <button type="button" class="manage-tab appearance-tab active" id="tab-btn-options" data-tab="options">
+          <span data-i18n="toolbar.options">Options</span>
+        </button>
+        <button type="button" class="manage-tab appearance-tab" id="tab-btn-styling" data-tab="styling">
+          <span data-i18n="toolbar.styling">Styling</span>
+        </button>
+        <button type="button" class="manage-tab appearance-tab" id="tab-btn-tiers" data-tab="tiers">
+          <span data-i18n="toolbar.tiers">Tiers</span>
+        </button>
+      </div>
+
+      <!-- Tab Panel 1: Options -->
+      <div class="appearance-tab-panel" id="appearance-panel-options">
+        <div class="modal-body archetype-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <!-- Section: Display Filters -->
         <div class="archetype-section-header">
           <span class="archetype-section-title"><span data-i18n="section.displayFilters">DISPLAY FILTERS</span></span>
@@ -611,15 +657,9 @@
         <button class="btn btn-primary btn-block" id="options-btn-done"><span data-i18n="action.apply">Apply</span></button>
       </div>
     </div>
-  </div>
 
-  <!-- Customize Modal (Showcase Colors, Typography, Title Size) -->
-  <div id="customize-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card archetype-modal-card" style="max-width: 440px;">
-      <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title"><span data-i18n="toolbar.styling">Styling</span></h2>
-        <button class="modal-close" id="customize-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
-      </div>
+    <!-- Tab Panel 2: Styling -->
+    <div class="appearance-tab-panel" id="appearance-panel-styling" style="display: none;">
       <div class="modal-body archetype-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <div class="setting-group">
           <div class="setting-label-row">
@@ -1138,15 +1178,9 @@
         <button class="btn btn-primary btn-block" id="customize-btn-done"><span data-i18n="action.apply">Apply</span></button>
       </div>
     </div>
-  </div>
 
-  <!-- Listing Custom Tiers Modal -->
-  <div id="listing-modal" class="modal-backdrop" style="display: none;">
-    <div class="modal-card archetype-modal-card modal-card-large" style="max-width: 760px;">
-      <div class="archetype-modal-header">
-        <h2 class="archetype-modal-title" data-i18n="modal.tierListing">Tier Listing Settings</h2>
-        <button class="modal-close" id="listing-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
-      </div>
+    <!-- Tab Panel 3: Tiers -->
+    <div class="appearance-tab-panel" id="appearance-panel-tiers" style="display: none;">
       <div class="modal-body archetype-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <!-- Showcase Tiers List Container (Movable tiers including Remaining/Other & Unowned) -->
         <div class="setting-group">
@@ -1173,6 +1207,12 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Fallback invisible containers for backward compatibility -->
+<div id="options-modal" style="display: none;" aria-hidden="true"></div>
+<div id="customize-modal" style="display: none;" aria-hidden="true"></div>
+<div id="listing-modal" style="display: none;" aria-hidden="true"></div>
 
   <!-- Manage / Add All Characters Roster Modal -->
   <div id="roster-modal" class="modal-backdrop" style="display: none;">
@@ -1310,6 +1350,43 @@
 
         <div class="builds-detail" id="builds-detail">
           <div class="guide-empty"><span data-i18n="builds.select">Select a character to see its build recommendations.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Planner Modal (event shop cost calculator) -->
+  <div id="planner-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card archetype-modal-card planner-modal-card">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="planner.title">Planner</span></h2>
+        <div class="builds-header-actions">
+          <div class="builds-mode-group" role="tablist" aria-label="Planner">
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn is-active" id="planner-tab-event" data-mode="event" data-i18n="planner.tabEvent">Event</button>
+          </div>
+          <button class="modal-close" id="planner-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+        </div>
+      </div>
+
+      <div class="planner-body">
+        <div class="planner-toolbar">
+          <div class="planner-toolbar-lead">
+            <span class="planner-patch" id="planner-patch"></span>
+            <select class="planner-shop-select" id="planner-shop-select" data-i18n-aria-label="planner.shop" aria-label="Event shop"></select>
+          </div>
+          <div class="planner-toolbar-tail">
+            <div class="planner-total">
+              <span class="planner-total-label" data-i18n="planner.totalRequired">Total Required</span>
+              <img class="planner-money-icon" id="planner-total-icon" alt="" hidden />
+              <span class="planner-total-value" id="planner-total-value">0</span>
+            </div>
+            <button type="button" class="btn btn-secondary planner-reset-btn" id="planner-clear" title="Reset quantities" data-i18n-title="planner.reset" aria-label="Reset quantities" data-i18n-aria-label="planner.reset">
+              <img src="images/random_icon/reset_png.png" alt="" class="planner-reset-icon" />
+            </button>
+          </div>
+        </div>
+        <div class="planner-scroll" id="planner-sections">
+          <!-- Populated dynamically -->
         </div>
       </div>
     </div>

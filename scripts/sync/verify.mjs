@@ -333,6 +333,82 @@ ok(
   ogChars.flatMap(([n, c]) => (c.resonance || []).filter((label) => typeof label !== "string" || !label).map(() => n)).join(","),
 );
 
+// ---- event shop (Planner) ---------------------------------------------------
+// The Planner's Event tab renders this file directly, so a broken shape shows as
+// an empty or mislabeled list. `maxBuy: 0` is the game's "unlimited" and must
+// survive as 0; a group whose title could not be resolved is left as an empty
+// string on purpose (the tab prints a generic label rather than a wrong one).
+const eventShop = read("event_shop.json");
+const eventShops = eventShop.shops || [];
+const eventCurrent = eventShops.find((shop) => shop.id === eventShop.current);
+ok("event_shop has a current shop", Boolean(eventCurrent), eventShop.current);
+ok("event_shop current shop is the flagged one", Boolean(eventCurrent && eventCurrent.isCurrent));
+ok("event_shop carries a patch label", /^\d+\.\d+$/.test(String(eventShop.patch || "")), eventShop.patch);
+ok("event_shop shops all carry the current patch", eventShops.every((shop) => shop.patch === eventShop.patch));
+const eventRows = eventShops.flatMap((shop) => (shop.groups || []).flatMap((group) => group.items || []));
+ok("event_shop shops have rows", eventRows.length > 0, String(eventRows.length));
+ok("event_shop groups are numbered", eventShops.every((shop) => shop.groups.every((group) => Number.isInteger(group.index) && group.index > 0)));
+ok(
+  "event_shop every row has a key + name",
+  eventRows.every((row) => row.key && row.name),
+  eventRows.filter((row) => !row.key || !row.name).map((row) => row.key).join(","),
+);
+ok(
+  "event_shop every row names its goods slot",
+  eventRows.every((row) => typeof row.uid === "string" && /^\d+$/.test(row.uid)),
+  eventRows.filter((row) => !(typeof row.uid === "string" && /^\d+$/.test(row.uid))).map((row) => row.key).join(","),
+);
+ok("event_shop every row has a price", eventRows.every((row) => Number.isFinite(row.cost) && row.cost > 0));
+ok(
+  "event_shop purchase caps are non-negative",
+  eventRows.every((row) => Number.isInteger(row.maxBuy) && row.maxBuy >= 0),
+  eventRows.filter((row) => !(Number.isInteger(row.maxBuy) && row.maxBuy >= 0)).map((row) => row.key).join(","),
+);
+ok("event_shop has at least one unlimited row", eventRows.some((row) => row.maxBuy === 0));
+// The current patch's own shop must name its sections: the prefab strings exist.
+ok(
+  "event_shop current shop names its sections",
+  Boolean(eventCurrent) && eventCurrent.groups.every((group) => typeof group.name === "string" && group.name),
+  eventCurrent ? eventCurrent.groups.map((group) => group.name).join(" / ") : "",
+);
+// Art is optional per row (Myssal does not ship every icon), but a path the tab
+// prints must resolve, or the row draws a broken image.
+const eventIconsMissing = eventRows
+  .filter((row) => row.icon)
+  .filter((row) => !fs.existsSync(path.join(OUT, "..", row.icon)))
+  .map((row) => row.icon);
+ok("every event shop icon exists", eventIconsMissing.length === 0, eventIconsMissing.slice(0, 6).join(","));
+const eventMoneyMissing = eventShops
+  .map((shop) => shop.money || {})
+  .filter((money) => money.icon)
+  .filter((money) => !fs.existsSync(path.join(OUT, "..", money.icon)))
+  .map((money) => money.icon);
+ok("every event shop currency icon exists", eventMoneyMissing.length === 0, eventMoneyMissing.join(","));
+ok(
+  "event_shop goods slots are unique per shop",
+  eventShops.every((shop) => {
+    const uids = (shop.groups || []).flatMap((group) => (group.items || []).map((row) => row.uid));
+    return new Set(uids).size === uids.length;
+  }),
+);
+// `type 13` is a wilderness land block, not a currency. Its names come from
+// `block_package` (Summer Haven Harbor / Evergreen Ground I), and the app draws
+// every block with one hand-added icon.
+const eventBlocks = eventRows.filter((row) => row.type === 13);
+if (eventBlocks.length) {
+  ok(
+    "event_shop wilderness blocks use their real names",
+    eventBlocks.every((row) => row.name && !/^(Tamer Badge|Perpetual Clef|Currency )/.test(row.name)),
+    eventBlocks.map((row) => row.name).join(", "),
+  );
+  ok(
+    "event_shop wilderness blocks share the wilderness icon",
+    eventBlocks.every((row) => row.icon === "images/items/wilderness_icon.png"),
+    eventBlocks.map((row) => `${row.name}: ${row.icon || "(none)"}`).join(", "),
+  );
+  ok("the wilderness icon exists", fs.existsSync(path.join(OUT, "..", "images", "items", "wilderness_icon.png")));
+}
+
 // ---- misc -------------------------------------------------------------------
 // ---- code rewards -----------------------------------------------------------
 // The Codes tab resolves a wiki reward name against `items.json`, then against

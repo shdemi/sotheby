@@ -86,6 +86,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30790131,
         "nameEn": "The Revelation",
         "nameZh": "亘古亘今的启示",
@@ -246,6 +248,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30660131,
         "nameEn": "Kingdom of Geometry",
         "nameZh": "数与几何的王国",
@@ -459,6 +463,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30070131,
         "nameEn": "After AD 778",
         "nameZh": "公元七七八年后",
@@ -619,6 +625,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Channel",
+        "attributeZh": "吟诵",
         "id": 31130131,
         "nameEn": "Reflections of Omniscience",
         "nameZh": "全知全能的映射",
@@ -779,6 +787,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31220131,
         "nameEn": "Sun of Fear",
         "nameZh": "恐惧烧灼之日",
@@ -948,6 +958,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30340131,
         "nameEn": "Future Interstellar War: Prelude",
         "nameZh": "未来星际大战·序",
@@ -1099,6 +1111,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30390131,
         "nameEn": "Scientific Ghost Buster",
         "nameZh": "新科学捉鬼专家",
@@ -1261,6 +1275,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Channel",
+        "attributeZh": "吟诵",
         "id": 31000131,
         "nameEn": "Interwoven Dreams",
         "nameZh": "坠入美梦尽头",
@@ -1421,6 +1437,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30280131,
         "nameEn": "Insignificant Achievements",
         "nameZh": "一些微小的成就",
@@ -1572,6 +1590,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30970131,
         "nameEn": "No Mark Unstruck",
         "nameZh": "线索牵引准星",
@@ -1769,6 +1789,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30780131,
         "nameEn": "One Stroke After Another",
         "nameZh": "一笔，又一画",
@@ -1933,6 +1955,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30160131,
         "nameEn": "Tea with Friends",
         "nameZh": "好朋友与茶话会",
@@ -2093,6 +2117,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30240131,
         "nameEn": "Good Kids, Bad Adults",
         "nameZh": "好孩子、坏大人",
@@ -2255,6 +2281,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30990131,
         "nameEn": "Another Jump This Way",
         "nameZh": "向此处、向此处",
@@ -2415,6 +2443,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31080131,
         "nameEn": "Sea Breeze Serenade",
         "nameZh": "海风交响诗",
@@ -2577,6 +2607,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31340131,
         "nameEn": "A Shimmering Night",
         "nameZh": "波光粼粼之夜",
@@ -2857,6 +2889,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30450131,
         "nameEn": "Every Audition",
         "nameZh": "每一次的选角",
@@ -3010,6 +3044,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30200131,
         "nameEn": "Uninvited Reviewer",
         "nameZh": "不请自来的点评者",
@@ -3170,6 +3206,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30600131,
         "nameEn": "Bloody Movie",
         "nameZh": "粉浆电影",
@@ -3330,6 +3368,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31060131,
         "nameEn": "Giddy Up, Mate!",
         "nameZh": "我们走！伙计！",
@@ -3565,6 +3605,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31350131,
         "nameEn": "Thrown Into Heroics",
         "nameZh": "壮举皆因形势所迫",
@@ -3734,6 +3776,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31150131,
         "nameEn": "The Nutcracker Super Squad",
         "nameZh": "极地松子先遣队",
@@ -3898,6 +3942,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Health",
+        "attributeZh": "治疗",
         "id": 30140131,
         "nameEn": "Bunny Medal Cert",
         "nameZh": "兔女郎勋章证明",
@@ -4049,6 +4095,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30320131,
         "nameEn": "Reality Show Premiere",
         "nameZh": "真人秀火热开场",
@@ -4211,6 +4259,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30170131,
         "nameEn": "I Stand Alone on the Stage",
         "nameZh": "我独立于剧场之上",
@@ -4373,6 +4423,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Channel",
+        "attributeZh": "吟诵",
         "id": 31280131,
         "nameEn": "New Blooms of Life",
         "nameZh": "纵使虞美人盛开",
@@ -4533,6 +4585,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31370131,
         "nameEn": "Thus the Night Is Calm",
         "nameZh": "故而得此良夜",
@@ -4697,6 +4751,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30490131,
         "nameEn": "A Picture at a Price",
         "nameZh": "昂贵的好照片",
@@ -4825,6 +4881,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31440131,
         "nameEn": "Song Etched Into Her Form",
         "nameZh": "雕于躯壳的唱名",
@@ -5018,6 +5076,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Counter",
+        "attributeZh": "反制",
         "id": 31400141,
         "nameEn": "Today Builds Tomorrow",
         "nameZh": "展望，奠基于此",
@@ -5189,6 +5249,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31320131,
         "nameEn": "Sewn into Forever",
         "nameZh": "将飞逝缝入永恒",
@@ -5364,6 +5426,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30310131,
         "nameEn": "This Is Radiotherapy",
         "nameZh": "注意放射性疗法",
@@ -5515,6 +5579,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30500131,
         "nameEn": "Great Inspirer",
         "nameZh": "始祖的金牌鼓舞",
@@ -5666,6 +5732,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Health",
+        "attributeZh": "治疗",
         "id": 30750131,
         "nameEn": "Beep Beep Bop Bop, Plappy!",
         "nameZh": "哔哔啵啵，波拉比！",
@@ -5826,6 +5894,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30640131,
         "nameEn": "Sweet Dreams for You",
         "nameZh": "合上眼，美梦将至",
@@ -5988,6 +6058,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30220131,
         "nameEn": "Maverick Judge",
         "nameZh": "出格的审判官",
@@ -6148,6 +6220,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30590131,
         "nameEn": "To the Universe in the Alley",
         "nameZh": "致巷中宇宙",
@@ -6303,6 +6377,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31580131,
         "nameEn": "Whither My Heart?",
         "nameZh": "我心何往",
@@ -6472,6 +6548,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30030131,
         "nameEn": "Silence in the Woods",
         "nameZh": "林间，静默将至",
@@ -6634,6 +6712,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30060131,
         "nameEn": "Between Superficiality and Reality",
         "nameZh": "表象与真实之间",
@@ -6785,6 +6865,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31430131,
         "nameEn": "The Riddle and the Answer",
         "nameZh": "世界的谜题与谜底",
@@ -6958,6 +7040,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30580131,
         "nameEn": "Glory to the Jarl",
         "nameZh": "荣耀归于维京主",
@@ -7111,6 +7195,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30510131,
         "nameEn": "Anecdotes in Exeter",
         "nameZh": "埃克塞特的奇闻",
@@ -7241,6 +7327,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31450131,
         "nameEn": "Echoes' Embrace",
         "nameZh": "于回忆中重逢",
@@ -7432,6 +7520,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31230131,
         "nameEn": "Branding of Faith",
         "nameZh": "信仰烙下之时",
@@ -7707,6 +7797,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30740131,
         "nameEn": "Compassion All-Round",
         "nameZh": "全方面关怀",
@@ -7867,6 +7959,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31090131,
         "nameEn": "Proverb of the Sea",
         "nameZh": "海风于此告诫",
@@ -8027,6 +8121,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Channel",
+        "attributeZh": "吟诵",
         "id": 31050131,
         "nameEn": "A Dream That Never Grows Old",
         "nameZh": "长不大的梦想",
@@ -8189,6 +8285,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30840131,
         "nameEn": "I Shall Walk, Exist, and Know",
         "nameZh": "我行，我在，故我见",
@@ -8349,6 +8447,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Health",
+        "attributeZh": "治疗",
         "id": 31630131,
         "nameEn": "Fight for Extra Treats",
         "nameZh": "为加餐而战",
@@ -8470,6 +8570,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31560131,
         "nameEn": "The Thirteenth Labor",
         "nameZh": "第十三项壮举",
@@ -8661,6 +8763,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31160131,
         "nameEn": "Experimental Rocketry",
         "nameZh": "0维爆炸的模拟",
@@ -8860,6 +8964,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30610131,
         "nameEn": "Twins' Play",
         "nameZh": "双胞胎诡计",
@@ -9022,6 +9128,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31550131,
         "nameEn": "Try This Move!",
         "nameZh": "试试杀手锏",
@@ -9240,6 +9348,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30920151,
         "nameEn": "Galloping Across the Underworld",
         "nameZh": "蹄声巡弋于冥界",
@@ -9411,6 +9521,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30810131,
         "nameEn": "Choking on Blood",
         "nameZh": "等血液涌上咽喉",
@@ -9573,6 +9685,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30940131,
         "nameEn": "Over the Haight Street!",
         "nameZh": "飞跃海特街！",
@@ -9735,6 +9849,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30560131,
         "nameEn": "Gaze From the Forest",
         "nameZh": "凝视来自深林之中",
@@ -9895,6 +10011,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30830131,
         "nameEn": "Baijiu and Mayhem",
         "nameZh": "酒与之外的事故",
@@ -10055,6 +10173,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30360131,
         "nameEn": "65,536 Bytes",
         "nameZh": "六五五三六字节",
@@ -10206,6 +10326,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30700131,
         "nameEn": "Ultimate Perfection",
         "nameZh": "独一的圆满",
@@ -10368,6 +10490,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30800131,
         "nameEn": "Id, Ego, and Superego",
         "nameZh": "本我，自我，超我",
@@ -10530,6 +10654,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30710131,
         "nameEn": "Song of Wandering",
         "nameZh": "流浪之歌与舞",
@@ -10694,6 +10820,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31240103,
         "nameEn": "Rush Assassination",
         "nameZh": "急速刺杀",
@@ -10985,6 +11113,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31170131,
         "nameEn": "Reach for the Stars",
         "nameZh": "星空或可企及",
@@ -11147,6 +11277,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30300131,
         "nameEn": "Another Version of the Legend",
         "nameZh": "另一版本的传说",
@@ -11300,6 +11432,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31360131,
         "nameEn": "What She Bears and Beyond",
         "nameZh": "她于框中所见",
@@ -11460,6 +11594,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30350131,
         "nameEn": "Hawaiian Archery",
         "nameZh": "夏威夷弓箭艺术",
@@ -11611,6 +11747,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31100131,
         "nameEn": "Call of Thunder: #0305",
         "nameZh": "雷电急call-0305",
@@ -11771,6 +11909,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30040131,
         "nameEn": "A Small Trick",
         "nameZh": "一点小花招",
@@ -11933,6 +12073,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31120131,
         "nameEn": "Cinema Binge",
         "nameZh": "无差别鉴赏会",
@@ -12093,6 +12235,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31020131,
         "nameEn": "More Than Alchemy",
         "nameZh": "杂学炼金术",
@@ -12255,6 +12399,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30910131,
         "nameEn": "A Drifting Song",
         "nameZh": "歌儿正漂流",
@@ -12417,6 +12563,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31390131,
         "nameEn": "The Unstable Dynamical System",
         "nameZh": "动力系统不可预测",
@@ -12642,6 +12790,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30860131,
         "nameEn": "A Step Forward",
         "nameZh": "前进的一阶",
@@ -12847,6 +12997,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30650131,
         "nameEn": "Next Chapter",
         "nameZh": "向更远处回望",
@@ -13011,6 +13163,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31270131,
         "nameEn": "Violence Begets Violence",
         "nameZh": "赠与暴力的谏言",
@@ -13184,6 +13338,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30410131,
         "nameEn": "Instant of Prediction",
         "nameZh": "一瞬洞见的预示",
@@ -13348,6 +13504,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30470131,
         "nameEn": "26 Secondary Reactions",
         "nameZh": "二十六项次生反应",
@@ -13508,6 +13666,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30620131,
         "nameEn": "Ridiculous Eyewitness Testimony",
         "nameZh": "荒唐的目击证词",
@@ -13668,6 +13828,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30950131,
         "nameEn": "Morning Star for the Night",
         "nameZh": "赠予夜的晨星",
@@ -13834,6 +13996,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30570131,
         "nameEn": "Artificial Somnambulism Therapy",
         "nameZh": "人工梦游疗法",
@@ -13987,6 +14151,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31210131,
         "nameEn": "Astray No More",
         "nameZh": "不再迷失的归途者",
@@ -14147,6 +14313,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30260131,
         "nameEn": "More Deadly than the Big Bad Wolves",
         "nameZh": "比大坏狼更可怕",
@@ -14298,6 +14466,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31030131,
         "nameEn": "A Veteran's Regards",
         "nameZh": "一位老兵的致意",
@@ -14458,6 +14628,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30440131,
         "nameEn": "Unique Tools",
         "nameZh": "与众不同的工具们",
@@ -14609,6 +14781,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Counter",
+        "attributeZh": "反制",
         "id": 30520131,
         "nameEn": "The Future Is Near",
         "nameZh": "未来，近在咫尺",
@@ -14769,6 +14943,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30270131,
         "nameEn": "A Bit of Truth Unveiled",
         "nameZh": "掀开真实一角",
@@ -14922,6 +15098,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31470141,
         "nameEn": "Implanted Memories",
         "nameZh": "非自愿铭记",
@@ -15114,6 +15292,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31180131,
         "nameEn": "Etched in Snow",
         "nameZh": "镌刻于雪上的",
@@ -15278,6 +15458,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31570131,
         "nameEn": "Her Odyssean Quest",
         "nameZh": "泉水宁芙的冒险",
@@ -15525,6 +15707,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Channel",
+        "attributeZh": "吟诵",
         "id": 31200131,
         "nameEn": "Divine Yoik",
         "nameZh": "神圣之尤伊克",
@@ -15685,6 +15869,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30370131,
         "nameEn": "Whispers of the Deceased",
         "nameZh": "逝者们的低语",
@@ -15845,6 +16031,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30050131,
         "nameEn": "Forest Eulogy",
         "nameZh": "森林的悼词",
@@ -15996,6 +16184,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31110131,
         "nameEn": "Climactic Moment",
         "nameZh": "戏剧性时刻",
@@ -16156,6 +16346,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31510131,
         "nameEn": "Obsessive Love",
         "nameZh": "无比狂烈的爱",
@@ -16309,6 +16501,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30180131,
         "nameEn": "Meaningless as Expected",
         "nameZh": "意料之中的无用功",
@@ -16462,6 +16656,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30540131,
         "nameEn": "Frequent Phenomena",
         "nameZh": "怪现象时有发生",
@@ -16613,6 +16809,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31410131,
         "nameEn": "A Paper Craft Legion",
         "nameZh": "一纸化五军",
@@ -16782,6 +16980,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30150131,
         "nameEn": "Nosier Than Me",
         "nameZh": "比我更吵的家伙们",
@@ -16935,6 +17135,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31590131,
         "nameEn": "Through Waking and Surviving",
         "nameZh": "历经苏醒与幸存",
@@ -17153,6 +17355,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30630131,
         "nameEn": "Thus Spoke Pickles",
         "nameZh": "皮克勒斯如是说",
@@ -17313,6 +17517,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30960131,
         "nameEn": "Bridge the Gap",
         "nameZh": "一处窗扇或桥梁",
@@ -17468,6 +17674,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Counter",
+        "attributeZh": "反制",
         "id": 30460131,
         "nameEn": "The Sun Is Not Gentle",
         "nameZh": "阳光并不温柔",
@@ -17621,6 +17829,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30420131,
         "nameEn": "Dedicated Straw Doctor",
         "nameZh": "敬业的稻草医生",
@@ -17776,6 +17986,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 31420131,
         "nameEn": "For the Peace of Both Worlds",
         "nameZh": "还两个世界安眠",
@@ -17947,6 +18159,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31140131,
         "nameEn": "Maze of Visceral Realism",
         "nameZh": "下现实主义迷宫",
@@ -18130,6 +18344,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31380131,
         "nameEn": "A Reed's Longing",
         "nameZh": "一苇之所如",
@@ -18290,6 +18506,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30250131,
         "nameEn": "Sleepless Rave",
         "nameZh": "狂欢与不眠夜",
@@ -18542,6 +18760,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31460131,
         "nameEn": "Chirping Chorus",
         "nameZh": "唱予无忧之诗",
@@ -18711,6 +18931,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 31250131,
         "nameEn": "All Hail Rubuska the First",
         "nameZh": "胜利属于“野树莓一世”！",
@@ -18884,6 +19106,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30380131,
         "nameEn": "Walk Down the Sakura",
         "nameZh": "樱花落于漫步之间",
@@ -19044,6 +19268,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30290131,
         "nameEn": "Darkness United",
         "nameZh": "团结的黑色国度",
@@ -19204,6 +19430,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30880131,
         "nameEn": "And So It Rises Again",
         "nameZh": "如此升起，升起",
@@ -19364,6 +19592,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31260131,
         "nameEn": "Infernal Mercy",
         "nameZh": "垂怜之下皆沉默",
@@ -19524,6 +19754,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30720131,
         "nameEn": "Edict of Atman",
         "nameZh": "万物之灵的旨意",
@@ -19688,6 +19920,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31540131,
         "nameEn": "Energy Transfer Theory",
         "nameZh": "能量转移学",
@@ -19848,6 +20082,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30230131,
         "nameEn": "Unrestricted Chant",
         "nameZh": "规章之外的咏叹诗",
@@ -20012,6 +20248,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30090131,
         "nameEn": "Mix Them All Up!",
         "nameZh": "把它们统统混合！",
@@ -20172,6 +20410,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30730131,
         "nameEn": "Flame Within the Fire",
         "nameZh": "火于之火",
@@ -20332,6 +20572,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30550131,
         "nameEn": "NDA Keeper",
         "nameZh": "保密协议恪守者",
@@ -20485,6 +20727,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30110131,
         "nameEn": "A Good Dream Tonight",
         "nameZh": "今夜，一场好梦",
@@ -20645,6 +20889,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30430131,
         "nameEn": "A Sincere Heart",
         "nameZh": "一颗真诚的心",
@@ -20805,6 +21051,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30120131,
         "nameEn": "Unexpected and Improvised",
         "nameZh": "预告外的即兴演出",
@@ -20968,6 +21216,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31490151,
         "nameEn": "Technological Breakthrough",
         "nameZh": "尤里卡时刻",
@@ -21180,6 +21430,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30530131,
         "nameEn": "Song for the Bad Tooth",
         "nameZh": "坏齿舞曲",
@@ -21344,6 +21596,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30330131,
         "nameEn": "Unplug It, Now!",
         "nameZh": "快，拔掉电源",
@@ -21497,6 +21751,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30980131,
         "nameEn": "Please, Come On In",
         "nameZh": "请进、请进",
@@ -21661,6 +21917,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30400131,
         "nameEn": "Good Children Sleep Well",
         "nameZh": "好孩子们入梦乡",
@@ -21812,6 +22070,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Channel",
+        "attributeZh": "吟诵",
         "id": 31070131,
         "nameEn": "The Sum of Infinity",
         "nameZh": "无限运算的总和",
@@ -21974,6 +22234,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30760131,
         "nameEn": "Indomitable Fire, Scorching Heart",
         "nameZh": "不灭的火，滚烫的心",
@@ -22136,6 +22398,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Buff",
+        "attributeZh": "增益",
         "id": 30870131,
         "nameEn": "Bright Prospect",
         "nameZh": "那遥远的，光明的",
@@ -22317,6 +22581,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30480131,
         "nameEn": "Galaxy on the Strings",
         "nameZh": "琴弦上的星系",
@@ -22477,6 +22743,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 31010131,
         "nameEn": "Boundless Sea, Limitless Sky",
         "nameZh": "驶向大海？驶向天空！",
@@ -22632,6 +22900,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Channel",
+        "attributeZh": "吟诵",
         "id": 31040131,
         "nameEn": "In the Fire, In the Shadow",
         "nameZh": "于火中，于影中",
@@ -22792,6 +23062,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30770131,
         "nameEn": "Long Long Journey",
         "nameZh": "更漫长的漫长",
@@ -22956,6 +23228,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Attack",
+        "attributeZh": "攻击",
         "id": 30100131,
         "nameEn": "Minimalism and Maximalism",
         "nameZh": "极简与繁复之间",
@@ -23116,6 +23390,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Health",
+        "attributeZh": "治疗",
         "id": 30820131,
         "nameEn": "The Rapids Know All",
         "nameZh": "湍流知晓一切",
@@ -23278,6 +23554,8 @@
       {
         "slot": 3,
         "type": "Ultimate",
+        "attribute": "Debuff",
+        "attributeZh": "减益",
         "id": 30130131,
         "nameEn": "Poem, Island, Breeze",
         "nameZh": "诗，远岛，风",

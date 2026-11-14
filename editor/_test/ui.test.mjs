@@ -424,7 +424,15 @@ try {
 
     const toolbar = await page.evaluate(() => {
       const reset = document.getElementById("btn-roster-reset");
-      const tabs = document.querySelector(".manage-tabs");
+      // The appearance modal also uses `.manage-tabs`, so scope to the roster modal.
+      const tabs = document.querySelector("#roster-modal .manage-tabs");
+      // Visual left-to-right order of the sub-toolbar's first row.
+      const box = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { left: Math.round(r.left), top: Math.round(r.top), right: Math.round(r.right) };
+      };
       return {
         manageButtons: [...document.querySelectorAll("#btn-manage-all, #btn-chubes")].map((b) => b.id),
         jsonButtons: [...document.querySelectorAll("#btn-json, #btn-export-data")].map((b) => b.id),
@@ -433,6 +441,16 @@ try {
         resetInTabs: !!reset && reset.parentElement === tabs,
         resetIsLast: !!reset && tabs.lastElementChild === reset,
         resetOutsideToolbar: !document.getElementById("btn-reset-data"),
+        boxes: {
+          appearance: box("btn-appearance"),
+          manage: box("btn-manage-all"),
+          search: box("filter-search"),
+          export: box("btn-export-image"),
+        },
+        iconOnly: ["btn-appearance", "btn-manage-all", "btn-export-image"].map((id) => {
+          const b = document.getElementById(id);
+          return { id, text: b.textContent.trim(), img: !!b.querySelector("img"), aria: b.getAttribute("aria-label") };
+        }),
       };
     });
     check("only one Manage button exists", toolbar.manageButtons.join(",") === "btn-manage-all", toolbar.manageButtons.join(","));
@@ -440,6 +458,52 @@ try {
     check("Reset is icon-only", toolbar.resetText === "" && toolbar.resetHasIcon, JSON.stringify(toolbar.resetText));
     check("Reset lives in the Manage tab row, right of the tabs", toolbar.resetInTabs && toolbar.resetIsLast, JSON.stringify(toolbar));
     check("the old toolbar Reset is gone", toolbar.resetOutsideToolbar);
+    const b = toolbar.boxes;
+    const sameRow =
+      b.appearance && b.manage && b.search &&
+      Math.abs(b.appearance.top - b.manage.top) <= 2 &&
+      Math.abs(b.manage.top - b.search.top) <= 2;
+    check(
+      "the sub-toolbar reads Appearance → Manage → Search on one row",
+      !!sameRow && b.appearance.right <= b.manage.left && b.manage.right <= b.search.left,
+      JSON.stringify(b)
+    );
+    check(
+      "the three actions are icon-only but still named",
+      toolbar.iconOnly.every((b) => b.text === "" && b.img && !!b.aria),
+      JSON.stringify(toolbar.iconOnly)
+    );
+
+    /* The ownership and rarity chips are two groups of one row; the drawer's
+       hairline separator used to appear between them and must stay gone. */
+    const chips = await page.evaluate(() => {
+      const groups = [...document.querySelectorAll("#mainboard-toolbar .filter-btn-group")];
+      const widths = (g) => [...g.querySelectorAll(".filter-btn")].map((b) => Math.round(b.getBoundingClientRect().width));
+      return {
+        separator: !!document.querySelector("#mainboard-toolbar .filter-group-separator"),
+        adjacent: groups[0]?.nextElementSibling === groups[1],
+        desktop: groups.map(widths),
+        padding: getComputedStyle(groups[0].querySelector(".filter-btn")).padding,
+      };
+    });
+    check("no separator sits between the ownership and rarity chips", !chips.separator && chips.adjacent, JSON.stringify(chips));
+
+    /* The chips must not shrink on a narrow screen: they wrap instead. */
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.waitForTimeout(400);
+    const narrow = await page.evaluate(() => {
+      const groups = [...document.querySelectorAll("#mainboard-toolbar .filter-btn-group")];
+      return {
+        widths: groups.map((g) => [...g.querySelectorAll(".filter-btn")].map((b) => Math.round(b.getBoundingClientRect().width))),
+        padding: getComputedStyle(groups[0].querySelector(".filter-btn")).padding,
+        clipped: groups.some((g) => [...g.querySelectorAll(".filter-btn")].some((b) => b.scrollWidth > b.getBoundingClientRect().width + 1)),
+        toolbarOverflow: document.getElementById("mainboard-toolbar").scrollWidth > document.getElementById("mainboard-toolbar").clientWidth + 1,
+      };
+    });
+    check("the chips keep their desktop size when the toolbar narrows", JSON.stringify(narrow.widths) === JSON.stringify(chips.desktop), JSON.stringify([chips.desktop, narrow.widths]));
+    check("their labels are never clipped", !narrow.clipped && !narrow.toolbarOverflow && narrow.padding === chips.padding, JSON.stringify(narrow));
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.waitForTimeout(400);
 
     await page.locator("#btn-manage-all").click();
     await page.waitForTimeout(900);
@@ -566,6 +630,91 @@ try {
   }
 
   /* ------------------------------------------------------------------ *
+   * 8b. Appearance modal: the tab highlight follows the selected tab
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== the Appearance modal highlights the selected tab ===");
+  {
+    const readTabs = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll("#appearance-modal .appearance-tab")].map((t) => ({
+          id: t.id.replace("tab-btn-", ""),
+          active: t.classList.contains("active"),
+          aria: t.getAttribute("aria-selected"),
+          color: getComputedStyle(t).color,
+          border: getComputedStyle(t).borderTopColor,
+          bg: getComputedStyle(t).backgroundColor,
+        }))
+      );
+    const oranges = (tabs) => tabs.filter((t) => /rgb\(237,\s*125,\s*49\)/.test(t.color)).map((t) => t.id);
+    const activeTab = (tabs) => tabs.filter((t) => t.active).map((t) => t.id).join(",");
+
+    await page.locator("#btn-appearance").click();
+    await page.waitForTimeout(500);
+    const first = await readTabs();
+    check("the Appearance modal opens on Options", activeTab(first) === "options", activeTab(first));
+    check("only the selected tab is orange", oranges(first).join(",") === "options", JSON.stringify(oranges(first)));
+
+    await page.locator("#tab-btn-styling").click();
+    await page.waitForTimeout(450);
+    const second = await readTabs();
+    check("choosing Styling moves the active state", activeTab(second) === "styling", activeTab(second));
+    check("and the orange follows it, leaving Options white", oranges(second).join(",") === "styling", JSON.stringify(oranges(second)));
+    check("the selected tab keeps aria-selected", second.find((t) => t.id === "styling")?.aria === "true");
+
+    const compact = await page.evaluate(() => {
+      const card = document.querySelector("#appearance-modal .appearance-modal-card");
+      return Math.round(card.getBoundingClientRect().width);
+    });
+
+    await page.locator("#tab-btn-tiers").click();
+    await page.waitForTimeout(450);
+    const third = await readTabs();
+    check("choosing Tiers moves the active state again", activeTab(third) === "tiers", activeTab(third));
+    check("and only Tiers is orange", oranges(third).join(",") === "tiers", JSON.stringify(oranges(third)));
+
+    const wide = await page.evaluate(() => {
+      const card = document.querySelector("#appearance-modal .appearance-modal-card");
+      return Math.round(card.getBoundingClientRect().width);
+    });
+    check("Tiers keeps the wide sheet", wide > compact + 150, `${wide}px vs ${compact}px`);
+
+    /* The Manage modal shares the `.manage-tab` look; its own switch must not
+       clear the Appearance tabs (that was why the highlight froze). */
+    const manageUntouched = await page.evaluate(() =>
+      document.querySelector("#roster-modal .manage-tab.active")?.dataset.manageTab ?? null
+    );
+    check("the Manage tabs were not switched by the Appearance tabs", manageUntouched === null || manageUntouched === "characters", String(manageUntouched));
+
+    /* The highlight is the Manage modal's own look — orange label + border and
+       no filled background, rather than a tinted pill of its own. */
+    const tabLook = await page.evaluate(() =>
+      [...document.querySelectorAll("#appearance-modal .appearance-tab")].map((t) => {
+        const c = getComputedStyle(t);
+        return { id: t.id.replace("tab-btn-", ""), bg: c.backgroundColor, border: c.borderTopColor, color: c.color };
+      })
+    );
+    check(
+      "the active tab has no filled background",
+      tabLook.every((t) => t.bg === "rgba(0, 0, 0, 0)"),
+      JSON.stringify(tabLook.map((t) => `${t.id}:${t.bg}`))
+    );
+
+    await page.locator("#appearance-btn-close").click();
+    await page.waitForTimeout(300);
+    const closedOnce = await page.evaluate(() => getComputedStyle(document.getElementById("appearance-modal")).display);
+    check("the modal closes", closedOnce === "none", closedOnce);
+
+    await page.locator("#btn-appearance").click();
+    await page.waitForTimeout(400);
+    const backToOptions = await readTabs();
+    check("reopening starts on Options again", activeTab(backToOptions) === "options", activeTab(backToOptions));
+
+    await page.locator("#appearance-btn-close").click();
+    await page.waitForTimeout(300);
+  }
+
+  /* ------------------------------------------------------------------ *
    * 9. JSON modal: import above, exports below
    * ------------------------------------------------------------------ */
 
@@ -619,15 +768,28 @@ try {
     await page.waitForTimeout(2200);
 
     const toolbar = await page.evaluate(() => {
-      const group = document.querySelector(".tools-data-group");
+      // The redesign moved the nav links into the global navbar (`.navbar-nav`);
+      // the old `.tools-data-group` wrapper no longer exists.
+      const group = document.querySelector("#navbar-nav");
+      const links = group ? [...group.querySelectorAll(":scope > button")] : [];
       return {
-        order: [...group.children].map((el) => el.id),
-        labels: [...group.children].map((el) => el.textContent.trim()),
+        hasGroup: !!group,
+        order: links.map((el) => el.id),
+        labels: links.map((el) => el.textContent.trim()),
         guideGone: !document.getElementById("btn-guide") && !document.getElementById("guide-modal"),
       };
     });
-    check("the data group is Teams → Rotations → InfoBook", toolbar.order.join(",") === "btn-team,btn-rotations,btn-builds", JSON.stringify(toolbar.order));
-    check("Rotations and InfoBook are labelled", toolbar.labels.join(",") === "Teams,Rotations,InfoBook", JSON.stringify(toolbar.labels));
+    check("the navbar carries the data group", toolbar.hasGroup);
+    check(
+      "the data group is Teams → Rotations → Planner → InfoBook",
+      toolbar.order.join(",") === "btn-team,btn-rotations,btn-planner,btn-builds",
+      JSON.stringify(toolbar.order)
+    );
+    check(
+      "Rotations, Planner and InfoBook are labelled",
+      toolbar.labels.join(",") === "Teams,Rotations,Planner,InfoBook",
+      JSON.stringify(toolbar.labels)
+    );
     check("the old Guide button and modal are gone", toolbar.guideGone);
   }
 
@@ -948,6 +1110,511 @@ try {
 
     await page.evaluate(() => document.getElementById("rotations-btn-close").click());
     await page.waitForTimeout(400);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 10b. Planner (event shop)
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== Planner: event shop cost calculator ===");
+  {
+    await page.evaluate(() => localStorage.removeItem("r1999_planner_v1"));
+    await page.goto(APP, { waitUntil: "networkidle" });
+    await page.waitForTimeout(1200);
+
+    const navOrder = await page.evaluate(() =>
+      [...document.querySelectorAll("#navbar-nav .nav-link")].map((el) => el.id)
+    );
+    const plannerAt = navOrder.indexOf("btn-planner");
+    check(
+      "the Planner button sits right of Rotations",
+      plannerAt > 0 && navOrder[plannerAt - 1] === "btn-rotations",
+      JSON.stringify(navOrder)
+    );
+    check(
+      "the narrow-screen menu offers the Planner too",
+      await page.evaluate(() => !!document.getElementById("drawer-nav-planner"))
+    );
+
+    await page.evaluate(() => document.getElementById("btn-planner").click());
+    await page.waitForTimeout(600);
+    const opened = await page.evaluate(() => {
+      const modal = document.getElementById("planner-modal");
+      return {
+        display: getComputedStyle(modal).display,
+        tabs: [...document.querySelectorAll("#planner-modal .builds-mode-btn")].map((b) => b.id),
+        patch: document.getElementById("planner-patch").textContent.trim(),
+        total: document.getElementById("planner-total-value").textContent.trim(),
+        totalColor: getComputedStyle(document.getElementById("planner-total-value")).color,
+        groups: [...document.querySelectorAll(".planner-group")].map((g) => {
+          const head = g.querySelector(".planner-group-head");
+          const title = g.querySelector(".planner-group-title") || g.querySelector(".archetype-section-title");
+          return {
+            index: g.dataset.group,
+            title: title.textContent.trim(),
+            headClass: head.className,
+            titleClass: title.className,
+            cards: g.querySelectorAll(".planner-card").length,
+            grid: getComputedStyle(g.querySelector(".planner-grid")).display,
+          };
+        }),
+        money: document.getElementById("planner-total-icon").getAttribute("src"),
+        moneyHidden: document.getElementById("planner-total-icon").hidden,
+      };
+    });
+    check("the Planner modal opens", opened.display === "flex", opened.display);
+    check("it carries exactly one Event tab", opened.tabs.length === 1, JSON.stringify(opened.tabs));
+    check("the tab is the event shop", opened.tabs[0] === "planner-tab-event", opened.tabs[0]);
+
+    // On a phone the InfoBook puts its tabs on a second row; the Planner should
+    // read the same, with the single Event tab keeping its own width instead of
+    // stretching into a full-width bar under the close button.
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.waitForTimeout(300);
+    const narrowTab = await page.evaluate(() => {
+      const tab = document.getElementById("planner-tab-event").getBoundingClientRect();
+      const title = document.querySelector("#planner-modal .archetype-modal-title").getBoundingClientRect();
+      const header = document.querySelector("#planner-modal .archetype-modal-header").getBoundingClientRect();
+      const close = document.getElementById("planner-btn-close").getBoundingClientRect();
+      return {
+        tabW: Math.round(tab.width),
+        headerW: Math.round(header.width),
+        belowTitle: tab.top >= title.bottom - 1,
+        overlap: tab.right > close.left && tab.top < close.bottom && tab.bottom > close.top,
+      };
+    });
+    check(
+      "the single Event tab keeps its own width on a phone",
+      narrowTab.tabW < narrowTab.headerW / 2,
+      JSON.stringify(narrowTab)
+    );
+    check("it sits on its own row, like the InfoBook's tabs", narrowTab.belowTitle, JSON.stringify(narrowTab));
+    check("it does not run under the close button", !narrowTab.overlap, JSON.stringify(narrowTab));
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(300);
+    check("it names the patch it was built from", /\d+\.\d+/.test(opened.patch), opened.patch);
+    check("the shop is split into sections", opened.groups.length > 1, String(opened.groups.length));
+    check(
+      "the sections use the game's own names",
+      opened.groups.every((g) => g.title.length > 0 && !/^Group \d+$/.test(g.title)),
+      JSON.stringify(opened.groups.map((g) => g.title))
+    );
+    check(
+      "a section bar is the Appearance modal's section header",
+      opened.groups.every(
+        (g) => /archetype-section-header/.test(g.headClass) && /archetype-section-title/.test(g.titleClass)
+      ),
+      JSON.stringify(opened.groups.map((g) => `${g.headClass} / ${g.titleClass}`))
+    );
+    check("every section lists items", opened.groups.every((g) => g.cards > 0), JSON.stringify(opened.groups));
+    check("the items are laid out as cards", opened.groups.every((g) => g.grid === "grid"), JSON.stringify(opened.groups.map((g) => g.grid)));
+    check("the event currency art resolves", !!opened.money && !opened.moneyHidden, String(opened.money));
+    check("the total is a bare number", /^[\d.,\s]+$/.test(opened.total), opened.total);
+    check("the total is not the glaring gold", opened.totalColor !== "rgb(245, 197, 66)", opened.totalColor);
+
+    const art = await page.evaluate(() => {
+      const imgs = [...document.querySelectorAll(".planner-card-art img")];
+      return {
+        count: imgs.length,
+        broken: imgs.filter((i) => i.naturalWidth === 0).length,
+        wild: imgs.filter((i) => i.getAttribute("src").includes("wilderness_icon")).length,
+      };
+    });
+    check("every card draws its item art", art.count > 0 && art.broken === 0, JSON.stringify(art));
+    check("the wilderness plots share the wilderness icon", art.wild > 0, JSON.stringify(art));
+
+    // The art carries its own frame in the game, so the card draws none: no box
+    // behind the icon and no border, which lets the icon itself be big.
+    const chrome = await page.evaluate(() => {
+      const artBox = document.querySelector(".planner-card-art");
+      const cs = getComputedStyle(artBox);
+      const img = artBox.querySelector("img");
+      return {
+        background: cs.backgroundColor,
+        border: cs.borderTopWidth,
+        imgW: Math.round(img.getBoundingClientRect().width),
+        boxW: Math.round(artBox.getBoundingClientRect().width),
+      };
+    });
+    check(
+      "the item art has no frame of its own",
+      chrome.background === "rgba(0, 0, 0, 0)" && parseFloat(chrome.border) === 0,
+      JSON.stringify(chrome)
+    );
+    check("the item art is drawn large", chrome.imgW >= chrome.boxW - 2 && chrome.imgW >= 60, JSON.stringify(chrome));
+
+    // The shop picker drops the OS chrome and draws its own caret, so the
+    // control matches the modal instead of looking like a raw form field.
+    const picker = await page.evaluate(() => {
+      const sel = document.getElementById("planner-shop-select");
+      const cs = getComputedStyle(sel);
+      return {
+        appearance: cs.appearance || cs.webkitAppearance,
+        caret: /svg/.test(cs.backgroundImage),
+        options: sel.options.length,
+        label: sel.options[sel.selectedIndex]?.textContent.trim() || "",
+      };
+    });
+    check("the shop picker draws its own caret", picker.appearance === "none" && picker.caret, JSON.stringify(picker));
+    check("it lists every shop in the patch", picker.options >= 1 && !!picker.label, JSON.stringify(picker));
+
+    // The toolbar reads "<label> <currency icon> <number> [reset]": the icon sits
+    // left of the amount, and reset is the rightmost control.
+    const row = await page.evaluate(() => {
+      const tail = document.querySelector(".planner-toolbar-tail");
+      const total = document.querySelector(".planner-total");
+      const icon = document.getElementById("planner-total-icon");
+      const value = document.getElementById("planner-total-value");
+      const reset = document.getElementById("planner-clear");
+      const ico = icon.getBoundingClientRect();
+      const val = value.getBoundingClientRect();
+      const rst = reset.getBoundingClientRect();
+      return {
+        iconBeforeValue: ico.right <= val.left + 1 && ico.width > 0,
+        resetRightOfTotal: rst.left >= val.right - 1,
+        resetLast: tail.lastElementChild === reset,
+        order: [...total.children].map((el) => el.id || el.className),
+      };
+    });
+    check("the currency icon sits left of the total", row.iconBeforeValue, JSON.stringify(row));
+    check("the reset button sits right of the currency", row.resetRightOfTotal && row.resetLast, JSON.stringify(row));
+
+    // Each card prices itself: "<currency icon> 1000", so a card still says what
+    // it costs when it is read on its own.
+    const priced = await page.evaluate(() => {
+      const price = document.querySelector(".planner-card-price");
+      const icon = price.querySelector(".planner-cost-money");
+      const value = price.querySelector(".planner-cost-value");
+      return {
+        hasIcon: !!icon && icon.getAttribute("src").includes("/items/icon/"),
+        resolves: !!icon && icon.naturalWidth > 0,
+        iconFirst: !!icon && price.firstElementChild === icon,
+        iconLeft: !!icon && icon.getBoundingClientRect().right <= value.getBoundingClientRect().left + 1,
+      };
+    });
+    check("a card prices itself with the currency icon on the left", priced.hasIcon && priced.iconFirst && priced.iconLeft, JSON.stringify(priced));
+    check("the card's currency art resolves", priced.resolves, JSON.stringify(priced));
+
+    // Names clamp to two lines but the box is always two lines tall, and the
+    // stepper is pinned to the card's foot — so a long name cannot push its
+    // stepper below a short name's.
+    const align = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll(".planner-card")];
+      const seen = new Map();
+      for (const card of cards) {
+        const top = Math.round(card.getBoundingClientRect().top);
+        const stepper = card.querySelector(".planner-stepper").getBoundingClientRect();
+        const height = Math.round(card.getBoundingClientRect().height);
+        const list = seen.get(top) || { heights: [], steppers: [] };
+        list.heights.push(height);
+        list.steppers.push(Math.round(stepper.bottom));
+        seen.set(top, list);
+      }
+      const rows = [...seen.values()];
+      return {
+        rows: rows.length,
+        unevenHeights: rows.filter((r) => new Set(r.heights).size > 1).length,
+        unevenSteppers: rows.filter((r) => new Set(r.steppers).size > 1).length,
+        names: cards.map((c) => c.querySelector(".planner-card-name").clientHeight),
+        nameHeights: [...new Set(cards.map((c) => Math.round(c.querySelector(".planner-card-name").getBoundingClientRect().height)))],
+      };
+    });
+    check("cards on a row share one height", align.unevenHeights === 0, JSON.stringify(align));
+    check("their steppers line up", align.unevenSteppers === 0, JSON.stringify(align));
+    check("the name box is always two lines tall", align.nameHeights.length === 1, JSON.stringify(align.nameHeights));
+
+    // This is a planner: an untouched capped row starts at its whole cap, and
+    // its box reads "n/max" so the cap stays visible while stepping.
+    const defaults = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll(".planner-card")].map((card) => {
+        const label = card.querySelector(".planner-count").textContent.trim();
+        const [countText, maxText] = label.split("/");
+        const max = Number(maxText);
+        return {
+          uid: card.dataset.uid,
+          label,
+          max: Number.isFinite(max) ? max : 0,
+          count: Number(countText),
+          dataMax: Number(card.dataset.max),
+        };
+      });
+      return {
+        capped: rows.filter((r) => r.max > 0),
+        unlimited: rows.filter((r) => r.max === 0),
+        all: rows,
+      };
+    });
+    check(
+      "a capped item starts at its maximum quantity",
+      defaults.capped.length > 0 && defaults.capped.every((r) => r.count === r.max),
+      JSON.stringify(defaults.capped.filter((r) => r.count !== r.max).slice(0, 4))
+    );
+    check(
+      "the quantity box shows quantity over the limit",
+      defaults.capped.length > 0 && defaults.capped.every((r) => r.label === `${r.count}/${r.max}`),
+      JSON.stringify(defaults.capped.slice(0, 4).map((r) => r.label))
+    );
+    check(
+      "an unlimited item starts at zero",
+      defaults.unlimited.length > 0 && defaults.unlimited.every((r) => r.count === 0),
+      JSON.stringify(defaults.unlimited.map((r) => r.label))
+    );
+
+    // The opening total is the whole shop, and it is quantity x price.
+    const audit = await page.evaluate(() => {
+      const num = (s) => Number(String(s).replace(/[^\d]/g, ""));
+      let sum = 0;
+      for (const card of document.querySelectorAll(".planner-card")) {
+        const count = Number(card.querySelector(".planner-count").textContent.split("/")[0]);
+        sum += count * num(card.querySelector(".planner-cost-value").textContent);
+      }
+      return { sum, shown: num(document.getElementById("planner-total-value").textContent) };
+    });
+    check("the total equals quantity x price", audit.sum === audit.shown, JSON.stringify(audit));
+
+    // A capped card: − walks it down, + walks it back, and neither passes a bound.
+    const capped = await page.evaluate(() => {
+      const card = [...document.querySelectorAll(".planner-card")].find((c) => Number(c.dataset.max) > 0);
+      return {
+        uid: card.dataset.uid,
+        cap: Number(card.dataset.max),
+        cost: Number(card.querySelector(".planner-cost-value").textContent.replace(/[^\d]/g, "")),
+      };
+    });
+    const rowSel = `.planner-card[data-uid="${capped.uid}"]`;
+    const readCount = (sel) =>
+      page.evaluate((s) => {
+        const card = document.querySelector(s);
+        const label = card.querySelector(".planner-count").textContent.trim();
+        return {
+          label,
+          count: Number(label.split("/")[0]),
+          up: card.querySelector('[data-step="1"]').disabled,
+          down: card.querySelector('[data-step="-1"]').disabled,
+          total: Number(document.getElementById("planner-total-value").textContent.replace(/[^\d]/g, "")),
+        };
+      }, sel);
+
+    const before = await readCount(rowSel);
+    await page.evaluate((s) => document.querySelector(s + ' .planner-step[data-step="-1"]').click(), rowSel);
+    await page.waitForTimeout(250);
+    const oneDown = await readCount(rowSel);
+    check("− removes one", oneDown.count === before.count - 1, `${before.label} -> ${oneDown.label}`);
+    check(
+      "the box counts down against the same limit",
+      oneDown.label === `${oneDown.count}/${capped.cap}`,
+      `${before.label} -> ${oneDown.label}`
+    );
+    check("the running total follows the pick", oneDown.total === before.total - capped.cost, `${before.total} -> ${oneDown.total} (unit ${capped.cost})`);
+    check(
+      "a stepped card keeps the plain card background",
+      await page.evaluate((s) => {
+        const card = document.querySelector(s);
+        const base = getComputedStyle(card).backgroundColor;
+        card.classList.add("is-picked");
+        const tinted = getComputedStyle(card).backgroundColor;
+        card.classList.remove("is-picked");
+        return base === tinted;
+      }, rowSel),
+      "a picked card must not change colour"
+    );
+
+    await page.evaluate((s) => document.querySelector(s + ' .planner-step[data-step="1"]').click(), rowSel);
+    await page.waitForTimeout(250);
+    const back = await readCount(rowSel);
+    check("+ puts it back", back.count === capped.cap, `${back.label} vs ${capped.cap}`);
+    check("a filled cap disables +", back.up, `cap ${capped.cap}`);
+
+    for (let i = 0; i < capped.cap + 2; i += 1) {
+      await page.evaluate((s) => document.querySelector(s + ' .planner-step[data-step="-1"]').click(), rowSel);
+      await page.waitForTimeout(40);
+    }
+    const floored = await readCount(rowSel);
+    check("− never goes below zero", floored.count === 0 && floored.down, JSON.stringify(floored));
+    check("a cleared box reads 0/limit", floored.label === `0/${capped.cap}`, floored.label);
+
+    // An unlimited card (maxBuy 0) has no ceiling.
+    const unlimited = await page.evaluate(() => {
+      const card = [...document.querySelectorAll(".planner-card")].find((c) => Number(c.dataset.max) === 0);
+      return card ? { uid: card.dataset.uid, label: card.querySelector(".planner-count").textContent.trim() } : null;
+    });
+    check("the shop has an unlimited card", !!unlimited, "no maxBuy 0 card rendered");
+    if (unlimited) {
+      const uSel = `.planner-card[data-uid="${unlimited.uid}"]`;
+      for (let i = 0; i < 4; i += 1) {
+        await page.evaluate((s) => document.querySelector(s + ' .planner-step[data-step="1"]').click(), uSel);
+        await page.waitForTimeout(80);
+      }
+      const climbed = await readCount(uSel);
+      check("an unlimited card keeps climbing", climbed.count === 4 && !climbed.up, JSON.stringify(climbed));
+    }
+
+    // The same product can sit in two sections at different prices; each card
+    // carries its own quantity. Both start at their cap, so the check steps the
+    // first one *down* and expects the second to stand still.
+    const dup = await page.evaluate(() => {
+      const byKey = new Map();
+      for (const card of document.querySelectorAll(".planner-card")) {
+        const list = byKey.get(card.dataset.key) || [];
+        list.push(card.dataset.uid);
+        byKey.set(card.dataset.key, list);
+      }
+      for (const [key, uids] of byKey) if (uids.length > 1) return { key, uids };
+      return null;
+    });
+    check("the shop lists a product in two sections", !!dup, "no duplicated goods key rendered");
+    if (dup) {
+      const readPair = (uids) =>
+        page.evaluate(
+          (ids) =>
+            ids.map((uid) =>
+              Number(document.querySelector(`.planner-card[data-uid="${uid}"] .planner-count`).textContent.split("/")[0])
+            ),
+          uids
+        );
+      const pairBefore = await readPair(dup.uids);
+      await page.evaluate(
+        (s) => document.querySelector(s + ' .planner-step[data-step="-1"]').click(),
+        `.planner-card[data-uid="${dup.uids[0]}"]`
+      );
+      await page.waitForTimeout(250);
+      const pair = await readPair(dup.uids);
+      check(
+        "two slots selling the same item keep separate quantities",
+        pair[0] === pairBefore[0] - 1 && pair.slice(1).every((n, i) => n === pairBefore[i + 1]),
+        `${dup.key}: ${JSON.stringify(pairBefore)} -> ${JSON.stringify(pair)}`
+      );
+    }
+
+    // A slot planned at zero reads as sold out: it is labelled, and it is drawn
+    // after everything still on the list. A cap-1 slot sells out in one step.
+    const soldUid = await page.evaluate(() => {
+      const card = [...document.querySelectorAll(".planner-card")].find((c) => c.dataset.max === "1");
+      const uid = card.dataset.uid;
+      card.querySelector('[data-step="-1"]').click();
+      return uid;
+    });
+    await page.waitForTimeout(250);
+    const soldAfter = await page.evaluate((uid) => {
+      const card = document.querySelector(`.planner-card[data-uid="${uid}"]`);
+      const cards = [...card.closest(".planner-group").querySelectorAll(".planner-card")];
+      return {
+        soldOutClass: card.classList.contains("is-soldout"),
+        label: card.querySelector(".planner-card-soldout")?.textContent.trim() || "",
+        index: cards.indexOf(card),
+        last: cards.length - 1,
+        box: card.querySelector(".planner-count").textContent.trim(),
+      };
+    }, soldUid);
+    check("a cleared slot reads as sold out", soldAfter.soldOutClass, JSON.stringify(soldAfter));
+    check("it prints the sold-out label", soldAfter.label === "Sold Out", soldAfter.label);
+    check("it shows 0/limit", /^0\/\d+$/.test(soldAfter.box), soldAfter.box);
+    check(
+      "a sold-out slot moves to the end of its section",
+      soldAfter.index === soldAfter.last,
+      `${soldAfter.index} of ${soldAfter.last}`
+    );
+
+    // Reset is an icon-only button that restores the default plan.
+    const reset = await page.evaluate(() => {
+      const btn = document.getElementById("planner-clear");
+      return {
+        text: btn.textContent.trim(),
+        icon: btn.querySelector("img")?.getAttribute("src") || "",
+        title: btn.title,
+      };
+    });
+    check("the reset control is the reset icon", /reset_png\.png$/.test(reset.icon), reset.icon);
+    check("it carries no text", reset.text === "", reset.text);
+    check("its tooltip still names it", !!reset.title, reset.title);
+
+    await page.evaluate(() => document.getElementById("planner-clear").click());
+    await page.waitForTimeout(300);
+    const afterReset = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll(".planner-card")].map((card) => {
+        const max = Number(card.dataset.max);
+        const count = Number(card.querySelector(".planner-count").textContent.split("/")[0]);
+        return { max, count };
+      });
+      return { rows, total: document.getElementById("planner-total-value").textContent.trim(), saved: localStorage.getItem("r1999_planner_v1") };
+    });
+    check(
+      "reset restores the default plan",
+      afterReset.rows.every((r) => r.count === r.max),
+      JSON.stringify(afterReset.rows.filter((r) => r.count !== r.max).slice(0, 4))
+    );
+    check("the reset total is not zero", !/^0$/.test(afterReset.total), afterReset.total);
+    check(
+      "the plan is saved with its patch",
+      !!afterReset.saved && /"patch":"[\d.]+"/.test(afterReset.saved),
+      String(afterReset.saved).slice(0, 120)
+    );
+
+    // Picks survive a close/reopen, and a patch change wipes them.
+    await page.evaluate((s) => document.querySelector(s + ' .planner-step[data-step="-1"]').click(), rowSel);
+    await page.waitForTimeout(200);
+    const savedTotal = await page.evaluate(() => document.getElementById("planner-total-value").textContent.trim());
+    await page.evaluate(() => document.getElementById("planner-btn-close").click());
+    await page.waitForTimeout(200);
+    await page.evaluate(() => document.getElementById("btn-planner").click());
+    await page.waitForTimeout(400);
+    check(
+      "the picks survive a close and reopen",
+      (await page.evaluate(() => document.getElementById("planner-total-value").textContent.trim())) === savedTotal,
+      savedTotal
+    );
+
+    await page.evaluate(() => {
+      const blob = JSON.parse(localStorage.getItem("r1999_planner_v1"));
+      blob.patch = "0.1";
+      localStorage.setItem("r1999_planner_v1", JSON.stringify(blob));
+    });
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(1400);
+    await page.evaluate(() => document.getElementById("btn-planner").click());
+    await page.waitForTimeout(500);
+    const wiped = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll(".planner-card")].map((card) => {
+        const max = Number(card.dataset.max);
+        const count = Number(card.querySelector(".planner-count").textContent.split("/")[0]);
+        return { max, count };
+      });
+      return { rows, raw: localStorage.getItem("r1999_planner_v1") };
+    });
+    check(
+      "a new patch drops the saved plan",
+      wiped.rows.every((r) => r.count === r.max),
+      JSON.stringify(wiped.rows.filter((r) => r.count !== r.max).slice(0, 4))
+    );
+    check(
+      "the stale blob is stamped with the current patch",
+      !/"patch":"0\.1"/.test(String(wiped.raw)),
+      String(wiped.raw).slice(0, 120)
+    );
+
+    // A language switch rebuilds the section bars and the cards in place.
+    await page.evaluate(() => setLanguage("cn"));
+    await page.waitForTimeout(800);
+    const cn = await page.evaluate(() => ({
+      title: document.querySelector("#planner-modal .archetype-modal-title").textContent.trim(),
+      group: document.querySelector(".planner-group .archetype-section-title").textContent.trim(),
+      total: document.querySelector(".planner-total-label").textContent.trim(),
+      card: document.querySelector(".planner-card-name").textContent.trim(),
+    }));
+    check(
+      "the Planner is translated",
+      cn.title !== "Planner" && /[\u4e00-\u9fff]/.test(cn.group + cn.total + cn.card),
+      JSON.stringify(cn)
+    );
+    await page.evaluate(() => setLanguage("en"));
+    await page.waitForTimeout(600);
+
+    await page.evaluate(() => document.getElementById("planner-btn-close").click());
+    await page.waitForTimeout(200);
+    check(
+      "the Planner closes",
+      (await page.evaluate(() => getComputedStyle(document.getElementById("planner-modal")).display)) === "none"
+    );
   }
 
   /* ------------------------------------------------------------------ *

@@ -138,8 +138,59 @@ function headAssets() {
   }));
 }
 
-/** Skill card art referenced by the hand-authored `content/guide_skills.json`. */
-function skillAssets() {
+/**
+ * Art the Planner modal's Event tab shows: `data/event_shop.json` prices goods
+ * that are usually *not* in `data/items.json` (event-only packs, a 4★ EXP
+ * psychube, the event currency itself), so their icons are copied here rather
+ * than assumed to be in the two caches above.
+ */
+function eventShopAssets() {
+  const plan = (() => {
+    try {
+      return readJson(path.join(OUT, "event_shop.json"));
+    } catch {
+      return { shops: [] };
+    }
+  })();
+  const itemRows = new Map(table("global", "item").map((row) => [row.id, row]));
+  const currencyRows = new Map(table("global", "currency").map((row) => [row.id, row]));
+  const equipRows = new Map(table("global", "equip").map((row) => [row.id, row]));
+
+  const assets = new Map();
+  const addItem = (row, id) => {
+    const item = itemRows.get(Number(id));
+    const currency = currencyRows.get(Number(id));
+    // `scripts/sync/derive/eventShop.mjs` probes both folders for either kind,
+    // and a few currencies only ship art under `propitem/prop` (3202 Growth
+    // Beat), so the copier has to look in the same two places.
+    const names = [item?.icon, currency?.icon, id].filter(Boolean);
+    const source = pick(DIRS.item, names) || pick(DIRS.currency, names) || null;
+    assets.set(`items/${id}`, { id, dest: path.join("images", "items", "icon", `${id}.png`), source });
+  };
+  const addChube = (row, id, rarity) => {
+    const equip = equipRows.get(Number(id));
+    assets.set(`chube/${id}`, {
+      id,
+      dest: path.join("images", "psychube_icon", String(rarity), `${id}.png`),
+      source: equip ? pick(DIRS.equipment, [equip.icon, equip.id]) : null,
+    });
+  };
+
+  for (const shop of plan.shops || []) {
+    if (shop.money?.id) addItem(null, shop.money.id);
+    for (const group of shop.groups || []) {
+      for (const item of group.items || []) {
+        if (item.type === 9) addChube(null, item.id, item.rarity);
+        // `13` is a wilderness land block: one shared icon, copied by hand, so
+        // there is no per-id art to fetch (see `eventShop.mjs`).
+        else if (item.type === 1 || item.type === 2) addItem(null, item.id);
+      }
+    }
+  }
+  return [...assets.values()];
+}
+
+/** Skill card art referenced by the hand-authored `content/guide_skills.json`. */function skillAssets() {
   const guide = readJson(path.join(CONTENT, "guide_skills.json"));
   const icons = new Set();
   for (const list of Object.values(guide)) {
@@ -161,6 +212,7 @@ const groups = [
   ["heads", headAssets()],
   ["skills", skillAssets()],
   ["code items", codeItemAssets()],
+  ["event shop", eventShopAssets()],
 ];
 
 for (const [name, assets] of groups) {

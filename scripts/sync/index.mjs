@@ -26,6 +26,7 @@ import { collabCharacters, excludeCharacters } from "./derive/curation.mjs";
 import { futureSight } from "./derive/futureSight.mjs";
 import { ogIndex } from "./derive/ogIndex.mjs";
 import { codeRewardIndex } from "./derive/codeRewards.mjs";
+import { eventShopData } from "./derive/eventShop.mjs";
 
 const argOut = (() => {
   const i = process.argv.indexOf("--out");
@@ -86,6 +87,7 @@ const files = {
   "psychubes_data.json": chubeDetails,
   "future_sight.json": futureSight(),
   "code_reward_index.json": codeRewardIndex(),
+  "event_shop.json": eventShopData(),
   "og_index.json": ogIndex({
     arcanists,
     profiles,

@@ -147,8 +147,8 @@ body::before {
   will-change: transform;
 }
 
-/* Floating Toolbar */
-.top-controls {
+/* Legacy Floating Toolbar (retained for sim-head) */
+.top-controls:not(.global-navbar) {
   position: sticky;
   top: 0;
   z-index: 100;
@@ -447,12 +447,6 @@ body::before {
   overflow: hidden;
   height: 31px;
   box-sizing: border-box;
-}
-
-/* Hairline between the ownership and rarity groups. Only the drawer layout
-   shows it: on a desktop the two groups already read as separate controls. */
-.filter-group-separator {
-  display: none;
 }
 
 .filter-btn {
@@ -845,9 +839,10 @@ body::before {
 
 /* Showcase Main Area */
 .showcase-wrapper {
-  max-width: 1420px;
-  margin: 28px auto 0;
+  max-width: 1440px;
+  margin: 18px auto 0;
   padding: 0 24px;
+  box-sizing: border-box;
   overflow-x: clip;
 }
 
@@ -978,7 +973,9 @@ body::before {
   position: absolute;
   bottom: calc(100% + 8px);
   left: 50%;
-  transform: translateX(-50%);
+  /* `--tooltip-shift` is set on hover so a card at the board's edge does not
+     have its tooltip clipped (see clampBoardTooltip in app.js). */
+  transform: translateX(calc(-50% + var(--tooltip-shift, 0px)));
   min-width: 190px;
   max-width: 262px;
   background-color: rgba(17, 17, 17, 0.97);
@@ -2968,7 +2965,8 @@ body::before {
 }
 
 .archetype-modal-card,
-#options-modal .modal-card {
+#options-modal .modal-card,
+#appearance-modal .modal-card {
   background-image: url("images/background.png") !important;
   background-position: center !important;
   background-size: cover !important;
@@ -3569,11 +3567,11 @@ body::before {
     font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif !important;
   }
 
-:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal) .modal-card * {
+:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal, #appearance-modal) .modal-card * {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
-:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal) .archetype-modal-header {
+:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal, #appearance-modal) .archetype-modal-header {
   padding: 16px 22px 14px;
   background: #212121 !important;
   border-bottom: none;
@@ -3583,7 +3581,7 @@ body::before {
   position: relative;
 }
 
-:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal) .archetype-modal-header::after {
+:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal, #appearance-modal) .archetype-modal-header::after {
   content: "";
   position: absolute;
   left: 0;
@@ -3594,7 +3592,7 @@ body::before {
   opacity: 1;
 }
 
-:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal) .archetype-modal-title {
+:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal, #appearance-modal) .archetype-modal-title {
   font-family: Georgia, 'Times New Roman', serif !important;
   font-size: 26px;
   font-weight: normal;
@@ -5129,16 +5127,6 @@ a.credit-name:hover {
     font-size: 0.64rem;
   }
 
-  /* The drawer puts both filter groups on one row, so a hairline splits them. */
-  .filter-group-separator {
-    display: block;
-    flex: 0 0 auto;
-    align-self: stretch;
-    width: 1px;
-    margin: 0 2px;
-    background: rgba(181, 181, 179, 0.28);
-  }
-
   /* Row 2: display tools, guide tools, then language + JSON on the right. */
   .tools-buttons-row {
     order: 2;
@@ -5333,8 +5321,9 @@ a.credit-name:hover {
     padding-bottom: 40px;
   }
 
-  /* Top Toolbar adjustments */
-  .top-controls {
+  /* Top Toolbar adjustments. The legacy toolbar floats as a card; the global
+     navbar is a full-bleed top bar and keeps its own edges at every width. */
+  .top-controls:not(.global-navbar) {
     margin: 8px auto 0;
     width: calc(100% - 16px);
     max-width: calc(100% - 16px);
@@ -5500,20 +5489,9 @@ a.credit-name:hover {
     flex: 0 0 auto;
   }
 
-  #filter-ownership-group .filter-btn {
-    padding: 0 8px;
-    font-size: 0.6rem;
-  }
-
-  /* Rarity filters become squares the same size as the icon buttons below,
-     so the whole toolbar shares one button rhythm on phones. */
-  #filter-rarity-group .filter-btn {
-    width: var(--toolbar-h);
-    padding: 0;
-    font-size: 0.58rem;
-    text-align: center;
-  }
-
+  /* The ownership/rarity chips used to shrink to 8px padding here. They now
+     live in the mainboard sub-toolbar and keep their normal size — see
+     `.mainboard-toolbar .filter-btn`, which wraps instead of shrinking. */
   /* Tools on one row; the language switcher wraps below when it must. */
   .tools-buttons-row {
     order: 2;
@@ -13092,5 +13070,1333 @@ body.sim-mode {
   /* The modal's own padding is too wide for a phone-width card. */
   .sim-build-card .builds-detail {
     padding: 16px 14px 22px;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL TOP NAVBAR (#111111 Mainboard Theme, Original Sotheby's Vintage Design)
+   ========================================================================== */
+
+.global-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background: #111111;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+  font-family: var(--primary-font);
+}
+
+.navbar-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* Left cluster: Brand + Nav Links pushed far to the left */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.global-navbar .app-brand-icon-box {
+  border-radius: 4px;
+  border: 1px solid #D05126;
+  background: rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link {
+  height: 31px;
+  padding: 0 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid #B5B5B3;
+  border-radius: 4px;
+  color: #B5B5B3;
+  font-family: var(--primary-font);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.nav-link:hover {
+  background: rgba(181, 181, 179, 0.12);
+  border-color: #B5B5B3;
+  color: #ffffff;
+}
+
+.nav-link.active {
+  background: rgba(208, 81, 38, 0.22);
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+.nav-icon {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Right cluster: Everything pushed far to the right */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.global-navbar .stat-badge {
+  background: rgba(17, 15, 12, 0.06);
+  color: #EBE3D7;
+  font-family: var(--primary-font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0 10px;
+  height: 31px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #B5B5B3;
+  border-radius: 4px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.global-navbar .stat-badge:hover {
+  border-color: #D05126;
+}
+
+/* Language Dropdown */
+.lang-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.lang-dropdown-btn {
+  height: 31px;
+  padding: 0 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid #B5B5B3;
+  border-radius: 4px;
+  color: #ECE5D9;
+  font-family: var(--primary-font);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.lang-dropdown-btn:hover {
+  background: rgba(181, 181, 179, 0.12);
+  border-color: #B5B5B3;
+  color: #FFFFFF;
+}
+
+.lang-dropdown-wrap.open .lang-dropdown-btn {
+  border-color: #D05126;
+  background: rgba(208, 81, 38, 0.12);
+  color: #FFFFFF;
+}
+
+.dropdown-caret {
+  font-size: 0.65rem;
+  transition: transform 0.2s ease;
+  color: #B5B5B3;
+  display: inline-block;
+  line-height: 1;
+}
+
+.lang-dropdown-wrap.open .dropdown-caret {
+  transform: rotate(180deg);
+  color: #D05126;
+}
+
+.lang-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 130px;
+  background: #111111;
+  border: 1px solid #B5B5B3;
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+  z-index: 1050;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.lang-dropdown-wrap.open .lang-dropdown-menu {
+  display: flex;
+}
+
+.lang-dropdown-item {
+  width: 100%;
+  padding: 7px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  color: #B5B5B3;
+  font-family: var(--primary-font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.lang-dropdown-item:hover {
+  background: rgba(181, 181, 179, 0.12);
+  color: #FFFFFF;
+}
+
+.lang-dropdown-item.active {
+  background: rgba(208, 81, 38, 0.22);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.navbar-right #btn-json {
+  height: 31px;
+  padding: 0 14px;
+  border: 1px solid #D05126;
+  color: #ECE5D9;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.03);
+  font-family: var(--primary-font);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-right #btn-json:hover {
+  background: rgba(208, 81, 38, 0.15);
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+.navbar-hamburger {
+  display: none !important;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid #B5B5B3;
+  border-radius: 4px;
+  padding: 0;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 31px;
+  box-sizing: border-box;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.navbar-hamburger:hover {
+  background: rgba(181, 181, 179, 0.12);
+  border-color: #B5B5B3;
+}
+
+.navbar-menu-wrap.open .navbar-hamburger {
+  border-color: #D05126;
+  background: rgba(208, 81, 38, 0.12);
+}
+
+.navbar-menu-wrap.open .hamburger-bar {
+  background: #D05126;
+}
+
+.hamburger-bar {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: #B5B5B3;
+  border-radius: 1px;
+}
+
+/* Menu dropdown — the same small panel as the language dropdown */
+.navbar-menu-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.navbar-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 150px;
+  background: #111111;
+  border: 1px solid #B5B5B3;
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+  z-index: 1050;
+  flex-direction: column;
+  gap: 2px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.navbar-menu-wrap.open .navbar-menu {
+  display: flex;
+}
+
+.navbar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 30px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  color: #B5B5B3;
+  font-family: var(--primary-font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.navbar-menu-item:hover {
+  background: rgba(181, 181, 179, 0.12);
+  color: #FFFFFF;
+}
+
+.navbar-menu-item .nav-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* ==========================================================================
+   MAINBOARD SUB-TOOLBAR (#111111 Mainboard Theme, Original Sotheby's Buttons)
+   ========================================================================== */
+
+.mainboard-toolbar {
+  width: 100%;
+  margin: 0 0 12px 0;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* Same 4px corner as the Appearance button and the search field, but a 4px
+     curve disappears on a 1232×50 bar, so the bar read square next to them.
+     Scaling the curve to the box gives the same visual roundness. */
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+  font-family: var(--primary-font);
+}
+
+.mainboard-search-wrap {
+  flex: 1 1 200px;
+  max-width: 280px;
+  min-width: 150px;
+}
+
+.mainboard-search-wrap .search-input {
+  width: 100%;
+  height: 31px;
+  box-sizing: border-box;
+  border: 1px solid #D05126;
+  border-radius: 4px;
+  background: rgba(17, 15, 12, 0.04);
+  color: #ECE5D9;
+  font-family: var(--primary-font);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mainboard-search-wrap .search-input:focus {
+  border-color: #D05126;
+  box-shadow: 0 0 0 4px rgba(208, 81, 38, 0.18);
+  outline: none;
+}
+
+.mainboard-filters-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mainboard-toolbar .filter-btn-group {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #B5B5B3;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 31px;
+  box-sizing: border-box;
+  /* Never let the flex row squeeze a group below its buttons' natural width. */
+  flex: 0 0 auto;
+}
+
+.mainboard-toolbar .filter-btn {
+  background: transparent;
+  border: none;
+  border-right: 1px solid #B5B5B3;
+  color: #B5B5B3;
+  font-family: var(--primary-font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  line-height: 1;
+  box-sizing: border-box;
+  /* Chips keep their own size at every width; the row wraps instead of
+     clipping the labels (the groups have `overflow: hidden`). */
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.mainboard-toolbar .filter-btn:last-child {
+  border-right: none;
+}
+
+.mainboard-toolbar .filter-btn:hover {
+  background: rgba(181, 181, 179, 0.12);
+  color: #ffffff;
+}
+
+.mainboard-toolbar .filter-btn.active {
+  background: rgba(208, 81, 38, 0.22);
+  color: #FFFFFF;
+}
+
+.mainboard-toolbar .filter-group-separator {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0 2px;
+}
+
+.mainboard-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.mainboard-actions-group .btn {
+  height: 31px;
+  padding: 0 16px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--primary-font);
+  box-sizing: border-box;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+/* Appearance / Manage / Export PNG are icon-only: the label would push the
+   sub-toolbar onto a second row long before the chips needed it, and the
+   tooltip (`title`) plus `aria-label` still say what each one does. */
+#mainboard-toolbar .mainboard-icon-btn {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+  flex: 0 0 auto;
+  font-size: 0.74rem;
+  font-family: var(--primary-font);
+  box-sizing: border-box;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mainboard-icon-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+/* Appearance and Manage sit ahead of the search field. */
+.mainboard-lead-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* The export button is the accent one; only its border/hover differ. */
+#mainboard-toolbar #btn-export-image {
+  padding: 0;
+}
+
+/* Exporting has no label to say "Rendering…", so the icon pulses and the
+   tooltip carries the word. */
+#mainboard-toolbar .mainboard-icon-btn:disabled {
+  cursor: progress;
+  opacity: 0.55;
+}
+
+#mainboard-toolbar .mainboard-icon-btn.is-busy .mainboard-icon-img {
+  animation: mainboardIconPulse 1s ease-in-out infinite;
+}
+
+@keyframes mainboardIconPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.88); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mainboard-toolbar .mainboard-icon-btn.is-busy .mainboard-icon-img {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+#mainboard-toolbar #btn-appearance,
+#mainboard-toolbar #btn-manage-all {
+  border: 1px solid #D05126;
+  color: #ECE5D9;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+#mainboard-toolbar #btn-appearance:hover,
+#mainboard-toolbar #btn-manage-all:hover {
+  background: rgba(208, 81, 38, 0.15);
+  border-color: #D05126;
+  color: #FFFFFF;
+}
+
+#mainboard-toolbar #btn-export-image {
+  border: 1px solid #D05126;
+  color: #ECE5D9;
+  background: transparent;
+}
+
+#mainboard-toolbar #btn-export-image:hover {
+  background: #D05126;
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   APPEARANCE MODAL & TABS (Identical Design to Other Modals)
+   ========================================================================== */
+
+#appearance-modal .appearance-modal-card {
+  max-width: 820px !important;
+  width: 95vw !important;
+  max-height: 90vh !important;
+}
+
+/* Options and Styling keep the compact width their old stand-alone modals had
+   (440px); only the Tiers panel uses the wide sheet. */
+#appearance-modal[data-appearance-tab="options"] .appearance-modal-card,
+#appearance-modal[data-appearance-tab="styling"] .appearance-modal-card {
+  max-width: 440px !important;
+}
+
+#appearance-modal .appearance-tabs {
+  margin: 0;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(208, 81, 38, 0.38);
+}
+
+/* The selected tab follows the Manage modal's own tabs exactly: orange label,
+   orange border, no fill (see `.manage-tab.active`). */
+#appearance-modal .appearance-tab:hover:not(.active) {
+  border-color: #EBE3D7;
+  color: #fff;
+}
+
+.appearance-tab-panel {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.appearance-tab-panel .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* ==========================================================================
+   PLANNER (event shop)
+   The Event tab is a shopping list: one card per goods slot of the shop the
+   global client is running, with a stepper for the quantity and a live total.
+   Data: data/event_shop.json (scripts/sync/derive/eventShop.mjs).
+   The section bars reuse the Appearance modal's section header
+   (`.archetype-section-header`), so "Divine Treasure" reads like "DISPLAY FILTERS".
+   ========================================================================== */
+
+.planner-modal-card {
+  max-width: 900px;
+  width: 100%;
+  height: min(88vh, 820px);
+  border-radius: 0 !important;
+}
+
+.planner-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+}
+
+/* Sticky head: which shop, and what the current picks cost. */
+.planner-toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.planner-toolbar-lead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.planner-patch {
+  flex: none;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #B5B5B3;
+}
+
+/* The shop picker. A native select is kept (it is the one control every
+   platform handles well), but its own chrome is dropped so it sits in the
+   modal's palette like the reset button beside it: dark field, thin border, a
+   caret that is an SVG rather than the OS arrow (which differs per browser and
+   ignores the dark theme). */
+.planner-shop-select {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 30px;
+  min-width: 168px;
+  max-width: 260px;
+  padding: 0 26px 0 10px;
+  background-color: rgba(0, 0, 0, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23B5B5B3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 9px 6px;
+  border: 1px solid rgba(181, 181, 179, 0.45);
+  border-radius: 4px;
+  color: #ECE5D9;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.planner-shop-select:hover {
+  border-color: rgba(237, 125, 49, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.planner-shop-select:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+/* Firefox draws the option list itself; match the modal, don't inherit white. */
+.planner-shop-select option {
+  background: #212121;
+  color: #ffffff;
+}
+
+.planner-toolbar-tail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.planner-total {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.planner-total-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #B5B5B3;
+}
+
+.planner-total-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  white-space: nowrap;
+}
+
+/* Reset is an icon-only button (reset_png.png), like the sub-toolbar's own. */
+.planner-reset-btn {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.planner-reset-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.planner-reset-btn:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+.planner-money-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
+/* The list itself */
+.planner-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.planner-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* The section bar is `.archetype-section-header`; only its right side differs —
+   it carries the running cost of the section instead of nothing. */
+.planner-group-head {
+  margin-bottom: 0;
+}
+
+.planner-group-total {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #8f8f8d;
+  opacity: 0.85;
+}
+
+.planner-group-total.is-set {
+  color: #ECE5D9;
+  opacity: 1;
+}
+
+/* The goods grid: board-style cards, one per slot. */
+.planner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 8px;
+}
+
+/* One goods slot */
+.planner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px 6px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.planner-card:hover {
+  background: rgba(0, 0, 0, 0.34);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* A picked card is deliberately *not* tinted: the "1/1" in the box says what is
+   planned, and colouring the card made the grid read as a warning. The border
+   stays neutral for the same reason. */
+
+.planner-card-art {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* The game's item art already carries its own frame, so the card draws no
+     chrome behind it: no background, no border, just the icon at full size. */
+  background: none;
+  border: none;
+}
+
+.planner-card-art img {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  display: block;
+}
+
+/* A row Myssal ships no art for: a dashed placeholder, never a broken image. */
+.planner-card-art-empty {
+  width: 24px;
+  height: 24px;
+  border: 1px dashed rgba(181, 181, 179, 0.6);
+  border-radius: 3px;
+}
+
+/* Planned at zero: the slot reads as sold out. The art greys back and a label
+   is printed across it, exactly like a slot the game has already bought out. */
+.planner-card.is-soldout .planner-card-art img {
+  opacity: 0.32;
+  filter: grayscale(1);
+}
+
+.planner-card-soldout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2px 0;
+  background: rgba(0, 0, 0, 0.78);
+  color: #E2726B;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+/* "×5" packs: the slot's price buys this many. */
+.planner-card-bundle {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #B5B5B3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.planner-card-name {
+  width: 100%;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.25;
+  font-family: var(--board-font, var(--mono-font));
+  color: rgba(244, 239, 233, 0.84);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  /* Two lines, then an ellipsis: the art carries the identity anyway. The box
+     is pinned to two lines whether the name needs one or two, so the price and
+     the stepper below it sit at the same height on every card of a row. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.5em;
+}
+
+.planner-card-price {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The price carries the shop's own currency art on its left, so a row reads
+   "<icon> 1000" instead of relying on the toolbar to say what the unit is. */
+.planner-cost-money {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: block;
+  flex: none;
+}
+
+.planner-cost-value {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.planner-cost-original {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #7d7d7b;
+  text-decoration: line-through;
+}
+
+/* Quantity stepper: [−] count [+] in one row, as wide as the card. It is
+   pushed to the bottom of the card (`margin-top: auto`) so every card in a grid
+   row lines its stepper up, whatever the name above it wrapped to. */
+.planner-stepper {
+  width: 100%;
+  margin-top: auto;
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  height: 24px;
+}
+
+.planner-count {
+  flex: 1;
+  min-width: 40px;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(181, 181, 179, 0.5);
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.planner-count.is-zero {
+  color: #7d7d7b;
+}
+
+.planner-step {
+  width: 20px;
+  flex: 0 0 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(181, 181, 179, 0.5);
+  border-radius: 3px;
+  color: #B5B5B3;
+  font-size: 0.74rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.planner-step:hover:not(:disabled) {
+  background: rgba(208, 81, 38, 0.22);
+  border-color: #D05126;
+  color: #ffffff;
+}
+
+.planner-step:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.planner-step:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+
+/* The wordmark is wider than the icon, so phones drop it and keep the icon. */
+#lang-current-short {
+  display: none;
+}
+
+/* Tablet and below: the four nav links move into the menu dropdown. The
+   threshold is 1080px (not 1024px) because four labelled links plus the right
+   cluster no longer fit the bar in the 1025-1048px band. */
+@media (max-width: 1080px) {
+  .navbar-nav {
+    display: none;
+  }
+  .navbar-hamburger {
+    display: flex !important;
+  }
+}
+
+/* Small laptops / large tablets: tighten the header so nothing wraps. */
+@media (max-width: 900px) {
+  .navbar-container {
+    padding: 8px 16px;
+    gap: 12px;
+  }
+  .navbar-left {
+    gap: 12px;
+  }
+  .navbar-right {
+    gap: 8px;
+  }
+}
+
+/* The navbar is a full-bleed bar at every width: it never becomes the legacy
+   floating card that `.top-controls` turns into on small screens. */
+@media (max-width: 768px) {
+  .global-navbar {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+  }
+  .navbar-container {
+    padding: 8px 14px;
+  }
+  /* One step down from the 44px desktop brand, still larger than the phones'. */
+  .global-navbar .app-logo-img {
+    height: 30px;
+  }
+  .global-navbar .app-brand-icon-box {
+    width: 38px;
+    height: 38px;
+  }
+  .global-navbar .app-brand-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Phones: keep the whole header on one line. */
+@media (max-width: 620px) {
+  .navbar-container {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .global-navbar .app-logo-img {
+    height: 26px;
+  }
+  .global-navbar .app-brand-icon-box {
+    width: 34px;
+    height: 34px;
+  }
+  .global-navbar .app-brand-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .navbar-right {
+    gap: 6px;
+  }
+  .navbar-right #btn-json {
+    padding: 0 10px;
+  }
+  /* The full language name is wide; the short code fits. */
+  #lang-current-label {
+    display: none;
+  }
+  #lang-current-short {
+    display: inline;
+  }
+  .lang-dropdown-btn {
+    padding: 0 8px;
+  }
+  /* "Crew 0/0" loses its label, keeping the count and the icon. */
+  .global-navbar .stat-badge > span[data-i18n] {
+    display: none;
+  }
+  .global-navbar .stat-badge {
+    padding: 0 8px;
+    gap: 4px;
+  }
+}
+
+/* Very small phones: drop the wordmark entirely, the icon carries the brand. */
+@media (max-width: 430px) {
+  .global-navbar .app-logo-wrap {
+    display: none;
+  }
+  .navbar-container {
+    padding: 8px 10px;
+  }
+  .navbar-right {
+    gap: 5px;
+  }
+  .navbar-right #btn-json {
+    padding: 0 8px;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+  .navbar-menu {
+    min-width: 140px;
+  }
+}
+
+/* Below a comfortable single row: the search and the three icon buttons share
+   the first row, and the filter chips take the second one. */
+@media (max-width: 900px) {
+  .mainboard-toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  /* In a wrapped row `flex: 1 1 200px` is fine, but the field must be allowed
+     to shrink past its min-width or the icons get pushed onto their own line. */
+  .mainboard-search-wrap {
+    flex: 1 1 120px;
+    width: auto;
+    max-width: 380px;
+    min-width: 0;
+  }
+  .mainboard-filters-group {
+    order: 2;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+  .mainboard-actions-group {
+    order: 1;
+    flex: 0 0 auto;
+    margin-left: auto;
+    gap: 6px;
+  }
+  .mainboard-actions-group .mainboard-icon-btn,
+  .mainboard-actions-group #btn-export-image {
+    flex: 0 0 auto;
+  }
+  .appearance-tabs {
+    margin: 8px 0 0 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* The filter chips and actions need to wrap rather than shrink off-screen. */
+@media (max-width: 560px) {
+  .mainboard-filters-group {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+  /* The chips keep their desktop size here on purpose: shrinking them made the
+     row look pinched. They wrap onto separate lines instead. */
+  .mainboard-actions-group {
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+  /* Icon buttons keep their size; only the labels would have stretched. */
+  .mainboard-actions-group .mainboard-icon-btn,
+  .mainboard-actions-group #btn-export-image {
+    flex: 0 0 auto;
+  }
+  #showcase-board {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  /* The Appearance modal fills the width it has instead of 95vw of padding. */
+  #appearance-modal .appearance-modal-card {
+    width: calc(100vw - 16px) !important;
+  }
+  #appearance-modal .appearance-tabs {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  #appearance-modal .appearance-tabs .manage-tab {
+    padding: 6px 10px;
+    font-size: 0.68rem;
+  }
+  .appearance-tab-panel .modal-body {
+    max-height: 62vh;
+  }
+}
+
+/* Planner: the toolbar stacks, and the cards tighten on phones. These rules sit
+   after the shared responsive blocks so they win at equal specificity. */
+@media (max-width: 768px) {
+  /* Same shape as the InfoBook on a phone: title on the first row, the mode
+     tabs on their own row below, close button in the header's top-right corner.
+     The only difference is that the tab must not grow — the generic rule lets a
+     tab fill the row, which is fine for four tabs and turns a lone "Event" into
+     a full-width bar sitting under the close button. */
+  #planner-modal .archetype-modal-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 44px 10px 12px;
+  }
+  #planner-modal .archetype-modal-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 19px;
+    line-height: 1.2;
+  }
+  #planner-modal .builds-header-actions {
+    flex: 1 1 100%;
+    margin-left: 0;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+  #planner-modal .builds-mode-group {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+  #planner-modal .builds-mode-btn {
+    flex: 0 0 auto;
+    padding: 0 10px;
+    font-size: 0.6rem;
+  }
+  .planner-toolbar {
+    padding: 10px 12px;
+  }
+  .planner-toolbar-tail {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .planner-scroll {
+    padding: 12px 12px 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .planner-modal-card {
+    height: min(92vh, 820px);
+  }
+  .planner-grid {
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 6px;
+  }
+  .planner-card {
+    padding: 6px 4px 4px;
+  }
+  .planner-card-art {
+    width: 62px;
+    height: 62px;
+  }
+  .planner-card-art img {
+    width: 62px;
+    height: 62px;
+  }
+  .planner-card-name {
+    font-size: 0.58rem;
+  }
+  .planner-stepper {
+    height: 22px;
+  }
+  .planner-count {
+    font-size: 0.68rem;
+  }
+  .planner-step {
+    width: 18px;
+    flex-basis: 18px;
+    font-size: 0.68rem;
+  }
+  .planner-total-label {
+    font-size: 0.62rem;
+  }
+  .planner-total-value {
+    font-size: 0.82rem;
+  }
+  .planner-shop-select {
+    max-width: 170px;
   }
 }

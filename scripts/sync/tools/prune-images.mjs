@@ -186,9 +186,32 @@ function shapeNeeded() {
   return need;
 }
 
+/**
+ * Planner (event shop) art. Its rows are usually *not* in `data/items.json` —
+ * event-only packs, a 4★ EXP psychube, the event currency itself — yet the icons
+ * land in `images/items/icon` and `images/psychube_icon`, so both caches have to
+ * count them or a prune would delete art the Planner prints.
+ */
+function eventShopNeeded() {
+  const need = new Set();
+  let plan = { shops: [] };
+  try {
+    plan = readJson(path.join(OUT, "event_shop.json"));
+  } catch {
+    return need;
+  }
+  for (const shop of plan.shops || []) {
+    if (shop.money?.icon) need.add(shop.money.icon);
+    for (const group of shop.groups || []) {
+      for (const item of group.items || []) if (item.icon) need.add(item.icon);
+    }
+  }
+  return need;
+}
+
 const CACHES = [
-  { dir: "images/items", needed: itemNeeded },
-  { dir: "images/psychube_icon", needed: psychubeNeeded },
+  { dir: "images/items", needed: () => new Set([...itemNeeded(), ...eventShopNeeded()]) },
+  { dir: "images/psychube_icon", needed: () => new Set([...psychubeNeeded(), ...eventShopNeeded()]) },
   { dir: "images/equip_defaulticon", needed: psychubeDetailNeeded },
   { dir: "images/headicon_small", needed: headNeeded },
   { dir: "images/skills", needed: skillNeeded },

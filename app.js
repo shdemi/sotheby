@@ -301,6 +301,19 @@ function applyTranslations() {
     btn.classList.toggle("active", btn.dataset.lang === currentLang);
   });
 
+  const langLabel = document.getElementById("lang-current-label");
+  if (langLabel) {
+    const names = { en: "English", vi: "Tiếng Việt", cn: "简体中文" };
+    langLabel.textContent = names[currentLang] || currentLang.toUpperCase();
+  }
+
+  // Narrow screens show the short code instead of the full name.
+  const langShort = document.getElementById("lang-current-short");
+  if (langShort) {
+    const codes = { en: "EN", vi: "VI", cn: "中" };
+    langShort.textContent = codes[currentLang] || currentLang.toUpperCase();
+  }
+
   // The wordmark has localised artwork for Chinese and Vietnamese
   const logo = document.getElementById("app-logo-img");
   if (logo) {
@@ -322,6 +335,17 @@ function applyTranslations() {
  */
 function setButtonLabel(btn, text, key) {
   if (!btn) return;
+  // Icon-only buttons have no label slot, so writing text would replace the
+  // artwork with a word. Their name lives in the tooltip instead.
+  if (btn.classList.contains("mainboard-icon-btn")) {
+    btn.title = text;
+    btn.setAttribute("aria-label", text);
+    if (key) {
+      btn.setAttribute("data-i18n-title", key);
+      btn.setAttribute("data-i18n-aria-label", key);
+    }
+    return;
+  }
   const span = btn.querySelector("[data-i18n]");
   if (span) {
     span.textContent = text;
@@ -375,6 +399,9 @@ function refreshDynamicTranslations() {
   if (rotationsModal && rotationsModal.style.display !== "none") {
     renderRotations();
   }
+  // The Planner builds its section titles and row labels in JS too.
+  const plannerModal = document.getElementById("planner-modal");
+  if (plannerModal && plannerModal.style.display !== "none") renderPlanner();
 }
 
 let characterDb = {}; // { "Name": "images/headicon_small/..." }
@@ -1263,7 +1290,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes, codeRewardsRes] = await Promise.all([
+    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes, codeRewardsRes, eventShopRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/future_sight.json").catch(() => null),
@@ -1293,6 +1320,7 @@ async function initApp() {
       fetch("data/psychubes_data.json").catch(() => null),
       fetch("data/psychube_key_map.json").catch(() => null),
       fetch("data/code_reward_index.json").catch(() => null),
+      fetch("data/event_shop.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1460,6 +1488,7 @@ async function initApp() {
     });
     loadRotationList();
     buildCredits(await readJson(creditsRes));
+    buildEventShopData(await readJson(eventShopRes));
 
     loadLanguage();
     applyTranslations();
@@ -3699,7 +3728,9 @@ function setManageTab(tab) {
   const next = tab === "chubes" ? "chubes" : "characters";
   manageActiveTab = next;
 
-  document.querySelectorAll(".manage-tab").forEach((btn) => {
+  // Only the Manage modal's own tabs: the Appearance modal reuses `.manage-tab`
+  // for its look, and must keep whatever tab it switched to.
+  document.querySelectorAll("#roster-modal .manage-tab").forEach((btn) => {
     const on = btn.dataset.manageTab === next;
     btn.classList.toggle("active", on);
     btn.setAttribute("aria-selected", on ? "true" : "false");
@@ -7397,6 +7428,16 @@ function getSkillBadgeText(sk, isCn = false, rank = 1) {
   if (sk.type === "Ultimate") {
     return isCn ? "至终" : "Ultimate";
   }
+  return getCardTypeLabel(sk, isCn, rank);
+}
+
+/**
+ * The card-type word itself (Attack / Buff / Debuff / …), without the strip's
+ * "Ultimate" badge. The game's own `skill_effect.showTag` wins when the generated row
+ * carries it (`attribute`), then the text heuristic. Empty for an ultimate the
+ * heuristic cannot read, so the detail board prints `Ultimate` alone instead of `S3`.
+ */
+function getCardTypeLabel(sk, isCn = false, rank = 1) {
 
   // Explicit attribute override if specified. A single rank can be relabelled on its
   // own (Click's S1 is Attack at ★1 but Debuff at ★2), and then that rank wins.
@@ -7500,6 +7541,10 @@ function getSkillBadgeText(sk, isCn = false, rank = 1) {
   if (sk.type === "Special") {
     return isCn ? "特殊" : "Special";
   }
+
+  // The ultimate itself names the type in the detail board, so a slot fallback would
+  // only produce noise (`Ultimate · S3`).
+  if (sk.type === "Ultimate") return "";
 
   return isCn ? `术${sk.slot}` : `S${sk.slot}`;
 }
@@ -8035,8 +8080,11 @@ function renderCharacterSkillsSection(name) {
       const subSlotTag = subSlotRaw && !/^special\s*\d*$/i.test(subSlotRaw) ? ` · ${subSlotRaw}` : "";
       const currentRankNum = isUlt ? 1 : charSkillSelectedRank;
       const attrBadge = getSkillBadgeText(viewSkill, isCn, currentRankNum);
+      // The detail board prints an ultimate's own card type next to the type word
+      // (`Ultimate · Buff`), while its strip badge stays "Ultimate".
+      const ultBadge = isUlt ? getCardTypeLabel(currentSkill, isCn, 1) : "";
       const typeTag = isUlt
-        ? (isCn ? "至终仪式" : "Ultimate")
+        ? `${isCn ? "至终仪式" : "Ultimate"}${ultBadge ? ` · ${ultBadge}` : ""}`
         : `${attrBadge}${subSlotTag}`;
 
       // Adaptive cards (Brume / Nautika) are one card whose variants the game lets you
@@ -11647,6 +11695,424 @@ function syncGuideResponsiveLayout() {
   if (rotationsBack) rotationsBack.hidden = !(stacked && !!rotationsSelected);
 }
 
+/* ================= Planner (event shop) =================
+ * The Planner's Event tab answers "how much does this patch's event shop cost
+ * me?". `data/event_shop.json` (scripts/sync/derive/eventShop.mjs) already
+ * carries the shop the global client is running, section by section, with each
+ * row's name, icon, price and purchase cap — so re-running `npm run sync` moves
+ * the tab to the new patch without a hand edit here.
+ *
+ * The only state is the user's picks: `r1999_planner_v1` keeps
+ * `{ patch, shop, limits }`, where `limits` maps "<shopId>|<goodsUid>" ->
+ * quantity. This is a planner, so a row the user has not touched starts at its
+ * **purchase cap** (`maxBuy`), i.e. the tab opens on "buy the shop out"; an
+ * unlimited row (`maxBuy: 0`) has no such maximum and starts at zero.
+ *
+ * The blob is stamped with the patch it was made for: `npm run sync` moving
+ * `data/event_shop.json` to a new patch drops the whole thing (the goods slots
+ * are activity rows, so old picks cannot mean anything on a new shop), and a
+ * key the shipped data no longer names is dropped even within one patch.
+ */
+const PLANNER_STORAGE_KEY = "r1999_planner_v1";
+
+let eventShopDb = { patch: "", current: "", shops: [] };
+let plannerShopId = "";
+let plannerLimits = {};
+
+function plannerLimitKey(shopId, uid) {
+  return `${shopId}|${uid}`;
+}
+
+/** The shop the tab shows: the picked one, else the patch's current shop. */
+function plannerShop() {
+  const shops = eventShopDb.shops || [];
+  return (
+    shops.find((shop) => shop.id === plannerShopId) ||
+    shops.find((shop) => shop.isCurrent) ||
+    shops[0] ||
+    null
+  );
+}
+
+function plannerFindItem(shop, uid) {
+  for (const group of shop.groups || []) {
+    const item = (group.items || []).find((row) => row.uid === uid);
+    if (item) return item;
+  }
+  return null;
+}
+
+/** `maxBuy: 0` means the game sells it without a cap. */
+function plannerClamp(item, value) {
+  const n = Math.floor(Number(value) || 0);
+  if (n <= 0) return 0;
+  return item.maxBuy > 0 ? Math.min(n, item.maxBuy) : n;
+}
+
+/** Untouched rows are planned at their full cap; unlimited ones stay at zero. */
+function plannerDefaultLimit(item) {
+  return item.maxBuy > 0 ? item.maxBuy : 0;
+}
+
+function plannerLimit(item, shopId) {
+  const key = plannerLimitKey(shopId || plannerShopId, item.uid);
+  const saved = plannerLimits[key];
+  return saved === undefined ? plannerDefaultLimit(item) : plannerClamp(item, saved);
+}
+
+/** An explicit 0 is stored (not deleted): it differs from the default cap. */
+function plannerSetLimit(item, shopId, value) {
+  plannerLimits[plannerLimitKey(shopId, item.uid)] = plannerClamp(item, value);
+}
+
+function savePlannerState() {
+  try {
+    localStorage.setItem(
+      PLANNER_STORAGE_KEY,
+      JSON.stringify({ patch: eventShopDb.patch || "", shop: plannerShopId, limits: plannerLimits })
+    );
+  } catch (e) {
+    /* private mode / quota: the plan still works, it just is not remembered */
+  }
+}
+
+/** Loads the saved picks; a patch change (or a vanished slot) discards them. */
+function loadPlannerState() {
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(PLANNER_STORAGE_KEY) || "null");
+  } catch (e) {
+    saved = null;
+  }
+  plannerLimits = {};
+  const samePatch = saved && saved.patch && saved.patch === eventShopDb.patch;
+  if (!samePatch) {
+    // New patch downloaded: the saved shop and quantities describe a shop that
+    // no longer exists, so wipe them instead of half-applying them.
+    if (saved) {
+      try {
+        localStorage.removeItem(PLANNER_STORAGE_KEY);
+      } catch (e) {
+        /* nothing to clean up */
+      }
+    }
+  }
+  const stored = samePatch && saved.limits && typeof saved.limits === "object" ? saved.limits : {};
+  const known = new Set();
+  for (const shop of eventShopDb.shops || []) {
+    for (const group of shop.groups || []) {
+      for (const item of group.items || []) known.add(plannerLimitKey(shop.id, item.uid));
+    }
+  }
+  for (const [key, value] of Object.entries(stored)) {
+    const n = Number(value);
+    if (known.has(key) && Number.isFinite(n) && n >= 0) plannerLimits[key] = Math.floor(n);
+  }
+  const shops = eventShopDb.shops || [];
+  const wanted = samePatch && typeof saved.shop === "string" ? saved.shop : "";
+  plannerShopId =
+    (shops.find((shop) => shop.id === wanted) || {}).id ||
+    (shops.find((shop) => shop.isCurrent) || {}).id ||
+    (shops[0] || {}).id ||
+    "";
+}
+
+function buildEventShopData(data) {
+  if (!data || !Array.isArray(data.shops) || !data.shops.length) {
+    eventShopDb = { patch: "", current: "", shops: [] };
+    plannerShopId = "";
+    plannerLimits = {};
+    return;
+  }
+  eventShopDb = data;
+  loadPlannerState();
+}
+
+function plannerLocale() {
+  return currentLang === "cn" ? "zh-CN" : currentLang === "vi" ? "vi-VN" : "en-US";
+}
+
+function plannerNumber(value) {
+  const n = Number(value) || 0;
+  try {
+    return n.toLocaleString(plannerLocale());
+  } catch (e) {
+    return String(n);
+  }
+}
+
+/** Item names are English game text; Chinese has its own column. */
+function plannerItemName(item) {
+  return currentLang === "cn" ? item.nameZh || item.name : item.name;
+}
+
+function plannerGroupName(group) {
+  const name = currentLang === "cn" ? group.nameZh || group.name : group.name;
+  return name || t("planner.groupN", { n: group.index });
+}
+
+function plannerShopLabel(shop) {
+  const name = currentLang === "cn" ? shop.nameZh || shop.name : shop.name;
+  return shop.retro ? `${name} · ${t("planner.rerun")}` : name;
+}
+
+function plannerGroupSpend(shop, group) {
+  return (group.items || []).reduce(
+    (sum, item) => sum + plannerLimit(item, shop.id) * item.cost,
+    0
+  );
+}
+
+function plannerTotalSpend(shop) {
+  return (shop.groups || []).reduce((sum, group) => sum + plannerGroupSpend(shop, group), 0);
+}
+
+function plannerMoneyIcon(shop) {
+  const money = (shop && shop.money) || {};
+  if (!money.icon) return "";
+  return `<img class="planner-money-icon" src="${escapeHtml(money.icon)}" alt="${escapeHtml(
+    money.name || ""
+  )}" />`;
+}
+
+/**
+ * One goods slot, drawn as a board-style card: square art, the name under it,
+ * then the price and a horizontal stepper — the same shape as a character card
+ * on the mainboard, so the shop reads as a collection instead of a form.
+ */
+function plannerCardHtml(shop, item) {
+  const limit = plannerLimit(item, shop.id);
+  const name = escapeHtml(plannerItemName(item));
+  const unlimited = item.maxBuy === 0;
+  const canAdd = unlimited || limit < item.maxBuy;
+  // Only a *capped* slot can sell out. An unlimited slot (Regular Reserve's
+  // currency sink) starts at 0 because it has no cap to default to — that is a
+  // plan of "none yet", not a shop that has run out.
+  const soldOut = !unlimited && limit === 0;
+  // The quantity box reads "n/max" so the cap is visible while stepping
+  // (0/1 means the one-per-shop slot has been cleared). An unlimited slot has
+  // no denominator.
+  const countText = `${limit}/${unlimited ? "∞" : item.maxBuy}`;
+  const capLabel = unlimited ? t("planner.unlimited") : t("planner.limit", { n: item.maxBuy });
+  const art = item.icon
+    ? `<img src="${escapeHtml(item.icon)}" alt="" loading="lazy" />`
+    : `<span class="planner-card-art-empty" aria-hidden="true"></span>`;
+  // `originalCost` is the struck-through "before the discount" price.
+  const was =
+    item.originalCost > item.cost
+      ? `<span class="planner-cost-original">${escapeHtml(plannerNumber(item.originalCost))}</span>`
+      : "";
+  const bundle = item.amount > 1 ? `<span class="planner-card-bundle">×${item.amount}</span>` : "";
+  // A row planned at zero is drawn as sold out: the art dims and a label sits
+  // across it, the same way the shop board greys a slot the player cannot buy.
+  const soldTag = soldOut
+    ? `<span class="planner-card-soldout">${escapeHtml(t("planner.soldOut"))}</span>`
+    : "";
+  const money = (shop.money || {}).icon
+    ? `<img class="planner-cost-money" src="${escapeHtml(shop.money.icon)}" alt="" />`
+    : "";
+  return `
+        <div class="planner-card${soldOut ? " is-soldout" : ""}" data-uid="${escapeHtml(
+          item.uid
+        )}" data-key="${escapeHtml(item.key)}" data-max="${item.maxBuy}">
+          <div class="planner-card-art">${art}${soldTag}${bundle}</div>
+          <span class="planner-card-name">${name}</span>
+          <div class="planner-card-price">
+            ${money}<span class="planner-cost-value">${escapeHtml(plannerNumber(item.cost))}</span>${was}
+          </div>
+          <div class="planner-stepper">
+            <button type="button" class="planner-step" data-step="-1" ${
+              limit > 0 ? "" : "disabled "
+            }aria-label="${t("planner.subtract")}" title="${t("planner.subtract")}">−</button>
+            <span class="planner-count${limit > 0 ? "" : " is-zero"}" title="${escapeHtml(
+              capLabel
+            )}">${escapeHtml(countText)}</span>
+            <button type="button" class="planner-step" data-step="1" ${
+              canAdd ? "" : "disabled "
+            }aria-label="${t("planner.add")}" title="${t("planner.add")}">+</button>
+          </div>
+        </div>`;
+}
+
+/**
+ * The cards of one section, sold-out slots pushed to the end.
+ *
+ * `Array.prototype.sort` is stable, so everything still planned keeps the order
+ * the shop ships; only the cleared slots move, which puts the things still on
+ * the list at the top-left of the grid where the eye starts.
+ *
+ * Only a capped slot that has been planned down to zero counts as sold out; an
+ * unlimited row sits at zero by default and keeps its shipped position.
+ */
+function plannerCards(shop, group) {
+  const items = (group.items || []).map((item) => ({
+    item,
+    soldOut: item.maxBuy > 0 && plannerLimit(item, shop.id) === 0,
+  }));
+  return items
+    .sort((a, b) => (a.soldOut === b.soldOut ? 0 : a.soldOut ? 1 : -1))
+    .map((entry) => plannerCardHtml(shop, entry.item))
+    .join("");
+}
+
+function plannerGroupHtml(shop, group) {
+  const spend = plannerGroupSpend(shop, group);
+  // The section bar is the Appearance modal's section title (`.archetype-…`), so
+  // "Divine Treasure" and "DISPLAY FILTERS" are the same object.
+  return `
+      <section class="planner-group" data-group="${group.index}">
+        <div class="archetype-section-header planner-group-head">
+          <span class="archetype-section-title"><span>${escapeHtml(plannerGroupName(group))}</span></span>
+          <span class="planner-group-total${spend > 0 ? " is-set" : ""}">${spend > 0 ? plannerMoneyIcon(shop) : ""}${escapeHtml(
+            plannerNumber(spend)
+          )}</span>
+        </div>
+        <div class="planner-grid">${plannerCards(shop, group)}</div>
+      </section>`;
+}
+
+function renderPlanner() {
+  const sections = document.getElementById("planner-sections");
+  if (!sections) return;
+  const select = document.getElementById("planner-shop-select");
+  const patchEl = document.getElementById("planner-patch");
+  const totalEl = document.getElementById("planner-total-value");
+  const totalIcon = document.getElementById("planner-total-icon");
+  const shops = eventShopDb.shops || [];
+
+  if (!shops.length) {
+    if (patchEl) patchEl.textContent = "";
+    if (select) {
+      select.innerHTML = "";
+      select.dataset.sig = "";
+    }
+    if (totalEl) totalEl.textContent = "0";
+    if (totalIcon) totalIcon.hidden = true;
+    sections.innerHTML = `<div class="guide-empty"><span>${escapeHtml(t("planner.noData"))}</span></div>`;
+    return;
+  }
+
+  const shop = plannerShop();
+
+  // Rebuild the picker only when the shop list or the language changed.
+  if (select) {
+    const sig = shops
+      .map((row) => `${row.id}|${plannerShopLabel(row)}`)
+      .join("::");
+    if (select.dataset.sig !== sig) {
+      select.dataset.sig = sig;
+      select.innerHTML = shops
+        .map((row) => `<option value="${escapeHtml(row.id)}">${escapeHtml(plannerShopLabel(row))}</option>`)
+        .join("");
+    }
+    select.value = shop.id;
+    select.hidden = shops.length < 2;
+  }
+  if (patchEl) patchEl.textContent = shop.patch ? t("planner.patch", { v: shop.patch }) : "";
+
+  // Stepping rebuilds the list, so keep the pane where the reader left it and
+  // hand focus back to the same (±1) button.
+  const scrollTop = sections.scrollTop;
+  const active = document.activeElement;
+  const focusedRow = active && sections.contains(active) ? active.closest(".planner-card") : null;
+  const focusedStep = focusedRow ? active.dataset.step : "";
+
+  sections.innerHTML = (shop.groups || []).map((group) => plannerGroupHtml(shop, group)).join("");
+  sections.scrollTop = scrollTop;
+
+  if (focusedRow && focusedStep) {
+    const esc = window.CSS && CSS.escape ? CSS.escape(focusedRow.dataset.uid) : focusedRow.dataset.uid;
+    const row = sections.querySelector(`.planner-card[data-uid="${esc}"]`);
+    const same = row && row.querySelector(`.planner-step[data-step="${focusedStep}"]:not([disabled])`);
+    const other = row && row.querySelector(".planner-step:not([disabled])");
+    if (same) same.focus();
+    else if (other) other.focus();
+  }
+
+  // The total is a number only: the currency art sits next to it, so printing
+  // its name would repeat what the icon already says.
+  const money = shop.money || {};
+  if (totalEl) totalEl.textContent = plannerNumber(plannerTotalSpend(shop));
+  if (totalIcon) {
+    if (money.icon) {
+      totalIcon.src = money.icon;
+      totalIcon.alt = money.name || "";
+      totalIcon.hidden = false;
+    } else {
+      totalIcon.hidden = true;
+      totalIcon.removeAttribute("src");
+    }
+  }
+}
+
+function openPlannerModal() {
+  const modal = document.getElementById("planner-modal");
+  if (!modal) return;
+  renderPlanner();
+  modal.style.display = "flex";
+}
+
+function closePlannerModal() {
+  const modal = document.getElementById("planner-modal");
+  if (modal) modal.style.display = "none";
+}
+
+function setupPlannerListeners() {
+  const plannerBtn = document.getElementById("btn-planner");
+  const modal = document.getElementById("planner-modal");
+  if (!modal) return;
+
+  if (plannerBtn) plannerBtn.addEventListener("click", openPlannerModal);
+  const closeBtn = document.getElementById("planner-btn-close");
+  if (closeBtn) closeBtn.addEventListener("click", closePlannerModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closePlannerModal();
+  });
+
+  const select = document.getElementById("planner-shop-select");
+  if (select) {
+    select.addEventListener("change", () => {
+      plannerShopId = select.value;
+      savePlannerState();
+      renderPlanner();
+    });
+  }
+
+  // Reset drops the shop's saved picks, so every row falls back to its default
+  // (the full purchase cap).
+  const clearBtn = document.getElementById("planner-clear");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      const shop = plannerShop();
+      if (!shop) return;
+      for (const group of shop.groups || []) {
+        for (const item of group.items || []) {
+          delete plannerLimits[plannerLimitKey(shop.id, item.uid)];
+        }
+      }
+      savePlannerState();
+      renderPlanner();
+    });
+  }
+
+  const sections = document.getElementById("planner-sections");
+  if (sections) {
+    sections.addEventListener("click", (e) => {
+      const btn = e.target.closest(".planner-step");
+      if (!btn) return;
+      const row = btn.closest(".planner-card");
+      const shop = plannerShop();
+      if (!row || !shop) return;
+      const item = plannerFindItem(shop, row.dataset.uid);
+      if (!item) return;
+      const next = plannerLimit(item, shop.id) + Number(btn.dataset.step);
+      plannerSetLimit(item, shop.id, next);
+      savePlannerState();
+      renderPlanner();
+    });
+  }
+}
+
 function setupGuideListeners() {
   const buildsBtn = document.getElementById("btn-builds");
   const buildsModal = document.getElementById("builds-modal");
@@ -11803,6 +12269,7 @@ function setupEventListeners() {
   setupPatternTooltip();
   setupTierCountTooltip();
   setupGuideListeners();
+  setupPlannerListeners();
   setupCreditsListeners();
 
   // Close term popover on document click
@@ -11984,6 +12451,75 @@ function setupEventListeners() {
     if (e.target === editModal) closeEditModal();
   });
 
+  // Appearance Modal & Tabs (Options, Styling, Tiers)
+  const appearanceModal = document.getElementById("appearance-modal");
+  const appearanceBtnClose = document.getElementById("appearance-btn-close");
+  const btnAppearance = document.getElementById("btn-appearance");
+  const tabBtnOptions = document.getElementById("tab-btn-options");
+  const tabBtnStyling = document.getElementById("tab-btn-styling");
+  const tabBtnTiers = document.getElementById("tab-btn-tiers");
+  const panelOptions = document.getElementById("appearance-panel-options");
+  const panelStyling = document.getElementById("appearance-panel-styling");
+  const panelTiers = document.getElementById("appearance-panel-tiers");
+
+  let currentAppearanceTab = "options";
+
+  function switchAppearanceTab(tabName) {
+    currentAppearanceTab = tabName;
+    if (tabBtnOptions) {
+      tabBtnOptions.classList.toggle("active", tabName === "options");
+      tabBtnOptions.setAttribute("aria-selected", tabName === "options" ? "true" : "false");
+    }
+    if (tabBtnStyling) {
+      tabBtnStyling.classList.toggle("active", tabName === "styling");
+      tabBtnStyling.setAttribute("aria-selected", tabName === "styling" ? "true" : "false");
+    }
+    if (tabBtnTiers) {
+      tabBtnTiers.classList.toggle("active", tabName === "tiers");
+      tabBtnTiers.setAttribute("aria-selected", tabName === "tiers" ? "true" : "false");
+    }
+
+    if (panelOptions) panelOptions.style.display = tabName === "options" ? "block" : "none";
+    if (panelStyling) panelStyling.style.display = tabName === "styling" ? "block" : "none";
+    if (panelTiers) panelTiers.style.display = tabName === "tiers" ? "block" : "none";
+
+    // Options and Styling keep the old 440px modal width; Tiers stays the wide sheet.
+    if (appearanceModal) appearanceModal.dataset.appearanceTab = tabName;
+
+    if (tabName === "options") initOptionsState();
+    else if (tabName === "styling") initCustomizeState();
+    else if (tabName === "tiers") initListingState();
+  }
+
+  function openAppearanceModal(tabName = "options") {
+    if (!appearanceModal) return;
+    switchAppearanceTab(tabName);
+    appearanceModal.style.display = "flex";
+  }
+
+  function closeAppearanceModal() {
+    if (appearanceModal) appearanceModal.style.display = "none";
+  }
+
+  if (appearanceBtnClose) appearanceBtnClose.addEventListener("click", closeAppearanceModal);
+  if (appearanceModal) {
+    appearanceModal.addEventListener("click", (e) => {
+      if (e.target === appearanceModal) closeAppearanceModal();
+    });
+  }
+  if (btnAppearance) {
+    btnAppearance.addEventListener("click", () => openAppearanceModal("options"));
+  }
+  if (tabBtnOptions) {
+    tabBtnOptions.addEventListener("click", () => switchAppearanceTab("options"));
+  }
+  if (tabBtnStyling) {
+    tabBtnStyling.addEventListener("click", () => switchAppearanceTab("styling"));
+  }
+  if (tabBtnTiers) {
+    tabBtnTiers.addEventListener("click", () => switchAppearanceTab("tiers"));
+  }
+
   // Options Modal
   const btnOptions = document.getElementById("btn-options");
   const optionsModal = document.getElementById("options-modal");
@@ -12162,7 +12698,7 @@ function setupEventListeners() {
     `;
   }
 
-  function openOptionsModal() {
+  function initOptionsState() {
     if (checkFutureSight) checkFutureSight.checked = !!futureSightEnabled;
     if (checkShowPatternBg) checkShowPatternBg.checked = !!displayOptions.showPatternBg;
     if (checkShowPatternBorder) checkShowPatternBorder.checked = !!displayOptions.showPatternBorder;
@@ -12229,12 +12765,14 @@ function setupEventListeners() {
 
     tempCustomLevelHideRules = JSON.parse(JSON.stringify(displayOptions.customLevelHideRules || []));
     renderCustomLevelHideRulesUI();
+  }
 
-    optionsModal.style.display = "flex";
+  function openOptionsModal() {
+    openAppearanceModal("options");
   }
 
   function closeOptionsModal() {
-    optionsModal.style.display = "none";
+    closeAppearanceModal();
   }
 
   function renderCustomHideRulesUI() {
@@ -12574,9 +13112,10 @@ function setupEventListeners() {
     }
   });
 
-  btnOptions.addEventListener("click", openOptionsModal);
-  optionsBtnClose.addEventListener("click", closeOptionsModal);
-  optionsBtnDone.addEventListener("click", () => {
+  if (btnOptions) btnOptions.addEventListener("click", openOptionsModal);
+  if (optionsBtnClose) optionsBtnClose.addEventListener("click", closeOptionsModal);
+  if (optionsBtnDone) {
+    optionsBtnDone.addEventListener("click", () => {
     if (checkFutureSight) {
       futureSightEnabled = checkFutureSight.checked;
       saveFutureSightState();
@@ -12632,7 +13171,8 @@ function setupEventListeners() {
     renderShowcase();
     refreshOpenTeamModals();
     closeOptionsModal();
-  });
+    });
+  }
 
   optionsModal.addEventListener("click", (e) => {
     if (e.target === optionsModal) closeOptionsModal();
@@ -13344,24 +13884,29 @@ function setupEventListeners() {
     );
   });
 
-  function openCustomizeModal() {
+  function initCustomizeState() {
     syncAppearanceFormWithState(displayOptions.appearance || DEFAULT_THEME_APPEARANCE);
-    customizeModal.style.display = "flex";
+  }
+
+  function openCustomizeModal() {
+    openAppearanceModal("styling");
   }
 
   function closeCustomizeModal() {
-    customizeModal.style.display = "none";
+    closeAppearanceModal();
   }
 
-  btnCustomize.addEventListener("click", openCustomizeModal);
-  customizeBtnClose.addEventListener("click", closeCustomizeModal);
-  customizeBtnDone.addEventListener("click", () => {
-    displayOptions.appearance = readAppearanceForm();
-    saveDisplayOptions();
-    applyCustomAppearance();
-    renderShowcase();
-    closeCustomizeModal();
-  });
+  if (btnCustomize) btnCustomize.addEventListener("click", openCustomizeModal);
+  if (customizeBtnClose) customizeBtnClose.addEventListener("click", closeCustomizeModal);
+  if (customizeBtnDone) {
+    customizeBtnDone.addEventListener("click", () => {
+      displayOptions.appearance = readAppearanceForm();
+      saveDisplayOptions();
+      applyCustomAppearance();
+      renderShowcase();
+      closeCustomizeModal();
+    });
+  }
 
   customizeModal.addEventListener("click", (e) => {
     if (e.target === customizeModal) closeCustomizeModal();
@@ -14014,7 +14559,7 @@ function setupEventListeners() {
     });
   }
 
-  function openListingModal() {
+  function initListingState() {
     tempListingTiers = JSON.parse(JSON.stringify(listingConfig.tiers || []));
 
     if (inputOtherLabel) inputOtherLabel.value = listingConfig.otherLabel || "Other";
@@ -14033,11 +14578,14 @@ function setupEventListeners() {
     if (checkUnownedBold) checkUnownedBold.checked = !!listingConfig.unownedBold;
 
     renderListingTiersEditor();
-    listingModal.style.display = "flex";
+  }
+
+  function openListingModal() {
+    openAppearanceModal("tiers");
   }
 
   function closeListingModal() {
-    listingModal.style.display = "none";
+    closeAppearanceModal();
   }
 
   btnAddTier.addEventListener("click", () => {
@@ -14066,13 +14614,16 @@ function setupEventListeners() {
     });
   }
 
-  btnListing.addEventListener("click", openListingModal);
-  listingBtnClose.addEventListener("click", closeListingModal);
-  listingModal.addEventListener("click", (e) => {
-    if (e.target === listingModal) closeListingModal();
-  });
+  if (btnListing) btnListing.addEventListener("click", openListingModal);
+  if (listingBtnClose) listingBtnClose.addEventListener("click", closeListingModal);
+  if (listingModal) {
+    listingModal.addEventListener("click", (e) => {
+      if (e.target === listingModal) closeListingModal();
+    });
+  }
 
-  listingBtnSave.addEventListener("click", () => {
+  if (listingBtnSave) {
+    listingBtnSave.addEventListener("click", () => {
     if (inputOtherLabel) listingConfig.otherLabel = inputOtherLabel.value.trim() || "Other";
     if (inputOtherColor) listingConfig.otherColor = inputOtherColor.value;
     listingConfig.otherBg = currentOtherBg;
@@ -14088,9 +14639,11 @@ function setupEventListeners() {
     saveListingConfig();
     renderShowcase();
     closeListingModal();
-  });
+    });
+  }
 
-  listingBtnReset.addEventListener("click", () => {
+  if (listingBtnReset) {
+    listingBtnReset.addEventListener("click", () => {
     showConfirmModal(
       t("confirm.resetTiers"),
       t("confirm.resetTiersMsg"),
@@ -14116,32 +14669,151 @@ function setupEventListeners() {
         renderListingTiersEditor();
       }
     );
-  });
-
-  // Mobile Tools Drawer Toggle Button
-  const btnToolsToggle = document.getElementById("btn-tools-toggle");
-  const topControls = document.getElementById("top-controls");
-  if (btnToolsToggle && topControls) {
-    btnToolsToggle.addEventListener("click", () => {
-      const isOpen = topControls.classList.toggle("tools-open");
-      btnToolsToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      const icon = btnToolsToggle.querySelector(".toggle-icon");
-      if (icon) icon.textContent = isOpen ? "▴" : "▾";
-      // The drawer switcher only has a measurable size once it is visible.
-      if (isOpen) refreshSlidingThumbs();
     });
   }
+
+  // Navbar menu: a small dropdown (like the language one) that carries the nav
+  // links on narrow screens where `.navbar-nav` is hidden.
+  const btnToolsToggle = document.getElementById("btn-tools-toggle");
+  const navbarMenuWrap = document.getElementById("navbar-menu-wrap");
+
+  function setNavMenuOpen(isOpen) {
+    if (!navbarMenuWrap) return;
+    navbarMenuWrap.classList.toggle("open", isOpen);
+    if (btnToolsToggle) btnToolsToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  }
+
+  function closeNavMenu() {
+    setNavMenuOpen(false);
+  }
+
+  if (btnToolsToggle && navbarMenuWrap) {
+    btnToolsToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setNavMenuOpen(!navbarMenuWrap.classList.contains("open"));
+    });
+  }
+
+  // Brand Logo click scrolls to top
+  const appLogo = document.getElementById("app-logo-img");
+  if (appLogo) {
+    appLogo.style.cursor = "pointer";
+    appLogo.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  // Nav links — the navbar buttons and the small menu's items run the same handlers.
+  const navMenuTeam = document.getElementById("drawer-nav-team");
+  if (navMenuTeam) {
+    navMenuTeam.addEventListener("click", () => {
+      closeNavMenu();
+      openTeamModal();
+    });
+  }
+
+  const navMenuRotations = document.getElementById("drawer-nav-rotations");
+  if (navMenuRotations) {
+    navMenuRotations.addEventListener("click", () => {
+      closeNavMenu();
+      openRotationsModal();
+    });
+  }
+
+  const navMenuBuilds = document.getElementById("drawer-nav-builds");
+  if (navMenuBuilds) {
+    navMenuBuilds.addEventListener("click", () => {
+      closeNavMenu();
+      openBuildsModal();
+    });
+  }
+
+  const navMenuPlanner = document.getElementById("drawer-nav-planner");
+  if (navMenuPlanner) {
+    navMenuPlanner.addEventListener("click", () => {
+      closeNavMenu();
+      openPlannerModal();
+    });
+  }
+
+  // Language Dropdown toggle & outside click handling
+  const langDropdownWrap = document.getElementById("lang-dropdown-wrap");
+  const langDropdownBtn = document.getElementById("lang-dropdown-btn");
+  if (langDropdownBtn && langDropdownWrap) {
+    langDropdownBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closeNavMenu();
+      const isOpen = langDropdownWrap.classList.toggle("open");
+      langDropdownBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (langDropdownWrap && !langDropdownWrap.contains(e.target)) {
+      langDropdownWrap.classList.remove("open");
+      if (langDropdownBtn) langDropdownBtn.setAttribute("aria-expanded", "false");
+    }
+    // The menu closes on any outside click, like the language dropdown.
+    if (navbarMenuWrap && !navbarMenuWrap.contains(e.target)) closeNavMenu();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    closeNavMenu();
+    if (langDropdownWrap) langDropdownWrap.classList.remove("open");
+    if (langDropdownBtn) langDropdownBtn.setAttribute("aria-expanded", "false");
+  });
+
+  document.querySelectorAll(".lang-dropdown-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      if (langDropdownWrap) langDropdownWrap.classList.remove("open");
+      if (langDropdownBtn) langDropdownBtn.setAttribute("aria-expanded", "false");
+    });
+  });
 
   // Keep the highlights aligned when the layout reflows.
   window.addEventListener("resize", refreshSlidingThumbs);
 
+  /* ---- Board tooltips stay inside the board ---------------------------
+     A card is ~60px wide but its tooltip reads ~190-260px wide and is centred
+     on the card, so the last card of a row had its tooltip clipped by the
+     board's edge. Nudge it back inside while it is shown. */
+  const TOOLTIP_EDGE_MARGIN = 14;
+  function clampBoardTooltip(card) {
+    const tip = card.querySelector(".char-tooltip");
+    if (!tip) return;
+    tip.style.setProperty("--tooltip-shift", "0px");
+    const board = document.getElementById("showcase-board");
+    if (!board) return;
+    const bounds = board.getBoundingClientRect();
+    const rect = tip.getBoundingClientRect();
+    const minLeft = Math.max(bounds.left, 0) + TOOLTIP_EDGE_MARGIN;
+    const maxRight = Math.min(bounds.right, window.innerWidth) - TOOLTIP_EDGE_MARGIN;
+    let shift = 0;
+    if (rect.left < minLeft) shift = minLeft - rect.left;
+    else if (rect.right > maxRight) shift = maxRight - rect.right;
+    if (shift) tip.style.setProperty("--tooltip-shift", `${Math.round(shift)}px`);
+  }
+
+  document.addEventListener(
+    "pointerover",
+    (e) => {
+      const target = e.target instanceof Element ? e.target : null;
+      const card = target ? target.closest("#showcase-board .char-card") : null;
+      if (card) clampBoardTooltip(card);
+    },
+    { passive: true }
+  );
+
   // Roster Manager
-  btnManageAll.addEventListener("click", openRosterModal);
-  rosterBtnClose.addEventListener("click", closeRosterModal);
-  rosterModal.addEventListener("click", (e) => {
-    if (e.target === rosterModal) closeRosterModal();
-  });
-  rosterSearch.addEventListener("input", renderRosterManager);
+  if (btnManageAll) btnManageAll.addEventListener("click", openRosterModal);
+  if (rosterBtnClose) rosterBtnClose.addEventListener("click", closeRosterModal);
+  if (rosterModal) {
+    rosterModal.addEventListener("click", (e) => {
+      if (e.target === rosterModal) closeRosterModal();
+    });
+  }
+  if (rosterSearch) rosterSearch.addEventListener("input", renderRosterManager);
 
   // Roster Manager — bulk selection
   const btnRosterSelectMode = document.getElementById("btn-roster-select-mode");
@@ -14226,8 +14898,9 @@ function setupEventListeners() {
     document.getElementById("btn-chubes-bulk-apply").addEventListener("click", openChubeBulkModal);
   }
 
-  // Manage modal tabs: Characters (default) / Psychubes
-  document.querySelectorAll(".manage-tab").forEach((btn) => {
+  // Manage modal tabs: Characters (default) / Psychubes. Scoped to the roster
+  // modal — the Appearance modal's tabs share the `.manage-tab` look only.
+  document.querySelectorAll("#roster-modal .manage-tab").forEach((btn) => {
     btn.addEventListener("click", () => setManageTab(btn.dataset.manageTab));
   });
 
@@ -14338,6 +15011,7 @@ function setupEventListeners() {
     if (!board) return;
 
     setButtonLabel(btnExportImage, t("action.rendering"));
+    btnExportImage.classList.add("is-busy");
     btnExportImage.disabled = true;
 
     try {
@@ -14407,6 +15081,7 @@ function setupEventListeners() {
       alert("Failed to export image. Please try again.");
     } finally {
       setButtonLabel(btnExportImage, t("action.exportPng"));
+      btnExportImage.classList.remove("is-busy");
       btnExportImage.disabled = false;
     }
   });

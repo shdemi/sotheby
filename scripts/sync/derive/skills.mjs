@@ -34,7 +34,7 @@
  * Placeholders are resolved per language instead of being deleted.
  */
 import path from "node:path";
-import { CONTENT, MAPS } from "../config.mjs";
+import { CONTENT, MAPS, SKILL_SHOW_TAGS } from "../config.mjs";
 import { sortKeys, tryReadJson } from "../util.mjs";
 import { language, lookup, stripMarkup, table } from "../sources.mjs";
 import { canonicalName, charactersById } from "./names.mjs";
@@ -171,6 +171,17 @@ export function characterSkills() {
   const chars = charactersById();
   const skills = mergedById("skill");
   const effects = mergedById("skill_effect");
+  // `skill_effect.showTag` is the game's own card-type label. `mergedById` lets global
+  // win, but a few global ultimates leave the column blank while the CN row has it
+  // (Perchta `31590151`'s ultimate), so this map keeps the first non-empty value with
+  // global first and CN filling the gaps.
+  const showTags = new Map();
+  for (const server of ["global", "cn"]) {
+    for (const row of table(server, "skill_effect")) {
+      const raw = String(row.showTag ?? "").trim();
+      if (raw && !showTags.has(row.id)) showTags.set(row.id, Number(raw));
+    }
+  }
   const devices = mergedById("fight_device");
   const replaces = mergedById("character_rank_replace");
   const passives = mergedByHeroLevel("skill_passive_level");
@@ -363,9 +374,14 @@ export function characterSkills() {
     const row = skills.get(rankIds[0]);
     const effect = effects.get(row?.skillEffect);
     const inner = { ...ctx, skillOverlay };
+    // The ultimate's card-type label (`Ultimate · Buff` on the detail board). Only
+    // ultimates carry it in the generated data: every other card keeps the hand-pinned
+    // labels of `maps/skill-badges.json`, which beat this table on purpose (AGENTS §10).
+    const showTag = SKILL_SHOW_TAGS[showTags.get(row?.skillEffect)];
     const item = {
       slot: 3,
       type: "Ultimate",
+      ...(showTag ? { attribute: showTag.en, attributeZh: showTag.zh } : {}),
       id: rankIds[0],
       nameEn: localized("en", row?.name) || skillOverlay.nameEn || "",
       nameZh: localized("zh", row?.name) || skillOverlay.nameZh || "",

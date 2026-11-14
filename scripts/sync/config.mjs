@@ -36,6 +36,25 @@ export const RARITY_OFFSET = 1;
 /** Rarity keys as the app uses them (displayed rarity), newest/highest first. */
 export const RARITIES = [6, 5, 4, 3, 2];
 
+/**
+ * `skill_effect.showTag` → the card-type label the game prints (AGENTS.md §10).
+ * The app's own heuristic guesses from the rank-1 text and gets it wrong on cards
+ * whose effect lands on a later rank, so the table is the reference where it is
+ * filled in. Only ultimates carry it into `data/` (the other cards keep the
+ * hand-pinned labels in `maps/skill-badges.json`).
+ */
+export const SKILL_SHOW_TAGS = {
+  1: { en: "Attack", zh: "攻击" },
+  2: { en: "Attack", zh: "攻击" },
+  3: { en: "Debuff", zh: "减益" },
+  4: { en: "Buff", zh: "增益" },
+  5: { en: "Counter", zh: "反制" },
+  6: { en: "Health", zh: "治疗" },
+  9: { en: "Channel", zh: "吟诵" },
+  11: { en: "Versatile", zh: "万能" },
+  14: { en: "Energy", zh: "交感" },
+};
+
 /** The two psychube rarities the app tracks (5★ and 6★). */
 export const PSYCHUBE_RARITIES = [6, 5];
 
