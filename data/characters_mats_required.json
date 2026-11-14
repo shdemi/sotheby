@@ -447,8 +447,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -469,8 +469,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -491,8 +491,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -513,8 +513,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -535,8 +535,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -994,8 +994,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -1016,8 +1016,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -1038,8 +1038,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -1060,8 +1060,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Rheingold",
@@ -1082,8 +1082,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -1550,8 +1550,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -1572,8 +1572,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -1594,8 +1594,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -1616,8 +1616,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -1638,8 +1638,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -2118,8 +2118,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -2140,8 +2140,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -2162,8 +2162,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -2184,8 +2184,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Rheingold",
@@ -2206,8 +2206,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Rheingold",
@@ -2432,7 +2432,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Goose Neck",
@@ -2445,8 +2445,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -2459,8 +2459,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -2473,8 +2473,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -2487,8 +2487,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -2704,8 +2704,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -2718,8 +2718,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -2732,8 +2732,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Goose Neck",
@@ -2746,8 +2746,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -2760,8 +2760,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -3223,8 +3223,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -3245,8 +3245,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -3267,8 +3267,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -3289,8 +3289,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -3311,8 +3311,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -3770,8 +3770,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -3792,8 +3792,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -3814,8 +3814,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -3836,8 +3836,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -3858,8 +3858,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Rheingold",
@@ -4222,8 +4222,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Watch Core",
@@ -4240,8 +4240,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -4258,8 +4258,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -4276,8 +4276,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -4294,8 +4294,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Bogeyman",
@@ -4642,8 +4642,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -4660,8 +4660,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -4678,8 +4678,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -4696,8 +4696,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -4714,8 +4714,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -4932,7 +4932,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -4945,8 +4945,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Holy Silver",
@@ -4959,8 +4959,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -4973,8 +4973,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -4987,8 +4987,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -5204,8 +5204,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -5218,8 +5218,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Winged Key",
@@ -5232,8 +5232,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -5246,8 +5246,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -5260,8 +5260,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -5477,8 +5477,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -5491,8 +5491,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Biting Box",
@@ -5505,8 +5505,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Goose Neck",
@@ -5519,8 +5519,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -5533,8 +5533,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -5750,8 +5750,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Holy Silver",
@@ -5764,8 +5764,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Winged Key",
@@ -5778,22 +5778,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
-        "materials": [
-          {
-            "material": "Bifurcated Skeleton",
-            "quantity": 4
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 50000
-          }
-        ]
-      },
-      {
         "id": 3,
-        "type": "Inverted-T",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -5806,8 +5792,22 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
+        "materials": [
+          {
+            "material": "Bifurcated Skeleton",
+            "quantity": 4
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 50000
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -6151,7 +6151,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Bogeyman",
@@ -6168,8 +6168,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -6186,8 +6186,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -6204,8 +6204,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -6222,8 +6222,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -6570,8 +6570,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -6588,8 +6588,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -6606,8 +6606,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Compass",
@@ -6624,8 +6624,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Bogeyman",
@@ -6642,8 +6642,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -6863,8 +6863,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -6877,8 +6877,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -6891,8 +6891,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Biting Box",
@@ -6905,8 +6905,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -6919,8 +6919,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Winged Key",
@@ -7362,8 +7362,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -7380,8 +7380,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -7398,8 +7398,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -7416,8 +7416,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Bogeyman",
@@ -7434,8 +7434,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -7782,8 +7782,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Watch Core",
@@ -7800,8 +7800,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Watch Core",
@@ -7818,8 +7818,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -7836,8 +7836,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Compass",
@@ -7854,8 +7854,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -8203,7 +8203,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Bogeyman",
@@ -8220,8 +8220,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -8238,8 +8238,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -8256,8 +8256,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -8274,8 +8274,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -8623,7 +8623,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -8640,8 +8640,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Watch Core",
@@ -8658,8 +8658,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -8676,8 +8676,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -8694,8 +8694,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -9170,8 +9170,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -9192,8 +9192,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -9214,8 +9214,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -9236,8 +9236,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -9258,8 +9258,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -9483,8 +9483,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -9497,8 +9497,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -9511,8 +9511,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -9525,8 +9525,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Winged Key",
@@ -9539,8 +9539,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Biting Box",
@@ -9761,7 +9761,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Holy Silver",
@@ -9774,8 +9774,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Winged Key",
@@ -9788,8 +9788,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Holy Silver",
@@ -9802,8 +9802,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Holy Silver",
@@ -9816,8 +9816,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -10033,8 +10033,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Biting Box",
@@ -10047,22 +10047,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
-        "materials": [
-          {
-            "material": "Holy Silver",
-            "quantity": 4
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 50000
-          }
-        ]
-      },
-      {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Holy Silver",
@@ -10076,7 +10062,21 @@
       },
       {
         "id": 3,
-        "type": "Inverted-T",
+        "name": "Hyper",
+        "materials": [
+          {
+            "material": "Holy Silver",
+            "quantity": 4
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 50000
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -10089,8 +10089,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -10431,7 +10431,98 @@
     ],
     "euphoria": [],
     "mastery": [],
-    "frequency": []
+    "frequency": [
+      {
+        "id": 1,
+        "name": "Elucidation",
+        "materials": [
+          {
+            "material": "Murmur of Insanity",
+            "quantity": 2
+          },
+          {
+            "material": "Salted Mandrake",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 100000
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Genuinity",
+        "materials": [
+          {
+            "material": "Silver Bullet",
+            "quantity": 2
+          },
+          {
+            "material": "Goose Neck",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 100000
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Stupefaction",
+        "materials": [
+          {
+            "material": "Bogeyman",
+            "quantity": 2
+          },
+          {
+            "material": "Goose Neck",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 100000
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Aspirational",
+        "materials": [
+          {
+            "material": "Goldbell Spirit Bottle",
+            "quantity": 2
+          },
+          {
+            "material": "Holy Silver",
+            "quantity": 4
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 100000
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Hyperphrenia",
+        "materials": [
+          {
+            "material": "Golden Compass",
+            "quantity": 2
+          },
+          {
+            "material": "Holy Silver",
+            "quantity": 4
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 100000
+          }
+        ]
+      }
+    ]
   },
   "La Source": {
     "id": 3030,
@@ -10631,8 +10722,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -10645,22 +10736,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
-        "materials": [
-          {
-            "material": "Goose Neck",
-            "quantity": 2
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 20000
-          }
-        ]
-      },
-      {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -10674,7 +10751,21 @@
       },
       {
         "id": 3,
-        "type": "Inverted-T",
+        "name": "Hyper",
+        "materials": [
+          {
+            "material": "Goose Neck",
+            "quantity": 2
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 20000
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -10687,8 +10778,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -10905,7 +10996,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -10918,8 +11009,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -10932,8 +11023,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Winged Key",
@@ -10946,8 +11037,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Holy Silver",
@@ -10960,8 +11051,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -11432,8 +11523,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -11454,8 +11545,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -11476,8 +11567,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -11498,8 +11589,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Rheingold",
@@ -11520,8 +11611,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Rheingold",
@@ -11745,8 +11836,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Holy Silver",
@@ -11759,8 +11850,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Winged Key",
@@ -11773,8 +11864,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -11787,8 +11878,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -11801,8 +11892,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Holy Silver",
@@ -12015,7 +12106,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -12028,8 +12119,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -12042,8 +12133,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Holy Silver",
@@ -12056,8 +12147,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -12070,8 +12161,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -12283,8 +12374,36 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
+        "materials": [
+          {
+            "material": "Bifurcated Skeleton",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 20000
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Genuinity",
+        "materials": [
+          {
+            "material": "Golden Beetle",
+            "quantity": 2
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 20000
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -12298,35 +12417,7 @@
       },
       {
         "id": 4,
-        "type": "Z-shape",
-        "materials": [
-          {
-            "material": "Golden Beetle",
-            "quantity": 2
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 20000
-          }
-        ]
-      },
-      {
-        "id": 11,
-        "type": "Z-shape",
-        "materials": [
-          {
-            "material": "Bifurcated Skeleton",
-            "quantity": 3
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 20000
-          }
-        ]
-      },
-      {
-        "id": 12,
-        "type": "Z-shape",
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -12339,8 +12430,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Biting Box",
@@ -12560,8 +12651,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -12574,8 +12665,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -12588,8 +12679,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -12602,8 +12693,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -12616,8 +12707,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -12960,8 +13051,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -12978,8 +13069,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -12996,8 +13087,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Compass",
@@ -13014,8 +13105,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Compass",
@@ -13032,8 +13123,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -13380,8 +13471,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -13398,8 +13489,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Bogeyman",
@@ -13416,8 +13507,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Bogeyman",
@@ -13434,8 +13525,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Bogeyman",
@@ -13452,8 +13543,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Watch Core",
@@ -13928,8 +14019,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -13950,8 +14041,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -13972,8 +14063,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -13994,8 +14085,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -14016,8 +14107,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -14246,7 +14337,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Goose Neck",
@@ -14259,8 +14350,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -14273,8 +14364,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -14287,8 +14378,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Biting Box",
@@ -14301,8 +14392,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -14765,8 +14856,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -14783,8 +14874,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -14801,8 +14892,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -14819,8 +14910,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Bogeyman",
@@ -14837,8 +14928,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Watch Core",
@@ -15058,8 +15149,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -15072,8 +15163,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Holy Silver",
@@ -15086,8 +15177,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Winged Key",
@@ -15100,8 +15191,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -15114,8 +15205,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Holy Silver",
@@ -15557,8 +15648,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -15575,8 +15666,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -15593,8 +15684,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -15611,8 +15702,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -15629,8 +15720,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -15850,8 +15941,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Winged Key",
@@ -15864,8 +15955,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -15878,8 +15969,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Holy Silver",
@@ -15892,8 +15983,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -15906,8 +15997,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Holy Silver",
@@ -16119,8 +16210,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -16133,8 +16224,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -16147,8 +16238,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Biting Box",
@@ -16161,8 +16252,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -16175,8 +16266,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Goose Neck",
@@ -16401,7 +16492,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Winged Key",
@@ -16414,8 +16505,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -16428,8 +16519,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Winged Key",
@@ -16442,8 +16533,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -16456,8 +16547,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Biting Box",
@@ -16908,7 +16999,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -16929,8 +17020,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -16951,8 +17042,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -16973,8 +17064,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -16995,8 +17086,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -17454,8 +17545,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -17476,8 +17567,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -17498,8 +17589,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Rheingold",
@@ -17520,8 +17611,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -17542,8 +17633,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -17906,8 +17997,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -17924,8 +18015,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -17942,8 +18033,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -17960,8 +18051,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Bogeyman",
@@ -17978,8 +18069,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -18196,7 +18287,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -18209,8 +18300,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -18223,8 +18314,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Biting Box",
@@ -18237,8 +18328,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -18251,8 +18342,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -18723,8 +18814,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -18745,8 +18836,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -18767,8 +18858,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Rheingold",
@@ -18789,8 +18880,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -18811,8 +18902,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -19271,7 +19362,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -19292,8 +19383,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Rheingold",
@@ -19314,8 +19405,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Rheingold",
@@ -19336,8 +19427,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -19358,8 +19449,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -19817,8 +19908,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -19839,8 +19930,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -19861,8 +19952,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -19883,8 +19974,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -19905,8 +19996,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Rheingold",
@@ -20126,8 +20217,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -20140,8 +20231,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -20154,8 +20245,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -20168,8 +20259,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -20182,8 +20273,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Biting Box",
@@ -20396,7 +20487,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Winged Key",
@@ -20409,8 +20500,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Holy Silver",
@@ -20423,8 +20514,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Holy Silver",
@@ -20437,8 +20528,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -20451,8 +20542,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -20923,8 +21014,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -20945,8 +21036,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -20967,8 +21058,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Rheingold",
@@ -20989,8 +21080,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Rheingold",
@@ -21011,8 +21102,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -21244,8 +21335,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -21258,8 +21349,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -21272,8 +21363,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Holy Silver",
@@ -21286,8 +21377,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -21300,8 +21391,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -21517,8 +21608,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -21531,8 +21622,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -21545,8 +21636,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Holy Silver",
@@ -21559,8 +21650,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Goose Neck",
@@ -21573,8 +21664,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Biting Box",
@@ -21794,8 +21885,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -21808,8 +21899,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Biting Box",
@@ -21822,8 +21913,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -21836,8 +21927,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -21850,8 +21941,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Salted Mandrake",
@@ -22194,8 +22285,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -22212,8 +22303,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -22230,8 +22321,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Watch Core",
@@ -22248,8 +22339,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -22266,8 +22357,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -22614,8 +22705,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Watch Core",
@@ -22632,8 +22723,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -22650,8 +22741,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Golden Compass",
@@ -22668,8 +22759,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -22686,8 +22777,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -23141,8 +23232,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -23163,8 +23254,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -23185,8 +23276,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -23207,8 +23298,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -23229,8 +23320,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -23688,8 +23779,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -23710,8 +23801,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -23732,8 +23823,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -23754,8 +23845,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -23776,8 +23867,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -24128,8 +24219,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Bogeyman",
@@ -24146,8 +24237,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -24164,8 +24255,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -24182,8 +24273,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -24200,8 +24291,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -24655,8 +24746,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -24677,8 +24768,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -24699,8 +24790,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Rheingold",
@@ -24721,8 +24812,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -24743,8 +24834,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -25095,8 +25186,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Watch Core",
@@ -25113,8 +25204,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Compass",
@@ -25131,8 +25222,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -25149,8 +25240,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Bogeyman",
@@ -25167,8 +25258,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -25622,8 +25713,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -25644,8 +25735,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -25666,8 +25757,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -25688,8 +25779,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -25710,8 +25801,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -26157,8 +26248,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -26179,8 +26270,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -26201,8 +26292,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Rheingold",
@@ -26223,8 +26314,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Rheingold",
@@ -26245,8 +26336,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -26725,8 +26816,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -26747,8 +26838,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -26769,8 +26860,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Rheingold",
@@ -26791,8 +26882,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -26813,8 +26904,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -27165,8 +27256,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Watch Core",
@@ -27183,8 +27274,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -27201,8 +27292,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -27219,8 +27310,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -27237,8 +27328,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -27585,8 +27676,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -27603,8 +27694,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Watch Core",
@@ -27621,8 +27712,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Bogeyman",
@@ -27639,8 +27730,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Compass",
@@ -27657,8 +27748,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -28006,7 +28097,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -28023,8 +28114,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -28041,8 +28132,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Golden Compass",
@@ -28059,8 +28150,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Bogeyman",
@@ -28077,8 +28168,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -28532,8 +28623,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -28554,8 +28645,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -28576,8 +28667,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -28598,8 +28689,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -28620,8 +28711,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -29079,8 +29170,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -29101,8 +29192,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -29123,8 +29214,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -29145,8 +29236,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -29167,8 +29258,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -29626,8 +29717,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -29648,8 +29739,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -29670,8 +29761,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -29692,8 +29783,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -29714,8 +29805,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -30185,8 +30276,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -30207,8 +30298,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -30229,8 +30320,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -30251,8 +30342,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -30273,8 +30364,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -30732,8 +30823,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -30754,8 +30845,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -30776,8 +30867,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -30798,8 +30889,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -30820,8 +30911,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -31172,8 +31263,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -31190,8 +31281,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Compass",
@@ -31208,8 +31299,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Golden Compass",
@@ -31226,8 +31317,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -31244,8 +31335,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Bogeyman",
@@ -31700,7 +31791,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -31721,8 +31812,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Rheingold",
@@ -31743,8 +31834,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -31765,8 +31856,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Rheingold",
@@ -31787,8 +31878,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -32258,8 +32349,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -32280,8 +32371,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -32302,8 +32393,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -32324,8 +32415,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -32346,8 +32437,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -32805,8 +32896,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -32827,8 +32918,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -32849,8 +32940,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -32871,8 +32962,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -32893,8 +32984,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Rheingold",
@@ -33246,7 +33337,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -33267,8 +33358,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -33289,8 +33380,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -33311,8 +33402,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -33333,8 +33424,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -33685,8 +33776,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -33703,8 +33794,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -33721,8 +33812,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Golden Compass",
@@ -33739,8 +33830,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -33757,8 +33848,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -34212,8 +34303,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -34234,8 +34325,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -34256,8 +34347,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -34278,8 +34369,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -34300,8 +34391,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -34771,8 +34862,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -34793,8 +34884,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -34815,8 +34906,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Rheingold",
@@ -34837,8 +34928,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -34859,8 +34950,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -35089,7 +35180,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -35102,8 +35193,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Biting Box",
@@ -35116,8 +35207,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -35130,8 +35221,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -35144,8 +35235,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Grass Incense",
@@ -35595,8 +35686,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -35617,8 +35708,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -35639,8 +35730,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -35661,8 +35752,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -35683,8 +35774,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -36154,8 +36245,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -36176,8 +36267,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -36198,8 +36289,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Rheingold",
@@ -36220,8 +36311,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -36242,8 +36333,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -36607,7 +36698,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Compass",
@@ -36624,8 +36715,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Bogeyman",
@@ -36642,8 +36733,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Watch Core",
@@ -36660,8 +36751,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Bogeyman",
@@ -36678,8 +36769,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -37133,8 +37224,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -37155,8 +37246,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -37177,8 +37268,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -37199,8 +37290,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -37221,8 +37312,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -37455,7 +37546,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -37468,8 +37559,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -37482,8 +37573,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -37496,8 +37587,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -37510,8 +37601,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Prophetic Bird",
@@ -37961,8 +38052,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -37983,8 +38074,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -38005,8 +38096,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -38027,8 +38118,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -38049,8 +38140,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -38401,8 +38492,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -38419,8 +38510,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Bogeyman",
@@ -38437,8 +38528,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -38455,8 +38546,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -38473,8 +38564,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Platinum Ouija",
@@ -38928,8 +39019,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -38950,8 +39041,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -38972,8 +39063,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -38994,8 +39085,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -39016,8 +39107,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -39368,8 +39459,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -39390,8 +39481,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -39412,8 +39503,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Rheingold",
@@ -39434,8 +39525,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -39456,8 +39547,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Rheingold",
@@ -39809,7 +39900,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -39826,8 +39917,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Bogeyman",
@@ -39844,8 +39935,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -39862,8 +39953,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -39880,8 +39971,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -40228,8 +40319,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -40250,8 +40341,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -40272,8 +40363,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -40294,8 +40385,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -40316,8 +40407,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -40668,8 +40759,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -40690,8 +40781,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -40712,8 +40803,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -40734,8 +40825,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -40756,8 +40847,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -41215,8 +41306,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -41237,8 +41328,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -41259,8 +41350,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -41281,8 +41372,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -41303,8 +41394,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -41762,8 +41853,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -41784,8 +41875,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -41806,8 +41897,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -41828,8 +41919,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -41850,8 +41941,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -42202,8 +42293,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -42220,8 +42311,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -42238,8 +42329,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Watch Core",
@@ -42256,8 +42347,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Wyrmling Skeleton",
@@ -42274,8 +42365,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Golden Compass",
@@ -42729,8 +42820,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -42751,8 +42842,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -42773,8 +42864,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -42795,8 +42886,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -42817,8 +42908,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -43181,8 +43272,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -43203,8 +43294,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -43225,8 +43316,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -43247,8 +43338,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -43269,8 +43360,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Rheingold",
@@ -43728,8 +43819,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -43750,8 +43841,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -43772,8 +43863,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Rheingold",
@@ -43794,8 +43885,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -43816,8 +43907,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -44169,7 +44260,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -44190,8 +44281,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -44212,8 +44303,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Rheingold",
@@ -44234,8 +44325,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -44256,8 +44347,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -44609,7 +44700,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -44626,8 +44717,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -44644,8 +44735,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Incorrupt Monkeypaw",
@@ -44662,8 +44753,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -44680,8 +44771,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Watch Core",
@@ -45040,8 +45131,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -45062,8 +45153,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -45084,8 +45175,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -45106,8 +45197,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -45128,8 +45219,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -45480,8 +45571,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Compass",
@@ -45498,8 +45589,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Goldbell Spirit Bottle",
@@ -45516,8 +45607,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Golden Compass",
@@ -45534,8 +45625,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Compass",
@@ -45552,8 +45643,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -46019,8 +46110,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -46041,8 +46132,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -46063,8 +46154,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -46085,8 +46176,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -46107,8 +46198,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -46566,8 +46657,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -46588,8 +46679,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -46610,8 +46701,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -46632,8 +46723,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -46654,8 +46745,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -47006,8 +47097,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -47028,8 +47119,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -47050,8 +47141,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -47072,8 +47163,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -47094,8 +47185,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -47459,7 +47550,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -47480,8 +47571,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -47502,8 +47593,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Rheingold",
@@ -47524,8 +47615,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -47546,8 +47637,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -47898,8 +47989,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Silver Bullet",
@@ -47916,8 +48007,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Glowing Mothwing",
@@ -47934,8 +48025,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Golden Compass",
@@ -47952,8 +48043,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Watch Core",
@@ -47970,8 +48061,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Watch Core",
@@ -48318,8 +48409,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -48340,8 +48431,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -48362,8 +48453,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -48384,8 +48475,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -48406,8 +48497,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -48758,8 +48849,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -48780,52 +48871,52 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
-        "materials": [
-          {
-            "material": "Mistilteinn",
-            "quantity": 1
-          },
-          {
-            "material": "Golden Compass",
-            "quantity": 2
-          },
-          {
-            "material": "Clawed Pendulum",
-            "quantity": 3
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 120000
-          }
-        ]
-      },
-      {
-        "id": 14,
-        "type": "Cross",
-        "materials": [
-          {
-            "material": "Mistilteinn",
-            "quantity": 1
-          },
-          {
-            "material": "Golden Compass",
-            "quantity": 2
-          },
-          {
-            "material": "Clawed Pendulum",
-            "quantity": 3
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 120000
-          }
-        ]
-      },
-      {
         "id": 2,
-        "type": "Cross",
+        "name": "Genuinity",
+        "materials": [
+          {
+            "material": "Mistilteinn",
+            "quantity": 1
+          },
+          {
+            "material": "Golden Compass",
+            "quantity": 2
+          },
+          {
+            "material": "Clawed Pendulum",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Stupefaction",
+        "materials": [
+          {
+            "material": "Mistilteinn",
+            "quantity": 1
+          },
+          {
+            "material": "Golden Compass",
+            "quantity": 2
+          },
+          {
+            "material": "Clawed Pendulum",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -48846,8 +48937,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -49199,7 +49290,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -49220,8 +49311,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -49242,8 +49333,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Rheingold",
@@ -49264,8 +49355,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -49286,8 +49377,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -49650,8 +49741,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -49672,8 +49763,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -49694,8 +49785,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -49716,8 +49807,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -49738,8 +49829,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -50209,8 +50300,8 @@
     ],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -50231,8 +50322,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -50253,8 +50344,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -50275,8 +50366,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -50297,8 +50388,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -50649,8 +50740,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -50671,8 +50762,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -50693,8 +50784,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -50715,8 +50806,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -50737,8 +50828,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Rheingold",
@@ -51089,8 +51180,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -51111,8 +51202,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -51133,8 +51224,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -51155,8 +51246,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -51177,8 +51268,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -51529,8 +51620,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -51551,8 +51642,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -51573,8 +51664,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Rheingold",
@@ -51595,8 +51686,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Rheingold",
@@ -51617,8 +51708,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Rheingold",
@@ -51969,8 +52060,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -51991,8 +52082,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -52013,8 +52104,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -52035,8 +52126,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -52057,8 +52148,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -52409,8 +52500,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -52431,8 +52522,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -52453,8 +52544,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Rheingold",
@@ -52475,8 +52566,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -52497,8 +52588,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -52722,8 +52813,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -52736,8 +52827,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Biting Box",
@@ -52750,22 +52841,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
-        "materials": [
-          {
-            "material": "Red Lacquer Slab",
-            "quantity": 3
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 50000
-          }
-        ]
-      },
-      {
         "id": 3,
-        "type": "Inverted-T",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Red Lacquer Slab",
@@ -52778,8 +52855,22 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
+        "materials": [
+          {
+            "material": "Red Lacquer Slab",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 50000
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Biting Box",
@@ -53134,8 +53225,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -53156,8 +53247,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -53178,8 +53269,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -53200,8 +53291,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -53222,8 +53313,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -53574,8 +53665,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -53596,8 +53687,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -53618,8 +53709,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Rheingold",
@@ -53640,8 +53731,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -53662,8 +53753,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -53887,8 +53978,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -53901,8 +53992,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Biting Box",
@@ -53915,22 +54006,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
-        "materials": [
-          {
-            "material": "Red Lacquer Slab",
-            "quantity": 3
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 50000
-          }
-        ]
-      },
-      {
         "id": 3,
-        "type": "Inverted-T",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Red Lacquer Slab",
@@ -53943,8 +54020,22 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
+        "materials": [
+          {
+            "material": "Red Lacquer Slab",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 50000
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Biting Box",
@@ -54300,7 +54391,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -54321,8 +54412,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -54343,8 +54434,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -54365,8 +54456,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -54387,8 +54478,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -54740,7 +54831,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -54761,8 +54852,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Rheingold",
@@ -54783,8 +54874,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -54805,8 +54896,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -54827,8 +54918,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -55179,8 +55270,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -55201,8 +55292,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -55223,8 +55314,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Rheingold",
@@ -55245,8 +55336,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -55267,8 +55358,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -55619,8 +55710,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Compass",
@@ -55637,8 +55728,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Bogeyman",
@@ -55655,8 +55746,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
+        "id": 3,
+        "name": "Hyper",
         "materials": [
           {
             "material": "Watch Core",
@@ -55673,8 +55764,8 @@
         ]
       },
       {
-        "id": 3,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
         "materials": [
           {
             "material": "Bogeyman",
@@ -55691,8 +55782,8 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Murmur of Insanity",
@@ -56039,8 +56130,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -56061,8 +56152,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -56083,8 +56174,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -56105,8 +56196,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Rheingold",
@@ -56127,8 +56218,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -56480,7 +56571,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -56501,8 +56592,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Rheingold",
@@ -56523,8 +56614,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -56545,8 +56636,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Rheingold",
@@ -56567,8 +56658,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -56919,8 +57010,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -56941,8 +57032,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -56963,8 +57054,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -56985,8 +57076,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Rheingold",
@@ -57007,8 +57098,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -57371,8 +57462,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -57393,8 +57484,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -57415,8 +57506,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -57437,8 +57528,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -57459,8 +57550,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -57692,8 +57783,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Inverted-T",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -57706,8 +57797,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Inverted-T",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Biting Box",
@@ -57720,22 +57811,8 @@
         ]
       },
       {
-        "id": 1,
-        "type": "Inverted-T",
-        "materials": [
-          {
-            "material": "Red Lacquer Slab",
-            "quantity": 3
-          },
-          {
-            "material": "Sharpodonty",
-            "quantity": 50000
-          }
-        ]
-      },
-      {
         "id": 3,
-        "type": "Inverted-T",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Red Lacquer Slab",
@@ -57748,8 +57825,22 @@
         ]
       },
       {
-        "id": 7,
-        "type": "Inverted-T",
+        "id": 4,
+        "name": "Inspire",
+        "materials": [
+          {
+            "material": "Red Lacquer Slab",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 50000
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Delirament",
         "materials": [
           {
             "material": "Biting Box",
@@ -58092,8 +58183,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -58114,8 +58205,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Rheingold",
@@ -58136,8 +58227,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -58158,8 +58249,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -58180,8 +58271,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -58533,7 +58624,7 @@
     "frequency": [
       {
         "id": 1,
-        "type": "U-shape",
+        "name": "Hyper",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -58554,8 +58645,8 @@
         ]
       },
       {
-        "id": 8,
-        "type": "U-shape",
+        "id": 2,
+        "name": "Overindulgence",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -58576,8 +58667,8 @@
         ]
       },
       {
-        "id": 9,
-        "type": "U-shape",
+        "id": 3,
+        "name": "Quiescence",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -58598,8 +58689,8 @@
         ]
       },
       {
-        "id": 10,
-        "type": "U-shape",
+        "id": 4,
+        "name": "Prudentiality",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -58620,8 +58711,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "U-shape",
+        "id": 5,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -58972,8 +59063,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Rheingold",
@@ -58994,8 +59085,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -59016,8 +59107,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -59038,8 +59129,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Fruit of Good and Evil",
@@ -59060,8 +59151,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -59412,8 +59503,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Z-shape",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Walking Terror",
@@ -59434,8 +59525,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Z-shape",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Walking Terror",
@@ -59456,8 +59547,8 @@
         ]
       },
       {
-        "id": 11,
-        "type": "Z-shape",
+        "id": 3,
+        "name": "Mercy",
         "materials": [
           {
             "material": "Serpent Scepter",
@@ -59478,8 +59569,8 @@
         ]
       },
       {
-        "id": 12,
-        "type": "Z-shape",
+        "id": 4,
+        "name": "Equanimity",
         "materials": [
           {
             "material": "Mistilteinn",
@@ -59500,8 +59591,8 @@
         ]
       },
       {
-        "id": 13,
-        "type": "Z-shape",
+        "id": 5,
+        "name": "Equibalance",
         "materials": [
           {
             "material": "Golden Fleece",
@@ -59725,8 +59816,8 @@
     "mastery": [],
     "frequency": [
       {
-        "id": 5,
-        "type": "Cross",
+        "id": 1,
+        "name": "Elucidation",
         "materials": [
           {
             "material": "Bifurcated Skeleton",
@@ -59739,8 +59830,8 @@
         ]
       },
       {
-        "id": 4,
-        "type": "Cross",
+        "id": 2,
+        "name": "Genuinity",
         "materials": [
           {
             "material": "Holy Silver",
@@ -59753,8 +59844,8 @@
         ]
       },
       {
-        "id": 14,
-        "type": "Cross",
+        "id": 3,
+        "name": "Stupefaction",
         "materials": [
           {
             "material": "Biting Box",
@@ -59767,8 +59858,8 @@
         ]
       },
       {
-        "id": 2,
-        "type": "Cross",
+        "id": 4,
+        "name": "Aspirational",
         "materials": [
           {
             "material": "Golden Beetle",
@@ -59781,8 +59872,8 @@
         ]
       },
       {
-        "id": 6,
-        "type": "Cross",
+        "id": 5,
+        "name": "Hyperphrenia",
         "materials": [
           {
             "material": "Clawed Pendulum",
@@ -60123,6 +60214,117 @@
     ],
     "euphoria": [],
     "mastery": [],
-    "frequency": []
+    "frequency": [
+      {
+        "id": 1,
+        "name": "Hyper",
+        "materials": [
+          {
+            "material": "Fruit of Good and Evil",
+            "quantity": 1
+          },
+          {
+            "material": "Golden Compass",
+            "quantity": 2
+          },
+          {
+            "material": "Golden Grass Incense",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Overindulgence",
+        "materials": [
+          {
+            "material": "Rheingold",
+            "quantity": 1
+          },
+          {
+            "material": "Emerald Slate",
+            "quantity": 2
+          },
+          {
+            "material": "Holy Silver",
+            "quantity": 4
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Quiescence",
+        "materials": [
+          {
+            "material": "Walking Terror",
+            "quantity": 1
+          },
+          {
+            "material": "Platinum Ouija",
+            "quantity": 2
+          },
+          {
+            "material": "Biting Box",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Prudentiality",
+        "materials": [
+          {
+            "material": "Mistilteinn",
+            "quantity": 1
+          },
+          {
+            "material": "Silver Bullet",
+            "quantity": 2
+          },
+          {
+            "material": "Goose Neck",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Equanimity",
+        "materials": [
+          {
+            "material": "Rheingold",
+            "quantity": 1
+          },
+          {
+            "material": "Watch Core",
+            "quantity": 2
+          },
+          {
+            "material": "Clawed Pendulum",
+            "quantity": 3
+          },
+          {
+            "material": "Sharpodonty",
+            "quantity": 120000
+          }
+        ]
+      }
+    ]
   }
 }

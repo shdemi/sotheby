@@ -1138,11 +1138,40 @@ try {
 
     await page.evaluate(() => document.getElementById("btn-planner").click());
     await page.waitForTimeout(600);
-    const opened = await page.evaluate(() => {
+    const tabsInfo = await page.evaluate(() => {
       const modal = document.getElementById("planner-modal");
+      const visible = (id) => {
+        const el = document.getElementById(id);
+        return el ? !el.hidden : null;
+      };
       return {
         display: getComputedStyle(modal).display,
         tabs: [...document.querySelectorAll("#planner-modal .builds-mode-btn")].map((b) => b.id),
+        active: document.querySelector("#planner-modal .builds-mode-btn.is-active")?.id || "",
+        charVisible: visible("planner-pane-character"),
+        eventVisible: visible("planner-pane-event"),
+      };
+    });
+    check("the Planner modal opens", tabsInfo.display === "flex", tabsInfo.display);
+    check(
+      "it carries the Character tab and then the Event tab",
+      tabsInfo.tabs.join(",") === "planner-tab-character,planner-tab-event",
+      JSON.stringify(tabsInfo.tabs)
+    );
+    check(
+      "it opens on the Character tab",
+      tabsInfo.active === "planner-tab-character" && tabsInfo.charVisible && !tabsInfo.eventVisible,
+      JSON.stringify(tabsInfo)
+    );
+
+    // Everything below is the Event tab, so switch to it once.
+    const openEventTab = async () => {
+      await page.evaluate(() => document.getElementById("planner-tab-event").click());
+      await page.waitForTimeout(400);
+    };
+    await openEventTab();
+    const opened = await page.evaluate(() => {
+      return {
         patch: document.getElementById("planner-patch").textContent.trim(),
         total: document.getElementById("planner-total-value").textContent.trim(),
         totalColor: getComputedStyle(document.getElementById("planner-total-value")).color,
@@ -1162,34 +1191,33 @@ try {
         moneyHidden: document.getElementById("planner-total-icon").hidden,
       };
     });
-    check("the Planner modal opens", opened.display === "flex", opened.display);
-    check("it carries exactly one Event tab", opened.tabs.length === 1, JSON.stringify(opened.tabs));
-    check("the tab is the event shop", opened.tabs[0] === "planner-tab-event", opened.tabs[0]);
 
     // On a phone the InfoBook puts its tabs on a second row; the Planner should
-    // read the same, with the single Event tab keeping its own width instead of
+    // read the same, with the two tabs keeping their own width instead of
     // stretching into a full-width bar under the close button.
     await page.setViewportSize({ width: 390, height: 780 });
     await page.waitForTimeout(300);
     const narrowTab = await page.evaluate(() => {
-      const tab = document.getElementById("planner-tab-event").getBoundingClientRect();
+      const tabs = [...document.querySelectorAll("#planner-modal .builds-mode-btn")].map((b) =>
+        b.getBoundingClientRect()
+      );
       const title = document.querySelector("#planner-modal .archetype-modal-title").getBoundingClientRect();
       const header = document.querySelector("#planner-modal .archetype-modal-header").getBoundingClientRect();
       const close = document.getElementById("planner-btn-close").getBoundingClientRect();
       return {
-        tabW: Math.round(tab.width),
+        tabW: Math.round(tabs.reduce((n, r) => n + r.width, 0)),
         headerW: Math.round(header.width),
-        belowTitle: tab.top >= title.bottom - 1,
-        overlap: tab.right > close.left && tab.top < close.bottom && tab.bottom > close.top,
+        belowTitle: tabs.every((r) => r.top >= title.bottom - 1),
+        overlap: tabs.some((r) => r.right > close.left && r.top < close.bottom && r.bottom > close.top),
       };
     });
     check(
-      "the single Event tab keeps its own width on a phone",
+      "the two tabs keep their own width on a phone",
       narrowTab.tabW < narrowTab.headerW / 2,
       JSON.stringify(narrowTab)
     );
-    check("it sits on its own row, like the InfoBook's tabs", narrowTab.belowTitle, JSON.stringify(narrowTab));
-    check("it does not run under the close button", !narrowTab.overlap, JSON.stringify(narrowTab));
+    check("they sit on their own row, like the InfoBook's tabs", narrowTab.belowTitle, JSON.stringify(narrowTab));
+    check("they do not run under the close button", !narrowTab.overlap, JSON.stringify(narrowTab));
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.waitForTimeout(300);
     check("it names the patch it was built from", /\d+\.\d+/.test(opened.patch), opened.patch);
@@ -1261,8 +1289,8 @@ try {
     // The toolbar reads "<label> <currency icon> <number> [reset]": the icon sits
     // left of the amount, and reset is the rightmost control.
     const row = await page.evaluate(() => {
-      const tail = document.querySelector(".planner-toolbar-tail");
-      const total = document.querySelector(".planner-total");
+      const tail = document.querySelector("#planner-pane-event .planner-toolbar-tail");
+      const total = tail.querySelector(".planner-total");
       const icon = document.getElementById("planner-total-icon");
       const value = document.getElementById("planner-total-value");
       const reset = document.getElementById("planner-clear");
@@ -1294,6 +1322,50 @@ try {
     });
     check("a card prices itself with the currency icon on the left", priced.hasIcon && priced.iconFirst && priced.iconLeft, JSON.stringify(priced));
     check("the card's currency art resolves", priced.resolves, JSON.stringify(priced));
+
+    // The Owned field names its unit the same way: "<icon> <n>" inside one box,
+    // and each tooltip line reads label → art → figure.
+    const owned = await page.evaluate(() => {
+      const input = document.getElementById("planner-owned-input");
+      const icon = document.getElementById("planner-owned-icon");
+      const box = input.getBoundingClientRect();
+      const ico = icon.getBoundingClientRect();
+      const tip = document.getElementById("planner-owned-tooltip");
+      const lines = [...tip.querySelectorAll(".planner-tooltip-line")];
+      const parts = (row) =>
+        [...row.children].map((el) => ({ el, r: el.getBoundingClientRect(), id: el.id || el.className }));
+      const inOrder = (row) => {
+        const p = parts(row);
+        return p.every((item, i) => i === 0 || p[i - 1].r.right <= item.r.left + 1);
+      };
+      return {
+        iconShown: getComputedStyle(icon).display !== "none",
+        resolves: icon.naturalWidth > 0,
+        inside: ico.left > box.left && ico.right <= box.right + 1,
+        iconLeftOfBox: ico.left < box.left + box.width / 2,
+        padLeft: parseFloat(getComputedStyle(input).paddingLeft),
+        needOrder: parts(lines[0]).map((p) => p.id),
+        needInOrder: inOrder(lines[0]),
+        stamOrder: parts(lines[1]).map((p) => p.id),
+        stamInOrder: inOrder(lines[1]),
+        needText: document.getElementById("planner-tooltip-need").textContent.trim(),
+        staminaIcon: lines[1].querySelector("img").getAttribute("src"),
+      };
+    });
+    check("the Owned field draws the shop currency art inside the box", owned.iconShown && owned.resolves && owned.inside, JSON.stringify(owned));
+    check("that art sits left of the number", owned.iconLeftOfBox && owned.padLeft >= 20, JSON.stringify(owned));
+    check(
+      "the still-need line reads label, currency art, figure",
+      owned.needOrder.join(",") === "planner-tooltip-need-label,planner-tooltip-need-icon,planner-tooltip-need" && owned.needInOrder,
+      JSON.stringify(owned.needOrder)
+    );
+    check(
+      "the stamina line reads label, stamina art, figure",
+      owned.stamOrder.join(",") === "planner-tooltip-stamina-label,planner-tooltip-icon,planner-tooltip-stamina" && owned.stamInOrder,
+      JSON.stringify(owned.stamOrder)
+    );
+    check("the figure is the bare number", /^[0-9][0-9.,]*$/.test(owned.needText), owned.needText);
+    check("the stamina line keeps the game's stamina art", owned.staminaIcon === "images/random_icon/Stamina.webp", owned.staminaIcon);
 
     // Names clamp to two lines but the box is always two lines tall, and the
     // stepper is pinned to the card's foot — so a long name cannot push its
@@ -1558,10 +1630,28 @@ try {
     await page.waitForTimeout(200);
     await page.evaluate(() => document.getElementById("btn-planner").click());
     await page.waitForTimeout(400);
+    await openEventTab();
     check(
       "the picks survive a close and reopen",
       (await page.evaluate(() => document.getElementById("planner-total-value").textContent.trim())) === savedTotal,
       savedTotal
+    );
+
+    // The modal reopens on the tab the reader left, so a reader working on the
+    // shop does not have to press Event every single time.
+    await page.evaluate(() => document.getElementById("planner-btn-close").click());
+    await page.waitForTimeout(200);
+    await page.evaluate(() => document.getElementById("btn-planner").click());
+    await page.waitForTimeout(400);
+    const reopened = await page.evaluate(() => ({
+      charHidden: document.getElementById("planner-pane-character").hidden,
+      eventHidden: document.getElementById("planner-pane-event").hidden,
+      saved: localStorage.getItem("r1999_planner_tab_v1"),
+    }));
+    check(
+      "it reopens on the Event tab it was left on",
+      reopened.charHidden && !reopened.eventHidden && reopened.saved === "event",
+      JSON.stringify(reopened)
     );
 
     await page.evaluate(() => {
@@ -1573,6 +1663,7 @@ try {
     await page.waitForTimeout(1400);
     await page.evaluate(() => document.getElementById("btn-planner").click());
     await page.waitForTimeout(500);
+    await openEventTab();
     const wiped = await page.evaluate(() => {
       const rows = [...document.querySelectorAll(".planner-card")].map((card) => {
         const max = Number(card.dataset.max);
@@ -1615,6 +1706,640 @@ try {
       "the Planner closes",
       (await page.evaluate(() => getComputedStyle(document.getElementById("planner-modal")).display)) === "none"
     );
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 10c. Planner (character progression)
+   * ------------------------------------------------------------------ */
+
+  console.log("\n=== Planner: character progression ===");
+  {
+    await page.evaluate(() => {
+      localStorage.removeItem("r1999_planner_characters_v1");
+      // The modal reopens on the tab it was left on, and the section above left it
+      // on Event — start this half from a clean slate so Character is the default.
+      localStorage.removeItem("r1999_planner_tab_v1");
+    });
+    await page.goto(APP, { waitUntil: "networkidle" });
+    await page.waitForTimeout(1400);
+    await page.evaluate(() => document.getElementById("btn-planner").click());
+    await page.waitForTimeout(600);
+
+    // Quantities live in `data-qty` (the badge prints a compact "894k", the way the
+    // InfoBook's own item sticker does), so read the exact figure.
+    const readMats = (sel) =>
+      page.evaluate((s) => {
+        const out = {};
+        for (const card of document.querySelectorAll(`${s} .planner-mat`)) {
+          out[card.dataset.item] = Number(card.dataset.qty || 0);
+        }
+        return out;
+      }, sel);
+    const norm = (obj) => JSON.stringify(Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0])));
+    const setField = (id, value) =>
+      page.evaluate(
+        ([fieldId, v]) => {
+          const el = document.getElementById(fieldId);
+          el.value = String(v);
+          el.dispatchEvent(new Event("change", { bubbles: true }));
+        },
+        [id, value]
+      );
+    const searchPicker = async (query) => {
+      await page.evaluate((q) => {
+        const input = document.getElementById("planner-picker-search");
+        input.value = q;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      }, query);
+      await page.waitForTimeout(200);
+    };
+
+    const emptyPane = await page.evaluate(() => ({
+      charVisible: !document.getElementById("planner-pane-character").hidden,
+      eventVisible: !document.getElementById("planner-pane-event").hidden,
+      railEmpty: (document.querySelector(".planner-rail-empty")?.textContent || "").trim(),
+      railTiles: document.querySelectorAll(".planner-char-tile").length,
+      goalCards: document.querySelectorAll("#planner-goal .planner-mat").length,
+      goalAvatars: document.querySelectorAll("#planner-goal .planner-goal-avatar").length,
+      goalText: (document.getElementById("planner-goal").textContent || "").replace(/\s+/g, " ").trim(),
+      paneText: (document.getElementById("planner-pane-character").textContent || "").trim(),
+    }));
+    check(
+      "the Character tab is the one that opens",
+      emptyPane.charVisible && !emptyPane.eventVisible,
+      JSON.stringify(emptyPane)
+    );
+    check(
+      "an empty plan says so instead of drawing an empty grid",
+      emptyPane.railTiles === 0 && emptyPane.goalCards === 0 && !!emptyPane.railEmpty && !!emptyPane.paneText,
+      JSON.stringify(emptyPane)
+    );
+    // The Goal band on an empty plan is its title and nothing else — no
+    // "0 arcanists", no "add one" prompt.
+    check(
+      "the empty Goal band is just its title",
+      emptyPane.goalAvatars === 0 && emptyPane.goalText.length <= 12,
+      JSON.stringify(emptyPane)
+    );
+
+    check(
+      "the picker starts closed",
+      (await page.evaluate(() => document.getElementById("planner-picker").hidden)) === true
+    );
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(300);
+    const picker = await page.evaluate(() => {
+      const el = document.getElementById("planner-picker");
+      const tiles = [...el.querySelectorAll("[data-pick]")];
+      return {
+        hidden: el.hidden,
+        width: Math.round(el.getBoundingClientRect().width),
+        paneWidth: Math.round(document.getElementById("planner-pane-character").getBoundingClientRect().width),
+        tiles: tiles.length,
+        broken: tiles.filter((t) => {
+          const img = t.querySelector("img");
+          return img && img.naturalWidth === 0;
+        }).length,
+        named: tiles.filter((t) =>
+          (t.querySelector(".roster-char-name")?.textContent || "").trim()
+        ).length,
+        // The picker is built out of the Manage modal's own pieces.
+        rosterTiles: tiles.filter((t) => t.classList.contains("roster-char-item")).length,
+        boxes: tiles.filter((t) => t.querySelector(".roster-avatar-box")).length,
+        avatars: tiles.filter((t) => t.querySelector(".roster-avatar-box .roster-avatar-img")).length,
+        searchIsManage: !!el.querySelector(".roster-toolbar .search-input"),
+        rarityChips: el.querySelectorAll(".filter-btn-group .filter-btn").length,
+      };
+    });
+    check("the add button opens the picker", picker.hidden === false, JSON.stringify(picker));
+    check("the picker covers the tab it belongs to", picker.width === picker.paneWidth, JSON.stringify(picker));
+    check("it lists the whole roster", picker.tiles > 100, String(picker.tiles));
+    check(
+      "every tile draws a head icon and a name",
+      picker.broken === 0 && picker.named === picker.tiles,
+      JSON.stringify(picker)
+    );
+    check(
+      "the tiles are the Manage modal's roster tiles",
+      // Eight roster heads have no art in the asset cache, so the box is the
+      // requirement and the image is the common case.
+      picker.rosterTiles === picker.tiles &&
+        picker.boxes === picker.tiles &&
+        picker.avatars >= picker.tiles - 8,
+      JSON.stringify(picker)
+    );
+    check(
+      "the picker carries Manage's search box and rarity chips",
+      picker.searchIsManage && picker.rarityChips === 5,
+      JSON.stringify(picker)
+    );
+
+    // The rarity chips narrow the grid, and pressing one again widens it back.
+    const byRarity = await page.evaluate(() => {
+      const grid = document.getElementById("planner-picker-grid");
+      const count = () => grid.querySelectorAll("[data-pick]").length;
+      const chip = (r) => document.querySelector(`#planner-picker-rarity .filter-btn[data-rarity="${r}"]`);
+      const all = count();
+      chip("6").click();
+      const six = count();
+      const sixNames = [...grid.querySelectorAll("[data-pick]")].slice(0, 5).map((t) => t.dataset.pick);
+      chip("5").click();
+      const sixFive = count();
+      chip("6").click();
+      chip("5").click();
+      const back = count();
+      return { all, six, sixFive, back, sixNames, active: !!document.querySelector("#planner-picker-rarity .filter-btn.active") };
+    });
+    await page.waitForTimeout(150);
+    check(
+      "a rarity chip narrows the picker",
+      byRarity.six > 0 && byRarity.six < byRarity.all && byRarity.sixFive > byRarity.six,
+      JSON.stringify(byRarity)
+    );
+    check(
+      "pressing the chips off restores the whole roster",
+      byRarity.back === byRarity.all && !byRarity.active,
+      JSON.stringify(byRarity)
+    );
+
+    await searchPicker("lucy");
+    const searched = await page.evaluate(() =>
+      [...document.querySelectorAll("#planner-picker [data-pick]")].map((t) => t.dataset.pick)
+    );
+    check("the picker searches the roster", searched.includes("Lucy"), JSON.stringify(searched.slice(0, 6)));
+
+    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Lucy"]').click());
+    await page.waitForTimeout(400);
+    const added = await page.evaluate(() => {
+      const selects = [...document.querySelectorAll("#planner-char-detail .planner-field-select")];
+      const cs = selects.length ? getComputedStyle(selects[0]) : null;
+      return {
+        pickerHidden: document.getElementById("planner-picker").hidden,
+        rail: document.querySelectorAll(".planner-char-tile").length,
+        selected: document.querySelectorAll(".planner-char-tile.is-selected").length,
+        name: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
+        portrait: document.querySelector(".planner-char-portrait")?.naturalWidth || 0,
+        selects: selects.length,
+        appearance: cs ? cs.appearance || cs.webkitAppearance : "",
+        caret: cs ? /svg/.test(cs.backgroundImage) : false,
+      };
+    });
+    check("picking an arcanist closes the picker", added.pickerHidden === true, JSON.stringify(added));
+    check(
+      "it joins the rail and opens its detail pane",
+      added.rail === 1 && added.selected === 1 && added.name === "Lucy" && added.portrait > 0,
+      JSON.stringify(added)
+    );
+    check(
+      "the pane carries four from → to controls",
+      added.selects === 8,
+      `${added.selects} selects`
+    );
+    check(
+      "the controls are the modal's own select",
+      added.appearance === "none" && added.caret === true,
+      JSON.stringify(added)
+    );
+
+    const detailMats = await readMats("#planner-char-detail");
+    const goalMats = await readMats("#planner-goal");
+    const matArt = await page.evaluate(() => {
+      const imgs = [...document.querySelectorAll("#planner-char-detail .planner-mat-art img")];
+      return { count: imgs.length, broken: imgs.filter((i) => i.naturalWidth === 0).length };
+    });
+    check("the arcanist gets a bill", Object.keys(detailMats).length > 0, Object.keys(detailMats).join(","));
+    check("every quantity on it is positive", Object.values(detailMats).every((n) => n > 0), JSON.stringify(detailMats));
+    check(
+      "levelling costs are on the bill",
+      !!detailMats.Dust && !!detailMats.Sharpodonty,
+      Object.keys(detailMats).join(",")
+    );
+    check("every material draws its art", matArt.count > 0 && matArt.broken === 0, JSON.stringify(matArt));
+    check(
+      "the goal bar repeats a single arcanist's bill",
+      norm(goalMats) === norm(detailMats),
+      JSON.stringify({ goalMats, detailMats })
+    );
+
+    // Frequency picks a resonance pattern. The five tiles are the arcanist's own
+    // board (`talent_style`), each named and drawn with its own glyph, and a
+    // pick must bill exactly `pattern_costs.json`'s row for that pattern.
+    const patternData = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "pattern_costs.json"), "utf8"));
+    const freqUi = await page.evaluate(() => {
+      const tiles = [...document.querySelectorAll("#planner-char-detail .planner-freq-tile")];
+      return {
+        count: tiles.length,
+        names: tiles.map((t) => (t.querySelector(".planner-freq-name")?.textContent || "").trim()),
+        glyphs: tiles.map((t) => {
+          const img = t.querySelector("img");
+          return img ? { src: img.getAttribute("src"), ok: img.naturalWidth > 0 } : null;
+        }),
+        label: (document.querySelector("#planner-char-detail .planner-freq-row")?.closest(".planner-field")
+          ?.querySelector(".planner-field-label")?.textContent || "").trim(),
+      };
+    });
+    check("the arcanist gets five pattern tiles", freqUi.count === 5, JSON.stringify(freqUi));
+    check(
+      "every tile is named and drawn with a real glyph",
+      freqUi.names.every(Boolean) && freqUi.glyphs.every((g) => g && g.ok && /images\/shape_pattern\//.test(g.src)),
+      JSON.stringify(freqUi),
+    );
+    check(
+      "the tiles are the arcanist's own board",
+      norm(freqUi.names) === norm(Object.keys(patternData.Lucy)),
+      JSON.stringify({ ui: freqUi.names, data: Object.keys(patternData.Lucy) }),
+    );
+    check(
+      "the picker reads as a resonance pattern, not a bare number",
+      /pattern|调频|Mẫu/i.test(freqUi.label) && !/\d/.test(freqUi.names.join("")),
+      JSON.stringify({ label: freqUi.label, names: freqUi.names }),
+    );
+
+    const patternName = freqUi.names[0];
+    const patternBill = patternData.Lucy[patternName];
+    await page.evaluate(() =>
+      document.querySelector("#planner-char-detail .planner-freq-tile").click()
+    );
+    await page.waitForTimeout(350);
+    const withPattern = await readMats("#planner-char-detail");
+    const patternDelta = {};
+    for (const mat of Object.keys(withPattern)) {
+      const delta = withPattern[mat] - (detailMats[mat] || 0);
+      if (delta) patternDelta[mat] = delta;
+    }
+    const expectedDelta = Object.fromEntries(patternBill.map((m) => [m.material, m.quantity]));
+    check(
+      "picking a pattern bills that pattern",
+      norm(patternDelta) === norm(expectedDelta),
+      JSON.stringify({ expectedDelta, patternDelta }),
+    );
+    // Clicking the same tile again must take that bill back off.
+    await page.evaluate(() =>
+      document.querySelector("#planner-char-detail .planner-freq-tile").click()
+    );
+    await page.waitForTimeout(350);
+    check(
+      "unpicking it takes the bill back off",
+      norm(await readMats("#planner-char-detail")) === norm(detailMats),
+      JSON.stringify(await readMats("#planner-char-detail")),
+    );
+
+    const defaults = await page.evaluate(() => ({
+      curInsight: document.getElementById("planner-f-curInsight").value,
+      curLevel: document.getElementById("planner-f-curLevel").value,
+      goalInsight: document.getElementById("planner-f-goalInsight").value,
+      goalLevel: document.getElementById("planner-f-goalLevel").value,
+      goalReso: document.getElementById("planner-f-goalReso").value,
+    }));
+    check(
+      "a new plan starts at Lv.1 Insight 0 and ends at the cap",
+      defaults.curInsight === "0" &&
+        defaults.curLevel === "1" &&
+        defaults.goalInsight === "3" &&
+        defaults.goalLevel === "60",
+      JSON.stringify(defaults)
+    );
+
+    // The Quick goal button is the usual "this arcanist can fight now"
+    // breakpoint: 5★/6★ stop at Insight III Lv.30 with a full R10 board.
+    await page.evaluate(() => document.getElementById("planner-quick-goal").click());
+    await page.waitForTimeout(300);
+    const quick = await page.evaluate(() => ({
+      insight: document.getElementById("planner-f-goalInsight").value,
+      level: document.getElementById("planner-f-goalLevel").value,
+      reso: document.getElementById("planner-f-goalReso").value,
+      mats: document.querySelectorAll("#planner-char-detail .planner-mat").length,
+    }));
+    check(
+      "quick goal is the usual breakpoint (Insight III Lv.30 R10)",
+      quick.insight === "3" && quick.level === "30" && quick.reso === "10",
+      JSON.stringify(quick)
+    );
+    check("it still leaves a bill to farm", quick.mats > 0, JSON.stringify(quick));
+
+    // Walking the current state up to the goal must empty the bill: the costs
+    // are differences between two states, not a fixed package.
+    const goalState = await page.evaluate(() => ({
+      insight: document.getElementById("planner-f-goalInsight").value,
+      level: document.getElementById("planner-f-goalLevel").value,
+      reso: document.getElementById("planner-f-goalReso").value,
+    }));
+    await setField("planner-f-curInsight", goalState.insight);
+    await page.waitForTimeout(150);
+    await setField("planner-f-curLevel", goalState.level);
+    await page.waitForTimeout(150);
+    await setField("planner-f-goalLevel", goalState.level);
+    await page.waitForTimeout(150);
+    await setField("planner-f-curReso", goalState.reso);
+    await page.waitForTimeout(300);
+    const settled = await readMats("#planner-char-detail");
+    const settledGoal = await readMats("#planner-goal");
+    check(
+      "a plan with nothing left to farm has no bill",
+      Object.keys(settled).length === 0 && Object.keys(settledGoal).length === 0,
+      JSON.stringify(settled)
+    );
+
+    // Put the arcanist back at square one: the goal never moves down, so the
+    // bill has to come back.
+    await setField("planner-f-curLevel", 1);
+    await page.waitForTimeout(150);
+    await setField("planner-f-curInsight", 0);
+    await page.waitForTimeout(300);
+    check(
+      "stepping the current state back down grows the bill again",
+      Object.keys(await readMats("#planner-char-detail")).length > 0
+    );
+
+    const savedRaw = await page.evaluate(() => localStorage.getItem("r1999_planner_characters_v1"));
+    check("the plan is saved locally", /"chars":\[\{/.test(String(savedRaw)), String(savedRaw).slice(0, 120));
+
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(1400);
+    await page.evaluate(() => document.getElementById("btn-planner").click());
+    await page.waitForTimeout(600);
+    const restored = await page.evaluate(() => ({
+      rail: document.querySelectorAll(".planner-char-tile").length,
+      selected: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
+      mats: document.querySelectorAll("#planner-char-detail .planner-mat").length,
+      goalLevel: document.getElementById("planner-f-goalLevel").value,
+    }));
+    check(
+      "the plan survives a reload",
+      restored.rail === 1 && restored.selected === "Lucy" && restored.mats > 0 && restored.goalLevel === "30",
+      JSON.stringify(restored)
+    );
+
+    // A second arcanist joins the plan, and the Goal bar becomes their sum.
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(250);
+    await searchPicker("jessica");
+    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Jessica"]').click());
+    await page.waitForTimeout(400);
+    const twoUp = await page.evaluate(() => ({
+      rail: document.querySelectorAll(".planner-char-tile").length,
+      avatars: [...document.querySelectorAll("#planner-goal .planner-goal-avatar")].map(
+        (a) => a.dataset.char
+      ),
+      broken: [...document.querySelectorAll("#planner-goal .planner-goal-avatar img")].filter(
+        (i) => i.naturalWidth === 0
+      ).length,
+    }));
+    check("a second arcanist joins the rail", twoUp.rail === 2, JSON.stringify(twoUp));
+    // The Goal header is the plan as head icons — no "2 arcanists" text.
+    check(
+      "the goal header carries one avatar per arcanist",
+      twoUp.avatars.length === 2 && twoUp.avatars.includes("Lucy") && twoUp.avatars.includes("Jessica"),
+      JSON.stringify(twoUp)
+    );
+    check("every goal avatar draws its head icon", twoUp.broken === 0, JSON.stringify(twoUp));
+
+    const names = await page.evaluate(() =>
+      [...document.querySelectorAll(".planner-char-tile")].map((t) => t.dataset.char)
+    );
+    const perChar = {};
+    for (const name of names) {
+      await page.evaluate((n) => document.querySelector(`.planner-char-tile[data-char="${n}"]`).click(), name);
+      await page.waitForTimeout(250);
+      perChar[name] = await readMats("#planner-char-detail");
+    }
+    const summed = {};
+    for (const list of Object.values(perChar)) {
+      for (const [item, qty] of Object.entries(list)) summed[item] = (summed[item] || 0) + qty;
+    }
+    const goalTwo = await readMats("#planner-goal");
+    check(
+      "the goal bar is every arcanist's bill added up",
+      norm(summed) === norm(goalTwo),
+      JSON.stringify({ summed, goalTwo })
+    );
+
+    // Pressing a Goal head icon opens that arcanist, exactly like the rail.
+    const viaGoal = await page.evaluate(() => {
+      const avatar = document.querySelector('#planner-goal .planner-goal-avatar[data-char="Jessica"]');
+      avatar.click();
+      return {
+        selected: document.querySelector("#planner-char-detail .planner-char-name")?.textContent.trim(),
+        railSelected: document.querySelector(".planner-char-tile.is-selected")?.dataset.char,
+        goalSelected: document.querySelector(".planner-goal-avatar.is-selected")?.dataset.char,
+      };
+    });
+    await page.waitForTimeout(250);
+    const viaGoalMats = await readMats("#planner-char-detail");
+    check(
+      "a goal avatar opens that arcanist",
+      viaGoal.selected === "Jessica" &&
+        viaGoal.railSelected === "Jessica" &&
+        viaGoal.goalSelected === "Jessica",
+      JSON.stringify(viaGoal)
+    );
+    check(
+      "and the detail pane now bills that arcanist",
+      norm(viaGoalMats) === norm(perChar.Jessica),
+      JSON.stringify({ detail: viaGoalMats, expected: perChar.Jessica })
+    );
+
+    const align = await page.evaluate(() => {
+      const rows = new Map();
+      for (const card of document.querySelectorAll("#planner-goal .planner-mat")) {
+        const top = Math.round(card.getBoundingClientRect().top);
+        const list = rows.get(top) || { heights: [], qtys: [] };
+        list.heights.push(Math.round(card.getBoundingClientRect().height));
+        list.qtys.push(Math.round(card.querySelector(".planner-mat-qty").getBoundingClientRect().bottom));
+        rows.set(top, list);
+      }
+      const list = [...rows.values()];
+      return {
+        rows: list.length,
+        uneven: list.filter((r) => new Set(r.heights).size > 1).length,
+        unevenQty: list.filter((r) => new Set(r.qtys).size > 1).length,
+      };
+    });
+    check("material cards on a row share one height", align.uneven === 0, JSON.stringify(align));
+    check("their quantities line up", align.unevenQty === 0, JSON.stringify(align));
+
+    const beforeRemove = await page.evaluate(() => {
+      const count = document.querySelectorAll(".planner-char-tile").length;
+      document.querySelector(".planner-char-remove").click();
+      return count;
+    });
+    await page.waitForTimeout(300);
+    const afterRemove = await page.evaluate(() => ({
+      rail: document.querySelectorAll(".planner-char-tile").length,
+      selected: document.querySelectorAll(".planner-char-tile.is-selected").length,
+      name: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
+    }));
+    check(
+      "removing an arcanist drops only that one",
+      afterRemove.rail === beforeRemove - 1,
+      JSON.stringify({ beforeRemove, afterRemove })
+    );
+    check(
+      "the pane falls back to the next arcanist",
+      afterRemove.selected === 1 && !!afterRemove.name,
+      JSON.stringify(afterRemove)
+    );
+
+    await page.evaluate(() => document.getElementById("planner-char-clear").click());
+    await page.waitForTimeout(300);
+    const cleared = await page.evaluate(() => ({
+      rail: document.querySelectorAll(".planner-char-tile").length,
+      goalCards: document.querySelectorAll("#planner-goal .planner-mat").length,
+      saved: localStorage.getItem("r1999_planner_characters_v1"),
+    }));
+    check("reset empties the plan", cleared.rail === 0 && cleared.goalCards === 0, JSON.stringify(cleared));
+    check("it clears the saved plan too", /"chars":\[\]/.test(String(cleared.saved)), String(cleared.saved).slice(0, 80));
+
+    // The two tabs are panes of one body, not two modals: switching to Event and
+    // back must leave the plan where it was, and an open picker cannot follow the
+    // reader into the other tab.
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(250);
+    await searchPicker("lucy");
+    await page.evaluate(() => {
+      document.getElementById("planner-tab-event").click();
+      return document.getElementById("planner-picker").hidden;
+    });
+    await page.waitForTimeout(350);
+    const tabbed = await page.evaluate(() => ({
+      pickerHidden: document.getElementById("planner-picker").hidden,
+      charHidden: document.getElementById("planner-pane-character").hidden,
+      eventHidden: document.getElementById("planner-pane-event").hidden,
+      eventCards: document.querySelectorAll("#planner-sections .planner-card").length,
+    }));
+    check(
+      "leaving the tab closes the picker",
+      tabbed.pickerHidden && tabbed.charHidden && !tabbed.eventHidden,
+      JSON.stringify(tabbed)
+    );
+    check("the Event tab is still the shop", tabbed.eventCards > 0, JSON.stringify(tabbed));
+    await page.evaluate(() => document.getElementById("planner-tab-character").click());
+    await page.waitForTimeout(350);
+    const backToChar = await page.evaluate(() => ({
+      charHidden: document.getElementById("planner-pane-character").hidden,
+      eventHidden: document.getElementById("planner-pane-event").hidden,
+      pickerHidden: document.getElementById("planner-picker").hidden,
+    }));
+    check(
+      "coming back lands on the Character tab again",
+      !backToChar.charHidden && backToChar.eventHidden && backToChar.pickerHidden,
+      JSON.stringify(backToChar)
+    );
+
+    // The Character tab is translated like the rest of the modal.
+    await page.evaluate(() => {
+      plannerChars = [];
+      plannerCharSelected = "";
+      plannerAddCharacter("Lucy");
+    });
+    await page.waitForTimeout(300);
+    await page.evaluate(() => setLanguage("cn"));
+    await page.waitForTimeout(800);
+    const cnChar = await page.evaluate(() => ({
+      tab: document.getElementById("planner-tab-character").textContent.trim(),
+      add: document.getElementById("planner-char-add").textContent.trim(),
+      goal: (document.querySelector("#planner-goal .archetype-section-title")?.textContent || "").trim(),
+      mats: (document.querySelector(".planner-char-mats-head .archetype-section-title")?.textContent || "").trim(),
+      placeholder: document.getElementById("planner-picker-search").placeholder,
+      item: (document.querySelector("#planner-goal .planner-mat-name")?.textContent || "").trim(),
+    }));
+    check(
+      "the Character tab is translated",
+      cnChar.tab !== "Character" &&
+        /[\u4e00-\u9fff]/.test(cnChar.tab + cnChar.add + cnChar.goal + cnChar.mats + cnChar.placeholder + cnChar.item),
+      JSON.stringify(cnChar)
+    );
+    await page.evaluate(() => setLanguage("en"));
+    await page.waitForTimeout(600);
+    await page.evaluate(() => {
+      plannerChars = [];
+      plannerCharSelected = "";
+      plannerSaveChars();
+      renderPlannerCharacter();
+    });
+    await page.waitForTimeout(200);
+
+    // Phones: the rail becomes a strip on top, the controls one column, and the
+    // Goal bar keeps its own band under the detail instead of scrolling away.
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(250);
+    await searchPicker("lucy");
+    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Lucy"]').click());
+    await page.waitForTimeout(400);
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.waitForTimeout(400);
+    const phone = await page.evaluate(() => {
+      const rail = document.getElementById("planner-char-rail");
+      const body = rail.closest(".planner-char-body");
+      const detail = document.getElementById("planner-char-detail");
+      const goal = document.getElementById("planner-goal");
+      const controls = document.querySelector(".planner-char-controls");
+      return {
+        bodyDir: getComputedStyle(body).flexDirection,
+        railDir: getComputedStyle(rail).flexDirection,
+        sameColumn: Math.abs(rail.getBoundingClientRect().left - detail.getBoundingClientRect().left) < 2,
+        goalBelow: goal.getBoundingClientRect().top >= detail.getBoundingClientRect().bottom - 1,
+        cols: getComputedStyle(controls).gridTemplateColumns.split(" ").length,
+      };
+    });
+    check(
+      "the rail moves above the detail on a phone",
+      phone.bodyDir === "column" && phone.sameColumn && phone.railDir === "row",
+      JSON.stringify(phone)
+    );
+    check("the goal bar stays under the detail", phone.goalBelow, JSON.stringify(phone));
+    check("the controls stack to one column", phone.cols === 1, JSON.stringify(phone));
+
+    // The Goal head icons survive the phone width, and the picker's search box,
+    // rarity chips and Manage-style grid still fit without scrolling sideways.
+    const phoneGoal = await page.evaluate(() => {
+      const goal = document.getElementById("planner-goal");
+      const avatars = [...goal.querySelectorAll(".planner-goal-avatar")];
+      return {
+        count: avatars.length,
+        inside: avatars.every((a) => a.getBoundingClientRect().right <= goal.getBoundingClientRect().right + 1),
+        head: Math.round(goal.querySelector(".planner-goal-head").getBoundingClientRect().height),
+      };
+    });
+    check(
+      "the goal avatars fit the phone band",
+      phoneGoal.count === 1 && phoneGoal.inside,
+      JSON.stringify(phoneGoal)
+    );
+
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(350);
+    const phonePicker = await page.evaluate(() => {
+      const picker = document.getElementById("planner-picker");
+      const grid = document.getElementById("planner-picker-grid");
+      const card = picker.querySelector(".planner-picker-card");
+      return {
+        position: getComputedStyle(picker).position,
+        cardFits: card.getBoundingClientRect().width <= window.innerWidth,
+        sideways: grid.scrollWidth > grid.clientWidth + 1,
+        tiles: grid.querySelectorAll("[data-pick]").length,
+        avatars: grid.querySelectorAll(".roster-avatar-box").length,
+        chips: picker.querySelectorAll(".filter-btn").length,
+      };
+    });
+    check(
+      "the picker is a lightbox that fits a phone",
+      phonePicker.position === "fixed" && phonePicker.cardFits,
+      JSON.stringify(phonePicker)
+    );
+    check(
+      "its roster tiles and rarity chips still render",
+      phonePicker.tiles > 100 && phonePicker.avatars === phonePicker.tiles && phonePicker.chips === 5,
+      JSON.stringify(phonePicker)
+    );
+    check("the phone grid never scrolls sideways", !phonePicker.sideways, JSON.stringify(phonePicker));
+    await page.evaluate(() => document.getElementById("planner-picker-close").click());
+    await page.waitForTimeout(200);
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(300);
+    await page.evaluate(() => document.getElementById("planner-btn-close").click());
+    await page.waitForTimeout(200);
   }
 
   /* ------------------------------------------------------------------ *

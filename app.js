@@ -524,6 +524,67 @@ function getMaxResonanceForInsight(insight) {
   }
 }
 
+/* ---------------- Arcanist levelling costs ----------------
+ * `data/progression_levels.json`, generated from the game's `character_cosume`
+ * table by `scripts/sync/derive/progressionLevels.mjs`. It is grouped by app
+ * rarity + insight: 5★ and 6★ share one curve, 2★ and 3★ another. The band totals
+ * are the ones the InfoBook's progression panel has always shown, and
+ * `npm run sync:verify` asserts they still add up.
+ */
+let levelCostGroups = [];
+
+function buildLevelCostData(data) {
+  levelCostGroups = data && Array.isArray(data.groups) ? data.groups : [];
+}
+
+function levelCostGroup(rarity, insight) {
+  const r = Number(rarity) || 5;
+  const ins = Number(insight) || 0;
+  return levelCostGroups.find((g) => g.insight === ins && (g.rarities || []).includes(r)) || null;
+}
+
+/** Dust + Sharpodonty spent going from level 1 to `level` inside one insight tier. */
+function levelCostToLevel(rarity, insight, level) {
+  const total = { dust: 0, sharpodonty: 0 };
+  const group = levelCostGroup(rarity, insight);
+  if (!group || !group.levels) return total;
+  const to = Math.min(Number(level) || 1, getMaxLevelForInsight(insight));
+  for (let lv = 2; lv <= to; lv++) {
+    const row = group.levels[String(lv)];
+    if (!row) continue;
+    total.dust += Number(row.dust) || 0;
+    total.sharpodonty += Number(row.sharpodonty) || 0;
+  }
+  return total;
+}
+
+/** The levels `from + 1 .. to` of one insight tier (both ends are levels there). */
+function levelCostBetween(rarity, insight, from, to) {
+  const end = levelCostToLevel(rarity, insight, to);
+  const start = levelCostToLevel(rarity, insight, from);
+  return { dust: end.dust - start.dust, sharpodonty: end.sharpodonty - start.sharpodonty };
+}
+
+/**
+ * Dust + Sharpodonty for a whole progression: every tier between the two
+ * insights, counted from the current level in the first one and up to the goal
+ * level in the last one.
+ */
+function levelExpBetween(rarity, curInsight, curLevel, goalInsight, goalLevel) {
+  const total = { dust: 0, sharpodonty: 0 };
+  const first = Number(curInsight) || 0;
+  const last = Number(goalInsight) || 0;
+  if (last < first) return total;
+  for (let ins = first; ins <= last; ins++) {
+    const from = ins === first ? Number(curLevel) || 1 : 1;
+    const to = ins === last ? Number(goalLevel) || 1 : getMaxLevelForInsight(ins);
+    const part = levelCostBetween(rarity, ins, from, to);
+    total.dust += part.dust;
+    total.sharpodonty += part.sharpodonty;
+  }
+  return total;
+}
+
 // DOM Elements
 const tierRowsContainer = document.getElementById("tier-rows-container");
 
@@ -1290,7 +1351,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes, codeRewardsRes, eventShopRes] = await Promise.all([
+    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes, codeRewardsRes, eventShopRes, levelCostsRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/future_sight.json").catch(() => null),
@@ -1313,7 +1374,7 @@ async function initApp() {
       fetch("data/characters_mats_required.json").catch(() => null),
       fetch("data/item_formulas.json").catch(() => null),
       fetch("data/character_profiles.json").catch(() => null),
-      null,
+      fetch("data/pattern_costs.json").catch(() => null),
       fetch("data/character_skills.json").catch(() => null),
       fetch("data/character_euphorias.json").catch(() => null),
       fetch("content/skill_glossary.json").catch(() => null),
@@ -1321,6 +1382,7 @@ async function initApp() {
       fetch("data/psychube_key_map.json").catch(() => null),
       fetch("data/code_reward_index.json").catch(() => null),
       fetch("data/event_shop.json").catch(() => null),
+      fetch("data/progression_levels.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1489,6 +1551,10 @@ async function initApp() {
     loadRotationList();
     buildCredits(await readJson(creditsRes));
     buildEventShopData(await readJson(eventShopRes));
+    buildLevelCostData(await readJson(levelCostsRes));
+    plannerLoadChars();
+    // Reopen the Planner on the tab the reader left, not always on Character.
+    loadPlannerTab();
 
     loadLanguage();
     applyTranslations();
@@ -6990,39 +7056,13 @@ function calculateCombinedCharacterMaterials(name) {
     }
   }
 
-  // Cumulative Dust & Sharpodonty for leveling
-  let totalDust = 0;
-  let totalSharp = 0;
-  const lookup = [
-    { rarity: [5, 6], insight: 0, maxLvl: 30, dust: 27700, sharp: 15080 },
-    { rarity: [5, 6], insight: 1, maxLvl: 40, dust: 100200, sharp: 53100 },
-    { rarity: [5, 6], insight: 2, maxLvl: 50, dust: 406700, sharp: 137200 },
-    { rarity: [5, 6], insight: 3, maxLvl: 60, dust: 810880, sharp: 400600 },
-    { rarity: [4], insight: 0, maxLvl: 30, dust: 20680, sharp: 11200 },
-    { rarity: [4], insight: 1, maxLvl: 40, dust: 75040, sharp: 39720 },
-    { rarity: [4], insight: 2, maxLvl: 50, dust: 304900, sharp: 102790 },
-    { rarity: [2, 3], insight: 0, maxLvl: 30, dust: 15510, sharp: 8400 },
-    { rarity: [2, 3], insight: 1, maxLvl: 40, dust: 56280, sharp: 29790 },
-  ];
-
-  // Full tiers completed before current insight
-  for (let ins = 0; ins < charProgInsight; ins++) {
-    const hit = lookup.find((l) => l.rarity.includes(rarity) && l.insight === ins);
-    if (hit) {
-      totalDust += hit.dust;
-      totalSharp += hit.sharp;
-    }
+  // Cumulative Dust & Sharpodonty for levelling: the exact per-level cost of
+  // every tier below the target insight plus the levels reached inside it.
+  const exp = levelExpBetween(rarity, 0, 1, charProgInsight, charProgLevel);
+  if (exp.dust > 0) result["Dust"] = (result["Dust"] || 0) + exp.dust;
+  if (exp.sharpodonty > 0) {
+    result["Sharpodonty"] = (result["Sharpodonty"] || 0) + exp.sharpodonty;
   }
-  // Current insight partial/full level ratio
-  const currHit = lookup.find((l) => l.rarity.includes(rarity) && l.insight === charProgInsight);
-  if (currHit && currHit.maxLvl > 1 && charProgLevel > 1) {
-    const fraction = (charProgLevel - 1) / (currHit.maxLvl - 1);
-    totalDust += Math.round(currHit.dust * fraction);
-    totalSharp += Math.round(currHit.sharp * fraction);
-  }
-
-  if (totalDust > 0) result["Dust"] = totalDust;
-  if (totalSharp > 0) result["Sharpodonty"] = (result["Sharpodonty"] || 0) + totalSharp;
 
   // 2. Resonance materials (from charProgResonanceStart + 1 up to charProgResonanceEnd)
   const startR = Math.min(charProgResonanceStart, charProgResonanceEnd);
@@ -11718,6 +11758,8 @@ const PLANNER_STORAGE_KEY = "r1999_planner_v1";
 let eventShopDb = { patch: "", current: "", shops: [] };
 let plannerShopId = "";
 let plannerLimits = {};
+let plannerOwned = {}; // shopId -> number
+let plannerActiveSliderItem = null;
 
 function plannerLimitKey(shopId, uid) {
   return `${shopId}|${uid}`;
@@ -11769,7 +11811,7 @@ function savePlannerState() {
   try {
     localStorage.setItem(
       PLANNER_STORAGE_KEY,
-      JSON.stringify({ patch: eventShopDb.patch || "", shop: plannerShopId, limits: plannerLimits })
+      JSON.stringify({ patch: eventShopDb.patch || "", shop: plannerShopId, limits: plannerLimits, owned: plannerOwned })
     );
   } catch (e) {
     /* private mode / quota: the plan still works, it just is not remembered */
@@ -11785,6 +11827,7 @@ function loadPlannerState() {
     saved = null;
   }
   plannerLimits = {};
+  plannerOwned = {};
   const samePatch = saved && saved.patch && saved.patch === eventShopDb.patch;
   if (!samePatch) {
     // New patch downloaded: the saved shop and quantities describe a shop that
@@ -11808,6 +11851,12 @@ function loadPlannerState() {
     const n = Number(value);
     if (known.has(key) && Number.isFinite(n) && n >= 0) plannerLimits[key] = Math.floor(n);
   }
+  if (samePatch && saved.owned && typeof saved.owned === "object") {
+    for (const [sid, val] of Object.entries(saved.owned)) {
+      const n = Number(val);
+      if (Number.isFinite(n) && n >= 0) plannerOwned[sid] = Math.floor(n);
+    }
+  }
   const shops = eventShopDb.shops || [];
   const wanted = samePatch && typeof saved.shop === "string" ? saved.shop : "";
   plannerShopId =
@@ -11828,6 +11877,7 @@ function buildEventShopData(data) {
   loadPlannerState();
 }
 
+/** Thousands separators follow the UI language: 71,250 / 71 250 / 71,250. */
 function plannerLocale() {
   return currentLang === "cn" ? "zh-CN" : currentLang === "vi" ? "vi-VN" : "en-US";
 }
@@ -11879,6 +11929,9 @@ function plannerMoneyIcon(shop) {
  * One goods slot, drawn as a board-style card: square art, the name under it,
  * then the price and a horizontal stepper — the same shape as a character card
  * on the mainboard, so the shop reads as a collection instead of a form.
+ *
+ * The card itself is also a button: a press anywhere but the stepper opens the
+ * quantity popup (`openPlannerSlider`), which is the fast way to set a big cap.
  */
 function plannerCardHtml(shop, item) {
   const limit = plannerLimit(item, shop.id);
@@ -11971,7 +12024,7 @@ function plannerGroupHtml(shop, group) {
       </section>`;
 }
 
-function renderPlanner() {
+function renderPlannerEvent() {
   const sections = document.getElementById("planner-sections");
   if (!sections) return;
   const select = document.getElementById("planner-shop-select");
@@ -12032,7 +12085,8 @@ function renderPlanner() {
   // The total is a number only: the currency art sits next to it, so printing
   // its name would repeat what the icon already says.
   const money = shop.money || {};
-  if (totalEl) totalEl.textContent = plannerNumber(plannerTotalSpend(shop));
+  const totalSpend = plannerTotalSpend(shop);
+  if (totalEl) totalEl.textContent = plannerNumber(totalSpend);
   if (totalIcon) {
     if (money.icon) {
       totalIcon.src = money.icon;
@@ -12043,12 +12097,984 @@ function renderPlanner() {
       totalIcon.removeAttribute("src");
     }
   }
+
+  // Update Owned input & tooltip
+  const ownedInput = document.getElementById("planner-owned-input");
+  const currentOwned = Number(plannerOwned[shop.id]) || 0;
+  if (ownedInput && document.activeElement !== ownedInput) {
+    ownedInput.value = currentOwned > 0 ? currentOwned : "";
+  }
+  const currencyEl = document.getElementById("planner-tooltip-currency");
+  if (currencyEl) {
+    const currencyName =
+      currentLang === "cn" ? money.nameZh || money.name || "" : money.name || "";
+    currencyEl.textContent = currencyName;
+    // No currency name (a shop whose cost row resolves to nothing) means no
+    // header bar rather than an empty one.
+    const tipEl = document.getElementById("planner-owned-tooltip");
+    if (tipEl) tipEl.classList.toggle("has-head", !!currencyName);
+  }
+
+  // The shop's own currency art sits inside the field, right beside the number
+  // ("123 <icon>") and again right beside the "still need" figure inside the
+  // tooltip, so the numbers always name their unit without a lookup.
+  const ownedIcon = document.getElementById("planner-owned-icon");
+  if (ownedIcon) {
+    if (money.icon) {
+      ownedIcon.src = money.icon;
+      ownedIcon.alt = money.name || "";
+      ownedIcon.hidden = false;
+    } else {
+      ownedIcon.hidden = true;
+      ownedIcon.removeAttribute("src");
+    }
+    // The field reserves the icon's room only while it is drawn.
+    const field = ownedIcon.closest(".planner-owned-field");
+    if (field) field.classList.toggle("has-icon", !!money.icon);
+  }
+  const needIcon = document.getElementById("planner-tooltip-need-icon");
+  if (needIcon) {
+    if (money.icon) {
+      needIcon.src = money.icon;
+      needIcon.alt = "";
+      needIcon.hidden = false;
+    } else {
+      needIcon.hidden = true;
+      needIcon.removeAttribute("src");
+    }
+  }
+
+  updatePlannerOwnedTooltip(totalSpend, currentOwned);
+}
+
+/**
+ * The Owned tooltip follows the cursor (it is `position: fixed`, so the same
+ * numbers work over the toolbar wherever it sits). It is the character card's
+ * surface — `.char-tooltip` — with `.is-visible` as the switch, exactly like
+ * `setupPatternTooltip()` and the tier-count tooltip.
+ */
+function setupPlannerOwnedTooltip() {
+  const wrap = document.querySelector(".planner-owned-wrap");
+  const tip = document.getElementById("planner-owned-tooltip");
+  const input = document.getElementById("planner-owned-input");
+  if (!wrap || !tip) return;
+
+  const place = (x, y) => {
+    const tw = tip.offsetWidth;
+    const th = tip.offsetHeight;
+    let left = x + 14;
+    if (left + tw > window.innerWidth - 8) left = x - tw - 14;
+    let top = y + 18;
+    if (top + th > window.innerHeight - 8) top = y - th - 12;
+    tip.style.left = `${Math.max(8, left)}px`;
+    tip.style.top = `${Math.max(8, top)}px`;
+  };
+
+  const show = (x, y) => {
+    tip.classList.add("is-visible");
+    tip.setAttribute("aria-hidden", "false");
+    place(x, y);
+  };
+
+  const hide = () => {
+    tip.classList.remove("is-visible");
+    tip.setAttribute("aria-hidden", "true");
+  };
+
+  wrap.addEventListener("pointerenter", (e) => show(e.clientX, e.clientY));
+  wrap.addEventListener("pointermove", (e) => {
+    if (tip.classList.contains("is-visible")) place(e.clientX, e.clientY);
+  });
+  wrap.addEventListener("pointerleave", () => {
+    // Typing keeps it open: the field still has focus, and the figures are the
+    // reason it is on screen.
+    if (document.activeElement !== input) hide();
+  });
+
+  if (input) {
+    // A keyboard reader never moves the pointer, so focus anchors it under the
+    // field instead of leaving it wherever the mouse last was.
+    input.addEventListener("focus", () => {
+      const r = wrap.getBoundingClientRect();
+      show(r.left + r.width / 2, r.bottom);
+    });
+    input.addEventListener("blur", hide);
+  }
+}
+
+/**
+ * A tooltip line is "label <art> figure": the word, then the art it counts, then
+ * the number. The i18n string is split at its `{n}` / `{stamina}` placeholder so
+ * the word and the figure can be separate nodes with the icon between them,
+ * while the translators still own the whole sentence.
+ */
+function setPlannerTooltipLine(labelEl, valueEl, template, marker, figure) {
+  // A template that lost its placeholder still reads as "label figure".
+  const raw = template.indexOf(marker) >= 0 ? template : `${marker} ${template}`;
+  const at = raw.indexOf(marker);
+  if (labelEl) labelEl.textContent = raw.slice(0, at).trim();
+  valueEl.textContent = `${figure}${raw.slice(at + marker.length)}`.trim();
+}
+
+function updatePlannerOwnedTooltip(totalSpend, owned) {
+  const labelEl = document.getElementById("planner-tooltip-need-label");
+  const needEl = document.getElementById("planner-tooltip-need");
+  const stamLabelEl = document.getElementById("planner-tooltip-stamina-label");
+  const stamEl = document.getElementById("planner-tooltip-stamina");
+  if (!needEl || !stamEl) return;
+  const stillNeed = Math.max(0, totalSpend - owned);
+
+  setPlannerTooltipLine(
+    labelEl,
+    needEl,
+    t("planner.stillNeed", { n: "{n}" }),
+    "{n}",
+    plannerNumber(stillNeed)
+  );
+
+  // 20 stamina -> 300 currency => stamina = ceil(stillNeed / 15)
+  const stamina = Math.ceil(stillNeed / 15);
+  const days = (stamina / 240).toFixed(1);
+  const daysRoaring = (stamina / 300).toFixed(1);
+  setPlannerTooltipLine(
+    stamLabelEl,
+    stamEl,
+    t("planner.staminaCalcRoaring", { stamina: "{stamina}", days, daysRoaring }),
+    "{stamina}",
+    plannerNumber(stamina)
+  );
+}
+
+function openPlannerSlider(item, shop) {
+  const modal = document.getElementById("planner-slider-modal");
+  if (!modal || !item || !shop) return;
+  plannerActiveSliderItem = { item, shop };
+
+  const artWrap = document.getElementById("planner-slider-art-wrap");
+  const nameEl = document.getElementById("planner-slider-name");
+  const limitEl = document.getElementById("planner-slider-limit");
+  const unitCostEl = document.getElementById("planner-slider-unit-cost");
+  const rangeInput = document.getElementById("planner-slider-range");
+  const numInput = document.getElementById("planner-slider-input");
+  const denomEl = document.getElementById("planner-slider-denom");
+  const minBtn = document.getElementById("planner-slider-min");
+  const maxBtn = document.getElementById("planner-slider-max");
+
+  const isPsychube = item.type === 9;
+  const rarity = item.rarity || 5;
+  const borderSrc = `images/items/border/${rarity}.webp`;
+  const iconSrc = item.icon || "";
+  if (artWrap) {
+    artWrap.innerHTML = `
+      ${!isPsychube && borderSrc ? `<img class="planner-slider-border" src="${escapeHtml(borderSrc)}" alt="" />` : ""}
+      ${iconSrc ? `<img class="planner-slider-icon${isPsychube ? " is-psychube" : ""}" src="${escapeHtml(iconSrc)}" alt="" />` : ""}
+    `;
+  }
+  if (nameEl) nameEl.textContent = plannerItemName(item);
+
+  const unlimited = item.maxBuy === 0;
+  const maxCap = unlimited ? 999 : item.maxBuy;
+  if (limitEl) {
+    limitEl.textContent = unlimited ? t("planner.unlimited") : t("planner.purchaseLimit", { n: item.maxBuy });
+  }
+
+  const moneyIcon = (shop.money || {}).icon
+    ? `<img class="planner-cost-money" src="${escapeHtml(shop.money.icon)}" alt="" />`
+    : "";
+  if (unitCostEl) {
+    unitCostEl.innerHTML = `${moneyIcon}<span>${escapeHtml(plannerNumber(item.cost))}</span>`;
+  }
+
+  const currentVal = plannerLimit(item, shop.id);
+  if (rangeInput) {
+    rangeInput.min = "0";
+    rangeInput.max = String(maxCap);
+    rangeInput.value = String(currentVal);
+  }
+  if (numInput) {
+    numInput.min = "0";
+    numInput.max = String(maxCap);
+    numInput.value = String(currentVal);
+  }
+  const denomDisplay = document.getElementById("planner-slider-denom-display");
+  if (denomDisplay) {
+    denomDisplay.textContent = `${currentVal} / ${unlimited ? "∞" : item.maxBuy}`;
+  }
+
+  updatePlannerSliderCost(item, shop, currentVal);
+  modal.hidden = false;
+  if (numInput) numInput.focus();
+}
+
+function updatePlannerSliderCost(item, shop, qty) {
+  const totalEl = document.getElementById("planner-slider-total-cost");
+  if (!totalEl) return;
+  const count = Math.max(0, Number(qty) || 0);
+  const total = count * (item.cost || 0);
+  const moneyIcon = (shop.money || {}).icon
+    ? `<img class="planner-cost-money" src="${escapeHtml(shop.money.icon)}" alt="" />`
+    : "";
+  totalEl.innerHTML = `${moneyIcon}<span>${escapeHtml(plannerNumber(total))}</span>`;
+}
+
+function closePlannerSlider() {
+  const modal = document.getElementById("planner-slider-modal");
+  if (modal) modal.hidden = true;
+  plannerActiveSliderItem = null;
+}
+
+/* ================= Planner (character progression) =================
+ * The Character tab is the other half of the Planner: add the arcanists you
+ * still have to build, say where each one stands and where it has to end up,
+ * and read two bills — one for the arcanist in the detail pane, one for the
+ * whole list in the Goal bar underneath it.
+ *
+ * Everything the bill needs is already generated:
+ *   data/characters_mats_required.json   insight / resonance / euphoria /
+ *                                        mastery / frequency steps, by name
+ *   data/progression_levels.json         Dust + Sharpodonty, per level
+ *   data/pattern_costs.json              the Frequency grids, by pattern name
+ *   data/items.json                      the art and the names
+ *
+ * State lives in `r1999_planner_characters_v1`. Unlike the event shop's picks it
+ * is not stamped with a patch: a build plan spans several patches, so it has to
+ * survive an update. Anything the shipped data no longer names — a removed
+ * arcanist, a material tier that moved — is dropped or clamped on load.
+ */
+const PLANNER_CHARS_KEY = "r1999_planner_characters_v1";
+
+let plannerChars = [];
+let plannerCharSelected = "";
+let plannerPickerQuery = "";
+const plannerPickerRarities = new Set();
+let plannerActiveTab = "character";
+
+/** The tab the modal reopens on: the one the reader left, or Character. */
+const PLANNER_TAB_KEY = "r1999_planner_tab_v1";
+
+function loadPlannerTab() {
+  try {
+    const saved = localStorage.getItem(PLANNER_TAB_KEY);
+    plannerActiveTab = saved === "event" ? "event" : "character";
+  } catch (e) {
+    plannerActiveTab = "character";
+  }
+}
+
+function savePlannerTab() {
+  try {
+    localStorage.setItem(PLANNER_TAB_KEY, plannerActiveTab);
+  } catch (e) {
+    /* A blocked storage just means the modal opens on Character. */
+  }
+}
+
+function plannerCurrentPlan() {
+  return plannerChars.find((plan) => plan.name === plannerCharSelected) || null;
+}
+
+/** Resonance is capped by insight (R5 / R10 / R15) and locked at Insight 0. */
+function plannerResoMax(insight) {
+  const ins = Number(insight) || 0;
+  return ins <= 0 ? 0 : getMaxResonanceForInsight(ins);
+}
+
+/** What "add this arcanist" starts at: level 1, built to its cap. */
+function plannerPlanDefaults(name) {
+  const mats = getCharacterMats(name);
+  const rarity = Number((mats && mats.rarity) || getCharacterRarity(name) || 5);
+  const maxInsight = getMaxInsightForRarity(rarity);
+  return {
+    name,
+    curInsight: 0,
+    curLevel: 1,
+    goalInsight: maxInsight,
+    goalLevel: getMaxLevelForInsight(maxInsight),
+    curReso: 0,
+    goalReso: Math.min(10, plannerResoMax(maxInsight)),
+    curMastery: 0,
+    goalMastery: 0,
+    euphoria: [],
+    frequency: [],
+  };
+}
+
+/**
+ * Fits a plan to the shipped data: unknown arcanists are rejected, every
+ * number is clamped to the range the game allows, and the goal never sits below
+ * the current state.
+ */
+function plannerClampPlan(plan) {
+  if (!plan || typeof plan.name !== "string") return null;
+  const mats = getCharacterMats(plan.name);
+  if (!mats) return null;
+  const rarity = Number(mats.rarity || getCharacterRarity(plan.name) || 5);
+  const maxInsight = getMaxInsightForRarity(rarity);
+  const clamp = (value, lo, hi) => Math.min(hi, Math.max(lo, value));
+  const int = (value, fallback) => {
+    const n = Math.round(Number(value));
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  plan.curInsight = clamp(int(plan.curInsight, 0), 0, maxInsight);
+  plan.curLevel = clamp(int(plan.curLevel, 1), 1, getMaxLevelForInsight(plan.curInsight));
+  plan.goalInsight = clamp(int(plan.goalInsight, maxInsight), plan.curInsight, maxInsight);
+  if (plan.goalInsight === plan.curInsight) {
+    plan.goalLevel = clamp(
+      int(plan.goalLevel, plan.curLevel),
+      plan.curLevel,
+      getMaxLevelForInsight(plan.goalInsight)
+    );
+  } else {
+    plan.goalLevel = clamp(int(plan.goalLevel, 1), 1, getMaxLevelForInsight(plan.goalInsight));
+  }
+  plan.curReso = clamp(int(plan.curReso, 0), 0, plannerResoMax(plan.curInsight));
+  plan.goalReso = clamp(int(plan.goalReso, plan.curReso), plan.curReso, plannerResoMax(plan.goalInsight));
+  plan.curMastery = clamp(int(plan.curMastery, 0), 0, 4);
+  plan.goalMastery = clamp(int(plan.goalMastery, plan.curMastery), plan.curMastery, 4);
+
+  const euphoriaIds = (mats.euphoria || []).map((e) => Number(e.id));
+  plan.euphoria = (Array.isArray(plan.euphoria) ? plan.euphoria : [])
+    .map(Number)
+    .filter((id) => euphoriaIds.includes(id));
+  const frequencyIds = (mats.frequency || []).map((f) => Number(f.id));
+  plan.frequency = (Array.isArray(plan.frequency) ? plan.frequency : [])
+    .map(Number)
+    .filter((id) => frequencyIds.includes(id));
+  return plan;
+}
+
+function plannerSaveChars() {
+  try {
+    localStorage.setItem(
+      PLANNER_CHARS_KEY,
+      JSON.stringify({ chars: plannerChars, selected: plannerCharSelected })
+    );
+  } catch (e) {
+    /* private mode / quota: the plan still works, it just is not remembered */
+  }
+}
+
+function plannerLoadChars() {
+  plannerChars = [];
+  plannerCharSelected = "";
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(PLANNER_CHARS_KEY) || "null");
+  } catch (e) {
+    saved = null;
+  }
+  if (!saved || !Array.isArray(saved.chars)) return;
+  const seen = new Set();
+  for (const raw of saved.chars) {
+    if (!raw || typeof raw.name !== "string" || seen.has(raw.name)) continue;
+    const plan = plannerClampPlan({ ...raw });
+    if (!plan) continue;
+    seen.add(plan.name);
+    plannerChars.push(plan);
+  }
+  const wanted = typeof saved.selected === "string" ? saved.selected : "";
+  plannerCharSelected = plannerChars.some((plan) => plan.name === wanted)
+    ? wanted
+    : (plannerChars[0] || {}).name || "";
+}
+
+function plannerAddMaterials(acc, list) {
+  for (const row of list || []) {
+    if (!row || !row.material) continue;
+    acc[row.material] = (acc[row.material] || 0) + (Number(row.quantity) || 0);
+  }
+}
+
+/**
+ * The materials one arcanist still needs: every step between the two states
+ * (insight, resonance, mastery), the picked euphoria facets and frequency
+ * nodes, plus the Dust and Sharpodonty of the levels in between.
+ */
+function plannerCharMaterials(plan) {
+  const mats = plan && getCharacterMats(plan.name);
+  if (!mats) return [];
+  const acc = {};
+  const rarity = Number(mats.rarity || getCharacterRarity(plan.name) || 5);
+
+  for (let ins = plan.curInsight + 1; ins <= plan.goalInsight; ins++) {
+    const row = (mats.insight || []).find((x) => x.insight === ins);
+    if (row) plannerAddMaterials(acc, row.materials);
+  }
+  for (let res = plan.curReso + 1; res <= plan.goalReso; res++) {
+    const row = (mats.resonance || []).find((x) => x.resonance === res);
+    if (row) plannerAddMaterials(acc, row.materials);
+  }
+  for (const node of mats.euphoria || []) {
+    if (plan.euphoria.includes(Number(node.id))) plannerAddMaterials(acc, node.materials);
+  }
+  for (let lv = plan.curMastery + 1; lv <= plan.goalMastery; lv++) {
+    const row = (mats.mastery || []).find((x) => x.level === lv);
+    if (row) plannerAddMaterials(acc, row.materials);
+  }
+  for (const node of mats.frequency || []) {
+    if (plan.frequency.includes(Number(node.id))) plannerAddMaterials(acc, node.materials);
+  }
+
+  const exp = levelExpBetween(rarity, plan.curInsight, plan.curLevel, plan.goalInsight, plan.goalLevel);
+  if (exp.dust > 0) acc["Dust"] = (acc["Dust"] || 0) + exp.dust;
+  if (exp.sharpodonty > 0) acc["Sharpodonty"] = (acc["Sharpodonty"] || 0) + exp.sharpodonty;
+
+  return sortMaterialsByCategory(
+    Object.entries(acc)
+      .filter(([, quantity]) => quantity > 0)
+      .map(([material, quantity]) => ({ material, quantity }))
+  );
+}
+
+/** The bill for the whole list: what is still missing across every arcanist. */
+function plannerGoalMaterials() {
+  const acc = {};
+  for (const plan of plannerChars) {
+    for (const row of plannerCharMaterials(plan)) {
+      acc[row.material] = (acc[row.material] || 0) + row.quantity;
+    }
+  }
+  return sortMaterialsByCategory(
+    Object.entries(acc).map(([material, quantity]) => ({ material, quantity }))
+  );
+}
+
+function plannerMatCardHtml(entry) {
+  const item = getItemByName(entry.material);
+  const fallback = entry.material;
+  const name = escapeHtml(
+    item ? (currentLang === "cn" ? item.nameZh || item.name || fallback : item.name || fallback) : fallback
+  );
+  // The badge is the InfoBook sticker's: compact the way the game prints a big
+  // quantity (893,980 -> 894k), with the exact figure in the tooltip and in
+  // `data-qty` so nothing is lost.
+  const exact = Number(entry.quantity) || 0;
+  const qty = escapeHtml(plannerNumber(exact));
+  const badge = escapeHtml(formatMaterialQuantity(exact));
+  // The sticker is the InfoBook's own: the game's art over its rarity frame, with
+  // the quantity in a dark badge in the bottom-right corner.
+  const sticker = item
+    ? `<div class="item-sticker planner-mat-sticker" data-item-name="${escapeHtml(item.name)}" title="${name} × ${qty}">
+            ${item.border ? `<img src="${escapeHtml(item.border)}" alt="" class="item-sticker-border" loading="lazy" />` : ""}
+            ${
+              item.icon
+                ? `<img src="${escapeHtml(item.icon)}" alt="" class="item-sticker-img" loading="lazy" />`
+                : `<span class="planner-mat-art-empty" aria-hidden="true"></span>`
+            }
+            <span class="item-sticker-qty planner-mat-qty">${badge}</span>
+          </div>`
+    : `<div class="item-sticker planner-mat-sticker is-plain" title="${escapeHtml(entry.material)} × ${qty}">
+            <span class="planner-mat-art-empty" aria-hidden="true"></span>
+            <span class="item-sticker-qty planner-mat-qty">${badge}</span>
+          </div>`;
+  return `
+        <div class="planner-mat" data-item="${escapeHtml(entry.material)}" data-qty="${exact}" title="${name} × ${qty}">
+          <div class="planner-mat-art">${sticker}</div>
+          <span class="planner-mat-name">${name}</span>
+        </div>`;
+}
+
+function plannerMatGridHtml(list, emptyKey) {
+  if (!list.length) {
+    return `<div class="guide-empty"><span>${escapeHtml(t(emptyKey))}</span></div>`;
+  }
+  return `<div class="planner-mat-grid">${list.map(plannerMatCardHtml).join("")}</div>`;
+}
+
+function plannerSeries(from, to) {
+  const out = [];
+  for (let v = from; v <= to; v++) out.push(v);
+  return out;
+}
+
+function plannerInsightLabel(insight) {
+  return insight === 0 ? "0" : ["I", "II", "III"][insight - 1] || String(insight);
+}
+
+/**
+ * One "from → to" control. Both ends are native selects dressed in the modal's
+ * own field style, so a step reads the same as the Event tab's shop picker.
+ */
+function plannerSelectHtml(field, values, current, label, title) {
+  const options = values
+    .map((value) => {
+      const text = label ? label(value) : String(value);
+      return `<option value="${value}"${value === current ? " selected" : ""}>${escapeHtml(
+        String(text)
+      )}</option>`;
+    })
+    .join("");
+  return `<select class="planner-field-select" id="planner-f-${field}" data-field="${field}" aria-label="${escapeHtml(
+    title
+  )}" title="${escapeHtml(title)}">${options}</select>`;
+}
+
+function plannerRangeRowHtml(labelKey, curSelect, goalSelect) {
+  return `
+        <div class="planner-field">
+          <span class="planner-field-label">${escapeHtml(t(labelKey))}</span>
+          <div class="planner-field-pair">
+            ${curSelect}
+            <span class="planner-field-arrow" aria-hidden="true">→</span>
+            ${goalSelect}
+          </div>
+        </div>`;
+}
+
+function plannerEuphoriaHtml(mats, plan) {
+  const nodes = mats.euphoria || [];
+  if (!nodes.length) return "";
+  const tiles = nodes
+    .map((node) => {
+      const active = plan.euphoria.includes(Number(node.id));
+      const art = mats.id ? `images/arcanists/euphoria/${mats.id}_${node.id}.webp` : "";
+      return `<button type="button" class="planner-euphoria-tile${
+        active ? " is-active" : ""
+      }" data-euphoria="${node.id}" title="E${node.id}" aria-pressed="${active ? "true" : "false"}">
+            ${
+              art
+                ? `<img src="${escapeHtml(art)}" alt="" loading="lazy" onerror="this.style.display='none'" />`
+                : ""
+            }
+            <span class="planner-euphoria-tag">E${node.id}</span>
+          </button>`;
+    })
+    .join("");
+  return `
+        <div class="planner-field is-wide">
+          <span class="planner-field-label">${escapeHtml(t("builds.euphoria"))}</span>
+          <div class="planner-euphoria-row">${tiles}</div>
+        </div>`;
+}
+
+/**
+ * Frequency picks a resonance pattern: five craftable patterns per board, each with
+ * its own bill (`data/characters_mats_required.json -> frequency[]`, generated from
+ * `talent_style_cost`). The tile shows the pattern's own glyph — the same art the
+ * InfoBook's pattern panel uses — with its name underneath and the bill in the
+ * tooltip; the materials also land in the arcanist's list when a pattern is picked.
+ */
+function plannerFrequencyHtml(mats, plan) {
+  const nodes = mats.frequency || [];
+  if (!nodes.length) return "";
+  const shape = getCharacterResoShape(plan.name);
+  const tiles = nodes
+    .map((node) => {
+      const active = plan.frequency.includes(Number(node.id));
+      const art = getPatternIconPathForShape(shape, node.name);
+      const label = patternLabel(node.name);
+      const bill = (node.materials || [])
+        .map((m) => `${m.material} ×${plannerNumber(m.quantity)}`)
+        .join(", ");
+      return `<button type="button" class="planner-freq-tile${
+        active ? " is-active" : ""
+      }" data-pattern="${node.id}" title="${escapeHtml(bill)}" aria-pressed="${active ? "true" : "false"}">
+            ${
+              art
+                ? `<img src="${escapeHtml(art)}" alt="" loading="lazy" />`
+                : `<span class="planner-freq-fallback"></span>`
+            }
+            <span class="planner-freq-name">${escapeHtml(label)}</span>
+          </button>`;
+    })
+    .join("");
+  return `
+        <div class="planner-field is-wide">
+          <span class="planner-field-label">${escapeHtml(t("planner.pattern"))}</span>
+          <div class="planner-freq-row">${tiles}</div>
+        </div>`;
+}
+
+function plannerCharDetailHtml() {
+  const plan = plannerCurrentPlan();
+  if (!plan) {
+    return `<div class="guide-empty"><span>${escapeHtml(t("planner.noCharacters"))}</span></div>`;
+  }
+  const mats = getCharacterMats(plan.name);
+  if (!mats) return "";
+  const rarity = Number(mats.rarity || getCharacterRarity(plan.name) || 5);
+  const maxInsight = getMaxInsightForRarity(rarity);
+  const icon = characterDb[plan.name] || "";
+  const name = escapeHtml(displayCharName(plan.name));
+  const title = (key) => t(key);
+
+  const insightRow = plannerRangeRowHtml(
+    "builds.insight",
+    plannerSelectHtml(
+      "curInsight",
+      plannerSeries(0, maxInsight),
+      plan.curInsight,
+      plannerInsightLabel,
+      title("builds.insight")
+    ),
+    plannerSelectHtml(
+      "goalInsight",
+      plannerSeries(plan.curInsight, maxInsight),
+      plan.goalInsight,
+      plannerInsightLabel,
+      title("builds.insight")
+    )
+  );
+
+  const levelRow = plannerRangeRowHtml(
+    "builds.level",
+    plannerSelectHtml(
+      "curLevel",
+      plannerSeries(1, getMaxLevelForInsight(plan.curInsight)),
+      plan.curLevel,
+      null,
+      title("builds.level")
+    ),
+    plannerSelectHtml(
+      "goalLevel",
+      plannerSeries(
+        plan.goalInsight === plan.curInsight ? plan.curLevel : 1,
+        getMaxLevelForInsight(plan.goalInsight)
+      ),
+      plan.goalLevel,
+      null,
+      title("builds.level")
+    )
+  );
+
+  const resoRow = plannerRangeRowHtml(
+    "builds.resonance",
+    plannerSelectHtml(
+      "curReso",
+      plannerSeries(0, plannerResoMax(plan.curInsight)),
+      plan.curReso,
+      (v) => `R${v}`,
+      title("builds.resonance")
+    ),
+    plannerSelectHtml(
+      "goalReso",
+      plannerSeries(plan.curReso, plannerResoMax(plan.goalInsight)),
+      plan.goalReso,
+      (v) => `R${v}`,
+      title("builds.resonance")
+    )
+  );
+
+  const masteryRow = plannerRangeRowHtml(
+    "builds.mastery",
+    plannerSelectHtml("curMastery", plannerSeries(0, 4), plan.curMastery, null, title("builds.mastery")),
+    plannerSelectHtml(
+      "goalMastery",
+      plannerSeries(plan.curMastery, 4),
+      plan.goalMastery,
+      null,
+      title("builds.mastery")
+    )
+  );
+
+  const materials = plannerCharMaterials(plan);
+
+  return `
+      <div class="planner-char-head">
+        ${icon ? `<img class="planner-char-portrait" src="${escapeHtml(icon)}" alt="" />` : ""}
+        <div class="planner-char-id">
+          <span class="planner-char-name">${name}</span>
+          <img class="planner-char-rarity" src="images/colour_references/${rarity}.png" alt="" loading="lazy" />
+        </div>
+        <button type="button" class="planner-char-remove" data-remove="${escapeHtml(
+          plan.name
+        )}" title="${escapeHtml(t("planner.removeArcanist"))}" aria-label="${escapeHtml(
+          t("planner.removeArcanist")
+        )}">
+          <img src="images/random_icon/cross.png" alt="" />
+        </button>
+      </div>
+
+      <div class="planner-char-controls">
+        ${insightRow}
+        ${levelRow}
+        ${resoRow}
+        ${masteryRow}
+        ${plannerEuphoriaHtml(mats, plan)}
+        ${plannerFrequencyHtml(mats, plan)}
+        <div class="planner-char-actions">
+          <button type="button" class="btn btn-secondary planner-quick-goal" id="planner-quick-goal">${escapeHtml(
+            t("planner.quickGoal")
+          )}</button>
+        </div>
+      </div>
+
+      <div class="archetype-section-header planner-char-mats-head">
+        <span class="archetype-section-title"><span>${escapeHtml(t("planner.charMaterials"))}</span></span>
+      </div>
+      ${plannerMatGridHtml(materials, "planner.charMaterialsEmpty")}`;
+}
+
+function plannerCharRailHtml() {
+  if (!plannerChars.length) {
+    return `<p class="planner-rail-empty">${escapeHtml(t("planner.noCharacters"))}</p>`;
+  }
+  return plannerChars
+    .map((plan) => {
+      const selected = plan.name === plannerCharSelected;
+      const icon = characterDb[plan.name] || "";
+      const label = escapeHtml(displayCharName(plan.name));
+      return `<button type="button" class="planner-char-tile${
+        selected ? " is-selected" : ""
+      }" data-char="${escapeHtml(plan.name)}" title="${label}">
+          ${
+            icon
+              ? `<img class="planner-char-tile-img" src="${escapeHtml(icon)}" alt="" loading="lazy" />`
+              : `<span class="planner-char-tile-img" aria-hidden="true"></span>`
+          }
+          <span class="planner-char-tile-name">${label}</span>
+        </button>`;
+    })
+    .join("");
+}
+
+/**
+ * The Goal band: every arcanist's bill added up. Its header carries the plan as
+ * head icons — one per arcanist, wrapping as the list grows — and pressing one
+ * opens that arcanist's own controls and materials in the detail pane above.
+ * An empty plan draws the title alone.
+ */
+function plannerGoalHtml() {
+  const avatars = plannerChars
+    .map((plan) => {
+      const icon = characterDb[plan.name] || "";
+      const label = escapeHtml(displayCharName(plan.name));
+      const selected = plan.name === plannerCharSelected;
+      return `<button type="button" class="planner-goal-avatar${
+        selected ? " is-selected" : ""
+      }" data-char="${escapeHtml(plan.name)}" title="${label}" aria-label="${label}">
+          ${
+            icon
+              ? `<img src="${escapeHtml(icon)}" alt="" loading="lazy" />`
+              : `<span class="planner-goal-avatar-empty" aria-hidden="true"></span>`
+          }
+        </button>`;
+    })
+    .join("");
+  return `
+      <div class="archetype-section-header planner-goal-head">
+        <span class="archetype-section-title"><span>${escapeHtml(t("planner.goalTitle"))}</span></span>
+        ${avatars ? `<div class="planner-goal-avatars">${avatars}</div>` : ""}
+      </div>
+      ${plannerChars.length ? plannerMatGridHtml(plannerGoalMaterials(), "planner.goalEmpty") : ""}`;
+}
+
+function renderPlannerCharacter() {
+  const rail = document.getElementById("planner-char-rail");
+  const detail = document.getElementById("planner-char-detail");
+  const goal = document.getElementById("planner-goal");
+  const count = document.getElementById("planner-char-count");
+  if (count) {
+    count.textContent = plannerChars.length ? t("planner.charCount", { n: plannerChars.length }) : "";
+  }
+  if (rail) rail.innerHTML = plannerCharRailHtml();
+  if (detail) detail.innerHTML = plannerCharDetailHtml();
+  if (goal) goal.innerHTML = plannerGoalHtml();
+}
+
+/** The picker lists the roster highest rarity first, minus what is already in. */
+function plannerPickerNames() {
+  const added = new Set(plannerChars.map((plan) => plan.name));
+  const query = plannerPickerQuery.trim().toLowerCase();
+  return Object.keys(charactersMatsData)
+    .filter((name) => {
+      if (added.has(name)) return false;
+      if (
+        plannerPickerRarities.size > 0 &&
+        !plannerPickerRarities.has(Number((charactersMatsData[name] || {}).rarity) || 0)
+      ) {
+        return false;
+      }
+      if (!query) return true;
+      return characterMatchesQuery(name, query);
+    })
+    .sort((a, b) => {
+      const ra = Number((charactersMatsData[a] || {}).rarity) || 0;
+      const rb = Number((charactersMatsData[b] || {}).rarity) || 0;
+      if (ra !== rb) return rb - ra;
+      return displayCharName(a).localeCompare(displayCharName(b));
+    });
+}
+
+/**
+ * The tiles are the Manage modal's own roster tile (`roster-char-item` +
+ * `roster-avatar-box`), so the picker reads as the same object as the roster
+ * manager: search box, rarity chips, head icon and name.
+ */
+function renderPlannerPicker() {
+  const grid = document.getElementById("planner-picker-grid");
+  if (!grid) return;
+  const names = plannerPickerNames();
+  if (!names.length) {
+    grid.innerHTML = `<div class="guide-empty"><span>${escapeHtml(t("planner.pickerEmpty"))}</span></div>`;
+    return;
+  }
+  grid.innerHTML = names
+    .map((name) => {
+      const icon = characterDb[name] || "";
+      const label = escapeHtml(displayCharName(name));
+      return `<div class="roster-char-item is-owned planner-pick" data-pick="${escapeHtml(
+        name
+      )}" role="button" tabindex="0" title="${label}">
+          <div class="roster-avatar-box">
+            ${
+              icon
+                ? `<img src="${escapeHtml(icon)}" alt="" class="roster-avatar-img" loading="lazy" decoding="async" />`
+                : ""
+            }
+          </div>
+          <span class="roster-char-name${
+            isItalicNameCharacter(name) ? " is-italic-name" : ""
+          }">${label}</span>
+        </div>`;
+    })
+    .join("");
+  syncPlannerPickerRarity();
+}
+
+function syncPlannerPickerRarity() {
+  const group = document.getElementById("planner-picker-rarity");
+  if (!group) return;
+  group.querySelectorAll(".filter-btn").forEach((btn) => {
+    const rarity = Number(btn.dataset.rarity);
+    btn.classList.toggle("active", plannerPickerRarities.has(rarity));
+  });
+}
+
+function openPlannerPicker() {
+  const picker = document.getElementById("planner-picker");
+  if (!picker) return;
+  plannerPickerQuery = "";
+  plannerPickerRarities.clear();
+  const search = document.getElementById("planner-picker-search");
+  if (search) search.value = "";
+  picker.hidden = false;
+  renderPlannerPicker();
+  syncPlannerPickerRarity();
+  if (search) search.focus();
+}
+
+function closePlannerPicker() {
+  const picker = document.getElementById("planner-picker");
+  if (picker) picker.hidden = true;
+}
+
+function plannerAddCharacter(name) {
+  if (!name || plannerChars.some((plan) => plan.name === name)) return;
+  const plan = plannerClampPlan(plannerPlanDefaults(name));
+  if (!plan) return;
+  plannerChars.push(plan);
+  plannerCharSelected = plan.name;
+  plannerSaveChars();
+  closePlannerPicker();
+  renderPlannerCharacter();
+}
+
+/** Opens one arcanist: the rail tile and the Goal head icon both land here. */
+function plannerSelectCharacter(name, reveal = false) {
+  if (!name || !plannerChars.some((plan) => plan.name === name)) return;
+  plannerCharSelected = name;
+  plannerSaveChars();
+  renderPlannerCharacter();
+  // On a phone the Goal band sits under the detail pane, so a press down there
+  // must bring the controls it just opened back into view.
+  if (reveal) {
+    const head = document.querySelector("#planner-char-detail .planner-char-head");
+    if (head) {
+      const box = head.getBoundingClientRect();
+      if (box.top < 0 || box.bottom > window.innerHeight) {
+        head.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }
+}
+
+function plannerRemoveCharacter(name) {
+  const before = plannerChars.length;
+  plannerChars = plannerChars.filter((plan) => plan.name !== name);
+  if (plannerChars.length === before) return;
+  if (plannerCharSelected === name) {
+    plannerCharSelected = (plannerChars[0] || {}).name || "";
+  }
+  plannerSaveChars();
+  renderPlannerCharacter();
+}
+
+function plannerSetField(field, value) {
+  const plan = plannerCurrentPlan();
+  if (!plan || !field) return;
+  const n = Math.round(Number(value));
+  if (!Number.isFinite(n)) return;
+  plan[field] = n;
+  plannerClampPlan(plan);
+  plannerSaveChars();
+  renderPlannerCharacter();
+  // Rebuilding the pane throws focus away; hand it back to the same control.
+  const again = document.getElementById(`planner-f-${field}`);
+  if (again) again.focus();
+}
+
+function plannerToggleList(key, id) {
+  const plan = plannerCurrentPlan();
+  if (!plan) return;
+  const list = Array.isArray(plan[key]) ? plan[key] : [];
+  const at = list.indexOf(id);
+  if (at === -1) list.push(id);
+  else list.splice(at, 1);
+  plan[key] = list;
+  plannerSaveChars();
+  renderPlannerCharacter();
+}
+
+/**
+ * The usual "this arcanist can fight now" breakpoint: 5★/6★ stop at Insight III
+ * Lv.30, everything else at Insight II Lv.50, and Resonance goes to R10 (the
+ * board is full there). The current state is never moved.
+ */
+function plannerQuickGoal() {
+  const plan = plannerCurrentPlan();
+  const mats = plan && getCharacterMats(plan.name);
+  if (!plan || !mats) return;
+  const rarity = Number(mats.rarity || getCharacterRarity(plan.name) || 5);
+  if (rarity >= 5) {
+    plan.goalInsight = 3;
+    plan.goalLevel = 30;
+  } else {
+    plan.goalInsight = getMaxInsightForRarity(rarity);
+    plan.goalLevel = 50;
+  }
+  plan.goalReso = Math.min(10, plannerResoMax(plan.goalInsight));
+  plannerClampPlan(plan);
+  plannerSaveChars();
+  renderPlannerCharacter();
+}
+
+function setPlannerTab(tab) {
+  plannerActiveTab = tab === "event" ? "event" : "character";
+  savePlannerTab();
+  document.querySelectorAll("#planner-modal .builds-mode-btn").forEach((btn) => {
+    const active = btn.dataset.mode === plannerActiveTab;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  const charPane = document.getElementById("planner-pane-character");
+  const eventPane = document.getElementById("planner-pane-event");
+  if (charPane) charPane.hidden = plannerActiveTab !== "character";
+  if (eventPane) eventPane.hidden = plannerActiveTab !== "event";
+  closePlannerPicker();
+  renderPlanner();
+}
+
+function renderPlanner() {
+  if (plannerActiveTab === "event") renderPlannerEvent();
+  else renderPlannerCharacter();
 }
 
 function openPlannerModal() {
   const modal = document.getElementById("planner-modal");
   if (!modal) return;
-  renderPlanner();
+  setPlannerTab(plannerActiveTab);
   modal.style.display = "flex";
 }
 
@@ -12074,7 +13100,7 @@ function setupPlannerListeners() {
     select.addEventListener("change", () => {
       plannerShopId = select.value;
       savePlannerState();
-      renderPlanner();
+      renderPlannerEvent();
     });
   }
 
@@ -12091,24 +13117,232 @@ function setupPlannerListeners() {
         }
       }
       savePlannerState();
-      renderPlanner();
+      renderPlannerEvent();
     });
   }
 
   const sections = document.getElementById("planner-sections");
   if (sections) {
     sections.addEventListener("click", (e) => {
+      // The stepper's own buttons step by one...
       const btn = e.target.closest(".planner-step");
-      if (!btn) return;
-      const row = btn.closest(".planner-card");
+      if (btn) {
+        const row = btn.closest(".planner-card");
+        const shop = plannerShop();
+        if (!row || !shop) return;
+        const item = plannerFindItem(shop, row.dataset.uid);
+        if (!item) return;
+        const next = plannerLimit(item, shop.id) + Number(btn.dataset.step);
+        plannerSetLimit(item, shop.id, next);
+        savePlannerState();
+        renderPlannerEvent();
+        return;
+      }
+
+      // ...and a press anywhere else on the card opens the quantity popup, which
+      // is the fast way to set a quantity against a big cap.
+      const card = e.target.closest(".planner-card");
+      if (card) {
+        const shop = plannerShop();
+        if (!shop) return;
+        const item = plannerFindItem(shop, card.dataset.uid);
+        if (item) openPlannerSlider(item, shop);
+      }
+    });
+  }
+
+  // Owned input handling
+  const ownedInput = document.getElementById("planner-owned-input");
+  if (ownedInput) {
+    ownedInput.addEventListener("input", () => {
       const shop = plannerShop();
-      if (!row || !shop) return;
-      const item = plannerFindItem(shop, row.dataset.uid);
-      if (!item) return;
-      const next = plannerLimit(item, shop.id) + Number(btn.dataset.step);
-      plannerSetLimit(item, shop.id, next);
+      if (!shop) return;
+      const val = Math.max(0, Math.floor(Number(ownedInput.value) || 0));
+      plannerOwned[shop.id] = val;
       savePlannerState();
-      renderPlanner();
+      updatePlannerOwnedTooltip(plannerTotalSpend(shop), val);
+    });
+  }
+  setupPlannerOwnedTooltip();
+
+  // Slider modal event listeners
+  const sliderModal = document.getElementById("planner-slider-modal");
+  const sliderBackdrop = document.getElementById("planner-slider-backdrop");
+  const sliderCloseBtn = document.getElementById("planner-slider-close");
+  const sliderRange = document.getElementById("planner-slider-range");
+  const sliderInput = document.getElementById("planner-slider-input");
+  const sliderMinus = document.getElementById("planner-slider-minus");
+  const sliderPlus = document.getElementById("planner-slider-plus");
+  const sliderMin = document.getElementById("planner-slider-min");
+  const sliderMax = document.getElementById("planner-slider-max");
+  const sliderConfirm = document.getElementById("planner-slider-confirm");
+
+  function syncSliderVal(val) {
+    if (!plannerActiveSliderItem) return;
+    const { item, shop } = plannerActiveSliderItem;
+    const clamped = plannerClamp(item, val);
+    if (sliderRange) sliderRange.value = String(clamped);
+    if (sliderInput) sliderInput.value = String(clamped);
+    const denomDisplay = document.getElementById("planner-slider-denom-display");
+    if (denomDisplay) {
+      denomDisplay.textContent = `${clamped} / ${item.maxBuy === 0 ? "∞" : item.maxBuy}`;
+    }
+    updatePlannerSliderCost(item, shop, clamped);
+  }
+
+  if (sliderBackdrop) sliderBackdrop.addEventListener("click", closePlannerSlider);
+  if (sliderCloseBtn) sliderCloseBtn.addEventListener("click", closePlannerSlider);
+
+  if (sliderRange) {
+    sliderRange.addEventListener("input", () => syncSliderVal(sliderRange.value));
+  }
+  if (sliderInput) {
+    sliderInput.addEventListener("input", () => syncSliderVal(sliderInput.value));
+  }
+  if (sliderMinus) {
+    sliderMinus.addEventListener("click", () => {
+      const cur = Number(sliderRange ? sliderRange.value : sliderInput.value) || 0;
+      syncSliderVal(cur - 1);
+    });
+  }
+  if (sliderPlus) {
+    sliderPlus.addEventListener("click", () => {
+      const cur = Number(sliderRange ? sliderRange.value : sliderInput.value) || 0;
+      syncSliderVal(cur + 1);
+    });
+  }
+  if (sliderMin) {
+    sliderMin.addEventListener("click", () => syncSliderVal(0));
+  }
+  if (sliderMax) {
+    sliderMax.addEventListener("click", () => {
+      if (!plannerActiveSliderItem) return;
+      const { item } = plannerActiveSliderItem;
+      const maxVal = item.maxBuy > 0 ? item.maxBuy : 999;
+      syncSliderVal(maxVal);
+    });
+  }
+  if (sliderConfirm) {
+    sliderConfirm.addEventListener("click", () => {
+      if (!plannerActiveSliderItem) return;
+      const { item, shop } = plannerActiveSliderItem;
+      const val = Number(sliderRange ? sliderRange.value : sliderInput.value) || 0;
+      plannerSetLimit(item, shop.id, val);
+      savePlannerState();
+      closePlannerSlider();
+      renderPlannerEvent();
+    });
+  }
+
+  /* ---- Character tab ---- */
+
+  const tabCharacter = document.getElementById("planner-tab-character");
+  const tabEvent = document.getElementById("planner-tab-event");
+  if (tabCharacter) tabCharacter.addEventListener("click", () => setPlannerTab("character"));
+  if (tabEvent) tabEvent.addEventListener("click", () => setPlannerTab("event"));
+
+  const charRail = document.getElementById("planner-char-rail");
+  if (charRail) {
+    charRail.addEventListener("click", (e) => {
+      const tile = e.target.closest("[data-char]");
+      if (!tile) return;
+      plannerSelectCharacter(tile.dataset.char);
+    });
+  }
+
+  // The Goal header carries the same list as head icons, so an arcanist is one
+  // press away even after the rail has been scrolled.
+  const goalBand = document.getElementById("planner-goal");
+  if (goalBand) {
+    goalBand.addEventListener("click", (e) => {
+      const avatar = e.target.closest(".planner-goal-avatar");
+      if (!avatar) return;
+      plannerSelectCharacter(avatar.dataset.char, true);
+    });
+  }
+
+  const charDetail = document.getElementById("planner-char-detail");
+  if (charDetail) {
+    charDetail.addEventListener("change", (e) => {
+      const field = e.target.closest("[data-field]");
+      if (!field) return;
+      plannerSetField(field.dataset.field, field.value);
+    });
+    charDetail.addEventListener("click", (e) => {
+      const euphoria = e.target.closest("[data-euphoria]");
+      if (euphoria) {
+        plannerToggleList("euphoria", Number(euphoria.dataset.euphoria));
+        return;
+      }
+      const pattern = e.target.closest("[data-pattern]");
+      if (pattern) {
+        plannerToggleList("frequency", Number(pattern.dataset.pattern));
+        return;
+      }
+      const remove = e.target.closest("[data-remove]");
+      if (remove) {
+        plannerRemoveCharacter(remove.dataset.remove);
+        return;
+      }
+      if (e.target.closest("#planner-quick-goal")) plannerQuickGoal();
+    });
+  }
+
+  const addCharBtn = document.getElementById("planner-char-add");
+  if (addCharBtn) addCharBtn.addEventListener("click", openPlannerPicker);
+
+  const picker = document.getElementById("planner-picker");
+  if (picker) {
+    picker.addEventListener("click", (e) => {
+      if (e.target === picker) {
+        closePlannerPicker();
+        return;
+      }
+      const pick = e.target.closest("[data-pick]");
+      if (pick) plannerAddCharacter(pick.dataset.pick);
+    });
+  }
+  const pickerClose = document.getElementById("planner-picker-close");
+  if (pickerClose) pickerClose.addEventListener("click", closePlannerPicker);
+  const pickerGrid = document.getElementById("planner-picker-grid");
+  if (pickerGrid) {
+    pickerGrid.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const pick = e.target.closest("[data-pick]");
+      if (!pick) return;
+      e.preventDefault();
+      plannerAddCharacter(pick.dataset.pick);
+    });
+  }
+  const pickerSearch = document.getElementById("planner-picker-search");
+  if (pickerSearch) {
+    pickerSearch.addEventListener("input", () => {
+      plannerPickerQuery = pickerSearch.value;
+      renderPlannerPicker();
+    });
+  }
+  // Rarity chips are the Manage modal's: one or more rarities narrow the grid,
+  // and pressing the same chip again widens it back.
+  const pickerRarity = document.getElementById("planner-picker-rarity");
+  if (pickerRarity) {
+    pickerRarity.addEventListener("click", (e) => {
+      const btn = e.target.closest(".filter-btn");
+      if (!btn) return;
+      const rarity = Number(btn.dataset.rarity);
+      if (plannerPickerRarities.has(rarity)) plannerPickerRarities.delete(rarity);
+      else plannerPickerRarities.add(rarity);
+      renderPlannerPicker();
+    });
+  }
+
+  const charClear = document.getElementById("planner-char-clear");
+  if (charClear) {
+    charClear.addEventListener("click", () => {
+      if (!plannerChars.length) return;
+      plannerChars = [];
+      plannerCharSelected = "";
+      plannerSaveChars();
+      renderPlannerCharacter();
     });
   }
 }

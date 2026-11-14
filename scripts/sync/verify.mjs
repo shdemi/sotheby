@@ -409,6 +409,145 @@ if (eventBlocks.length) {
   ok("the wilderness icon exists", fs.existsSync(path.join(OUT, "..", "images", "items", "wilderness_icon.png")));
 }
 
+// ---- progression levels (per-level Dust + Sharpodonty) ----------------------
+// `character_cosume` prices every (rare, level) pair; `derive/progressionLevels.mjs`
+// turns its cumulative level column into one group per (rarity set, insight). The
+// InfoBook's progression panel and the Planner's Character tab both read it, so the
+// band totals below are the numbers the panel has always shown; if an edit changes
+// them, one of the two surfaces changes silently.
+const levelCosts = read("progression_levels.json");
+const levelGroups = (levelCosts && levelCosts.groups) || [];
+const levelMaxFor = (ins) => (ins >= 3 ? 60 : ins === 2 ? 50 : ins === 1 ? 40 : 30);
+const levelBandTotal = (group) =>
+  Object.values(group.levels).reduce(
+    (acc, row) => ({ dust: acc.dust + row.dust, sharpodonty: acc.sharpodonty + row.sharpodonty }),
+    { dust: 0, sharpodonty: 0 },
+  );
+ok("progression_levels has ten groups", levelGroups.length === 10, String(levelGroups.length));
+ok(
+  "progression_levels groups carry rarities + insight",
+  levelGroups.every((g) => Array.isArray(g.rarities) && g.rarities.length && Number.isInteger(g.insight)),
+);
+ok(
+  "progression_levels rarities only use 2/3/4/5/6",
+  levelGroups.every((g) => g.rarities.every((r) => r >= 2 && r <= 6)),
+);
+ok(
+  "progression_levels levels are 2..max for their insight",
+  levelGroups.every((g) => {
+    const keys = Object.keys(g.levels).map(Number).sort((a, b) => a - b);
+    const max = levelMaxFor(g.insight);
+    return keys.length === max - 1 && keys[0] === 2 && keys[keys.length - 1] === max;
+  }),
+);
+ok(
+  "progression_levels costs are positive integers",
+  levelGroups.every((g) =>
+    Object.values(g.levels).every(
+      (row) => Number.isInteger(row.dust) && row.dust > 0 && Number.isInteger(row.sharpodonty) && row.sharpodonty > 0,
+    ),
+  ),
+);
+// Every arcanist rarity must find a group for every insight it can reach.
+const levelCovered = [];
+for (const rarityValue of [2, 3, 4, 5, 6]) {
+  const maxInsight = rarityValue >= 5 ? 3 : 2;
+  for (let ins = 0; ins <= maxInsight; ins++) {
+    const group = levelGroups.find((g) => g.insight === ins && g.rarities.includes(rarityValue));
+    if (!group) levelCovered.push(`${rarityValue}/${ins}`);
+  }
+}
+ok("progression_levels covers every rarity and insight", levelCovered.length === 0, levelCovered.join(","));
+const LEVEL_BANDS = {
+  "5,6": [[27700, 15080], [100200, 53100], [406700, 137200], [810880, 400600]],
+  "4": [[20680, 11200], [75040, 39720], [305020, 102780]],
+  "2,3": [[16620, 8930], [60120, 31860], [244020, 82320]],
+};
+const levelBandMismatch = [];
+for (const [key, bands] of Object.entries(LEVEL_BANDS)) {
+  for (let ins = 0; ins < bands.length; ins++) {
+    const group = levelGroups.find((g) => g.insight === ins && g.rarities.join(",") === key);
+    if (!group) {
+      levelBandMismatch.push(`${key}/${ins}: missing`);
+      continue;
+    }
+    const total = levelBandTotal(group);
+    const [dust, sharpodonty] = bands[ins];
+    if (total.dust !== dust || total.sharpodonty !== sharpodonty) {
+      levelBandMismatch.push(`${key}/${ins}: ${total.dust}/${total.sharpodonty} != ${dust}/${sharpodonty}`);
+    }
+  }
+}
+ok("progression_levels band totals match the InfoBook", levelBandMismatch.length === 0, levelBandMismatch.join(" | "));
+
+// ---- resonance patterns (the "Frequency" system) ----------------------------
+// `talent_style` names the six patterns of each board and `talent_style_cost`
+// prices the five craftable ones per hero (styleId 0, Placidity, is already on the
+// board). The Planner's Frequency picker reads `frequency[]` and the InfoBook's
+// pattern panel reads `pattern_costs.json`; both come from that pair, so they must
+// agree with each other and with `shape_patterns.json`.
+const patternCosts = read("pattern_costs.json");
+const patternNames = new Set(Object.values(read("shape_patterns.json")).flat());
+const patternEntries = Object.entries(patternCosts);
+ok("pattern_costs covers the roster", patternEntries.length >= 130, String(patternEntries.length));
+ok(
+  "pattern_costs keys are roster names",
+  patternEntries.every(([name]) => !!matsBook[name]),
+  patternEntries.filter(([name]) => !matsBook[name]).map(([n]) => n).join(","),
+);
+ok(
+  "pattern_costs patterns come from shape_patterns",
+  patternEntries.every(([, rows]) => Object.keys(rows).every((p) => patternNames.has(p))),
+  patternEntries
+    .flatMap(([, rows]) => Object.keys(rows).filter((p) => !patternNames.has(p)))
+    .join(","),
+);
+ok(
+  "pattern_costs bills are non-empty",
+  patternEntries.every(([, rows]) =>
+    Object.values(rows).every(
+      (list) => list.length >= 2 && list.every((m) => m.material && Number(m.quantity) > 0),
+    ),
+  ),
+);
+const freqProblems = [];
+for (const [name, rows] of patternEntries) {
+  const steps = (matsBook[name] && matsBook[name].frequency) || [];
+  const names = steps.map((step) => step.name);
+  if (steps.length !== Object.keys(rows).length) freqProblems.push(`${name}: ${steps.length} steps`);
+  if (new Set(names).size !== names.length) freqProblems.push(`${name}: duplicate patterns`);
+  if (steps.some((step) => !patternNames.has(step.name))) freqProblems.push(`${name}: unknown pattern`);
+  // The Planner and the InfoBook must be able to read the same bill.
+  for (const step of steps) {
+    if (JSON.stringify(step.materials) !== JSON.stringify(rows[step.name])) {
+      freqProblems.push(`${name}/${step.name}: bill differs`);
+    }
+  }
+}
+ok("frequency steps match pattern_costs", freqProblems.length === 0, freqProblems.slice(0, 6).join(" | "));
+ok(
+  "frequency ids are the game's styleId 1..5",
+  Object.values(matsBook).every(
+    (row) =>
+      (row.frequency || []).every((step) => Number.isInteger(step.id) && step.id >= 1 && step.id <= 5) &&
+      new Set((row.frequency || []).map((step) => step.id)).size === (row.frequency || []).length,
+  ),
+);
+ok(
+  "frequency covers the roster (incl. CN-only arcanists)",
+  Object.values(matsBook).every((row) => (row.frequency || []).length === 5),
+  Object.entries(matsBook)
+    .filter(([, row]) => (row.frequency || []).length !== 5)
+    .map(([name, row]) => `${name}:${(row.frequency || []).length}`)
+    .join(","),
+);
+const sixPatterns = ((matsBook["6"] || {}).frequency || []).map((step) => step.name).join(",");
+ok(
+  "frequency names the Z-shape board in game order",
+  sixPatterns === "Elucidation,Genuinity,Mercy,Equanimity,Equibalance",
+  sixPatterns,
+);
+
 // ---- misc -------------------------------------------------------------------
 // ---- code rewards -----------------------------------------------------------
 // The Codes tab resolves a wiki reward name against `items.json`, then against

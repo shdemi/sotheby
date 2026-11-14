@@ -3,10 +3,10 @@
  * `data/characters_mats_required.json` into `content/progression_costs.json`.
  *
  * `insight` and `resonance` are game data (`character_rank` and
- * `character_talent`), but `stats`, `euphoria`, `mastery` and `frequency` were
- * typed in by hand and no table reproduces them. This tool copies those four
- * fields across, keyed by canonical roster name, so the generator can own the
- * rest without losing the curated numbers.
+ * `character_talent`), and so is `frequency` (`talent_style_cost`, wired later);
+ * `stats`, `euphoria` and `mastery` are typed in by hand and no table reproduces
+ * them. This tool copies those three fields across, keyed by canonical roster
+ * name, so the generator can own the rest without losing the curated numbers.
  *
  *   node scripts/sync/tools/extract-progression.mjs
  *
@@ -20,7 +20,7 @@ import { CONTENT, OUT } from "../config.mjs";
 import { readJson, writeJson } from "../util.mjs";
 import { canonicalName, charactersById, resolveName } from "../derive/names.mjs";
 
-const FIELDS = ["stats", "euphoria", "mastery", "frequency"];
+const FIELDS = ["stats", "euphoria", "mastery"];
 
 const legacy = readJson(path.join(OUT, "characters_mats_required.json"));
 

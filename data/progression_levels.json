@@ -1,0 +1,1704 @@
+{
+  "groups": [
+    {
+      "rarities": [5, 6],
+      "insight": 0,
+      "levels": {
+        "2": {
+          "dust": 100,
+          "sharpodonty": 100
+        },
+        "3": {
+          "dust": 150,
+          "sharpodonty": 130
+        },
+        "4": {
+          "dust": 200,
+          "sharpodonty": 160
+        },
+        "5": {
+          "dust": 250,
+          "sharpodonty": 190
+        },
+        "6": {
+          "dust": 350,
+          "sharpodonty": 220
+        },
+        "7": {
+          "dust": 400,
+          "sharpodonty": 250
+        },
+        "8": {
+          "dust": 450,
+          "sharpodonty": 280
+        },
+        "9": {
+          "dust": 500,
+          "sharpodonty": 310
+        },
+        "10": {
+          "dust": 550,
+          "sharpodonty": 340
+        },
+        "11": {
+          "dust": 600,
+          "sharpodonty": 370
+        },
+        "12": {
+          "dust": 650,
+          "sharpodonty": 400
+        },
+        "13": {
+          "dust": 700,
+          "sharpodonty": 430
+        },
+        "14": {
+          "dust": 750,
+          "sharpodonty": 460
+        },
+        "15": {
+          "dust": 800,
+          "sharpodonty": 490
+        },
+        "16": {
+          "dust": 850,
+          "sharpodonty": 520
+        },
+        "17": {
+          "dust": 900,
+          "sharpodonty": 550
+        },
+        "18": {
+          "dust": 950,
+          "sharpodonty": 580
+        },
+        "19": {
+          "dust": 1000,
+          "sharpodonty": 610
+        },
+        "20": {
+          "dust": 1050,
+          "sharpodonty": 640
+        },
+        "21": {
+          "dust": 1200,
+          "sharpodonty": 670
+        },
+        "22": {
+          "dust": 1300,
+          "sharpodonty": 700
+        },
+        "23": {
+          "dust": 1400,
+          "sharpodonty": 730
+        },
+        "24": {
+          "dust": 1500,
+          "sharpodonty": 760
+        },
+        "25": {
+          "dust": 1600,
+          "sharpodonty": 790
+        },
+        "26": {
+          "dust": 1700,
+          "sharpodonty": 820
+        },
+        "27": {
+          "dust": 1800,
+          "sharpodonty": 850
+        },
+        "28": {
+          "dust": 1900,
+          "sharpodonty": 880
+        },
+        "29": {
+          "dust": 2000,
+          "sharpodonty": 910
+        },
+        "30": {
+          "dust": 2100,
+          "sharpodonty": 940
+        }
+      }
+    },
+    {
+      "rarities": [5, 6],
+      "insight": 1,
+      "levels": {
+        "2": {
+          "dust": 400,
+          "sharpodonty": 200
+        },
+        "3": {
+          "dust": 500,
+          "sharpodonty": 250
+        },
+        "4": {
+          "dust": 600,
+          "sharpodonty": 300
+        },
+        "5": {
+          "dust": 700,
+          "sharpodonty": 350
+        },
+        "6": {
+          "dust": 900,
+          "sharpodonty": 400
+        },
+        "7": {
+          "dust": 1000,
+          "sharpodonty": 450
+        },
+        "8": {
+          "dust": 1100,
+          "sharpodonty": 500
+        },
+        "9": {
+          "dust": 1200,
+          "sharpodonty": 550
+        },
+        "10": {
+          "dust": 1300,
+          "sharpodonty": 600
+        },
+        "11": {
+          "dust": 1500,
+          "sharpodonty": 650
+        },
+        "12": {
+          "dust": 1600,
+          "sharpodonty": 700
+        },
+        "13": {
+          "dust": 1700,
+          "sharpodonty": 750
+        },
+        "14": {
+          "dust": 1800,
+          "sharpodonty": 800
+        },
+        "15": {
+          "dust": 1900,
+          "sharpodonty": 850
+        },
+        "16": {
+          "dust": 2100,
+          "sharpodonty": 900
+        },
+        "17": {
+          "dust": 2200,
+          "sharpodonty": 950
+        },
+        "18": {
+          "dust": 2300,
+          "sharpodonty": 1000
+        },
+        "19": {
+          "dust": 2400,
+          "sharpodonty": 1050
+        },
+        "20": {
+          "dust": 2500,
+          "sharpodonty": 1100
+        },
+        "21": {
+          "dust": 2600,
+          "sharpodonty": 1150
+        },
+        "22": {
+          "dust": 2700,
+          "sharpodonty": 1200
+        },
+        "23": {
+          "dust": 2800,
+          "sharpodonty": 1250
+        },
+        "24": {
+          "dust": 2900,
+          "sharpodonty": 1300
+        },
+        "25": {
+          "dust": 3000,
+          "sharpodonty": 1350
+        },
+        "26": {
+          "dust": 3100,
+          "sharpodonty": 1400
+        },
+        "27": {
+          "dust": 3200,
+          "sharpodonty": 1450
+        },
+        "28": {
+          "dust": 3300,
+          "sharpodonty": 1500
+        },
+        "29": {
+          "dust": 3400,
+          "sharpodonty": 1550
+        },
+        "30": {
+          "dust": 3500,
+          "sharpodonty": 1600
+        },
+        "31": {
+          "dust": 3700,
+          "sharpodonty": 1800
+        },
+        "32": {
+          "dust": 3800,
+          "sharpodonty": 2000
+        },
+        "33": {
+          "dust": 3900,
+          "sharpodonty": 2200
+        },
+        "34": {
+          "dust": 4000,
+          "sharpodonty": 2400
+        },
+        "35": {
+          "dust": 4100,
+          "sharpodonty": 2600
+        },
+        "36": {
+          "dust": 4300,
+          "sharpodonty": 2800
+        },
+        "37": {
+          "dust": 4400,
+          "sharpodonty": 3000
+        },
+        "38": {
+          "dust": 4500,
+          "sharpodonty": 3200
+        },
+        "39": {
+          "dust": 4600,
+          "sharpodonty": 3400
+        },
+        "40": {
+          "dust": 4700,
+          "sharpodonty": 3600
+        }
+      }
+    },
+    {
+      "rarities": [5, 6],
+      "insight": 2,
+      "levels": {
+        "2": {
+          "dust": 1100,
+          "sharpodonty": 400
+        },
+        "3": {
+          "dust": 1400,
+          "sharpodonty": 500
+        },
+        "4": {
+          "dust": 1700,
+          "sharpodonty": 600
+        },
+        "5": {
+          "dust": 2000,
+          "sharpodonty": 700
+        },
+        "6": {
+          "dust": 2300,
+          "sharpodonty": 800
+        },
+        "7": {
+          "dust": 2600,
+          "sharpodonty": 900
+        },
+        "8": {
+          "dust": 2900,
+          "sharpodonty": 1000
+        },
+        "9": {
+          "dust": 3200,
+          "sharpodonty": 1100
+        },
+        "10": {
+          "dust": 3500,
+          "sharpodonty": 1200
+        },
+        "11": {
+          "dust": 3800,
+          "sharpodonty": 1300
+        },
+        "12": {
+          "dust": 4100,
+          "sharpodonty": 1400
+        },
+        "13": {
+          "dust": 4400,
+          "sharpodonty": 1500
+        },
+        "14": {
+          "dust": 4700,
+          "sharpodonty": 1600
+        },
+        "15": {
+          "dust": 5000,
+          "sharpodonty": 1700
+        },
+        "16": {
+          "dust": 5300,
+          "sharpodonty": 1800
+        },
+        "17": {
+          "dust": 5600,
+          "sharpodonty": 1900
+        },
+        "18": {
+          "dust": 5900,
+          "sharpodonty": 2000
+        },
+        "19": {
+          "dust": 6200,
+          "sharpodonty": 2100
+        },
+        "20": {
+          "dust": 6500,
+          "sharpodonty": 2200
+        },
+        "21": {
+          "dust": 6800,
+          "sharpodonty": 2300
+        },
+        "22": {
+          "dust": 7100,
+          "sharpodonty": 2400
+        },
+        "23": {
+          "dust": 7400,
+          "sharpodonty": 2500
+        },
+        "24": {
+          "dust": 7700,
+          "sharpodonty": 2600
+        },
+        "25": {
+          "dust": 8000,
+          "sharpodonty": 2700
+        },
+        "26": {
+          "dust": 8300,
+          "sharpodonty": 2800
+        },
+        "27": {
+          "dust": 8600,
+          "sharpodonty": 2900
+        },
+        "28": {
+          "dust": 8900,
+          "sharpodonty": 3000
+        },
+        "29": {
+          "dust": 9200,
+          "sharpodonty": 3100
+        },
+        "30": {
+          "dust": 9500,
+          "sharpodonty": 3200
+        },
+        "31": {
+          "dust": 9800,
+          "sharpodonty": 3300
+        },
+        "32": {
+          "dust": 10100,
+          "sharpodonty": 3400
+        },
+        "33": {
+          "dust": 10400,
+          "sharpodonty": 3500
+        },
+        "34": {
+          "dust": 10700,
+          "sharpodonty": 3600
+        },
+        "35": {
+          "dust": 11000,
+          "sharpodonty": 3700
+        },
+        "36": {
+          "dust": 11300,
+          "sharpodonty": 3800
+        },
+        "37": {
+          "dust": 11600,
+          "sharpodonty": 3900
+        },
+        "38": {
+          "dust": 11900,
+          "sharpodonty": 4000
+        },
+        "39": {
+          "dust": 12200,
+          "sharpodonty": 4100
+        },
+        "40": {
+          "dust": 12500,
+          "sharpodonty": 4200
+        },
+        "41": {
+          "dust": 12800,
+          "sharpodonty": 4300
+        },
+        "42": {
+          "dust": 13100,
+          "sharpodonty": 4400
+        },
+        "43": {
+          "dust": 13400,
+          "sharpodonty": 4500
+        },
+        "44": {
+          "dust": 13700,
+          "sharpodonty": 4600
+        },
+        "45": {
+          "dust": 14000,
+          "sharpodonty": 4700
+        },
+        "46": {
+          "dust": 14300,
+          "sharpodonty": 4800
+        },
+        "47": {
+          "dust": 14600,
+          "sharpodonty": 4900
+        },
+        "48": {
+          "dust": 14900,
+          "sharpodonty": 5000
+        },
+        "49": {
+          "dust": 15200,
+          "sharpodonty": 5100
+        },
+        "50": {
+          "dust": 15500,
+          "sharpodonty": 5200
+        }
+      }
+    },
+    {
+      "rarities": [5, 6],
+      "insight": 3,
+      "levels": {
+        "2": {
+          "dust": 5640,
+          "sharpodonty": 2500
+        },
+        "3": {
+          "dust": 5760,
+          "sharpodonty": 2600
+        },
+        "4": {
+          "dust": 5880,
+          "sharpodonty": 2700
+        },
+        "5": {
+          "dust": 6000,
+          "sharpodonty": 2800
+        },
+        "6": {
+          "dust": 6240,
+          "sharpodonty": 2900
+        },
+        "7": {
+          "dust": 6380,
+          "sharpodonty": 3000
+        },
+        "8": {
+          "dust": 6520,
+          "sharpodonty": 3100
+        },
+        "9": {
+          "dust": 6660,
+          "sharpodonty": 3200
+        },
+        "10": {
+          "dust": 6800,
+          "sharpodonty": 3300
+        },
+        "11": {
+          "dust": 7160,
+          "sharpodonty": 3400
+        },
+        "12": {
+          "dust": 7320,
+          "sharpodonty": 3500
+        },
+        "13": {
+          "dust": 7480,
+          "sharpodonty": 3600
+        },
+        "14": {
+          "dust": 7640,
+          "sharpodonty": 3700
+        },
+        "15": {
+          "dust": 7800,
+          "sharpodonty": 3800
+        },
+        "16": {
+          "dust": 8280,
+          "sharpodonty": 3900
+        },
+        "17": {
+          "dust": 8460,
+          "sharpodonty": 4000
+        },
+        "18": {
+          "dust": 8640,
+          "sharpodonty": 4100
+        },
+        "19": {
+          "dust": 8820,
+          "sharpodonty": 4200
+        },
+        "20": {
+          "dust": 9000,
+          "sharpodonty": 4300
+        },
+        "21": {
+          "dust": 9600,
+          "sharpodonty": 4500
+        },
+        "22": {
+          "dust": 9800,
+          "sharpodonty": 4700
+        },
+        "23": {
+          "dust": 10000,
+          "sharpodonty": 4900
+        },
+        "24": {
+          "dust": 10200,
+          "sharpodonty": 5100
+        },
+        "25": {
+          "dust": 10400,
+          "sharpodonty": 5300
+        },
+        "26": {
+          "dust": 11100,
+          "sharpodonty": 5500
+        },
+        "27": {
+          "dust": 11300,
+          "sharpodonty": 5700
+        },
+        "28": {
+          "dust": 11600,
+          "sharpodonty": 5900
+        },
+        "29": {
+          "dust": 11800,
+          "sharpodonty": 6100
+        },
+        "30": {
+          "dust": 12000,
+          "sharpodonty": 6300
+        },
+        "31": {
+          "dust": 12800,
+          "sharpodonty": 6500
+        },
+        "32": {
+          "dust": 13100,
+          "sharpodonty": 6700
+        },
+        "33": {
+          "dust": 13300,
+          "sharpodonty": 6900
+        },
+        "34": {
+          "dust": 13600,
+          "sharpodonty": 7100
+        },
+        "35": {
+          "dust": 13800,
+          "sharpodonty": 7300
+        },
+        "36": {
+          "dust": 14800,
+          "sharpodonty": 7500
+        },
+        "37": {
+          "dust": 15000,
+          "sharpodonty": 7700
+        },
+        "38": {
+          "dust": 15300,
+          "sharpodonty": 7900
+        },
+        "39": {
+          "dust": 15500,
+          "sharpodonty": 8100
+        },
+        "40": {
+          "dust": 15800,
+          "sharpodonty": 8300
+        },
+        "41": {
+          "dust": 16900,
+          "sharpodonty": 8500
+        },
+        "42": {
+          "dust": 17200,
+          "sharpodonty": 8700
+        },
+        "43": {
+          "dust": 17400,
+          "sharpodonty": 8900
+        },
+        "44": {
+          "dust": 17700,
+          "sharpodonty": 9100
+        },
+        "45": {
+          "dust": 18000,
+          "sharpodonty": 9300
+        },
+        "46": {
+          "dust": 19200,
+          "sharpodonty": 9500
+        },
+        "47": {
+          "dust": 19500,
+          "sharpodonty": 9700
+        },
+        "48": {
+          "dust": 19800,
+          "sharpodonty": 9900
+        },
+        "49": {
+          "dust": 20100,
+          "sharpodonty": 10100
+        },
+        "50": {
+          "dust": 20400,
+          "sharpodonty": 10300
+        },
+        "51": {
+          "dust": 21700,
+          "sharpodonty": 10500
+        },
+        "52": {
+          "dust": 22000,
+          "sharpodonty": 10700
+        },
+        "53": {
+          "dust": 22400,
+          "sharpodonty": 10900
+        },
+        "54": {
+          "dust": 22700,
+          "sharpodonty": 11100
+        },
+        "55": {
+          "dust": 23000,
+          "sharpodonty": 11300
+        },
+        "56": {
+          "dust": 24400,
+          "sharpodonty": 11500
+        },
+        "57": {
+          "dust": 24800,
+          "sharpodonty": 11700
+        },
+        "58": {
+          "dust": 25100,
+          "sharpodonty": 11900
+        },
+        "59": {
+          "dust": 25500,
+          "sharpodonty": 12100
+        },
+        "60": {
+          "dust": 25800,
+          "sharpodonty": 12300
+        }
+      }
+    },
+    {
+      "rarities": [4],
+      "insight": 0,
+      "levels": {
+        "2": {
+          "dust": 70,
+          "sharpodonty": 70
+        },
+        "3": {
+          "dust": 110,
+          "sharpodonty": 90
+        },
+        "4": {
+          "dust": 150,
+          "sharpodonty": 120
+        },
+        "5": {
+          "dust": 180,
+          "sharpodonty": 140
+        },
+        "6": {
+          "dust": 260,
+          "sharpodonty": 160
+        },
+        "7": {
+          "dust": 300,
+          "sharpodonty": 180
+        },
+        "8": {
+          "dust": 330,
+          "sharpodonty": 210
+        },
+        "9": {
+          "dust": 370,
+          "sharpodonty": 230
+        },
+        "10": {
+          "dust": 410,
+          "sharpodonty": 250
+        },
+        "11": {
+          "dust": 450,
+          "sharpodonty": 270
+        },
+        "12": {
+          "dust": 480,
+          "sharpodonty": 300
+        },
+        "13": {
+          "dust": 520,
+          "sharpodonty": 320
+        },
+        "14": {
+          "dust": 560,
+          "sharpodonty": 340
+        },
+        "15": {
+          "dust": 600,
+          "sharpodonty": 360
+        },
+        "16": {
+          "dust": 630,
+          "sharpodonty": 390
+        },
+        "17": {
+          "dust": 670,
+          "sharpodonty": 410
+        },
+        "18": {
+          "dust": 710,
+          "sharpodonty": 430
+        },
+        "19": {
+          "dust": 750,
+          "sharpodonty": 450
+        },
+        "20": {
+          "dust": 780,
+          "sharpodonty": 480
+        },
+        "21": {
+          "dust": 900,
+          "sharpodonty": 500
+        },
+        "22": {
+          "dust": 970,
+          "sharpodonty": 520
+        },
+        "23": {
+          "dust": 1050,
+          "sharpodonty": 540
+        },
+        "24": {
+          "dust": 1120,
+          "sharpodonty": 570
+        },
+        "25": {
+          "dust": 1200,
+          "sharpodonty": 590
+        },
+        "26": {
+          "dust": 1270,
+          "sharpodonty": 610
+        },
+        "27": {
+          "dust": 1350,
+          "sharpodonty": 630
+        },
+        "28": {
+          "dust": 1420,
+          "sharpodonty": 660
+        },
+        "29": {
+          "dust": 1500,
+          "sharpodonty": 680
+        },
+        "30": {
+          "dust": 1570,
+          "sharpodonty": 700
+        }
+      }
+    },
+    {
+      "rarities": [4],
+      "insight": 1,
+      "levels": {
+        "2": {
+          "dust": 300,
+          "sharpodonty": 150
+        },
+        "3": {
+          "dust": 370,
+          "sharpodonty": 180
+        },
+        "4": {
+          "dust": 450,
+          "sharpodonty": 220
+        },
+        "5": {
+          "dust": 520,
+          "sharpodonty": 260
+        },
+        "6": {
+          "dust": 670,
+          "sharpodonty": 300
+        },
+        "7": {
+          "dust": 750,
+          "sharpodonty": 330
+        },
+        "8": {
+          "dust": 820,
+          "sharpodonty": 370
+        },
+        "9": {
+          "dust": 900,
+          "sharpodonty": 410
+        },
+        "10": {
+          "dust": 970,
+          "sharpodonty": 450
+        },
+        "11": {
+          "dust": 1120,
+          "sharpodonty": 480
+        },
+        "12": {
+          "dust": 1200,
+          "sharpodonty": 520
+        },
+        "13": {
+          "dust": 1270,
+          "sharpodonty": 560
+        },
+        "14": {
+          "dust": 1350,
+          "sharpodonty": 600
+        },
+        "15": {
+          "dust": 1420,
+          "sharpodonty": 630
+        },
+        "16": {
+          "dust": 1570,
+          "sharpodonty": 670
+        },
+        "17": {
+          "dust": 1650,
+          "sharpodonty": 710
+        },
+        "18": {
+          "dust": 1720,
+          "sharpodonty": 750
+        },
+        "19": {
+          "dust": 1800,
+          "sharpodonty": 780
+        },
+        "20": {
+          "dust": 1870,
+          "sharpodonty": 820
+        },
+        "21": {
+          "dust": 1950,
+          "sharpodonty": 860
+        },
+        "22": {
+          "dust": 2020,
+          "sharpodonty": 900
+        },
+        "23": {
+          "dust": 2100,
+          "sharpodonty": 930
+        },
+        "24": {
+          "dust": 2170,
+          "sharpodonty": 970
+        },
+        "25": {
+          "dust": 2250,
+          "sharpodonty": 1010
+        },
+        "26": {
+          "dust": 2320,
+          "sharpodonty": 1050
+        },
+        "27": {
+          "dust": 2400,
+          "sharpodonty": 1080
+        },
+        "28": {
+          "dust": 2470,
+          "sharpodonty": 1120
+        },
+        "29": {
+          "dust": 2550,
+          "sharpodonty": 1160
+        },
+        "30": {
+          "dust": 2620,
+          "sharpodonty": 1200
+        },
+        "31": {
+          "dust": 2770,
+          "sharpodonty": 1350
+        },
+        "32": {
+          "dust": 2850,
+          "sharpodonty": 1500
+        },
+        "33": {
+          "dust": 2920,
+          "sharpodonty": 1650
+        },
+        "34": {
+          "dust": 3000,
+          "sharpodonty": 1800
+        },
+        "35": {
+          "dust": 3070,
+          "sharpodonty": 1950
+        },
+        "36": {
+          "dust": 3220,
+          "sharpodonty": 2100
+        },
+        "37": {
+          "dust": 3300,
+          "sharpodonty": 2250
+        },
+        "38": {
+          "dust": 3370,
+          "sharpodonty": 2400
+        },
+        "39": {
+          "dust": 3450,
+          "sharpodonty": 2550
+        },
+        "40": {
+          "dust": 3520,
+          "sharpodonty": 2700
+        }
+      }
+    },
+    {
+      "rarities": [4],
+      "insight": 2,
+      "levels": {
+        "2": {
+          "dust": 820,
+          "sharpodonty": 300
+        },
+        "3": {
+          "dust": 1050,
+          "sharpodonty": 370
+        },
+        "4": {
+          "dust": 1270,
+          "sharpodonty": 450
+        },
+        "5": {
+          "dust": 1500,
+          "sharpodonty": 520
+        },
+        "6": {
+          "dust": 1720,
+          "sharpodonty": 600
+        },
+        "7": {
+          "dust": 1950,
+          "sharpodonty": 670
+        },
+        "8": {
+          "dust": 2170,
+          "sharpodonty": 750
+        },
+        "9": {
+          "dust": 2400,
+          "sharpodonty": 820
+        },
+        "10": {
+          "dust": 2620,
+          "sharpodonty": 900
+        },
+        "11": {
+          "dust": 2850,
+          "sharpodonty": 970
+        },
+        "12": {
+          "dust": 3070,
+          "sharpodonty": 1050
+        },
+        "13": {
+          "dust": 3300,
+          "sharpodonty": 1120
+        },
+        "14": {
+          "dust": 3520,
+          "sharpodonty": 1200
+        },
+        "15": {
+          "dust": 3750,
+          "sharpodonty": 1270
+        },
+        "16": {
+          "dust": 3970,
+          "sharpodonty": 1350
+        },
+        "17": {
+          "dust": 4200,
+          "sharpodonty": 1420
+        },
+        "18": {
+          "dust": 4420,
+          "sharpodonty": 1500
+        },
+        "19": {
+          "dust": 4650,
+          "sharpodonty": 1570
+        },
+        "20": {
+          "dust": 4870,
+          "sharpodonty": 1650
+        },
+        "21": {
+          "dust": 5100,
+          "sharpodonty": 1720
+        },
+        "22": {
+          "dust": 5320,
+          "sharpodonty": 1800
+        },
+        "23": {
+          "dust": 5550,
+          "sharpodonty": 1870
+        },
+        "24": {
+          "dust": 5770,
+          "sharpodonty": 1950
+        },
+        "25": {
+          "dust": 6000,
+          "sharpodonty": 2020
+        },
+        "26": {
+          "dust": 6220,
+          "sharpodonty": 2100
+        },
+        "27": {
+          "dust": 6450,
+          "sharpodonty": 2170
+        },
+        "28": {
+          "dust": 6670,
+          "sharpodonty": 2250
+        },
+        "29": {
+          "dust": 6900,
+          "sharpodonty": 2320
+        },
+        "30": {
+          "dust": 7120,
+          "sharpodonty": 2400
+        },
+        "31": {
+          "dust": 7350,
+          "sharpodonty": 2470
+        },
+        "32": {
+          "dust": 7570,
+          "sharpodonty": 2550
+        },
+        "33": {
+          "dust": 7800,
+          "sharpodonty": 2620
+        },
+        "34": {
+          "dust": 8020,
+          "sharpodonty": 2700
+        },
+        "35": {
+          "dust": 8250,
+          "sharpodonty": 2770
+        },
+        "36": {
+          "dust": 8470,
+          "sharpodonty": 2850
+        },
+        "37": {
+          "dust": 8700,
+          "sharpodonty": 2920
+        },
+        "38": {
+          "dust": 8920,
+          "sharpodonty": 3000
+        },
+        "39": {
+          "dust": 9150,
+          "sharpodonty": 3070
+        },
+        "40": {
+          "dust": 9370,
+          "sharpodonty": 3150
+        },
+        "41": {
+          "dust": 9600,
+          "sharpodonty": 3220
+        },
+        "42": {
+          "dust": 9820,
+          "sharpodonty": 3300
+        },
+        "43": {
+          "dust": 10100,
+          "sharpodonty": 3370
+        },
+        "44": {
+          "dust": 10300,
+          "sharpodonty": 3450
+        },
+        "45": {
+          "dust": 10500,
+          "sharpodonty": 3520
+        },
+        "46": {
+          "dust": 10700,
+          "sharpodonty": 3600
+        },
+        "47": {
+          "dust": 11000,
+          "sharpodonty": 3670
+        },
+        "48": {
+          "dust": 11200,
+          "sharpodonty": 3750
+        },
+        "49": {
+          "dust": 11400,
+          "sharpodonty": 3820
+        },
+        "50": {
+          "dust": 11600,
+          "sharpodonty": 3900
+        }
+      }
+    },
+    {
+      "rarities": [2, 3],
+      "insight": 0,
+      "levels": {
+        "2": {
+          "dust": 60,
+          "sharpodonty": 60
+        },
+        "3": {
+          "dust": 90,
+          "sharpodonty": 70
+        },
+        "4": {
+          "dust": 120,
+          "sharpodonty": 90
+        },
+        "5": {
+          "dust": 150,
+          "sharpodonty": 110
+        },
+        "6": {
+          "dust": 210,
+          "sharpodonty": 130
+        },
+        "7": {
+          "dust": 240,
+          "sharpodonty": 150
+        },
+        "8": {
+          "dust": 270,
+          "sharpodonty": 160
+        },
+        "9": {
+          "dust": 300,
+          "sharpodonty": 180
+        },
+        "10": {
+          "dust": 330,
+          "sharpodonty": 200
+        },
+        "11": {
+          "dust": 360,
+          "sharpodonty": 220
+        },
+        "12": {
+          "dust": 390,
+          "sharpodonty": 240
+        },
+        "13": {
+          "dust": 420,
+          "sharpodonty": 250
+        },
+        "14": {
+          "dust": 450,
+          "sharpodonty": 270
+        },
+        "15": {
+          "dust": 480,
+          "sharpodonty": 290
+        },
+        "16": {
+          "dust": 510,
+          "sharpodonty": 310
+        },
+        "17": {
+          "dust": 540,
+          "sharpodonty": 330
+        },
+        "18": {
+          "dust": 570,
+          "sharpodonty": 340
+        },
+        "19": {
+          "dust": 600,
+          "sharpodonty": 360
+        },
+        "20": {
+          "dust": 630,
+          "sharpodonty": 380
+        },
+        "21": {
+          "dust": 720,
+          "sharpodonty": 400
+        },
+        "22": {
+          "dust": 780,
+          "sharpodonty": 420
+        },
+        "23": {
+          "dust": 840,
+          "sharpodonty": 430
+        },
+        "24": {
+          "dust": 900,
+          "sharpodonty": 450
+        },
+        "25": {
+          "dust": 960,
+          "sharpodonty": 470
+        },
+        "26": {
+          "dust": 1020,
+          "sharpodonty": 490
+        },
+        "27": {
+          "dust": 1080,
+          "sharpodonty": 510
+        },
+        "28": {
+          "dust": 1140,
+          "sharpodonty": 520
+        },
+        "29": {
+          "dust": 1200,
+          "sharpodonty": 540
+        },
+        "30": {
+          "dust": 1260,
+          "sharpodonty": 560
+        }
+      }
+    },
+    {
+      "rarities": [2, 3],
+      "insight": 1,
+      "levels": {
+        "2": {
+          "dust": 240,
+          "sharpodonty": 120
+        },
+        "3": {
+          "dust": 300,
+          "sharpodonty": 150
+        },
+        "4": {
+          "dust": 360,
+          "sharpodonty": 180
+        },
+        "5": {
+          "dust": 420,
+          "sharpodonty": 210
+        },
+        "6": {
+          "dust": 540,
+          "sharpodonty": 240
+        },
+        "7": {
+          "dust": 600,
+          "sharpodonty": 270
+        },
+        "8": {
+          "dust": 660,
+          "sharpodonty": 300
+        },
+        "9": {
+          "dust": 720,
+          "sharpodonty": 330
+        },
+        "10": {
+          "dust": 780,
+          "sharpodonty": 360
+        },
+        "11": {
+          "dust": 900,
+          "sharpodonty": 390
+        },
+        "12": {
+          "dust": 960,
+          "sharpodonty": 420
+        },
+        "13": {
+          "dust": 1020,
+          "sharpodonty": 450
+        },
+        "14": {
+          "dust": 1080,
+          "sharpodonty": 480
+        },
+        "15": {
+          "dust": 1140,
+          "sharpodonty": 510
+        },
+        "16": {
+          "dust": 1260,
+          "sharpodonty": 540
+        },
+        "17": {
+          "dust": 1320,
+          "sharpodonty": 570
+        },
+        "18": {
+          "dust": 1380,
+          "sharpodonty": 600
+        },
+        "19": {
+          "dust": 1440,
+          "sharpodonty": 630
+        },
+        "20": {
+          "dust": 1500,
+          "sharpodonty": 660
+        },
+        "21": {
+          "dust": 1560,
+          "sharpodonty": 690
+        },
+        "22": {
+          "dust": 1620,
+          "sharpodonty": 720
+        },
+        "23": {
+          "dust": 1680,
+          "sharpodonty": 750
+        },
+        "24": {
+          "dust": 1740,
+          "sharpodonty": 780
+        },
+        "25": {
+          "dust": 1800,
+          "sharpodonty": 810
+        },
+        "26": {
+          "dust": 1860,
+          "sharpodonty": 840
+        },
+        "27": {
+          "dust": 1920,
+          "sharpodonty": 870
+        },
+        "28": {
+          "dust": 1980,
+          "sharpodonty": 900
+        },
+        "29": {
+          "dust": 2040,
+          "sharpodonty": 930
+        },
+        "30": {
+          "dust": 2100,
+          "sharpodonty": 960
+        },
+        "31": {
+          "dust": 2220,
+          "sharpodonty": 1080
+        },
+        "32": {
+          "dust": 2280,
+          "sharpodonty": 1200
+        },
+        "33": {
+          "dust": 2340,
+          "sharpodonty": 1320
+        },
+        "34": {
+          "dust": 2400,
+          "sharpodonty": 1440
+        },
+        "35": {
+          "dust": 2460,
+          "sharpodonty": 1560
+        },
+        "36": {
+          "dust": 2580,
+          "sharpodonty": 1680
+        },
+        "37": {
+          "dust": 2640,
+          "sharpodonty": 1800
+        },
+        "38": {
+          "dust": 2700,
+          "sharpodonty": 1920
+        },
+        "39": {
+          "dust": 2760,
+          "sharpodonty": 2040
+        },
+        "40": {
+          "dust": 2820,
+          "sharpodonty": 2160
+        }
+      }
+    },
+    {
+      "rarities": [2, 3],
+      "insight": 2,
+      "levels": {
+        "2": {
+          "dust": 660,
+          "sharpodonty": 240
+        },
+        "3": {
+          "dust": 840,
+          "sharpodonty": 300
+        },
+        "4": {
+          "dust": 1020,
+          "sharpodonty": 360
+        },
+        "5": {
+          "dust": 1200,
+          "sharpodonty": 420
+        },
+        "6": {
+          "dust": 1380,
+          "sharpodonty": 480
+        },
+        "7": {
+          "dust": 1560,
+          "sharpodonty": 540
+        },
+        "8": {
+          "dust": 1740,
+          "sharpodonty": 600
+        },
+        "9": {
+          "dust": 1920,
+          "sharpodonty": 660
+        },
+        "10": {
+          "dust": 2100,
+          "sharpodonty": 720
+        },
+        "11": {
+          "dust": 2280,
+          "sharpodonty": 780
+        },
+        "12": {
+          "dust": 2460,
+          "sharpodonty": 840
+        },
+        "13": {
+          "dust": 2640,
+          "sharpodonty": 900
+        },
+        "14": {
+          "dust": 2820,
+          "sharpodonty": 960
+        },
+        "15": {
+          "dust": 3000,
+          "sharpodonty": 1020
+        },
+        "16": {
+          "dust": 3180,
+          "sharpodonty": 1080
+        },
+        "17": {
+          "dust": 3360,
+          "sharpodonty": 1140
+        },
+        "18": {
+          "dust": 3540,
+          "sharpodonty": 1200
+        },
+        "19": {
+          "dust": 3720,
+          "sharpodonty": 1260
+        },
+        "20": {
+          "dust": 3900,
+          "sharpodonty": 1320
+        },
+        "21": {
+          "dust": 4080,
+          "sharpodonty": 1380
+        },
+        "22": {
+          "dust": 4260,
+          "sharpodonty": 1440
+        },
+        "23": {
+          "dust": 4440,
+          "sharpodonty": 1500
+        },
+        "24": {
+          "dust": 4620,
+          "sharpodonty": 1560
+        },
+        "25": {
+          "dust": 4800,
+          "sharpodonty": 1620
+        },
+        "26": {
+          "dust": 4980,
+          "sharpodonty": 1680
+        },
+        "27": {
+          "dust": 5160,
+          "sharpodonty": 1740
+        },
+        "28": {
+          "dust": 5340,
+          "sharpodonty": 1800
+        },
+        "29": {
+          "dust": 5520,
+          "sharpodonty": 1860
+        },
+        "30": {
+          "dust": 5700,
+          "sharpodonty": 1920
+        },
+        "31": {
+          "dust": 5880,
+          "sharpodonty": 1980
+        },
+        "32": {
+          "dust": 6060,
+          "sharpodonty": 2040
+        },
+        "33": {
+          "dust": 6240,
+          "sharpodonty": 2100
+        },
+        "34": {
+          "dust": 6420,
+          "sharpodonty": 2160
+        },
+        "35": {
+          "dust": 6600,
+          "sharpodonty": 2220
+        },
+        "36": {
+          "dust": 6780,
+          "sharpodonty": 2280
+        },
+        "37": {
+          "dust": 6960,
+          "sharpodonty": 2340
+        },
+        "38": {
+          "dust": 7140,
+          "sharpodonty": 2400
+        },
+        "39": {
+          "dust": 7320,
+          "sharpodonty": 2460
+        },
+        "40": {
+          "dust": 7500,
+          "sharpodonty": 2520
+        },
+        "41": {
+          "dust": 7680,
+          "sharpodonty": 2580
+        },
+        "42": {
+          "dust": 7860,
+          "sharpodonty": 2640
+        },
+        "43": {
+          "dust": 8040,
+          "sharpodonty": 2700
+        },
+        "44": {
+          "dust": 8220,
+          "sharpodonty": 2760
+        },
+        "45": {
+          "dust": 8400,
+          "sharpodonty": 2820
+        },
+        "46": {
+          "dust": 8580,
+          "sharpodonty": 2880
+        },
+        "47": {
+          "dust": 8760,
+          "sharpodonty": 2940
+        },
+        "48": {
+          "dust": 8940,
+          "sharpodonty": 3000
+        },
+        "49": {
+          "dust": 9120,
+          "sharpodonty": 3060
+        },
+        "50": {
+          "dust": 9300,
+          "sharpodonty": 3120
+        }
+      }
+    }
+  ]
+}

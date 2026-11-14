@@ -20,6 +20,8 @@ import { characterResoShape, shapePatterns } from "./derive/resonance.mjs";
 import { characterEuphorias } from "./derive/euphorias.mjs";
 import { characterSkills } from "./derive/skills.mjs";
 import { charactersMatsRequired } from "./derive/mats.mjs";
+import { patternCosts } from "./derive/patterns.mjs";
+import { progressionLevels } from "./derive/progressionLevels.mjs";
 import { itemsData, itemFormulas } from "./derive/items.mjs";
 import { arcanistMap } from "./derive/arcanistMap.mjs";
 import { collabCharacters, excludeCharacters } from "./derive/curation.mjs";
@@ -78,6 +80,8 @@ const files = {
   "character_euphorias.json": characterEuphorias(),
   "character_skills.json": characterSkills(),
   "characters_mats_required.json": charactersMatsRequired(),
+  "pattern_costs.json": patternCosts(),
+  "progression_levels.json": progressionLevels(),
   "items.json": items,
   "item_formulas.json": itemFormulas(new Set(items.map((item) => item.id))),
   "exclude_character.json": excludeCharacters(),

@@ -19,7 +19,7 @@ share cards and share pages (§13).
 | Team Building | modal |
 | Rotations | modal |
 | InfoBook | modal |
-| Planner (event shop) | modal (§14) |
+| Planner (Character plan + event shop) | modal (§14) |
 | Stages | data generated in `data/stages/`, UI missing |
 | Timeline | no data yet |
 | Share card / share page | `/api/og` PNG + `/sim` shell (§13) |
@@ -105,7 +105,9 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `characters_by_afflatus.json` | `character.json → career` | see caveat below |
 | `character_profiles.json` | `character.json → dmgType`, `character_battle_tag.json` | `dmgType`: 1=Reality, 2=Mental; `battleTag` is `101#117#122` → needs a role map |
 | `character_skills.json` | `character.json`, `character_rank_replace.json`, `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json`, `fight_device.json` + global `language_*` | **derived**: 139 characters; device heroes take stances/specials from `fight_device`; CN-only English + all Vietnamese live in `content/translations/skills.json` |
-| `characters_mats_required.json` | `character_rank.json`, `character_talent.json`, `item.json` + global `language_*` | **mixed**: `insight`/`resonance` derived; `stats`/`euphoria`/`mastery`/`frequency` come from `content/progression_costs.json` |
+| `characters_mats_required.json` | `character_rank.json`, `character_talent.json`, `talent_style_cost.json`, `item.json` + global `language_*` | **mixed**: `insight`/`resonance`/`frequency` derived; `stats`/`euphoria`/`mastery` come from `content/progression_costs.json` |
+| `pattern_costs.json` | `talent_style_cost.json` + `item.json` + global `language_*` | **derived**: one bill per (arcanist, resonance pattern) — the same rows `characters_mats_required.frequency[]` carries, keyed by pattern name so the InfoBook's pattern panel can price a pick |
+| `progression_levels.json` | `character_cosume.json` | **derived**: what one level costs in Dust (`2#5`) + Sharpodonty (`2#3`), 10 groups by rarity set + insight, 410 rows; the `level` column is cumulative over the four insight tiers, so the band offset is the only translation (§14) |
 | `items.json` | `item.json` (`isShow === 1`), `currency.json`, `item_use.json` (category) + global `language_*` | **derived**: 425 entries keyed by game id; `subType` → category label; Vietnamese + the editorial `source` live in `content/translations/items.json` |
 | `item_formulas.json` | `formula.json` (`produce`, `costMaterial`, `costScore`) | key = produced item id; inputs are `costMaterial` + `costScore` |
 | `psychube_id.json` | `equip.json` | key = `equip.id` (see §5) |
@@ -136,7 +138,6 @@ Keep these maps in `scripts/sync/maps/`.
 | `characters_by_afflatus` | afflatus overrides (§above) |
 | `exclude_character.json` | exclusion policy (currently `["Schneider"]`) |
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
-| `pattern_costs.json` | pattern → cost mapping (currently ships `{}`) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
 | `character_skills.json` | `skill-extras.json` (Rhiannon's two Bendith cards, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards), `skill-badges.json` (card-type overrides), `adaptive.json` (cards whose variants are cast options instead of stance cards: Brume S1, Nautika S2) and `single-rank.json` (heroes whose Conduit incantations ship one rank: The Twins, Hedone) |
 
@@ -150,7 +151,7 @@ Owned by the project, not the game. Lives in `content/` (moved out of `data/` in
 | `rotations.json` | skill rotation plans |
 | `guide_skills.json` | skill icon/variant mapping |
 | `progressions.json` | progression charts |
-| `progression_costs.json` | the hand-authored half of `characters_mats_required.json`: `stats` (level bands), `euphoria`, `mastery`, `frequency` (seeded by `scripts/sync/tools/extract-progression.mjs`) |
+| `progression_costs.json` | the hand-authored half of `characters_mats_required.json`: `stats` (level bands), `euphoria`, `mastery` (seeded by `scripts/sync/tools/extract-progression.mjs`) |
 | `teams.json` | team presets |
 | `i18n.json` | UI strings + VI translations |
 | `credits.json` | acknowledgements |
@@ -161,8 +162,10 @@ Owned by the project, not the game. Lives in `content/` (moved out of `data/` in
 | `translations/skills.json` | English for CN-only skills/insights/portrays + every Vietnamese skill string + the collab weapon charts |
 | `translations/items.json` | every Vietnamese item string (description/usage/source) + the editorial `source` prose + English for CN-only items |
 
-`guide_cards.json`, `reso_shape.json` and `pattern_costs.json` were dropped on
-2026-11-06 (never fetched, byte-identical duplicate, and unused respectively).
+`guide_cards.json` and `reso_shape.json` were dropped on 2026-11-06 (never fetched,
+byte-identical duplicate). The hand-typed `pattern_costs.json` was dropped the same
+day for being unused; the file ships again now, but as **generated** data from
+`talent_style_cost` (§3 Class A) — never re-type it.
 
 `euphoria_list.json` was dropped on 2026-11-06: it stored stale effect tags
 (“General”, “Pursuit”) instead of the trees' real names, which
@@ -319,6 +322,7 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
     character_skills.json  character_euphorias.json  skill_glossary.json
     ArcanistMap.json  promo_codes.json  og_index.json  stages/*.json
     event_shop.json          the Planner's event shops (§14)
+    pattern_costs.json  progression_levels.json   the Planner's bills (§14)
   api/                       Vercel Node functions
     codes.js                 GET /api/codes + edge cache (§12)
     og.js                    GET /api/og PNG share card (§13)
@@ -482,7 +486,10 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 3. **`guide_skills.json`:** hand-authored. Its slot numbers and variant art (Beryl's
    crystal icons, stance duplicates for Nautika/The Twins/Rhiannon) are editorial
    choices, not a table lookup; it lives in `content/`.
-4. **`pattern_costs.json`:** deleted 2026-11-06 — it was unused.
+4. **`pattern_costs.json`:** the hand-typed file was deleted 2026-11-06 (unused). The name
+   is back as a **generated** file — `talent_style_cost` prices the five craftable
+   resonance patterns per hero, which is what the Planner's Frequency picker and the
+   InfoBook's pattern panel both spend (§3 Class A, §14).
 5. **`exclude_character` / `collab_character`:** hand-curated policy. Both now derive
    from `content/curation.json`.
 6. **Old psychube localStorage migration:** yes. `scripts/sync/legacy/psychube-migration.json`
@@ -709,12 +716,13 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   repeated portray lines apart) and the app renders them as HTML. `cleanGame()` mirrors
   the legacy cleaner rather than calling `stripMarkup()` on descriptions.
 - **`characters_mats_required.json` is split by provenance.** `insight` comes from
-  `character_rank` (rank 2..N → insight 1..N-1) and `resonance` from
-  `character_talent` (talent 2..N → resonance N); both merge CN + global and match the
-  legacy quantities exactly. `stats`, `euphoria`, `mastery` and `frequency` cannot be
-  derived from any table (`character_level` uses cumulative levels and different values),
-  so they live in `content/progression.json`, keyed by canonical name. Lower-rarity
-  arcanists have four stat bands, not five.
+  `character_rank` (rank 2..N → insight 1..N-1), `resonance` from
+  `character_talent` (talent 2..N → resonance N) and `frequency` from
+  `talent_style` / `talent_style_cost` (the five craftable resonance patterns of the
+  hero's board); all three merge CN + global and match the legacy quantities exactly.
+  `stats`, `euphoria` and `mastery` cannot be derived from any table, so they live in
+  `content/progression_costs.json`, keyed by canonical name. Lower-rarity arcanists have
+  four stat bands, not five.
 - **Material names are refreshed from `item.json`.** The legacy file carried older
   translations ("Alopecurus Pratensis", "Golden Herb Incense", "Pyroxene Ore"); the
   generated file uses the current global names ("Fox Tail", "Golden Grass Incense",
@@ -726,7 +734,7 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   `progressions.json`, `guide_skills.json`, `skill_glossary.json`,
   `progression_costs.json`, `i18n.json`, `credits.json` and `curation.json` moved out of
   `data/`; `app.js` and the editor read them from there (`editor/files.js` `dirFor()`).
-  `guide_cards.json`, `reso_shape.json` and `pattern_costs.json` were deleted.
+  `guide_cards.json` and `reso_shape.json` were deleted.
 - **`items.json` is now derived (Phase 3).** Items are the union of `item` rows with
   `isShow === 1`, `currency` rows with a real name, and (when an overlay provides an
   English name) CN-only `item` rows; every key is the game id. `subType` is an
@@ -1079,10 +1087,25 @@ WASM is not a unit-test dependency.
 
 ---
 
-## 14. Planner (event shop)
+## 14. Planner (event shop and character progression)
 
-The 23rd modal: an InfoBook-shaped window with **one tab, Event**, that prices the event
-shop the global client is currently running. Data is `data/event_shop.json`, generated by
+The 23rd modal: an InfoBook-shaped window with **two mode tabs, Character then Event**.
+Character is a build plan (what each arcanist still needs); Event prices the event shop the
+global client is currently running. Both read generated data, so `npm run sync` moves them
+to a new patch with no hand edit in `app.js`.
+
+```html
+<button id="planner-tab-character">Character</button>
+<button id="planner-tab-event">Event</button>
+```
+
+`setPlannerTab()` shows one pane and hides the other (`#planner-pane-character` /
+`#planner-pane-event`); the modal always opens on Character. Both panes are siblings in the
+same `.planner-body`, and the phone header is the InfoBook's (title row 1, tabs row 2).
+
+### Event tab
+
+Data is `data/event_shop.json`, generated by
 `scripts/sync/derive/eventShop.mjs` — so `npm run sync` moves the tab to a new patch with
 no hand edit in `app.js`.
 
@@ -1115,8 +1138,9 @@ Parlor` (Shard of Prophecy) ship beside it and are reachable through the modal's
 because the same product can sit in two sections at different prices (Old Ticket 230 vs
 750) and each carries its own cap.
 
-**State.** `r1999_planner_v1` holds `{ patch, shop, limits }`, where `limits` maps
-`"<shopId>|<goodsUid>"` → quantity. On load, a blob whose `patch` differs from
+**State.** `r1999_planner_v1` holds `{ patch, shop, limits, owned }`, where `limits` maps
+`"<shopId>|<goodsUid>"` → quantity and `owned` maps `shopId` → the currency the reader says
+they already hold (the Owned field). On load, a blob whose `patch` differs from
 `data/event_shop.json`'s patch is **removed entirely** (the goods slots are activity rows,
 so old picks cannot mean anything on a new shop); uids the shipped data no longer names
 are dropped even within one patch. This is a planner, so an untouched capped row starts
@@ -1128,15 +1152,19 @@ entries, so every row falls back to its default.
 is art / clamped name / price / `[−][n/max][+]`. Conventions the owner pinned:
 
 - The item art draws **no frame of its own** (no background, no border) and is 76px, since
-  the game's item art already carries its border.
+  the game's item art already carries its border. `data/event_shop.json` emits the art path,
+  so a psychube is `images/psychube_icon/<rarity>/<id>.png` like every other surface.
 - The quantity box reads **`n/max`** (`1/1`, then `0/1`), `n/∞` when the slot has no cap;
   `data-max` carries the numeric cap for tests.
 - A card planned at **zero reads as sold out**: `.is-soldout` greys the art and prints
   `Sold Out` / `售罄` / `Hết hàng` across it, and `plannerCards()` stable-sorts those to the
-  end of their section. Stepping back up returns the card to its shop position.
+  end of their section. Stepping back up returns the card to its shop position. An
+  *unlimited* row (`maxBuy: 0`, Regular Reserve's currency sink) starts at 0 and is never
+  sold out — it has no cap to default to.
 - A card's price carries the shop's currency icon on **its left** (`<icon> 1000`), and the
   toolbar total reads label → currency icon → number, with the reset button to the **right**
-  of the number.
+  of the number. Every figure goes through `plannerNumber()`, which adds thousands
+  separators for the current language (`plannerLocale()`: en-US / vi-VN / zh-CN).
 - A picked card is **not** tinted: `.planner-card.is-picked` does nothing on purpose, the
   `n/max` box already says what is planned.
 - The name box is always two lines tall and `.planner-stepper` is `margin-top: auto`, so
@@ -1145,6 +1173,48 @@ is art / clamped name / price / `[−][n/max][+]`. Conventions the owner pinned:
   `.archetype-section-title`, so "Divine Treasure" is the same object as "DISPLAY FILTERS".
 - The shop picker is a native `<select>` with `appearance: none` and an inline SVG caret,
   so it matches the modal instead of showing the OS arrow.
+- **The card is also a button.** A press on the art, the name or the price opens the
+  quantity popup (`#planner-slider-modal`, `openPlannerSlider()`), which is the fast way to
+  set a quantity against a big cap; the `−`/`+` buttons step by one and stop propagation, so
+  a stepper press never opens the popup. The popup's art is `item.icon` at 54x64 for a
+  psychube, 54x54 otherwise, behind the rarity plate.
+
+**The Owned field.** `#planner-owned-input` sits in the Event tab's toolbar
+(`.planner-toolbar-tail`) and says how much of the shop currency the reader already holds
+per shop (`plannerOwned`, `shopId → number`, saved in `r1999_planner_v1`). The field reads
+`OWNED [icon] [n]`: the shop's own currency art is drawn **inside the input's left edge**
+(`.planner-owned-field` / `.planner-owned-icon`, 16px, absolutely placed at `left: 6px`,
+`pointer-events: none`) so it sits immediately left of the figure, and `.has-icon` reserves
+its room (`padding-left: 28px`, `text-align: left`). That keeps the number and its unit one
+control, the same order every tooltip line below prints. The icon is `hidden` (and the
+padding dropped) when the palette row resolves to nothing.
+
+Its tooltip is the character card's **`.char-tooltip`** surface with one difference: it is
+`position: fixed` and placed by `setupPlannerOwnedTooltip()` **under the cursor**
+(`pointerenter` / `pointermove`), flipping to the left/up edge so it never covers the field;
+`.is-visible` is the switch, exactly like `setupPatternTooltip()`. Focus anchors it under
+the field for a keyboard reader. The head prints the currency name (`#planner-tooltip-currency`,
+hidden with `:not(.has-head) .ct-head` when there is none). Each body line is the same three
+parts — **label → art → figure** — so the icon always sits immediately left of the number it
+counts:
+
+| Line | Label | Art | Figure |
+|---|---|---|---|
+| still need | `#planner-tooltip-need-label` | `#planner-tooltip-need-icon` (the shop currency) | `#planner-tooltip-need` |
+| stamina | `#planner-tooltip-stamina-label` | `images/random_icon/Stamina.webp` | `#planner-tooltip-stamina` |
+
+`setPlannerTooltipLine()` splits the translated sentence at its placeholder
+(`planner.stillNeed` at `{n}`, `planner.staminaCalcRoaring` at `{stamina}`) so the label
+text and the figure can be separate nodes with the art between them, while the translators
+still own the whole sentence. The stamina figure is `ceil(need / 15)` stamina followed by
+the days at 240 and 300/day. The stamina art is a WebP committed at that path —
+`images/random_icon/` is hand-added UI art, not a synced cache.
+
+**The open tab is remembered.** `setPlannerTab()` writes the active tab to
+`localStorage["r1999_planner_tab_v1"]` (`"character"` / `"event"`), and `initApp` runs
+`loadPlannerTab()` alongside `plannerLoadChars()`, so the modal reopens on the tab the
+reader left instead of jumping back to Character. It is a UI preference, not part of either
+plan blob, so a patch wipe leaves it alone; a blocked storage simply opens on Character.
 
 **Assets.** `scripts/sync/assets.mjs` `eventShopAssets()` copies the shop's icons into
 `images/items/icon/` and `images/psychube_icon/`; `prune-images.mjs` `eventShopNeeded()`
@@ -1152,6 +1222,136 @@ is unioned into both groups, so a slot the data names is never pruned.
 
 **Verify.** `scripts/sync/verify.mjs` asserts the `event_shop` shape (slot uniqueness, real
 section names, every icon present) plus the wilderness rules above. `editor/_test/ui.test.mjs`
-drives the modal itself: card layout, `n/max`, defaults at cap, unlimited climbing, separate
-quantities per slot, sold-out label + reordering, reset, persistence, patch wipe, the
-toolbar order, the card's currency icon and the row alignment.
+drives the modal itself: the two tabs and the Character default, the Event panes' section
+names, the card layout (76px art with no chrome of its own, the price under the name, the
+`[−] n/max [+]` stepper), defaults at cap, unlimited climbing, separate quantities per slot,
+sold-out label + reordering, reset, persistence, patch wipe, the toolbar order, the card's
+currency icon, the row alignment and the Owned field's icon + tooltip.
+
+### Character tab
+
+The build-plan half: add the arcanists still to be built, say where each one stands and
+where it has to end up, and read two bills — the one for the selected arcanist (in the
+detail pane) and the one for the whole list (in the **Goal** bar underneath it).
+
+**Every number is already generated.**
+
+- `data/characters_mats_required.json` carries the step costs by canonical name: `insight`
+  (tier 1..N), `resonance` (2..N), `euphoria` (one entry per facet, `id` = the E tier),
+  `mastery` (level 1..4) and `frequency` (one entry per craftable resonance pattern, in game
+  order, `id` = the game's `styleId` 1..5 and `name` = the pattern's own name). Each step is
+  `[{ material, quantity }]`, material names as `data/items.json` spells them.
+- `data/pattern_costs.json` is the same frequency bill keyed by pattern name, so the InfoBook's
+  pattern panel can price one pattern without walking the roster.
+- `data/items.json` supplies the art (`images/items/icon/<id>.png`) and the names.
+- **Level EXP comes from `character_cosume`**, which prices every `(rare, level)` pair:
+  `data/progression_levels.json` (`{ groups: [{ rarities, insight, levels: { "N": { dust,
+  sharpodonty } } }] }`, 10 groups / 410 rows, 5★+6★ share a curve, 2★+3★ another). Its
+  `level` column is cumulative over the four insight tiers (a 6★ runs 1..180), so the band
+  offset — 0 / 30 / 70 / 120 — is the only translation, and the row for a level is the cost of
+  *reaching* it. `app.js` `levelCostGroup()` /
+  `levelCostToLevel()` / `levelCostBetween()` / `levelExpBetween()` read it; the InfoBook's
+  `calculateCombinedCharacterMaterials` calls `levelExpBetween(rarity, 0, 1, insight, level)`
+  too, so **both surfaces agree** (before this they did not: the panel prorated the last
+  band linearly, which overstated a partially levelled arcanist — Insight II Lv.20 was
+  76,515 Dust by the old ratio, 55,400 by the real per-level curve). `npm run sync:verify`
+  asserts the ten groups, the 2..max level range, positive integer costs, full
+  rarity/insight coverage and the band totals (5★/6★ `27700/15080`, `100200/53100`,
+  `406700/137200`, `810880/400600`; 4★ `20680/11200`, `75040/39720`, `305020/102780`;
+  2★+3★ `16620/8930`, `60120/31860`, `244020/82320`). Those totals are the ones the panel
+  had always shown, which is what proved the offset reading of the table.
+
+**Frequency is the resonance-pattern system.** The five tiles are `talent_style`'s craftable
+patterns for the arcanist's `talentMould` board (Placidity, `styleId 0`, is already on the
+board and is not offered), priced by `talent_style_cost` per hero. A tile draws the pattern's
+own glyph (`images/shape_pattern/<shape>/<pattern>.png`) with its name underneath and the bill
+in the tooltip. `derive/patterns.mjs` owns the mapping and `sync:verify` asserts that
+`frequency[].materials` and `pattern_costs.json` are byte-identical bills, that every pattern
+name exists in `shape_patterns.json`, and that all 139 arcanists carry five of them.
+
+**A plan** is one object per arcanist:
+`{ name, curInsight, curLevel, goalInsight, goalLevel, curReso, goalReso, curMastery,
+goalMastery, euphoria[], frequency[] }`. The bill is the difference between the two states:
+every `insight` tier after `curInsight` up to `goalInsight`, every `resonance` step after
+`curReso`, every `mastery` level after `curMastery`, the picked euphoria facets and frequency
+nodes, plus `levelExpBetween()` for the levels in between. A plan whose current state equals
+its goal therefore bills **nothing** — the costs are steps, not a fixed package.
+
+**Clamps.** Resonance is capped by insight the way the game caps it (R0 at Insight 0, then
+R5 / R10 / R15 — `getMaxResonanceForInsight`), mastery is 0..4, the current state never
+sits above the goal, and a level is capped by its insight (30/40/50/60). `plannerClampPlan()`
+applies all of it on load and after every change, so a hand-edited localStorage blob cannot
+produce an impossible plan.
+
+**The defaults** of a freshly added arcanist are level 1 / Insight 0 / R0 / mastery 0, with
+the goal at the arcanist's own cap (Insight III Lv.60 for 5★/6★, Insight II Lv.50 below
+that) and the goal resonance at R10 (a full board). **Quick goal** is the usual "can fight
+now" breakpoint: 5★/6★ → Insight III Lv.30, everything else → Insight II Lv.50, both at R10.
+
+**State.** `r1999_planner_characters_v1` holds `{ chars, selected }`. Unlike the Event tab's
+picks it is **not patch-stamped**: a build plan spans patches, so an update must not wipe it.
+Unknown arcanist names (no `characters_mats_required` row) are dropped, duplicates collapse,
+and every number is clamped on load, so a stale blob still opens.
+
+**Data sources the tab needs in order.** `getCharacterMats(name)` (from
+`charactersMatsData`, filled by `buildInfoBookData`), `characterDb[name]` for the head icon
+(filled by `buildArcanistMap`), `charactersMatsData` keys for the picker roster (highest
+rarity first, minus what is already in), and `levelCostGroups` (filled by
+`buildLevelCostData`). `initApp` therefore calls `buildLevelCostData(await
+readJson(levelCostsRes))` and then `plannerLoadChars()` **after** the other builders — a
+missing fetch just leaves the goal at level 1 instead of crashing.
+
+**UI conventions** (they mirror the Event tab on purpose, so the two panes read as one
+modal):
+
+- `.planner-char-rail` (158px, its own scroller) → `.planner-char-detail` (the hero row, the
+  four from → to rows, the Euphoria and Frequency pickers, this arcanist's bill) →
+  `.planner-goal` (its own band, `max-height: 38%`, summing every arcanist).
+- The from → to control is **two native `<select>`s** dressed like the shop picker
+  (`appearance: none`, inline SVG caret): the current value on the left, an arrow, the goal
+  on the right. Both lists are rebuilt from the plan, so the goal list can never offer
+  something below the current state.
+- Empty panes print `.guide-empty`; material lists use `.planner-mat-grid`
+  (`repeat(auto-fill, minmax(96px, 1fr))`).
+- **A material card is the InfoBook's own item sticker.** `plannerMatCardHtml()` wraps
+  `.item-sticker` (the game's art over its rarity frame from `images/items/border/<rarity>.webp`,
+  art from `images/items/icon/<id>.png`) in `.planner-mat-art`, with
+  `.item-sticker-qty` printing the quantity in the dark badge in the **bottom-right corner** of
+  the art, and the clamped name under it. The quantity in the badge is the compact form the
+  InfoBook prints (`formatMaterialQuantity`: `894k`, `1.3m`); the exact figure is on
+  `data-qty` and in the tooltip, and the tests read `data-qty`, never the badge. A material
+  with no art falls back to `.is-plain` (dashed box + badge) and an unknown name draws no
+  image at all. The card draws no frame of its own — the sticker already carries one.
+- The section bars (this arcanist's bill, the Goal bar) are the Appearance modal's
+  `.archetype-section-header` / `.archetype-section-title`.
+- **The Goal header is the plan itself, as head icons** (`.planner-goal-avatar`, 26px, from
+  `characterDb`), right-aligned and wrapping, with the selected arcanist outlined. It carries
+  **no `"N arcanists"` text**, and an empty plan draws the Goal title alone (`.planner.goalMeta`
+  is gone; `.planner.noCharacters` belongs to the rail/detail). Pressing a head icon calls
+  `plannerSelectCharacter(name, true)` — the same path as a rail tile — and on a phone it also
+  scrolls that arcanist's controls back into view, because the band sits under the detail.
+- **The picker** (`#planner-picker`) is a lightbox over the tab only — it is
+  `position: absolute; inset: 0` inside `#planner-pane-character` (so a reader on the Event
+  tab never sees it). It is built from the **Manage modal's own pieces**: a `.roster-toolbar` row
+  holding `.search-input` (`#planner-picker-search`) and a `.filter-btn-group` of five rarity
+  chips (`#planner-picker-rarity`, `plannerPickerRarities` — press one or more to narrow,
+  press again to widen), over a `.roster-grid` of `.roster-char-item` tiles carrying
+  `.roster-avatar-box` + `.roster-avatar-img` + `.roster-char-name` (still `data-pick` for the
+  press handler; eight roster heads have no art, so the box is the requirement, not the
+  image). `setPlannerTab()` closes it, and so does the backdrop, the close button and picking a
+  name.
+- On a phone (≤768px) the rail becomes a horizontal strip on top, the controls stack to one
+  column, and the **whole tab scrolls as one column** (strip → controls → bill → Goal) with
+  the toolbar sticky, so there are never two nested scrollers; the picker goes
+  `position: fixed` because an absolutely positioned overlay would scroll out from under the
+  reader.
+
+**Verify.** `editor/_test/ui.test.mjs` drives the tab: tab order and the Character default,
+the empty state, the picker (opens, covers the tab, the whole roster, search, the Manage-style
+tiles and rarity chips narrowing and widening the grid), adding an arcanist, the eight selects
+and their own chrome, the bill and its art, the Level bands, the goal pinning at the cap, the
+bill emptying when current == goal and growing again when the current state steps back down,
+the pattern picker billing exactly `pattern_costs.json`, Quick goal, persistence across a
+reload, a second arcanist and the Goal bar being their exact sum plus one head icon each (and
+a head icon opening that arcanist), row alignment of the cards, remove / reset, the picker
+closing on a tab switch, the phone stacking, the phone picker, and the Chinese translation.

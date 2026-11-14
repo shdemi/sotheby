@@ -1362,31 +1362,160 @@
         <h2 class="archetype-modal-title"><span data-i18n="planner.title">Planner</span></h2>
         <div class="builds-header-actions">
           <div class="builds-mode-group" role="tablist" aria-label="Planner">
-            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn is-active" id="planner-tab-event" data-mode="event" data-i18n="planner.tabEvent">Event</button>
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn is-active" id="planner-tab-character" data-mode="character" data-i18n="planner.tabCharacter">Character</button>
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="planner-tab-event" data-mode="event" data-i18n="planner.tabEvent">Event</button>
           </div>
           <button class="modal-close" id="planner-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
         </div>
       </div>
 
       <div class="planner-body">
-        <div class="planner-toolbar">
-          <div class="planner-toolbar-lead">
-            <span class="planner-patch" id="planner-patch"></span>
-            <select class="planner-shop-select" id="planner-shop-select" data-i18n-aria-label="planner.shop" aria-label="Event shop"></select>
-          </div>
-          <div class="planner-toolbar-tail">
-            <div class="planner-total">
-              <span class="planner-total-label" data-i18n="planner.totalRequired">Total Required</span>
-              <img class="planner-money-icon" id="planner-total-icon" alt="" hidden />
-              <span class="planner-total-value" id="planner-total-value">0</span>
+        <!-- Character tab: pick the arcanists you still have to build, and read
+             the combined bill underneath. -->
+        <div class="planner-pane is-active" id="planner-pane-character" data-pane="character">
+          <div class="planner-toolbar">
+            <div class="planner-toolbar-lead">
+              <span class="planner-patch" id="planner-char-count"></span>
             </div>
-            <button type="button" class="btn btn-secondary planner-reset-btn" id="planner-clear" title="Reset quantities" data-i18n-title="planner.reset" aria-label="Reset quantities" data-i18n-aria-label="planner.reset">
-              <img src="images/random_icon/reset_png.png" alt="" class="planner-reset-icon" />
-            </button>
+            <div class="planner-toolbar-tail">
+              <button type="button" class="btn btn-secondary planner-add-btn" id="planner-char-add" data-i18n-title="planner.addArcanist" aria-label="Add arcanist" data-i18n-aria-label="planner.addArcanist">
+                <span class="planner-add-plus" aria-hidden="true">+</span>
+                <span data-i18n="planner.addArcanist">Add arcanist</span>
+              </button>
+              <button type="button" class="btn btn-secondary planner-reset-btn" id="planner-char-clear" title="Reset the plan" data-i18n-title="planner.resetPlan" aria-label="Reset the plan" data-i18n-aria-label="planner.resetPlan">
+                <img src="images/random_icon/reset_png.png" alt="" class="planner-reset-icon" />
+              </button>
+            </div>
+          </div>
+          <div class="planner-char-body">
+            <div class="planner-char-rail" id="planner-char-rail"></div>
+            <div class="planner-char-detail" id="planner-char-detail"></div>
+          </div>
+          <div class="planner-goal" id="planner-goal"></div>
+
+          <!-- "Add arcanist" picker, drawn over the tab like a lightbox. Search,
+               rarity filter and tile grid are the Manage modal's own pieces. -->
+          <div class="planner-picker" id="planner-picker" hidden>
+            <div class="planner-picker-card">
+              <div class="planner-picker-head">
+                <span class="archetype-section-title"><span data-i18n="planner.addArcanist">Add arcanist</span></span>
+                <button type="button" class="modal-close planner-picker-close" id="planner-picker-close" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="roster-toolbar planner-picker-toolbar">
+                <div class="roster-toolbar-left">
+                  <input type="text" class="search-input" id="planner-picker-search" placeholder="Search arcanists" data-i18n-placeholder="planner.searchArcanist" aria-label="Search arcanists" data-i18n-aria-label="planner.searchArcanist" />
+                  <div class="roster-toolbar-right">
+                    <div class="filter-btn-group" id="planner-picker-rarity">
+                      <button type="button" class="filter-btn" data-rarity="6">✦6</button>
+                      <button type="button" class="filter-btn" data-rarity="5">✦5</button>
+                      <button type="button" class="filter-btn" data-rarity="4">✦4</button>
+                      <button type="button" class="filter-btn" data-rarity="3">✦3</button>
+                      <button type="button" class="filter-btn" data-rarity="2">✦2</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="roster-grid planner-picker-grid" id="planner-picker-grid"></div>
+            </div>
           </div>
         </div>
-        <div class="planner-scroll" id="planner-sections">
-          <!-- Populated dynamically -->
+
+        <!-- Event tab: price the event shop the global client is running. -->
+        <div class="planner-pane" id="planner-pane-event" data-pane="event" hidden>
+          <div class="planner-toolbar">
+            <div class="planner-toolbar-lead">
+              <span class="planner-patch" id="planner-patch"></span>
+              <select class="planner-shop-select" id="planner-shop-select" data-i18n-aria-label="planner.shop" aria-label="Event shop"></select>
+            </div>
+            <div class="planner-toolbar-tail">
+              <div class="planner-owned-wrap">
+                <span class="planner-owned-label" data-i18n="planner.owned">OWNED</span>
+                <span class="planner-owned-field">
+                  <img class="planner-owned-icon" id="planner-owned-icon" alt="" hidden />
+                  <input type="number" min="0" step="1" id="planner-owned-input" class="planner-owned-input" placeholder="0" />
+                </span>
+                <!-- Same surface as the character card's tooltip (`.char-tooltip`):
+                     a head naming the shop currency, then the two figures — each
+                     behind the art it counts (the shop currency, then stamina). It
+                     follows the cursor, so it never covers the field. -->
+                <div class="char-tooltip planner-owned-tooltip" id="planner-owned-tooltip" role="tooltip" aria-hidden="true">
+                  <div class="ct-head"><span class="ct-name" id="planner-tooltip-currency"></span></div>
+                  <div class="ct-body">
+                    <div class="planner-tooltip-line">
+                      <span class="planner-tooltip-label" id="planner-tooltip-need-label">Still need</span>
+                      <img class="planner-tooltip-icon" id="planner-tooltip-need-icon" alt="" hidden />
+                      <span id="planner-tooltip-need">0</span>
+                    </div>
+                    <div class="planner-tooltip-line">
+                      <span class="planner-tooltip-label" id="planner-tooltip-stamina-label">Stamina</span>
+                      <img class="planner-tooltip-icon" src="images/random_icon/Stamina.webp" alt="" />
+                      <span id="planner-tooltip-stamina">0 (0.0d)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="planner-total">
+                <span class="planner-total-label" data-i18n="planner.totalRequired">Total Required</span>
+                <img class="planner-money-icon" id="planner-total-icon" alt="" hidden />
+                <span class="planner-total-value" id="planner-total-value">0</span>
+              </div>
+              <button type="button" class="btn btn-secondary planner-reset-btn" id="planner-clear" title="Reset quantities" data-i18n-title="planner.reset" aria-label="Reset quantities" data-i18n-aria-label="planner.reset">
+                <img src="images/random_icon/reset_png.png" alt="" class="planner-reset-icon" />
+              </button>
+            </div>
+          </div>
+          <div class="planner-scroll" id="planner-sections">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Quantity slider modal popup -->
+          <div class="planner-slider-modal" id="planner-slider-modal" hidden>
+            <div class="planner-slider-backdrop" id="planner-slider-backdrop"></div>
+            <div class="modal-card archetype-modal-card planner-slider-dialog">
+              <div class="archetype-modal-header planner-slider-header">
+                <div class="planner-slider-item-preview">
+                  <div class="planner-slider-art-wrap" id="planner-slider-art-wrap"></div>
+                  <div class="planner-slider-meta">
+                    <h2 class="modal-char-title planner-slider-item-name" id="planner-slider-name"></h2>
+                    <span class="planner-slider-item-limit" id="planner-slider-limit"></span>
+                    <div class="planner-slider-item-unit-cost" id="planner-slider-unit-cost"></div>
+                  </div>
+                </div>
+                <button type="button" class="modal-close" id="planner-slider-close" aria-label="Close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="modal-body archetype-modal-body planner-slider-body">
+                <div class="setting-group">
+                  <div class="setting-label-row">
+                    <label class="setting-label"><span data-i18n="planner.quantity">Quantity</span></label>
+                    <span class="setting-val-display" id="planner-slider-denom-display">0 / 0</span>
+                  </div>
+                  <div class="planner-slider-controls">
+                    <button type="button" class="btn btn-secondary planner-slider-btn-quick" id="planner-slider-min">Min</button>
+                    <button type="button" class="btn btn-secondary planner-slider-step-btn" id="planner-slider-minus" aria-label="Subtract">−</button>
+                    <div class="planner-slider-track-wrap">
+                      <input type="range" class="custom-slider" id="planner-slider-range" min="0" max="1" step="1" value="0" />
+                    </div>
+                    <button type="button" class="btn btn-secondary planner-slider-step-btn" id="planner-slider-plus" aria-label="Add">+</button>
+                    <button type="button" class="btn btn-secondary planner-slider-btn-quick" id="planner-slider-max">Max</button>
+                  </div>
+                </div>
+                <div class="setting-group planner-slider-num-group">
+                  <input type="number" class="custom-number-input planner-slider-input" id="planner-slider-input" min="0" step="1" />
+                </div>
+                <div class="planner-slider-total-cost">
+                  <span class="planner-slider-cost-label" data-i18n="planner.totalRequired">Total Required</span>
+                  <div class="planner-slider-cost-val" id="planner-slider-total-cost"></div>
+                </div>
+                <div class="planner-slider-footer">
+                  <button type="button" class="btn btn-primary planner-slider-confirm-btn" id="planner-slider-confirm" data-i18n="planner.confirm">Confirm</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

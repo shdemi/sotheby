@@ -1,14 +1,15 @@
 /**
  * `characters_mats_required.json` — per-character progression costs.
  *
- * Two of the six fields are game data:
- *   insight   <- `character_rank` (rank 2..N -> insight 1..N-1, each `consume`)
- *   resonance <- `character_talent` (talent 2..N -> resonance N, each `consume`)
- * Both are merged CN-then-global so CN-only arcanists get their rows too, and
- * the material names come from the global `item` table.
+ * Three of the six fields are game data:
+ *   insight   <- `character_rank`      (rank 2..N -> insight 1..N-1, each `consume`)
+ *   resonance <- `character_talent`    (talent 2..N -> resonance N, each `consume`)
+ *   frequency <- `talent_style_cost`   (style 1..5 -> the craftable resonance patterns)
+ * All are merged CN-then-global so CN-only arcanists get their rows too, and the
+ * material names come from the global `item` table.
  *
- * The other four are hand-authored — no table reproduces them:
- *   stats, euphoria, mastery, frequency
+ * The other three are hand-authored — no table reproduces them:
+ *   stats, euphoria, mastery
  * They live in `content/progression_costs.json` (extracted once by
  * `scripts/sync/tools/extract-progression.mjs`) and are copied through here.
  *
@@ -18,9 +19,11 @@
 import path from "node:path";
 import { CONTENT, RARITY_OFFSET } from "../config.mjs";
 import { tryReadJson } from "../util.mjs";
-import { text, table } from "../sources.mjs";
+import { table } from "../sources.mjs";
 import { canonicalName, charactersById } from "./names.mjs";
 import { afflatusFor } from "./characters.mjs";
+import { materialsFrom } from "./consume.mjs";
+import { frequencySteps, patternTables } from "./patterns.mjs";
 
 /** Fallback used only when the curated file has no row for a hero. */
 const DEFAULT_STATS = {
@@ -50,29 +53,10 @@ function groupByHero(rows) {
 }
 
 export function charactersMatsRequired() {
-  const items = new Map(table("global", "item").map((item) => [item.id, item]));
-
-  /** "2#3" is Sharpodonty; everything else is an `item` row. */
-  function materialName(type, id) {
-    if (type === "2" && id === "3") return "Sharpodonty";
-    const item = items.get(Number(id));
-    if (!item) return `Item_${id}`;
-    return text("en", item.name) || String(item.name);
-  }
-
-  function materials(consume) {
-    return String(consume || "")
-      .split("|")
-      .filter(Boolean)
-      .map((part) => {
-        const [type, id, quantity] = part.split("#");
-        return { material: materialName(type, id), quantity: Number(quantity) };
-      });
-  }
-
   const rankBy = groupByHero(mergedTiers("character_rank", "rank"));
   const talentBy = groupByHero(mergedTiers("character_talent", "talentId"));
   const curated = tryReadJson(path.join(CONTENT, "progression_costs.json")) || {};
+  const patterns = patternTables();
 
   // Deduplicate the roster by canonical name; the global row wins.
   const roster = new Map();
@@ -90,11 +74,11 @@ export function charactersMatsRequired() {
     const ranks = (rankBy.get(id) || [])
       .filter((row) => row.rank > 1 && row.consume)
       .sort((a, b) => a.rank - b.rank)
-      .map((row) => ({ insight: row.rank - 1, materials: materials(row.consume) }));
+      .map((row) => ({ insight: row.rank - 1, materials: materialsFrom(row.consume) }));
     const talents = (talentBy.get(id) || [])
       .filter((row) => row.talentId > 1 && row.consume)
       .sort((a, b) => a.talentId - b.talentId)
-      .map((row) => ({ resonance: row.talentId, materials: materials(row.consume) }));
+      .map((row) => ({ resonance: row.talentId, materials: materialsFrom(row.consume) }));
 
     out[name] = {
       id,
@@ -106,7 +90,7 @@ export function charactersMatsRequired() {
       resonance: talents,
       euphoria: own.euphoria || [],
       mastery: own.mastery || [],
-      frequency: own.frequency || [],
+      frequency: frequencySteps(id, patterns.mouldMap, patterns.costMap, patterns.nameMap),
     };
   }
 
