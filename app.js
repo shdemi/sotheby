@@ -15135,43 +15135,6 @@ function plannerInsightLabel(insight) {
 }
 
 /**
- * One "from → to" control. Both ends are native selects dressed in the modal's
- * own field style, so a step reads the same as the Event tab's shop picker.
- */
-function plannerSelectHtml(field, values, current, label, title, disabled) {
-  const options = values
-    .map((value) => {
-      const text = label ? label(value) : String(value);
-      return `<option value="${value}"${value === current ? " selected" : ""}>${escapeHtml(
-        String(text)
-      )}</option>`;
-    })
-    .join("");
-  return `<select class="planner-field-select" id="planner-f-${field}" data-field="${field}" aria-label="${escapeHtml(
-    title
-  )}" title="${escapeHtml(title)}"${disabled ? " disabled" : ""}>${options}</select>`;
-}
-
-/**
- * One from → to row, laid out the way the Character Setting modal lays out a
- * setting: the label and the two values on a header row, the control underneath.
- */
-function plannerRangeGroupHtml(labelKey, values, curSelect, goalSelect) {
-  return `
-        <div class="setting-group planner-range">
-          <div class="setting-label-row">
-            <label class="setting-label"><span>${escapeHtml(t(labelKey))}</span></label>
-            <span class="setting-val-display">${escapeHtml(values)}</span>
-          </div>
-          <div class="planner-range-controls">
-            ${curSelect}
-            <span class="planner-field-arrow" aria-hidden="true">→</span>
-            ${goalSelect}
-          </div>
-        </div>`;
-}
-
-/**
  * Insight is a row of the game's own tier pips — the same
  * `images/insight_icon/I<n>.png` buttons the InfoBook's progression panel draws —
  * instead of a text select, so a step reads as a tier rather than as a number.
@@ -15219,42 +15182,128 @@ function plannerInsightPicksHtml(plan, maxInsight) {
 }
 
 /**
- * Level is a slider per end, the way the InfoBook levels a character: a range
- * input with the figure beside it. The reason matters — a 5★ arcanist has 180
- * levels, and a select of 180 rows is unusable.
+ * How each end of a from → to slider prints its figure. One table, so the panel and
+ * the live drag preview (`plannerPreviewField`) cannot disagree about a `Lv.` or an `R`.
  */
-function plannerLevelSlidersHtml(plan) {
-  const slider = (field, lo, hi, value, roleKey) => `
+const PLANNER_SLIDER_FIELDS = {
+  curLevel: (value) => `Lv.${value}`,
+  goalLevel: (value) => `Lv.${value}`,
+  curReso: (value) => `R${value}`,
+  goalReso: (value) => `R${value}`,
+  curMastery: (value) => String(value),
+  goalMastery: (value) => String(value),
+};
+
+/**
+ * One from → to setting drawn as a slider per end, the way the InfoBook levels a
+ * character: a range input with the figure beside it. Level needs it (a 5★ arcanist
+ * has 180 levels, which no select can offer), and Resonance and Mastery follow so
+ * every bounded number in the editor is set the same way.
+ *
+ * `disabled` greys the pair without hiding it — mastery is a real setting that the
+ * game only offers once a Euphoria facet is on — and `wrapper` lets a caller that
+ * already sits inside another `setting-group` (mastery) open its own box instead.
+ */
+function plannerSliderGroupHtml(labelKey, readoutKey, readout, rows, disabled, wrapper) {
+  const slider = ({ field, lo, hi, value, roleKey }) => `
               <span class="planner-field-mini">${escapeHtml(t(roleKey))}</span>
               <input type="range" class="custom-slider planner-level-slider" data-slider="${field}"
-                min="${lo}" max="${hi}" value="${value}" step="1"
-                aria-label="${escapeHtml(`${t(roleKey)} ${t("builds.level")}`)}" />
-              <span class="psychube-level-number planner-level-number" data-number="${field}">Lv.${value}</span>`;
+                min="${lo}" max="${hi}" value="${value}" step="1"${disabled ? " disabled" : ""}
+                aria-label="${escapeHtml(`${t(roleKey)} ${t(labelKey)}`)}" />
+              <span class="psychube-level-number planner-level-number" data-number="${field}">${escapeHtml(
+                (PLANNER_SLIDER_FIELDS[field] || String)(value)
+              )}</span>`;
   return `
-        <div class="setting-group planner-range">
+        <div class="${wrapper || "setting-group planner-range"}">
           <div class="setting-label-row">
-            <label class="setting-label"><span>${escapeHtml(t("builds.level"))}</span></label>
-            <span class="setting-val-display" data-readout="level">${escapeHtml(
-              `Lv.${plan.curLevel} → Lv.${plan.goalLevel}`
-            )}</span>
+            <label class="setting-label"><span>${escapeHtml(t(labelKey))}</span></label>
+            <span class="setting-val-display" data-readout="${readoutKey}">${escapeHtml(readout)}</span>
           </div>
           <div class="planner-level-sliders">
-            <div class="planner-level-row">${slider(
-              "curLevel",
-              1,
-              getMaxLevelForInsight(plan.curInsight),
-              plan.curLevel,
-              "builds.from"
-            )}</div>
-            <div class="planner-level-row">${slider(
-              "goalLevel",
-              plan.goalInsight === plan.curInsight ? plan.curLevel : 1,
-              getMaxLevelForInsight(plan.goalInsight),
-              plan.goalLevel,
-              "builds.to"
-            )}</div>
+            ${rows
+              .map((row) => `<div class="planner-level-row">${slider(row)}</div>`)
+              .join("")}
           </div>
         </div>`;
+}
+
+function plannerLevelSlidersHtml(plan) {
+  return plannerSliderGroupHtml(
+    "builds.level",
+    "level",
+    `Lv.${plan.curLevel} → Lv.${plan.goalLevel}`,
+    [
+      {
+        field: "curLevel",
+        lo: 1,
+        hi: getMaxLevelForInsight(plan.curInsight),
+        value: plan.curLevel,
+        roleKey: "builds.from",
+      },
+      {
+        field: "goalLevel",
+        lo: plan.goalInsight === plan.curInsight ? plan.curLevel : 1,
+        hi: getMaxLevelForInsight(plan.goalInsight),
+        value: plan.goalLevel,
+        roleKey: "builds.to",
+      },
+    ]
+  );
+}
+
+/** Resonance is a slider too: R0…R15, capped by each end's insight the way the game caps it. */
+function plannerResoSlidersHtml(plan) {
+  return plannerSliderGroupHtml(
+    "builds.resonance",
+    "reso",
+    `R${plan.curReso} → R${plan.goalReso}`,
+    [
+      {
+        field: "curReso",
+        lo: 0,
+        hi: plannerResoMax(plan.curInsight),
+        value: plan.curReso,
+        roleKey: "builds.from",
+      },
+      {
+        field: "goalReso",
+        lo: plan.curReso,
+        hi: plannerResoMax(plan.goalInsight),
+        value: plan.goalReso,
+        roleKey: "builds.to",
+      },
+    ]
+  );
+}
+
+/** Mastery is 0…4, and only switchable once a Euphoria facet is ticked. */
+function plannerMasterySlidersHtml(plan, gated) {
+  return plannerSliderGroupHtml(
+    "builds.mastery",
+    "mastery",
+    `${plan.curMastery} → ${plan.goalMastery}`,
+    [
+      {
+        field: "curMastery",
+        lo: 0,
+        hi: 4,
+        value: plan.curMastery,
+        roleKey: "builds.from",
+      },
+      {
+        field: "goalMastery",
+        lo: plan.curMastery,
+        hi: 4,
+        value: plan.goalMastery,
+        roleKey: "builds.to",
+      },
+    ],
+    gated,
+    // Mastery already sits inside the Euphoria · Mastery group, so it must not open a
+    // second `setting-group` — it wears the `.planner-subsetting` wrapper its gate and
+    // opacity rules already key off.
+    `planner-subsetting${gated ? " is-disabled" : ""}`
+  );
 }
 
 /**
@@ -15298,29 +15347,14 @@ function plannerEuphoriaMasteryHtml(mats, plan) {
     })
     .join("");
   const mastery = hasMastery
-    ? `<div class="planner-subsetting${gated ? " is-disabled" : ""}">
-          <div class="setting-label-row">
-            <label class="setting-label"><span>${escapeHtml(t("builds.mastery"))}</span></label>
-            <span class="setting-val-display">${escapeHtml(`${plan.curMastery} → ${plan.goalMastery}`)}</span>
-          </div>
-          <div class="planner-range-controls">
-            ${plannerSelectHtml("curMastery", plannerSeries(0, 4), plan.curMastery, null, t("builds.mastery"), gated)}
-            <span class="planner-field-arrow" aria-hidden="true">→</span>
-            ${plannerSelectHtml(
-              "goalMastery",
-              plannerSeries(plan.curMastery, 4),
-              plan.goalMastery,
-              null,
-              t("builds.mastery"),
-              gated
-            )}
-          </div>
+    ? `${
+        plannerMasterySlidersHtml(plan, gated)
+      }
           ${
             gated
               ? `<p class="planner-subsetting-hint">${escapeHtml(t("planner.masteryNeedsEuphoria"))}</p>`
               : ""
-          }
-        </div>`
+          }`
     : "";
   return `
         <div class="setting-group is-wide planner-euphoria-mastery">
@@ -15390,7 +15424,6 @@ function plannerCharDetailHtml() {
   if (!mats) return "";
   const rarity = Number(mats.rarity || getCharacterRarity(plan.name) || 5);
   const maxInsight = getMaxInsightForRarity(rarity);
-  const title = (key) => t(key);
 
   const materials = plannerCharMaterials(plan);
 
@@ -15398,24 +15431,7 @@ function plannerCharDetailHtml() {
       <div class="planner-char-controls">
         ${plannerInsightPicksHtml(plan, maxInsight)}
         ${plannerLevelSlidersHtml(plan)}
-        ${plannerRangeGroupHtml(
-          "builds.resonance",
-          `R${plan.curReso} → R${plan.goalReso}`,
-          plannerSelectHtml(
-            "curReso",
-            plannerSeries(0, plannerResoMax(plan.curInsight)),
-            plan.curReso,
-            (v) => `R${v}`,
-            title("builds.resonance")
-          ),
-          plannerSelectHtml(
-            "goalReso",
-            plannerSeries(plan.curReso, plannerResoMax(plan.goalInsight)),
-            plan.goalReso,
-            (v) => `R${v}`,
-            title("builds.resonance")
-          )
-        )}
+        ${plannerResoSlidersHtml(plan)}
         ${plannerEuphoriaMasteryHtml(mats, plan)}
         ${plannerFrequencyHtml(mats, plan)}
       </div>
@@ -16309,14 +16325,9 @@ function plannerSetField(field, value) {
   plannerClampPlan(plan);
   plannerSaveChars();
   renderPlannerCharacter();
-  // Rebuilding the pane throws focus away; hand it back to the same control. The
-  // selects, the Insight pips and the Level sliders all name their field, so one
-  // lookup covers all three.
-  const again = document.getElementById(`planner-f-${field}`);
-  if (again) {
-    again.focus();
-    return;
-  }
+  // Rebuilding the pane throws focus away; hand it back to the same control. Every
+  // control names its field (a pip its `data-set`, a slider its `data-slider`), so two
+  // lookups cover all three.
   const pick =
     document.querySelector(`#planner-char-detail [data-set="${field}"][data-value="${plan[field]}"]`) ||
     document.querySelector(`#planner-char-detail [data-slider="${field}"]`);
@@ -16339,9 +16350,9 @@ function plannerPreviewField(field, value) {
   plannerSaveChars();
   const detail = document.getElementById("planner-char-detail");
   if (!detail) return;
-  // A clamp can move the other end too (a goal level below the current one), so both
-  // readouts and both thumbs are repainted from the clamped plan rather than the value
-  // the drag reported.
+  // A clamp can move the other end too (a goal level below the current one, a resonance
+  // cap following the insight down), so every readout and every thumb is repainted from
+  // the clamped plan rather than from the value the drag reported.
   const setText = (selector, text) => {
     const el = detail.querySelector(selector);
     if (el) el.textContent = text;
@@ -16351,8 +16362,10 @@ function plannerPreviewField(field, value) {
     `${plannerInsightLabel(plan.curInsight)} → ${plannerInsightLabel(plan.goalInsight)}`
   );
   setText('[data-readout="level"]', `Lv.${plan.curLevel} → Lv.${plan.goalLevel}`);
-  ["curLevel", "goalLevel"].forEach((key) => {
-    setText(`[data-number="${key}"]`, `Lv.${plan[key]}`);
+  setText('[data-readout="reso"]', `R${plan.curReso} → R${plan.goalReso}`);
+  setText('[data-readout="mastery"]', `${plan.curMastery} → ${plan.goalMastery}`);
+  Object.entries(PLANNER_SLIDER_FIELDS).forEach(([key, format]) => {
+    setText(`[data-number="${key}"]`, format(plan[key]));
     const input = detail.querySelector(`[data-slider="${key}"]`);
     if (input && input.value !== String(plan[key])) input.value = String(plan[key]);
   });
@@ -16628,15 +16641,11 @@ function setupPlannerListeners() {
         return;
       }
       // A slider commits on release, which is when `change` fires; the drag itself
-      // is painted in place by the `input` listener below.
+      // is painted in place by the `input` listener below. Insight is a pip press
+      // (`click`), not a change, so this is the only control shape left here.
       const slider = e.target.closest("[data-slider]");
-      if (slider) {
-        plannerSetField(slider.dataset.slider, slider.value);
-        return;
-      }
-      const field = e.target.closest("[data-field]");
-      if (!field) return;
-      plannerSetField(field.dataset.field, field.value);
+      if (!slider) return;
+      plannerSetField(slider.dataset.slider, slider.value);
     });
     // A drag must not rebuild the pane — that would drop the thumb out from under
     // the reader's finger — so the readouts are repainted and the plan is only

@@ -1314,7 +1314,8 @@ each one costs, and the **farm route** that pays for every enabled one in stamin
 **Left press edits, right press leaves out.** A tile's `click` opens the editor
 (`openPlannerEditor`); its `contextmenu` flips `plan.enabled`
 (`plannerToggleCharacterEnabled`). A disabled arcanist keeps its settings and stays in the
-grid — dimmed (`.planner-char-tile.is-disabled`: `opacity: .32` + `filter: grayscale(1)`) —
+grid — dimmed (`.planner-char-tile.is-disabled`: `opacity: .32` + `filter: grayscale(1)`, and
+its rule drops from the site orange to grey) —
 but drops out of the Goal bill and out of the farm route, so a reader can build one arcanist
 now and file the rest away with one press each.
 
@@ -1368,8 +1369,8 @@ asserts the computed values match the real modal's, so the two cannot drift.
   Resonance, `Euphoria · Mastery`, Resonance Pattern — because the card is modal-wide
   (440px), so `.planner-char-controls` is `grid-template-columns: 1fr` (it used to be
   `repeat(auto-fit, minmax(300px, 1fr))` when the card was 860px wide).
-- **Insight is four tier pips and Level is a slider — the InfoBook's own two controls.**
-  Both ends of each are drawn, because a step is a range:
+- **Insight is four tier pips and every bounded number is a slider — the InfoBook's own
+  controls.** Both ends of each are drawn, because a step is a range:
   - `plannerInsightPicksHtml()` emits `.planner-insight-picks` → two `.planner-insight-row`s,
     each a `.planner-field-mini` label (From / To) over a `.char-mats-ins-boxes` run of
     `.char-mats-ins-btn` buttons — the *same* button and `images/insight_icon/I<n>.png` art
@@ -1385,13 +1386,20 @@ asserts the computed values match the real modal's, so the two cannot drift.
     only, no rebuild, so the thumb never vanishes under the finger) and committed by
     `plannerSetField()` on `change`, which clamps and re-renders. A pip press goes through
     `plannerSetField()` directly. Both hand focus back to the same control afterwards.
-  Resonance and Mastery stay the dressed-up native selects (`plannerRangeGroupHtml()` →
-  `.planner-range-controls`).
+  Resonance and Mastery are the same slider pair through the same builder
+  (`plannerResoSlidersHtml()`, `plannerMasterySlidersHtml()` → `plannerSliderGroupHtml()`),
+  so **the editor carries no native select at all**: Level's ends come from
+  `getMaxLevelForInsight`, Resonance's from `plannerResoMax(insight)` (so the pair follows the
+  insight step), and Mastery's are a flat 0…4 with both ends `disabled` until a facet is
+  ticked. `PLANNER_SLIDER_FIELDS` is the one table that prints each end (`Lv.N` / `RN` /
+  plain), so the panel and the drag preview cannot disagree. Mastery passes `wrapper` so it
+  opens a `.planner-subsetting` instead of a second `setting-group` — it already lives inside
+  the Euphoria · Mastery group.
 - **Euphoria and Mastery are one setting, ticked then ranged.** The game only offers a
   mastery tier once a Euphoria facet is on, so `plannerEuphoriaMasteryHtml()` draws the
   facets as the modal's own `.check-container` boxes (`data-euphoria` on the `<input>`, wired
-  on the detail pane's `change` not `click`) over a `.planner-subsetting` mastery range that is
-  `disabled` — with `planner.masteryNeedsEuphoria` as its hint — until one box is ticked.
+  on the detail pane's `change` not `click`) over a `.planner-subsetting` mastery slider pair that
+  is `disabled` — with `planner.masteryNeedsEuphoria` as its hint — until one box is ticked.
   A facet draws the tree's **own Euphoria portrait** (the same 64px thumb the Character
   Setting modal uses) instead of a text label; the name goes in the `title` / `aria-label`,
   and only a tree without art falls back to `.planner-euphoria-label` with the name in text.
@@ -1495,15 +1503,16 @@ modal):
   `/天`), so the button says what it counts. `.planner-char-scroll` is the **one** scroller of
   the tab and holds `#planner-char-rail` → `#planner-rail-hint` → `#planner-farm`.
 - **A tile is a head icon and nothing else** — no name, no rarity plate, no selection frame
-  beyond the border. It is **square** (`border-radius: 0`) and ruled in one flat grey,
-  `#504F4D` (hover `#7A7876`), so a wall of them reads as a roster sheet rather than a grid
-  of buttons. `.planner-char-rail` is
+  of its own. It is **square** (`border-radius: 0`) and its rule says whether the arcanist
+  counts: **`#D05126` (the site's orange) while `enabled`**, `#504F4D` once filed away
+  (`.is-disabled`, hover `#7A7876`), and `#ED7D31` on hover of a live one — so "in the plan"
+  reads off the border instead of only off the dimming. `.planner-char-rail` is
   `grid-template-columns: repeat(auto-fill, minmax(64px, 1fr))` with a 1:1 aspect ratio, so
   the grid is 69px tiles on a desktop and 54px on a phone. `title` / `aria-label` carry the
   name, `aria-pressed` carries `enabled`. Eight roster heads have no art; the tile then draws
   an empty `<span>` in the same box instead of a broken image. A tile emits **no `is-selected`
-  class at all** (removed 2026-11-14, along with its `#D05126` rule): the owner does not want
-  an orange border on whichever arcanist is open, and the rail paints nothing per-selection.
+  class at all** (removed 2026-11-14): the border belongs to `enabled`, not to whichever
+  arcanist happens to be open, and the rail paints nothing per-selection.
 - A lightbox head is `.planner-sheet-head` + `.archetype-section-title`, and its body is
   `.planner-sheet-body` (`flex: 1; min-height: 0; overflow-y: auto`), so the picker's roster
   scrolls inside a fixed card instead of pushing the modal taller.
@@ -1787,11 +1796,14 @@ widening, **no excluded character and no dummy in the list**, backdrop closes), 
 character (picker closes, editor opens on the `#edit-modal` card — `rgb(181, 88, 41)` frame,
 `20px` radius, the wallpaper with **no `linear-gradient` scrim**, `≤440px` wide, the `#212121`
 head over its orange line and the Georgia title, and a header portrait / rarity / `Lv.1 →` line
-with the remove button in it), the icon-only **square** tile (`0px` radius, `#504F4D` rule),
+with the remove button in it), the icon-only **square** tile (`0px` radius, `#D05126` while
+in the plan and `#504F4D` once filed away),
 Insight as **two rows of tier pips** (`data-set`/`data-value`, `images/insight_icon/I<n>.png`
-art that really loads, one `.is-active` per row at I0 and I3, square corners) and Level as
-**two range sliders** (`type=range`, min/max from `getMaxLevelForInsight`, a `Lv.N` figure
-beside each), Resonance and Mastery still dressed-up selects, all five
+art that really loads, one `.is-active` per row at I0 and I3, square corners) and Level,
+Resonance and Mastery as **three range-slider pairs** (`type=range`, min/max from
+`getMaxLevelForInsight` / `plannerResoMax` / a flat 0…4, a `Lv.N` / `RN` / plain figure beside
+each, Mastery's pair `disabled` and gated while no facet is ticked) with **no native select
+left in the editor**, all five
 `setting-group`s (Insight, Level, Resonance, `Euphoria · Mastery`, Resonance Pattern) whose
 computed label/value/rule styles are asserted against the real modal's, the five pattern
 glyphs, Euphoria drawn as `input[type=checkbox]` boxes (`.planner-euphoria-checks`) with

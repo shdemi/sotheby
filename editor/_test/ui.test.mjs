@@ -103,8 +103,8 @@ const readSave = () => page.evaluate(() => document.getElementById("btn-save").t
 
 /**
  * The Planner's character plan, read back from whichever control draws each field:
- * Insight is a row of tier pips, Level a slider, the rest still native selects. One
- * reader keeps every assertion independent of the control type.
+ * Insight is a row of tier pips, everything else (Level, Resonance, Mastery) is a
+ * slider per end. One reader keeps every assertion independent of the control type.
  */
 const PLAN_FIELD_ORDER = [
   "curInsight",
@@ -120,16 +120,11 @@ const readPlanFields = () =>
   page.evaluate((order) => {
     const detail = document.getElementById("planner-char-detail");
     const state = {};
-    for (const select of detail.querySelectorAll("select[data-field]")) {
-      state[select.dataset.field] = select.value;
-    }
-    for (const end of ["curInsight", "goalInsight"]) {
+    for (const end of order) {
       const active = detail.querySelector(`[data-set="${end}"].is-active`);
-      if (active) state[end] = active.dataset.value;
-    }
-    for (const end of ["curLevel", "goalLevel"]) {
       const slider = detail.querySelector(`[data-slider="${end}"]`);
-      if (slider) state[end] = slider.value;
+      if (active) state[end] = active.dataset.value;
+      else if (slider) state[end] = slider.value;
     }
     return order.map((field) => `${field}=${state[field]}`);
   }, PLAN_FIELD_ORDER);
@@ -145,16 +140,10 @@ const setPlanField = async (field, value) => {
         return true;
       }
       const slider = detail.querySelector(`[data-slider="${field}"]`);
-      if (slider) {
-        slider.value = String(value);
-        slider.dispatchEvent(new Event("input", { bubbles: true }));
-        slider.dispatchEvent(new Event("change", { bubbles: true }));
-        return true;
-      }
-      const select = detail.querySelector(`select[data-field="${field}"]`);
-      if (!select) return false;
-      select.value = String(value);
-      select.dispatchEvent(new Event("change", { bubbles: true }));
+      if (!slider) return false;
+      slider.value = String(value);
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+      slider.dispatchEvent(new Event("change", { bubbles: true }));
       return true;
     },
     { field, value }
@@ -3695,7 +3684,6 @@ try {
           !tile.querySelector(".planner-char-tile-name") &&
           tile.textContent.trim() === "",
         selected: tile.classList.contains("is-selected"),
-        selectedBorder: getComputedStyle(tile).borderTopColor,
         // The editor wears the Character Setting modal's own head: a portrait, the
         // name, and a Remove button — no rarity plate and no status line.
         portrait: document.getElementById("planner-editor-portrait").getAttribute("src") || "",
@@ -3740,11 +3728,7 @@ try {
     );
     check(
       "the plan is a grid of head icons and nothing else",
-      added.grid === "grid" &&
-        added.tiles === 1 &&
-        added.iconOnly &&
-        !added.selected &&
-        added.selectedBorder !== "rgb(208, 81, 38)",
+      added.grid === "grid" && added.tiles === 1 && added.iconOnly && !added.selected,
       JSON.stringify(added)
     );
     check(
@@ -3805,18 +3789,7 @@ try {
         // tier pips per end, Level a slider per end, the rest still native selects.
         fields: (() => {
           const state = {};
-          for (const select of detail.querySelectorAll("select[data-field]")) {
-            state[select.dataset.field] = select.value;
-          }
-          for (const end of ["curInsight", "goalInsight"]) {
-            const active = detail.querySelector(`[data-set="${end}"].is-active`);
-            if (active) state[end] = active.dataset.value;
-          }
-          for (const end of ["curLevel", "goalLevel"]) {
-            const slider = detail.querySelector(`[data-slider="${end}"]`);
-            if (slider) state[end] = slider.value;
-          }
-          const order = [
+          for (const end of [
             "curInsight",
             "goalInsight",
             "curLevel",
@@ -3825,11 +3798,26 @@ try {
             "goalReso",
             "curMastery",
             "goalMastery",
-          ];
-          return order.map((field) => `${field}=${state[field]}`);
+          ]) {
+            const active = detail.querySelector(`[data-set="${end}"].is-active`);
+            const slider = detail.querySelector(`[data-slider="${end}"]`);
+            if (active) state[end] = active.dataset.value;
+            else if (slider) state[end] = slider.value;
+          }
+          return [
+            "curInsight",
+            "goalInsight",
+            "curLevel",
+            "goalLevel",
+            "curReso",
+            "goalReso",
+            "curMastery",
+            "goalMastery",
+          ].map((field) => `${field}=${state[field]}`);
         })(),
-        // Resonance and Mastery are still the select pair; the caret check reads one.
-        caret: getComputedStyle(detail.querySelector('select[data-field="curReso"]')).backgroundImage,
+        // No native select is left in the editor: every bounded number is a slider or a
+        // tier pip now, and the only select in the tab is the Wilderness board's.
+        selects: detail.querySelectorAll("select").length,
         quickGoal: !!document.getElementById("planner-quick-goal"),
         // Remove lives in the header now, so the body carries no remove button.
         remove: detail.querySelectorAll("[data-remove]").length,
@@ -3849,18 +3837,29 @@ try {
             radius: getComputedStyle(b).borderTopLeftRadius,
           })),
         })),
-        levelRows: [...detail.querySelectorAll(".planner-level-row")].map((row) => {
-          const slider = row.querySelector("[data-slider]");
-          const number = row.querySelector("[data-number]");
+        // Level, Resonance and Mastery are one slider pair each, drawn as the pieces the
+        // InfoBook levels a character with. The pair is read per group so a check knows
+        // which setting it is looking at, not just that a range input exists.
+        sliderGroups: [...detail.querySelectorAll(".planner-level-sliders")].map((box) => {
+          const group = box.closest(".setting-group, .planner-subsetting");
           return {
-            end: row.querySelector(".planner-field-mini")?.textContent.trim() || "",
-            field: slider?.dataset.slider || "",
-            type: slider?.type || "",
-            min: slider?.min || "",
-            max: slider?.max || "",
-            value: slider?.value || "",
-            width: slider ? Math.round(slider.getBoundingClientRect().width) : 0,
-            number: number?.textContent.trim() || "",
+            label: group?.querySelector(".setting-label span")?.textContent.trim() || "",
+            readout: group?.querySelector("[data-readout]")?.textContent.trim() || "",
+            gated: !!box.closest(".planner-subsetting.is-disabled"),
+            rows: [...box.querySelectorAll(".planner-level-row")].map((row) => {
+              const slider = row.querySelector("[data-slider]");
+              const number = row.querySelector("[data-number]");
+              return {
+                field: slider?.dataset.slider || "",
+                type: slider?.type || "",
+                min: slider?.min || "",
+                max: slider?.max || "",
+                value: slider?.value || "",
+                disabled: !!slider?.disabled,
+                width: slider ? Math.round(slider.getBoundingClientRect().width) : 0,
+                number: number?.textContent.trim() || "",
+              };
+            }),
           };
         }),
         labelStyle: (() => {
@@ -3902,9 +3901,9 @@ try {
       JSON.stringify(editor.fields)
     );
     check(
-      "its Resonance and Mastery rows are the dressed-up native selects",
-      /^url\(/.test(editor.caret) && editor.quickGoal && editor.remove === 0,
-      JSON.stringify({ caret: editor.caret, quickGoal: editor.quickGoal, remove: editor.remove })
+      "every number in the editor is a slider or a pip — no native select is left",
+      editor.selects === 0 && editor.quickGoal && editor.remove === 0,
+      JSON.stringify({ selects: editor.selects, quickGoal: editor.quickGoal, remove: editor.remove })
     );
     check(
       "the settings are the Setting modal's own setting-groups",
@@ -3941,26 +3940,64 @@ try {
     );
     check(
       "Level is a slider per end with its figure beside it, like the InfoBook",
-      editor.levelRows.length === 2 &&
-        editor.levelRows[0].field === "curLevel" &&
-        editor.levelRows[1].field === "goalLevel" &&
-        editor.levelRows.every((row) => row.type === "range" && row.width >= 60) &&
-        editor.levelRows[0].min === "1" &&
-        editor.levelRows[0].max === "30" &&
-        editor.levelRows[1].max === "60" &&
-        editor.levelRows[0].value === "1" &&
-        editor.levelRows[1].value === "60" &&
-        editor.levelRows[0].number === "Lv.1" &&
-        editor.levelRows[1].number === "Lv.60",
-      JSON.stringify(editor.levelRows)
+      editor.sliderGroups[0]?.label === "Level" &&
+        editor.sliderGroups[0].readout === "Lv.1 → Lv.60" &&
+        editor.sliderGroups[0].rows.length === 2 &&
+        editor.sliderGroups[0].rows[0].field === "curLevel" &&
+        editor.sliderGroups[0].rows[1].field === "goalLevel" &&
+        editor.sliderGroups[0].rows.every((row) => row.type === "range" && row.width >= 60) &&
+        editor.sliderGroups[0].rows[0].min === "1" &&
+        editor.sliderGroups[0].rows[0].max === "30" &&
+        editor.sliderGroups[0].rows[1].max === "60" &&
+        editor.sliderGroups[0].rows[0].value === "1" &&
+        editor.sliderGroups[0].rows[1].value === "60" &&
+        editor.sliderGroups[0].rows[0].number === "Lv.1" &&
+        editor.sliderGroups[0].rows[1].number === "Lv.60",
+      JSON.stringify(editor.sliderGroups[0])
     );
     check(
-      "a plan tile is a square head icon ruled in #504F4D",
+      "Resonance is a slider pair too, capped by each end's insight",
+      editor.sliderGroups[1]?.label === "Resonance" &&
+        editor.sliderGroups[1].readout === "R0 → R10" &&
+        editor.sliderGroups[1].rows.map((row) => row.field).join(",") === "curReso,goalReso" &&
+        editor.sliderGroups[1].rows[0].min === "0" &&
+        editor.sliderGroups[1].rows[0].max === "0" &&
+        editor.sliderGroups[1].rows[1].max === "15" &&
+        editor.sliderGroups[1].rows[0].number === "R0" &&
+        editor.sliderGroups[1].rows[1].number === "R10",
+      JSON.stringify(editor.sliderGroups[1])
+    );
+    check(
+      "Mastery is a slider pair, switched off until a Euphoria facet is ticked",
+      editor.sliderGroups[2]?.label === "Mastery" &&
+        editor.sliderGroups[2].readout === "0 → 0" &&
+        editor.sliderGroups[2].rows.map((row) => row.field).join(",") === "curMastery,goalMastery" &&
+        editor.sliderGroups[2].rows.every((row) => row.max === "4" && row.disabled) &&
+        editor.sliderGroups[2].gated,
+      JSON.stringify(editor.sliderGroups[2])
+    );
+    check(
+      "a tile in the plan is ruled in #D05126, a filed-away one in #504F4D",
       await page.evaluate(() => {
+        // The rule is transitioned (0.15s), so the class has to be applied with the
+        // transition off or the computed value is still the colour it is leaving.
         const tile = document.querySelector("#planner-char-rail .planner-char-tile");
         if (!tile) return false;
         const cs = getComputedStyle(tile);
-        return cs.borderTopLeftRadius === "0px" && cs.borderTopColor === "rgb(80, 79, 77)";
+        const width = cs.borderTopWidth;
+        tile.style.transition = "none";
+        tile.classList.add("is-disabled");
+        const off = getComputedStyle(tile).borderTopColor;
+        tile.classList.remove("is-disabled");
+        const back = getComputedStyle(tile).borderTopColor;
+        tile.style.transition = "";
+        return (
+          cs.borderTopLeftRadius === "0px" &&
+          cs.borderTopColor === "rgb(208, 81, 38)" &&
+          off === "rgb(80, 79, 77)" &&
+          back === "rgb(208, 81, 38)" &&
+          width !== "0px"
+        );
       })
     );
     check(
@@ -4037,7 +4074,7 @@ try {
     const picks = await page.evaluate(() => {
       const detail = document.getElementById("planner-char-detail");
       const masteryLocked = () =>
-        [...detail.querySelectorAll('select[data-field="curMastery"], select[data-field="goalMastery"]')].every(
+        [...detail.querySelectorAll('[data-slider="curMastery"], [data-slider="goalMastery"]')].every(
           (el) => el.disabled
         );
       const before = detail.querySelectorAll(".planner-mat").length;

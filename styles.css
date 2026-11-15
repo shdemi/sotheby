@@ -14560,10 +14560,11 @@ body.sim-mode {
   display: none;
 }
 
-/* A plan tile is a bare head icon squared off: no radius, and one flat grey rule
-   (#504F4D) rather than a white wash, so a wall of them reads as a roster sheet
-   instead of a grid of buttons. Right-clicking one leaves it out of the plan's
-   totals (it stays, dimmed). */
+/* A plan tile is a bare head icon squared off: no radius, and one flat rule so a wall
+   of them reads as a roster sheet instead of a grid of buttons. The rule is the site's
+   orange while the arcanist counts toward the plan, and the flat grey `#504F4D` once
+   they are filed away (right-click) — so "in the plan" is readable without dimming
+   being the only signal. */
 .planner-char-tile {
   position: relative;
   display: block;
@@ -14572,23 +14573,25 @@ body.sim-mode {
   padding: 0;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.28);
-  border: 1px solid #504F4D;
+  border: 1px solid #D05126;
   border-radius: 0;
   cursor: pointer;
   transition: border-color 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
 }
 
 .planner-char-tile:hover {
-  border-color: #7A7876;
+  border-color: #ED7D31;
 }
 
 /* Left out of the plan: still one press from coming back, but clearly off. */
 .planner-char-tile.is-disabled {
+  border-color: #504F4D;
   opacity: 0.32;
   filter: grayscale(1);
 }
 
 .planner-char-tile.is-disabled:hover {
+  border-color: #7A7876;
   opacity: 0.6;
 }
 
@@ -14977,16 +14980,9 @@ span.planner-char-tile-img {
   grid-column: 1 / -1;
 }
 
-/* from → to: the current value on the left, the goal on the right. */
-.planner-range-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-/* Same native select as the shop picker, one step smaller: it is a number
-   range, not a menu, so it sits inline with its label. */
+/* Same native select as the shop picker, one step smaller. The only select left in
+   the tab is the Wilderness board's level picker — every from → to number in the
+   character editor is a slider or a tier pip now. */
 .planner-field-select {
   -webkit-appearance: none;
   appearance: none;
@@ -15025,12 +15021,6 @@ span.planner-char-tile-img {
 .planner-field-select option {
   background: #212121;
   color: #ffffff;
-}
-
-.planner-field-arrow {
-  flex: none;
-  font-size: 0.7rem;
-  color: #7d7d7b;
 }
 
 /* Insight: one row per end, each a run of the game's tier pips. The pips are the
@@ -15202,7 +15192,8 @@ span.planner-char-tile-img {
   opacity: 0.45;
 }
 
-.planner-subsetting.is-disabled .planner-field-select {
+.planner-subsetting.is-disabled .planner-field-select,
+.planner-subsetting.is-disabled .planner-level-slider {
   cursor: not-allowed;
 }
 
