@@ -2807,6 +2807,7 @@ try {
         runs,
         runsText: figure("planner-tooltip-runs"),
         activityText: figure("planner-tooltip-stamina"),
+        activityFull: document.getElementById("planner-tooltip-stamina").textContent.trim(),
         restText: figure("planner-tooltip-rest"),
         expectedActivity: runs * 20,
         expectedRest: held + runs * 300 - total,
@@ -2851,6 +2852,16 @@ try {
       "Activity is whole runs, never a fraction of one",
       owned.activityText === owned.expectedActivity && owned.expectedActivity % 20 === 0,
       `${owned.activityText} vs ${owned.expectedActivity}`
+    );
+    check(
+      "the Roaring Month day count is its own figure, never the plain day twice",
+      (() => {
+        const days = [...owned.activityFull.matchAll(/([0-9]+(?:[.,][0-9]+)?)\s*(?:d\b|ngày|天)/g)].map(
+          (m) => m[1]
+        );
+        return days.length === 2 && days[0] !== days[1];
+      })(),
+      owned.activityFull
     );
     check(
       "the remainder is what the whole runs leave over",

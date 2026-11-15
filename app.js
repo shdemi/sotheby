@@ -12287,8 +12287,10 @@ function updatePlannerOwnedTooltip(totalSpend, owned) {
     plannerNumber(farm.runs)
   );
 
-  // The Activity is the runs' own cost, so it is always a multiple of 20.
-  const perDay = plannerActivityStamina();
+  // The Activity is the runs' own cost, so it is always a multiple of 20. The two day
+  // counts compare the day *without* the Roaring Month against the day with it, so the
+  // pair never collapses into the same figure when the card is already switched on.
+  const perDay = plannerActivityStaminaBase();
   const perDayRoaring = plannerActivityStaminaRoaring();
   const days = plannerNumber(Number((perDay > 0 ? farm.activity / perDay : 0).toFixed(1)));
   const daysRoaring = plannerNumber(
@@ -14780,9 +14782,20 @@ function plannerActivityStamina() {
   return value;
 }
 
-/** The same day with a Roaring Month on, which is what the tooltip compares. */
+/** The same day with the Roaring Month left out — what the tooltip compares against. */
+function plannerActivityStaminaBase() {
+  let value = 240;
+  if (plannerActivity.weeklyActivity) value += Math.floor(240 / 7);
+  return value;
+}
+
+/**
+ * The same day with a Roaring Month on, which is what the tooltip compares. It is
+ * always the base + 60, never "the day you already have" — otherwise a reader with the
+ * card switched on saw the same day count twice (`{days} / {days} Roaring Month`).
+ */
 function plannerActivityStaminaRoaring() {
-  return plannerActivityStamina() + (plannerActivity.roaringMonth ? 0 : 60);
+  return plannerActivityStaminaBase() + 60;
 }
 
 function plannerSaveActivity() {
