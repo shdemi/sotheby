@@ -14560,6 +14560,10 @@ body.sim-mode {
   display: none;
 }
 
+/* A plan tile is a bare head icon squared off: no radius, and one flat grey rule
+   (#504F4D) rather than a white wash, so a wall of them reads as a roster sheet
+   instead of a grid of buttons. Right-clicking one leaves it out of the plan's
+   totals (it stays, dimmed). */
 .planner-char-tile {
   position: relative;
   display: block;
@@ -14568,14 +14572,14 @@ body.sim-mode {
   padding: 0;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border: 1px solid #504F4D;
+  border-radius: 0;
   cursor: pointer;
   transition: border-color 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
 }
 
 .planner-char-tile:hover {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: #7A7876;
 }
 
 /* Left out of the plan: still one press from coming back, but clearly off. */
@@ -15027,6 +15031,58 @@ span.planner-char-tile-img {
   flex: none;
   font-size: 0.7rem;
   color: #7d7d7b;
+}
+
+/* Insight: one row per end, each a run of the game's tier pips. The pips are the
+   InfoBook's own `.char-mats-ins-btn`, so the two panels ask a tier in the same
+   units, and short of the row's width they wrap rather than shrink. */
+.planner-insight-picks,
+.planner-level-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.planner-insight-row,
+.planner-level-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.planner-insight-row .char-mats-ins-boxes {
+  flex-wrap: wrap;
+}
+
+/* The end a row sets ("From" / "To"), the InfoBook's sub-label at the modal's scale. */
+.planner-field-mini {
+  flex: none;
+  min-width: 30px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8f8f8d;
+}
+
+/* Level: a range input per end with the figure beside it, as the InfoBook levels a
+   character. A 5★ arcanist has 180 levels, which no select can offer. */
+.planner-level-slider {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+.planner-level-number {
+  flex: none;
+  min-width: 40px;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
 }
 
 .planner-char-actions {

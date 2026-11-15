@@ -101,6 +101,68 @@ const readSegs = () =>
 const readBadge = () => page.evaluate(() => document.getElementById("review-badge").textContent);
 const readSave = () => page.evaluate(() => document.getElementById("btn-save").textContent);
 
+/**
+ * The Planner's character plan, read back from whichever control draws each field:
+ * Insight is a row of tier pips, Level a slider, the rest still native selects. One
+ * reader keeps every assertion independent of the control type.
+ */
+const PLAN_FIELD_ORDER = [
+  "curInsight",
+  "goalInsight",
+  "curLevel",
+  "goalLevel",
+  "curReso",
+  "goalReso",
+  "curMastery",
+  "goalMastery",
+];
+const readPlanFields = () =>
+  page.evaluate((order) => {
+    const detail = document.getElementById("planner-char-detail");
+    const state = {};
+    for (const select of detail.querySelectorAll("select[data-field]")) {
+      state[select.dataset.field] = select.value;
+    }
+    for (const end of ["curInsight", "goalInsight"]) {
+      const active = detail.querySelector(`[data-set="${end}"].is-active`);
+      if (active) state[end] = active.dataset.value;
+    }
+    for (const end of ["curLevel", "goalLevel"]) {
+      const slider = detail.querySelector(`[data-slider="${end}"]`);
+      if (slider) state[end] = slider.value;
+    }
+    return order.map((field) => `${field}=${state[field]}`);
+  }, PLAN_FIELD_ORDER);
+
+/** Sets one plan field through whatever control draws it, then lets the pane rebuild. */
+const setPlanField = async (field, value) => {
+  const ok = await page.evaluate(
+    ({ field, value }) => {
+      const detail = document.getElementById("planner-char-detail");
+      const pick = detail.querySelector(`[data-set="${field}"][data-value="${value}"]`);
+      if (pick) {
+        pick.click();
+        return true;
+      }
+      const slider = detail.querySelector(`[data-slider="${field}"]`);
+      if (slider) {
+        slider.value = String(value);
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        slider.dispatchEvent(new Event("change", { bubbles: true }));
+        return true;
+      }
+      const select = detail.querySelector(`select[data-field="${field}"]`);
+      if (!select) return false;
+      select.value = String(value);
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      return true;
+    },
+    { field, value }
+  );
+  await page.waitForTimeout(80);
+  return ok;
+};
+
 /** Character names of the slots in the first variant card. */
 const readFirstVariant = () =>
   page.evaluate(() => {
@@ -3451,15 +3513,6 @@ try {
       page.evaluate((n) => document.querySelector(`#planner-picker-grid [data-pick="${n}"]`).click(), name);
     const selectChar = (name) =>
       page.evaluate((n) => document.querySelector(`#planner-char-rail [data-char="${n}"]`).click(), name);
-    const setField = (field, value) =>
-      page.evaluate(
-        ([f, v]) => {
-          const el = document.querySelector(`#planner-char-detail select[data-field="${f}"]`);
-          el.value = String(v);
-          el.dispatchEvent(new Event("change", { bubbles: true }));
-        },
-        [field, value]
-      );
     const waitForRoute = async () => {
       await page.waitForFunction(() => !!document.getElementById("planner-farm-stamina"), null, {
         timeout: 25000,
@@ -3748,15 +3801,68 @@ try {
       const first = cards[0];
       const sticker = first?.querySelector(".planner-mat-sticker");
       return {
-        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
-        caret: getComputedStyle(detail.querySelector("select[data-field]")).backgroundImage,
+        // Every field, read back from whichever control draws it: Insight is a row of
+        // tier pips per end, Level a slider per end, the rest still native selects.
+        fields: (() => {
+          const state = {};
+          for (const select of detail.querySelectorAll("select[data-field]")) {
+            state[select.dataset.field] = select.value;
+          }
+          for (const end of ["curInsight", "goalInsight"]) {
+            const active = detail.querySelector(`[data-set="${end}"].is-active`);
+            if (active) state[end] = active.dataset.value;
+          }
+          for (const end of ["curLevel", "goalLevel"]) {
+            const slider = detail.querySelector(`[data-slider="${end}"]`);
+            if (slider) state[end] = slider.value;
+          }
+          const order = [
+            "curInsight",
+            "goalInsight",
+            "curLevel",
+            "goalLevel",
+            "curReso",
+            "goalReso",
+            "curMastery",
+            "goalMastery",
+          ];
+          return order.map((field) => `${field}=${state[field]}`);
+        })(),
+        // Resonance and Mastery are still the select pair; the caret check reads one.
+        caret: getComputedStyle(detail.querySelector('select[data-field="curReso"]')).backgroundImage,
         quickGoal: !!document.getElementById("planner-quick-goal"),
         // Remove lives in the header now, so the body carries no remove button.
         remove: detail.querySelectorAll("[data-remove]").length,
         groups: detail.querySelectorAll(".planner-char-controls .setting-group").length,
         labels: [...detail.querySelectorAll(".setting-label span")].map((el) => el.textContent.trim()),
-        // The setting rules are `#edit-modal`'s own: 12px caps at #BFBFBF over a
-        // 1px rule, and the value in 13px gg sans.
+        // Insight is a row of the game's own tier pips per end; Level is a slider per
+        // end. Both carry the InfoBook's own pieces (`.char-mats-ins-btn`, the level
+        // range and its figure), so a step asks in the same units there.
+        insightRows: [...detail.querySelectorAll(".planner-insight-row")].map((row) => ({
+          end: row.querySelector(".planner-field-mini")?.textContent.trim() || "",
+          pips: [...row.querySelectorAll("[data-set]")].map((b) => ({
+            field: b.dataset.set,
+            value: b.dataset.value,
+            active: b.classList.contains("is-active"),
+            img: (b.querySelector("img") || {}).getAttribute ? b.querySelector("img").getAttribute("src") : "",
+            size: Math.round(b.getBoundingClientRect().width),
+            radius: getComputedStyle(b).borderTopLeftRadius,
+          })),
+        })),
+        levelRows: [...detail.querySelectorAll(".planner-level-row")].map((row) => {
+          const slider = row.querySelector("[data-slider]");
+          const number = row.querySelector("[data-number]");
+          return {
+            end: row.querySelector(".planner-field-mini")?.textContent.trim() || "",
+            field: slider?.dataset.slider || "",
+            type: slider?.type || "",
+            min: slider?.min || "",
+            max: slider?.max || "",
+            value: slider?.value || "",
+            width: slider ? Math.round(slider.getBoundingClientRect().width) : 0,
+            number: number?.textContent.trim() || "",
+          };
+        }),
         labelStyle: (() => {
           const el = detail.querySelector(".setting-label");
           const cs = getComputedStyle(el);
@@ -3796,9 +3902,9 @@ try {
       JSON.stringify(editor.fields)
     );
     check(
-      "its from→to controls are the dressed-up native selects",
+      "its Resonance and Mastery rows are the dressed-up native selects",
       /^url\(/.test(editor.caret) && editor.quickGoal && editor.remove === 0,
-      JSON.stringify(editor)
+      JSON.stringify({ caret: editor.caret, quickGoal: editor.quickGoal, remove: editor.remove })
     );
     check(
       "the settings are the Setting modal's own setting-groups",
@@ -3808,6 +3914,54 @@ try {
         editor.labels.includes("Euphoria · Mastery") &&
         editor.euphoria >= 1,
       JSON.stringify({ groups: editor.groups, labels: editor.labels, euphoria: editor.euphoria })
+    );
+    check(
+      "Insight is a row of the game's tier pips per end, not a select",
+      editor.insightRows.length === 2 &&
+        editor.insightRows[0].pips.length === 4 &&
+        editor.insightRows[1].pips.length === 4 &&
+        editor.insightRows[0].pips.every(
+          (p) => p.field === "curInsight" && /images\/insight_icon\/I\d\.png$/.test(p.img)
+        ) &&
+        editor.insightRows[1].pips.every((p) => p.field === "goalInsight") &&
+        editor.insightRows[0].pips.filter((p) => p.active).length === 1 &&
+        editor.insightRows[0].pips.find((p) => p.active).value === "0" &&
+        editor.insightRows[1].pips.find((p) => p.active).value === "3" &&
+        editor.insightRows[0].pips.every((p) => p.radius === "0px") &&
+        editor.insightRows[0].pips.every((p) => p.size >= 24 && p.size <= 40),
+      JSON.stringify(editor.insightRows.map((r) => ({ end: r.end, pips: r.pips })))
+    );
+    check(
+      "the Insight pip art is really there",
+      await page.evaluate(() =>
+        [...document.querySelectorAll("#planner-char-detail .planner-insight-row [data-set] img")].every(
+          (img) => img.complete && img.naturalWidth > 0
+        )
+      )
+    );
+    check(
+      "Level is a slider per end with its figure beside it, like the InfoBook",
+      editor.levelRows.length === 2 &&
+        editor.levelRows[0].field === "curLevel" &&
+        editor.levelRows[1].field === "goalLevel" &&
+        editor.levelRows.every((row) => row.type === "range" && row.width >= 60) &&
+        editor.levelRows[0].min === "1" &&
+        editor.levelRows[0].max === "30" &&
+        editor.levelRows[1].max === "60" &&
+        editor.levelRows[0].value === "1" &&
+        editor.levelRows[1].value === "60" &&
+        editor.levelRows[0].number === "Lv.1" &&
+        editor.levelRows[1].number === "Lv.60",
+      JSON.stringify(editor.levelRows)
+    );
+    check(
+      "a plan tile is a square head icon ruled in #504F4D",
+      await page.evaluate(() => {
+        const tile = document.querySelector("#planner-char-rail .planner-char-tile");
+        if (!tile) return false;
+        const cs = getComputedStyle(tile);
+        return cs.borderTopLeftRadius === "0px" && cs.borderTopColor === "rgb(80, 79, 77)";
+      })
     );
     check(
       "a group is drawn the way the Character Setting modal draws one",
@@ -3852,31 +4006,26 @@ try {
     );
 
     // ---- quick goal, and a plan whose current state is its goal ----------
-    const quick = await page.evaluate(() => {
-      document.getElementById("planner-quick-goal").click();
-      const detail = document.getElementById("planner-char-detail");
-      return [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`);
-    });
+    await page.evaluate(() => document.getElementById("planner-quick-goal").click());
+    await page.waitForTimeout(80);
+    const quick = await readPlanFields();
     check(
       "Quick goal lands on the can-fight-now breakpoint",
       quick.includes("goalInsight=3") && quick.includes("goalLevel=30") && quick.includes("goalReso=10"),
       JSON.stringify(quick)
     );
 
+    // Insight and Level are the new controls, so they are driven through them: the
+    // plan has to reach its goal state whether the reader pressed a pip or dragged a
+    // slider, exactly as it did through the old selects.
+    await setPlanField("curInsight", 3);
+    await setPlanField("curLevel", 30);
+    await setPlanField("curReso", 10);
     const sameState = await page.evaluate(() => {
       const detail = document.getElementById("planner-char-detail");
-      const set = (field, value) => {
-        const el = detail.querySelector(`select[data-field="${field}"]`);
-        el.value = String(value);
-        el.dispatchEvent(new Event("change", { bubbles: true }));
-      };
-      set("curInsight", 3);
-      set("curLevel", 30);
-      set("curReso", 10);
       return {
         cards: detail.querySelectorAll(".planner-mat").length,
         bill: detail.querySelector(".planner-mat-grid")?.textContent.trim() || "",
-        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
       };
     });
     check(
@@ -3928,25 +4077,17 @@ try {
     );
 
     // Step the current state back down so the route has something to pay for.
-    const stepped = await page.evaluate(() => {
-      const detail = document.getElementById("planner-char-detail");
-      const set = (field, value) => {
-        const el = detail.querySelector(`select[data-field="${field}"]`);
-        el.value = String(value);
-        el.dispatchEvent(new Event("change", { bubbles: true }));
-      };
-      set("curInsight", 0);
-      set("curLevel", 1);
-      set("curReso", 0);
-      return {
-        cards: detail.querySelectorAll(".planner-mat").length,
-        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
-      };
-    });
+    await setPlanField("curInsight", 0);
+    await setPlanField("curLevel", 1);
+    await setPlanField("curReso", 0);
+    const stepped = await page.evaluate(() => ({
+      cards: document.getElementById("planner-char-detail").querySelectorAll(".planner-mat").length,
+    }));
+    const steppedFields = await readPlanFields();
     check(
       "stepping the current state back down grows the bill again",
-      stepped.cards > 10 && stepped.fields.includes("curInsight=0") && stepped.fields.includes("curReso=0"),
-      JSON.stringify(stepped)
+      stepped.cards > 10 && steppedFields.includes("curInsight=0") && steppedFields.includes("curReso=0"),
+      JSON.stringify({ cards: stepped.cards, fields: steppedFields })
     );
 
     // ---- the farm route --------------------------------------------------

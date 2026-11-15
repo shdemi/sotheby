@@ -1363,12 +1363,30 @@ asserts the computed values match the real modal's, so the two cannot drift.
   + name + Remove on the left, the close button at the card's right edge — and at ≤768px it
   overrides the modal head's own `flex-wrap: wrap` + 44px gutter, which had pushed the close
   under the name on a phone. The name row wraps its Remove button only at ~360px.
-- Every from → to control is a `setting-group` (`plannerRangeGroupHtml()`): label + value on
-  one `setting-label-row`, the two dressed-up selects under it in `.planner-range-controls`.
-  The editor is **five groups in one column** — Insight, Level, Resonance, `Euphoria ·
-  Mastery`, Resonance Pattern — because the card is modal-wide (440px), so
-  `.planner-char-controls` is `grid-template-columns: 1fr` (it used to be
+- Every from → to control is a `setting-group`: label + value on one `setting-label-row`,
+  the control under it. The editor is **five groups in one column** — Insight, Level,
+  Resonance, `Euphoria · Mastery`, Resonance Pattern — because the card is modal-wide
+  (440px), so `.planner-char-controls` is `grid-template-columns: 1fr` (it used to be
   `repeat(auto-fit, minmax(300px, 1fr))` when the card was 860px wide).
+- **Insight is four tier pips and Level is a slider — the InfoBook's own two controls.**
+  Both ends of each are drawn, because a step is a range:
+  - `plannerInsightPicksHtml()` emits `.planner-insight-picks` → two `.planner-insight-row`s,
+    each a `.planner-field-mini` label (From / To) over a `.char-mats-ins-boxes` run of
+    `.char-mats-ins-btn` buttons — the *same* button and `images/insight_icon/I<n>.png` art
+    the InfoBook's progression panel uses, so a tier is asked in the same units in both
+    panels. A pip carries `data-set` (= the field) and `data-value` (= the tier), draws
+    `.is-active` on the current one and `aria-pressed`. The current row runs I0…cap and the
+    goal row I<cur>…cap, so a tier the plan cannot step back to is not offered.
+  - `plannerLevelSlidersHtml()` emits `.planner-level-sliders` → two `.planner-level-row`s,
+    each a `input[type=range].custom-slider` (`data-slider` = the field, min/max from
+    `getMaxLevelForInsight`) with the figure in `.psychube-level-number` (`data-number`).
+    That is the InfoBook's level row: a 5★ arcanist has 180 levels, which no select can
+    offer. A drag is painted by `plannerPreviewField()` on `input` (readouts and thumbs
+    only, no rebuild, so the thumb never vanishes under the finger) and committed by
+    `plannerSetField()` on `change`, which clamps and re-renders. A pip press goes through
+    `plannerSetField()` directly. Both hand focus back to the same control afterwards.
+  Resonance and Mastery stay the dressed-up native selects (`plannerRangeGroupHtml()` →
+  `.planner-range-controls`).
 - **Euphoria and Mastery are one setting, ticked then ranged.** The game only offers a
   mastery tier once a Euphoria facet is on, so `plannerEuphoriaMasteryHtml()` draws the
   facets as the modal's own `.check-container` boxes (`data-euphoria` on the `<input>`, wired
@@ -1477,7 +1495,9 @@ modal):
   `/天`), so the button says what it counts. `.planner-char-scroll` is the **one** scroller of
   the tab and holds `#planner-char-rail` → `#planner-rail-hint` → `#planner-farm`.
 - **A tile is a head icon and nothing else** — no name, no rarity plate, no selection frame
-  beyond the border. `.planner-char-rail` is
+  beyond the border. It is **square** (`border-radius: 0`) and ruled in one flat grey,
+  `#504F4D` (hover `#7A7876`), so a wall of them reads as a roster sheet rather than a grid
+  of buttons. `.planner-char-rail` is
   `grid-template-columns: repeat(auto-fill, minmax(64px, 1fr))` with a 1:1 aspect ratio, so
   the grid is 69px tiles on a desktop and 54px on a phone. `title` / `aria-label` carry the
   name, `aria-pressed` carries `enabled`. Eight roster heads have no art; the tile then draws
@@ -1767,7 +1787,11 @@ widening, **no excluded character and no dummy in the list**, backdrop closes), 
 character (picker closes, editor opens on the `#edit-modal` card — `rgb(181, 88, 41)` frame,
 `20px` radius, the wallpaper with **no `linear-gradient` scrim**, `≤440px` wide, the `#212121`
 head over its orange line and the Georgia title, and a header portrait / rarity / `Lv.1 →` line
-with the remove button in it), the icon-only tile, the eight dressed-up selects in **five**
+with the remove button in it), the icon-only **square** tile (`0px` radius, `#504F4D` rule),
+Insight as **two rows of tier pips** (`data-set`/`data-value`, `images/insight_icon/I<n>.png`
+art that really loads, one `.is-active` per row at I0 and I3, square corners) and Level as
+**two range sliders** (`type=range`, min/max from `getMaxLevelForInsight`, a `Lv.N` figure
+beside each), Resonance and Mastery still dressed-up selects, all five
 `setting-group`s (Insight, Level, Resonance, `Euphoria · Mastery`, Resonance Pattern) whose
 computed label/value/rule styles are asserted against the real modal's, the five pattern
 glyphs, Euphoria drawn as `input[type=checkbox]` boxes (`.planner-euphoria-checks`) with
