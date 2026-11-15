@@ -29,6 +29,7 @@ import { futureSight } from "./derive/futureSight.mjs";
 import { ogIndex } from "./derive/ogIndex.mjs";
 import { codeRewardIndex } from "./derive/codeRewards.mjs";
 import { eventShopData } from "./derive/eventShop.mjs";
+import { bannerData, gachaRules } from "./derive/banners.mjs";
 
 const argOut = (() => {
   const i = process.argv.indexOf("--out");
@@ -67,6 +68,7 @@ const files = {
       "github.com/St-Pavlov-Foundation/re1999-data-global-main",
       "github.com/St-Pavlov-Foundation/re1999-data-main",
       "github.com/Myssal/Reverse-1999-CN-Asset (images only)",
+      "docs.google.com/spreadsheets/…/Banner History (banner dates only)",
     ],
   },
   "global_name_transfer.json": transfer,
@@ -92,6 +94,8 @@ const files = {
   "future_sight.json": futureSight(),
   "code_reward_index.json": codeRewardIndex(),
   "event_shop.json": eventShopData(),
+  "banners.json": bannerData({ arcanists, transfer }),
+  "gacha_rules.json": gachaRules({ items }),
   "og_index.json": ogIndex({
     arcanists,
     profiles,

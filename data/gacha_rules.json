@@ -1,0 +1,89 @@
+{
+  "pull": {
+    "itemId": "140001",
+    "amount": 1,
+    "dropsPerUnilog": 180
+  },
+  "rates": {
+    "sixStar": 0.015,
+    "fiveStar": 0.085,
+    "softPity": 0.05
+  },
+  "pity": {
+    "soft": 60,
+    "hard": 70
+  },
+  "rateUpShare": 0.5,
+  "portraitCopies": 6,
+  "income": {
+    "source": "calculator.xlsx › Pull Calculator",
+    "dailyTasks": {
+      "weekday": 90
+    },
+    "weeklyTask": {
+      "weekday": 1,
+      "drops": 100
+    },
+    "cumulativeLogin": {
+      "day": 1,
+      "drops": 180
+    },
+    "roaringMonth": {
+      "instantCrystal": 300,
+      "drops": 90,
+      "days": 30
+    },
+    "offerOfTheMonth": {
+      "day": 1,
+      "clear": 1800,
+      "unilog": 10
+    },
+    "limbo": {
+      "days": [1, 16],
+      "drops": 700,
+      "monthlyDrops": 1400
+    },
+    "bassCounter": {
+      "day": 1,
+      "pulls": 10
+    },
+    "patch": {
+      "days": 42,
+      "anchor": "2026-08-13",
+      "jukeboxFreePulls": 2,
+      "jukeboxCollectorPulls": 5,
+      "maintenanceCompensation": 480,
+      "warmupLogin": 400,
+      "devBroadcast": 120,
+      "webEventSurvey": 120,
+      "storyStage": 1200,
+      "characterStory": 480,
+      "eventShopPulls": 2,
+      "signIn": {
+        "limited": 20,
+        "standard": 14
+      }
+    },
+    "dailyPurchasing": [0, 60, 150, 270, 390, 540, 690, 890, 1090]
+  },
+  "currencies": [
+    {
+      "id": "1",
+      "name": "Crystal Drop",
+      "nameZh": "粹雨滴",
+      "icon": "images/items/icon/1.png"
+    },
+    {
+      "id": "2",
+      "name": "Clear Drop",
+      "nameZh": "纯雨滴",
+      "icon": "images/items/icon/2.png"
+    },
+    {
+      "id": "140001",
+      "name": "Unilog",
+      "nameZh": "独一律",
+      "icon": "images/items/icon/140001.png"
+    }
+  ]
+}

@@ -1119,6 +1119,10 @@ try {
   console.log("\n=== Planner: event shop cost calculator ===");
   {
     await page.evaluate(() => localStorage.removeItem("r1999_planner_v1"));
+    // The Planner reopens on the tab the reader left, so a choice kept by an
+    // earlier case would hide the default this block asserts.
+    await page.evaluate(() => localStorage.removeItem("r1999_planner_tab_v1"));
+    await page.evaluate(() => localStorage.removeItem("r1999_calculator_v1"));
     await page.goto(APP, { waitUntil: "networkidle" });
     await page.waitForTimeout(1200);
 
@@ -1148,21 +1152,1284 @@ try {
         display: getComputedStyle(modal).display,
         tabs: [...document.querySelectorAll("#planner-modal .builds-mode-btn")].map((b) => b.id),
         active: document.querySelector("#planner-modal .builds-mode-btn.is-active")?.id || "",
+        calcVisible: visible("planner-pane-calculator"),
         charVisible: visible("planner-pane-character"),
         eventVisible: visible("planner-pane-event"),
       };
     });
     check("the Planner modal opens", tabsInfo.display === "flex", tabsInfo.display);
     check(
-      "it carries the Character tab and then the Event tab",
-      tabsInfo.tabs.join(",") === "planner-tab-character,planner-tab-event",
+      "it carries Calculator, Character and then Event",
+      tabsInfo.tabs.join(",") === "planner-tab-calculator,planner-tab-character,planner-tab-event",
       JSON.stringify(tabsInfo.tabs)
     );
     check(
-      "it opens on the Character tab",
-      tabsInfo.active === "planner-tab-character" && tabsInfo.charVisible && !tabsInfo.eventVisible,
+      "it opens on the Calculator tab",
+      tabsInfo.active === "planner-tab-calculator" &&
+        tabsInfo.calcVisible &&
+        !tabsInfo.charVisible &&
+        !tabsInfo.eventVisible,
       JSON.stringify(tabsInfo)
     );
+
+    /* ---- Calculator tab ---- */
+    // Everything the tab shows is generated: `data/gacha_rules.json` prices a pull and
+    // carries the ledger transcribed from calculator.xlsx, and `data/banners.json`
+    // joins the community sheet to a summon pool. The list starts *empty* by design —
+    // the reader adds the banners they care about — so every assertion below builds
+    // its own plan instead of reading the shipped rows.
+    const calc = await page.evaluate(() => {
+      const sections = [...document.querySelectorAll("#planner-calculator .calc-section")];
+      const byTitle = (title) =>
+        sections.find((s) => s.querySelector(".archetype-section-title").textContent.trim() === title);
+      const fields = (section) =>
+        section ? [...section.querySelectorAll("[data-calc-field]")].map((el) => el.dataset.calcField) : [];
+      return {
+        sections: sections.length,
+        titles: sections.map((s) => s.querySelector(".archetype-section-title").textContent.trim()),
+        current: fields(byTitle("Current amounts")),
+        income: fields(byTitle("Drop income")),
+        outcome: fields(byTitle("Crystal Drop outcome")),
+        currencyIcons: document.querySelectorAll(".calc-hold .planner-owned-icon").length,
+        // Income is split the way the reader earns it: what every player gets, and
+        // what a purchase adds.
+        groups: [...document.querySelectorAll("#planner-calculator .calc-group-title")].map((el) =>
+          el.textContent.trim()
+        ),
+        groupFields: [...document.querySelectorAll("#planner-calculator .calc-group")].map((group) => [
+          ...[...group.querySelectorAll("[data-calc-field]")].map((el) => el.dataset.calcField),
+        ]),
+        help: !!document.getElementById("calc-help-open"),
+        // The "?" is an outline only — no fill behind it.
+        helpButton: (() => {
+          const el = document.getElementById("calc-help-open");
+          const style = getComputedStyle(el);
+          return { background: style.backgroundColor, border: `${style.borderTopStyle} ${style.borderTopWidth}` };
+        })(),
+        // The pity pairs read as one row each, as do the two package fields.
+        pityRows: [...document.querySelectorAll("#planner-calculator .calc-hold .calc-pair-row")].map((row) => {
+          const kids = [...row.children].map((child) => child.getBoundingClientRect());
+          return {
+            fields: [...row.querySelectorAll("[data-calc-field]")].map((el) => el.dataset.calcField),
+            sameRow: kids.length === 2 && kids[0].top < kids[1].bottom && kids[1].top < kids[0].bottom,
+          };
+        }),
+        packageRow: (() => {
+          const row = document.querySelector("#planner-calculator .calc-group > .calc-pair-row");
+          if (!row) return null;
+          const kids = [...row.children].map((child) => child.getBoundingClientRect());
+          return {
+            fields: [...row.querySelectorAll("[data-calc-field]")].map((el) => el.dataset.calcField),
+            sameRow: kids.length === 2 && kids[0].top < kids[1].bottom && kids[1].top < kids[0].bottom,
+          };
+        })(),
+        // The calculator prints ✦ for a 6★: the star glyph is not in the fonts the
+        // share cards use, and the tab reads as one system with them.
+        stars: /★/.test(document.getElementById("planner-calculator").textContent),
+        sparks: /✦/.test(document.getElementById("planner-calculator").textContent),
+        cards: document.querySelectorAll("#calc-banners .calc-card").length,
+        empty: (document.querySelector("#calc-banners .guide-empty") || {}).textContent || "",
+        chart: document.querySelectorAll("#calc-chart .calc-chart-svg").length,
+        line: document.querySelectorAll("#calc-chart .calc-chart-line").length,
+        dots: document.querySelectorAll("#calc-chart .calc-dot").length,
+        // Every tick box is a card that carries what ticking it is worth.
+        toggles: [...document.querySelectorAll("#planner-calculator .calc-check")].map((el) => ({
+          key: el.querySelector("[data-calc-field]").dataset.calcField,
+          card: el.getBoundingClientRect().height > 20 && getComputedStyle(el).borderTopStyle !== "none",
+          yield: (el.querySelector(".calc-check-yield") || {}).textContent || "",
+          // The purse the badge is paid in: a Clear-Drop source must print the clear
+          // art, not the Unilog one.
+          icon: (el.querySelector(".calc-check-yield .calc-pull-icon") || {}).src || "",
+          checked: !!el.querySelector("input").checked,
+        })),
+        // The cards in one grid row are all the same height: `end` alignment left the
+        // row ragged as soon as a narrow grid wrapped a name onto a second line.
+        groupAlign: getComputedStyle(document.querySelector("#planner-calculator .calc-group-grid")).alignItems,
+        toggleRows: [...document.querySelectorAll("#planner-calculator .calc-group-grid")].map((grid) => {
+          const rows = new Map();
+          [...grid.querySelectorAll(".calc-check")].forEach((card) => {
+            const box = card.getBoundingClientRect();
+            const key = Math.round(box.top);
+            rows.set(key, [...(rows.get(key) || []), Math.round(box.height)]);
+          });
+          return [...rows.values()].map((heights) => new Set(heights).size === 1);
+        }),
+        spans: [...document.querySelectorAll("#calc-span .calc-span-btn")].map((b) => ({
+          months: Number(b.dataset.calcSpan),
+          active: b.classList.contains("is-active"),
+        })),
+        summary: [...document.querySelectorAll("#calc-summary .calc-summary-cell")].map((cell) => ({
+          label: cell.querySelector(".calc-summary-label").textContent.trim(),
+          value: cell.querySelector(".calc-summary-value").textContent.trim(),
+          icon: !!cell.querySelector(".calc-pull-icon"),
+        })),
+        // The v1 calculator's chrome is gone: no server switch, no past toggle, no
+        // projection pane and no steppers.
+        gone: [
+          document.querySelectorAll("#calc-server, .calc-server-btn").length,
+          document.querySelectorAll("#calc-past-btn").length,
+          document.querySelectorAll(".calc-projection, #calc-projection").length,
+          document.querySelectorAll(".calc-banner-stepper").length,
+        ],
+        ledger: calcRules.income,
+        pull: calcRules.pull,
+        rules: calcRules.rates,
+        pity: calcRules.pity,
+        copies: calcRules.portraitCopies,
+        currencyArt: calcRules.currencies.map((row) => row.icon),
+        banners: (calcHistory.banners || []).length,
+      };
+    });
+    check("the Calculator has its five sections", calc.sections === 5, JSON.stringify(calc.titles));
+    check(
+      "the tabs read amounts, income, outcome, the calculator and its banners — in that order",
+      calc.titles.join("|") === "Current amounts|Drop income|Crystal Drop outcome|Calculator|Banners",
+      JSON.stringify(calc.titles)
+    );
+    check(
+      "the current amounts take one pity counter per track, and both guarantees",
+      calc.current.join(",") === "crystal,clear,unilog,pityRateUp,guaranteedRateUp,pityRipples,guaranteedRipples",
+      JSON.stringify(calc.current)
+    );
+    check(
+      "Drop income is split into what is free and what a purchase adds",
+      calc.groups.join("|") === "Freebies|Spenders" &&
+        calc.groupFields[0].join(",") === "limbo,login,bass,storyStage,characterStory,webEvent,jukeboxFree,eventShop" &&
+        calc.groupFields[1].join(",") === "roaring,jukebox,offer,monthly,patchly",
+      JSON.stringify({ groups: calc.groups, fields: calc.groupFields })
+    );
+    check(
+      "a “?” on the income bar opens the sheet that explains every source",
+      calc.help,
+      String(calc.help)
+    );
+    check(
+      "the “?” is drawn as an outline, with no fill behind it",
+      (calc.helpButton.background === "rgba(0, 0, 0, 0)" || calc.helpButton.background === "transparent") &&
+        /^solid 1px/.test(calc.helpButton.border),
+      JSON.stringify(calc.helpButton)
+    );
+    check(
+      "each pity track is one row: its counter beside the guarantee box it sets",
+      calc.pityRows.length === 2 &&
+        calc.pityRows[0].fields.join(",") === "pityRateUp,guaranteedRateUp" &&
+        calc.pityRows[1].fields.join(",") === "pityRipples,guaranteedRipples" &&
+        calc.pityRows.every((row) => row.sameRow),
+      JSON.stringify(calc.pityRows)
+    );
+    check(
+      "the monthly and patchly package fields share a row too",
+      !!calc.packageRow && calc.packageRow.fields.join(",") === "monthly,patchly" && calc.packageRow.sameRow,
+      JSON.stringify(calc.packageRow)
+    );
+    check(
+      "the tab marks a 6★ with ✦, not the star glyph",
+      !calc.stars && calc.sparks,
+      JSON.stringify({ stars: calc.stars, sparks: calc.sparks })
+    );
+    check(
+      "Crystal Drop outcome carries the daily purchase, the reader's own spend and the pay-with-Crystal switch",
+      calc.outcome.join(",") === "daily,other,useCrystal",
+      JSON.stringify(calc.outcome)
+    );
+    check(
+      "every tick box is a card, and each income source says what it pays",
+      calc.toggles.length === 14 &&
+        calc.toggles.every((box) => box.card) &&
+        calc.toggles.filter((box) => box.yield).length === 11,
+      JSON.stringify(calc.toggles.filter((box) => !box.card || !box.yield).slice(0, 4))
+    );
+    check(
+      "the tick-box cards in a row share one height, so none reads as a smaller button",
+      calc.groupAlign === "stretch" && calc.toggleRows.every((group) => group.every(Boolean)),
+      JSON.stringify({ align: calc.groupAlign, rows: calc.toggleRows })
+    );
+    check(
+      "the Bass Counter is off by default and worth ten Unilogs a month when ticked",
+      !calc.toggles.find((box) => box.key === "bass").checked &&
+        /^\+10 \/month/.test(calc.toggles.find((box) => box.key === "bass").yield),
+      JSON.stringify(calc.toggles.find((box) => box.key === "bass"))
+    );
+    check(
+      "the login track is a free source worth 180 Clear Drops a month",
+      !calc.toggles.find((box) => box.key === "login").checked &&
+        /^\+180 \/month/.test(calc.toggles.find((box) => box.key === "login").yield),
+      JSON.stringify(calc.toggles.find((box) => box.key === "login"))
+    );
+    check(
+      "the Roar Jukebox's two free Unilogs are on by default, since they are free",
+      calc.toggles.find((box) => box.key === "jukeboxFree").checked &&
+        /^\+2 \/patch/.test(calc.toggles.find((box) => box.key === "jukeboxFree").yield),
+      JSON.stringify(calc.toggles.find((box) => box.key === "jukeboxFree"))
+    );
+    check(
+      "Limbo's two resets read as the Clear Drops they pay, not as pulls",
+      /^\+1,400 \/month/.test(calc.toggles.find((box) => box.key === "limbo").yield),
+      calc.toggles.find((box) => box.key === "limbo").yield
+    );
+    check(
+      "a daily source reads as the Clear Drops a whole month of it pays",
+      /^\+2,700 \/month/.test(calc.toggles.find((box) => box.key === "roaring").yield),
+      calc.toggles.find((box) => box.key === "roaring").yield
+    );
+    check(
+      "the patch payouts are separate sources with their own yields",
+      /^\+1,200 \/patch/.test(calc.toggles.find((box) => box.key === "storyStage").yield) &&
+        /^\+480 \/patch/.test(calc.toggles.find((box) => box.key === "characterStory").yield) &&
+        /^\+120 \/patch/.test(calc.toggles.find((box) => box.key === "webEvent").yield) &&
+        /^\+2 \/patch/.test(calc.toggles.find((box) => box.key === "jukeboxFree").yield) &&
+        /^\+2 \/patch/.test(calc.toggles.find((box) => box.key === "eventShop").yield) &&
+        /^\+5 \/patch/.test(calc.toggles.find((box) => box.key === "jukebox").yield),
+      JSON.stringify(calc.toggles.map((box) => box.yield))
+    );
+    const artOf = (key) => (calc.toggles.find((box) => box.key === key) || {}).icon || "";
+    const clearArt = calc.currencyArt[1].split("/").pop();
+    const unilogArt = calc.currencyArt[2].split("/").pop();
+    check(
+      "every badge is paid in the purse it counts: Clear Drops for the free sources, Unilogs for the rest",
+      ["limbo", "login", "storyStage", "characterStory", "webEvent", "roaring", "offer"].every((key) =>
+        artOf(key).endsWith(clearArt)
+      ) &&
+        ["bass", "eventShop", "jukeboxFree", "jukebox"].every((key) => artOf(key).endsWith(unilogArt)),
+      JSON.stringify({ clearArt, unilogArt, icons: calc.toggles.map((b) => [b.key, artOf(b.key).split("/").pop()]) })
+    );
+    check("Crystal Drop is off by default", !calc.toggles.find((box) => box.key === "useCrystal").checked, String(calc.toggles.find((box) => box.key === "useCrystal").checked));
+    check(
+      "the chart span is a 1/2/3/6-month control, on six months by default",
+      calc.spans.map((span) => span.months).join(",") === "1,2,3,6" &&
+        calc.spans.filter((span) => span.active).length === 1 &&
+        calc.spans.find((span) => span.active).months === 6,
+      JSON.stringify(calc.spans)
+    );
+    check(
+      "the row under the chart prints what the plan leaves, then each purse",
+      calc.summary.length === 4 &&
+        calc.summary[0].label === "Expected" &&
+        calc.summary.every((cell) => cell.icon && cell.value.length > 0),
+      JSON.stringify(calc.summary)
+    );
+    check("the three currencies draw their art inside the fields", calc.currencyIcons === 3, String(calc.currencyIcons));
+    check("the list starts empty", calc.cards === 0 && /Add banner/.test(calc.empty), `${calc.cards} / ${calc.empty}`);
+    check("the chart is drawn before any banner is added", calc.chart === 1 && calc.line === 1, `${calc.chart}/${calc.line}`);
+    check("and it carries no dot yet", calc.dots === 0, String(calc.dots));
+
+    // The span control really redraws the window: one month ends 30 days out, six
+    // months 180, and the choice is remembered with the plan.
+    const calcSpan = await page.evaluate(async () => {
+      const ticks = () =>
+        [...document.querySelectorAll("#calc-chart .calc-axis-label")]
+          .map((t) => t.textContent.trim())
+          .filter((t) => /\d+\/\d+/.test(t));
+      const six = ticks();
+      document.querySelector('#calc-span .calc-span-btn[data-calc-span="1"]').click();
+      await new Promise((r) => setTimeout(r, 150));
+      const one = ticks();
+      const stored = JSON.parse(localStorage.getItem("r1999_calculator_v1") || "null");
+      document.querySelector('#calc-span .calc-span-btn[data-calc-span="6"]').click();
+      await new Promise((r) => setTimeout(r, 150));
+      return { six, one, active: document.querySelector("#calc-span .calc-span-btn.is-active").dataset.calcSpan, stored };
+    });
+    check(
+      "choosing one month narrows the window to 30 days",
+      calcSpan.six.length === 3 && calcSpan.one.length === 3 && calcSpan.six[2] !== calcSpan.one[2],
+      JSON.stringify(calcSpan)
+    );
+    check(
+      "the span is remembered with the plan",
+      calcSpan.stored && calcSpan.stored.months === 1 && calcSpan.active === "6",
+      JSON.stringify({ stored: calcSpan.stored?.months, active: calcSpan.active })
+    );
+    check(
+      "the removed chrome is really gone (server switch, past toggle, projection, steppers)",
+      calc.gone.every((n) => n === 0),
+      JSON.stringify(calc.gone)
+    );
+    check(
+      "the Drop Income ledger ships the spreadsheet's constants",
+      calc.ledger.dailyTasks.weekday === 90 &&
+        calc.ledger.dailyTasks.sunday === undefined &&
+        calc.ledger.cumulativeLogin.drops === 180 &&
+        calc.ledger.weeklyTask.drops === 100 &&
+        calc.ledger.roaringMonth.drops === 90 &&
+        calc.ledger.roaringMonth.instantCrystal === 300 &&
+        calc.ledger.offerOfTheMonth.clear === 1800 &&
+        calc.ledger.offerOfTheMonth.unilog === 10 &&
+        calc.ledger.limbo.drops === 700 &&
+        calc.ledger.limbo.monthlyDrops === 1400 &&
+        calc.ledger.bassCounter.pulls === 10 &&
+        calc.ledger.patch.days === 42 &&
+        calc.ledger.patch.maintenanceCompensation === 480 &&
+        calc.ledger.dailyPurchasing.length === 9,
+      JSON.stringify(calc.ledger).slice(0, 120)
+    );
+    check(
+      "the patch payouts are the sheet's, and the login event pays more on a Limited patch",
+      calc.ledger.patch.warmupLogin === 400 &&
+        calc.ledger.patch.devBroadcast === 120 &&
+        calc.ledger.patch.webEventSurvey === 120 &&
+        calc.ledger.patch.storyStage === 1200 &&
+        calc.ledger.patch.characterStory === 480 &&
+        calc.ledger.patch.eventShopPulls === 2 &&
+        calc.ledger.patch.jukeboxFreePulls === 2 &&
+        calc.ledger.patch.jukeboxCollectorPulls === 5 &&
+        calc.ledger.patch.signIn.limited === 20 &&
+        calc.ledger.patch.signIn.standard === 14,
+      JSON.stringify(calc.ledger.patch)
+    );
+    check(
+      "the shipped pull rules are the game's",
+      calc.pull.amount === 1 &&
+        calc.pull.dropsPerUnilog === 180 &&
+        Math.abs(calc.rules.sixStar - 0.015) < 1e-9 &&
+        calc.pity.soft === 60 &&
+        calc.pity.hard === 70 &&
+        calc.copies === 6,
+      JSON.stringify(calc.pull)
+    );
+    check("the banner data really does carry both servers", calc.banners >= 300, String(calc.banners));
+
+    // "+ Add banner" is a lightbox over the tab, and it only offers what can still be
+    // run: Global rows on a scheduled kind, never Standard or Beginner, in release
+    // order from the earliest banner still running.
+    const calcPickList = await page.evaluate(() => {
+      document.getElementById("calc-add").click();
+      const rows = [...document.querySelectorAll("#calc-picker-list .calc-pick")];
+      const today = calcToday();
+      const read = rows.map((row) => {
+        const banner = calcBanner(row.dataset.pickBanner);
+        return {
+          id: row.dataset.pickBanner,
+          name: row.querySelector(".calc-pick-name").textContent.trim(),
+          // The patch is a tag beside the name, not part of it.
+          tag: (row.querySelector(".calc-pick-version") || {}).textContent?.trim() || "",
+          meta: row.querySelector(".calc-pick-meta").textContent.trim(),
+          type: banner.type,
+          version: banner.version,
+          server: banner.server,
+          start: banner.start,
+          end: banner.end,
+          heads: row.querySelectorAll(".calc-pick-heads .calc-head:not(.calc-head-more):not(.calc-head-any)").length,
+          more: !!row.querySelector(".calc-pick-heads .calc-head-more"),
+          any: !!row.querySelector(".calc-pick-heads .calc-head-any"),
+          targets: (banner.targets || []).length,
+          predicted: !!banner.predicted,
+        };
+      });
+      const starts = read.map((row) => row.start);
+      return {
+        open: !document.getElementById("calc-picker").hidden,
+        today,
+        rows: read.length,
+        first: read[0] || null,
+        last: read[read.length - 1] || null,
+        types: [...new Set(read.map((row) => row.type))],
+        // Every row prints the sheet's patch as its own tag, and the name is bare.
+        tagged: read.every((row) => !row.version || (row.tag === row.version && !/^\[/.test(row.name))),
+        ripples: read
+          .filter((row) => row.type === "Ripples")
+          .map((row) => `${row.version}|${row.name}|${row.start}|${row.predicted ? "pred" : "run"}`),
+        // A row is one line high, so at most three rate-up heads draw and the rest are
+        // counted by an ellipsis. A banner with no rate-up draws the `?` box instead.
+        capped: read.every((row) =>
+          row.targets === 0
+            ? row.any && row.heads === 0
+            : row.heads === Math.min(3, row.targets) && row.more === row.targets > 3
+        ),
+        manyHeads: read.filter((row) => row.targets > 3).length,
+        ellipsis: read.filter((row) => row.more).length,
+        globalOnly: read.every((row) => row.server === "global"),
+        scheduled: read.every((row) => row.type !== "Standard" && row.type !== "Beginner"),
+        open_ended: read.every((row) => (row.end || row.start) >= today),
+        sorted: starts.every((start, i) => i === 0 || start >= starts[i - 1]),
+        predicted: read.filter((row) => row.predicted).length,
+        // No type filter any more: one search box over one flat list.
+        filters: document.querySelectorAll("#calc-picker .filter-btn, #calc-picker-types").length,
+        search: !!document.getElementById("calc-picker-search"),
+        // The picker's own row count against the data, read the same way.
+        expected: (calcHistory.banners || []).filter(
+          (row) =>
+            row.server === "global" &&
+            row.type !== "Standard" &&
+            row.type !== "Beginner" &&
+            row.start &&
+            (row.end || row.start) >= today
+        ).length,
+      };
+    });
+    check("'+ Add banner' opens the picker over the tab", calcPickList.open, String(calcPickList.open));
+    check(
+      "it offers every banner still to run, and only those",
+      calcPickList.rows === calcPickList.expected && calcPickList.rows > 0,
+      `${calcPickList.rows} of ${calcPickList.expected}`
+    );
+    check("the banner picker is Global-only", calcPickList.globalOnly, JSON.stringify(calcPickList.first));
+    check("Standard and Beginner banners are not offered", calcPickList.scheduled, JSON.stringify(calcPickList.types));
+    check("a closed banner is not offered", calcPickList.open_ended, JSON.stringify(calcPickList.last));
+    check("the list is sorted by release date", calcPickList.sorted, JSON.stringify([calcPickList.first?.start, calcPickList.last?.start]));
+    check(
+      "the earliest banner still running comes first",
+      !!calcPickList.first &&
+        calcPickList.first.start <= calcPickList.today &&
+        calcPickList.first.end >= calcPickList.today,
+      JSON.stringify(calcPickList.first)
+    );
+    check("the CN-only banners arrive as predictions", calcPickList.predicted > 0, String(calcPickList.predicted));
+    check(
+      "every banner carries the patch it ships in, as a tag beside the name",
+      calcPickList.tagged,
+      JSON.stringify([calcPickList.first, calcPickList.last])
+    );
+    // A picker row is one line high: three rate-up heads at most, then `…`.
+    check(
+      "a banner with many rate-ups lists three heads and an ellipsis",
+      calcPickList.capped && calcPickList.manyHeads > 0 && calcPickList.ellipsis > 0,
+      JSON.stringify({
+        capped: calcPickList.capped,
+        many: calcPickList.manyHeads,
+        ellipsis: calcPickList.ellipsis,
+      })
+    );
+    // A recurring banner has to arrive once per patch: Ripples on the Water for 4.0 was
+    // swallowed by the 3.9 run being "close enough", so both patches are pinned here.
+    check(
+      "Ripples on the Water is listed for every patch, 4.0 included",
+      calcPickList.ripples.some((row) => row === "4.0|Ripples on the Water|2026-12-17|pred"),
+      JSON.stringify(calcPickList.ripples)
+    );
+    check(
+      "the picker is one search box over one flat list — no type filter",
+      calcPickList.filters === 0 && calcPickList.search,
+      JSON.stringify({ filters: calcPickList.filters, search: calcPickList.search })
+    );
+
+    // Picking one closes the popup and adds exactly one card.
+    const calcAdded = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll("#calc-picker-list .calc-pick")];
+      const first = rows[0];
+      const later = rows[rows.length - 1];
+      const ids = { first: first.dataset.pickBanner, later: later.dataset.pickBanner };
+      first.click();
+      const closed = document.getElementById("calc-picker").hidden;
+      // A second banner, added from the same picker, must land *after* the first
+      // when it releases later.
+      document.getElementById("calc-add").click();
+      const stillThere = [...document.querySelectorAll("#calc-picker-list .calc-pick")].some(
+        (row) => row.dataset.pickBanner === ids.first
+      );
+      document.querySelector(`#calc-picker-list [data-pick-banner='${ids.later}']`).click();
+      const cards = [...document.querySelectorAll("#calc-banners .calc-card")];
+      const card = cards[0];
+      return {
+        ids,
+        closed,
+        stillThere,
+        cards: cards.length,
+        order: cards.map((c) => c.dataset.banner),
+        pills: [...card.querySelectorAll(".calc-card-pills .calc-pill")].map((p) => p.textContent.trim()),
+        chips: [...card.querySelectorAll(".calc-chip")].map((c) => c.dataset.p),
+        chipOdds: [...card.querySelectorAll(".calc-chip")].map((c) => Number(c.dataset.odds)),
+        input: {
+          type: card.querySelector(".calc-pull-input").type,
+          value: card.querySelector(".calc-pull-input").value,
+          min: card.querySelector(".calc-pull-input").getAttribute("min"),
+        },
+        cost: card.querySelector(".calc-card-cost") ? card.querySelector(".calc-card-cost").textContent.trim() : "",
+        pullsIcon: !!card.querySelector(".calc-card-pills .calc-pill.is-pulls .calc-pull-icon"),
+        kind: card.dataset.kind,
+        edge: getComputedStyle(card).borderLeftColor,
+        versionPill: (card.querySelector(".calc-card-pills .calc-pill.is-version") || {}).textContent?.trim() || "",
+        name: card.querySelector(".calc-card-name").textContent.trim(),
+        remove: !!card.querySelector(".calc-card-remove"),
+        bannerTotal: document.getElementById("calc-banner-total").textContent.trim(),
+      };
+    });
+    check("picking a banner closes the picker", calcAdded.closed, String(calcAdded.closed));
+    check("an added banner drops out of the picker", !calcAdded.stillThere, String(calcAdded.stillThere));
+    check("the plan holds both banners", calcAdded.cards === 2, String(calcAdded.cards));
+    check(
+      "the cards are ordered by release date",
+      calcAdded.order[0] === calcAdded.ids.first && calcAdded.order[1] === calcAdded.ids.later,
+      JSON.stringify(calcAdded.order)
+    );
+    check(
+      "a card carries its patch, type, release, end and projected pulls as round tags",
+      calcAdded.pills.length === 5 &&
+        calcAdded.pills[0] === calcAdded.versionPill &&
+        /^\d+\.\d+$/.test(calcAdded.pills[0]) &&
+        /^(11|12|01|02|03)/.test(calcAdded.pills[2].replace(/[^\d/]/g, "")),
+      JSON.stringify(calcAdded.pills)
+    );
+    check(
+      "the card's left rail is the banner's kind",
+      calcAdded.kind === calcAdded.pills[1] && calcAdded.edge !== "",
+      JSON.stringify({ kind: calcAdded.kind, edge: calcAdded.edge, pills: calcAdded.pills })
+    );
+    // The rail is a colour per kind, so a long list reads at a glance. Each probe is a
+    // fresh element: mutating one node's `data-kind` in a loop reads a stale computed
+    // style, because the recalc is only flushed on a layout pass.
+    const kindEdges = await page.evaluate(() => {
+      const host = document.querySelector("#calc-banners") || document.body;
+      const out = {};
+      for (const kind of ["Debut", "Ripples", "Rerun", "Limited", "Event", "Yearning"]) {
+        const probe = document.createElement("article");
+        probe.className = "calc-card";
+        probe.dataset.kind = kind;
+        host.appendChild(probe);
+        void probe.offsetWidth;
+        out[kind] = getComputedStyle(probe).borderLeftColor;
+        probe.remove();
+      }
+      return out;
+    });
+    check(
+      "each banner kind paints its own rail colour",
+      kindEdges.Debut === "rgb(212, 237, 188)" &&
+        kindEdges.Ripples === "rgb(198, 219, 225)" &&
+        kindEdges.Rerun === "rgb(255, 229, 160)" &&
+        kindEdges.Limited === "rgb(177, 2, 2)" &&
+        kindEdges.Event === "rgb(10, 83, 168)" &&
+        // A kind with no colour of its own keeps the tab's orange.
+        kindEdges.Yearning === "rgba(237, 125, 49, 0.45)",
+      JSON.stringify(kindEdges)
+    );
+    check("a card carries six odds chips", calcAdded.chips.join(",") === "0,1,2,3,4,5", JSON.stringify(calcAdded.chips));
+    check(
+      "the odds are a falling scale",
+      calcAdded.chipOdds.every((v, i) => i === 0 || v <= calcAdded.chipOdds[i - 1] + 1e-9),
+      JSON.stringify(calcAdded.chipOdds)
+    );
+    check(
+      "the pull count is a plain number field, not a stepper",
+      calcAdded.input.type === "number" && calcAdded.input.min === "0",
+      JSON.stringify(calcAdded.input)
+    );
+    check("a card can be removed", calcAdded.remove, String(calcAdded.remove));
+    check(
+      "a card does not repeat its cost in drops — the tab is a pull ledger",
+      calcAdded.cost === "",
+      calcAdded.cost
+    );
+    check(
+      "its projected pull count is the Unilog art, not the word",
+      calcAdded.pullsIcon,
+      String(calcAdded.pullsIcon)
+    );
+    check("the plan's banner count is in the section bar", /2/.test(calcAdded.bannerTotal), calcAdded.bannerTotal);
+
+    // Typing a pull count repaints the odds and the chart without stealing the focus.
+    const typed = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll("#calc-banners .calc-card")];
+      const card = cards[0];
+      const input = card.querySelector(".calc-pull-input");
+      input.focus();
+      input.value = "80";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      // A second banner with its own count: the chart draws a dot per planned
+      // banner, not one for the whole plan.
+      const second = cards[1].querySelector(".calc-pull-input");
+      second.value = "40";
+      second.dispatchEvent(new Event("input", { bubbles: true }));
+      const after = document.querySelector("#calc-banners .calc-card");
+      const dots = [...document.querySelectorAll("#calc-chart .calc-dot")];
+      // The dot prints its spend *below* the point and draws the rate-up's portrait
+      // *above* it, so the two never sit on top of each other.
+      const label = dots[0] ? dots[0].querySelector(".calc-dot-label").getBoundingClientRect() : null;
+      const point = dots[0] ? dots[0].querySelector("circle").getBoundingClientRect() : null;
+      const head = dots[0] ? dots[0].querySelector(".calc-dot-head") : null;
+      return {
+        value: document.getElementById("calc-crystal").value,
+        focused: document.activeElement.className,
+        chips: [...after.querySelectorAll(".calc-chip")].map((c) => Number(c.dataset.odds)),
+        dots: dots.length,
+        label: dots[0] ? dots[0].querySelector(".calc-dot-label").textContent : "",
+        labelBelow: label && point ? Math.round(label.top - point.top) : -999,
+        headAbove: head && point ? Math.round(point.top - head.getBoundingClientRect().bottom) : -999,
+        heads: dots[0] ? dots[0].querySelectorAll(".calc-dot-head").length : 0,
+        title: dots[0] ? dots[0].querySelector("title").textContent : "",
+        planned: document.getElementById("calc-banner-total").textContent.trim(),
+        stored: JSON.parse(localStorage.getItem("r1999_calculator_v1") || "null"),
+      };
+    });
+    check("typing a pull count does not steal the focus", /calc-pull-input/.test(typed.focused), typed.focused);
+    check(
+      "80 pulls buy real odds on the first banner",
+      typed.chips[0] > 0 && typed.chips[0] < 1,
+      JSON.stringify(typed.chips)
+    );
+    check(
+      "the chart draws one dot per planned banner",
+      typed.dots === 2,
+      String(typed.dots)
+    );
+    check(
+      "the dot is labelled with what it spends, under the rate-up it is for",
+      /^−\d+$/.test(typed.label) &&
+        /80/.test(typed.title) &&
+        typed.labelBelow > 0 &&
+        typed.heads > 0 &&
+        typed.headAbove >= 0,
+      JSON.stringify({ label: typed.label, labelBelow: typed.labelBelow, heads: typed.heads, headAbove: typed.headAbove })
+    );
+    check(
+      "the plan is saved",
+      typed.stored && Array.isArray(typed.stored.list) && typed.stored.list.length === 2 &&
+        typed.stored.plans[typed.stored.list[0]] === 80,
+      JSON.stringify(typed.stored)
+    );
+
+    // A dot is the banner's sheet: pressing it opens the info popup.
+    const info = await page.evaluate(() => {
+      const dot = document.querySelector("#calc-chart .calc-dot");
+      dot.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      const body = document.getElementById("calc-info-body");
+      const out = {
+        open: !document.getElementById("calc-info").hidden,
+        title: document.getElementById("calc-info-title").textContent.trim(),
+        banner: calcBannerName(calcBanner(dot.dataset.banner)),
+        rule: (body.querySelector(".calc-info-rule") || {}).textContent || "",
+        figures: [...body.querySelectorAll(".calc-figure")].map((f) => f.querySelector(".calc-figure-label").textContent),
+        odds: [...body.querySelectorAll(".calc-odd-card")].map((c) => c.dataset.p),
+        notes: [...body.querySelectorAll(".calc-info-note")].map((n) => n.textContent.trim()),
+        pills: [...document.querySelectorAll("#calc-info .calc-pill")].map((p) => p.textContent.trim()),
+        heads: document.querySelectorAll("#calc-info-heads .calc-head").length,
+        card: document.querySelector("#calc-info .calc-info-card").className,
+      };
+      document.getElementById("calc-info-close").click();
+      out.closed = document.getElementById("calc-info").hidden;
+      return out;
+    });
+    check("pressing a dot opens the banner's sheet", info.open, String(info.open));
+    check("the sheet names that banner", info.title === info.banner, `${info.title} vs ${info.banner}`);
+    check(
+      "the sheet is the site's own modal card, with the rate-up in its header",
+      /modal-card/.test(info.card) && /archetype-modal-card/.test(info.card) && info.heads > 0,
+      JSON.stringify({ card: info.card, heads: info.heads })
+    );
+    check("it prints the banner's rule", info.rule.length > 0, info.rule);
+    check(
+      "it prices the plan and the odds",
+      info.figures.join(",") === "Pulls,Cost,By end" && info.odds.join(",") === "0,1,2,3,4,5",
+      JSON.stringify({ figures: info.figures, odds: info.odds })
+    );
+    check(
+      "it lists the banner's perk and its pity track as notes",
+      info.notes.length >= 1 && info.pills.length === 5,
+      JSON.stringify({ notes: info.notes, pills: info.pills })
+    );
+    check("its close button closes it", info.closed, String(info.closed));
+
+    // Crystal Drop is a paid purse, so it does not count toward the pulls unless the
+    // reader says it does: the same 18,000 drops buy nothing while the box is off.
+    const paidOff = await page.evaluate(() => {
+      const crystal = document.getElementById("calc-crystal");
+      crystal.focus();
+      crystal.value = "18000";
+      crystal.dispatchEvent(new Event("input", { bubbles: true }));
+      return {
+        checked: document.getElementById("calc-useCrystal").checked,
+        hold: document.getElementById("calc-hold-total").textContent.trim(),
+        crystalCell: [...document.querySelectorAll("#calc-summary .calc-summary-cell")].map((cell) =>
+          cell.querySelector(".calc-summary-value").textContent.trim()
+        ),
+      };
+    });
+    check(
+      "Crystal Drop is not counted toward the pulls by default",
+      paidOff.checked === false && !/100/.test(paidOff.hold) && /18,?000/.test(paidOff.crystalCell[3]),
+      JSON.stringify(paidOff)
+    );
+
+    // The ledger prices the hold: 18,000 Crystal Drops are 100 pulls once the reader
+    // lets the paid purse count, and the section bar says so. One more pull never
+    // lowers the odds.
+    const held = await page.evaluate(() => {
+      const box = document.getElementById("calc-useCrystal");
+      box.checked = true;
+      box.dispatchEvent(new Event("input", { bubbles: true }));
+      const card = document.querySelector("#calc-banners .calc-card");
+      const before = [...card.querySelectorAll(".calc-chip")].map((c) => Number(c.dataset.odds));
+      const input = card.querySelector(".calc-pull-input");
+      input.value = "81";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      const after = document.querySelector("#calc-banners .calc-card");
+      return {
+        crystal: document.getElementById("calc-crystal").value,
+        focused: document.activeElement.id,
+        holdTotal: document.getElementById("calc-hold-total").textContent.trim(),
+        before,
+        after: [...after.querySelectorAll(".calc-chip")].map((c) => Number(c.dataset.odds)),
+        left: document.getElementById("calc-chart-total").textContent.trim(),
+        expected: document.querySelector("#calc-summary .calc-summary-value")?.textContent.trim() || "",
+        stored: JSON.parse(localStorage.getItem("r1999_calculator_v1") || "null"),
+      };
+    });
+    check("the hold field keeps what was typed", held.crystal === "18000", held.crystal);
+    check("typing the hold does not steal the focus", held.focused === "calc-crystal", held.focused);
+    check("the hold reads as pulls on the section bar", /100/.test(held.holdTotal), held.holdTotal);
+    check(
+      "one more pull never lowers the odds",
+      held.after.every((v, i) => v >= held.before[i]),
+      `${JSON.stringify(held.before)} -> ${JSON.stringify(held.after)}`
+    );
+    check("the chart reports what the plan leaves", /\d/.test(held.left), held.left);
+    check(
+      "the summary prints the expected pulls under the chart",
+      held.expected.length > 0 && held.stored && held.stored.useCrystal === true,
+      JSON.stringify({ expected: held.expected, useCrystal: held.stored?.useCrystal })
+    );
+
+    // The DP is the whole feature, so it is checked against its own edge cases rather
+    // than against the rendered numbers: a guaranteed pity bank, a hard pity floor,
+    // the 50/50, a "no rate-up" banner, and one copy for a Thread.
+    const engine = await page.evaluate(() => {
+      const rateUp = { kind: "rateUp", share: 0.5, guarantee: true, maxCopies: 6 };
+      const monoTen = window.calcDistribution(rateUp, 10, 0, false);
+      const guaranteed = window.calcDistribution(rateUp, 70, 0, true);
+      const hardPity = window.calcDistribution({ share: 1, guarantee: false, maxCopies: 6 }, 1, 69, false);
+      const lateStart = window.calcDistribution(rateUp, 70, 69, false);
+      const none = window.calcDistribution({ kind: "none", share: 0, guarantee: false, maxCopies: 6 }, 200, 0, false);
+      const thread = window.calcDistribution({ kind: "thread", share: 1, guarantee: false, maxCopies: 1 }, 200, 0, false);
+      const mid = window.calcDistribution(rateUp, 150, 0, false);
+      const many = window.calcDistribution(rateUp, 1200, 0, false);
+
+      // A simulation over the same constants: the DP must agree with it, but the
+      // simulation uses no pity state, so only the no-pity band is comparable.
+      let rng = 1;
+      const rand = () => {
+        rng = (rng * 1103515245 + 12345) % 2147483648;
+        return rng / 2147483648;
+      };
+      let hits = 0;
+      const RUNS = 20000;
+      for (let run = 0; run < RUNS; run += 1) {
+        let banked = false;
+        for (let n = 0; n < 10; n += 1) {
+          const p = calcRules.rates.sixStar;
+          if (rand() < p) {
+            if (banked || rand() < 0.5) {
+              hits += 1;
+              break;
+            }
+            banked = true;
+          }
+        }
+      }
+      return {
+        ten: monoTen,
+        guaranteed,
+        hardPity,
+        lateStart,
+        none,
+        thread,
+        mid,
+        many,
+        simulated: hits / RUNS,
+      };
+    });
+    check(
+      "ten pulls on a 50/50 beat ten flat 0.75% rolls, because a loss banks the next 6★",
+      engine.ten[0] > 1 - Math.pow(0.9925, 10) && engine.ten[0] < 0.09,
+      engine.ten[0].toFixed(4)
+    );
+    check(
+      "a banked guarantee makes the first 6★ the rate-up (P0 = 100% by pull 70)",
+      engine.guaranteed[0] > 0.9999,
+      engine.guaranteed[0].toFixed(4)
+    );
+    check(
+      "the 70th pull is a hard-pity 6★ and therefore the rate-up",
+      engine.hardPity[0] === 1 && engine.hardPity[1] === 0,
+      JSON.stringify(engine.hardPity)
+    );
+    check(
+      "starting one pull from hard pity is better than starting from zero",
+      engine.lateStart[0] > engine.ten[0],
+      `${engine.lateStart[0].toFixed(4)} vs ${engine.ten[0].toFixed(4)}`
+    );
+    check(
+      "the DP agrees with a simulation of the same band",
+      Math.abs(engine.ten[0] - engine.simulated) < 0.02,
+      `${engine.ten[0].toFixed(4)} vs ${engine.simulated.toFixed(4)}`
+    );
+    check("a banner with no rate-up reports 0% everywhere", engine.none.every((p) => p === 0), JSON.stringify(engine.none));
+    check(
+      "a Thread banner can only grant one copy",
+      engine.thread[0] > 0.9999 && engine.thread[1] === 0,
+      JSON.stringify(engine.thread)
+    );
+    check("P5 is six copies, certain long before 1200 pulls", engine.many[5] > 0.999, engine.many[5].toFixed(4));
+    check(
+      "more pulls keep paying: 1200 beats 150 on every level",
+      engine.many[5] > engine.mid[5] && engine.many.every((v, i) => v >= engine.mid[i] - 1e-9),
+      `${JSON.stringify(engine.mid)} -> ${JSON.stringify(engine.many)}`
+    );
+    check(
+      "every level is at least the next one",
+      engine.many.every((v, i) => i === 0 || v <= engine.many[i - 1] + 1e-9),
+      JSON.stringify(engine.many)
+    );
+
+    // The plan survives a reload: unlike the Event tab's picks it is not patch-stamped.
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(1200);
+    await page.evaluate(() => document.getElementById("btn-planner").click());
+    await page.waitForTimeout(600);
+    const calcRestored = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll("#calc-banners .calc-card")];
+      return {
+        tab: document.querySelector("#planner-modal .builds-mode-btn.is-active")?.id || "",
+        crystal: document.getElementById("calc-crystal").value,
+        cards: cards.length,
+        pulls: cards.map((c) => c.querySelector(".calc-pull-input").value),
+        dots: document.querySelectorAll("#calc-chart .calc-dot").length,
+        remembered: localStorage.getItem("r1999_planner_tab_v1"),
+      };
+    });
+    check("the modal reopens on the Calculator", calcRestored.tab === "planner-tab-calculator", calcRestored.tab);
+    check(
+      "the plan survives a reload",
+      calcRestored.crystal === "18000" && calcRestored.cards === 2 && calcRestored.pulls[0] === "81",
+      JSON.stringify(calcRestored)
+    );
+    check(
+      "and the chart redraws its dots",
+      calcRestored.dots === 2,
+      String(calcRestored.dots)
+    );
+    check("the open tab is remembered", calcRestored.remembered === "calculator", calcRestored.remembered);
+
+    // Reset is the tab's own button, and it leaves the tab alone.
+    await page.evaluate(() => document.getElementById("calc-reset").click());
+    await page.waitForTimeout(200);
+    const calcReset = await page.evaluate(() => ({
+      crystal: document.getElementById("calc-crystal").value,
+      cards: document.querySelectorAll("#calc-banners .calc-card").length,
+      empty: (document.querySelector("#calc-banners .guide-empty") || {}).textContent || "",
+      dots: document.querySelectorAll("#calc-chart .calc-dot").length,
+      tab: document.querySelector("#planner-modal .builds-mode-btn.is-active")?.id || "",
+      stored: JSON.parse(localStorage.getItem("r1999_calculator_v1") || "null"),
+    }));
+    check(
+      "Reset clears the hold and the whole plan",
+      calcReset.crystal === "" &&
+        calcReset.cards === 0 &&
+        calcReset.dots === 0 &&
+        /Add banner/.test(calcReset.empty) &&
+        calcReset.tab === "planner-tab-calculator",
+      JSON.stringify(calcReset)
+    );
+    check(
+      "and the cleared plan is what is stored",
+      calcReset.stored && calcReset.stored.list.length === 0 && Object.keys(calcReset.stored.plans).length === 0,
+      JSON.stringify(calcReset.stored)
+    );
+
+    // The two perks and the three pity tracks are what makes the tab agree with the
+    // game instead of with a flat 50/50: a Limited patch hands out ten free pulls, a
+    // Ripples pool discounts its first ten-pull and selects its first 6★, and only
+    // Debut / Rerun spend the Rate Up counter — a Ripples pool has its own.
+    const tracks = await page.evaluate(() => {
+      const pool = calcPickerPool();
+      const pick = (type) => (pool.find((row) => row.type === type) || {}).id || "";
+      const ids = { ripples: pick("Ripples"), limited: pick("Limited"), rerun: pick("Rerun") };
+      for (const id of Object.values(ids)) calcAddBanner(id);
+      calcSetPulls(ids.ripples, 80);
+      calcSetPulls(ids.limited, 60);
+      calcSetPulls(ids.rerun, 100);
+      calcRefresh();
+      const cardOf = (id) => document.querySelector(`#calc-banners .calc-card[data-banner="${id}"]`);
+      const perks = {};
+      for (const [key, id] of Object.entries(ids)) {
+        perks[key] = [...cardOf(id).querySelectorAll(".calc-pill.is-perk")].map((p) => p.textContent.trim());
+      }
+      // What the dot is charged is the cost, not the number typed: the free ten pulls
+      // and the discounted ten-pull come off it.
+      const dots = {};
+      for (const dot of document.querySelectorAll("#calc-chart .calc-dot")) {
+        dots[dot.dataset.banner] = dot.querySelector(".calc-dot-label").textContent.trim();
+      }
+      // P1, not P0: a Ripples pool selects its first 6★, so its P0 is 100% whatever
+      // the counter says. The second copy is what the counter actually moves.
+      const headOf = (id) => Number(cardOf(id).querySelector('.calc-chip[data-p="1"]').dataset.odds);
+      const base = { rerun: headOf(ids.rerun), ripples: headOf(ids.ripples) };
+      // Advancing the Rate Up counter must move the Rerun card only.
+      calcPityRateUp = 65;
+      calcRefresh();
+      const rateUpMoved = { rerun: headOf(ids.rerun), ripples: headOf(ids.ripples) };
+      calcPityRateUp = 0;
+      // And advancing the Ripples counter must move the Ripples card only.
+      calcPityRipples = 65;
+      calcRefresh();
+      const ripplesMoved = { rerun: headOf(ids.rerun), ripples: headOf(ids.ripples) };
+      calcPityRipples = 0;
+      calcRefresh();
+      const dotsArt = [...document.querySelectorAll("#calc-chart .calc-dot")].map((dot) => {
+        const head = dot.querySelector(".calc-dot-head");
+        const label = dot.querySelector(".calc-dot-label");
+        return {
+          headW: head ? Math.round(head.getBoundingClientRect().width) : 0,
+          labelPx: label ? parseFloat(getComputedStyle(label).fontSize) : 0,
+        };
+      });
+      document.getElementById("calc-reset").click();
+      return { ids, perks, dots, base, rateUpMoved, ripplesMoved, dotsArt };
+    });
+    check(
+      "a Limited banner carries its free ten pulls",
+      tracks.perks.limited.some((pill) => /10 free pulls/.test(pill)),
+      JSON.stringify(tracks.perks.limited)
+    );
+    check(
+      "a Ripples pool carries its ten-pull discount and its first-6★ selector",
+      tracks.perks.ripples.some((pill) => /−3 on a ten-pull/.test(pill)) &&
+        tracks.perks.ripples.some((pill) => /First 6✦ selected/.test(pill)),
+      JSON.stringify(tracks.perks.ripples)
+    );
+    check(
+      "a plain Rerun carries no perk",
+      tracks.perks.rerun.length === 0,
+      JSON.stringify(tracks.perks.rerun)
+    );
+    check(
+      "the dot is charged the cost, not the typed count",
+      tracks.dots[tracks.ids.limited] === "−50" && tracks.dots[tracks.ids.ripples] === "−77",
+      JSON.stringify(tracks.dots)
+    );
+    check(
+      "the Rate Up counter moves Debut and Rerun, and nothing else",
+      tracks.rateUpMoved.rerun > tracks.base.rerun &&
+        Math.abs(tracks.rateUpMoved.ripples - tracks.base.ripples) < 1e-12,
+      JSON.stringify(tracks.rateUpMoved)
+    );
+    check(
+      "the Ripples counter moves Ripples, and nothing else",
+      tracks.ripplesMoved.ripples > tracks.base.ripples &&
+        Math.abs(tracks.ripplesMoved.rerun - tracks.base.rerun) < 1e-12,
+      JSON.stringify(tracks.ripplesMoved)
+    );
+    check(
+      "the chart art is big enough to read at low resolution",
+      tracks.dotsArt.length === 3 &&
+        tracks.dotsArt.every((dot) => dot.headW >= 20 && dot.labelPx >= 12),
+      JSON.stringify(tracks.dotsArt)
+    );
+
+    // The patch's first Limited banner trades a bonus copy at 200 pulls, and the trade
+    // **repeats** — 560 pulls buys two — so its copy levels sit above what the pulls
+    // alone buy. That is what makes portraits cheaper to hunt there than elsewhere.
+    const exchange = await page.evaluate(() => {
+      const banner = calcPickerPool().find((row) => row.rule && row.rule.copyExchange);
+      if (!banner) return { found: false };
+      const rule = calcRuleOf(banner);
+      const plain = calcDistribution({ ...rule, copyExchange: null }, 200, 0, false);
+      const traded = calcDistribution(rule, 200, 0, false);
+      // Below the threshold nothing is traded, so the odds are exactly the plain ones.
+      const plain199 = calcDistribution({ ...rule, copyExchange: null }, 199, 0, false);
+      const traded199 = calcDistribution(rule, 199, 0, false);
+      // 560 pulls is two thresholds: two copies traded, so P5 is what three traded
+      // copies would have made of it — a certainty.
+      const plain560 = calcDistribution({ ...rule, copyExchange: null }, 560, 0, false);
+      const traded560 = calcDistribution(rule, 560, 0, false);
+      // The card has to print the same numbers the model does.
+      calcAddBanner(banner.id);
+      const cardOf = () => document.querySelector(`#calc-banners .calc-card[data-banner="${banner.id}"]`);
+      const chipsOf = () => [...cardOf().querySelectorAll(".calc-chip")].map((c) => Number(c.dataset.odds));
+      const read = (pulls) => {
+        calcSetPulls(banner.id, pulls);
+        calcRefresh();
+        return {
+          chips: chipsOf(),
+          perks: [...cardOf().querySelectorAll(".calc-pill.is-perk")].map((p) => p.textContent.trim()),
+        };
+      };
+      const at199 = read(199);
+      const at200 = read(200);
+      const at560 = read(560);
+      document.getElementById("calc-reset").click();
+      return {
+        found: true,
+        name: calcBannerName(banner),
+        type: banner.type,
+        threshold: rule.copyExchange.pulls,
+        copies: rule.copyExchange.copies,
+        plain,
+        traded,
+        plain199,
+        traded199,
+        plain560,
+        traded560,
+        at199,
+        at200,
+        at560,
+      };
+    });
+    check(
+      "a Limited patch's first banner trades a copy at 200 pulls",
+      exchange.found &&
+        exchange.type === "Limited" &&
+        exchange.threshold === 200 &&
+        exchange.copies === 1 &&
+        exchange.at200.perks.includes("1 copy every 200 pulls"),
+      JSON.stringify({ found: exchange.found, name: exchange.name, perks: exchange.at200?.perks })
+    );
+    check(
+      "the traded copy moves every level up by one",
+      exchange.found &&
+        Math.abs(exchange.traded[0] - 1) < 1e-9 &&
+        [1, 2, 3, 4, 5].every((level) => Math.abs(exchange.traded[level] - exchange.plain[level - 1]) < 1e-9),
+      JSON.stringify({ plain: exchange.plain, traded: exchange.traded })
+    );
+    check(
+      "the trade repeats: 560 pulls is two copies, so P5 reaches 100%",
+      exchange.found &&
+        Math.abs(exchange.traded560[5] - 1) < 1e-6 &&
+        exchange.traded560[5] > exchange.plain560[5] &&
+        Math.abs(exchange.traded560[4] - exchange.plain560[2]) < 1e-9 &&
+        Math.abs(exchange.at560.chips[5] - exchange.traded560[5]) < 1e-4,
+      JSON.stringify({
+        plain560: exchange.plain560,
+        traded560: exchange.traded560,
+        chips: exchange.at560?.chips,
+      })
+    );
+    check(
+      "the card prints the traded odds, and only from the threshold on",
+      exchange.found &&
+        exchange.at200.chips.every((value, level) => Math.abs(value - exchange.traded[level]) < 1e-4) &&
+        exchange.traded199.every((value, level) => Math.abs(value - exchange.plain199[level]) < 1e-12),
+      JSON.stringify({ at199: exchange.at199?.chips, at200: exchange.at200?.chips })
+    );
+
+    // The "?" sheet beside the income bar explains every source, so it has to be one
+    // row per income with what it pays and how often.
+    const helpSheet = await page.evaluate(() => {
+      document.getElementById("calc-help-open").click();
+      const host = document.getElementById("calc-help");
+      const out = {
+        open: !host.hidden,
+        title: document.getElementById("calc-help-title").textContent.trim(),
+        groups: [...host.querySelectorAll(".calc-help-group-title")].map((g) => g.textContent.trim()),
+        rows: [...host.querySelectorAll(".calc-help-row")].map((row) => ({
+          name: row.querySelector(".calc-help-name").textContent.trim(),
+          amount: row.querySelector(".calc-help-amount").textContent.trim(),
+          when: row.querySelector(".calc-help-when").textContent.trim(),
+          note: row.querySelector(".calc-help-note").textContent.trim(),
+        })),
+        // One count per group, in the sheet's own order, so a row that lands in the
+        // wrong block is caught rather than merely counted.
+        groupRows: [...host.querySelectorAll(".calc-help-group")].map(
+          (group) => group.querySelectorAll(".calc-help-row").length
+        ),
+        card: host.querySelector(".calc-help-card").className,
+        fixed: getComputedStyle(host).position === "fixed" || getComputedStyle(host).position === "absolute",
+      };
+      document.getElementById("calc-help-close").click();
+      out.closed = host.hidden;
+      return out;
+    });
+    check("the “?” opens the income sheet", helpSheet.open, String(helpSheet.open));
+    check(
+      "it groups the sources the way the tab does",
+      helpSheet.groups.join("|") === "Freebies|Spenders|Always paid",
+      JSON.stringify(helpSheet.groups)
+    );
+    check(
+      "it lists every income with what it pays and how often",
+      helpSheet.rows.length === 19 &&
+        helpSheet.rows.every((row) => row.name && row.when) &&
+        helpSheet.rows.filter((row) => row.amount).length >= 17,
+      JSON.stringify(helpSheet.rows.slice(0, 4))
+    );
+    check(
+      "the free block carries the login track and both halves of the Jukebox",
+      helpSheet.groupRows[0] === 10 &&
+        helpSheet.rows.some((row) => row.name === "Login 7/15/25 days" && row.amount === "180") &&
+        helpSheet.rows.some((row) => row.name === "Roar Jukebox" && row.amount === "2"),
+      JSON.stringify({ groupRows: helpSheet.groupRows })
+    );
+    check(
+      "Dev Broadcasts is one more always-paid patch payout",
+      helpSheet.groupRows[2] === 4 &&
+        helpSheet.rows.some((row) => row.name === "Dev Broadcasts" && row.amount === "120"),
+      JSON.stringify(helpSheet.rows.map((row) => [row.name, row.amount]))
+    );
+    check(
+      "the Daily Tasks note claims no Sunday bonus, because the sheet has none",
+      helpSheet.rows.find((row) => row.name === "Daily Tasks").note === "90 Clear Drops a day.",
+      helpSheet.rows.find((row) => row.name === "Daily Tasks").note
+    );
+    check(
+      "the sheet wears the site's modal card and its close button works",
+      /modal-card/.test(helpSheet.card) && helpSheet.closed,
+      JSON.stringify({ card: helpSheet.card, closed: helpSheet.closed })
+    );
+
+    // The tab is translated like the rest of the modal — including the banner kinds,
+    // which are the sheet's own English words in the data.
+    await page.evaluate(() => setLanguage("cn"));
+    await page.waitForTimeout(800);
+    const calcCn = await page.evaluate(() => {
+      document.getElementById("calc-add").click();
+      const out = {
+        sections: [...document.querySelectorAll("#planner-calculator .archetype-section-title")].map((s) =>
+          s.textContent.trim()
+        ),
+        hold: document.getElementById("calc-chart-total").textContent.trim(),
+        summary: [...document.querySelectorAll("#calc-summary .calc-summary-label")].map((s) => s.textContent.trim()),
+        toggle: (document.querySelector("#planner-calculator .calc-check-yield") || {}).textContent || "",
+        groups: [...document.querySelectorAll("#planner-calculator .calc-group-title")].map((g) => g.textContent.trim()),
+        tracks: [...document.querySelectorAll("#planner-calculator .calc-hold .calc-field-label")].map((l) =>
+          l.textContent.trim()
+        ),
+        spans: [...document.querySelectorAll("#calc-span .calc-span-btn")].map((s) => s.textContent.trim()),
+        hint: (document.querySelector("#planner-calculator .calc-hint") || {}).textContent || "",
+        empty: (document.querySelector("#calc-banners .guide-empty") || {}).textContent || "",
+        add: document.getElementById("calc-add").textContent.replace(/\s+/g, " ").trim(),
+        filters: document.querySelectorAll("#calc-picker .filter-btn").length,
+        kinds: [...new Set([...document.querySelectorAll("#calc-picker-list .calc-pick-meta")].map((m) => m.textContent.split(" · ")[0].trim()))],
+        meta: (document.querySelector("#calc-picker-list .calc-pick-meta") || {}).textContent || "",
+      };
+      document.getElementById("calc-picker-close").click();
+      document.getElementById("calc-help-open").click();
+      out.helpTitle = document.getElementById("calc-help-title").textContent.trim();
+      out.helpGroups = [...document.querySelectorAll("#calc-help .calc-help-group-title")].map((g) =>
+        g.textContent.trim()
+      );
+      out.helpRow = (document.querySelector("#calc-help .calc-help-note") || {}).textContent || "";
+      document.getElementById("calc-help-close").click();
+      return out;
+    });
+    const CJK = /[\u4e00-\u9fff]/;
+    check(
+      "the Calculator is translated",
+      calcCn.sections.every((s) => CJK.test(s)) &&
+        CJK.test(calcCn.hold) &&
+        CJK.test(calcCn.empty) &&
+        CJK.test(calcCn.add),
+      JSON.stringify(calcCn.sections)
+    );
+    check(
+      "the ledger's own labels are translated too (summary, tick boxes, span, help)",
+      calcCn.summary.every((s) => CJK.test(s)) &&
+        CJK.test(calcCn.toggle) &&
+        calcCn.spans.every((s) => CJK.test(s)) &&
+        CJK.test(calcCn.hint),
+      JSON.stringify({ summary: calcCn.summary, spans: calcCn.spans, hint: calcCn.hint })
+    );
+    check(
+      "the two income groups and the two pity tracks are translated",
+      calcCn.groups.every((g) => CJK.test(g)) && calcCn.tracks.every((label) => CJK.test(label)),
+      JSON.stringify({ groups: calcCn.groups, tracks: calcCn.tracks })
+    );
+    check(
+      "the “?” sheet is translated as well",
+      CJK.test(calcCn.helpTitle) && calcCn.helpGroups.every((g) => CJK.test(g)) && CJK.test(calcCn.helpRow),
+      JSON.stringify({ title: calcCn.helpTitle, groups: calcCn.helpGroups })
+    );
+    check(
+      "a banner kind is a label, not the data's English word",
+      calcCn.filters === 0 && calcCn.kinds.length > 0 && calcCn.kinds.every((k) => CJK.test(k)) && CJK.test(calcCn.meta),
+      JSON.stringify({ kinds: calcCn.kinds, meta: calcCn.meta })
+    );
+    await page.evaluate(() => setLanguage("en"));
+    await page.waitForTimeout(600);
+    const backToEn = await page.evaluate(() => ({
+      sections: [...document.querySelectorAll("#planner-calculator .archetype-section-title")].map((s) =>
+        s.textContent.trim()
+      ),
+      add: document.getElementById("calc-add").textContent.replace(/\s+/g, " ").trim(),
+    }));
+    check(
+      "switching back restores the English labels",
+      backToEn.sections[0] === "Current amounts" && /Add banner/.test(backToEn.add),
+      JSON.stringify(backToEn)
+    );
+
+    // On a phone a banner with several rate-up heads used to squeeze the name into a
+    // ~90px column, and the tags then stacked and ran out of the card. The head row
+    // now lets the name take the full width.
+    await page.evaluate(() => document.getElementById("calc-add").click());
+    await page.waitForTimeout(200);
+    await page.evaluate(() => document.querySelector("#calc-picker-list .calc-pick").click());
+    await page.waitForTimeout(300);
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.waitForTimeout(400);
+    const calcPhone = await page.evaluate(() => {
+      const card = document.querySelector("#calc-banners .calc-card");
+      const title = card.querySelector(".calc-card-title").getBoundingClientRect();
+      const row = card.querySelector(".calc-card-pills").getBoundingClientRect();
+      const pills = [...card.querySelectorAll(".calc-pill")];
+      return {
+        cards: document.querySelectorAll("#calc-banners .calc-card").length,
+        titleW: Math.round(title.width),
+        cardW: Math.round(card.clientWidth),
+        overflow: card.scrollWidth > card.clientWidth + 1,
+        pillRows: new Set(pills.map((p) => Math.round(p.getBoundingClientRect().top))).size,
+        pillsFit: pills.every((p) => p.getBoundingClientRect().right <= row.right + 1),
+        removeRight: Math.round(
+          card.querySelector(".calc-card-remove").getBoundingClientRect().right - card.getBoundingClientRect().left
+        ),
+        removeInside: true,
+      };
+    });
+    check(
+      "on a phone the card gives the name the full width",
+      calcPhone.cards > 0 && calcPhone.titleW >= calcPhone.cardW - 30,
+      JSON.stringify(calcPhone)
+    );
+    check(
+      "and no tag runs out of the card",
+      !calcPhone.overflow && calcPhone.pillsFit && calcPhone.removeRight <= calcPhone.cardW,
+      JSON.stringify(calcPhone)
+    );
+
+    // The new blocks on a phone: the span chips and the summary row used to be a
+    // 780-wide desktop line, so they either overflowed the tab or squeezed into one
+    // unreadable column.
+    const calcPhoneBlocks = await page.evaluate(() => {
+      const host = document.querySelector("#planner-calculator");
+      const cells = [...document.querySelectorAll("#calc-summary .calc-summary-cell")];
+      const boxes = [...document.querySelectorAll("#planner-calculator .calc-check")];
+      const hostRight = host.getBoundingClientRect().right;
+      return {
+        overflow: host.scrollWidth > host.clientWidth + 1,
+        cellsFit: cells.every((cell) => cell.getBoundingClientRect().right <= hostRight + 1),
+        summaryRows: new Set(cells.map((cell) => Math.round(cell.getBoundingClientRect().top))).size,
+        spanFits: document.getElementById("calc-span").getBoundingClientRect().right <= hostRight + 1,
+        boxesFit: boxes.every((box) => box.scrollWidth <= box.clientWidth + 1),
+        // Every card in a grid row is the same size on a phone too: one card a head
+        // taller than the one beside it read as a mismatched button.
+        boxRows: [...document.querySelectorAll("#planner-calculator .calc-group-grid")].map((grid) => {
+          const rows = new Map();
+          [...grid.querySelectorAll(".calc-check")].forEach((box) => {
+            const b = box.getBoundingClientRect();
+            const key = Math.round(b.top);
+            rows.set(key, [...(rows.get(key) || []), Math.round(b.height)]);
+          });
+          return [...rows.values()].map((heights) => new Set(heights).size === 1);
+        }),
+        pairFits: [...document.querySelectorAll("#planner-calculator .calc-group > .calc-pair-row")].every(
+          (row) => row.getBoundingClientRect().right <= hostRight + 1
+        ),
+      };
+    });
+    check(
+      "the tick-box cards keep one size per row on a phone, and the package pair stays inside",
+      calcPhoneBlocks.boxRows.every((group) => group.every(Boolean)) && calcPhoneBlocks.pairFits,
+      JSON.stringify({ rows: calcPhoneBlocks.boxRows, pairFits: calcPhoneBlocks.pairFits })
+    );
+    check(
+      "the span chips and the summary fit a phone",
+      !calcPhoneBlocks.overflow && calcPhoneBlocks.spanFits && calcPhoneBlocks.cellsFit && calcPhoneBlocks.boxesFit,
+      JSON.stringify(calcPhoneBlocks)
+    );
+    check(
+      "the summary keeps two cells a row rather than one long column",
+      calcPhoneBlocks.summaryRows <= 2,
+      String(calcPhoneBlocks.summaryRows)
+    );
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(300);
 
     // Everything below is the Event tab, so switch to it once.
     const openEventTab = async () => {
@@ -1193,8 +2460,8 @@ try {
     });
 
     // On a phone the InfoBook puts its tabs on a second row; the Planner should
-    // read the same, with the two tabs keeping their own width instead of
-    // stretching into a full-width bar under the close button.
+    // read the same, with the tabs keeping their own width instead of stretching
+    // into a full-width bar under the close button.
     await page.setViewportSize({ width: 390, height: 780 });
     await page.waitForTimeout(300);
     const narrowTab = await page.evaluate(() => {
@@ -1208,12 +2475,13 @@ try {
         tabW: Math.round(tabs.reduce((n, r) => n + r.width, 0)),
         headerW: Math.round(header.width),
         belowTitle: tabs.every((r) => r.top >= title.bottom - 1),
+        sameRow: tabs.every((r) => Math.abs(r.top - tabs[0].top) <= 1),
         overlap: tabs.some((r) => r.right > close.left && r.top < close.bottom && r.bottom > close.top),
       };
     });
     check(
-      "the two tabs keep their own width on a phone",
-      narrowTab.tabW < narrowTab.headerW / 2,
+      "the tabs keep their own width on a phone",
+      narrowTab.tabW < narrowTab.headerW * 0.8 && narrowTab.sameRow && narrowTab.belowTitle && !narrowTab.overlap,
       JSON.stringify(narrowTab)
     );
     check("they sit on their own row, like the InfoBook's tabs", narrowTab.belowTitle, JSON.stringify(narrowTab));
@@ -1724,6 +2992,10 @@ try {
     await page.waitForTimeout(1400);
     await page.evaluate(() => document.getElementById("btn-planner").click());
     await page.waitForTimeout(600);
+    // With no saved tab the modal opens on Calculator, its first tab; every check
+    // below is about the Character tab, so press it once.
+    await page.evaluate(() => document.getElementById("planner-tab-character").click());
+    await page.waitForTimeout(400);
 
     // Quantities live in `data-qty` (the badge prints a compact "894k", the way the
     // InfoBook's own item sticker does), so read the exact figure.
@@ -1756,6 +3028,7 @@ try {
 
     const emptyPane = await page.evaluate(() => ({
       charVisible: !document.getElementById("planner-pane-character").hidden,
+      calcVisible: !document.getElementById("planner-pane-calculator").hidden,
       eventVisible: !document.getElementById("planner-pane-event").hidden,
       railEmpty: (document.querySelector(".planner-rail-empty")?.textContent || "").trim(),
       railTiles: document.querySelectorAll(".planner-char-tile").length,
@@ -1765,8 +3038,8 @@ try {
       paneText: (document.getElementById("planner-pane-character").textContent || "").trim(),
     }));
     check(
-      "the Character tab is the one that opens",
-      emptyPane.charVisible && !emptyPane.eventVisible,
+      "the Character tab opens on the plan, not the calculator",
+      emptyPane.charVisible && !emptyPane.eventVisible && !emptyPane.calcVisible,
       JSON.stringify(emptyPane)
     );
     check(

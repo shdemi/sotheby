@@ -1,0 +1,16 @@
+{
+  "_comment": "Extra spellings the community banner sheet uses for an arcanist -> the game's own English label (ArcanistMap.nameEng) or the canonical roster key. Keys are compared normalised (lowercased, accents and punctuation stripped, whitespace collapsed). The sheet writes digits for numeric names ('6', '37') and short forms ('Ezra', 'Liang'), while the game ships words ('Six', 'Thirty-seven', 'Ezra Theodore', 'Liang Yue').",
+  "6": "Six",
+  "37": "Thirty-seven",
+  "ezra": "Ezra Theodore",
+  "liang": "Liang Yue",
+  "kaala baunaa": "Kaalaa Baunaa",
+  "ms newbabel": "Ms. NewBabel",
+  "ms new babel": "Ms. NewBabel",
+  "tooth fairy": "Tooth Fairy",
+  "a knight": "A Knight",
+  "medicine pocket": "Medicine Pocket",
+  "druvis iii": "Druvis III",
+  "an an lee": "An-an Lee",
+  "spathodea": "Spathodea"
+}

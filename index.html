@@ -1362,7 +1362,8 @@
         <h2 class="archetype-modal-title"><span data-i18n="planner.title">Planner</span></h2>
         <div class="builds-header-actions">
           <div class="builds-mode-group" role="tablist" aria-label="Planner">
-            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn is-active" id="planner-tab-character" data-mode="character" data-i18n="planner.tabCharacter">Character</button>
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn is-active" id="planner-tab-calculator" data-mode="calculator" data-i18n="planner.tabCalculator">Calculator</button>
+            <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="planner-tab-character" data-mode="character" data-i18n="planner.tabCharacter">Character</button>
             <button type="button" class="btn btn-secondary btn-sm builds-mode-btn" id="planner-tab-event" data-mode="event" data-i18n="planner.tabEvent">Event</button>
           </div>
           <button class="modal-close" id="planner-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
@@ -1370,9 +1371,87 @@
       </div>
 
       <div class="planner-body">
+        <!-- Calculator tab: how many pulls reach a banner and the odds of P0…P5. The
+             pane is a shell — `renderPlannerCalculator()` in app.js draws every
+             section into `#planner-calculator`, so the whole tab is one render
+             function. The two popups below it are lightboxes over the tab. -->
+        <div class="planner-pane is-active" id="planner-pane-calculator" data-pane="calculator">
+          <div class="planner-toolbar">
+            <div class="planner-toolbar-lead">
+              <span class="planner-patch" id="calc-today"></span>
+            </div>
+            <div class="planner-toolbar-tail">
+              <button type="button" class="btn btn-secondary planner-add-btn" id="calc-add" title="Add a banner" data-i18n-title="planner.calcAddBanner" aria-label="Add a banner" data-i18n-aria-label="planner.calcAddBanner">
+                <span class="planner-add-plus" aria-hidden="true">+</span>
+                <span data-i18n="planner.calcAddBanner">Add banner</span>
+              </button>
+              <button type="button" class="btn btn-secondary planner-reset-btn" id="calc-reset" title="Reset the calculator" data-i18n-title="planner.calcReset" aria-label="Reset the calculator" data-i18n-aria-label="planner.calcReset">
+                <img src="images/random_icon/reset_png.png" alt="" class="planner-reset-icon" />
+              </button>
+            </div>
+          </div>
+          <div class="planner-scroll calc-scroll" id="planner-calculator"></div>
+
+          <!-- "+ Add banner" picker. Search and type chips are the Manage modal's
+               own toolbar, inside the site's modal frame; the list is one row per
+               banner still to run. -->
+          <div class="calc-picker" id="calc-picker" hidden>
+            <div class="calc-picker-backdrop" id="calc-picker-backdrop"></div>
+            <div class="modal-card archetype-modal-card calc-picker-card" role="dialog" aria-modal="true" aria-labelledby="calc-picker-title">
+              <div class="archetype-modal-header calc-picker-head">
+                <h2 class="archetype-modal-title"><span id="calc-picker-title" data-i18n="planner.calcAddBanner">Add banner</span></h2>
+                <button type="button" class="modal-close" id="calc-picker-close" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="modal-body archetype-modal-body calc-picker-body">
+                <div class="roster-toolbar calc-picker-toolbar">
+                  <div class="roster-toolbar-left">
+                    <input type="text" class="search-input" id="calc-picker-search" placeholder="Search banners" data-i18n-placeholder="planner.calcSearchBanner" aria-label="Search banners" data-i18n-aria-label="planner.calcSearchBanner" />
+                  </div>
+                </div>
+                <div class="calc-picker-list" id="calc-picker-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- The sheet a chart dot opens: the banner's dates, its pity track, its
+               perks and the odds the planned pulls buy. -->
+          <div class="calc-info" id="calc-info" hidden>
+            <div class="calc-info-backdrop" id="calc-info-backdrop"></div>
+            <div class="modal-card archetype-modal-card calc-info-card" role="dialog" aria-modal="true" aria-labelledby="calc-info-title">
+              <div class="archetype-modal-header calc-info-head">
+                <div class="calc-info-title-wrap">
+                  <span class="calc-info-heads" id="calc-info-heads"></span>
+                  <h2 class="archetype-modal-title" id="calc-info-title"></h2>
+                </div>
+                <button type="button" class="modal-close" id="calc-info-close" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="modal-body archetype-modal-body calc-info-body" id="calc-info-body"></div>
+            </div>
+          </div>
+
+          <!-- "?" beside Drop income: every source the ledger knows, what purse it
+               pays and how often, in the same modal frame. -->
+          <div class="calc-help" id="calc-help" hidden>
+            <div class="calc-help-backdrop" id="calc-help-backdrop"></div>
+            <div class="modal-card archetype-modal-card calc-help-card" role="dialog" aria-modal="true" aria-labelledby="calc-help-title">
+              <div class="archetype-modal-header calc-help-head">
+                <h2 class="archetype-modal-title"><span id="calc-help-title" data-i18n="planner.calcHelpTitle">Drop income explained</span></h2>
+                <button type="button" class="modal-close" id="calc-help-close" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="modal-body archetype-modal-body calc-help-body" id="calc-help-body"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Character tab: pick the arcanists you still have to build, and read
              the combined bill underneath. -->
-        <div class="planner-pane is-active" id="planner-pane-character" data-pane="character">
+        <div class="planner-pane" id="planner-pane-character" data-pane="character" hidden>
           <div class="planner-toolbar">
             <div class="planner-toolbar-lead">
               <span class="planner-patch" id="planner-char-count"></span>

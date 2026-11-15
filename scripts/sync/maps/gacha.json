@@ -1,0 +1,63 @@
+{
+  "_comment": "Class-B constants for the Planner Calculator. No game table states any of these, so they are declared once here and copied into data/gacha_rules.json. portraitCopies: how many copies of a 6★ unlock P5 (P0 = the first copy, then one duplicate per portrait). dropsPerUnilog: the shop price of one pull (180 Crystal Drops). rateUpShare: the default 50/50 between the rate-up 6★ and the standard pool. track: which pity counter a banner spends and banks, and the only thing the tab asks the reader to fill in — `rateUp` is shared by Debut and Rerun, `ripples` belongs to Ripples on the Water alone, and `solo` means the banner keeps its own counter that nothing else can see (Limited, Event, Collab and Yearning), so a fresh one always starts at zero. freePulls: pulls the banner hands out at its patch start before the reader spends anything. discountFirst10: Unilogs knocked off the first ten-pull. selectFirstSix: the first 6★ is a character selector, so it can never miss. patchFirstLimited: the exchange every Limited patch opens with — its headline Limited banner hands one portrait token per {pulls}, and the token buys a copy of the rate-up, so portraits are cheaper to hunt there than on any other Limited banner.",
+  "portraitCopies": 6,
+  "dropsPerUnilog": 180,
+  "rateUpShare": 0.5,
+  "patchFirstLimited": {
+    "_comment": "The first Limited banner of a Limited patch (the one no other Limited run opened within a patch before) trades one bonus copy of its rate-up for every 200 pulls of the run. The trade repeats: 560 pulls buys two. That is how Huntsworn Lilya's banner is easier to take to P5.",
+    "pulls": 200,
+    "copies": 1
+  },
+  "byType": {
+    "Debut": { "kind": "rateUp", "track": "rateUp" },
+    "Rerun": { "kind": "rateUp", "track": "rateUp" },
+    "Ripples": {
+      "kind": "rateUp",
+      "track": "ripples",
+      "selectFirstSix": true,
+      "discountFirst10": 3
+    },
+    "Limited": { "kind": "rateUp", "track": "solo", "freePulls": 10 },
+    "Event": { "kind": "rateUp", "track": "solo" },
+    "Collab": { "kind": "rateUp", "track": "solo" },
+    "Yearning": { "kind": "rateUp", "track": "solo" }
+  },
+  "byBanner": {
+    "_comment": "Keyed by the spreadsheet's banner name, merged *on top of* the type rule above. The notes below quote its own 'Pity Explained' text, which is the only place these rules are written down.",
+    "Boon of the Water": {
+      "kind": "inGroup",
+      "choose": 3
+    },
+    "Abundance of the Water: The First Milestone": {
+      "kind": "inGroup",
+      "choose": 4
+    },
+    "Revelation of the Water": {
+      "kind": "rateUp",
+      "share": 0.7
+    },
+    "Promise of the Water": {
+      "kind": "rateUp",
+      "share": 0.5,
+      "discountFirst10": 5
+    },
+    "From the Lake's Heart": {
+      "kind": "rateUp",
+      "share": 0.5
+    },
+    "Covenant of the Water": {
+      "kind": "thread"
+    },
+    "Invitation From the Water": {
+      "kind": "thread"
+    },
+    "The Snow of Dushuo": {
+      "kind": "rateUp",
+      "share": 0.5,
+      "separatePity": true,
+      "track": "solo",
+      "freePulls": 100,
+      "maxPulls": 100
+    }
+  }
+}

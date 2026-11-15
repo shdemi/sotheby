@@ -1,0 +1,9 @@
+{
+  "_comment": "Banner names as the community sheet spells them -> the name summon_pool.nameEn uses. Keys and values are compared normalised (lowercased, accents and punctuation stripped, whitespace collapsed), so exact casing does not matter. Only real wording differences belong here; a whitespace, tab or '!' difference is handled by the normaliser.",
+  "myth at her fingertips": "The Myth at Her Fingertips",
+  "into the mirrors": "Observation into the Mirrors",
+  "amid the lake": "Amid the Water",
+  "amongst the lake": "Amid the Water",
+  "the arrow breaks through the sky": "THE ARROW BREAKS THROUGH THE AIR",
+  "the aristocrat the hermits": "The Aristocrat and The Hermit"
+}

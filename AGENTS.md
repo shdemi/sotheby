@@ -19,7 +19,7 @@ share cards and share pages (§13).
 | Team Building | modal |
 | Rotations | modal |
 | InfoBook | modal |
-| Planner (Character plan + event shop) | modal (§14) |
+| Planner (Calculator + Character plan + event shop) | modal (§14, §15) |
 | Stages | data generated in `data/stages/`, UI missing |
 | Timeline | no data yet |
 | Share card / share page | `/api/og` PNG + `/sim` shell (§13) |
@@ -36,14 +36,17 @@ data manifest. Do not start that refactor unless the owner asks for it again.
    generator in `scripts/sync/`, then re-run it.
 2. **`content/` is human-authored** (build guides, rotations, team archetypes, UI strings,
    translations). This is the only place a human edits data by hand.
-3. **Only two data sources are allowed:**
+3. **Only three data sources are allowed:**
    - `githubfetch/St-Pavlov-Foundation/re1999-data-global-main` (global server)
    - `githubfetch/St-Pavlov-Foundation/re1999-data-main` (CN server)
-   Images come from a third source, assets only:
+   - the community **banner history sheet** (§15), read through a committed snapshot only
+     (`data/banner_history.json`): `npm run sync:banners` fetches, the generator joins it
+   Images come from a fourth source, assets only:
    - `githubfetch/Myssal/Reverse-1999-CN-Asset`
    The Fandom wiki (`reverse1999.fandom.com`, read-only) is the **one** allowed runtime
    source, and only for promotional codes (§12). It never feeds `data/` other than
-   `data/promo_codes.json`.
+   `data/promo_codes.json`. The banner sheet never feeds the app at runtime either — its
+   snapshot is a committed file, so `npm run sync` stays offline.
 4. **No Kornblume.** It was a third-party data + image source; it is being removed.
 5. **No hand-numbered IDs.** Every object keyed by an id must use the **game id** from
    St-Pavlov (see §5 for the psychube re-key).
@@ -82,7 +85,7 @@ githubfetch/
 
 Version stamps (from `data/meta.json`):
 
-- global: `111.0.1050`
+- global: `111.0.1077`
 - CN: `113.0.1421`
 
 **Rule:** numbers/tables come from St-Pavlov (global and/or CN). Text comes from
@@ -121,6 +124,8 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `code_reward_index.json` | `power_item.json` + `equip.json` (`rare <= 3`) + global `language_*` | **derived**: the reward names the Codes tab cannot resolve through `items.json` (stamina candy, EXP-fodder psychubes like Enlighten II/III). Keyed by lowercased name; art copied to `images/code_items/` |
 | `stages/*.json` | `chapter.json`, `episode.json`, `battle.json`, `monster*.json`, `tower_permanent_episode.json`, `activity128_*.json` (CN) | already produced by `scripts/build_stages_data.mjs` |
 | `event_shop.json` | `activity107` + `activity` + `language_prefab` + `item`/`currency`/`equip`/`skin`/`character`/`block_package` + global `language_*` | **derived**: the event shops the client ships, with per-slot name/icon/price/cap for the Planner (§14). Patch-invariant: the shop is keyed by `activityId`, the patch by `activityId / 100` |
+| `banners.json` | `data/banner_history.json` (the frozen sheet snapshot) + `summon_pool` + `character.json` + global `language_*` | **derived**: 406 banner rows (199 global + 199 CN + 8 CN runs predicted for Global at a measured 84-day lag). Every row keeps its sheet facts (version, dates, type, rate-up label) and gains the server's pool rule from `summon_pool`; see §15 |
+| `gacha_rules.json` | `item.json` / `currency.json` (art) + `summon_pool` rates + `calculator.xlsx` (the ledger) | **mixed**: the rates and the 6★ curve are read from `sources`; `portraitCopies`, `dropsPerUnilog`, the per-banner-kind rule table and the `income` ledger are hand-declared in `scripts/sync/maps/gacha.json` / `calc-income.json` (§15) |
 
 `characters_by_afflatus` caveat: `career` is the primary afflatus key
 (3=Plant, 4=Beast, 5=Spirit, 6=Intellect, 101=hybrid `Mineral_Star`), but current
@@ -139,6 +144,8 @@ Keep these maps in `scripts/sync/maps/`.
 | `exclude_character.json` | exclusion policy (currently `["Schneider"]`) |
 | `collab_character.json` | collab detection rule (`heroType` / tag / id range) |
 | `character_reso_shape.json` / `shape_patterns.json` | shape ↔ pattern list mapping from `resonance.json` |
+| `banners.json` | `banner-aliases.json` (sheet name → pool name) and `hero-aliases.json` (sheet spelling → roster name); the CN→Global prediction needs no map — the lag is measured (§15) |
+| `gacha_rules.json` | `gacha.json` (the per-banner-kind odds rule table — kinds, pity tracks, free pulls, ten-pull discounts, the first-6★ selector) and `calc-income.json` (the `calculator.xlsx` Pull Calculator ledger: daily/weekly tasks, Limbo, the Bass Counter, the patch payouts, the Roaring Month pass, the Offer of the Month, the daily purchasing ladder) (§15) |
 | `character_skills.json` | `skill-extras.json` (Rhiannon's two Bendith cards, Beryl's three emanations, Ms. Stranger's `[A Moth to a Flame]` omni card, Huntsworn Lilya's `Shoot Down`, the four base-kit specials, and 37's / Regulus's Euphoria-gated cards), `skill-badges.json` (card-type overrides), `adaptive.json` (cards whose variants are cast options instead of stance cards: Brume S1, Nautika S2) and `single-rank.json` (heroes whose Conduit incantations ship one rank: The Twins, Hedone) |
 
 ### Class C — human-authored content (NOT derivable)
@@ -323,6 +330,8 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
     ArcanistMap.json  promo_codes.json  og_index.json  stages/*.json
     event_shop.json          the Planner's event shops (§14)
     pattern_costs.json  progression_levels.json   the Planner's bills (§14)
+    banner_history.json      frozen banner-sheet snapshot (§15) — not generated by `sync`
+    banners.json  gacha_rules.json   the Calculator's data (§15)
   api/                       Vercel Node functions
     codes.js                 GET /api/codes + edge cache (§12)
     og.js                    GET /api/og PNG share card (§13)
@@ -338,12 +347,18 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
     guide_skills.json skill_glossary.json progression_costs.json
     i18n.json curation.json credits.json translations/
   scripts/
+    banners/
+      snapshot.mjs           the banner sheet -> data/banner_history.json (`sync:banners`)
     sync/
       config.mjs  util.mjs  sources.mjs
       derive/names.mjs  derive/characters.mjs
       derive/psychubes.mjs  derive/futureSight.mjs
+      derive/banners.mjs     sheet rows + summon_pool + CN→Global prediction -> data/banners.json,
+                             and the calculator.xlsx ledger -> data/gacha_rules.json (§15)
       derive/ogIndex.mjs     the compact lookup the share cards read
-      maps/*.json            hand-written mappings (class B)
+      maps/*.json            hand-written mappings (class B): gacha.json (odds rules),
+                             calc-income.json (the ledger), banner-aliases.json,
+                             hero-aliases.json
       legacy/                frozen migration inputs (do not regenerate)
       tools/                 one-time migration scripts
       index.mjs              run the whole pipeline
@@ -459,6 +474,7 @@ npm run sync:verify   # asserts the invariants (rarity, psychubes, future sight,
 npm run sync:assets   # fills the images/ cache from Myssal (items, psychubes, heads, skills)
 npm run sync:prune    # reports unreachable art under images/ (--delete to remove)
 npm run codes:snapshot  # refreshes data/promo_codes.json from the Fandom wiki
+npm run sync:banners    # refreshes data/banner_history.json from the community sheet (§15)
 
 # Share cards (see §13)
 python scripts/og/fetch-fonts.py   # rebuild assets/og/*.ttf (needs fonttools)
@@ -1087,21 +1103,30 @@ WASM is not a unit-test dependency.
 
 ---
 
-## 14. Planner (event shop and character progression)
+## 14. Planner (calculator, event shop and character progression)
 
-The 23rd modal: an InfoBook-shaped window with **two mode tabs, Character then Event**.
-Character is a build plan (what each arcanist still needs); Event prices the event shop the
-global client is currently running. Both read generated data, so `npm run sync` moves them
-to a new patch with no hand edit in `app.js`.
+The 23rd modal: an InfoBook-shaped window with **three mode tabs, Calculator, Character,
+then Event**. Calculator (§15) is a pull ledger: what the reader holds and earns, a balance
+curve over the span they pick with a dot per planned banner, a pity counter per pool family, and
+the odds of P0…P5 for each banner's typed pull count; Character is a build plan (what each
+arcanist still needs); Event prices the event shop the global client is currently running. All
+three read generated data, so `npm run sync` moves them to a new patch with no hand edit in
+`app.js`.
 
 ```html
+<button id="planner-tab-calculator">Calculator</button>
 <button id="planner-tab-character">Character</button>
 <button id="planner-tab-event">Event</button>
 ```
 
-`setPlannerTab()` shows one pane and hides the other (`#planner-pane-character` /
-`#planner-pane-event`); the modal always opens on Character. Both panes are siblings in the
-same `.planner-body`, and the phone header is the InfoBook's (title row 1, tabs row 2).
+`setPlannerTab()` shows one pane and hides the others (`#planner-pane-calculator` /
+`#planner-pane-character` / `#planner-pane-event`); the modal opens on whatever
+`PLANNER_TABS[0]` is — Calculator — unless the reader left it on another tab (the choice is
+remembered under `r1999_planner_tab_v1`). The panes are siblings in the same
+`.planner-body`, and the phone header is the InfoBook's (title row 1, tabs row 2).
+
+`renderPlanner()` dispatches on the active tab, and `setupPlannerListeners()` binds the tab
+row once for all three (the Calculator's own wiring lives in `setupPlannerCalculator()`).
 
 ### Event tab
 
@@ -1355,3 +1380,464 @@ the pattern picker billing exactly `pattern_costs.json`, Quick goal, persistence
 reload, a second arcanist and the Goal bar being their exact sum plus one head icon each (and
 a head icon opening that arcanist), row alignment of the cards, remove / reset, the picker
 closing on a tab switch, the phone stacking, the phone picker, and the Chinese translation.
+
+---
+
+## 15. Planner Calculator (banner odds)
+
+The Planner's **first tab** is a pull ledger. The reader says what they hold, what the patch
+pays them and what they spend, adds the banners they care about, and reads one balance curve
+over the span they pick (1 / 2 / 3 / 6 months) with a dot per planned banner — its rate-up's
+portrait above the point and what it costs below it; each banner card prints the odds of
+owning 1…6 copies of its rate-up for the pull count typed into it. It ships no numbers of its
+own — every figure is either the reader's input or generated data — and it is **Global only**:
+the CN server switch, the `Show N past` toggle and the old Projection pane are gone, and
+CN-only banners arrive as *predictions* for Global instead (§below). Every count on the tab is
+printed as `132` + the Unilog art, never as the word "pulls".
+
+Three things shape the tab as much as the odds do:
+
+- **Pity is not one counter.** The game keeps a counter per pool *family* — Debut and Rerun
+  share one, Ripples on the Water keeps its own, and Limited / Event / Collab / Yearning carry
+  none between runs — so the tab takes one counter (and one guarantee box) per track and each
+  banner card reads the counter its type implies.
+- **Income is split the way the reader earns it** — `Freebies` and `Spenders` groups, so a
+  reader who buys nothing is never told they can afford a banner they cannot.
+- **The reader can ask what a source is worth.** A `[?]` beside the income bar opens a sheet
+  that lists all 19 incomes with what each pays and how often.
+
+### Sources
+
+Banner **dates** are the one thing the client does not ship: `summon_pool` describes what is
+on a banner and what it costs, but the windows are server-side. So the community
+*Banner History* spreadsheet is the **third data source** (§1.3), and it is read exactly the
+way `data/promo_codes.json` reads the Fandom wiki — through a committed snapshot:
+
+```
+npm run sync:banners              # scripts/banners/snapshot.mjs -> data/banner_history.json
+npm run sync:banners -- --check   # report only, never write
+```
+
+`data/banner_history.json` holds `{ source, fetchedAt, global[], cn[] }` and is rewritten
+only when the rows changed. `snapshot.mjs` parses the published CSV (RFC 4180, quoted fields,
+embedded newlines) and keeps both 6-column blocks (CN at 0…5, GLB at 7…12) **plus** the
+shared `Version` column at 6, which the sheet merges across a patch block. The cell labels the
+*content*, and it is written three ways — `4.1`, `3.8 (CN) / 3.7 (GLB)`, `AH Collab (CN) / 3.8
+(GLB)` — often on several lines, so `parseVersionCell()` flattens it and splits the two
+server tags, and `readVersions()` forward-fills the merged cell (rows 0–1 are the two header
+lines and are skipped). Each row therefore carries its own `version` (`3.9`, `4.0`,
+`AH Collab`, …), which every banner surface prints as a tag.
+
+Nothing repairs the sheet. `-` placeholders, a `Rerun` row with no name, and hand-typed dates
+that are plainly wrong (`1/9/23` inside the 12/2023 block) are all left alone: an unreadable
+date becomes `null` and the row is kept, exactly like an unreadable promo-code expiry (§12).
+A nameless rerun **is** dropped, because a banner with no identity can never be joined to a
+pool. `npm run sync` stays offline: `scripts/sync/derive/banners.mjs` only *reads* the
+snapshot.
+
+### The join
+
+`banners.json` = sheet row × `summon_pool` × roster. Two joins happen:
+
+1. **Sheet → pool.** The two sides share a banner *name* and nothing else, so the name is
+   normalised (NFKD, accents stripped, punctuation / NBSP / tabs collapsed, lowercased) and
+   `scripts/sync/maps/banner-aliases.json` covers the handful the sheet spells differently
+   (`Into the Mirrors` is `Observation into the Mirrors` in the tables). A rerun answers to
+   every name its pools answer to, so it shares its debut's row. CN rows look in the CN pool
+   table first and fall back to global.
+2. **Pool → rate-up hero.** `upWeight` is `"<6★ ids>|<5★ ids>"`. One 6★ id is a real
+   rate-up; several mean a selector. `maps/hero-aliases.json` covers sheet spellings the
+   roster does not know.
+
+**The sheet names the run's rate-up; `upWeight` is the fallback.** Two banners rotate through
+one pool (`Yearning of the Water`, `Over the New Leaf`), so the pool can only name the
+banner's character, not this run's. `ambiguous` is therefore set only when the sheet named
+nobody *and* the pool candidates disagreed.
+
+Each row keeps its sheet facts (`name`, `nameZh`, `version`, `type`, `note`, `start`, `end`) and
+gains `poolId`, `targets` (the 6★ the odds are for), `fiveStar`, `rule` and `ambiguous`. `id` is
+`<server>:<poolId>:<start>`, unique per run. 406 rows ship today (199 global + 199 CN + 8
+predictions, see below); `sync:verify` asserts the join drops nothing.
+
+### Predicting a CN banner on Global
+
+Global runs behind CN, and nearly everything CN schedules eventually arrives — the one kind
+that is **not** expected is a **Rerun**, because a rerun repeats a banner Global has already
+run under its own name. So `derive/banners.mjs` emits a **Global copy** of every CN run of
+`PREDICTED_TYPES` (`Debut`, `Limited`, `Event`, `Ripples`, `Collab`, `Yearning`) that Global
+has not scheduled yet, marked `predicted: true` with `lagDays`, `cnId`, `cnStart`, `cnEnd` and
+its CN run's `version`, and `id = global:pred:<poolId>:<cnStart>`.
+
+"Not scheduled yet" is a **one-to-one pairing**, not a name test and not a window
+(`unmatchedCnRuns(rows, lag)`): walking a name's CN runs newest first, each claims the nearest
+still-unclaimed Global run of that name within `MATCH_TOLERANCE_DAYS = 21` of
+`cnStart + lag`, and may only claim one older than what the *newer* CN run claimed (the
+calendar is monotone). Whatever is left unclaimed is a banner Global has not listed yet. A
+prediction must also land **after the sheet's newest Global row** (the horizon): an earlier
+`cnStart + lag` is history, because the early servers drifted by years and the Global run it
+maps to is already on the calendar under a later date.
+
+Both halves of that matter, and each fixed a real miss:
+
+- the name test the first version used ("this name has never run on Global") hid every
+  **repeat**, i.e. exactly the newest CN content: Ripples on the Water, From the Lake's Heart,
+  Boon of the Water and every rerun of a Limited run on both servers;
+- the one-patch-wide window it was replaced with (`COVERED_DAYS = 42`) let a single Global run
+  of a recurring banner absorb **two** consecutive CN runs, so `Ripples on the Water` for 4.0
+  went missing from the picker. 21 days is half a patch: tolerance for a slip, never enough for
+  a second run to hide behind the first.
+
+The lag is measured, not guessed: `globalLag(rows)` takes the newest `LAG_SAMPLE = 20`
+CN→Global first-run pairs at the same banner name and returns the **median** of the day gaps
+(`LAG_FALLBACK = 84` when there are no pairs). It currently measures **84 days**, which puts
+today's eight predictions at The Unswerving Navigator and Ripples on the Water (2026-12-17), On
+Fate's Cue (2026-12-18), From the Lake's Heart and To Be and to Burn (2027-01-07), As Red as
+Blood and Ripples on the Water (2027-01-28) and Dance, My Clues, Dance (2027-02-18) — a
+recurring banner therefore appears once per patch instead of being collapsed into one row. The
+sync reports the count and the lag; `sync:verify` re-checks that a prediction is its CN run
+shifted by exactly that many days, that it is a scheduled kind Global has nothing scheduled
+near, that a name is predicted once per patch, and that it lands after the horizon. `app.js`
+draws the card with a `Predicted` pill and a `calcPredictedNote` sentence, so the reader always
+knows the date is an estimate.
+
+### The rule table (`maps/gacha.json`)
+
+Who the 6★ *is* varies per banner, and no game table states it — the spreadsheet writes it
+into prose ("Pity Explained: …"), which `banner_history` keeps as `note`. `maps/gacha.json`
+is the hand-written translation of that prose into numbers: `byBanner` (exact sheet name)
+beats `byType` (`Debut`, `Limited`, `Rerun`, `Collab`, `Event`, `Ripples`, `Yearning`).
+`derive/banners.mjs` merges them with `makeRule()` — the **type** rule is the base and the
+**banner** rule is laid on top — so an outlier keeps everything its type implies (its pity
+track, its free pulls, its guarantee) and only overrides what it actually changes.
+
+| Kind | Meaning | Priced as |
+|---|---|---|
+| `rateUp` | one advertised 6★ | `share` chance per 6★ (default 0.5 = the 50/50); a lost 50/50 **guarantees** the rate-up on the next 6★ |
+| `inGroup` | "all 6★ are one of the N" | `share = 1/choose`; no 50/50, so no guarantee either |
+| `thread` | a Thread, not a character | one copy ever (`maxCopies: 1`) |
+| `none` | nothing to price (Standard, Beginner) | the tab prints a "cannot be priced" note instead of inventing a rate |
+
+Per-banner entries carry the outliers: `Revelation of the Water` is 70/30, `Boon of the
+Water` guarantees one of 3, `Abundance of the Water: The First Milestone` one of 4, `Promise
+of the Water` discounts the first 10-pull, `The Snow of Dushuo` keeps its own pity and 100
+free pulls, `Covenant of the Water` / `Invitation From the Water` are Threads. Ripples and
+Yearning default to a 50/50 because the sheet does not explain them.
+
+**Four properties are per *type*, and they are what makes the tab agree with the game:**
+
+| Type | `track` | `freePulls` | `discountFirst10` | `selectFirstSix` |
+|---|---|---|---|---|
+| `Debut` | `rateUp` | – | – | – |
+| `Rerun` | `rateUp` | – | – | – |
+| `Ripples` | `ripples` | – | 3 | true |
+| `Limited` | `solo` | 10 | – | – |
+| `Event` / `Collab` / `Yearning` | `solo` | – | – | – |
+
+- **`track`** is which pity counter the pool spends: `rateUp` (Debut + Rerun, one shared
+  counter — both spend it and both bank it), `ripples` (Ripples on the Water alone), or
+  `solo` (Limited / Event / Collab / Yearning, which always start from zero). `sync:verify`
+  asserts the mapping, so a type landing on the wrong track cannot silently price a plan from
+  the wrong starting point.
+- **`freePulls`** is the ten free pulls a **Limited** patch always hands out. It is not a
+  discount: those pulls are free, so the card carries a `10 free pulls` perk pill and the
+  chart dot is charged the *cost*, not the typed count.
+- **`discountFirst10`** is Ripples' first ten-pull: 10 pulls for the price of 7 (`7` Unilog
+  for 10 pulls, the first one each patch), i.e. `−3` on the ten-pull.
+- **`selectFirstSix`** is Ripples' opening 6★: the first 6★ of the pool is chosen by the
+  reader, so it is folded into the DP as a banked `guaranteed` rather than as a new state.
+- **`copyExchange`** is the patch's **first Limited banner** (the one no other Limited run
+  opened within a patch before — positional, not a hand list) trading `copies` bonus copies of
+  its rate-up for every `pulls` of the run: `maps/gacha.json → patchFirstLimited` is
+  `{ pulls: 200, copies: 1 }`, so 200 pulls buys one and **560 buys two**. 18 of the 406 rows
+  carry it, one per patch per server, and `sync:verify` asserts both halves — that only a
+  Limited banner trades a copy, and that no two exchanging banners sit inside one patch.
+  Because the trade is not a roll it lifts every level by the number of copies traded
+  (`calcDistribution()` shifts `P5 ← P3` at two copies), which is why Huntsworn Lilya's banner
+  reads P5 = 100% at 560 pulls while a plain Limited banner does not.
+
+`guarantee` is inferred — a `rateUp` banner guarantees the 6★ that follows a lost 50/50
+unless it opts out — so `sync:verify` also asserts that no `rateUp` row lost it.
+
+`gacha_rules.json` carries the rest: `pull` (1 Unilog, 180 Crystal Drops), `rates`
+(`sixStar` 0.015, `softPity` 0.05), `pity` (soft 60, hard 70), `portraitCopies: 6`,
+`rateUpShare` and the three `currencies` with their art. Everything except `portraitCopies`,
+`dropsPerUnilog`, `rateUpShare` and the rule table is read out of `summon_pool`:
+`initWeight` totals 10,000, so the 6★ weight *is* the rate, `changeWeight`'s `5#500` is the
+soft-pity rate, and `awardTime`'s `60|70` is the curve.
+
+### The odds
+
+`calcDistribution(rule, pulls, pity, guaranteed)` returns `[P0…P5]`, where **`Pk` is the
+chance of owning at least `k+1` copies** — so `P5` is six copies.
+
+It is an **exact dynamic program**, not a binomial. State is `(pity, lost, copies)` — pulls
+since the last 6★, whether that 6★ was the rate-up, and copies owned, capped at the portrait
+count — i.e. `70 × 2 × 7 = 980` states per pull. Each pull either misses (the counter
+advances), hits the rate-up (`share`, or 1 when the previous 6★ was off-banner), or hits an
+off-banner 6★ (which banks the guarantee). Pulls 61…69 use the soft-pity rate and pull 70 is a
+certainty. The chain is walked pull by pull — more pulls can always add a copy — and the memo
+(`calcDistCache`, one entry per rule / plan / pity, cleared past 800) is what keeps the tab's
+per-keystroke repaint cheap. 4,000 pulls is the ceiling: that is ~720k drops and puts the last
+level within float precision of certainty, while a hand-edited blob claiming a billion pulls
+cannot freeze the tab.
+
+`calcPityOf(banner)` picks the track's counter (and `calcTrackOf(banner)` its name), so a
+Rerun reads the Rate Up field while a Limited banner always starts at 0. Ripples' selector
+arrives as `guaranteed = true` on the first pull.
+
+The DP is what makes the tab agree with the game rather than with Uma's pity-less sheet:
+
+- ten pulls on a 50/50 are **worse** than ten flat 0.75% rolls (~7.3% vs the naive 7.5%),
+  because a loss only pays back on the *next* 6★;
+- starting one pull from hard pity is worth far more than starting from zero;
+- a Thread banner is 100% at P0 and 0% everywhere else;
+- a Standard banner is 0% everywhere, and says so.
+
+`npm run sync:verify` re-derives the community 6★ figure (≈43 pulls per 6★) from the shipped
+curve, so a game update that moves a weight fails the build instead of skewing every card.
+
+### The ledger (`maps/calc-income.json`)
+
+The balance curve needs to know what the game *pays* — the daily and weekly tasks, Limbo, the
+Bass Counter shop, the patch payouts, the Roaring Month pass, the Offer of the Month, the
+package Unilogs, the daily purchasing ladder. None of it is in a game table, and it is all
+written down in the owner's `calculator.xlsx` (`Pull Calculator` sheet).
+`scripts/sync/maps/calc-income.json` is that sheet hand-transcribed once;
+`derive/banners.mjs` copies it to `gacha_rules.json → income`, so `app.js` never hand-types a
+number.
+
+```
+dailyTasks          weekday 90 Clear Drop a day (flat — no Sunday bonus)
+weeklyTask          weekday 1, 100 Clear Drop a week
+limbo               days [1, 16], 700 each, monthlyDrops 1400 (a tick box, Clear Drop)
+                    — the two resets of Limbo (1st) and Lucidscape (16th) of one reward
+cumulativeLogin     day 1, 180 Clear Drop a month (a tick box, Clear Drop)
+                    — the 7 / 15 / 25-day login track
+bassCounter         day 1, 10 Unilogs a month (a tick box, OFF by default)
+roaringMonth        instantCrystal 300 up front, then 90 Clear Drop a day for 30 days
+                    (a tick box, Spenders)
+offerOfTheMonth     day 1, 1800 Clear Drop AND 10 Unilogs (a tick box, Spenders)
+patch               every 42 days, anchored 2026-08-13 (the sheet's Jukebox date):
+                      jukeboxFreePulls 2, jukeboxCollectorPulls 5
+                      maintenanceCompensation 480, warmupLogin 400
+                      devBroadcast 120
+                      webEventSurvey 120, storyStage 1200, characterStory 480
+                      eventShopPulls 2
+                      signIn { limited: 20, standard: 14 }
+dailyPurchasing     [0, 60, 150, 270, 390, 540, 690, 890, 1090] Crystal Drop a day
+```
+
+Four of those rows are worth spelling out, because the sheet's own prose does:
+
+- **Jukebox** pays differently with and without the Collector's Edition: 2 free Unilogs on
+  any patch, or 5 Unilogs **plus** the same 2 free with it. The two are separate lines and
+  separate tick boxes — `Roar Jukebox` (the free 2, **on** by default because it is free)
+  and `Collector's Edition` (the paid 5) — and the `[?]` sheet prints both.
+- **Roaring Month** is a pass, not a rate: 300 Crystal Drops the moment it is bought and then
+  90 Clear Drops a day for 30 days. `calcIncomeOn()` settles it against `calcToday()` (phase
+  0 pays the lump, then the daily until it lapses) and it renews.
+- **Offer of the Month** is one Clear Drop lump *and* ten Unilogs. Pricing only the drops
+  (3,600) undersold it by half; the tab prints `+20` a month.
+- **Sign-in event** pays more on a patch that runs a Limited banner: 20 Unilogs, against 14
+  otherwise. `calcPatchLimited(iso)` reads that off the banner schedule (any Global `Limited`
+  row starting inside the patch window), so the figure follows the data rather than a guess.
+
+The daily task is a **flat 90**: an earlier draft added a Sunday figure the sheet never had,
+so both the ledger and the `[?]` note now say `90 Clear Drops a day` and nothing more.
+
+`sync:verify` asserts every constant above, that the Limbo monthly figure reads as a **whole
+number of pulls** (1,400 / 180 = 7.78 → `8`, which is why the yield is not `7.8`), and that
+the anchor is on the 42-day lattice.
+
+**Three purses, not one balance.** `calcIncomeOn()` returns `{ unilog, clear, crystal, total }`
+because the reader does not pre-convert one currency into another: the tasks, Limbo, Roaring
+Month's daily half and most patch payouts pay **Clear Drops**, Roaring Month's lump and the
+Offer pay **Crystal Drops**, and the Bass Counter / packages / Roar Jukebox pay **Unilogs**.
+`calcSchedule()` walks all three side by side and pays a banner's pulls Unilog first (they
+*are* the token), then Clear Drop, then Crystal Drop **only when `calcUseCrystal` is on** (it
+is off by default — a reader who never spends Crystal Drop must not be told they can afford
+more than they can). `worth()` prices a purse set in drops (one Unilog is 180), so the curve
+stays one number while the summary prints each purse separately.
+
+`calcSchedule()` walks one day at a time from today for `calcChartDays()` (the picked span ×
+`CALC_DAYS_PER_MONTH = 30`) and, on each day, adds `calcIncomeOn(date)` and subtracts
+`calcOutcomeOn(date)` plus the pulls of every banner that *spends on that day*. A banner spends
+on its release day, or on **today** when it is already running (the reader is pulling now, not
+in the past), and a banner that releases past the window is spent on the window's last day so
+its dot still lands on the curve. What it spends is `calcBannerCostPulls(banner, pulls)` —
+the typed count minus `freePulls` minus `discountFirst10`, clamped at 0 — not the count
+itself, so the dots agree with the cards. The walk emits `points` (per-day balance and gross),
+`dots` (one per planned banner, with its day index, the balance it lands on, its cost, the
+count typed and its slot among the banners spending that day) and `purse` (what each purse
+holds at the end, for the summary), and `calcScheduleMemo()` keeps the last result while the
+inputs are unchanged — the tab repaints on every keystroke.
+
+`calcPullsLeft()` is the last point's balance over 180 drops: that is the **`Left: N`** figure
+on the chart bar, and it goes negative when the plan costs more than the reader earns.
+
+### State
+
+`localStorage["r1999_calculator_v1"]` holds every option on the tab — 26 keys:
+`{ crystal, clear, unilog, pityRateUp, guaranteedRateUp, pityRipples, guaranteedRipples,
+roaring, limbo, login, jukeboxFree, bass, storyStage, characterStory, webEvent, eventShop,
+jukebox, offer, monthly, patchly, daily, other, useCrystal, months, list, plans }`.
+`list` is the banners in the reader's plan (by `banners.json` id) and `plans` maps banner
+id → pulls.
+
+- The oldest blob shaped this as a single `pity` / `guaranteed` pair; `calcLoadState()`
+  migrates both into the `RateUp` pair (that *was* the Debut/Rerun counter) and leaves the
+  Ripples pair at 0.
+- `bass` is a **boolean** now (it was a Unilog count): a tick box pays the ledger's 10 a month.
+  A positive number still reads as "on", but an **absent** key reads **off** — not every
+  reader buys the Bass Counter pass.
+- `jukeboxFree` is the same kind of box for the Jukebox's two free Unilogs, but an **absent**
+  key reads **on**: they are free, so the only reason to have it off is that the reader
+  turned it off.
+- `months` is one of `CALC_SPANS` (default 6).
+- Unlike the Event tab's picks the blob is **not patch-stamped** — a plan spans banners — so a
+  load only drops ids the data no longer ships or whose window has closed, and clamps `pity*`
+  to `hard - 1` and every other number to `calcFieldCap()` (999,999 for the drop fields, 9,999
+  elsewhere).
+- A blob with no `list` (the v1 shape) is read through its `plans` keys. The open tab lives in
+  `r1999_planner_tab_v1` (§14), so a patch resets neither.
+
+### UI
+
+One scroller, five sections, all of them the modal's own pieces, read top-down as a ledger:
+
+- **Current amounts** — the three purses (Crystal / Clear / Unilog) on one row, then **one row
+  per pity track**: the counter and the guarantee box it sets (`pityRateUp` +
+  `guaranteedRateUp` = "Rate Up", `pityRipples` + `guaranteedRipples` = "Ripples"). A pair
+  row is `.calc-pair-row` (a two-column grid that stacks on a phone), so reading a track is
+  one line instead of two cells of a wrapped grid. Each field is drawn with the Event tab's
+  Owned field (currency art inside its left edge). The bar's right side is the hold's worth in
+  pulls, as `N` + the Unilog art. The tab prints **`✦`** for a 6★ (`Pulls since 6✦ · Rate Up`),
+  never `★`.
+- **Drop income** — the ledger's sources, each a **tick box drawn as a card** (`.calc-check`,
+  the box, the name and what ticking it is worth under it), split into two groups by
+  `.calc-group`:
+  - **`Freebies`** — `Limbo / Lucidscape` `+1,400 Clear /month`, `Login 7/15/25 days`
+    `+180 Clear /month`, `Bass Counter` `+10 Unilog /month` (off), `Complete Story Stage`
+    `+1,200 Clear /patch`, `Complete Character Story` `+480 Clear /patch`, `Web Event &
+    Survey` `+120 Clear /patch`, `Roar Jukebox` `+2 Unilog /patch` (on), `Event shop`
+    `+2 Unilog /patch`.
+  - **`Spenders`** — `Roaring Month` `+2,700 Clear /month`, `Collector's Edition` `+5 Unilog
+    /patch`, `Offer of the Month` `+3,600 Clear /month`, plus the monthly and patchly package
+    Unilog fields, which share one `.calc-pair-row`.
+
+  The cards in a row are **one height** (`.calc-group-grid { align-items: stretch }`, and the
+  pair row narrows to the same 140px floor on a phone): bottom alignment made a taller
+  two-line card sit beside a short one, which read as a big button next to small ones.
+
+  **A yield prints the purse the source is paid in**, not a pull-equivalent: the Clear-Drop
+  sources count Clear Drops and carry `calcCurrencyIcon(1)`, the Unilog sources count Unilogs
+  and carry `calcCurrencyIcon(2)` (`.calc-check-yield` prints label → figure → art, the same
+  order every other figure on the tab uses). The Offer's badge is the whole offer priced in
+  drops (1,800 + 10 × 180 = `+3,600 Clear /month`), not just its Clear half. The balance curve
+  is unchanged by this: `calcIncomeOn()` still values every purse at `per` drops a pull, so the
+  total and the chart move exactly as they did.
+
+  The bar carries a `[?]` (`#calc-help-open`, `.calc-help-btn`) that opens the income sheet —
+  **an outline only**, no fill behind the glyph (`background: none`, a 1px `#ED7D31` ring that
+  brightens on hover) — and a help line under the grid spells Limbo and Lucidscape apart
+  (1st / 16th, 700 Clear Drop each).
+- **Crystal Drop outcome** — the daily purchasing activity as the Event tab's shop picker, an
+  `Other outcome` field for anything the ledger cannot know, and **`Use Crystal Drop to pull`**,
+  a tick box that is **off by default**: until it is ticked the paid purse is carried and printed
+  but never counted toward the pulls.
+- **Calculator** — the balance chart over the picked span (`calcChartHtml()`): one polyline, a
+  dashed zero line, a grid, and **one dot per planned banner — its rate-up's portrait above the
+  point and `−N` below it**, where `N` is the **cost** (the title spells `Pulls 80 → 77 pulls`
+  out when the perks changed it). The art is drawn large enough to read (the dot's portrait is
+  22px, the `−Pull` label 13px). The section bar carries the `1 / 2 / 3 / 6 months` chips
+  (`#calc-span`, `.calc-span-btn`, the active one filled) and `Left: N`. Pressing a dot opens the
+  banner-info sheet (`#calc-info`). Under the chart, `#calc-summary` prints the row the reader
+  asked for: **`Expected`**, then `Unilog`, `Clear Drop` and `Crystal Drop`, each with its own
+  art and what the plan leaves in that purse.
+- **Banners** — the plan, ordered by release date. Each card is uma's Carat Calculator layout:
+  rate-up heads, the name, then round pills — **the patch (`[3.9]` → a `3.9` pill, the sheet's
+  own label, untranslated)**, `type`, `Release <date>`, `Ends <date>`, `By end <n>` (the pulls
+  the income alone buys by then, again as the Unilog art), plus `Predicted` for a forecast row
+  and a `.calc-pill.is-perk` per perk the banner carries (`10 free pulls`,
+  `−3 on a ten-pull`, `First 6✦ selected`, `1 copy every 200 pulls`) — then the six odds chips
+  and a foot of `Pulls [plain number input]`. The card **no longer repeats the cost in Crystal
+  Drops**: the tab is a pull ledger. There is no stepper and no `Upcoming`/`Running` chip: the
+  dates are pills and the list only ever holds banners that can still be run.
+- The **left rail is the banner's kind** (`data-kind` on the card): `Debut` `#D4EDBC`,
+  `Ripples` `#C6DBE1`, `Rerun` `#FFE5A0`, `Limited` `#B10202`, `Event` `#0A53A8`, so a long
+  list reads at a glance. A kind with no colour of its own (`Collab`, `Yearning`) keeps the
+  tab's orange, so a new sheet kind never draws an invisible rail.
+
+A banner **kind** stays the sheet's English word in `data/banners.json` — it is what the pool
+rules and the aliases are keyed by — but every surface prints `calcKindLabel(type)`, which
+looks up `planner.kind<Type>` (`Rerun` → `复刻`, `Debut` → `首发`, …) and falls back to the raw
+value for a kind with no label. A card's pill and its picker row therefore carry the same label.
+
+On a phone (≤768px) the card head wraps: the rate-up heads and the remove button take the first
+line and `.calc-card-title` (name + pills) takes the full width. Without that, a banner with
+several rate-up heads left the name a ~90px column and the four pills stacked into a 147px
+overflow. The chart bar's span chips take a line of their own and the summary keeps two cells a
+row.
+
+**`+ Add banner`** (toolbar) opens a lightbox over the tab (`#calc-picker`) built from the
+Manage modal's search box — **one flat list, no type chips** — over one row per banner. The
+pool is Global, drops `Standard` and `Beginner` (`CALC_SKIP_TYPES`), drops rows whose window
+has closed, and drops what is already planned; the list opens **empty** and only ever grows
+through a pick. The rows are in release order, so the earliest banner still running is the
+first one offered. Future `Ripples` / `Event` / `Limited` rows are in it: only a **Rerun of a
+CN banner** is not expected on Global, so it is the one kind the picker never predicts.
+
+A row is one line high, so it prints the patch as a small tag beside the name (the same label
+the card's pill carries) and **at most `CALC_PICK_HEADS = 3` rate-up heads**, with a `…` chip
+counting the rest in its `title` — Ripples and Boon of the Water advertise six or seven, which
+used to push the name into an unreadable column. The plan's own cards draw every head: they
+have the room, and there a missing rate-up is missed information. A banner with no rate-up at
+all keeps the `?` box.
+
+**Three sheets, one chrome.** `#calc-picker`, `#calc-info` and `#calc-help` are all
+`modal-card archetype-modal-card` with the site's `archetype-modal-header` / `modal-close` —
+the same frame the Appearance and Rotation modals wear — inside a `.calc-*-backdrop`
+lightbox. The help sheet (`calcHelpHtml()`) is three groups — **`Freebies`**, **`Spenders`**
+and **`Always paid`** (the sign-in event, maintenance compensation, the warm-up login and the
+dev broadcast, which nobody has to switch on) — over 19 `.calc-help-row`s of name → amount →
+cadence → note, so every figure on the tab can be traced to a source. `setPlannerTab()` closes
+all three.
+
+**Verify.** `editor/_test/ui.test.mjs` drives the tab: tab order and the Calculator default, the
+five sections and their exact fields (`…|Crystal Drop outcome|Calculator|Banners`), the seven
+`current` inputs (three purses + two counters + two guarantee boxes), the two groups and their
+exact fields, the `[?]` (present, and drawn as an outline with no fill), each pity track and the
+two package fields sharing a row, `✦` instead of `★`, the 14 tick boxes as cards with their 11
+yields, one shared height per grid row, the Bass Counter **off** by default, the `Roar Jukebox`
+box **on** by default (`+2 /patch`), `Login 7/15/25 days` at `+180 /month`, Limbo reading
+`+1,400 /month` in Clear Drops, the patch yields (`+1,200` / `+480` / `+120` / `+2` / `+2` / `+5`)
+and each badge's purse art (Clear for the Clear sources, Unilog for the rest), Crystal Drop off
+by default, the `1/2/3/6` span control on six months, the four summary cells with their art, the
+three currency icons, the empty list and the dotless chart, the shipped pull constants and every
+ledger constant (incl. `limbo.monthlyDrops`, `weeklyTask.drops`, `cumulativeLogin.drops`,
+`roaringMonth.instantCrystal`, `offerOfTheMonth.unilog`, `patch.signIn`, the patch payouts incl.
+`devBroadcast`), and that the removed chrome really is gone (server switch, past toggle,
+projection, steppers). Then the picker (opens, Global only, no Standard/Beginner, no
+closed banner, release order, predictions present, **no type filter**, every row tagging its
+patch beside a bare name, three heads + `…` on a banner with more, Ripples on the Water for
+4.0 present), adding two banners (one
+card each, the second additive, the first gone from the picker, release order, five pills with
+the patch first, a rail colour per kind, six
+chips, a `type="number"` field, no cost figure, the Unilog art in the `By end` pill), typing a count
+(focus kept, odds move, two dots each labelled `−N` below the point and drawn with a portrait
+above it), a dot opening the info sheet (modal chrome, `Pulls/Cost/By end`, the rule, the perk
+and pity-track notes, the six odds cards, the close button), the hold reading as pulls only once
+Crystal Drop is counted, one more pull never lowering the odds, the DP's own edge cases (a
+simulation of the same band, a banked guarantee, hard pity at 70, no-rate-up, one copy for a
+Thread, monotonicity), the perks and the three pity tracks (a Limited card's `10 free pulls`, a
+Ripples card's `−3 on a ten-pull` + `First 6✦ selected`, a plain Rerun with neither, the dot
+charged the cost rather than the typed count, the Rate Up counter moving only the Rerun card and
+the Ripples counter only the Ripples card, and the dot art ≥ 20px with a ≥ 12px label), the
+portrait exchange (the perk pill, one copy at 200 pulls, the same copy shifting the levels and
+nothing before the threshold, and **the trade repeating** — `P`5 = 100% at 560 pulls), the
+`[?]` sheet (opens, its three groups, 19 rows split 10 / 5 / 4 with an amount and a cadence, the
+Daily Tasks note claiming no Sunday bonus, the modal chrome, its close button), the reload,
+Reset, and the Chinese switch (every section, the two groups, both
+pity tracks, the summary labels, the tick-box yield, the span chips, the help lines, the `[?]`
+sheet's title/groups/note, the empty note, the `+ Add banner` label and each banner kind come
+out Chinese, and switching back restores the English labels).

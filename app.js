@@ -1351,7 +1351,7 @@ function isCharacterExcluded(name, item) {
 // Initial Setup
 async function initApp() {
   try {
-    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes, codeRewardsRes, eventShopRes, levelCostsRes] = await Promise.all([
+    const [rarityRes, arcanistRes, futureRes, excludeRes, afflatusRes, resoShapeRes, shapePatternRes, i18nRes, nameMapRes, psychubeRes, collabRes, nameTransferRes, teamArchRes, guideBuildsRes, guideRotationsRes, guideSkillsRes, guideProgRes, creditsRes, itemsRes, matsReqRes, itemFormulasRes, charProfilesRes, patternCostsRes, charSkillsRes, charEuphoriasRes, skillGlossaryRes, psychubesDataRes, psychubeKeyMapRes, codeRewardsRes, eventShopRes, levelCostsRes, bannersRes, gachaRes] = await Promise.all([
       fetch("data/characters_by_rarity.json"),
       fetch("data/ArcanistMap.json"),
       fetch("data/future_sight.json").catch(() => null),
@@ -1383,6 +1383,8 @@ async function initApp() {
       fetch("data/code_reward_index.json").catch(() => null),
       fetch("data/event_shop.json").catch(() => null),
       fetch("data/progression_levels.json").catch(() => null),
+      fetch("data/banners.json").catch(() => null),
+      fetch("data/gacha_rules.json").catch(() => null),
     ]);
 
     if (excludeRes && excludeRes.ok) {
@@ -1552,8 +1554,11 @@ async function initApp() {
     buildCredits(await readJson(creditsRes));
     buildEventShopData(await readJson(eventShopRes));
     buildLevelCostData(await readJson(levelCostsRes));
+    // The Calculator needs the roster (head art) and the pity curve, both already
+    // built by this point.
+    buildCalculatorData(await readJson(bannersRes), await readJson(gachaRes));
     plannerLoadChars();
-    // Reopen the Planner on the tab the reader left, not always on Character.
+    // Reopen the Planner on the tab the reader left, not always on Calculator.
     loadPlannerTab();
 
     loadLanguage();
@@ -12323,6 +12328,2137 @@ function closePlannerSlider() {
   plannerActiveSliderItem = null;
 }
 
+/* ================= Planner (Calculator) =================
+ * The Calculator tab answers two questions (AGENTS.md §15): how many pulls can I
+ * afford by the day a banner closes, and what are the odds of owning 1…6 copies of
+ * its rate-up if I spend them? It is a **ledger**, not a table:
+ *
+ *   data/gacha_rules.json   the price of a pull (1 Unilog = 180 Crystal Drops), the
+ *                           pity curve, and `income` — the Drop Income / Drop
+ *                           Outcome constants transcribed from calculator.xlsx
+ *   data/banners.json       every banner the community sheet dates, joined to its
+ *                           pool, with the rate-up hero and the banner's rule. The
+ *                           CN-only rows of a scheduled kind carry a **predicted**
+ *                           Global window (`cnStart + predictedLagDays`).
+ *
+ * The reader adds the banners they care about with "+ Add banner", types the pulls
+ * each one gets, and the tab draws the balance those pulls leave over the span they
+ * pick (1 / 2 / 3 / 6 months) — one dot per planned banner on the curve, under its
+ * rate-up's portrait. Nothing is pre-selected and nothing is projected into a second
+ * pane: the cards carry their own odds.
+ *
+ * P0…P5 is **not** a binomial: a pull is not independent because the counter that
+ * guarantees a 6★ at 70 makes it a Markov chain. `calcDistribution()` runs the
+ * exact distribution over `(pity, lost 50/50, copies)` — 980 states, one pass per
+ * pull — so the numbers are right in the 60–70 band where a binomial is wildly
+ * optimistic.
+ *
+ * **Pity is not one counter.** A pull banks into the counter its banner actually
+ * spends, and the game keeps them apart: Debut and Rerun share one (`rateUp`),
+ * Ripples on the Water keeps its own (`ripples`), and Limited / Event / Collab /
+ * Yearning banners each carry a counter nothing else can see (`solo`). So the tab
+ * asks for two "pulls since 6★" figures, not one — see `calcPityOf()`.
+ *
+ * State lives in `r1999_calculator_v1`. Like a build plan it spans patches, so it
+ * is not patch-stamped; only a banner id the shipped data no longer names (or one
+ * whose window closed) is dropped on load.
+ */
+const CALC_STORAGE_KEY = "r1999_calculator_v1";
+/** The chart's window, in months: the reader picks one of these. */
+const CALC_SPANS = [1, 2, 3, 6];
+const CALC_DEFAULT_SPAN = 6;
+/** A month is 30 days — the ledger's own unit (`/month` yields are priced the same). */
+const CALC_DAYS_PER_MONTH = 30;
+/** How many days the curve draws: the span the reader picked. */
+function calcChartDays() {
+  return Math.max(1, calcMonths) * CALC_DAYS_PER_MONTH;
+}
+/** Kinds the banner picker never offers: no rate-up, and they never close. */
+const CALC_SKIP_TYPES = new Set(["Standard", "Beginner"]);
+/** How many rate-up heads a picker row draws before it prints an ellipsis (`…`). */
+const CALC_PICK_HEADS = 3;
+/** The fields that are tick boxes rather than number inputs. */
+const CALC_TOGGLES = new Set([
+  "guaranteedRateUp",
+  "guaranteedRipples",
+  "roaring",
+  "jukebox",
+  "offer",
+  "limbo",
+  "login",
+  "jukeboxFree",
+  "bass",
+  "storyStage",
+  "characterStory",
+  "webEvent",
+  "eventShop",
+  "useCrystal",
+]);
+/** `data/banners.json` / `data/gacha_rules.json`, filled by `buildCalculatorData`. */
+let calcHistory = null;
+let calcRules = null;
+/** `(rule, pulls, pity)` -> `[P0…P5]`; see `calcDistribution()`. */
+const calcDistCache = new Map();
+/** The `calcSchedule()` memo: the tab repaints on every keystroke. */
+let calcScheduleCache = { key: "", value: null };
+
+/* Current amounts. */
+let calcCrystal = 0; // Crystal Drop (paid)
+let calcClear = 0; // Clear Drop (freely earned)
+let calcUnilog = 0; // Unilog — the pull token itself
+/* Pity, one counter per track the game keeps. A Debut or a Rerun banks into the
+ * `rateUp` counter; Ripples on the Water banks into its own; every other kind keeps
+ * a counter of its own that nothing shares, so it always starts at zero. */
+let calcPityRateUp = 0;
+let calcGuaranteedRateUp = false;
+let calcPityRipples = 0;
+let calcGuaranteedRipples = false;
+
+/* Drop income — the free half (F2P). The purses are kept apart because the reader
+ * earns them from different sources: the tasks, Limbo and the patch bundles pay
+ * **Clear Drops**, and the login events, the event shop and the Jukebox pay
+ * **Unilogs**. */
+let calcLimbo = false; // Limbo (1st) / Lucidscape (16th): 700 Clear Drops each
+let calcBass = false; // Bass Counter: 10 Unilogs a month, on the 1st — off by default
+let calcLogin = false; // the 7 / 15 / 25-day login track: 180 Clear Drops a month
+let calcJukeboxFree = true; // the Roar Jukebox's two free Unilogs a patch — on, it is free
+let calcStoryStage = false; // every story stage cleared, 1,200 Clear Drops a patch
+let calcCharacterStory = false; // every character story, 480 Clear Drops a patch
+let calcWebEvent = false; // web events and surveys, 120 Clear Drops a patch
+let calcEventShop = false; // the event shop's free Unilogs, 2 a patch
+
+/* Drop income — the paid half (Spender). Buying any of these is a purchase, so all
+ * three start off and the reader opts in. */
+let calcRoaring = false; // Roaring Month: 300 Crystal Drops up front, then 90 Clear a day for 30 days
+let calcJukebox = false; // Collector's Edition (Roar Jukebox): 5 extra Unilogs a patch
+let calcOffer = false; // Offer of the Month: 1,800 Clear Drops + 10 Unilogs on the 1st
+let calcMonthly = 0; // Unilogs in the monthly package, on the 1st
+let calcPatchly = 0; // Unilogs in the patchly package, on the patch start
+
+/* Drop outcome — all of it is Crystal Drop. */
+let calcDaily = 0; // index into `income.dailyPurchasing`
+let calcOther = 0; // Crystal Drops spent on the 1st
+let calcUseCrystal = false; // count Crystal Drop toward the pulls at all
+
+/* The chart's span, in months. */
+let calcMonths = CALC_DEFAULT_SPAN;
+
+/* The plan: the banners the reader added, and the pulls each one gets. */
+let calcList = [];
+let calcPlans = {};
+
+/* The two popups. */
+let calcPickerQuery = "";
+let calcInfoId = "";
+
+function calcNumber(value) {
+  return plannerNumber(Math.max(0, Math.round(Number(value) || 0)));
+}
+
+/** A signed figure: `-1,240` keeps its minus, which the ledger needs. */
+function calcSigned(value) {
+  const n = Math.round(Number(value) || 0);
+  return `${n < 0 ? "-" : ""}${plannerNumber(Math.abs(n))}`;
+}
+
+/** One of the three currency rows of `data/gacha_rules.json` (0 crystal, 1 clear, 2 unilog). */
+function calcCurrency(index) {
+  return ((calcRules && calcRules.currencies) || [])[index] || {};
+}
+
+/** The art of a currency, sized for a figure: it stands in for the word "pulls". */
+function calcCurrencyIcon(index) {
+  const row = calcCurrency(index);
+  const src = row.icon || "";
+  if (!src) return "";
+  return `<img class="calc-pull-icon" src="${escapeHtml(src)}" alt="${escapeHtml(calcCurrencyName(index))}" />`;
+}
+
+/** A currency's name in the reader's language: `Unilog` / 独一律. */
+function calcCurrencyName(index) {
+  const row = calcCurrency(index);
+  if (currentLang === "cn") return row.nameZh || row.name || "";
+  return row.name || "";
+}
+
+/** `132` -> `132 <unilog>`, the figure every bar, pill and summary cell prints. */
+function calcPullFigure(value) {
+  return `${calcNumber(value)}${calcCurrencyIcon(2)}`;
+}
+
+/** `0.4712` -> `"47.1%"`; the extremes print exactly, everything else has a decimal. */
+function calcPercent(ratio) {
+  const value = Math.max(0, Math.min(1, Number(ratio) || 0));
+  if (value <= 0.0005) return "0%";
+  if (value >= 0.9995) return "100%";
+  return `${(value * 100).toFixed(1)}%`;
+}
+
+const calcPad = (n) => String(n).padStart(2, "0");
+
+/** Today, in the reader's own calendar (the ledger's weekdays are local days). */
+function calcToday() {
+  const d = new Date();
+  return `${d.getFullYear()}-${calcPad(d.getMonth() + 1)}-${calcPad(d.getDate())}`;
+}
+
+/** `2026-11-05` -> a Date at 00:00 UTC, so day arithmetic never sees a time zone. */
+function calcDate(iso) {
+  const [y, m, d] = String(iso).split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+
+function calcIso(date) {
+  return `${date.getUTCFullYear()}-${calcPad(date.getUTCMonth() + 1)}-${calcPad(date.getUTCDate())}`;
+}
+
+/** Whole days from `today` to `iso` (negative when the date already passed). */
+function calcDaysUntil(iso) {
+  if (!iso) return 0;
+  return Math.round((calcDate(iso).getTime() - calcDate(calcToday()).getTime()) / 86400000);
+}
+
+/** `2026-11-05` -> `11/05`, the way the sheet writes a date. */
+function calcShortDate(iso) {
+  return iso ? `${iso.slice(5, 7)}/${iso.slice(8, 10)}` : "—";
+}
+
+/** The banner's name, in the reader's language and nothing else — the patch it ships
+ * in is a tag of its own (`calcVersionTag()`), printed beside the name. */
+function calcBannerName(banner) {
+  if (!banner) return "";
+  return currentLang === "cn" ? banner.nameZh || banner.name : banner.name;
+}
+
+/**
+ * The patch the community sheet files the banner under (`3.9`, `4.0`, `AH Collab`).
+ * It labels the *content*, which both servers ship, so a prediction carries its CN
+ * run's label. It is data, never translated, and every banner surface prints it as a
+ * tag rather than inside the name.
+ */
+function calcVersionTag(banner) {
+  return String((banner && banner.version) || "").trim();
+}
+
+/** The ledger constants `data/gacha_rules.json` ships (transcribed from the sheet). */
+function calcLedger() {
+  return (calcRules && calcRules.income) || {};
+}
+
+/** The shop price of one pull: 180 Crystal Drops in `data/gacha_rules.json`. */
+function calcDropsPerPull() {
+  return Math.max(1, Number((calcRules && calcRules.pull && calcRules.pull.dropsPerUnilog) || 180));
+}
+
+/* ---------- the day-by-day balance ---------- */
+
+/**
+ * A patch starts every `patch.days` days from `patch.anchor`. Everything the client
+ * hands over when a patch goes live lands on that day — the maintenance and warm-up
+ * compensations, the login event, the Jukebox pulls, the free event-shop Unilogs and
+ * the patchly package — so the lattice is all the ledger needs.
+ */
+function calcPatchStart(date) {
+  const patch = calcLedger().patch || {};
+  const span = Math.max(1, Number(patch.days) || 42) * 86400000;
+  const anchor = patch.anchor ? calcDate(patch.anchor).getTime() : calcDate("2026-08-13").getTime();
+  const diff = date.getTime() - anchor;
+  return ((diff % span) + span) % span === 0;
+}
+
+/** Whole days from one ISO date to another (negative when `to` already passed). */
+function calcDaysBetween(fromIso, toIso) {
+  return Math.round((calcDate(toIso).getTime() - calcDate(fromIso).getTime()) / 86400000);
+}
+
+/**
+ * Does the patch that opened on `iso` run a **Limited** banner? The cumulative login
+ * event pays 20 Unilogs on such a patch and 14 on any other, so the sign-in figure is
+ * read off the banner schedule rather than guessed.
+ */
+function calcPatchLimited(iso) {
+  const patch = calcLedger().patch || {};
+  const start = calcDate(iso).getTime();
+  const end = start + (Math.max(1, Number(patch.days) || 42) - 1) * 86400000;
+  return ((calcHistory && calcHistory.banners) || []).some((row) => {
+    if (row.server !== "global" || row.type !== "Limited" || !row.start) return false;
+    const at = calcDate(row.start).getTime();
+    return at >= start && at <= end;
+  });
+}
+
+/**
+ * What one calendar day pays in, split by the purse it lands in. Every line is a
+ * column of the ledger: the tasks every day and every Monday, Limbo on its two
+ * resets, the monthly resets on the 1st, and the patch-stamped sources on a patch
+ * start. The reader's tick boxes only switch the optional ones on.
+ *
+ * Returns `{ unilog, clear, crystal, total }`, where `total` is what the whole day is
+ * worth in drops (one Unilog is 180 of them).
+ */
+function calcIncomeOn(date) {
+  const ledger = calcLedger();
+  const per = calcDropsPerPull();
+  const dom = date.getUTCDate();
+  const dow = date.getUTCDay();
+  const out = { unilog: 0, clear: 0, crystal: 0 };
+
+  // The free daily baseline: Daily Tasks pay 90 Clear Drops every day and the Weekly
+  // Task another 100 on its own weekday.
+  const tasks = ledger.dailyTasks || {};
+  out.clear += Number(tasks.weekday) || 0;
+  const weekly = ledger.weeklyTask || {};
+  if (dow === (Number(weekly.weekday) || 0)) out.clear += Number(weekly.drops) || 0;
+
+  // Limbo (1st) and Lucidscape (16th) are two resets of the same 1,400 reward.
+  const limbo = ledger.limbo || {};
+  if (calcLimbo && (limbo.days || []).includes(dom)) out.clear += Number(limbo.drops) || 0;
+
+  // The login track (7 / 15 / 25 days) hands its Clear Drops over once a month.
+  const login = ledger.cumulativeLogin || {};
+  if (calcLogin && dom === (Number(login.day) || 1)) out.clear += Number(login.drops) || 0;
+
+  // Roaring Month is a 30-day pass, not a permanent rate: 300 Crystal Drops on its
+  // first day, then 90 Clear Drops a day until it lapses, and then it renews. The
+  // clock is anchored to the day the tab is opened, so the curve is stable.
+  if (calcRoaring) {
+    const roaring = ledger.roaringMonth || {};
+    const span = Math.max(1, Number(roaring.days) || 30);
+    const phase = ((calcDaysBetween(calcToday(), calcIso(date)) % span) + span) % span;
+    if (phase === 0) out.crystal += Number(roaring.instantCrystal) || 0;
+    out.clear += Number(roaring.drops) || 0;
+  }
+
+  // The monthly resets, all on the 1st unless the ledger says otherwise.
+  const offer = ledger.offerOfTheMonth || {};
+  if (calcOffer && dom === (Number(offer.day) || 1)) {
+    out.clear += Number(offer.clear) || 0;
+    out.unilog += Number(offer.unilog) || 0;
+  }
+  const bass = ledger.bassCounter || {};
+  if (calcBass && dom === (Number(bass.day) || 1)) out.unilog += Number(bass.pulls) || 0;
+  if (calcMonthly > 0 && dom === 1) out.unilog += calcMonthly;
+
+  // Everything a new patch hands over on its first day.
+  const patch = ledger.patch || {};
+  if (calcPatchStart(date)) {
+    out.clear += Number(patch.maintenanceCompensation) || 0;
+    out.clear += Number(patch.warmupLogin) || 0;
+    out.clear += Number(patch.devBroadcast) || 0;
+    // The Jukebox pays two free pulls to everyone and five more to a Collector's
+    // Edition owner, so the two are separate lines (and separate tick boxes) rather
+    // than one 7.
+    if (calcJukeboxFree) out.unilog += Number(patch.jukeboxFreePulls) || 0;
+    if (calcJukebox) out.unilog += Number(patch.jukeboxCollectorPulls) || 0;
+    // The cumulative login event pays more on a patch that runs a Limited banner.
+    const signIn = patch.signIn || {};
+    out.unilog += calcPatchLimited(calcIso(date))
+      ? Number(signIn.limited) || 0
+      : Number(signIn.standard) || 0;
+    if (calcStoryStage) out.clear += Number(patch.storyStage) || 0;
+    if (calcCharacterStory) out.clear += Number(patch.characterStory) || 0;
+    if (calcWebEvent) out.clear += Number(patch.webEventSurvey) || 0;
+    if (calcEventShop) out.unilog += Number(patch.eventShopPulls) || 0;
+    if (calcPatchly > 0) out.unilog += calcPatchly;
+  }
+  out.total = out.clear + out.crystal + out.unilog * per;
+  return out;
+}
+
+
+/** What one calendar day costs *besides* pulls. Everything here is Crystal Drop. */
+function calcOutcomeOn(date) {
+  const ledger = calcLedger();
+  const table = Array.isArray(ledger.dailyPurchasing) ? ledger.dailyPurchasing : [];
+  let total = Number(table[calcDaily]) || 0;
+  if (calcOther > 0 && date.getUTCDate() === 1) total += calcOther;
+  return total;
+}
+
+/**
+ * The chart's window, day by day: income, spending, and the balance the plan leaves.
+ *
+ * Three purses are walked — Unilog, Clear Drop, Crystal Drop — because the reader
+ * does not pre-convert one into the other. `calcUseCrystal` decides whether the paid
+ * purse counts toward the pulls at all (it is off by default: a reader who does not
+ * touch Crystal Drop should not be told they can afford more than they can).
+ *
+ * Two balances are tracked: `balance` is what the reader is left with (the planned
+ * pulls deducted) and is what the chart draws; `gross` ignores the plan and is what a
+ * card's "by end" pill reports, so planning a banner never changes how many pulls
+ * that banner says you can afford.
+ */
+function calcSchedule() {
+  const per = calcDropsPerPull();
+  const today = calcToday();
+  const start = calcDate(today);
+  const days = calcChartDays();
+  const held = {
+    unilog: Math.max(0, Math.floor(Number(calcUnilog) || 0)),
+    clear: Math.max(0, Math.floor(Number(calcClear) || 0)),
+    crystal: Math.max(0, Math.floor(Number(calcCrystal) || 0)),
+  };
+  /** What a set of purses is worth in drops — the paid one only when it counts. */
+  const worth = (purse) => purse.unilog * per + purse.clear + (calcUseCrystal ? purse.crystal : 0);
+
+  // A banner spends its pulls on its release day, or today when it is already
+  // running — the reader is pulling now, not in the past. A banner that releases
+  // past the chart's window is spent on the last day the chart draws, so the plan
+  // still costs what it costs and its dot is still on the curve.
+  const lastDay = calcIso(new Date(start.getTime() + days * 86400000));
+  const pullDays = new Map();
+  for (const banner of calcListBanners()) {
+    const pulls = calcPulls(banner.id);
+    if (!pulls) continue;
+    const cost = calcBannerCostPulls(banner, pulls);
+    let when = banner.start && banner.start > today ? banner.start : today;
+    if (when > lastDay) when = lastDay;
+    if (!pullDays.has(when)) pullDays.set(when, []);
+    pullDays.get(when).push({ id: banner.id, pulls, cost });
+  }
+
+  const points = [];
+  const dots = [];
+  let balance = worth(held);
+  let gross = balance;
+  let planned = 0;
+  // The purses as they stand, so the summary can print what is left in each.
+  const purse = { ...held };
+
+  /**
+   * Pays `pulls` out of the purses, Unilogs first (they *are* the token), then Clear
+   * Drops, then Crystal Drops when that purse counts. What the purses cannot cover is
+   * not withdrawn — the balance below goes negative instead, which is the signal the
+   * plan is out of reach.
+   */
+  const pay = (pulls) => {
+    let owed = pulls;
+    const fromUni = Math.min(Math.max(0, purse.unilog), owed);
+    purse.unilog -= fromUni;
+    owed -= fromUni;
+    const fromClear = Math.min(Math.floor(Math.max(0, purse.clear) / per), owed);
+    purse.clear -= fromClear * per;
+    owed -= fromClear;
+    if (calcUseCrystal) {
+      const fromCrystal = Math.min(Math.floor(Math.max(0, purse.crystal) / per), owed);
+      purse.crystal -= fromCrystal * per;
+      owed -= fromCrystal;
+    }
+    return owed;
+  };
+
+  for (let i = 0; i <= days; i += 1) {
+    const date = new Date(start.getTime() + i * 86400000);
+    const iso = calcIso(date);
+    const income = calcIncomeOn(date);
+    const spend = calcOutcomeOn(date);
+    purse.unilog += income.unilog;
+    purse.clear += income.clear;
+    purse.crystal += income.crystal - spend;
+    const net = income.unilog * per + income.clear + (calcUseCrystal ? income.crystal - spend : 0);
+
+    const entries = pullDays.get(iso) || [];
+    const pulled = entries.reduce((sum, entry) => sum + entry.cost, 0);
+    const asked = entries.reduce((sum, entry) => sum + entry.pulls, 0);
+    balance += net - pulled * per;
+    gross += net;
+    planned += pulled;
+    pay(pulled);
+    points.push({
+      iso,
+      index: i,
+      income: income.total,
+      spend: spend + pulled * per,
+      pulls: pulled,
+      asked,
+      balance,
+      gross,
+    });
+    entries.forEach((entry, slot) => {
+      dots.push({
+        id: entry.id,
+        index: i,
+        iso,
+        pulls: entry.pulls,
+        cost: entry.cost,
+        balance,
+        slot,
+        slots: entries.length,
+      });
+    });
+  }
+  return { points, dots, per, today, days, held: worth(held), heldPurse: held, purse, planned };
+}
+
+/** The schedule, rebuilt only when one of its inputs moved. */
+function calcScheduleMemo() {
+  const key = [
+    calcCrystal,
+    calcClear,
+    calcUnilog,
+    calcLimbo ? 1 : 0,
+    calcBass ? 1 : 0,
+    calcStoryStage ? 1 : 0,
+    calcCharacterStory ? 1 : 0,
+    calcWebEvent ? 1 : 0,
+    calcEventShop ? 1 : 0,
+    calcRoaring ? 1 : 0,
+    calcJukebox ? 1 : 0,
+    calcOffer ? 1 : 0,
+    calcMonthly,
+    calcPatchly,
+    calcDaily,
+    calcOther,
+    calcUseCrystal ? 1 : 0,
+    calcMonths,
+    calcListBanners()
+      .map((banner) => `${banner.id}:${calcPulls(banner.id)}`)
+      .join(","),
+  ].join("|");
+  if (calcScheduleCache.key !== key) calcScheduleCache = { key, value: calcSchedule() };
+  return calcScheduleCache.value;
+}
+
+/** How many pulls the income alone covers by the end of `iso`. */
+function calcPullsBy(iso) {
+  const schedule = calcScheduleMemo();
+  if (!iso) return 0;
+  const day = Math.max(0, Math.min(schedule.days, calcDaysUntil(iso)));
+  return Math.max(0, Math.floor(schedule.points[day].gross / schedule.per));
+}
+
+/** How many pulls the reader is left with when the plan is done. */
+function calcPullsLeft() {
+  const schedule = calcScheduleMemo();
+  return Math.floor(schedule.points[schedule.points.length - 1].balance / schedule.per);
+}
+
+/* ---------- the banners ---------- */
+
+function calcBanner(id) {
+  const rows = (calcHistory && calcHistory.banners) || [];
+  return rows.find((row) => row.id === id) || null;
+}
+
+/** `ended` / `current` / `upcoming`, from the sheet's two dates. */
+function calcStatus(banner) {
+  const today = calcToday();
+  if (banner.end && banner.end < today) return "ended";
+  if (banner.start && banner.start > today) return "upcoming";
+  return "current";
+}
+
+function calcSortByStart(a, b) {
+  const sa = a.start || "9999";
+  const sb = b.start || "9999";
+  if (sa !== sb) return sa < sb ? -1 : 1;
+  return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+}
+
+/**
+ * The reader's plan, by release date: the banner that opened first comes first, so
+ * the list reads like the schedule. A banner whose window closed is gone — there is
+ * nothing left to pull on — even if it was in the saved list.
+ */
+function calcListBanners() {
+  const today = calcToday();
+  return calcList
+    .map((id) => calcBanner(id))
+    .filter((banner) => banner && !(banner.end && banner.end < today))
+    .sort(calcSortByStart);
+}
+
+/**
+ * The picker's pool: every Global banner of a scheduled kind that can still be
+ * pulled on and is not already in the plan — announced runs and the CN-only
+ * predictions alike, in release order.
+ */
+function calcPickerPool() {
+  const today = calcToday();
+  const added = new Set(calcList);
+  return ((calcHistory && calcHistory.banners) || [])
+    .filter((row) => row.server === "global" && !CALC_SKIP_TYPES.has(row.type) && row.start)
+    .filter((row) => !added.has(row.id))
+    .filter((row) => (row.end || row.start) >= today)
+    .sort(calcSortByStart);
+}
+
+/** What the picker shows: the pool narrowed by the search box. */
+function calcPickerBanners() {
+  const query = calcPickerQuery.trim().toLowerCase();
+  return calcPickerPool()
+    .filter(
+      (row) =>
+        !query ||
+        String(row.name || "").toLowerCase().includes(query) ||
+        // The version is part of the printed name (`[3.9] …`), so it is searchable too.
+        String(row.version || "").toLowerCase().includes(query) ||
+        String(row.nameZh || "").includes(calcPickerQuery.trim())
+    )
+    .sort(calcSortByStart);
+}
+
+/**
+ * How large a field may get. The drop fields hold drops, so they need room for a
+ * real hoard (100 pulls is 18,000); the rest count pulls or Unilogs, which never
+ * run that high. A hand-edited localStorage blob is clamped to the same bound.
+ */
+function calcFieldCap(key) {
+  return key === "crystal" || key === "clear" || key === "other" ? 999999 : 9999;
+}
+
+/** The pull count planned for one banner. */
+function calcPulls(bannerId) {
+  return Math.max(0, Math.min(9999, Math.floor(Number(calcPlans[bannerId]) || 0)));
+}
+
+function calcSetPulls(bannerId, pulls) {
+  const value = Math.max(0, Math.min(9999, Math.floor(Number(pulls) || 0)));
+  if (value) calcPlans[bannerId] = value;
+  else delete calcPlans[bannerId];
+  calcSaveState();
+}
+
+function calcAddBanner(id) {
+  if (!id || calcList.includes(id) || !calcBanner(id)) return;
+  calcList.push(id);
+  calcSaveState();
+}
+
+function calcRemoveBanner(id) {
+  calcList = calcList.filter((entry) => entry !== id);
+  delete calcPlans[id];
+  if (calcInfoId === id) calcInfoId = "";
+  calcSaveState();
+}
+
+/**
+ * The banner's rule with its per-6★ chance resolved. `inGroup` has no 50/50: the
+ * game guarantees every 6★ is one of the N the reader picked, so the chance a
+ * given one arrives is `1/choose`. A `thread` banner hands out a Thread and
+ * nothing else, so it can never grant a second copy.
+ */
+function calcRuleOf(banner) {
+  const rule = Object.assign(
+    {
+      kind: "none",
+      share: 0.5,
+      choose: 0,
+      guarantee: false,
+      separatePity: false,
+      freePulls: 0,
+      discountFirst10: 0,
+      maxPulls: 0,
+      track: "solo",
+      selectFirstSix: false,
+      copyExchange: null,
+    },
+    (banner && banner.rule) || {}
+  );
+  const copies = Math.max(1, Number((calcRules && calcRules.portraitCopies) || 6));
+  if (rule.kind === "inGroup") {
+    const n = Number(rule.choose) || (banner.targets || []).length || 1;
+    return { ...rule, share: 1 / Math.max(1, n), maxCopies: copies };
+  }
+  if (rule.kind === "thread") return { ...rule, share: 1, guarantee: false, maxCopies: 1 };
+  return { ...rule, maxCopies: copies };
+}
+
+/**
+ * Which pity counter a banner spends and banks. The game keeps three kinds apart:
+ * Debut and Rerun share the `rateUp` counter, Ripples on the Water has one of its
+ * own (`ripples`), and Limited / Event / Collab / Yearning banners each carry a
+ * counter nothing else can see (`solo`) — so a freshly planned one always starts
+ * at zero. The track rides on the banner's rule, so a data change moves the tab.
+ */
+function calcTrackOf(banner) {
+  return (banner && banner.rule && banner.rule.track) || "solo";
+}
+
+/** The reader's counter for the track the banner spends. */
+function calcPityOf(banner) {
+  const track = calcTrackOf(banner);
+  if (track === "rateUp") return { track, pity: calcPityRateUp, guaranteed: calcGuaranteedRateUp };
+  if (track === "ripples") return { track, pity: calcPityRipples, guaranteed: calcGuaranteedRipples };
+  return { track, pity: 0, guaranteed: false };
+}
+
+/**
+ * What a banner's plan actually costs, in pulls. The typed count is not always the
+ * price: a Limited banner hands out a free ten-pull at its patch start, and Ripples
+ * charges 7 Unilogs for the first ten-pull of a patch instead of 10.
+ */
+function calcBannerCostPulls(banner, pulls) {
+  const count = Math.max(0, Math.floor(Number(pulls) || 0));
+  if (!count) return 0;
+  const rule = calcRuleOf(banner);
+  let cost = count - Math.max(0, Number(rule.freePulls) || 0);
+  const discount = Math.max(0, Number(rule.discountFirst10) || 0);
+  if (discount && count >= 10) cost -= discount;
+  return Math.max(0, cost);
+}
+
+/**
+ * The odds of the planned pulls on *this* banner: the counter it spends, plus the
+ * banner's own quirks. Ripples hands its first 6★ to a character selector, which is
+ * the same arithmetic as a banked 50/50 loss, so `selectFirstSix` is folded into the
+ * guaranteed flag rather than growing a second state in the chain.
+ */
+function calcOddsOf(banner, pulls) {
+  const rule = calcRuleOf(banner);
+  if (rule.kind !== "rateUp") return calcDistribution(rule, pulls, 0, false);
+  const state = calcPityOf(banner);
+  return calcDistribution(rule, pulls, state.pity, state.guaranteed || !!rule.selectFirstSix);
+}
+
+
+/**
+ * The exact distribution of how many copies of the rate-up a run of `pulls` buys.
+ *
+ * State is `(pity, lost, copies)`: `pity` is how many pulls in a row missed, so
+ * the pull about to happen is number `pity + 1`; `lost` says the last 6★ was not
+ * the rate-up (only meaningful on a banner with a guarantee); `copies` is capped
+ * at the number of portraits, since P5 is the last thing reported.
+ *
+ * Returns `[P0…P5]`, where `Pk = P(owning at least k+1 copies)`.
+ */
+function calcDistribution(rule, pulls, pity, guaranteed) {
+  const rates = (calcRules && calcRules.rates) || {};
+  const curve = (calcRules && calcRules.pity) || {};
+  const hard = Number(curve.hard) || 70;
+  const soft = Number(curve.soft) || 60;
+  const base = Number(rates.sixStar) || 0.015;
+  const softRate = Number(rates.softPity) || 0.05;
+  const cap = Math.max(1, Number(rule.maxCopies) || 6);
+  const share = Math.max(0, Math.min(1, Number(rule.share) || 0));
+  const guarantee = !!rule.guarantee;
+
+  // The chain has to be walked pull by pull: more pulls can always add a copy, so
+  // stopping early would understate P5. 4,000 pulls is ~720k drops and puts the
+  // last level within float precision of certainty, which is the only ceiling worth
+  // applying — a hand-edited blob claiming a billion pulls must not freeze the tab.
+  const runs = Math.max(0, Math.min(Math.floor(Number(pulls) || 0), 4000));
+  // The pull that ends a window is guaranteed, so the counter never reaches it.
+  const span = hard; // 0 .. hard-1 are reachable counters
+  const slots = span * 2 * (cap + 1);
+  const at = (p, lost, count) => (p * 2 + lost) * (cap + 1) + count;
+
+  const memo = `${base}|${softRate}|${soft}|${hard}|${share}|${guarantee ? 1 : 0}|${cap}|${runs}|${
+    guaranteed ? 1 : 0
+  }|${Math.max(0, Math.min(span - 1, Math.floor(Number(pity) || 0)))}|${calcExchangeKey(rule)}`;
+  if (calcDistCache.has(memo)) return calcDistCache.get(memo);
+
+  let cur = new Float64Array(slots);
+  const startPity = Math.max(0, Math.min(span - 1, Math.floor(Number(pity) || 0)));
+  cur[at(startPity, guaranteed ? 1 : 0, 0)] = 1;
+
+  for (let n = 0; n < runs; n += 1) {
+    const next = new Float64Array(slots);
+    for (let p = 0; p < span; p += 1) {
+      const pull = p + 1;
+      const p6 = pull >= hard ? 1 : pull > soft ? softRate : base;
+      for (let lost = 0; lost < 2; lost += 1) {
+        for (let count = 0; count <= cap; count += 1) {
+          const weight = cur[at(p, lost, count)];
+          if (!weight) continue;
+          if (p6 < 1) {
+            next[at(p + 1, lost, count)] += weight * (1 - p6);
+          }
+          const chance = lost ? 1 : share;
+          if (chance > 0) {
+            next[at(0, 0, count < cap ? count + 1 : cap)] += weight * p6 * chance;
+          }
+          if (chance < 1 && p6 > 0) {
+            next[at(0, guarantee ? 1 : 0, count)] += weight * p6 * (1 - chance);
+          }
+        }
+      }
+    }
+    cur = next;
+  }
+
+  const odds = new Array(cap + 1).fill(0);
+  for (let p = 0; p < span; p += 1) {
+    for (let lost = 0; lost < 2; lost += 1) {
+      for (let count = 0; count <= cap; count += 1) {
+        odds[count] += cur[at(p, lost, count)];
+      }
+    }
+  }
+  // `odds[k]` counts owners of *exactly* k copies; Pn is "at least n+1".
+  const out = [];
+  for (let level = 0; level < 6; level += 1) {
+    let sum = 0;
+    for (let count = level + 1; count <= cap; count += 1) sum += odds[count];
+    out.push(sum);
+  }
+  // **The patch's first Limited banner sells portraits.** Every `copyExchange.pulls`
+  // pulls of the run can be traded for `copyExchange.copies` bonus copies, and the
+  // trade **repeats**: 560 pulls on a 200-pull banner buys two of them. Each traded
+  // copy is not a roll, so it lifts every level by that many — P5 becomes what P3 was,
+  // P4 what P2 was, and the levels it fills are a certainty. The trade costs the pulls
+  // already made, not extra Unilogs, which is why the price is untouched.
+  const exchange = calcExchange(rule);
+  const traded = exchange ? exchange.copies * Math.floor(runs / exchange.pulls) : 0;
+  if (traded > 0) {
+    const base = out.slice();
+    const shift = Math.min(6, traded);
+    for (let level = 0; level < 6; level += 1) {
+      out[level] = level < shift ? 1 : base[level - shift];
+    }
+  }
+  // One entry per (rule, plan, pity) combination; the tab repaints on every
+  // keystroke, and an unchanged banner must not re-walk its chain.
+  if (calcDistCache.size > 800) calcDistCache.clear();
+  calcDistCache.set(memo, out);
+  return out;
+}
+
+/** A rule's copy exchange as `{ pulls, copies }`, or `null` when it has none. */
+function calcExchange(rule) {
+  const exchange = rule && rule.copyExchange;
+  if (!exchange) return null;
+  const pulls = Math.floor(Number(exchange.pulls) || 0);
+  const copies = Math.floor(Number(exchange.copies) || 0);
+  if (pulls < 1 || copies < 1) return null;
+  return { pulls, copies };
+}
+
+/** The exchange as a cache-key fragment, so a rule with it never reuses a plain run. */
+function calcExchangeKey(rule) {
+  const exchange = calcExchange(rule);
+  return exchange ? `${exchange.pulls}x${exchange.copies}` : "-";
+}
+
+function calcRuleNote(banner) {
+  const rule = calcRuleOf(banner);
+  if (rule.kind === "inGroup") return t("planner.calcRuleInGroup", { n: Math.round(1 / rule.share) });
+  if (rule.kind === "thread") return t("planner.calcRuleThread");
+  if (rule.kind === "rateUp") return t("planner.calcRuleRateUp", { p: calcPercent(rule.share) });
+  return t("planner.calcRuleNone");
+}
+
+/**
+ * A banner's own mechanical quirks, as one sentence each: the pity counter it
+ * shares, the free ten-pull a Limited banner opens its patch with, the ten-pull
+ * discount Ripples gives, the selector its first 6★ is, and the portrait a Limited
+ * patch's first banner trades for 200 pulls. They are generated from the rule the data
+ * ships, so a new quirk only has to be declared once.
+ */
+function calcRuleNotes(banner) {
+  const rule = calcRuleOf(banner);
+  const notes = [];
+  const track = calcTrackOf(banner);
+  if (track === "rateUp") notes.push(t("planner.calcTrackRateUp"));
+  else if (track === "ripples") notes.push(t("planner.calcTrackRipples"));
+  else notes.push(t("planner.calcTrackSolo"));
+  if (Number(rule.freePulls) > 0) notes.push(t("planner.calcFreePulls", { n: calcNumber(rule.freePulls) }));
+  if (Number(rule.discountFirst10) > 0) {
+    notes.push(t("planner.calcDiscount", { n: calcNumber(rule.discountFirst10) }));
+  }
+  if (rule.selectFirstSix) notes.push(t("planner.calcSelectFirst"));
+  const exchange = calcExchange(rule);
+  if (exchange) {
+    notes.push(
+      t("planner.calcExchangeNote", { n: calcNumber(exchange.pulls), c: calcNumber(exchange.copies) })
+    );
+  }
+  return notes;
+}
+
+
+/* ---------- markup ---------- */
+
+/** A rounded tag on a banner card: `Release 11/05`, `132 <unilog>`. */
+function calcPillHtml(label, value, tone, raw) {
+  const key = label ? `<span class="calc-pill-key">${escapeHtml(label)}</span>` : "";
+  const text = raw ? value : escapeHtml(value);
+  return `<span class="calc-pill${tone ? ` ${tone}` : ""}">${key}${text}</span>`;
+}
+
+/** The art a rate-up hero draws: the banner row's own icon, else the roster head. */
+function calcTargetIcon(target) {
+  if (!target) return "";
+  return target.icon || characterDb[target.name] || "";
+}
+
+/**
+ * The head art of the banner's rate-up hero (or heroes). `max` caps how many draw —
+ * the picker's rows are one line high, so a banner with six rate-ups shows three and
+ * an ellipsis for the rest, while the plan's cards draw them all.
+ */
+function calcTargetsHtml(banner, max = 0) {
+  const targets = banner.targets || [];
+  const shown = max > 0 && targets.length > max ? targets.slice(0, max) : targets;
+  const heads = shown
+    .map((target) => {
+      const art = calcTargetIcon(target);
+      const name = escapeHtml(displayCharName(target.name));
+      if (!art) return `<span class="calc-head calc-head-empty" title="${name}"></span>`;
+      return `<img class="calc-head" src="${escapeHtml(art)}" alt="${name}" title="${name}" loading="lazy" />`;
+    })
+    .join("");
+  const more =
+    shown.length < targets.length
+      ? `<span class="calc-head calc-head-more" title="${escapeHtml(
+          targets.map((target) => displayCharName(target.name)).join(", ")
+        )}">…</span>`
+      : "";
+  if (heads) return heads + more;
+  return `<span class="calc-head calc-head-any" title="${escapeHtml(t("planner.calcAnyHero"))}">?</span>`;
+}
+
+/** The six P0…P5 chips for a banner, or the note that it cannot be priced. */
+function calcOddsChips(banner, pulls) {
+  const rule = calcRuleOf(banner);
+  if (rule.kind === "none") {
+    return `<span class="calc-card-note">${escapeHtml(t("planner.calcRuleNone"))}</span>`;
+  }
+  return calcOddsOf(banner, pulls)
+    .map(
+      (value, level) =>
+        `<span class="calc-chip" data-p="${level}" data-odds="${value.toFixed(4)}"><b>P${level}</b>${calcPercent(
+          value
+        )}</span>`
+    )
+    .join("");
+}
+
+/**
+ * A banner kind as the reader's language spells it (`Rerun` / 复刻 / `Rerun`). The
+ * kind itself stays the sheet's word — it is what the data is keyed by — so only the
+ * label is translated, and an unknown kind prints as it is.
+ */
+function calcKindLabel(type) {
+  if (!type) return "—";
+  const key = `planner.kind${type}`;
+  const label = t(key);
+  return label && label !== key ? label : type;
+}
+
+/**
+ * The round tags every banner surface wears: the patch the run ships in, the kind, the
+ * two dates, the pulls the income alone buys by the closing day, `Predicted` when the
+ * row is a forecast, and the banner's own mechanical quirks (a free ten-pull, a
+ * discounted ten-pull, a selector on the first 6★) so the reader knows why the typed
+ * count is not always the price. The pull count is the Unilog art, never the word —
+ * every figure on the tab reads the same way.
+ */
+function calcPillsHtml(banner) {
+  const rule = calcRuleOf(banner);
+  const version = calcVersionTag(banner);
+  const pills = [
+    ...(version ? [calcPillHtml("", version, "is-version")] : []),
+    calcPillHtml("", calcKindLabel(banner.type), "is-type"),
+    calcPillHtml(t("planner.calcRelease"), calcShortDate(banner.start)),
+    calcPillHtml(t("planner.calcEnds"), calcShortDate(banner.end)),
+    calcPillHtml(t("planner.calcByEnd"), calcPullFigure(calcPullsBy(banner.end)), "is-pulls", true),
+  ];
+  if (banner.predicted) pills.push(calcPillHtml("", t("planner.calcPredicted"), "is-predicted"));
+  if (Number(rule.freePulls) > 0) {
+    pills.push(calcPillHtml("", t("planner.calcPillFree", { n: calcNumber(rule.freePulls) }), "is-perk"));
+  }
+  if (Number(rule.discountFirst10) > 0) {
+    pills.push(calcPillHtml("", t("planner.calcPillDiscount", { n: calcNumber(rule.discountFirst10) }), "is-perk"));
+  }
+  if (rule.selectFirstSix) pills.push(calcPillHtml("", t("planner.calcPillSelect"), "is-perk"));
+  const exchange = calcExchange(rule);
+  if (exchange) {
+    pills.push(
+      calcPillHtml(
+        "",
+        t("planner.calcPillExchange", { n: calcNumber(exchange.pulls), c: calcNumber(exchange.copies) }),
+        "is-perk"
+      )
+    );
+  }
+  return pills.join("");
+}
+
+/**
+ * One banner card, read like a pull ticket: the rate-up heads and the name on top,
+ * the type / release / end / projected-pulls tags under it, then the odds the
+ * planned pulls buy and the number field that sets them.
+ */
+function calcCardHtml(banner) {
+  const pulls = calcPulls(banner.id);
+  const chips = calcOddsChips(banner, pulls);
+  return `
+        <article class="calc-card" data-banner="${escapeHtml(banner.id)}" data-kind="${escapeHtml(
+    banner.type || ""
+  )}">
+          <div class="calc-card-head">
+            <span class="calc-card-heads">${calcTargetsHtml(banner)}</span>
+            <span class="calc-card-title">
+              <span class="calc-card-name" title="${escapeHtml(calcBannerName(banner))}">${escapeHtml(
+    calcBannerName(banner)
+  )}</span>
+              <span class="calc-card-pills">${calcPillsHtml(banner)}</span>
+            </span>
+            <button type="button" class="calc-card-remove" data-calc-action="remove" data-banner-id="${escapeHtml(
+              banner.id
+            )}" title="${escapeHtml(t("planner.calcRemoveBanner"))}" aria-label="${escapeHtml(
+    t("planner.calcRemoveBanner")
+  )}">×</button>
+          </div>
+          <div class="calc-card-odds">${chips}</div>
+          <div class="calc-card-foot">
+            <label class="calc-pull-field">
+              <span class="calc-pull-label">${escapeHtml(t("planner.calcPulls"))}</span>
+              <input type="number" min="0" max="9999" step="1" inputmode="numeric" class="calc-pull-input"
+                data-calc-pulls="${escapeHtml(banner.id)}" value="${pulls}"
+                aria-label="${escapeHtml(`${t("planner.calcPulls")} — ${calcBannerName(banner)}`)}" />
+            </label>
+          </div>
+        </article>`;
+}
+
+/** Everything below the section bars: the chart and the cards. */
+function calcBannersHtml() {
+  const rows = calcListBanners();
+  if (!rows.length) {
+    return `<div class="guide-empty"><span>${escapeHtml(t("planner.calcNoBanners"))}</span></div>`;
+  }
+  return rows.map((banner) => calcCardHtml(banner)).join("");
+}
+
+/* ---------- the chart ---------- */
+
+/** `137` -> `100`, so the y axis lands on a round number. */
+function calcNiceStep(raw) {
+  const value = Math.max(1e-6, Number(raw) || 1);
+  const pow = Math.pow(10, Math.floor(Math.log10(value)));
+  const base = value / pow;
+  const mult = base <= 1 ? 1 : base <= 2 ? 2 : base <= 5 ? 5 : 10;
+  return mult * pow;
+}
+
+/**
+ * The balance as a polyline, in pulls, from today to the end of the span the reader
+ * picked. A planned banner puts a dot on the day it spends, with its rate-up's
+ * portrait above and what it costs below; pressing that dot opens the banner's sheet.
+ */
+function calcChartHtml() {
+  const schedule = calcScheduleMemo();
+  const { points, dots, per } = schedule;
+  const W = 760;
+  const H = 258;
+  const padL = 48;
+  const padR = 16;
+  const padT = 58;
+  const padB = 26;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+  const values = points.map((point) => point.balance / per);
+  const low = Math.min(0, ...values);
+  const high = Math.max(1, ...values);
+  const step = calcNiceStep((high - low) / 4);
+  const min = Math.floor(low / step) * step;
+  const max = Math.ceil(high / step) * step;
+  const x = (index) => padL + (index / Math.max(1, points.length - 1)) * innerW;
+  const y = (value) => padT + (1 - (value - min) / Math.max(1e-6, max - min)) * innerH;
+  const line = points
+    .map((point, index) => `${x(index).toFixed(1)},${y(point.balance / per).toFixed(1)}`)
+    .join(" ");
+
+  const grid = [];
+  for (let value = min; value <= max + 1e-9; value += step) {
+    grid.push(
+      `<line class="calc-grid-line" x1="${padL}" y1="${y(value).toFixed(1)}" x2="${W - padR}" y2="${y(
+        value
+      ).toFixed(1)}" />` +
+        `<text class="calc-axis-label" x="${padL - 8}" y="${(y(value) + 3).toFixed(1)}" text-anchor="end">${calcNumber(
+          value
+        )}</text>`
+    );
+  }
+  const zero =
+    min < 0
+      ? `<line class="calc-zero-line" x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W - padR}" y2="${y(0).toFixed(
+          1
+        )}" />`
+      : "";
+  const ticks = [0, Math.floor((points.length - 1) / 2), points.length - 1]
+    .map(
+      (index, order) =>
+        `<text class="calc-axis-label" x="${x(index).toFixed(1)}" y="${H - 8}" text-anchor="${
+          order === 0 ? "start" : order === 1 ? "middle" : "end"
+        }">${escapeHtml(calcShortDate(points[index].iso))}</text>`
+    )
+    .join("");
+
+  // The dot carries its banner: the rate-up's head art *above* the point says which
+  // one it is (`−80` under it only says what it costs). The art is clipped to a
+  // circle so a square head icon still reads as a portrait, and it is drawn large
+  // enough to see at low resolution on a phone. A banner with several rate-ups (a
+  // Ripples pool) draws three at most — and only one when several banners spend the
+  // same day, because a 3-wide portrait group would cover its neighbour.
+  const clips = [];
+  const markers = dots
+    .map((dot, order) => {
+      const banner = calcBanner(dot.id);
+      const name = escapeHtml(calcBannerName(banner));
+      const cx = x(dot.index) + (dot.slot - (dot.slots - 1) / 2) * 28;
+      const cy = y(dot.balance / per);
+      const heads = ((banner && banner.targets) || [])
+        .map((target) => calcTargetIcon(target))
+        .filter(Boolean)
+        .slice(0, dot.slots > 1 ? 1 : 3);
+      const size = 22;
+      const draw = heads
+        .map((src, slot) => {
+          const span = heads.length * size + (heads.length - 1) * 2;
+          const left = cx - span / 2 + slot * (size + 2);
+          const top = cy - 18 - size;
+          const clip = `calc-dot-clip-${order}-${slot}`;
+          clips.push(
+            `<clipPath id="${clip}"><circle cx="${(left + size / 2).toFixed(1)}" cy="${(top + size / 2).toFixed(
+              1
+            )}" r="${size / 2}" /></clipPath>`
+          );
+          return `<image class="calc-dot-head" href="${escapeHtml(
+            src
+          )}" x="${left.toFixed(1)}" y="${top.toFixed(1)}" width="${size}" height="${size}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${clip})" />`;
+        })
+        .join("");
+      const title =
+        dot.cost !== dot.pulls
+          ? `${name} — ${t("planner.calcPulls")} ${dot.pulls} → ${dot.cost} ${t("planner.calcPullsUnit")}`
+          : `${name} — ${dot.pulls} ${t("planner.calcPullsUnit")}`;
+      return `<g class="calc-dot" data-banner="${escapeHtml(dot.id)}" role="button" tabindex="0" aria-label="${escapeHtml(
+        title
+      )}"><title>${escapeHtml(title)}</title>${draw}<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(
+        1
+      )}" r="4.6" /><text class="calc-dot-label" x="${cx.toFixed(1)}" y="${(cy + 19).toFixed(
+        1
+      )}" text-anchor="middle">−${dot.cost}</text></g>`;
+    })
+    .join("");
+
+  return `<svg class="calc-chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img"
+      aria-label="${escapeHtml(t("planner.calcChartHint"))}">
+      <defs>${clips.join("")}</defs>
+      ${grid.join("")}
+      ${zero}
+      <polyline class="calc-chart-line" points="${line}" />
+      ${ticks}
+      ${markers}
+    </svg>`;
+}
+
+/**
+ * The row under the chart: what the plan leaves in each purse. A reader who has not
+ * pre-converted Clear Drop into Unilogs needs the three counts side by side, so
+ * `Expected` is the pulls the plan leaves and the line under it says where the pulls
+ * come from.
+ */
+function calcSummaryHtml() {
+  const schedule = calcScheduleMemo();
+  const { per, purse } = schedule;
+  const last = schedule.points[schedule.points.length - 1];
+  const expected = Math.floor(last.balance / per);
+  const cell = (name, value, index, signed) => `
+        <span class="calc-summary-cell" title="${escapeHtml(name)}">
+          <span class="calc-summary-label">${escapeHtml(name)}</span>
+          <span class="calc-summary-value">${signed && value < 0 ? calcSigned(value) : calcNumber(value)}${calcCurrencyIcon(
+    index
+  )}</span>
+        </span>`;
+  return [
+    cell(t("planner.calcExpected"), expected, 2, true),
+    cell(calcCurrencyName(2) || "Unilog", Math.max(0, purse.unilog), 2, false),
+    cell(calcCurrencyName(1) || "Clear Drop", Math.max(0, purse.clear), 1, false),
+    cell(calcCurrencyName(0) || "Crystal Drop", Math.max(0, purse.crystal), 0, false),
+  ].join("");
+}
+
+/* ---------- the two popups ---------- */
+
+/**
+ * The "?" sheet beside Drop income: every source the ledger knows, grouped the way
+ * the tab groups it, each with the purse it pays and how often it pays. Every figure
+ * is read from `data/gacha_rules.json → income`, so the sheet follows the ledger
+ * rather than restating it by hand.
+ */
+function calcHelpHtml() {
+  const ledger = calcLedger();
+  const per = calcDropsPerPull();
+  const patch = ledger.patch || {};
+  const limbo = ledger.limbo || {};
+  const offer = ledger.offerOfTheMonth || {};
+  const bass = ledger.bassCounter || {};
+  const tasks = ledger.dailyTasks || {};
+  const weekly = ledger.weeklyTask || {};
+  const login = ledger.cumulativeLogin || {};
+  const roaring = ledger.roaringMonth || {};
+  const signIn = patch.signIn || {};
+  const limboMonthly =
+    Number(limbo.monthlyDrops) || (Number(limbo.drops) || 0) * ((limbo.days || []).length || 1);
+
+  /** `1,400 <icon>` — a figure with the purse art it is paid in. */
+  const money = (value, index) => `${calcNumber(value)}${calcCurrencyIcon(index)}`;
+  const row = (name, amount, when, note) => `
+      <div class="calc-help-row">
+        <span class="calc-help-name">${escapeHtml(name)}</span>
+        <span class="calc-help-amount">${amount}</span>
+        <span class="calc-help-when">${escapeHtml(when)}</span>
+        <span class="calc-help-note">${escapeHtml(note)}</span>
+      </div>`;
+  const group = (title, rows) => `
+      <div class="calc-help-group">
+        <span class="calc-help-group-title">${escapeHtml(title)}</span>
+        ${rows}
+      </div>`;
+
+  return `
+      <p class="calc-help-lead">${escapeHtml(t("planner.calcHelpLead", { per: calcNumber(per) }))}</p>
+      ${group(
+        t("planner.calcFree"),
+        row(
+          t("planner.calcDailyTasks"),
+          money(tasks.weekday, 1),
+          t("planner.calcWhenDay"),
+          t("planner.calcHelpDailyTasks", { n: calcNumber(tasks.weekday) })
+        ) +
+          row(
+            t("planner.calcWeeklyTask"),
+            money(weekly.drops, 1),
+            t("planner.calcWhenWeek"),
+            t("planner.calcHelpWeeklyTask", { n: calcNumber(weekly.drops) })
+          ) +
+          row(
+            t("planner.calcLimbo"),
+            money(limboMonthly, 1),
+            t("planner.calcWhenMonth"),
+            t("planner.calcHelpLimbo", {
+              drops: calcNumber(limbo.drops),
+              monthly: calcNumber(limboMonthly),
+            })
+          ) +
+          row(
+            t("planner.calcLogin"),
+            money(login.drops, 1),
+            t("planner.calcWhenMonth"),
+            t("planner.calcHelpLogin", { n: calcNumber(login.drops) })
+          ) +
+          row(
+            t("planner.calcBass"),
+            money(bass.pulls, 2),
+            t("planner.calcWhenReset"),
+            t("planner.calcHelpBass", { n: calcNumber(bass.pulls) })
+          ) +
+          row(
+            t("planner.calcStoryStage"),
+            money(patch.storyStage, 1),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpStoryStage", { n: calcNumber(patch.storyStage) })
+          ) +
+          row(
+            t("planner.calcCharacterStory"),
+            money(patch.characterStory, 1),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpCharacterStory", { n: calcNumber(patch.characterStory) })
+          ) +
+          row(
+            t("planner.calcWebEvent"),
+            money(patch.webEventSurvey, 1),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpWebEvent", { n: calcNumber(patch.webEventSurvey) })
+          ) +
+          row(
+            t("planner.calcJukeboxFree"),
+            money(patch.jukeboxFreePulls, 2),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpJukeboxFree", { n: calcNumber(patch.jukeboxFreePulls) })
+          ) +
+          row(
+            t("planner.calcEventShop"),
+            money(patch.eventShopPulls, 2),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpEventShop", { n: calcNumber(patch.eventShopPulls) })
+          )
+      )}
+      ${group(
+        t("planner.calcSpender"),
+        row(
+          t("planner.calcRoaring"),
+          money(roaring.drops, 1),
+          t("planner.calcWhenDay"),
+          t("planner.calcHelpRoaring", {
+            crystal: calcNumber(roaring.instantCrystal),
+            drops: calcNumber(roaring.drops),
+            days: calcNumber(roaring.days),
+          })
+        ) +
+          row(
+            t("planner.calcJukebox"),
+            money(patch.jukeboxCollectorPulls, 2),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpJukebox", {
+              free: calcNumber(patch.jukeboxFreePulls),
+              collector: calcNumber(patch.jukeboxCollectorPulls),
+            })
+          ) +
+          row(
+            t("planner.calcOffer"),
+            money(offer.unilog, 2),
+            t("planner.calcWhenReset"),
+            t("planner.calcHelpOffer", {
+              clear: calcNumber(offer.clear),
+              unilog: calcNumber(offer.unilog),
+            })
+          ) +
+          row(t("planner.calcMonthly"), "", t("planner.calcWhenReset"), t("planner.calcHelpMonthly")) +
+          row(t("planner.calcPatchly"), "", t("planner.calcWhenPatch"), t("planner.calcHelpPatchly"))
+      )}
+      ${group(
+        t("planner.calcHelpAlways"),
+        row(
+          t("planner.calcSignIn"),
+          `${calcNumber(signIn.limited)} / ${calcNumber(signIn.standard)}${calcCurrencyIcon(2)}`,
+          t("planner.calcWhenPatch"),
+          t("planner.calcHelpSignIn", {
+            limited: calcNumber(signIn.limited),
+            standard: calcNumber(signIn.standard),
+          })
+        ) +
+          row(
+            t("planner.calcMaintenance"),
+            money(patch.maintenanceCompensation, 1),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpMaintenance", { n: calcNumber(patch.maintenanceCompensation) })
+          ) +
+          row(
+            t("planner.calcWarmup"),
+            money(patch.warmupLogin, 1),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpWarmup", { n: calcNumber(patch.warmupLogin) })
+          ) +
+          row(
+            t("planner.calcDevBroadcast"),
+            money(patch.devBroadcast, 1),
+            t("planner.calcWhenPatch"),
+            t("planner.calcHelpDevBroadcast", { n: calcNumber(patch.devBroadcast) })
+          )
+      )}`;
+}
+
+function calcPickerHtml() {
+  const rows = calcPickerBanners();
+  if (!rows.length) {
+    return `<div class="guide-empty"><span>${escapeHtml(t("planner.calcPickerEmpty"))}</span></div>`;
+  }
+  return rows
+    .map((banner) => {
+      const meta = [calcKindLabel(banner.type), `${calcShortDate(banner.start)} → ${calcShortDate(banner.end)}`]
+        .filter(Boolean)
+        .join(" · ");
+      const tag = banner.predicted
+        ? `<span class="calc-pill is-predicted">${escapeHtml(t("planner.calcPredicted"))}</span>`
+        : "";
+      const version = calcVersionTag(banner);
+      return `
+        <button type="button" class="calc-pick" data-pick-banner="${escapeHtml(banner.id)}" data-kind="${escapeHtml(
+        banner.type || ""
+      )}">
+          <span class="calc-pick-heads">${calcTargetsHtml(banner, CALC_PICK_HEADS)}</span>
+          <span class="calc-pick-main">
+            <span class="calc-pick-line">
+              ${version ? `<span class="calc-pick-version">${escapeHtml(version)}</span>` : ""}
+              <span class="calc-pick-name">${escapeHtml(calcBannerName(banner))}</span>
+            </span>
+            <span class="calc-pick-meta">${escapeHtml(meta)}</span>
+          </span>
+          ${tag}
+        </button>`;
+    })
+    .join("");
+}
+
+function calcInfoHtml() {
+  const banner = calcBanner(calcInfoId);
+  if (!banner) return "";
+  const rule = calcRuleOf(banner);
+  const pulls = calcPulls(banner.id);
+  const cost = calcBannerCostPulls(banner, pulls);
+  const odds =
+    rule.kind === "none"
+      ? `<p class="calc-note">${escapeHtml(t("planner.calcRuleNone"))}</p>`
+      : `<div class="calc-odds-grid">${calcOddsOf(banner, pulls)
+          .map(
+            (value, level) => `
+          <div class="calc-odd-card" data-p="${level}" data-odds="${value.toFixed(4)}">
+            <span class="calc-odd-label">P${level}</span>
+            <span class="calc-odd-value">${calcPercent(value)}</span>
+            <span class="calc-odd-hint">${escapeHtml(t("planner.calcCopies", { n: level + 1 }))}</span>
+          </div>`
+          )
+          .join("")}</div>`;
+  const prediction = banner.predicted
+    ? `<p class="calc-note">${escapeHtml(
+        t("planner.calcPredictedNote", { date: banner.cnStart, n: banner.lagDays })
+      )}</p>`
+    : "";
+  const notes = calcRuleNotes(banner)
+    .map((note) => `<li class="calc-info-note">${escapeHtml(note)}</li>`)
+    .join("");
+  return `
+      <div class="calc-card-pills calc-info-pills">${calcPillsHtml(banner)}</div>
+      <p class="calc-info-rule">${escapeHtml(calcRuleNote(banner))}</p>
+      <ul class="calc-info-notes">${notes}</ul>
+      ${prediction}
+      <div class="calc-figures">
+        <div class="calc-figure">
+          <span class="calc-figure-label">${escapeHtml(t("planner.calcPulls"))}</span>
+          <span class="calc-figure-value">${calcPullFigure(pulls)}</span>
+        </div>
+        <div class="calc-figure${cost !== pulls ? " is-strong" : ""}">
+          <span class="calc-figure-label">${escapeHtml(t("planner.calcInfoCost"))}</span>
+          <span class="calc-figure-value">${calcPullFigure(cost)}</span>
+        </div>
+        <div class="calc-figure is-strong">
+          <span class="calc-figure-label">${escapeHtml(t("planner.calcByEnd"))}</span>
+          <span class="calc-figure-value">${calcPullFigure(calcPullsBy(banner.end))}</span>
+        </div>
+      </div>
+      ${odds}`;
+}
+
+/* ---------- the tab ---------- */
+
+/** Reads/writes the reader's numbers, the plan, and nothing the data can derive. */
+function calcSaveState() {
+  try {
+    localStorage.setItem(
+      CALC_STORAGE_KEY,
+      JSON.stringify({
+        crystal: calcCrystal,
+        clear: calcClear,
+        unilog: calcUnilog,
+        pityRateUp: calcPityRateUp,
+        guaranteedRateUp: calcGuaranteedRateUp,
+        pityRipples: calcPityRipples,
+        guaranteedRipples: calcGuaranteedRipples,
+        limbo: calcLimbo,
+        login: calcLogin,
+        jukeboxFree: calcJukeboxFree,
+        bass: calcBass,
+        storyStage: calcStoryStage,
+        characterStory: calcCharacterStory,
+        webEvent: calcWebEvent,
+        eventShop: calcEventShop,
+        roaring: calcRoaring,
+        jukebox: calcJukebox,
+        offer: calcOffer,
+        monthly: calcMonthly,
+        patchly: calcPatchly,
+        daily: calcDaily,
+        other: calcOther,
+        useCrystal: calcUseCrystal,
+        months: calcMonths,
+        list: calcList,
+        plans: calcPlans,
+      })
+    );
+  } catch (e) {
+    /* A blocked storage leaves the calculator at its defaults every visit. */
+  }
+}
+
+/** Reads the saved blob back, dropping anything the shipped data no longer names. */
+function calcLoadState() {
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(CALC_STORAGE_KEY) || "null");
+  } catch (e) {
+    saved = null;
+  }
+  const blob = saved && typeof saved === "object" ? saved : {};
+  const int = (value) => Math.max(0, Math.floor(Number(value) || 0));
+  const hard = (calcRules && calcRules.pity && calcRules.pity.hard) || 70;
+  const today = calcToday();
+
+  calcCrystal = Math.min(calcFieldCap("crystal"), int(blob.crystal));
+  calcClear = Math.min(calcFieldCap("clear"), int(blob.clear));
+  calcUnilog = Math.min(calcFieldCap("unilog"), int(blob.unilog));
+  // Pity is one counter per track the game keeps. A round-2 blob has a single
+  // `pity` / `guaranteed` pair and no Ripples counter at all, so it is read into the
+  // Debut/Rerun track — the one the old tab meant — and Ripples starts fresh.
+  calcPityRateUp = Math.min(hard - 1, int(blob.pityRateUp !== undefined ? blob.pityRateUp : blob.pity));
+  calcGuaranteedRateUp = !!(
+    blob.guaranteedRateUp !== undefined ? blob.guaranteedRateUp : blob.guaranteed
+  );
+  calcPityRipples = Math.min(hard - 1, int(blob.pityRipples));
+  calcGuaranteedRipples = !!blob.guaranteedRipples;
+
+  // The free half of the income.
+  calcLimbo = !!blob.limbo;
+  calcLogin = !!blob.login;
+  // The Roar Jukebox's two free Unilogs are free for everyone, so the tick box is on
+  // unless the reader turned it off.
+  calcJukeboxFree = blob.jukeboxFree === undefined ? true : !!blob.jukeboxFree;
+  // The Bass Counter is a tick box: 10 Unilogs a month. It used to be a numeric field,
+  // so a positive number still reads as "on"; an absent key is off (the owner's
+  // default), because not every reader buys the Bass Counter pass.
+  calcBass = blob.bass === undefined ? false : blob.bass === true || Number(blob.bass) > 0;
+  calcStoryStage = !!blob.storyStage;
+  calcCharacterStory = !!blob.characterStory;
+  calcWebEvent = !!blob.webEvent;
+  calcEventShop = !!blob.eventShop;
+
+  // The paid half.
+  calcRoaring = !!blob.roaring;
+  calcJukebox = !!blob.jukebox;
+  calcOffer = !!blob.offer;
+  calcMonthly = Math.min(calcFieldCap("monthly"), int(blob.monthly));
+  calcPatchly = Math.min(calcFieldCap("patchly"), int(blob.patchly));
+  const table = Array.isArray(calcLedger().dailyPurchasing) ? calcLedger().dailyPurchasing : [];
+  calcDaily = Math.min(Math.max(0, table.length - 1), int(blob.daily));
+  calcOther = Math.min(calcFieldCap("other"), int(blob.other));
+  calcUseCrystal = !!blob.useCrystal;
+  calcMonths = CALC_SPANS.includes(Number(blob.months)) ? Number(blob.months) : CALC_DEFAULT_SPAN;
+
+  const rows = (calcHistory && calcHistory.banners) || [];
+  const known = new Map(rows.map((row) => [row.id, row]));
+  // An old blob has no `list`: its `plans` keys are the plan it meant.
+  const savedList = Array.isArray(blob.list) ? blob.list : Object.keys(blob.plans || {});
+  const list = [];
+  for (const id of savedList) {
+    const banner = known.get(id);
+    if (!banner || CALC_SKIP_TYPES.has(banner.type)) continue;
+    if (banner.end && banner.end < today) continue;
+    if (!list.includes(id)) list.push(id);
+  }
+  calcList = list;
+  const plans = {};
+  for (const [id, value] of Object.entries(blob.plans || {})) {
+    const pulls = Math.floor(Number(value) || 0);
+    if (known.has(id) && pulls > 0) plans[id] = Math.min(9999, pulls);
+  }
+  calcPlans = plans;
+}
+
+/** The static half of the tab: the three input groups, the chart, the cards. */
+function calcSkeleton() {
+  const currencies = (calcRules && calcRules.currencies) || [];
+  const icon = (index) => escapeHtml((currencies[index] || {}).icon || "");
+  const label = (index, fallback) => {
+    const row = currencies[index] || {};
+    return escapeHtml(currentLang === "cn" ? row.nameZh || row.name || fallback : row.name || fallback);
+  };
+  const hard = (calcRules && calcRules.pity && calcRules.pity.hard) || 70;
+  const ledger = calcLedger();
+  const per = calcDropsPerPull();
+  const purchasing = Array.isArray(ledger.dailyPurchasing) ? ledger.dailyPurchasing : [];
+  const patch = ledger.patch || {};
+  const limbo = ledger.limbo || {};
+  const offer = ledger.offerOfTheMonth || {};
+  const bassRow = ledger.bassCounter || {};
+  const roaring = ledger.roaringMonth || {};
+
+  // Limbo and Lucidscape are two resets of the same reward: the ledger names the
+  // monthly total, so the yield does not depend on how many dates it lands on.
+  const limboMonthly =
+    Number(limbo.monthlyDrops) || (Number(limbo.drops) || 0) * ((limbo.days || []).length || 1);
+
+  // A yield prints the purse the source actually pays, not a pull-equivalent: the
+  // Clear-Drop sources read `+1,400 <clear>/month`, the Unilog sources
+  // `+10 <unilog>/month`. The balance curve still values every purse at `per`
+  // drops a pull, so only the badge changes — the plan's total does not.
+  const yieldMonth = (amount, index = 2) =>
+    t("planner.calcYieldMonth", { n: calcNumber(amount), icon: calcCurrencyIcon(index) });
+  /** A source that pays once a patch: `+1,200 <clear>/patch`. */
+  const yieldPatch = (amount, index = 2) =>
+    t("planner.calcYieldPatch", { n: calcNumber(amount), icon: calcCurrencyIcon(index) });
+
+  const field = (id, key, name, options) => `
+          <label class="calc-field">
+            <span class="calc-field-label">${escapeHtml(name)}</span>
+            <span class="planner-owned-field${options.icon ? " has-icon" : ""}">
+              ${options.icon ? `<img class="planner-owned-icon" src="${options.icon}" alt="" />` : ""}
+              <input type="number" min="0" max="${options.max || calcFieldCap(key)}" step="1" ${
+    options.inputmode ? `inputmode="${options.inputmode}" ` : ""
+  }class="planner-owned-input" id="${id}" data-calc-field="${key}" placeholder="0" aria-label="${escapeHtml(name)}" />
+            </span>
+          </label>`;
+  // A tick box is a card: the box, the name, and what ticking it is worth. Left bare
+  // in the grid it read as loose text on a phone, with nothing to say how much it pays.
+  const toggle = (key, name, checked, extra, title) => `
+          <label class="calc-check"${title ? ` title="${escapeHtml(title)}"` : ""}>
+            <input type="checkbox" id="calc-${key}" data-calc-field="${key}" ${checked ? "checked " : ""}/>
+            <span class="calc-check-text">
+              <span class="calc-field-label">${escapeHtml(name)}</span>
+              ${extra ? `<span class="calc-check-yield">${extra}</span>` : ""}
+            </span>
+          </label>`;
+  /** A titled block of tick boxes, so free and paid income never read as one list.
+   *  `extra` is markup that belongs to the block but not to one cell of its grid (the
+   *  package pair), so it never stretches the cards' shared row height. */
+  const group = (title, body, extra = "") => `
+          <div class="calc-group">
+            <span class="calc-group-title">${escapeHtml(title)}</span>
+            <div class="calc-group-grid">${body}</div>
+            ${extra}
+          </div>`;
+
+  const spans = CALC_SPANS.map(
+    (months) =>
+      `<button type="button" class="calc-span-btn${months === calcMonths ? " is-active" : ""}"
+        data-calc-span="${months}" aria-pressed="${months === calcMonths}"
+        title="${escapeHtml(t(`planner.calcSpan${months}`))}">${escapeHtml(t(`planner.calcSpan${months}`))}</button>`
+  ).join("");
+
+  // Limbo and Lucidscape reset on the 1st and the 16th and pay the same reward each
+  // time; the note spells the two apart so the reader knows both resets are counted.
+  const limboNote = t("planner.calcLimboNote", { drops: calcNumber(Number(limbo.drops) || 0) });
+
+  return `
+      <section class="calc-section">
+        <div class="archetype-section-header">
+          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcCurrent"))}</span></span>
+          <span class="calc-hold-total" id="calc-hold-total"></span>
+        </div>
+        <div class="calc-hold">
+          <div class="calc-hold-purses">
+            ${field("calc-crystal", "crystal", label(0, "Crystal Drop"), { icon: icon(0), inputmode: "numeric" })}
+            ${field("calc-clear", "clear", label(1, "Clear Drop"), { icon: icon(1), inputmode: "numeric" })}
+            ${field("calc-unilog", "unilog", label(2, "Unilog"), { icon: icon(2), inputmode: "numeric" })}
+          </div>
+          <!-- One pity track per row: its counter and the guarantee box it sets. -->
+          <div class="calc-pair-row">
+            ${field("calc-pityRateUp", "pityRateUp", t("planner.calcPityRateUp"), {
+              max: hard - 1,
+              inputmode: "numeric",
+            })}
+            ${toggle("guaranteedRateUp", t("planner.calcGuaranteedRateUp"), calcGuaranteedRateUp, "", t("planner.calcTrackRateUp"))}
+          </div>
+          <div class="calc-pair-row">
+            ${field("calc-pityRipples", "pityRipples", t("planner.calcPityRipples"), {
+              max: hard - 1,
+              inputmode: "numeric",
+            })}
+            ${toggle("guaranteedRipples", t("planner.calcGuaranteedRipples"), calcGuaranteedRipples, "", t("planner.calcTrackRipples"))}
+          </div>
+        </div>
+      </section>
+      <section class="calc-section">
+        <div class="archetype-section-header">
+          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcIncome"))}</span></span>
+          <span class="calc-section-tail">
+            <span class="calc-hold-total" id="calc-income-total"></span>
+            <button type="button" class="calc-help-btn" id="calc-help-open"
+              title="${escapeHtml(t("planner.calcHelpOpen"))}" aria-label="${escapeHtml(
+    t("planner.calcHelpOpen")
+  )}">?</button>
+          </span>
+        </div>
+        <div class="calc-income">
+          ${group(
+            t("planner.calcFree"),
+            toggle("limbo", t("planner.calcLimbo"), calcLimbo, yieldMonth(limboMonthly, 1), limboNote) +
+              toggle(
+                "login",
+                t("planner.calcLogin"),
+                calcLogin,
+                yieldMonth(Number((ledger.cumulativeLogin || {}).drops) || 0, 1)
+              ) +
+              toggle("bass", t("planner.calcBass"), calcBass, yieldMonth(Number(bassRow.pulls) || 0, 2)) +
+              toggle(
+                "storyStage",
+                t("planner.calcStoryStage"),
+                calcStoryStage,
+                yieldPatch(Number(patch.storyStage) || 0, 1)
+              ) +
+              toggle(
+                "characterStory",
+                t("planner.calcCharacterStory"),
+                calcCharacterStory,
+                yieldPatch(Number(patch.characterStory) || 0, 1)
+              ) +
+              toggle(
+                "webEvent",
+                t("planner.calcWebEvent"),
+                calcWebEvent,
+                yieldPatch(Number(patch.webEventSurvey) || 0, 1)
+              ) +
+              toggle(
+                "jukeboxFree",
+                t("planner.calcJukeboxFree"),
+                calcJukeboxFree,
+                yieldPatch(Number(patch.jukeboxFreePulls) || 0, 2)
+              ) +
+              toggle(
+                "eventShop",
+                t("planner.calcEventShop"),
+                calcEventShop,
+                yieldPatch(Number(patch.eventShopPulls) || 0, 2)
+              )
+          )}
+          ${group(
+            t("planner.calcSpender"),
+            toggle(
+              "roaring",
+              t("planner.calcRoaring"),
+              calcRoaring,
+              // Roaring Month pays Clear Drops a day, so its badge is the month of them.
+              yieldMonth((Number(roaring.drops) || 0) * CALC_DAYS_PER_MONTH, 1)
+            ) +
+              toggle(
+                "jukebox",
+                t("planner.calcJukebox"),
+                calcJukebox,
+                yieldPatch(Number(patch.jukeboxCollectorPulls) || 0, 2)
+              ) +
+              toggle(
+                "offer",
+                t("planner.calcOffer"),
+                calcOffer,
+                // The Offer pays one Clear Drop lump *and* Unilogs: priced in drops, so
+                // the badge is what the whole offer is worth in its Clear Drop purse.
+                yieldMonth(Number(offer.clear) + (Number(offer.unilog) || 0) * per, 1)
+              ),
+            `<div class="calc-pair-row calc-pair-row-packages">
+                ${field("calc-monthly", "monthly", t("planner.calcMonthly"), { inputmode: "numeric" })}
+                ${field("calc-patchly", "patchly", t("planner.calcPatchly"), { inputmode: "numeric" })}
+              </div>`
+          )}
+        </div>
+        <p class="calc-hint">${escapeHtml(limboNote)}</p>
+      </section>
+      <section class="calc-section">
+        <div class="archetype-section-header">
+          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcOutcome"))}</span></span>
+        </div>
+        <div class="calc-outcome">
+          <label class="calc-field">
+            <span class="calc-field-label">${escapeHtml(t("planner.calcDaily"))}</span>
+            <select class="planner-shop-select" id="calc-daily" data-calc-field="daily" aria-label="${escapeHtml(
+              t("planner.calcDaily")
+            )}">
+              ${purchasing
+                .map(
+                  (value, level) =>
+                    `<option value="${level}">${
+                      level === 0 ? escapeHtml(t("planner.calcNone")) : `${calcNumber(value)} ${escapeHtml(t("planner.calcDrops"))}`
+                    }</option>`
+                )
+                .join("")}
+            </select>
+          </label>
+          ${field("calc-other", "other", t("planner.calcOther"), { icon: icon(0), inputmode: "numeric" })}
+          ${toggle("useCrystal", t("planner.calcUseCrystal"), calcUseCrystal, "", t("planner.calcCrystalHint"))}
+        </div>
+        <p class="calc-hint">${escapeHtml(t("planner.calcCrystalHint"))}</p>
+      </section>
+      <section class="calc-section">
+        <div class="archetype-section-header">
+          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcChart"))}</span></span>
+          <span class="calc-chart-bar">
+            <span class="calc-span" id="calc-span" role="group" aria-label="${escapeHtml(t("planner.calcSpan"))}">${spans}</span>
+            <span class="calc-hold-total" id="calc-chart-total"></span>
+          </span>
+        </div>
+        <div class="calc-chart" id="calc-chart"></div>
+        <div class="calc-summary" id="calc-summary"></div>
+        <p class="calc-hint">${escapeHtml(t("planner.calcChartHint"))}</p>
+      </section>
+      <section class="calc-section">
+        <div class="archetype-section-header">
+          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcBanners"))}</span></span>
+          <span class="calc-hold-total" id="calc-banner-total"></span>
+        </div>
+        <div class="calc-banner-list" id="calc-banners"></div>
+      </section>`;
+}
+
+/** Paints the saved numbers back into the fields after a (re)mount. */
+function calcFillFields() {
+  const set = (id, value) => {
+    const el = document.getElementById(id);
+    if (el && String(el.value) !== String(value)) el.value = value;
+  };
+  set("calc-crystal", calcCrystal || "");
+  set("calc-clear", calcClear || "");
+  set("calc-unilog", calcUnilog || "");
+  set("calc-pityRateUp", calcPityRateUp || "");
+  set("calc-pityRipples", calcPityRipples || "");
+  set("calc-monthly", calcMonthly || "");
+  set("calc-patchly", calcPatchly || "");
+  set("calc-other", calcOther || "");
+  const daily = document.getElementById("calc-daily");
+  if (daily) daily.value = String(calcDaily);
+  const boxes = {
+    guaranteedRateUp: calcGuaranteedRateUp,
+    guaranteedRipples: calcGuaranteedRipples,
+    limbo: calcLimbo,
+    login: calcLogin,
+    jukeboxFree: calcJukeboxFree,
+    bass: calcBass,
+    storyStage: calcStoryStage,
+    characterStory: calcCharacterStory,
+    webEvent: calcWebEvent,
+    eventShop: calcEventShop,
+    roaring: calcRoaring,
+    jukebox: calcJukebox,
+    offer: calcOffer,
+    useCrystal: calcUseCrystal,
+  };
+  for (const [key, on] of Object.entries(boxes)) {
+    const box = document.getElementById(`calc-${key}`);
+    if (box) box.checked = !!on;
+  }
+}
+
+/**
+ * Repaints the derived half of the tab — the chart, the cards and the totals —
+ * without touching the fields the reader is typing in. Every pull figure prints the
+ * Unilog art, not the word: `132 <icon>` is the tab's one way of saying a count.
+ */
+function calcRefresh(parts) {
+  const which = parts || {};
+  const schedule = calcScheduleMemo();
+  const banners = document.getElementById("calc-banners");
+  if (banners && which.list !== false) {
+    const scrollTop = document.querySelector("#planner-calculator")?.scrollTop || 0;
+    banners.innerHTML = calcBannersHtml();
+    const host = document.querySelector("#planner-calculator");
+    if (host) host.scrollTop = scrollTop;
+  }
+  const chart = document.getElementById("calc-chart");
+  if (chart) chart.innerHTML = calcChartHtml();
+  const summary = document.getElementById("calc-summary");
+  if (summary) summary.innerHTML = calcSummaryHtml();
+  const today = document.getElementById("calc-today");
+  if (today) today.textContent = t("planner.calcAsOf", { date: schedule.today });
+  const hold = document.getElementById("calc-hold-total");
+  if (hold) {
+    hold.innerHTML = calcPullFigure(Math.floor(schedule.held / schedule.per));
+    hold.title = t("planner.calcHoldTotal", { n: calcNumber(Math.floor(schedule.held / schedule.per)) });
+  }
+  const income = document.getElementById("calc-income-total");
+  if (income) {
+    // Everything the window pays in, whatever the reader switches on.
+    const earned = schedule.points.reduce((sum, point) => sum + point.income, 0);
+    income.innerHTML = `+${calcPullFigure(earned / schedule.per)}`;
+    income.title = t("planner.calcHoldTotal", { n: calcNumber(earned / schedule.per) });
+  }
+  const chartTotal = document.getElementById("calc-chart-total");
+  if (chartTotal) {
+    const left = calcPullsLeft();
+    chartTotal.innerHTML = `${escapeHtml(t("planner.calcChartLeft", { n: calcSigned(left) }))}${calcCurrencyIcon(2)}`;
+    chartTotal.title = t("planner.calcHoldTotal", { n: calcNumber(left) });
+  }
+  const bannerTotal = document.getElementById("calc-banner-total");
+  if (bannerTotal) {
+    // "1 banner · 80 <unilog>": the count picks its own key so English does not
+    // print "1 banners", and the pulls reuse the Unilog figure every bar prints.
+    const count = calcListBanners().length;
+    const label = count === 1 ? t("planner.calcBannerOne") : t("planner.calcBannerMany", { n: calcNumber(count) });
+    bannerTotal.innerHTML = `${escapeHtml(label)} · ${calcPullFigure(schedule.planned)}`;
+  }
+  // The span chips are static markup, so only their active state moves.
+  for (const chip of document.querySelectorAll("#calc-span .calc-span-btn")) {
+    const on = Number(chip.dataset.calcSpan) === calcMonths;
+    chip.classList.toggle("is-active", on);
+    chip.setAttribute("aria-pressed", String(on));
+  }
+  if (!document.getElementById("calc-picker")?.hidden) renderCalcPicker();
+  if (calcInfoId) renderCalcInfo();
+}
+
+/** The card the reader is typing in: its odds, without a repaint. */
+function calcRefreshCard(card) {
+  const banner = calcBanner(card.dataset.banner);
+  if (!banner) return;
+  const pulls = calcPulls(banner.id);
+  const odds = card.querySelector(".calc-card-odds");
+  if (odds) odds.innerHTML = calcOddsChips(banner, pulls);
+}
+
+function renderCalcPicker() {
+  const list = document.getElementById("calc-picker-list");
+  if (list) list.innerHTML = calcPickerHtml();
+}
+
+function renderCalcInfo() {
+  const host = document.getElementById("calc-info");
+  if (!host) return;
+  const banner = calcBanner(calcInfoId);
+  if (!banner) {
+    host.hidden = true;
+    return;
+  }
+  host.hidden = false;
+  const title = document.getElementById("calc-info-title");
+  if (title) title.textContent = calcBannerName(banner);
+  const heads = document.getElementById("calc-info-heads");
+  if (heads) heads.innerHTML = calcTargetsHtml(banner);
+  const body = document.getElementById("calc-info-body");
+  if (body) body.innerHTML = calcInfoHtml();
+}
+
+function openCalcPicker() {
+  const picker = document.getElementById("calc-picker");
+  if (!picker) return;
+  calcPickerQuery = "";
+  const search = document.getElementById("calc-picker-search");
+  if (search) search.value = "";
+  picker.hidden = false;
+  renderCalcPicker();
+  if (search) search.focus();
+}
+
+function closeCalcPicker() {
+  const picker = document.getElementById("calc-picker");
+  if (picker) picker.hidden = true;
+}
+
+function openCalcInfo(id) {
+  calcInfoId = id || "";
+  renderCalcInfo();
+}
+
+function closeCalcInfo() {
+  calcInfoId = "";
+  const host = document.getElementById("calc-info");
+  if (host) host.hidden = true;
+}
+
+/** The "?" sheet beside Drop income: every source, what it pays and how often. */
+function openCalcHelp() {
+  const host = document.getElementById("calc-help");
+  if (!host) return;
+  const body = document.getElementById("calc-help-body");
+  if (body) body.innerHTML = calcHelpHtml();
+  host.hidden = false;
+}
+
+function closeCalcHelp() {
+  const host = document.getElementById("calc-help");
+  if (host) host.hidden = true;
+}
+
+function renderPlannerCalculator() {
+  const host = document.getElementById("planner-calculator");
+  if (!host) return;
+  if (!calcHistory || !calcRules) {
+    host.innerHTML = `<div class="guide-empty"><span>${escapeHtml(t("planner.noData"))}</span></div>`;
+    return;
+  }
+  // The skeleton depends on the currency and ledger labels, so it is rebuilt on a
+  // language change as well as a first mount.
+  const signature = currentLang;
+  if (host.dataset.calcSig !== signature) {
+    host.dataset.calcSig = signature;
+    host.innerHTML = calcSkeleton();
+  }
+  calcFillFields();
+  calcRefresh();
+}
+
+function buildCalculatorData(banners, rules) {
+  calcHistory = banners && Array.isArray(banners.banners) ? banners : null;
+  calcRules = rules && rules.rates ? rules : null;
+  calcLoadState();
+  const host = document.getElementById("planner-calculator");
+  if (host) host.dataset.calcSig = "";
+  if (plannerActiveTab === "calculator") renderPlannerCalculator();
+}
+
+/** The calculator's own delegated wiring; `setupPlannerListeners` calls it once. */
+function setupPlannerCalculator() {
+  const add = document.getElementById("calc-add");
+  if (add) add.addEventListener("click", openCalcPicker);
+
+  const reset = document.getElementById("calc-reset");
+  if (reset) {
+    reset.addEventListener("click", () => {
+      calcCrystal = 0;
+      calcClear = 0;
+      calcUnilog = 0;
+      calcPityRateUp = 0;
+      calcGuaranteedRateUp = false;
+      calcPityRipples = 0;
+      calcGuaranteedRipples = false;
+      calcLimbo = false;
+      calcLogin = false;
+      calcJukeboxFree = true;
+      calcBass = false;
+      calcStoryStage = false;
+      calcCharacterStory = false;
+      calcWebEvent = false;
+      calcEventShop = false;
+      calcRoaring = false;
+      calcJukebox = false;
+      calcOffer = false;
+      calcMonthly = 0;
+      calcPatchly = 0;
+      calcDaily = 0;
+      calcOther = 0;
+      calcUseCrystal = false;
+      calcMonths = CALC_DEFAULT_SPAN;
+      calcList = [];
+      calcPlans = {};
+      closeCalcInfo();
+      closeCalcPicker();
+      closeCalcHelp();
+      calcSaveState();
+      renderPlannerCalculator();
+    });
+  }
+
+  // The picker is a lightbox over the tab: its own close affordances, plus the
+  // backdrop, and a pick closes it because the banner is now in the list.
+  const picker = document.getElementById("calc-picker");
+  if (picker) {
+    picker.addEventListener("click", (event) => {
+      if (event.target === picker || event.target.closest("#calc-picker-backdrop")) return closeCalcPicker();
+      if (event.target.closest("#calc-picker-close")) return closeCalcPicker();
+      const pick = event.target.closest("[data-pick-banner]");
+      if (pick) {
+        calcAddBanner(pick.dataset.pickBanner);
+        closeCalcPicker();
+        calcRefresh();
+      }
+    });
+    const search = document.getElementById("calc-picker-search");
+    if (search) {
+      search.addEventListener("input", () => {
+        calcPickerQuery = search.value;
+        const list = document.getElementById("calc-picker-list");
+        if (list) list.innerHTML = calcPickerHtml();
+      });
+    }
+  }
+
+  const info = document.getElementById("calc-info");
+  if (info) {
+    info.addEventListener("click", (event) => {
+      if (
+        event.target === info ||
+        event.target.closest("#calc-info-backdrop") ||
+        event.target.closest("#calc-info-close")
+      ) {
+        closeCalcInfo();
+      }
+    });
+  }
+
+  const help = document.getElementById("calc-help");
+  if (help) {
+    help.addEventListener("click", (event) => {
+      if (
+        event.target === help ||
+        event.target.closest("#calc-help-backdrop") ||
+        event.target.closest("#calc-help-close")
+      ) {
+        closeCalcHelp();
+      }
+    });
+  }
+
+  const host = document.getElementById("planner-calculator");
+  if (!host) return;
+
+  host.addEventListener("input", (event) => {
+    const pullsField = event.target.closest("[data-calc-pulls]");
+    if (pullsField) {
+      calcSetPulls(pullsField.dataset.calcPulls, pullsField.value);
+      // Repaint everything except the list, so the field keeps its focus, then fix
+      // up the card the reader is in.
+      calcRefresh({ list: false });
+      const card = pullsField.closest(".calc-card");
+      if (card) calcRefreshCard(card);
+      return;
+    }
+    const field = event.target.closest("[data-calc-field]");
+    if (!field) return;
+    const key = field.dataset.calcField;
+    if (CALC_TOGGLES.has(key)) {
+      calcToggleFromBox(key, !!field.checked);
+    } else {
+      const hard = (calcRules && calcRules.pity && calcRules.pity.hard) || 70;
+      let value = Math.max(0, Math.floor(Number(field.value) || 0));
+      if (key === "pityRateUp" || key === "pityRipples") value = Math.min(hard - 1, value);
+      else value = Math.min(calcFieldCap(key), value);
+      if (key === "crystal") calcCrystal = value;
+      else if (key === "clear") calcClear = value;
+      else if (key === "unilog") calcUnilog = value;
+      else if (key === "monthly") calcMonthly = value;
+      else if (key === "patchly") calcPatchly = value;
+      else if (key === "daily") calcDaily = value;
+      else if (key === "other") calcOther = value;
+      else if (key === "pityRateUp") calcPityRateUp = value;
+      else if (key === "pityRipples") calcPityRipples = value;
+    }
+    calcSaveState();
+    // Repaint only the derived half: the field keeps both its value and its focus.
+    calcRefresh();
+  });
+
+  host.addEventListener("change", (event) => {
+    const field = event.target.closest("[data-calc-field]");
+    if (!field) return;
+    const key = field.dataset.calcField;
+    if (!CALC_TOGGLES.has(key) && key !== "daily") return;
+    if (key === "daily") calcDaily = Math.max(0, Math.floor(Number(field.value) || 0));
+    else calcToggleFromBox(key, !!field.checked);
+    calcSaveState();
+    calcRefresh();
+  });
+
+  host.addEventListener("click", (event) => {
+    if (event.target.closest("#calc-help-open")) {
+      openCalcHelp();
+      return;
+    }
+    const span = event.target.closest("[data-calc-span]");
+    if (span) {
+      const months = Number(span.dataset.calcSpan);
+      if (CALC_SPANS.includes(months)) {
+        calcMonths = months;
+        calcSaveState();
+        calcRefresh();
+      }
+      return;
+    }
+    const action = event.target.closest("[data-calc-action]");
+    if (action && action.dataset.calcAction === "remove") {
+      calcRemoveBanner(action.dataset.bannerId);
+      calcRefresh();
+      return;
+    }
+    const dot = event.target.closest(".calc-dot");
+    if (dot) openCalcInfo(dot.dataset.banner);
+  });
+
+  host.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const dot = event.target.closest(".calc-dot");
+    if (!dot) return;
+    event.preventDefault();
+    openCalcInfo(dot.dataset.banner);
+  });
+}
+
+/** A tick box by its key, so the input and change handlers agree. */
+function calcToggleFromBox(key, on) {
+  if (key === "guaranteedRateUp") calcGuaranteedRateUp = on;
+  else if (key === "guaranteedRipples") calcGuaranteedRipples = on;
+  else if (key === "limbo") calcLimbo = on;
+  else if (key === "login") calcLogin = on;
+  else if (key === "jukeboxFree") calcJukeboxFree = on;
+  else if (key === "bass") calcBass = on;
+  else if (key === "storyStage") calcStoryStage = on;
+  else if (key === "characterStory") calcCharacterStory = on;
+  else if (key === "webEvent") calcWebEvent = on;
+  else if (key === "eventShop") calcEventShop = on;
+  else if (key === "roaring") calcRoaring = on;
+  else if (key === "jukebox") calcJukebox = on;
+  else if (key === "offer") calcOffer = on;
+  else if (key === "useCrystal") calcUseCrystal = on;
+}
+
 /* ================= Planner (character progression) =================
  * The Character tab is the other half of the Planner: add the arcanists you
  * still have to build, say where each one stands and where it has to end up,
@@ -12347,17 +14483,25 @@ let plannerChars = [];
 let plannerCharSelected = "";
 let plannerPickerQuery = "";
 const plannerPickerRarities = new Set();
-let plannerActiveTab = "character";
+let plannerActiveTab = "calculator";
 
-/** The tab the modal reopens on: the one the reader left, or Character. */
+/**
+ * Every pane the modal knows, in the order the tab row draws them. A tab is
+ * nothing more than a `.builds-mode-btn` with `data-mode` plus a `.planner-pane`
+ * with the same `data-pane`, so adding one means adding its name here and the
+ * markup — `setPlannerTab()` needs no branch.
+ */
+const PLANNER_TABS = ["calculator", "character", "event"];
+
+/** The tab the modal reopens on: the one the reader left, or the first tab. */
 const PLANNER_TAB_KEY = "r1999_planner_tab_v1";
 
 function loadPlannerTab() {
   try {
     const saved = localStorage.getItem(PLANNER_TAB_KEY);
-    plannerActiveTab = saved === "event" ? "event" : "character";
+    plannerActiveTab = PLANNER_TABS.includes(saved) ? saved : PLANNER_TABS[0];
   } catch (e) {
-    plannerActiveTab = "character";
+    plannerActiveTab = PLANNER_TABS[0];
   }
 }
 
@@ -13051,23 +15195,28 @@ function plannerQuickGoal() {
 }
 
 function setPlannerTab(tab) {
-  plannerActiveTab = tab === "event" ? "event" : "character";
+  plannerActiveTab = PLANNER_TABS.includes(tab) ? tab : PLANNER_TABS[0];
   savePlannerTab();
   document.querySelectorAll("#planner-modal .builds-mode-btn").forEach((btn) => {
     const active = btn.dataset.mode === plannerActiveTab;
     btn.classList.toggle("is-active", active);
     btn.setAttribute("aria-selected", active ? "true" : "false");
   });
-  const charPane = document.getElementById("planner-pane-character");
-  const eventPane = document.getElementById("planner-pane-event");
-  if (charPane) charPane.hidden = plannerActiveTab !== "character";
-  if (eventPane) eventPane.hidden = plannerActiveTab !== "event";
+  // Each pane names itself through `data-pane`, so showing the active one never
+  // needs a section per tab.
+  document.querySelectorAll("#planner-modal .planner-pane").forEach((pane) => {
+    pane.hidden = pane.dataset.pane !== plannerActiveTab;
+  });
   closePlannerPicker();
+  closeCalcPicker();
+  closeCalcInfo();
+  closeCalcHelp();
   renderPlanner();
 }
 
 function renderPlanner() {
-  if (plannerActiveTab === "event") renderPlannerEvent();
+  if (plannerActiveTab === "calculator") renderPlannerCalculator();
+  else if (plannerActiveTab === "event") renderPlannerEvent();
   else renderPlannerCharacter();
 }
 
@@ -13234,10 +15383,16 @@ function setupPlannerListeners() {
     });
   }
 
+  /* ---- Calculator tab ---- */
+
+  setupPlannerCalculator();
+
   /* ---- Character tab ---- */
 
+  const tabCalculator = document.getElementById("planner-tab-calculator");
   const tabCharacter = document.getElementById("planner-tab-character");
   const tabEvent = document.getElementById("planner-tab-event");
+  if (tabCalculator) tabCalculator.addEventListener("click", () => setPlannerTab("calculator"));
   if (tabCharacter) tabCharacter.addEventListener("click", () => setPlannerTab("character"));
   if (tabEvent) tabEvent.addEventListener("click", () => setPlannerTab("event"));
 

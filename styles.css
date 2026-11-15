@@ -15126,6 +15126,1245 @@ span.planner-char-tile-img {
 }
 
 /* ==========================================================================
+   PLANNER (calculator)
+   The first tab answers two questions: how many pulls can I afford by the day a
+   banner closes, and what are the odds of owning 1…6 copies of its rate-up if I
+   spend them? It is a ledger, so the tab reads top-down: what the reader holds,
+   what they earn, what they spend, then the balance those numbers draw as one
+   curve over the next six months, with a dot for every banner they plan to pull
+   on. Nothing here invents a second look — the section bars are the Appearance
+   modal's, the number fields are the Event tab's Owned field, the picker is the
+   "Add arcanist" lightbox, and the odds chips are one width so P0…P5 read as a
+   scale.
+   ========================================================================== */
+
+.calc-scroll {
+  gap: 18px;
+}
+
+/* One section = a bar + its body, exactly like the Event tab's groups. */
+.calc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calc-section .archetype-section-header {
+  margin-bottom: 0;
+}
+
+/* The running figure on a section bar (the hold in pulls, what the plan costs). */
+.calc-hold-total {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ECE5D9;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Current amounts ---- */
+.calc-hold {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* The three purses, side by side. */
+.calc-hold-purses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 10px 14px;
+  align-items: end;
+}
+
+/* A pair that reads as one line: a pity counter beside its guarantee box, or the
+   monthly and patchly package fields. Two columns wide, one on a narrow screen. */
+.calc-pair-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(184px, 1fr));
+  gap: 10px 14px;
+  align-items: end;
+}
+
+/* The package pair sits under its group's cards rather than inside their grid: as a
+   grid item it drove `grid-auto-rows` and stretched every card to its own height once
+   the two fields stacked on a phone. */
+.calc-group > .calc-pair-row-packages {
+  grid-template-columns: repeat(auto-fit, minmax(184px, 1fr));
+}
+
+/* A labelled control: the label above, the number in the Event tab's Owned
+   field (dark plate, currency art inside its left edge). */
+.calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.calc-field-label {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #B5B5B3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calc-field .planner-owned-field {
+  display: flex;
+  width: 100%;
+}
+
+.calc-field .planner-owned-input,
+.calc-field .planner-owned-field.has-icon .planner-owned-input {
+  width: 100%;
+}
+
+/* The Drop Outcome's daily-purchase picker is the Event tab's shop picker. */
+.calc-field .planner-shop-select {
+  width: 100%;
+  max-width: 220px;
+}
+
+/* A tick box is a card, not a loose label: left bare in the grid the box and its
+   name read as stray text on a phone, and nothing said what ticking it is worth.
+   The card carries the box, the name, and the source's projected yield under it. */
+.calc-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.calc-check:hover {
+  border-color: rgba(237, 125, 49, 0.45);
+}
+
+/* The card lights up the way the Event tab's picked card does not: here the tick is
+   the only state the reader can see, so it has to be visible. */
+.calc-check:has(input:checked) {
+  background: rgba(208, 81, 38, 0.12);
+  border-color: rgba(237, 125, 49, 0.55);
+}
+
+.calc-check input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  flex: none;
+  accent-color: #D05126;
+  cursor: pointer;
+}
+
+.calc-check-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.calc-check .calc-field-label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.7rem;
+  color: #ECE5D9;
+  white-space: normal;
+  overflow: visible;
+  cursor: pointer;
+}
+
+/* `+15 <unilog> /month` — what the box is worth, in the tab's own pull figure. */
+.calc-check-yield {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #8f8f8d;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* A currency glyph standing where the word "pulls" used to be: `132 <unilog>`. */
+.calc-pull-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: -2px;
+  margin-left: 3px;
+  flex: none;
+}
+
+/* ---- Drop income / Crystal Drop outcome ---- */
+/* Income is two titled blocks — what every player earns and what a purchaser adds —
+   so the free half never reads as if it needed a purchase. */
+.calc-income {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-group-title {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ED7D31;
+}
+
+.calc-group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+  /* Every row is the same height as the tallest one, and every card fills its row.
+     Bottom alignment (`end`) left a one-line card short beside a two-line one, which
+     read as a big button next to a small one at narrower widths. */
+  grid-auto-rows: 1fr;
+  gap: 8px 14px;
+  align-items: stretch;
+}
+
+/* The section bar's right side when it carries a figure *and* a button. */
+.calc-section-tail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* The "?" that opens the income sheet: a small round badge on the section bar,
+   drawn as an outline only — no fill behind it. */
+.calc-help-btn {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #ED7D31;
+  background: none;
+  border: 1px solid rgba(237, 125, 49, 0.45);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.calc-help-btn:hover {
+  border-color: #ED7D31;
+  color: #FFD9BC;
+}
+
+.calc-help-btn:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 2px;
+}
+
+.calc-outcome {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.calc-outcome .calc-field {
+  flex: 0 0 200px;
+}
+
+.calc-hint {
+  flex: 1;
+  min-width: 180px;
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #8f8f8d;
+}
+
+/* ---- The balance chart ---- */
+.calc-chart {
+  padding: 2px 0 0;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+}
+
+/* The span chips and the running total share the section bar. */
+.calc-chart-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* 1 / 2 / 3 / 6 months: one segmented control, the active span filled in the
+   modal's orange. */
+.calc-span {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.calc-span-btn {
+  padding: 3px 8px;
+  font-family: inherit;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #B5B5B3;
+  background: transparent;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.calc-span-btn:hover {
+  color: #ECE5D9;
+}
+
+.calc-span-btn.is-active {
+  color: #1b1b1b;
+  background: #ED7D31;
+}
+
+.calc-span-btn:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+/* The row under the chart: what the plan leaves, then where it is held. A reader
+   does not pre-convert Clear Drop into pulls, so the three purses print side by
+   side instead of being folded into one figure. */
+.calc-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px 18px;
+  flex-wrap: wrap;
+  padding: 8px 2px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.calc-summary-cell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.calc-summary-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8f8f8d;
+  white-space: nowrap;
+}
+
+.calc-summary-value {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.calc-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.calc-grid-line {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+
+.calc-zero-line {
+  stroke: rgba(221, 56, 56, 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.calc-axis-label {
+  fill: #8f8f8d;
+  font-size: 10px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-chart-line {
+  fill: none;
+  stroke: #ED7D31;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* One dot per planned banner, on the day its pulls are spent. The whole group is
+   the button, so the label above the dot is part of the hit box. */
+.calc-dot {
+  cursor: pointer;
+}
+
+.calc-dot circle {
+  fill: #ED7D31;
+  stroke: #1b1b1b;
+  stroke-width: 1.5;
+  transition: fill 0.15s ease;
+}
+
+.calc-dot-label {
+  fill: #ECE5D9;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.calc-dot:hover circle,
+.calc-dot:focus-visible circle {
+  fill: #ffb066;
+}
+
+.calc-dot:focus-visible {
+  outline: none;
+}
+
+/* ---- One banner card ---- */
+.calc-banner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 3px solid rgba(237, 125, 49, 0.45);
+  border-radius: 4px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+/* The left rail is the banner's kind, so a long list reads at a glance. A kind with
+   no colour of its own (Collab, Yearning, …) keeps the tab's orange. */
+.calc-card[data-kind="Debut"] {
+  border-left-color: #D4EDBC;
+}
+
+.calc-card[data-kind="Ripples"] {
+  border-left-color: #C6DBE1;
+}
+
+.calc-card[data-kind="Rerun"] {
+  border-left-color: #FFE5A0;
+}
+
+.calc-card[data-kind="Limited"] {
+  border-left-color: #B10202;
+}
+
+.calc-card[data-kind="Event"] {
+  border-left-color: #0A53A8;
+}
+
+.calc-card:hover {
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.calc-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.calc-card-heads {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+
+.calc-head {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(181, 181, 179, 0.35);
+}
+
+.calc-head-empty,
+.calc-head-any {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #B5B5B3;
+  border-style: dashed;
+}
+
+/* `…` — the picker lists three rate-ups and counts the rest in this chip. */
+.calc-head-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #8f8f8d;
+  background: rgba(255, 255, 255, 0.06);
+  border-style: dashed;
+}
+
+.calc-card-title {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  flex: 1;
+}
+
+.calc-card-name {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ECE5D9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The round tags: kind, release, end, the pulls the budget buys by then. */
+.calc-card-pills {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.calc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 19px;
+  padding: 0 8px;
+  border: 1px solid rgba(181, 181, 179, 0.35);
+  border-radius: 10px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #B5B5B3;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-pill-key {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8f8f8d;
+}
+
+.calc-pill.is-type {
+  color: #ECE5D9;
+  border-color: rgba(181, 181, 179, 0.55);
+}
+
+/* The patch the run ships in — the sheet's own label (`3.9`, `4.0`, `AH Collab`) —
+   so a card reads `3.9` then `Debut` then the dates. */
+.calc-pill.is-version {
+  color: #ECE5D9;
+  border-color: rgba(181, 181, 179, 0.8);
+  background: rgba(255, 255, 255, 0.09);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-pill.is-pulls {
+  color: #ED7D31;
+  border-color: rgba(237, 125, 49, 0.55);
+  background: rgba(208, 81, 38, 0.12);
+}
+
+.calc-pill .calc-pull-icon {
+  width: 12px;
+  height: 12px;
+  margin-left: 1px;
+  vertical-align: 0;
+}
+
+.calc-pill.is-predicted {
+  color: #7fb0d8;
+  border-color: rgba(127, 176, 216, 0.55);
+  background: rgba(127, 176, 216, 0.1);
+}
+
+/* A banner's own perks — the free ten-pull, the discounted ten-pull, the selector —
+   wear the health-green so they read as upside, not as another date. */
+.calc-pill.is-perk {
+  color: #7FC98D;
+  border-color: rgba(96, 165, 102, 0.55);
+  background: rgba(96, 165, 102, 0.12);
+}
+
+.calc-card-remove {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: #8f8f8d;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.calc-card-remove:hover {
+  color: #DD3838;
+  border-color: rgba(221, 56, 56, 0.5);
+}
+
+.calc-card-remove:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+/* Portrait pips: one chip per copy tier, on one line so they read as a scale. */
+.calc-card-odds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.calc-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(181, 181, 179, 0.25);
+  border-radius: 3px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.calc-chip b {
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #8f8f8d;
+}
+
+.calc-card-note {
+  font-size: 0.64rem;
+  color: #8f8f8d;
+}
+
+.calc-card-foot {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* The pull count is a plain number field — the reader types it, they do not step
+   it one at a time against a 200-pull banner. */
+.calc-pull-field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: none;
+}
+
+.calc-pull-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8f8f8d;
+}
+
+.calc-pull-input {
+  width: 84px;
+  height: 28px;
+  padding: 0 8px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(181, 181, 179, 0.5);
+  border-radius: 3px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.calc-pull-input::-webkit-outer-spin-button,
+.calc-pull-input::-webkit-inner-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.calc-pull-input:focus {
+  border-color: #ED7D31;
+  box-shadow: 0 0 6px rgba(237, 125, 49, 0.4);
+}
+
+/* ---- The three sheets over the tab: "+ Add banner", a dot's banner, and the
+   income help. Each is the site's own modal card (`.modal-card
+   archetype-modal-card`) inside a lightbox anchored to the tab, so it wears the
+   standard header, title and close button rather than a parallel look. ---- */
+.calc-picker,
+.calc-info,
+.calc-help {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.calc-picker[hidden],
+.calc-info[hidden],
+.calc-help[hidden] {
+  display: none;
+}
+
+.calc-picker-backdrop,
+.calc-info-backdrop,
+.calc-help-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.calc-picker-card,
+.calc-info-card,
+.calc-help-card {
+  position: relative;
+  width: min(680px, 100%);
+  max-height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.calc-picker-card > .archetype-modal-header,
+.calc-info-card > .archetype-modal-header,
+.calc-help-card > .archetype-modal-header {
+  flex: none;
+}
+
+.calc-picker-card > .archetype-modal-body,
+.calc-info-card > .archetype-modal-body,
+.calc-help-card > .archetype-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+}
+
+/* The info sheet is narrower: one banner, six odds cards. */
+.calc-info-card {
+  width: min(560px, 100%);
+}
+
+.calc-help-card {
+  width: min(640px, 100%);
+}
+
+/* The toolbar is the Manage modal's own search box and nothing else: the type
+   chips are gone, so the list is one flat set of every banner still to run and
+   the field takes the whole row. */
+.calc-picker .roster-toolbar {
+  padding: 0 0 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calc-picker .roster-toolbar-left {
+  gap: 8px;
+}
+
+.calc-picker .roster-toolbar-left .search-input {
+  height: 30px;
+  max-width: none;
+}
+
+.calc-picker-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 0 0;
+}
+
+.calc-picker-list .guide-empty {
+  padding: 18px 0;
+}
+
+/* One banner to add: heads, name, kind + window. */
+.calc-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  font-family: inherit;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.calc-pick:hover,
+.calc-pick:focus-visible {
+  background: rgba(208, 81, 38, 0.14);
+  border-color: rgba(237, 125, 49, 0.45);
+  outline: none;
+}
+
+.calc-pick-heads {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+
+.calc-pick-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.calc-pick-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The patch tag beside the name, the same label the card prints as a pill. */
+.calc-pick-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.calc-pick-version {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 6px;
+  border: 1px solid rgba(181, 181, 179, 0.6);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-pick-meta {
+  font-size: 0.62rem;
+  color: #8f8f8d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- the sheet a chart dot opens ---- */
+.calc-info-head {
+  gap: 12px;
+}
+
+.calc-info-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.calc-info-title-wrap .archetype-modal-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calc-info-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calc-info-heads {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+}
+
+.calc-info-heads .calc-head {
+  width: 34px;
+  height: 34px;
+}
+
+.calc-info-pills {
+  margin: 0;
+}
+
+.calc-info-rule {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: #ECE5D9;
+}
+
+/* The mechanical quirks — which pity counter, the free ten-pull, the discount, the
+   selector — as one bullet each, under the rule they modify. */
+.calc-info-notes {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calc-info-note {
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #B5B5B3;
+}
+
+/* ---- the income help sheet ---- */
+.calc-help-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.calc-help-lead {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: #B5B5B3;
+}
+
+.calc-help-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calc-help-group-title {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ED7D31;
+}
+
+.calc-help-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name amount"
+    "when when"
+    "note note";
+  gap: 2px 10px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 2px solid rgba(237, 125, 49, 0.45);
+  border-radius: 4px;
+}
+
+.calc-help-name {
+  grid-area: name;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  min-width: 0;
+}
+
+.calc-help-amount {
+  grid-area: amount;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.calc-help-amount:empty {
+  display: none;
+}
+
+.calc-help-when {
+  grid-area: when;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ED7D31;
+}
+
+.calc-help-note {
+  grid-area: note;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  color: #B5B5B3;
+}
+
+.calc-note {
+  margin: 0;
+  font-size: 0.66rem;
+  color: #8f8f8d;
+}
+
+.calc-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 10px;
+}
+
+.calc-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  min-width: 0;
+}
+
+.calc-figure-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8f8f8d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calc-figure-value {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-figure-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  object-fit: contain;
+  display: block;
+}
+
+.calc-figure.is-strong {
+  border-color: rgba(237, 125, 49, 0.45);
+  background: rgba(208, 81, 38, 0.12);
+}
+
+.calc-figure.is-strong .calc-figure-value {
+  font-size: 1.05rem;
+  color: #ED7D31;
+}
+
+.calc-odds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 8px;
+}
+
+.calc-odd-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+}
+
+.calc-odd-label {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #ED7D31;
+}
+
+.calc-odd-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ECE5D9;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.calc-odd-hint {
+  font-size: 0.58rem;
+  color: #8f8f8d;
+}
+
+/* On a phone the income grid and the card foot each take their own line: a label,
+   a 200-wide field and a tick box cannot share one 360px row. */
+@media (max-width: 768px) {
+  .calc-hold {
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  }
+  .calc-group-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+  /* The package pair narrows with the tick-box cards, so the two inputs never go
+     full width while the cards above them are still two-up — that mismatch read as
+     one oversized button next to a row of small ones. */
+  .calc-group > .calc-pair-row-packages {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+  .calc-outcome .calc-field {
+    flex: 1 1 140px;
+  }
+  /* The section bar's span chips and running total each take a line of their own:
+     four chips and a figure do not fit beside a section title. */
+  .calc-section .archetype-section-header {
+    flex-wrap: wrap;
+  }
+  .calc-chart-bar {
+    flex: 1 1 100%;
+    width: auto;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .calc-span {
+    flex: 1 1 auto;
+  }
+  .calc-span-btn {
+    flex: 1 1 auto;
+    padding: 4px 6px;
+  }
+  /* The summary keeps two cells a row, so `Crystal Drop` is never a 40px sliver. */
+  .calc-summary {
+    gap: 4px 12px;
+  }
+  .calc-summary-cell {
+    flex: 1 1 44%;
+  }
+  /* The picker, the info sheet and the help sheet would scroll out from under the
+     reader inside the tab. */
+  .calc-picker,
+  .calc-info,
+  .calc-help {
+    position: fixed;
+  }
+  .calc-card-foot {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  /* A banner with several rate-up heads leaves the name almost no room in a 360px
+     row, and the pills then stack into one 90px column. On a phone the heads and the
+     remove button take the first line and the name + tags get the full width. */
+  .calc-card-head {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .calc-card-heads {
+    order: 1;
+    flex-wrap: wrap;
+  }
+  .calc-card-remove {
+    order: 2;
+    margin-left: auto;
+  }
+  .calc-card-title {
+    order: 3;
+    flex: 1 1 100%;
+  }
+  .calc-card-odds {
+    gap: 3px;
+  }
+  .calc-chip {
+    font-size: 0.6rem;
+    padding: 2px 5px;
+  }
+}
+
+/* ==========================================================================
    RESPONSIVE ADJUSTMENTS
    ========================================================================== */
 

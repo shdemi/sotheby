@@ -1,0 +1,26 @@
+{
+  "_comment": "The Planner Calculator's Drop Income / Drop Outcome ledger (§15). No game table carries any of these figures, so they are declared here once and copied into data/gacha_rules.json. One pull is 180 Crystal Drops. `dailyTasks` pays 90 Clear Drops every day and `weeklyTask` 100 every Monday, both for free; `limbo` pays on the 1st and the 16th (two resets of one 1,400 reward); `cumulativeLogin` pays the 7/15/25-day login track once a month on the 1st; `offerOfTheMonth`, `bassCounter` and `dailyPurchasing` pay on the 1st; everything under `patch` pays on a patch start, a patch being 42 days from `anchor`. `roaringMonth` is a 30-day pass: 300 Crystal Drops on its first day and 90 Clear Drops a day until it lapses, then it renews. `patch.signIn` is the cumulative login event, which pays 20 Unilogs on a patch that runs a Limited banner and 14 on one that does not.",
+  "source": "calculator.xlsx › Pull Calculator",
+  "dailyTasks": { "weekday": 90 },
+  "weeklyTask": { "weekday": 1, "drops": 100 },
+  "cumulativeLogin": { "day": 1, "drops": 180 },
+  "roaringMonth": { "instantCrystal": 300, "drops": 90, "days": 30 },
+  "offerOfTheMonth": { "day": 1, "clear": 1800, "unilog": 10 },
+  "limbo": { "days": [1, 16], "drops": 700, "monthlyDrops": 1400 },
+  "bassCounter": { "day": 1, "pulls": 10 },
+  "patch": {
+    "days": 42,
+    "anchor": "2026-08-13",
+    "jukeboxFreePulls": 2,
+    "jukeboxCollectorPulls": 5,
+    "maintenanceCompensation": 480,
+    "warmupLogin": 400,
+    "devBroadcast": 120,
+    "webEventSurvey": 120,
+    "storyStage": 1200,
+    "characterStory": 480,
+    "eventShopPulls": 2,
+    "signIn": { "limited": 20, "standard": 14 }
+  },
+  "dailyPurchasing": [0, 60, 150, 270, 390, 540, 690, 890, 1090]
+}

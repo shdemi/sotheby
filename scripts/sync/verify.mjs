@@ -11,6 +11,7 @@ import path from "node:path";
 import { OUT, ROOT } from "./config.mjs";
 import { table } from "./sources.mjs";
 import { allEquipRows, isRealPsychube } from "./derive/psychubes.mjs";
+import { MATCH_TOLERANCE_DAYS, normName, unmatchedCnRuns } from "./derive/banners.mjs";
 import { readJson } from "./util.mjs";
 
 const dir = process.argv[2] ? path.resolve(process.argv[2]) : OUT;
@@ -546,6 +547,348 @@ ok(
   "frequency names the Z-shape board in game order",
   sixPatterns === "Elucidation,Genuinity,Mercy,Equanimity,Equibalance",
   sixPatterns,
+);
+
+// ---- banners (Planner Calculator) -------------------------------------------
+// `banner_history.json` is the frozen community spreadsheet (`npm run sync:banners`)
+// and `banners.json` is that history joined to a `summon_pool` row. The join is the
+// only place a sheet banner name becomes a game object, so the invariants are:
+// every row resolved, every rate-up resolved to a roster name, and no duplicates.
+// `banner_history.json` is not a `sync` output — it is frozen by `npm run
+// sync:banners` (§15) and merely *read* by the pipeline — so it always comes
+// from `data/`, even when verifying a `--out` directory.
+const history = readJson(path.join(OUT, "banner_history.json"));
+const bannerFile = read("banners.json");
+const gacha = read("gacha_rules.json");
+const banners = bannerFile.banners || [];
+// A CN-only banner of a scheduled kind is copied into the list with shifted dates
+// and `predicted: true` (§15); everything below that is about the *sheet* join
+// reads the sheet rows alone.
+const sheetRows = banners.filter((b) => !b.predicted);
+const predictedRows = banners.filter((b) => b.predicted);
+
+ok("banner_history points at the spreadsheet", /^https:\/\/docs\.google\.com\/spreadsheets\//.test(history.source || ""), history.source);
+ok("banner_history has both servers", (history.global || []).length >= 190 && (history.cn || []).length >= 190, `${history.global?.length} / ${history.cn?.length}`);
+ok(
+  "banner_history dates are ISO or null",
+  [...(history.global || []), ...(history.cn || [])].every(
+    (row) => [row.start, row.end].every((d) => d === null || /^\d{4}-\d{2}-\d{2}$/.test(d)),
+  ),
+);
+const sheetKeys = sheetRows.map((b) => `${b.server}|${b.name}|${b.start || ""}`);
+ok("banners cover every sheet row (no dropped join)", sheetRows.length === (history.global || []).length + (history.cn || []).length, `${sheetRows.length} vs ${(history.global?.length || 0) + (history.cn?.length || 0)}`);
+ok("banner ids are unique", new Set(banners.map((b) => b.id)).size === banners.length);
+ok("banner names+starts are unique per server", new Set(sheetKeys).size === sheetKeys.length, sheetKeys.filter((k, i) => sheetKeys.indexOf(k) !== i).slice(0, 6).join(","));
+ok("no banner fell back to an ambiguous pool", sheetRows.every((b) => !b.ambiguous), sheetRows.filter((b) => b.ambiguous).map((b) => b.name).join(","));
+
+// The prediction is the Calculator's Future Sight (§15): everything CN schedules
+// reaches Global eventually — only a **Rerun** is not expected, because a rerun
+// repeats a banner Global has already run under its own name. The CN and Global runs
+// of a name are paired **one to one** (`unmatchedCnRuns()`), so a recurring banner
+// whose newest Global copy has not been listed yet still gets a prediction for its own
+// patch; whatever is left unpaired is a prediction, landing exactly
+// `predictedLagDays` after its CN run.
+const PREDICTED_TYPES = ["Debut", "Limited", "Event", "Ripples", "Collab", "Yearning"];
+const dayShift = (iso) => Date.parse(`${iso}T00:00:00Z`);
+const globalSheet = sheetRows.filter((b) => b.server === "global" && b.start);
+const unpaired = new Set(unmatchedCnRuns(sheetRows, bannerFile.predictedLagDays).map((row) => row.id));
+const badPrediction = predictedRows.filter(
+  (b) =>
+    b.server !== "global" ||
+    !PREDICTED_TYPES.includes(b.type) ||
+    !b.start ||
+    b.lagDays !== bannerFile.predictedLagDays ||
+    !unpaired.has(b.cnId),
+);
+ok("CN-only banners are predicted for Global", predictedRows.length >= 1, String(predictedRows.length));
+ok(
+  "a prediction is a scheduled kind with no Global run of its own",
+  badPrediction.length === 0,
+  badPrediction.map((b) => `${b.type}:${b.name}`).join(","),
+);
+// Every unpaired CN run must still be one of those banners, or the pairing and the
+// projection would disagree about what Global is waiting for.
+const missed = [...unpaired].filter(
+  (id) => !predictedRows.some((b) => b.cnId === id),
+);
+ok(
+  "every unpaired CN run is either predicted or already in the past",
+  missed.length === 0 ||
+    missed.every((id) => (sheetRows.find((row) => row.id === id)?.start || "") < (globalSheet.map((b) => b.start).sort().pop() || "")),
+  missed.join(","),
+);
+// Only the future is worth predicting: the sheet's newest Global row is the horizon,
+// so a prediction always lands after everything Global has already scheduled.
+const horizon = globalSheet.map((b) => b.start).sort().pop() || "";
+const earlyPrediction = predictedRows.filter((b) => !(b.start >= horizon));
+ok(
+  "a prediction lands after Global's newest scheduled banner",
+  earlyPrediction.length === 0,
+  `${earlyPrediction.map((b) => `${b.name}:${b.start}`).join(",") || horizon}`,
+);
+const lagged = predictedRows.every((b) => {
+  const cn = sheetRows.find((row) => row.id === b.cnId);
+  if (!cn) return false;
+  const shift = (iso) => Date.parse(`${iso}T00:00:00Z`);
+  return Math.round((shift(b.start) - shift(cn.start)) / 86400000) === b.lagDays;
+});
+ok("a prediction is its CN run shifted by the measured lag", lagged, predictedRows.map((b) => `${b.name}+${b.lagDays}`).join(","));
+ok("the CN→Global lag is the recent median", bannerFile.predictedLagDays >= 60 && bannerFile.predictedLagDays <= 200, String(bannerFile.predictedLagDays));
+// A recurring banner has to arrive once per patch: two runs of one name may never be
+// collapsed into one prediction, which is what let 4.0's Ripples on the Water vanish.
+const byName = new Map();
+for (const b of predictedRows) {
+  const key = normName(b.name);
+  byName.set(key, [...(byName.get(key) || []), b.start]);
+}
+const spaced = [...byName.entries()].every(([, starts]) =>
+  starts.every((start, i) => i === 0 || Math.abs(dayShift(start) - dayShift(starts[i - 1])) / 86400000 >= MATCH_TOLERANCE_DAYS),
+);
+ok("a recurring banner is predicted once per patch", spaced, JSON.stringify([...byName.entries()]));
+
+// The version prefix every banner surface prints (`[3.9] Cognitive Dynamics`) is the
+// patch the sheet files the run under. Every row carries one, and a prediction inherits
+// its CN run's, because the content is the same.
+const versionless = banners.filter((b) => !String(b.version || "").trim());
+ok("every banner carries the sheet's version", versionless.length === 0, versionless.map((b) => b.name).join(","));
+const versionMismatch = predictedRows.filter((b) => {
+  const cn = sheetRows.find((row) => row.id === b.cnId);
+  return !cn || cn.version !== b.version;
+});
+ok("a prediction keeps its CN run's version", versionMismatch.length === 0, versionMismatch.map((b) => b.name).join(","));
+
+
+const poolIds = {
+  global: new Set(table("global", "summon_pool").map((p) => Number(p.id))),
+  cn: new Set(table("cn", "summon_pool").map((p) => Number(p.id))),
+};
+const badPools = banners.filter(
+  (b) =>
+    !poolIds.global.has(b.poolId) &&
+    !poolIds.cn.has(b.poolId) &&
+    !(b.server === "cn" && poolIds[b.server]?.has(b.poolId)),
+);
+ok("every banner resolved to a real summon_pool row", badPools.length === 0, badPools.map((b) => `${b.name}:${b.poolId}`).join(","));
+
+const arcanistIds = new Set(read("ArcanistMap.json").map((entry) => Number(entry.id)));
+const rosterNames = new Set(rarities);
+const targetIds = banners.flatMap((b) => b.targets.map((t) => t.id));
+ok("every rate-up id is a known arcanist", targetIds.every((id) => arcanistIds.has(Number(id))), [...new Set(targetIds.filter((id) => !arcanistIds.has(Number(id))))].join(","));
+const targetNames = banners.flatMap((b) => [...b.targets, ...b.fiveStar].map((t) => t.name));
+ok("rate-up names are canonical roster names", targetNames.every((n) => rosterNames.has(n)), [...new Set(targetNames.filter((n) => !rosterNames.has(n)))].join(","));
+
+const KINDS = ["rateUp", "inGroup", "thread", "none"];
+ok("banner rules use known kinds", banners.every((b) => KINDS.includes(b.rule.kind)), banners.filter((b) => !KINDS.includes(b.rule.kind)).map((b) => b.name).join(","));
+ok("banner rule shares are a probability", banners.every((b) => Number(b.rule.share) > 0 && Number(b.rule.share) <= 1));
+ok("inGroup banners name how many are guaranteed", banners.filter((b) => b.rule.kind === "inGroup").every((b) => b.rule.choose >= 1), banners.filter((b) => b.rule.kind === "inGroup" && !(b.rule.choose >= 1)).map((b) => b.name).join(","));
+const noRate = banners.filter((b) => b.rule.kind === "none");
+ok("only the standard and beginner banners have no odds rule", noRate.every((b) => ["Standard", "Beginner"].includes(b.type)), noRate.map((b) => `${b.type}:${b.name}`).join(","));
+const missingGuarantee = banners.filter((b) => b.rule.kind === "rateUp" && !b.rule.guarantee).map((b) => b.name);
+ok("every rateUp banner keeps its guarantee", missingGuarantee.length === 0, [...new Set(missingGuarantee)].slice(0, 6).join(","));
+
+// Which pity counter a banner spends is a property of its **type**, not of the row:
+// Debut and Rerun share one, Ripples on the Water keeps its own, and Limited / Event /
+// Collab / Yearning never carry a counter between runs (§15). The tab draws one
+// field per track, so a type landing on the wrong track would silently price the
+// wrong starting point.
+const TRACKS = { Debut: "rateUp", Rerun: "rateUp", Ripples: "ripples", Limited: "solo", Event: "solo", Collab: "solo", Yearning: "solo" };
+const badTrack = banners.filter((b) => TRACKS[b.type] && b.rule.track !== TRACKS[b.type]);
+ok(
+  "each banner spends the pity counter its type implies",
+  badTrack.length === 0,
+  [...new Set(badTrack.map((b) => `${b.type}:${b.rule.track}`))].join(","),
+);
+// The perks a banner can carry: the free ten-pull a Limited patch always hands out,
+// the ten-pull discount, and the first-6★ selector. Each is a property of the *type*
+// except where an exact sheet name overrides it in `maps/gacha.json → byBanner`, so a
+// stray perk has to be a declared outlier rather than a copy-paste.
+const gachaMap = readJson(path.join(ROOT, "scripts", "sync", "maps", "gacha.json")) || {};
+const outliers = new Set(Object.keys(gachaMap.byBanner || {}));
+const limitedRows = banners.filter((b) => b.type === "Limited");
+ok(
+  "a Limited banner always hands out the free ten-pull",
+  limitedRows.length > 0 && limitedRows.every((b) => b.rule.freePulls >= 10),
+  [...new Set(limitedRows.map((b) => b.rule.freePulls))].join(","),
+);
+const strayFree = banners.filter((b) => b.rule.freePulls > 0 && b.type !== "Limited" && !outliers.has(b.name));
+ok(
+  "a free ten-pull outside a Limited banner is a declared outlier",
+  strayFree.length === 0,
+  [...new Set(strayFree.map((b) => `${b.type}:${b.name}`))].join(","),
+);
+const strayDiscount = banners.filter((b) => b.rule.discountFirst10 > 0 && b.type !== "Ripples" && !outliers.has(b.name));
+ok(
+  "a ten-pull discount outside Ripples is a declared outlier",
+  strayDiscount.length === 0,
+  [...new Set(strayDiscount.map((b) => `${b.type}:${b.name}`))].join(","),
+);
+const ripplesRows = banners.filter((b) => b.type === "Ripples");
+ok(
+  "every Ripples run discounts its first ten-pull",
+  ripplesRows.length > 0 && ripplesRows.every((b) => b.rule.discountFirst10 === 3),
+  [...new Set(ripplesRows.map((b) => b.rule.discountFirst10))].join(","),
+);
+const selectors = banners.filter((b) => b.rule.selectFirstSix);
+ok(
+  "only Ripples on the Water selects the first 6★",
+  selectors.every((b) => b.type === "Ripples"),
+  [...new Set(selectors.map((b) => b.type))].join(","),
+);
+// A Limited patch opens with one Limited banner that trades a bonus portrait at 200
+// pulls (`maps/gacha.json → patchFirstLimited`), so the tab prices one extra copy above
+// what the pulls alone buy. "First" is positional — no other Limited run may open within
+// a patch before it — which is why the second banner beside it keeps the plain odds.
+const exchangeRule = gachaMap.patchFirstLimited || {};
+ok(
+  "the patch's first Limited banner trades a portrait at 200 pulls",
+  exchangeRule.pulls === 200 && exchangeRule.copies === 1,
+  JSON.stringify(exchangeRule),
+);
+const exchangers = banners.filter((b) => b.rule.copyExchange);
+ok(
+  "only a Limited banner trades a portrait",
+  exchangers.length > 0 &&
+    exchangers.every(
+      (b) =>
+        b.type === "Limited" &&
+        b.rule.copyExchange.pulls === exchangeRule.pulls &&
+        b.rule.copyExchange.copies === exchangeRule.copies,
+    ),
+  [...new Set(exchangers.map((b) => `${b.type}:${b.name}`))].join(","),
+);
+const exchangePatchDays = gacha.income?.patch?.days || 42;
+const crowdedExchange = ["global", "cn"].flatMap((server) => {
+  const starts = banners
+    .filter((b) => b.server === server && b.type === "Limited" && b.start && b.rule.copyExchange)
+    .map((b) => b.start)
+    .sort();
+  return starts.filter(
+    (start, i) => i > 0 && Math.round((dayShift(start) - dayShift(starts[i - 1])) / 86400000) < exchangePatchDays,
+  );
+});
+ok(
+  "each patch has exactly one exchanging Limited banner",
+  crowdedExchange.length === 0,
+  crowdedExchange.join(","),
+);
+
+// The pity curve must reproduce the community figure (≈43 pulls per 6★, i.e. two
+// 6★s per 50/50 pair at ~64) by itself; if a game update moves a weight this fails.
+const expectPulls = (() => {
+  let sum = 0;
+  let alive = 1;
+  for (let n = 1; n <= gacha.pity.hard; n += 1) {
+    const p = n >= gacha.pity.hard ? 1 : n > gacha.pity.soft ? gacha.rates.softPity : gacha.rates.sixStar;
+    sum += alive * p * n;
+    alive *= 1 - p;
+  }
+  return sum;
+})();
+ok("6★ expected pulls is the community figure", expectPulls > 42 && expectPulls < 44, expectPulls.toFixed(2));
+
+ok("one pull is one Unilog", gacha.pull.amount === 1 && gacha.pull.itemId === "140001");
+ok("180 Crystal Drops buy a Unilog", gacha.pull.dropsPerUnilog === 180);
+ok("6★ base rate is 1.5%", Math.abs(gacha.rates.sixStar - 0.015) < 1e-9, String(gacha.rates.sixStar));
+ok("soft pity is 5% from pull 61, hard at 70", gacha.pity.soft === 60 && gacha.pity.hard === 70 && Math.abs(gacha.rates.softPity - 0.05) < 1e-9);
+ok("P5 needs six copies", gacha.portraitCopies === 6, String(gacha.portraitCopies));
+ok("three currencies for the Calculator", gacha.currencies.length === 3 && gacha.currencies.every((c) => c.name && c.nameZh && c.icon));
+ok("currency icons are real PNG/JPEG", gacha.currencies.every((c) => isRealBitmap(c.icon)), gacha.currencies.filter((c) => !isRealBitmap(c.icon)).map((c) => c.icon).join(","));
+
+// The Drop Income ledger is transcribed from calculator.xlsx (§15) and is the only
+// place those constants exist; the chart, the tick boxes' yields and the "?" sheet
+// all read it. It is grouped the way the tab groups it: what every player earns
+// (`dailyTasks`, `weeklyTask`, `limbo`, `cumulativeLogin`, `bassCounter`, `patch`),
+// what a purchase adds (`roaringMonth`, `offerOfTheMonth`), and the patch payouts
+// nobody has to switch on.
+const ledger = gacha.income || {};
+ok(
+  "the Drop Income ledger ships the spreadsheet constants",
+  ledger.dailyTasks?.weekday === 90 &&
+    // The daily task is flat: a Sunday bonus would be an invented figure, not a
+    // spreadsheet one, so its absence is part of the check.
+    ledger.dailyTasks?.sunday === undefined &&
+    ledger.weeklyTask?.drops === 100 &&
+    ledger.cumulativeLogin?.drops === 180 &&
+    ledger.bassCounter?.pulls === 10 &&
+    ledger.limbo?.drops === 700 &&
+    ledger.limbo?.monthlyDrops === 1400 &&
+    Array.isArray(ledger.dailyPurchasing) &&
+    ledger.dailyPurchasing.length === 9,
+  JSON.stringify(ledger).slice(0, 160),
+);
+// The 7 / 15 / 25-day login track pays its Clear Drops once a month, on the 1st.
+ok(
+  "the login track pays once a month on the 1st",
+  ledger.cumulativeLogin?.day === 1 && ledger.cumulativeLogin?.drops === 180,
+  JSON.stringify(ledger.cumulativeLogin),
+);
+ok(
+  "the Weekly Task pays on a named weekday",
+  Number.isInteger(ledger.weeklyTask?.weekday) && ledger.weeklyTask.weekday >= 0 && ledger.weeklyTask.weekday <= 6,
+  JSON.stringify(ledger.weeklyTask),
+);
+// Limbo (1st) and Lucidscape (16th) are two resets of one reward, so the tab shows
+// a **whole** monthly figure (1,400 / 180 = 7.78 reads as 8) instead of a fraction.
+ok(
+  "Limbo and Lucidscape are the two resets of one monthly reward",
+  Array.isArray(ledger.limbo?.days) &&
+    ledger.limbo.days.join(",") === "1,16" &&
+    ledger.limbo.monthlyDrops === ledger.limbo.drops * ledger.limbo.days.length,
+  JSON.stringify(ledger.limbo),
+);
+ok(
+  "the Limbo yield prints as a whole number of pulls",
+  Math.round(ledger.limbo.monthlyDrops / gacha.pull.dropsPerUnilog) === 8,
+  String(ledger.limbo.monthlyDrops / gacha.pull.dropsPerUnilog),
+);
+ok(
+  "the Bass Counter pays its Unilogs on the 1st",
+  ledger.bassCounter?.day === 1 && ledger.bassCounter?.pulls === 10,
+  JSON.stringify(ledger.bassCounter),
+);
+// Roaring Month is a pass, not a rate: it hands 300 Crystal Drops over the moment it
+// is bought and then 90 Clear Drops a day until it lapses.
+ok(
+  "Roaring Month pays its Crystal Drops up front and then daily",
+  ledger.roaringMonth?.instantCrystal === 300 &&
+    ledger.roaringMonth?.drops === 90 &&
+    ledger.roaringMonth?.days === 30,
+  JSON.stringify(ledger.roaringMonth),
+);
+// The Offer of the Month is one Clear Drop lump **and** ten Unilogs - the second half
+// is what the old sheet lost, and what the tab prices as 20 pulls a month.
+ok(
+  "the Offer of the Month pays Clear Drops and Unilogs",
+  ledger.offerOfTheMonth?.clear === 1800 && ledger.offerOfTheMonth?.unilog === 10,
+  JSON.stringify(ledger.offerOfTheMonth),
+);
+const patchPayouts = ledger.patch || {};
+ok(
+  "the patch payouts are the sheet's figures",
+  patchPayouts.days === 42 &&
+    patchPayouts.jukeboxFreePulls === 2 &&
+    patchPayouts.jukeboxCollectorPulls === 5 &&
+    patchPayouts.maintenanceCompensation === 480 &&
+    patchPayouts.warmupLogin === 400 &&
+    patchPayouts.devBroadcast === 120 &&
+    patchPayouts.webEventSurvey === 120 &&
+    patchPayouts.storyStage === 1200 &&
+    patchPayouts.characterStory === 480 &&
+    patchPayouts.eventShopPulls === 2,
+  JSON.stringify(patchPayouts),
+);
+// The login event pays more on a patch that runs a Limited banner, so the two figures
+// and the 14 < 20 ordering are both load-bearing.
+ok(
+  "the sign-in event pays more on a Limited patch",
+  patchPayouts.signIn?.limited === 20 && patchPayouts.signIn?.standard === 14,
+  JSON.stringify(patchPayouts.signIn),
+);
+ok(
+  "the ledger's patch anchor is the sheet's Jukebox date",
+  /^\d{4}-\d{2}-\d{2}$/.test(patchPayouts.anchor || "") &&
+    (Date.parse(`${patchPayouts.anchor}T00:00:00Z`) - Date.parse("2026-11-05T00:00:00Z")) % (patchPayouts.days * 86400000) === 0,
+  String(patchPayouts.anchor),
 );
 
 // ---- misc -------------------------------------------------------------------

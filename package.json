@@ -11,6 +11,7 @@
     "sync:verify": "node scripts/sync/verify.mjs",
     "sync:assets": "node scripts/sync/assets.mjs",
     "sync:prune": "node scripts/sync/tools/prune-images.mjs",
+    "sync:banners": "node scripts/banners/snapshot.mjs",
     "codes:snapshot": "node scripts/codes/snapshot.mjs"
   },
   "devDependencies": {
