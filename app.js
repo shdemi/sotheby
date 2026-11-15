@@ -12854,9 +12854,12 @@ function calcSchedule() {
   return { points, dots, per, today, days, held: worth(held), heldPurse: held, purse, planned };
 }
 
-/** The schedule, rebuilt only when one of its inputs moved. */
-function calcScheduleMemo() {
-  const key = [
+/**
+ * Every input the schedule reads, as one string. The balance memo and the
+ * max-pulls memo share it, so both move with the same fields.
+ */
+function calcScheduleKey() {
+  return [
     calcCrystal,
     calcClear,
     calcUnilog,
@@ -12879,8 +12882,98 @@ function calcScheduleMemo() {
       .map((banner) => `${banner.id}:${calcPulls(banner.id)}`)
       .join(","),
   ].join("|");
+}
+
+/** The schedule, rebuilt only when one of its inputs moved. */
+function calcScheduleMemo() {
+  const key = calcScheduleKey();
   if (calcScheduleCache.key !== key) calcScheduleCache = { key, value: calcSchedule() };
   return calcScheduleCache.value;
+}
+
+/** The max-pulls walk per banner, rebuilt only when the schedule's inputs moved. */
+let calcMaxPullsCache = { key: "", value: null };
+/** A year of walk at most, so a hand-edited banner date cannot spin here. */
+const CALC_MAX_PULLS_DAYS = 366;
+
+/**
+ * The most pulls the reader can put into the banner, by that banner's own closing day:
+ * everything held and earned up to then, minus what the *rest* of the plan spends on
+ * the way there. A card never shrinks its own ceiling as the reader types into it —
+ * its own planned pulls are handed back — so the box answers "how far can I go on this
+ * one?" rather than "how much is left after I decided?".
+ *
+ * Every figure here is in **pulls**: the earnings are floored into pulls the day they
+ * land, so one planned pull costs exactly one of them. Charging pulls against drops
+ * under-charged the plan and let a typed count *raise* the ceiling.
+ *
+ * Unlike the `By end` pill (the income alone, plan ignored) this follows the plan, and
+ * unlike the chart it reaches past the picked span: a banner's end is what decides how
+ * long the reader has to save for it.
+ */
+function calcMaxPullsMap() {
+  const key = calcScheduleKey();
+  if (calcMaxPullsCache.key === key) return calcMaxPullsCache.value;
+
+  const per = calcDropsPerPull();
+  const today = calcToday();
+  const start = calcDate(today);
+  const held = {
+    unilog: Math.max(0, Math.floor(Number(calcUnilog) || 0)),
+    clear: Math.max(0, Math.floor(Number(calcClear) || 0)),
+    crystal: Math.max(0, Math.floor(Number(calcCrystal) || 0)),
+  };
+  const worth = (purse) => purse.unilog * per + purse.clear + (calcUseCrystal ? purse.crystal : 0);
+
+  // Each planned banner is charged on the day `calcSchedule()` charges it: its release
+  // day, or today when it is already running.
+  const rows = calcListBanners().map((row) => {
+    const pulls = calcPulls(row.id);
+    return {
+      id: row.id,
+      own: pulls ? calcBannerCostPulls(row, pulls) : 0,
+      when: row.start && row.start > today ? row.start : today,
+      end: row.end || row.start || today,
+    };
+  });
+
+  const horizon = rows.reduce((max, row) => (row.end > max ? row.end : max), today);
+  const days = Math.max(0, Math.min(CALC_MAX_PULLS_DAYS, calcDaysUntil(horizon)));
+  // Both columns are **pulls**, never drops: the earnings are floored into pulls the
+  // day they land, so a planned pull costs one of them. Mixing the two — drops earned
+  // against pulls spent — under-charged the plan and made a typed count *raise* the
+  // ceiling, because the add-back below was in drops while the charge was in pulls.
+  const earnings = [];
+  const spends = [];
+  let gross = worth(held);
+  let planned = 0;
+  for (let i = 0; i <= days; i += 1) {
+    const date = new Date(start.getTime() + i * 86400000);
+    const iso = calcIso(date);
+    const income = calcIncomeOn(date);
+    const outcome = calcOutcomeOn(date);
+    gross += income.unilog * per + income.clear + (calcUseCrystal ? income.crystal - outcome : 0);
+    planned += rows.filter((row) => row.when === iso).reduce((sum, row) => sum + row.own, 0);
+    earnings.push(Math.floor(gross / per));
+    spends.push(planned);
+  }
+
+  const out = {};
+  for (const row of rows) {
+    const day = Math.max(0, Math.min(days, calcDaysUntil(row.end)));
+    // What the rest of the plan takes on the way to this banner's last day, and this
+    // banner's own pulls handed back so the box never shrinks under the reader's typing.
+    const available = earnings[day] - (spends[day] - row.own);
+    out[row.id] = Math.max(0, Math.min(9999, available));
+  }
+  calcMaxPullsCache = { key, value: out };
+  return out;
+}
+
+/** The max-pulls ceiling of one banner (`0` for one that is not in the plan). */
+function calcMaxPulls(banner) {
+  if (!banner) return 0;
+  return calcMaxPullsMap()[banner.id] || 0;
 }
 
 /** How many pulls the income alone covers by the end of `iso`. */
@@ -13347,6 +13440,7 @@ function calcPillsHtml(banner) {
 function calcCardHtml(banner) {
   const pulls = calcPulls(banner.id);
   const chips = calcOddsChips(banner, pulls);
+  const maxPulls = calcMaxPulls(banner);
   return `
         <article class="calc-card" data-banner="${escapeHtml(banner.id)}" data-kind="${escapeHtml(
     banner.type || ""
@@ -13373,6 +13467,14 @@ function calcCardHtml(banner) {
                 data-calc-pulls="${escapeHtml(banner.id)}" value="${pulls}"
                 aria-label="${escapeHtml(`${t("planner.calcPulls")} — ${calcBannerName(banner)}`)}" />
             </label>
+            <div class="calc-pull-field calc-max-field" title="${escapeHtml(
+              t("planner.calcMaxPullsHint", { date: calcShortDate(banner.end) })
+            )}">
+              <span class="calc-pull-label">${escapeHtml(t("planner.calcMaxPulls"))}</span>
+              <span class="calc-max-value" data-max-pulls="${escapeHtml(banner.id)}">${calcPullFigure(
+    maxPulls
+  )}</span>
+            </div>
           </div>
         </article>`;
 }
@@ -13409,7 +13511,8 @@ function calcChartHtml() {
   const H = 258;
   const padL = 48;
   const padR = 16;
-  const padT = 58;
+  // Room above the curve for a dot's whole label — the date, then the rate-up art.
+  const padT = 74;
   const padB = 26;
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
@@ -13451,12 +13554,12 @@ function calcChartHtml() {
     )
     .join("");
 
-  // The dot carries its banner: the rate-up's head art *above* the point says which
-  // one it is (`−80` under it only says what it costs). The art is clipped to a
-  // circle so a square head icon still reads as a portrait, and it is drawn large
-  // enough to see at low resolution on a phone. A banner with several rate-ups (a
-  // Ripples pool) draws three at most — and only one when several banners spend the
-  // same day, because a 3-wide portrait group would cover its neighbour.
+  // The dot carries its banner: the date it starts on, the rate-up's head art under
+  // that says which one it is (`−80` under the point only says what it costs). The art
+  // is clipped to a circle so a square head icon still reads as a portrait, and it is
+  // drawn large enough to see at low resolution on a phone. A banner with several
+  // rate-ups (a Ripples pool) draws three at most — and only one when several banners
+  // spend the same day, because a 3-wide portrait group would cover its neighbour.
   const clips = [];
   const markers = dots
     .map((dot, order) => {
@@ -13469,29 +13572,36 @@ function calcChartHtml() {
         .filter(Boolean)
         .slice(0, dot.slots > 1 ? 1 : 3);
       const size = 22;
+      const top = cy - 18 - size;
       const draw = heads
         .map((src, slot) => {
           const span = heads.length * size + (heads.length - 1) * 2;
           const left = cx - span / 2 + slot * (size + 2);
-          const top = cy - 18 - size;
+          const headTop = cy - 18 - size;
           const clip = `calc-dot-clip-${order}-${slot}`;
           clips.push(
-            `<clipPath id="${clip}"><circle cx="${(left + size / 2).toFixed(1)}" cy="${(top + size / 2).toFixed(
+            `<clipPath id="${clip}"><circle cx="${(left + size / 2).toFixed(1)}" cy="${(headTop + size / 2).toFixed(
               1
             )}" r="${size / 2}" /></clipPath>`
           );
           return `<image class="calc-dot-head" href="${escapeHtml(
             src
-          )}" x="${left.toFixed(1)}" y="${top.toFixed(1)}" width="${size}" height="${size}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${clip})" />`;
+          )}" x="${left.toFixed(1)}" y="${headTop.toFixed(1)}" width="${size}" height="${size}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${clip})" />`;
         })
         .join("");
+      // The banner's own date, above the art: the icon says *who*, the date says
+      // *when*, so a dot reads without opening its sheet.
+      const date = calcShortDate((banner && banner.start) || dot.iso);
+      const stamp = `<text class="calc-dot-date" x="${cx.toFixed(1)}" y="${(top - 6).toFixed(
+        1
+      )}" text-anchor="middle">${escapeHtml(date)}</text>`;
       const title =
         dot.cost !== dot.pulls
-          ? `${name} — ${t("planner.calcPulls")} ${dot.pulls} → ${dot.cost} ${t("planner.calcPullsUnit")}`
-          : `${name} — ${dot.pulls} ${t("planner.calcPullsUnit")}`;
+          ? `${name} · ${date} — ${t("planner.calcPulls")} ${dot.pulls} → ${dot.cost} ${t("planner.calcPullsUnit")}`
+          : `${name} · ${date} — ${dot.pulls} ${t("planner.calcPullsUnit")}`;
       return `<g class="calc-dot" data-banner="${escapeHtml(dot.id)}" role="button" tabindex="0" aria-label="${escapeHtml(
         title
-      )}"><title>${escapeHtml(title)}</title>${draw}<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(
+      )}"><title>${escapeHtml(title)}</title>${stamp}${draw}<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(
         1
       )}" r="4.6" /><text class="calc-dot-label" x="${cx.toFixed(1)}" y="${(cy + 19).toFixed(
         1
@@ -13717,23 +13827,26 @@ function calcPickerHtml() {
       const meta = [calcKindLabel(banner.type), `${calcShortDate(banner.start)} → ${calcShortDate(banner.end)}`]
         .filter(Boolean)
         .join(" · ");
-      const tag = banner.predicted
+      const version = calcVersionTag(banner);
+      const predicted = banner.predicted
         ? `<span class="calc-pill is-predicted">${escapeHtml(t("planner.calcPredicted"))}</span>`
         : "";
-      const version = calcVersionTag(banner);
+      // The patch is a tag of its own, at the row's right edge — in front of
+      // `Predicted` when the row is a forecast, so the two read as one cluster and
+      // the name keeps the room the tag used to take beside it.
+      const tags = `${
+        version ? `<span class="calc-pick-version">${escapeHtml(version)}</span>` : ""
+      }${predicted}`;
       return `
         <button type="button" class="calc-pick" data-pick-banner="${escapeHtml(banner.id)}" data-kind="${escapeHtml(
         banner.type || ""
       )}">
           <span class="calc-pick-heads">${calcTargetsHtml(banner, CALC_PICK_HEADS)}</span>
           <span class="calc-pick-main">
-            <span class="calc-pick-line">
-              ${version ? `<span class="calc-pick-version">${escapeHtml(version)}</span>` : ""}
-              <span class="calc-pick-name">${escapeHtml(calcBannerName(banner))}</span>
-            </span>
+            <span class="calc-pick-name">${escapeHtml(calcBannerName(banner))}</span>
             <span class="calc-pick-meta">${escapeHtml(meta)}</span>
           </span>
-          ${tag}
+          ${tags ? `<span class="calc-pick-tags">${tags}</span>` : ""}
         </button>`;
     })
     .join("");
@@ -14174,6 +14287,18 @@ function calcFillFields() {
 }
 
 /**
+ * The max-pulls boxes, rewritten in place. Typing into one card changes what the rest
+ * of the plan can reach, and the list is not rebuilt while a field has focus — so the
+ * figures are refreshed instead of the cards.
+ */
+function calcRefreshMaxPulls() {
+  for (const box of document.querySelectorAll("#calc-banners [data-max-pulls]")) {
+    const banner = calcBanner(box.dataset.maxPulls);
+    if (banner) box.innerHTML = calcPullFigure(calcMaxPulls(banner));
+  }
+}
+
+/**
  * Repaints the derived half of the tab — the chart, the cards and the totals —
  * without touching the fields the reader is typing in. Every pull figure prints the
  * Unilog art, not the word: `132 <icon>` is the tab's one way of saying a count.
@@ -14188,6 +14313,7 @@ function calcRefresh(parts) {
     const host = document.querySelector("#planner-calculator");
     if (host) host.scrollTop = scrollTop;
   }
+  calcRefreshMaxPulls();
   const chart = document.getElementById("calc-chart");
   if (chart) chart.innerHTML = calcChartHtml();
   const summary = document.getElementById("calc-summary");

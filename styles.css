@@ -15965,6 +15965,19 @@ span.planner-char-tile-img {
   pointer-events: none;
 }
 
+/* The banner's own date, stamped over the icon so a dot says *when* as well as
+   *who* without opening its sheet. Plain text — no outline, no plate: the number
+   is legible on its own and the ring around it read as a badge. */
+.calc-dot-date {
+  fill: #ECE5D9;
+  font-size: 9px;
+  font-weight: 800;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
 .calc-dot:hover circle,
 .calc-dot:focus-visible circle {
   fill: #ffb066;
@@ -16242,6 +16255,30 @@ span.planner-char-tile-img {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #8f8f8d;
+  white-space: nowrap;
+}
+
+/* The ceiling beside the field: the same box, filled rather than typed into. It
+   reads as a figure (number + the Unilog art) so it matches the pills above. */
+.calc-max-field {
+  cursor: default;
+}
+
+.calc-max-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 84px;
+  height: 28px;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(181, 181, 179, 0.28);
+  border-radius: 3px;
+  color: #B5B5B3;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .calc-pull-input {
@@ -16419,12 +16456,13 @@ span.planner-char-tile-img {
   text-overflow: ellipsis;
 }
 
-/* The patch tag beside the name, the same label the card prints as a pill. */
-.calc-pick-line {
+/* The row's trailing cluster: the patch tag, and `Predicted` after it on a forecast.
+   Both sit at the row's right edge, so neither crowds the banner's name. */
+.calc-pick-tags {
   display: flex;
   align-items: center;
   gap: 6px;
-  min-width: 0;
+  flex: none;
 }
 
 .calc-pick-version {

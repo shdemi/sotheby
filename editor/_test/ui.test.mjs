@@ -1151,6 +1151,7 @@ try {
       return {
         display: getComputedStyle(modal).display,
         tabs: [...document.querySelectorAll("#planner-modal .builds-mode-btn")].map((b) => b.id),
+        labels: [...document.querySelectorAll("#planner-modal .builds-mode-btn")].map((b) => b.textContent.trim()),
         active: document.querySelector("#planner-modal .builds-mode-btn.is-active")?.id || "",
         calcVisible: visible("planner-pane-calculator"),
         charVisible: visible("planner-pane-character"),
@@ -1159,12 +1160,13 @@ try {
     });
     check("the Planner modal opens", tabsInfo.display === "flex", tabsInfo.display);
     check(
-      "it carries Calculator, Character and then Event",
-      tabsInfo.tabs.join(",") === "planner-tab-calculator,planner-tab-character,planner-tab-event",
-      JSON.stringify(tabsInfo.tabs)
+      "it carries Pull Calculator, Character and then Event",
+      tabsInfo.tabs.join(",") === "planner-tab-calculator,planner-tab-character,planner-tab-event" &&
+        tabsInfo.labels[0] === "Pull Calculator",
+      JSON.stringify(tabsInfo.labels)
     );
     check(
-      "it opens on the Calculator tab",
+      "it opens on the Pull Calculator tab",
       tabsInfo.active === "planner-tab-calculator" &&
         tabsInfo.calcVisible &&
         !tabsInfo.charVisible &&
@@ -1517,11 +1519,22 @@ try {
       const today = calcToday();
       const read = rows.map((row) => {
         const banner = calcBanner(row.dataset.pickBanner);
+        const tagEl = row.querySelector(".calc-pick-version");
+        const predEl = row.querySelector(".calc-pick-tags .is-predicted");
+        const nameEl = row.querySelector(".calc-pick-name");
+        const tagBox = tagEl ? tagEl.getBoundingClientRect() : null;
+        const predBox = predEl ? predEl.getBoundingClientRect() : null;
+        const nameBox = nameEl ? nameEl.getBoundingClientRect() : null;
         return {
           id: row.dataset.pickBanner,
           name: row.querySelector(".calc-pick-name").textContent.trim(),
-          // The patch is a tag beside the name, not part of it.
-          tag: (row.querySelector(".calc-pick-version") || {}).textContent?.trim() || "",
+          // The patch is a tag of its own at the row's trailing edge, not part of the
+          // name and no longer beside it: `P4.0` in front of `Predicted` when the row
+          // is a forecast, the row's last thing when it is not.
+          tag: tagEl ? tagEl.textContent.trim() : "",
+          tagLeftOfName: !!(tagBox && nameBox) && tagBox.left < nameBox.right,
+          tagBeforePredicted: !!(tagBox && predBox) && tagBox.right <= predBox.left + 1,
+          tagIsLast: !!tagEl && row.querySelector(".calc-pick-tags")?.lastElementChild === tagEl,
           meta: row.querySelector(".calc-pick-meta").textContent.trim(),
           type: banner.type,
           version: banner.version,
@@ -1543,7 +1556,6 @@ try {
         first: read[0] || null,
         last: read[read.length - 1] || null,
         types: [...new Set(read.map((row) => row.type))],
-        // Every row prints the sheet's patch as its own tag, and the name is bare.
         tagged: read.every((row) => !row.version || (row.tag === row.version && !/^\[/.test(row.name))),
         ripples: read
           .filter((row) => row.type === "Ripples")
@@ -1562,6 +1574,11 @@ try {
         open_ended: read.every((row) => (row.end || row.start) >= today),
         sorted: starts.every((start, i) => i === 0 || start >= starts[i - 1]),
         predicted: read.filter((row) => row.predicted).length,
+        // A forecast puts the patch in front of `Predicted`; any other row ends with it.
+        tagPlacement: read.every((row) =>
+          !row.tag ? true : row.predicted ? row.tagBeforePredicted && !row.tagIsLast : row.tagIsLast
+        ),
+        tagClearedOfName: read.every((row) => !row.tagLeftOfName),
         // No type filter any more: one search box over one flat list.
         filters: document.querySelectorAll("#calc-picker .filter-btn, #calc-picker-types").length,
         search: !!document.getElementById("calc-picker-search"),
@@ -1595,9 +1612,18 @@ try {
     );
     check("the CN-only banners arrive as predictions", calcPickList.predicted > 0, String(calcPickList.predicted));
     check(
-      "every banner carries the patch it ships in, as a tag beside the name",
+      "every banner carries the patch it ships in, as a `P` tag",
       calcPickList.tagged,
       JSON.stringify([calcPickList.first, calcPickList.last])
+    );
+    check(
+      "the patch tag sits at the row's right edge, not beside the name",
+      calcPickList.tagPlacement && calcPickList.tagClearedOfName,
+      JSON.stringify({
+        placement: calcPickList.tagPlacement,
+        cleared: calcPickList.tagClearedOfName,
+        first: calcPickList.first,
+      })
     );
     // A picker row is one line high: three rate-up heads at most, then `…`.
     check(
@@ -1661,6 +1687,26 @@ try {
         name: card.querySelector(".calc-card-name").textContent.trim(),
         remove: !!card.querySelector(".calc-card-remove"),
         bannerTotal: document.getElementById("calc-banner-total").textContent.trim(),
+        pullLabel: card.querySelector(".calc-pull-label").textContent.trim(),
+        max: (() => {
+          const field = card.querySelector(".calc-max-field");
+          const value = card.querySelector(".calc-max-value");
+          const box = value ? value.getBoundingClientRect() : null;
+          const input = card.querySelector(".calc-pull-input").getBoundingClientRect();
+          const banner = calcBanner(card.dataset.banner);
+          return {
+            label: (field.querySelector(".calc-pull-label") || {}).textContent?.trim() || "",
+            figure: Number((value ? value.textContent : "").replace(/[^0-9]/g, "")),
+            expected: calcMaxPulls(banner),
+            text: value ? value.textContent.trim() : "",
+            hasInput: !!field.querySelector("input"),
+            hasIcon: !!field.querySelector(".calc-pull-icon"),
+            rightOfInput: !!box && box.left >= input.right - 1,
+            hint: field.getAttribute("title") || "",
+            sameBox: box ? Math.round(box.height) : 0,
+            inputBox: Math.round(input.height),
+          };
+        })(),
       };
     });
     check("picking a banner closes the picker", calcAdded.closed, String(calcAdded.closed));
@@ -1736,6 +1782,24 @@ try {
     );
     check("the plan's banner count is in the section bar", /2/.test(calcAdded.bannerTotal), calcAdded.bannerTotal);
 
+    // Beside the field sits the banner's ceiling: the same box, filled not typed into,
+    // and it answers "how many pulls can this banner take by its own closing day".
+    check(
+      "a card prints the max pulls available beside the field",
+      calcAdded.max.label === "Max Pulls Available" &&
+        calcAdded.max.label !== calcAdded.pullLabel &&
+        calcAdded.max.hasInput === false &&
+        calcAdded.max.rightOfInput &&
+        calcAdded.max.figure === calcAdded.max.expected,
+      JSON.stringify({ max: calcAdded.max, pulls: calcAdded.pullLabel })
+    );
+    check(
+      "the ceiling is drawn as the same box as the field",
+      calcAdded.max.sameBox === calcAdded.max.inputBox && calcAdded.max.hasIcon,
+      JSON.stringify({ box: calcAdded.max.sameBox, input: calcAdded.max.inputBox })
+    );
+    check("the ceiling explains when it runs to", /11|12|01|02|03/.test(calcAdded.max.hint), calcAdded.max.hint);
+
     // Typing a pull count repaints the odds and the chart without stealing the focus.
     const typed = await page.evaluate(() => {
       const cards = [...document.querySelectorAll("#calc-banners .calc-card")];
@@ -1768,6 +1832,30 @@ try {
         title: dots[0] ? dots[0].querySelector("title").textContent : "",
         planned: document.getElementById("calc-banner-total").textContent.trim(),
         stored: JSON.parse(localStorage.getItem("r1999_calculator_v1") || "null"),
+        // The ceilings are rewritten in place while a field has focus, so every card
+        // still agrees with what the plan can reach.
+        maxes: cards.map((c) =>
+          Number((c.querySelector(".calc-max-value") || {}).textContent?.replace(/[^0-9]/g, "") || 0)
+        ),
+        expectedMaxes: cards.map((c) => calcMaxPulls(calcBanner(c.dataset.banner))),
+        // The date stamp sits above the point of the same dot (and therefore above its
+        // head art; a banner with no rate-up art has the stamp alone).
+        dates: [...document.querySelectorAll("#calc-chart .calc-dot")].map((g) => {
+          const stamp = g.querySelector(".calc-dot-date");
+          const head = g.querySelector(".calc-dot-head");
+          const point = g.querySelector("circle");
+          return {
+            text: stamp ? stamp.textContent.trim() : "",
+            above:
+              stamp && point
+                ? Math.round(point.getBoundingClientRect().top - stamp.getBoundingClientRect().bottom)
+                : -999,
+            clearOfHead: !head || !stamp
+              ? true
+              : Math.round(head.getBoundingClientRect().top - stamp.getBoundingClientRect().bottom) >= 0,
+            onBanner: !!stamp && /^\d\d\/\d\d$/.test(stamp.textContent.trim()),
+          };
+        }),
       };
     });
     check("typing a pull count does not steal the focus", /calc-pull-input/.test(typed.focused), typed.focused);
@@ -1791,10 +1879,67 @@ try {
       JSON.stringify({ label: typed.label, labelBelow: typed.labelBelow, heads: typed.heads, headAbove: typed.headAbove })
     );
     check(
+      "each dot is dated, above the rate-up icon",
+      typed.dates.length === 2 &&
+        typed.dates.every((row) => /^\d\d\/\d\d$/.test(row.text)) &&
+        typed.dates.every((row) => row.above > 0 && row.clearOfHead && row.onBanner),
+      JSON.stringify(typed.dates)
+    );
+    check(
       "the plan is saved",
       typed.stored && Array.isArray(typed.stored.list) && typed.stored.list.length === 2 &&
         typed.stored.plans[typed.stored.list[0]] === 80,
       JSON.stringify(typed.stored)
+    );
+    check(
+      "typing a count rewrites every card's ceiling in place",
+      typed.maxes.join(",") === typed.expectedMaxes.join(","),
+      JSON.stringify({ shown: typed.maxes, expected: typed.expectedMaxes })
+    );
+
+    // ...and the rest of the plan is charged one pull for one pull: ten more pulls in the
+    // earlier banner take exactly ten off the later one's ceiling. (The first version
+    // charged pulls against drops, so a typed count raised the ceiling instead.) The
+    // count is put back, so the rest of the tab keeps the plan it had.
+    const ceiling = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll("#calc-banners .calc-card")];
+      const first = calcBanner(cards[0].dataset.banner);
+      const second = calcBanner(cards[1].dataset.banner);
+      const before = { own: calcMaxPulls(first), other: calcMaxPulls(second) };
+      const typedBefore = calcPulls(first.id);
+      const input = cards[0].querySelector(".calc-pull-input");
+      input.value = String(typedBefore + 10);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      const typedAfter = calcPulls(first.id);
+      const after = { own: calcMaxPulls(first), other: calcMaxPulls(second) };
+      const shown = [...document.querySelectorAll(".calc-max-value")].map((el) =>
+        Number(el.textContent.replace(/[^0-9]/g, ""))
+      );
+      const expected = cards.map((c) => calcMaxPulls(calcBanner(c.dataset.banner)));
+      input.value = String(typedBefore);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      return { before, typedBefore, typedAfter, after, shown, expected };
+    });
+    check(
+      "a banner's ceiling ignores its own planned pulls",
+      ceiling.after.own === ceiling.before.own,
+      JSON.stringify(ceiling)
+    );
+    check(
+      "spending on one banner lowers what the others can reach",
+      ceiling.after.other <= ceiling.before.other,
+      JSON.stringify(ceiling)
+    );
+    check(
+      "one more pull typed into an earlier banner takes exactly one off a later one",
+      ceiling.before.other - ceiling.after.other === ceiling.typedAfter - ceiling.typedBefore &&
+        ceiling.typedAfter > ceiling.typedBefore,
+      JSON.stringify(ceiling)
+    );
+    check(
+      "the boxes follow the plan without a repaint",
+      ceiling.shown.join(",") === ceiling.expected.join(","),
+      JSON.stringify(ceiling)
     );
 
     // A dot is the banner's sheet: pressing it opens the info popup.
