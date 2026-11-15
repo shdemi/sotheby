@@ -14578,6 +14578,71 @@ span.planner-char-tile-img {
   margin-top: 0;
 }
 
+/* The Wilderness switch on the route's own bar: a tree glyph, brighter when the
+   board is already counted in the solve. */
+.planner-farm-toggle {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.planner-farm-toggle img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.planner-farm-toggle:hover {
+  opacity: 0.9;
+  border-color: rgba(237, 125, 49, 0.7);
+}
+
+.planner-farm-toggle.is-active {
+  opacity: 1;
+  border-color: #ED7D31;
+  box-shadow: inset 0 0 0 1px rgba(237, 125, 49, 0.35);
+}
+
+.planner-farm-toggle:focus-visible {
+  outline: 2px solid #ED7D31;
+  outline-offset: 1px;
+}
+
+/* The Wilderness card is a credit, not a run: it carries the days it paid for
+   instead of runs and stamina. */
+.planner-farm-card.is-wilderness {
+  border-color: rgba(237, 125, 49, 0.45);
+  background: rgba(237, 125, 49, 0.1);
+}
+
+.planner-farm-wild-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+.planner-farm-days {
+  flex: none;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #ED7D31;
+  white-space: nowrap;
+}
+
 /* The one number the reader came for: whole stamina, and the days it takes at
    whatever the activity settings say a day is worth. */
 .planner-farm-total {
@@ -14620,7 +14685,7 @@ span.planner-char-tile-img {
 
 .planner-farm-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 8px;
   margin-top: 8px;
 }
@@ -14685,11 +14750,11 @@ span.planner-char-tile-img {
   gap: 4px;
 }
 
-/* A drop is the item sticker the bill uses, one size down: the art already
-   carries its own frame, so there is no card box around it. */
+/* A drop is the item sticker the bill uses: the art already carries its own frame,
+   so there is no card box around it, and it is large enough to read at a glance. */
 .planner-farm-drop {
-  width: 38px;
-  height: 38px;
+  width: 64px;
+  height: 64px;
   flex: none;
   cursor: default;
 }
@@ -14701,10 +14766,21 @@ span.planner-char-tile-img {
 }
 
 .planner-farm-drop .item-sticker-qty {
-  font-size: 9px;
-  padding: 0 3px;
+  font-size: 11px;
+  padding: 0 4px;
   bottom: 2px;
   right: 2px;
+}
+
+/* The shop rows are a list, not a grid, so their art stays a step smaller. */
+.planner-farm-shop-row .planner-farm-drop {
+  width: 48px;
+  height: 48px;
+}
+
+.planner-farm-shop-row .planner-farm-drop .item-sticker-qty {
+  font-size: 10px;
+  padding: 0 3px;
 }
 
 .planner-farm-sharpo {
@@ -14768,130 +14844,77 @@ span.planner-char-tile-img {
   gap: 10px;
 }
 
-.planner-char-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+/* The editor wears the Character Setting modal's head: the portrait with its
+   accent frame, the name, and one line saying where the plan starts and ends. */
+.planner-editor-header {
+  flex: none;
+  padding: 12px 48px 10px 14px;
 }
 
-.planner-char-portrait {
-  width: 54px;
-  height: 54px;
-  flex: 0 0 54px;
-  object-fit: cover;
-  border-radius: 3px;
-  display: block;
-  background: rgba(0, 0, 0, 0.45);
+.planner-editor-header .modal-char-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 24px;
+  font-weight: normal;
+  letter-spacing: 0;
+  color: #ECE5D9;
 }
 
-.planner-char-id {
-  flex: 1 1 auto;
-  min-width: 0;
+.planner-editor-header .modal-char-sub {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.planner-char-name {
-  min-width: 0;
-  font-family: var(--board-font, var(--mono-font));
-  font-size: 0.86rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: #BFBFBF;
 }
 
-.planner-char-rarity {
-  height: 12px;
-  width: auto;
-  flex: none;
-  display: block;
-}
-
-/* Icon-only remove, like the share and reset buttons. */
-.planner-char-remove {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  border-radius: 3px;
-  opacity: 0.62;
-  cursor: pointer;
-  transition: opacity 0.15s ease, background 0.15s ease;
-}
-
-.planner-char-remove img {
-  width: 11px;
+.planner-editor-rarity {
   height: 11px;
-  object-fit: contain;
+  width: auto;
   display: block;
-  pointer-events: none;
 }
 
-.planner-char-remove:hover {
+/* Remove sits where the favourite pin sits in the Setting modal. */
+.planner-editor-remove {
+  top: -2px;
+}
+
+.planner-editor-header .planner-editor-remove-img {
+  width: 12px;
+  height: 12px;
+  opacity: 0.6;
+}
+
+.planner-editor-remove:hover .planner-editor-remove-img {
   opacity: 1;
-  background: rgba(208, 81, 38, 0.22);
 }
 
-.planner-char-remove:focus-visible {
-  outline: 2px solid #ED7D31;
-  outline-offset: 1px;
-}
-
-/* The from→to controls. Two columns when there is room, one when there is not;
-   the Euphoria / Frequency pickers always take the full width. */
+/* The settings are the Character Setting modal's own `setting-group`s: two
+   columns when the card is wide, one when it is not. */
 .planner-char-controls {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(216px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px 16px;
   align-items: start;
 }
 
-.planner-field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.planner-char-controls .setting-group {
   min-width: 0;
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
+  margin: 0;
 }
 
-.planner-field.is-wide,
-.planner-char-actions {
+.planner-char-controls .is-wide {
   grid-column: 1 / -1;
 }
 
-.planner-field-label {
-  flex: 0 0 auto;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #B5B5B3;
-}
-
-.planner-field-pair {
-  flex: 1;
-  min-width: 0;
+/* from → to: the current value on the left, the goal on the right. */
+.planner-range-controls {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-left: auto;
+  min-width: 0;
 }
 
 /* Same native select as the shop picker, one step smaller: it is a number
@@ -14901,8 +14924,8 @@ span.planner-char-tile-img {
   appearance: none;
   flex: 1 1 0;
   min-width: 0;
-  height: 26px;
-  padding: 0 20px 0 8px;
+  height: 32px;
+  padding: 0 22px 0 10px;
   background-color: rgba(0, 0, 0, 0.35);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23B5B5B3'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -15088,8 +15111,8 @@ span.planner-char-tile-img {
    can run to seventy materials and the names would drown the quantities. */
 .planner-mat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
 }
 
 .planner-mat {
@@ -15097,11 +15120,12 @@ span.planner-char-tile-img {
   justify-content: center;
 }
 
-/* The item sticker is 68px and lifts on hover; in a bill it is a label, not a
-   control, so only the box size changes and the lift is dropped. */
+/* The item sticker is a label, not a control, so only the box size changes and
+   the lift is dropped. It is drawn large on purpose: the bill is meant to read as
+   a wall of art, and the art already carries the rarity frame. */
 .planner-mat .planner-mat-sticker {
-  width: 60px;
-  height: 60px;
+  width: 96px;
+  height: 96px;
   flex: none;
   cursor: default;
 }
@@ -15117,12 +15141,13 @@ span.planner-char-tile-img {
   transform: scale(1.18);
 }
 
-/* The badge is cut for a 68px sticker; at 60px it needs a tighter corner. */
+/* The badge is cut for the 68px InfoBook sticker; a 96px one carries a bigger
+   figure, scaled with the art so the corner stays proportionate. */
 .planner-mat .item-sticker-qty {
-  bottom: 1px;
-  right: 1px;
-  padding: 0 3px;
-  font-size: 9px;
+  bottom: 2px;
+  right: 2px;
+  padding: 0 4px;
+  font-size: 12px;
 }
 
 .planner-mat-art-empty {
@@ -15139,57 +15164,24 @@ span.planner-char-tile-img {
 
 /* ---- Activity settings ---------------------------------------------------- */
 
-/* The gear in the toolbar, with the stamina it works out to right beside it, so
-   "how many days is that" is answerable without opening the panel. */
+/* A normal toolbar button beside Add / Goal: the label, then the stamina a day is
+   worth, so "how many days is that" is answerable without opening the panel. */
 .planner-activity-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 26px;
-  padding: 0 8px 0 6px;
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
-  color: #ECE5D9;
-  font-family: inherit;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.planner-activity-btn:hover {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.26);
-}
-
-.planner-activity-btn:focus-visible {
-  outline: 2px solid #ED7D31;
-  outline-offset: 1px;
-}
-
-.planner-activity-icon {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  opacity: 0.85;
-}
-
-.planner-activity-stamina-icon {
-  width: 13px;
-  height: 13px;
-  object-fit: contain;
+  gap: 8px;
 }
 
 .planner-activity-value {
   font-family: var(--mono-font);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  color: #ED7D31;
 }
 
 .planner-activity-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   padding: 12px 14px 16px;
 }
 
@@ -15210,42 +15202,76 @@ span.planner-char-tile-img {
   font-variant-numeric: tabular-nums;
 }
 
-/* A switch row is the label over the control, so the four settings read as one
-   list and the refill select lines up with the checkboxes. */
-.planner-switch {
+/* ---- Wilderness ----------------------------------------------------------- */
+
+/* Three selects per row: the three buildings of one kind, side by side. */
+.planner-wilderness-selects {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.planner-wilderness-vigor {
+  width: 100%;
+}
+
+/* Dust and Sharpodonty a day: the same item sticker the bill uses, then the figure
+   the game would print beside it. */
+.planner-wilderness-output {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.planner-wilderness-output .planner-farm-drop {
+  width: 48px;
+  height: 48px;
+}
+
+.planner-wilderness-stat {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 6px 2px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  cursor: pointer;
+  gap: 8px;
 }
 
-.planner-switch.is-select {
-  cursor: default;
+.planner-wilderness-stat-value {
+  font-family: var(--mono-font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
 }
 
-.planner-switch-label {
-  font-size: 0.72rem;
-  color: rgba(244, 239, 233, 0.88);
+/* The Goal sheet: whose bill it is, as the plan's own head icons. */
+.planner-goal-chars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.planner-switch input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #D05126;
-  cursor: pointer;
+.planner-goal-char {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
 
-.planner-switch .planner-field-select {
-  width: 84px;
+.planner-goal-char img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 /* ---- Lightboxes over the Character tab ------------------------------------ */
 
-/* The four panels are one object: a backdrop over the tab and a card on it, so
-   "add" / "edit" / "Goal" / "activity" all read as the same gesture. */
+/* The five panels are one object: a backdrop over the tab and a card on it, drawn
+   the way the Character Setting modal draws its own card, so "add" / "edit" /
+   "Goal" / "activity" / "Wilderness" all read as the same gesture. */
 .planner-sheet {
   position: absolute;
   inset: 0;
@@ -15262,14 +15288,25 @@ span.planner-char-tile-img {
 }
 
 .planner-sheet-card {
-  width: min(680px, 100%);
+  width: min(860px, 100%);
   max-height: 100%;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  background: #212121;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+  /* The Character Setting modal's own card: the wallpaper behind a dark wash, the
+     orange frame, the single rounded corner. The wash keeps a wall of item art
+     readable over the texture. */
+  background-color: #212121;
+  background-image: linear-gradient(rgba(20, 18, 17, 0.84), rgba(20, 18, 17, 0.84)),
+    url("images/background.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid #B55829;
+  border-radius: 0 20px 0 0;
+  box-shadow: 0 0 8px rgba(181, 88, 41, 0.28), 0 0 18px rgba(181, 88, 41, 0.12);
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  overflow: hidden;
 }
 
 .planner-sheet-head {
@@ -15653,12 +15690,12 @@ span.planner-char-tile-img {
     padding: 10px;
   }
   .planner-mat-grid {
-    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
-    gap: 5px;
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    gap: 6px;
   }
   .planner-mat .planner-mat-sticker {
-    width: 50px;
-    height: 50px;
+    width: 76px;
+    height: 76px;
   }
   .planner-picker-grid {
     grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
@@ -15724,20 +15761,20 @@ span.planner-char-tile-img {
   /* The bill is the densest thing in the modal; it shrinks a step further
      instead of the grid turning into a horizontal scroll. */
   .planner-mat-grid {
-    grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
   }
   .planner-mat .planner-mat-sticker {
-    width: 44px;
-    height: 44px;
+    width: 66px;
+    height: 66px;
   }
-  /* A 44px sticker needs a smaller badge, or "894k" eats half the art. */
+  /* A 66px sticker needs a smaller badge, or "894k" eats half the art. */
   .planner-mat .item-sticker-qty {
-    font-size: 8px;
-    padding: 0 2px;
+    font-size: 10px;
+    padding: 0 3px;
   }
   .planner-farm-drop {
-    width: 34px;
-    height: 34px;
+    width: 52px;
+    height: 52px;
   }
   .planner-add-btn {
     padding: 0 10px;

@@ -1601,6 +1601,32 @@ try {
     check("its tooltip still names it", !!reset.title, reset.title);
 
     await page.evaluate(() => document.getElementById("planner-clear").click());
+    await page.waitForTimeout(250);
+    const resetAsk = await page.evaluate(() => ({
+      open: getComputedStyle(document.getElementById("confirm-modal")).display !== "none",
+      message: document.getElementById("confirm-modal-message").textContent.trim(),
+      // Not one card has moved yet.
+      stillStepped: [...document.querySelectorAll(".planner-card")].some(
+        (card) => Number(card.querySelector(".planner-count").textContent.split("/")[0]) !== Number(card.dataset.max)
+      ),
+    }));
+    check(
+      "Reset asks before it throws the shop's picks away",
+      resetAsk.open && resetAsk.stillStepped && resetAsk.message.length > 0,
+      JSON.stringify(resetAsk)
+    );
+    const resetCancelled = await page.evaluate(() => {
+      document.getElementById("confirm-modal-btn-cancel").click();
+      return [...document.querySelectorAll(".planner-card")].some(
+        (card) => Number(card.querySelector(".planner-count").textContent.split("/")[0]) !== Number(card.dataset.max)
+      );
+    });
+    check("cancelling keeps the picks", resetCancelled, "a cancel must leave the shop alone");
+
+    await page.evaluate(() => {
+      document.getElementById("planner-clear").click();
+      document.getElementById("confirm-modal-btn-yes").click();
+    });
     await page.waitForTimeout(300);
     const afterReset = await page.evaluate(() => {
       const rows = [...document.querySelectorAll(".planner-card")].map((card) => {
@@ -1804,7 +1830,7 @@ try {
     );
     check(
       "every panel starts closed",
-      empty.sheets.length === 4 && empty.sheets.every(Boolean),
+      empty.sheets.length === 5 && empty.sheets.every(Boolean),
       JSON.stringify(empty.sheets)
     );
 
@@ -1817,20 +1843,24 @@ try {
       const tile = grid.querySelector("[data-pick]");
       const box = sheet.getBoundingClientRect();
       const pane = document.getElementById("planner-pane-character").getBoundingClientRect();
+      const names = [...grid.querySelectorAll("[data-pick]")].map((el) => el.dataset.pick);
       return {
         open: !sheet.hidden,
         covers: Math.abs(box.width - pane.width) < 2 && Math.abs(box.height - pane.height) < 2,
-        tiles: grid.querySelectorAll("[data-pick]").length,
+        tiles: names.length,
         manageStyle:
           !!tile.querySelector(".roster-avatar-box") &&
           !!tile.querySelector(".roster-avatar-img") &&
           !!tile.querySelector(".roster-char-name"),
         search: !!document.getElementById("planner-picker-search"),
         chips: document.querySelectorAll("#planner-picker-rarity .filter-btn").length,
+        // The Manage modal's roster, so the curated exclusion list applies too.
+        excludesSchneider: !names.includes("Schneider"),
+        excludesDummy: !names.some((name) => /Machine D/.test(name)),
       };
     });
     check(
-      "Add arcanist opens a lightbox over the whole tab",
+      "Add character opens a lightbox over the whole tab",
       picker.open && picker.covers,
       JSON.stringify(picker)
     );
@@ -1838,6 +1868,11 @@ try {
       "it lists the whole roster as Manage-style tiles",
       picker.tiles > 100 && picker.manageStyle && picker.search && picker.chips === 5,
       JSON.stringify(picker)
+    );
+    check(
+      "the picker is the Manage roster, so excluded characters never appear",
+      picker.excludesSchneider && picker.excludesDummy,
+      JSON.stringify({ tiles: picker.tiles, schneider: picker.excludesSchneider })
     );
 
     await page.evaluate(() => {
@@ -1887,7 +1922,7 @@ try {
     });
     check("a press on the backdrop closes the picker", backdrop);
 
-    // ---- add one arcanist ------------------------------------------------
+    // ---- add one character -----------------------------------------------
     await page.evaluate(() => document.getElementById("planner-char-add").click());
     await page.waitForTimeout(250);
     await pickName("Lucy");
@@ -1895,8 +1930,8 @@ try {
     const added = await page.evaluate(() => {
       const rail = document.getElementById("planner-char-rail");
       const tile = rail.querySelector(".planner-char-tile");
-      const detail = document.getElementById("planner-char-detail");
-      const head = detail.querySelector(".planner-char-head");
+      const card = document.querySelector("#planner-char-editor .planner-sheet-card");
+      const style = getComputedStyle(card);
       return {
         pickerClosed: document.getElementById("planner-picker").hidden,
         editorOpen: !document.getElementById("planner-char-editor").hidden,
@@ -1908,20 +1943,41 @@ try {
           !tile.querySelector(".planner-char-tile-name") &&
           tile.textContent.trim() === "",
         selected: tile.classList.contains("is-selected"),
-        headIcon: !!head?.querySelector("img"),
+        // The editor wears the Character Setting modal's own head: a portrait, the
+        // name, and one line saying where the plan starts and ends.
+        portrait: document.getElementById("planner-editor-portrait").getAttribute("src") || "",
+        sub: document.getElementById("planner-editor-sub").textContent.trim(),
+        rarity: !!document.getElementById("planner-editor-sub").querySelector("img"),
+        removeInHeader: document.getElementById("planner-editor-remove").dataset.remove,
+        cardFrame: style.borderTopColor,
+        cardRadius: style.borderTopRightRadius,
+        cardWash: /background\.png/.test(style.backgroundImage),
         hint: document.getElementById("planner-rail-hint").textContent.trim(),
         count: document.getElementById("planner-char-count").textContent.trim(),
       };
     });
     check(
-      "picking an arcanist closes the picker and opens its panel",
+      "picking a character closes the picker and opens its panel",
       added.pickerClosed && added.editorOpen && /^Lucy$/.test(added.title),
       JSON.stringify(added)
     );
     check(
       "the plan is a grid of head icons and nothing else",
-      added.grid === "grid" && added.tiles === 1 && added.iconOnly && added.selected && added.headIcon,
+      added.grid === "grid" && added.tiles === 1 && added.iconOnly && added.selected,
       JSON.stringify(added)
+    );
+    check(
+      "the editor is the Character Setting modal's own card",
+      /^rgb\(181, 88, 41\)$/.test(added.cardFrame) && added.cardRadius === "20px" && added.cardWash,
+      JSON.stringify({ frame: added.cardFrame, radius: added.cardRadius, wash: added.cardWash })
+    );
+    check(
+      "its head carries the portrait, the rarity and the from → to line",
+      /images\/headicon_small\//.test(added.portrait) &&
+        added.rarity &&
+        /Lv\.1 →/.test(added.sub) &&
+        added.removeInHeader === "Lucy",
+      JSON.stringify({ portrait: added.portrait, sub: added.sub, remove: added.removeInHeader })
     );
     check(
       "the rail hint and the count follow the plan",
@@ -1938,7 +1994,10 @@ try {
         fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
         caret: getComputedStyle(detail.querySelector("select[data-field]")).backgroundImage,
         quickGoal: !!document.getElementById("planner-quick-goal"),
+        // Remove lives in the header now, so the body carries no remove button.
         remove: detail.querySelectorAll("[data-remove]").length,
+        groups: detail.querySelectorAll(".planner-char-controls .setting-group").length,
+        labels: [...detail.querySelectorAll(".setting-label span")].map((el) => el.textContent.trim()),
         euphoria: detail.querySelectorAll("[data-euphoria]").length,
         patterns: detail.querySelectorAll("[data-pattern]").length,
         glyphs: [...detail.querySelectorAll("[data-pattern] img")].map((img) => img.getAttribute("src")),
@@ -1946,20 +2005,26 @@ try {
         noName: !detail.querySelector(".planner-mat-name"),
         sticker: !!first?.querySelector(".item-sticker-img") && !!first?.querySelector(".item-sticker-border"),
         size: sticker ? Math.round(sticker.getBoundingClientRect().width) : 0,
+        badgeSize: first ? parseFloat(getComputedStyle(first.querySelector(".item-sticker-qty")).fontSize) : 0,
         badge: first?.querySelector(".item-sticker-qty")?.textContent.trim() || "",
         qty: Number(first?.dataset.qty || 0),
       };
     });
     check(
-      "the panel opens on level 1 / Insight 0, built to the arcanist's cap",
+      "the panel opens on level 1 / Insight 0, built to the character's cap",
       editor.fields.join(",") ===
         "curInsight=0,goalInsight=3,curLevel=1,goalLevel=60,curReso=0,goalReso=10,curMastery=0,goalMastery=0",
       JSON.stringify(editor.fields)
     );
     check(
       "its from→to controls are the dressed-up native selects",
-      /^url\(/.test(editor.caret) && editor.quickGoal && editor.remove === 1,
+      /^url\(/.test(editor.caret) && editor.quickGoal && editor.remove === 0,
       JSON.stringify(editor)
+    );
+    check(
+      "the settings are the Setting modal's own setting-groups",
+      editor.groups === 6 && editor.labels.includes("Insight") && editor.labels.includes("Resonance"),
+      JSON.stringify({ groups: editor.groups, labels: editor.labels })
     );
     check(
       "the five resonance patterns draw their own glyphs",
@@ -1969,9 +2034,14 @@ try {
       JSON.stringify(editor.glyphs)
     );
     check(
-      "the bill is a wall of item stickers with no name and no card box",
-      editor.cards > 10 && editor.noName && editor.sticker && editor.size >= 55 && editor.size <= 65,
-      JSON.stringify(editor)
+      "the bill is a wall of large item stickers with no name and no card box",
+      editor.cards > 10 && editor.noName && editor.sticker && editor.size >= 76 && editor.size <= 110,
+      JSON.stringify({ cards: editor.cards, size: editor.size })
+    );
+    check(
+      "the quantity badge scales with the art",
+      editor.badgeSize >= 11 && editor.badgeSize <= 14,
+      JSON.stringify({ size: editor.size, badge: editor.badgeSize })
     );
     check(
       "the quantity badge is the compact form and data-qty the exact one",
@@ -2138,67 +2208,223 @@ try {
     const activity = await page.evaluate(() => {
       document.getElementById("planner-activity-btn").click();
       const sheet = document.getElementById("planner-activity-sheet");
-      const cost = document.getElementById("planner-activity-cost");
+      const clickToggle = (group, value) => {
+        const btn = document.querySelector(`#${group} .btn-toggle[data-value="${value}"]`);
+        btn.click();
+      };
       const out = {
         open: !sheet.hidden,
-        switches: sheet.querySelectorAll(".planner-switch").length,
+        groups: sheet.querySelectorAll(".setting-group").length,
+        toggles: sheet.querySelectorAll(".toggle-group").length,
+        buttons: sheet.querySelectorAll(".btn-toggle").length,
+        groupIds: [...sheet.querySelectorAll(".toggle-group")].map((el) => el.id),
         perDay: document.getElementById("planner-activity-perday").textContent.trim(),
-        costHidden: cost.hidden,
-        refills: document.getElementById("planner-set-refills").value,
+        // Lazy mode and the Clear-Drop refills are gone from this panel.
+        hasRefills: !!document.getElementById("planner-set-refills"),
+        hasLazy: !!document.getElementById("planner-set-lazy"),
         daysBefore: document.getElementById("planner-farm-days").textContent,
       };
-      const roar = document.getElementById("planner-set-roaring");
-      roar.checked = true;
-      roar.dispatchEvent(new Event("change", { bubbles: true }));
+      clickToggle("planner-set-roaring", 1);
       out.afterRoar = {
         perDay: document.getElementById("planner-activity-perday").textContent.trim(),
         toolbar: document.getElementById("planner-activity-value").textContent.trim(),
+        value: document.getElementById("planner-roaring-value").textContent.trim(),
+        active: document
+          .querySelector('#planner-set-roaring .btn-toggle[data-value="1"]')
+          .classList.contains("active"),
         days: document.getElementById("planner-farm-days").textContent,
       };
-      const refills = document.getElementById("planner-set-refills");
-      refills.value = "2";
-      refills.dispatchEvent(new Event("change", { bubbles: true }));
-      out.afterRefills = {
+      clickToggle("planner-set-weekly", 1);
+      out.afterWeekly = {
         perDay: document.getElementById("planner-activity-perday").textContent.trim(),
-        cost: cost.textContent.trim(),
-        costHidden: cost.hidden,
         toolbar: document.getElementById("planner-activity-value").textContent.trim(),
+        value: document.getElementById("planner-weekly-value").textContent.trim(),
       };
       out.stored = JSON.parse(localStorage.getItem("r1999_planner_activity_v1") || "null");
       return out;
     });
     check(
-      "the activity panel holds the four switches and a per-day figure",
-      activity.open && activity.switches === 4 && /240/.test(activity.perDay) && activity.refills === "0",
+      "the activity panel is two on/off settings in setting-groups",
+      activity.open &&
+        activity.groups === 2 &&
+        activity.toggles === 2 &&
+        activity.buttons === 4 &&
+        activity.groupIds.join(",") === "planner-set-roaring,planner-set-weekly",
       JSON.stringify(activity)
     );
     check(
-      "with no refills there is no Clear Drops line to read",
-      activity.costHidden,
+      "Lazy mode and the Clear-Drop refills are gone",
+      !activity.hasRefills && !activity.hasLazy,
       JSON.stringify(activity)
+    );
+    check(
+      "a day starts at 240 stamina",
+      /240/.test(activity.perDay),
+      activity.perDay
     );
     check(
       "Roaring Month pays 60 more a day and shortens the route",
       /300/.test(activity.afterRoar.perDay) &&
         activity.afterRoar.toolbar === "300" &&
+        activity.afterRoar.active &&
+        /On/.test(activity.afterRoar.value) &&
         parseDays(activity.afterRoar.days) < parseDays(activity.daysBefore),
       JSON.stringify({ before: activity.daysBefore, after: activity.afterRoar.days })
     );
     check(
-      "refills add 100 a day each and price themselves in Clear Drops",
-      /500/.test(activity.afterRefills.perDay) &&
-        activity.afterRefills.toolbar === "500" &&
-        /150/.test(activity.afterRefills.cost) &&
-        !activity.afterRefills.costHidden,
-      JSON.stringify(activity.afterRefills)
+      "Weekly Activeness adds 240/7 a day",
+      /334/.test(activity.afterWeekly.perDay) &&
+        activity.afterWeekly.toolbar === "334" &&
+        /On/.test(activity.afterWeekly.value),
+      JSON.stringify(activity.afterWeekly)
     );
     check(
-      "the settings are saved locally",
-      activity.stored?.roaringMonth === true && activity.stored?.refills === 2,
+      "the settings are saved locally, and only those two",
+      activity.stored?.roaringMonth === true &&
+        activity.stored?.weeklyActivity === true &&
+        !("refills" in (activity.stored || {})) &&
+        !("lazyModo" in (activity.stored || {})),
       JSON.stringify(activity.stored)
     );
     await page.evaluate(() => document.querySelector('#planner-activity-sheet [data-sheet]').click());
     await page.waitForTimeout(200);
+
+    // ---- wilderness ------------------------------------------------------
+    const wildBefore = await page.evaluate(() =>
+      Number((document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, ""))
+    );
+    const wildOpen = await page.evaluate(() => {
+      document.getElementById("planner-farm-wilderness").click();
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const output = {};
+      for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+        output[row.dataset.item] = Number(row.dataset.qty || 0);
+      }
+      return {
+        open: !sheet.hidden,
+        state: document.getElementById("planner-wilderness-state").textContent.trim(),
+        selects: [...sheet.querySelectorAll("[data-wild]")].map((el) => `${el.dataset.wild}=${el.value}`),
+        vigor: document.getElementById("planner-wilderness-vigor").value,
+        lazy: document.getElementById("planner-wilderness-lazy").checked,
+        output,
+      };
+    });
+    check(
+      "the tree button on the route opens the Wilderness board, off by default",
+      wildOpen.open && /Off/.test(wildOpen.state),
+      JSON.stringify(wildOpen)
+    );
+    check(
+      "it starts on three Lv.6 Dust towers and three Lv.6 markets",
+      wildOpen.selects.length === 6 &&
+        wildOpen.selects.every((row) => row.endsWith("=6")) &&
+        wildOpen.vigor === "0" &&
+        wildOpen.lazy === false,
+      JSON.stringify(wildOpen.selects)
+    );
+    check(
+      "a full board with no vigor pays 19,440 Dust and 8,640 Sharpodonty a day",
+      wildOpen.output.Dust === 19440 && wildOpen.output.Sharpodonty === 8640,
+      JSON.stringify(wildOpen.output)
+    );
+
+    const wildOn = await page.evaluate(() => {
+      document.querySelector('#planner-wilderness-toggle .btn-toggle[data-value="1"]').click();
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const output = {};
+      for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+        output[row.dataset.item] = Number(row.dataset.qty || 0);
+      }
+      return {
+        state: document.getElementById("planner-wilderness-state").textContent.trim(),
+        output,
+        saved: JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null"),
+        toggleActive: document.getElementById("planner-farm-wilderness").classList.contains("is-active"),
+      };
+    });
+    check(
+      "turning it on is saved locally",
+      wildOn.saved?.enabled === true && /On/.test(wildOn.state),
+      JSON.stringify(wildOn.saved)
+    );
+    {
+      // The payout is Dust/Sharpodonty, so the solve is handed them as a rate over
+      // the days it takes: the same route is worth less stamina.
+      await page.waitForFunction(
+        (before) => {
+          const total = Number(
+            (document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")
+          );
+          return total > 0 && total < before;
+        },
+        wildBefore,
+        { timeout: 25000 }
+      );
+      const wildRoute = await page.evaluate(() => ({
+        total: Number((document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")),
+        card: !!document.querySelector("#planner-farm .planner-farm-card.is-wilderness"),
+        days: document.querySelector("#planner-farm .planner-farm-card.is-wilderness")?.dataset.days || "",
+        toggleActive: document.getElementById("planner-farm-wilderness").classList.contains("is-active"),
+        drops: document.querySelectorAll("#planner-farm .planner-farm-card.is-wilderness .planner-farm-drop").length,
+      }));
+      check(
+        "the Wilderness credit shortens the route and shows its own card",
+        wildRoute.total > 0 && wildRoute.total < wildBefore && wildRoute.card && wildRoute.drops === 2,
+        JSON.stringify({ before: wildBefore, after: wildRoute.total, card: wildRoute.card, days: wildRoute.days })
+      );
+      check(
+        "the route bar shows the board is counted in",
+        wildRoute.toggleActive,
+        JSON.stringify(wildRoute)
+      );
+    }
+    const wildVigor = await page.evaluate(() => {
+      const slider = document.getElementById("planner-wilderness-vigor");
+      slider.value = "50";
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const output = {};
+      for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+        output[row.dataset.item] = Number(row.dataset.qty || 0);
+      }
+      return { vigor: document.getElementById("planner-vigor-value").textContent.trim(), output };
+    });
+    check(
+      "Vigor adds its percentage to the payout",
+      wildVigor.vigor === "50%" && wildVigor.output.Dust === 29160 && wildVigor.output.Sharpodonty === 12960,
+      JSON.stringify(wildVigor)
+    );
+    await page.evaluate(() => {
+      const lazy = document.getElementById("planner-wilderness-lazy");
+      lazy.checked = true;
+      lazy.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await page.waitForTimeout(300);
+    const wildLazy = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const output = {};
+      for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+        output[row.dataset.item] = Number(row.dataset.qty || 0);
+      }
+      return { output, saved: JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null") };
+    });
+    check(
+      "Lazy mode collects once a day instead of twice",
+      wildLazy.output.Dust === 24300 && wildLazy.saved?.lazyModo === true,
+      JSON.stringify(wildLazy)
+    );
+    await page.evaluate(() => {
+      // Put the raised Vigor and Lazy mode back, so the saved state is the plain
+      // full board, but leave the board switched on: the reload has to bring it back.
+      const slider = document.getElementById("planner-wilderness-vigor");
+      slider.value = "0";
+      slider.dispatchEvent(new Event("change", { bubbles: true }));
+      const lazy = document.getElementById("planner-wilderness-lazy");
+      lazy.checked = false;
+      lazy.dispatchEvent(new Event("change", { bubbles: true }));
+      document.querySelector('#planner-wilderness-sheet [data-sheet]').click();
+    });
+    await page.waitForTimeout(900);
 
     // ---- the Goal lightbox ----------------------------------------------
     const lucyBill = await (async () => {
@@ -2309,16 +2535,24 @@ try {
         (el) => el.dataset.char
       ),
       disabled: document.querySelectorAll("#planner-char-rail .planner-char-tile.is-disabled").length,
+      // 240 a day, +60 for the Roaring Month, +240/7 for a full weekly bar.
       activity: document.getElementById("planner-activity-value").textContent.trim(),
+      wild: document.getElementById("planner-farm-wilderness")?.classList.contains("is-active"),
+      wildBlob: JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null"),
       saved: localStorage.getItem("r1999_planner_characters_v1"),
     }));
     check(
       "the plan and its activity settings come back after a reload",
       restored.tiles.length === 2 &&
         restored.disabled === 0 &&
-        restored.activity === "500" &&
+        restored.activity === "334" &&
         /"enabled":true/.test(String(restored.saved)),
       JSON.stringify(restored)
+    );
+    check(
+      "the Wilderness board comes back switched on",
+      restored.wild === true && restored.wildBlob?.enabled === true && restored.wildBlob?.vigor === 0,
+      JSON.stringify({ wild: restored.wild, blob: restored.wildBlob })
     );
     await waitForRoute();
     check(
@@ -2364,6 +2598,7 @@ try {
       const column = rail.closest(".planner-char-scroll");
       const card = document.querySelector(".planner-farm-card");
       const sheet = document.getElementById("planner-activity-sheet");
+      const drop = document.querySelector("#planner-farm .planner-farm-drop");
       return {
         railGrid: getComputedStyle(rail).display === "grid",
         railColumns: getComputedStyle(rail).gridTemplateColumns.split(" ").length,
@@ -2371,6 +2606,8 @@ try {
         cardFits: card ? card.getBoundingClientRect().width <= window.innerWidth : true,
         sheetFixed: getComputedStyle(sheet).position === "fixed",
         sideways: document.documentElement.scrollWidth <= window.innerWidth + 1,
+        // The art shrinks a step on a phone but never back to the old 38px thumbnail.
+        drop: drop ? Math.round(drop.getBoundingClientRect().width) : 0,
       };
     });
     check(
@@ -2379,6 +2616,53 @@ try {
       JSON.stringify(phone)
     );
     check("the panels are real lightboxes on a phone", phone.sheetFixed, JSON.stringify(phone));
+    // A closed lightbox has no boxes to measure, so open the editor first.
+    await page.evaluate(() => document.querySelector("#planner-char-rail .planner-char-tile").click());
+    await page.waitForTimeout(350);
+    const phoneBill = await page.evaluate(() => {
+      const sticker = document.querySelector("#planner-char-detail .planner-mat-sticker");
+      const badge = document.querySelector("#planner-char-detail .item-sticker-qty");
+      const sheet = document.getElementById("planner-char-editor");
+      return {
+        sticker: sticker ? Math.round(sticker.getBoundingClientRect().width) : 0,
+        badge: badge ? parseFloat(getComputedStyle(badge).fontSize) : 0,
+        sheetFixed: getComputedStyle(sheet).position === "fixed",
+        cardFits: document.querySelector("#planner-char-editor .planner-sheet-card").getBoundingClientRect().width <= window.innerWidth,
+      };
+    });
+    check(
+      "the item art stays large on a phone, badge and frame with it",
+      phoneBill.sticker >= 60 && phoneBill.badge >= 9 && phone.drop >= 44,
+      JSON.stringify({ sticker: phoneBill.sticker, badge: phoneBill.badge, drop: phone.drop })
+    );
+    check(
+      "the editor is a fixed lightbox that fits a phone",
+      phoneBill.sheetFixed && phoneBill.cardFits,
+      JSON.stringify(phoneBill)
+    );
+    await page.evaluate(() => document.querySelector('#planner-char-editor [data-sheet]').click());
+    await page.waitForTimeout(200);
+    await page.evaluate(() => document.getElementById("planner-farm-wilderness").click());
+    await page.waitForTimeout(300);
+    const phoneWild = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const card = sheet.querySelector(".planner-sheet-card");
+      const selects = [...sheet.querySelectorAll("[data-wild]")];
+      return {
+        open: !sheet.hidden,
+        cardFits: card.getBoundingClientRect().width <= window.innerWidth,
+        fits: selects.every((el) => el.getBoundingClientRect().right <= window.innerWidth),
+        sideways: card.scrollWidth <= card.clientWidth + 1,
+        selects: selects.length,
+      };
+    });
+    check(
+      "the Wilderness board fits a phone",
+      phoneWild.open && phoneWild.cardFits && phoneWild.fits && phoneWild.sideways && phoneWild.selects === 6,
+      JSON.stringify(phoneWild)
+    );
+    await page.evaluate(() => document.querySelector('#planner-wilderness-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
     await page.evaluate(() => document.getElementById("planner-char-add").click());
     await page.waitForTimeout(300);
     const phonePicker = await page.evaluate(() => {
@@ -2409,8 +2693,39 @@ try {
     await page.waitForTimeout(200);
 
     // ---- reset -----------------------------------------------------------
+    const confirmAsk = await page.evaluate(() => {
+      document.getElementById("planner-char-clear").click();
+      const modal = document.getElementById("confirm-modal");
+      return {
+        open: getComputedStyle(modal).display !== "none",
+        title: document.getElementById("confirm-modal-title").textContent.trim(),
+        message: document.getElementById("confirm-modal-message").textContent.trim(),
+        // Nothing is dropped until the reader says yes.
+        tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+      };
+    });
+    check(
+      "Reset asks before it throws the plan away",
+      confirmAsk.open && confirmAsk.tiles === 2 && /plan/i.test(confirmAsk.title + confirmAsk.message),
+      JSON.stringify(confirmAsk)
+    );
+
+    const cancelled = await page.evaluate(() => {
+      document.getElementById("confirm-modal-btn-cancel").click();
+      return {
+        closed: getComputedStyle(document.getElementById("confirm-modal")).display === "none",
+        tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+      };
+    });
+    check(
+      "cancelling keeps the plan",
+      cancelled.closed && cancelled.tiles === 2,
+      JSON.stringify(cancelled)
+    );
+
     const cleared = await page.evaluate(() => {
       document.getElementById("planner-char-clear").click();
+      document.getElementById("confirm-modal-btn-yes").click();
       return {
         tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
         railEmpty: (document.querySelector(".planner-rail-empty")?.textContent || "").trim(),
