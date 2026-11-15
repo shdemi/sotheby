@@ -2089,11 +2089,16 @@ id → pulls.
   migrates both into the `RateUp` pair (that *was* the Debut/Rerun counter) and leaves the
   Ripples pair at 0.
 - `bass` is a **boolean** now (it was a Unilog count): a tick box pays the ledger's 10 a month.
-  A positive number still reads as "on", but an **absent** key reads **off** — not every
-  reader buys the Bass Counter pass.
+  A positive number still reads as "on", and an **absent** key reads **on** like every other
+  free source (2026-11-15).
 - `jukeboxFree` is the same kind of box for the Jukebox's two free Unilogs, but an **absent**
   key reads **on**: they are free, so the only reason to have it off is that the reader
   turned it off.
+- **The whole free half starts ticked.** `limbo`, `login`, `bass`, `storyStage`,
+  `characterStory`, `webEvent`, `jukeboxFree` and `eventShop` all default to on, in the
+  declarations, on load (an absent key is on) and after Reset — none of them costs anything,
+  so the fresh tab is the free set. The paid three (`roaring`, `jukebox`, `offer`) and
+  `useCrystal` still start off.
 - `months` is one of `CALC_SPANS` (default 6).
 - Unlike the Event tab's picks the blob is **not patch-stamped** — a plan spans banners — so a
   load only drops ids the data no longer ships or whose window has closed, and clamps `pity*`
@@ -2118,10 +2123,11 @@ One scroller, five sections, all of them the modal's own pieces, read top-down a
   the box, the name and what ticking it is worth under it), split into two groups by
   `.calc-group`:
   - **`Freebies`** — `Limbo / Lucidscape` `+1,400 Clear /month`, `Login 7/15/25 days`
-    `+180 Clear /month`, `Bass Counter` `+10 Unilog /month` (off), `Complete Story Stage`
+    `+180 Clear /month`, `Bass Counter` `+10 Unilog /month`, `Complete Story Stage`
     `+1,200 Clear /patch`, `Complete Character Story` `+480 Clear /patch`, `Web Event &
-    Survey` `+120 Clear /patch`, `Roar Jukebox` `+2 Unilog /patch` (on), `Event shop`
-    `+2 Unilog /patch`.
+    Survey` `+120 Clear /patch`, `Roar Jukebox` `+2 Unilog /patch`, `Event shop`
+    `+2 Unilog /patch` — **all eight start ticked** (2026-11-15), since none of them costs
+    anything; a reader who skips a story stage unticks it.
   - **`Spenders`** — `Roaring Month` `+2,700 Clear /month`, `Collector's Edition` `+5 Unilog
     /patch`, `Offer of the Month` `+3,600 Clear /month`, plus the monthly and patchly package
     Unilog fields, which share one `.calc-pair-row`.
@@ -2168,6 +2174,11 @@ One scroller, five sections, all of them the modal's own pieces, read top-down a
   `Ripples` `#C6DBE1`, `Rerun` `#FFE5A0`, `Limited` `#B10202`, `Event` `#0A53A8`, so a long
   list reads at a glance. A kind with no colour of its own (`Collab`, `Yearning`) keeps the
   tab's orange, so a new sheet kind never draws an invisible rail.
+  **The kind tag wears the same colour** (2026-11-15): the rail and `.calc-pill.is-type` both
+  read `--calc-kind` / `--calc-kind-ink` off the card, so `Ripples` prints ice blue, `Debut`
+  pale green, `Rerun` warm yellow. The two dark kinds lift their text shade (`Limited`
+  `#E4695F`, `Event` `#5A9BE2`) because a `#B10202` or `#0A53A8` glyph on the near-black card
+  is unreadable; the rail stays the sheet's own colour.
 
 A banner **kind** stays the sheet's English word in `data/banners.json` — it is what the pool
 rules and the aliases are keyed by — but every surface prints `calcKindLabel(type)`, which
@@ -2209,8 +2220,9 @@ five sections and their exact fields (`…|Crystal Drop outcome|Calculator|Banne
 `current` inputs (three purses + two counters + two guarantee boxes), the two groups and their
 exact fields, the `[?]` (present, and drawn as an outline with no fill), each pity track and the
 two package fields sharing a row, `✦` instead of `★`, the 14 tick boxes as cards with their 11
-yields, one shared height per grid row, the Bass Counter **off** by default, the `Roar Jukebox`
-box **on** by default (`+2 /patch`), `Login 7/15/25 days` at `+180 /month`, Limbo reading
+yields, one shared height per grid row, **the eight free sources ticked by default** and the
+three paid ones unticked, the `Roar Jukebox` box on (`+2 /patch`), `Login 7/15/25 days` at
+`+180 /month`, Limbo reading
 `+1,400 /month` in Clear Drops, the patch yields (`+1,200` / `+480` / `+120` / `+2` / `+2` / `+5`)
 and each badge's purse art (Clear for the Clear sources, Unilog for the rest), Crystal Drop off
 by default, the `1/2/3/6` span control on six months, the four summary cells with their art, the

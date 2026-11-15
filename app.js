@@ -12483,15 +12483,16 @@ let calcGuaranteedRipples = false;
 /* Drop income — the free half (F2P). The purses are kept apart because the reader
  * earns them from different sources: the tasks, Limbo and the patch bundles pay
  * **Clear Drops**, and the login events, the event shop and the Jukebox pay
- * **Unilogs**. */
-let calcLimbo = false; // Limbo (1st) / Lucidscape (16th): 700 Clear Drops each
-let calcBass = false; // Bass Counter: 10 Unilogs a month, on the 1st — off by default
-let calcLogin = false; // the 7 / 15 / 25-day login track: 180 Clear Drops a month
-let calcJukeboxFree = true; // the Roar Jukebox's two free Unilogs a patch — on, it is free
-let calcStoryStage = false; // every story stage cleared, 1,200 Clear Drops a patch
-let calcCharacterStory = false; // every character story, 480 Clear Drops a patch
-let calcWebEvent = false; // web events and surveys, 120 Clear Drops a patch
-let calcEventShop = false; // the event shop's free Unilogs, 2 a patch
+ * **Unilogs**. Everything in this half is free, so everything starts ticked: a reader
+ * who does not clear a story stage can untick it, but the default is the whole free set. */
+let calcLimbo = true; // Limbo (1st) / Lucidscape (16th): 700 Clear Drops each
+let calcBass = true; // Bass Counter: 10 Unilogs a month, on the 1st
+let calcLogin = true; // the 7 / 15 / 25-day login track: 180 Clear Drops a month
+let calcJukeboxFree = true; // the Roar Jukebox's two free Unilogs a patch
+let calcStoryStage = true; // every story stage cleared, 1,200 Clear Drops a patch
+let calcCharacterStory = true; // every character story, 480 Clear Drops a patch
+let calcWebEvent = true; // web events and surveys, 120 Clear Drops a patch
+let calcEventShop = true; // the event shop's free Unilogs, 2 a patch
 
 /* Drop income — the paid half (Spender). Buying any of these is a purchase, so all
  * three start off and the reader opts in. */
@@ -13970,20 +13971,20 @@ function calcLoadState() {
   calcPityRipples = Math.min(hard - 1, int(blob.pityRipples));
   calcGuaranteedRipples = !!blob.guaranteedRipples;
 
-  // The free half of the income.
-  calcLimbo = !!blob.limbo;
-  calcLogin = !!blob.login;
-  // The Roar Jukebox's two free Unilogs are free for everyone, so the tick box is on
-  // unless the reader turned it off.
+  // The free half of the income. Every one of these sources is free, so the tick box
+  // starts on and only a reader who turned it off reads as off — an absent key is the
+  // whole free set, which is what a fresh tab shows.
+  calcLimbo = blob.limbo === undefined ? true : !!blob.limbo;
+  calcLogin = blob.login === undefined ? true : !!blob.login;
   calcJukeboxFree = blob.jukeboxFree === undefined ? true : !!blob.jukeboxFree;
   // The Bass Counter is a tick box: 10 Unilogs a month. It used to be a numeric field,
-  // so a positive number still reads as "on"; an absent key is off (the owner's
-  // default), because not every reader buys the Bass Counter pass.
-  calcBass = blob.bass === undefined ? false : blob.bass === true || Number(blob.bass) > 0;
-  calcStoryStage = !!blob.storyStage;
-  calcCharacterStory = !!blob.characterStory;
-  calcWebEvent = !!blob.webEvent;
-  calcEventShop = !!blob.eventShop;
+  // so a positive number still reads as "on"; an absent key is on, like the rest of the
+  // free half.
+  calcBass = blob.bass === undefined ? true : blob.bass === true || Number(blob.bass) > 0;
+  calcStoryStage = blob.storyStage === undefined ? true : !!blob.storyStage;
+  calcCharacterStory = blob.characterStory === undefined ? true : !!blob.characterStory;
+  calcWebEvent = blob.webEvent === undefined ? true : !!blob.webEvent;
+  calcEventShop = blob.eventShop === undefined ? true : !!blob.eventShop;
 
   // The paid half.
   calcRoaring = !!blob.roaring;
@@ -14472,14 +14473,14 @@ function setupPlannerCalculator() {
       calcGuaranteedRateUp = false;
       calcPityRipples = 0;
       calcGuaranteedRipples = false;
-      calcLimbo = false;
-      calcLogin = false;
+      calcLimbo = true;
+      calcLogin = true;
       calcJukeboxFree = true;
-      calcBass = false;
-      calcStoryStage = false;
-      calcCharacterStory = false;
-      calcWebEvent = false;
-      calcEventShop = false;
+      calcBass = true;
+      calcStoryStage = true;
+      calcCharacterStory = true;
+      calcWebEvent = true;
+      calcEventShop = true;
       calcRoaring = false;
       calcJukebox = false;
       calcOffer = false;

@@ -15999,9 +15999,14 @@ span.planner-char-tile-img {
   flex-direction: column;
   gap: 8px;
   padding: 10px 12px;
+  /* The kind's colour, in one place: the left rail below and the kind tag inside the
+     card both read it, so a new kind only has to declare the pair once. `-ink` is the
+     same colour lifted enough to print as text — `#B10202` on black is invisible. */
+  --calc-kind: rgba(237, 125, 49, 0.45);
+  --calc-kind-ink: #ED7D31;
   background: rgba(0, 0, 0, 0.32);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-left: 3px solid rgba(237, 125, 49, 0.45);
+  border-left: 3px solid var(--calc-kind);
   border-radius: 4px;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
@@ -16009,23 +16014,28 @@ span.planner-char-tile-img {
 /* The left rail is the banner's kind, so a long list reads at a glance. A kind with
    no colour of its own (Collab, Yearning, …) keeps the tab's orange. */
 .calc-card[data-kind="Debut"] {
-  border-left-color: #D4EDBC;
+  --calc-kind: #D4EDBC;
+  --calc-kind-ink: #D4EDBC;
 }
 
 .calc-card[data-kind="Ripples"] {
-  border-left-color: #C6DBE1;
+  --calc-kind: #C6DBE1;
+  --calc-kind-ink: #C6DBE1;
 }
 
 .calc-card[data-kind="Rerun"] {
-  border-left-color: #FFE5A0;
+  --calc-kind: #FFE5A0;
+  --calc-kind-ink: #FFE5A0;
 }
 
 .calc-card[data-kind="Limited"] {
-  border-left-color: #B10202;
+  --calc-kind: #B10202;
+  --calc-kind-ink: #E4695F;
 }
 
 .calc-card[data-kind="Event"] {
-  border-left-color: #0A53A8;
+  --calc-kind: #0A53A8;
+  --calc-kind-ink: #5A9BE2;
 }
 
 .calc-card:hover {
@@ -16133,6 +16143,14 @@ span.planner-char-tile-img {
 .calc-pill.is-type {
   color: #ECE5D9;
   border-color: rgba(181, 181, 179, 0.55);
+}
+
+/* The kind tag wears the card's own rail colour, so `Ripples` reads as the same ice
+   blue as the band beside it and a long list can be scanned by tag alone. */
+.calc-card .calc-pill.is-type {
+  color: var(--calc-kind-ink, #ECE5D9);
+  border-color: var(--calc-kind, rgba(181, 181, 179, 0.55));
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* The patch the run ships in — the sheet's own label (`3.9`, `4.0`, `AH Collab`) —

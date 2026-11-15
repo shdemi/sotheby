@@ -1366,20 +1366,33 @@ try {
       calc.groupAlign === "stretch" && calc.toggleRows.every((group) => group.every(Boolean)),
       JSON.stringify({ align: calc.groupAlign, rows: calc.toggleRows })
     );
+    const freebies = calc.toggles.filter((box) =>
+      ["limbo", "login", "bass", "storyStage", "characterStory", "webEvent", "jukeboxFree", "eventShop"].includes(
+        box.key
+      )
+    );
     check(
-      "the Bass Counter is off by default and worth ten Unilogs a month when ticked",
-      !calc.toggles.find((box) => box.key === "bass").checked &&
-        /^\+10 \/month/.test(calc.toggles.find((box) => box.key === "bass").yield),
+      "every free source starts ticked, because none of them costs anything",
+      freebies.length === 8 && freebies.every((box) => box.checked),
+      JSON.stringify(freebies.map((box) => [box.key, box.checked]))
+    );
+    check(
+      "the paid sources still start unticked",
+      ["roaring", "jukebox", "offer"].every((key) => !calc.toggles.find((box) => box.key === key).checked),
+      JSON.stringify(["roaring", "jukebox", "offer"].map((key) => [key, calc.toggles.find((b) => b.key === key).checked]))
+    );
+    check(
+      "the Bass Counter is worth ten Unilogs a month when ticked",
+      /^\+10 \/month/.test(calc.toggles.find((box) => box.key === "bass").yield),
       JSON.stringify(calc.toggles.find((box) => box.key === "bass"))
     );
     check(
       "the login track is a free source worth 180 Clear Drops a month",
-      !calc.toggles.find((box) => box.key === "login").checked &&
-        /^\+180 \/month/.test(calc.toggles.find((box) => box.key === "login").yield),
+      /^\+180 \/month/.test(calc.toggles.find((box) => box.key === "login").yield),
       JSON.stringify(calc.toggles.find((box) => box.key === "login"))
     );
     check(
-      "the Roar Jukebox's two free Unilogs are on by default, since they are free",
+      "the Roar Jukebox's two free Unilogs are on, since they are free",
       calc.toggles.find((box) => box.key === "jukeboxFree").checked &&
         /^\+2 \/patch/.test(calc.toggles.find((box) => box.key === "jukeboxFree").yield),
       JSON.stringify(calc.toggles.find((box) => box.key === "jukeboxFree"))
@@ -1757,6 +1770,55 @@ try {
         // A kind with no colour of its own keeps the tab's orange.
         kindEdges.Yearning === "rgba(237, 125, 49, 0.45)",
       JSON.stringify(kindEdges)
+    );
+    // The kind tag wears the card's rail colour, so `Ripples` is the same ice blue as
+    // the band beside it. A probe card is built per kind: the light kinds print exactly
+    // their rail colour, the two dark ones print a lifted shade of the same hue (a
+    // `#B10202` tag on black is unreadable).
+    const kindTags = await page.evaluate(() => {
+      const host = document.querySelector("#calc-banners") || document.body;
+      const out = {};
+      for (const kind of ["Debut", "Ripples", "Rerun", "Limited", "Event", "Yearning"]) {
+        const probe = document.createElement("article");
+        probe.className = "calc-card";
+        probe.dataset.kind = kind;
+        probe.innerHTML =
+          '<span class="calc-card-pills"><span class="calc-pill is-version">4.0</span><span class="calc-pill is-type">Kind</span></span>';
+        host.appendChild(probe);
+        void probe.offsetWidth;
+        const tag = probe.querySelector(".calc-pill.is-type");
+        const style = getComputedStyle(tag);
+        const rail = getComputedStyle(probe).borderLeftColor;
+        out[kind] = { color: style.color, border: style.borderTopColor, rail };
+        probe.remove();
+      }
+      return out;
+    });
+    check(
+      "the kind tag wears the card's rail colour",
+      kindTags.Debut.color === "rgb(212, 237, 188)" &&
+        kindTags.Ripples.color === "rgb(198, 219, 225)" &&
+        kindTags.Rerun.color === "rgb(255, 229, 160)" &&
+        kindTags.Debut.color === kindTags.Debut.rail &&
+        kindTags.Ripples.color === kindTags.Ripples.rail &&
+        kindTags.Rerun.color === kindTags.Rerun.rail &&
+        kindTags.Ripples.border === kindTags.Ripples.rail,
+      JSON.stringify(kindTags)
+    );
+    check(
+      "the two dark kinds lift their tag enough to read on the card",
+      (() => {
+        const lum = (rgb) => {
+          const [r, g, b] = (rgb.match(/\d+/g) || []).map(Number);
+          return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        };
+        return (
+          lum(kindTags.Limited.color) > lum(kindTags.Limited.rail) + 40 &&
+          lum(kindTags.Event.color) > lum(kindTags.Event.rail) + 40 &&
+          kindTags.Limited.color !== kindTags.Event.color
+        );
+      })(),
+      JSON.stringify({ limited: kindTags.Limited, event: kindTags.Event })
     );
     check("a card carries six odds chips", calcAdded.chips.join(",") === "0,1,2,3,4,5", JSON.stringify(calcAdded.chips));
     check(
@@ -2172,6 +2234,10 @@ try {
       empty: (document.querySelector("#calc-banners .guide-empty") || {}).textContent || "",
       dots: document.querySelectorAll("#calc-chart .calc-dot").length,
       tab: document.querySelector("#planner-modal .builds-mode-btn.is-active")?.id || "",
+      // A reset returns to the fresh tab, and a fresh tab has the whole free half on.
+      freebiesOn: [...document.querySelectorAll("#planner-calculator .calc-check input")].filter(
+        (box) => box.checked
+      ).length,
       stored: JSON.parse(localStorage.getItem("r1999_calculator_v1") || "null"),
     }));
     check(
@@ -2187,6 +2253,14 @@ try {
       "and the cleared plan is what is stored",
       calcReset.stored && calcReset.stored.list.length === 0 && Object.keys(calcReset.stored.plans).length === 0,
       JSON.stringify(calcReset.stored)
+    );
+    check(
+      "a reset turns the whole free half back on",
+      calcReset.freebiesOn === 8 &&
+        ["limbo", "login", "bass", "storyStage", "characterStory", "webEvent", "jukeboxFree", "eventShop"].every(
+          (key) => calcReset.stored[key] === true
+        ),
+      JSON.stringify({ on: calcReset.freebiesOn, stored: calcReset.stored })
     );
 
     // The two perks and the three pity tracks are what makes the tab agree with the
