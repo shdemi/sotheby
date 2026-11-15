@@ -1647,21 +1647,37 @@
                   <input type="number" min="0" step="1" id="planner-owned-input" class="planner-owned-input" placeholder="0" />
                 </span>
                 <!-- Same surface as the character card's tooltip (`.char-tooltip`):
-                     a head naming the shop currency, then the two figures — each
-                     behind the art it counts (the shop currency, then stamina). It
-                     follows the cursor, so it never covers the field. -->
+                     a head naming the shop currency, then one line per figure — each
+                     behind the art it counts (the shop currency, then Activity, then
+                     the currency again for what the runs leave over). Every line is
+                     `label → art → figure` in a fixed label column, so the arts and
+                     the figures stack in one vertical line. It follows the cursor,
+                     so it never covers the field. -->
                 <div class="char-tooltip planner-owned-tooltip" id="planner-owned-tooltip" role="tooltip" aria-hidden="true">
                   <div class="ct-head"><span class="ct-name" id="planner-tooltip-currency"></span></div>
-                  <div class="ct-body">
+                  <div class="ct-body planner-tooltip-body">
                     <div class="planner-tooltip-line">
                       <span class="planner-tooltip-label" id="planner-tooltip-need-label">Still need</span>
                       <img class="planner-tooltip-icon" id="planner-tooltip-need-icon" alt="" hidden />
-                      <span id="planner-tooltip-need">0</span>
+                      <span class="planner-tooltip-value" id="planner-tooltip-need">0</span>
+                    </div>
+                    <!-- A run of the currency stage: the hand-added `times` art
+                         counts runs, so this line keeps the same
+                         label → art → figure rhythm as the others. -->
+                    <div class="planner-tooltip-line">
+                      <span class="planner-tooltip-label" id="planner-tooltip-runs-label">Times</span>
+                      <img class="planner-tooltip-icon" src="images/random_icon/times.png" alt="" />
+                      <span class="planner-tooltip-value" id="planner-tooltip-runs">0</span>
                     </div>
                     <div class="planner-tooltip-line">
-                      <span class="planner-tooltip-label" id="planner-tooltip-stamina-label">Stamina</span>
+                      <span class="planner-tooltip-label" id="planner-tooltip-stamina-label">Activity</span>
                       <img class="planner-tooltip-icon" src="images/random_icon/Stamina.webp" alt="" />
-                      <span id="planner-tooltip-stamina">0 (0.0d)</span>
+                      <span class="planner-tooltip-value" id="planner-tooltip-stamina">0 (0.0d)</span>
+                    </div>
+                    <div class="planner-tooltip-line">
+                      <span class="planner-tooltip-label" id="planner-tooltip-rest-label">Remainder</span>
+                      <img class="planner-tooltip-icon" id="planner-tooltip-rest-icon" alt="" hidden />
+                      <span class="planner-tooltip-value" id="planner-tooltip-rest">0</span>
                     </div>
                   </div>
                 </div>

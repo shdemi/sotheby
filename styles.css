@@ -14197,8 +14197,8 @@ body.sim-mode {
   left: 0;
   bottom: auto;
   transform: none;
-  min-width: 176px;
-  max-width: 260px;
+  min-width: 244px;
+  max-width: 400px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   z-index: 3000;
 }
@@ -14213,10 +14213,17 @@ body.sim-mode {
   display: none;
 }
 
-.planner-tooltip-line {
-  display: flex;
+/* The tooltip's figures sit on one three-column grid — label → art → figure —
+   shared by every line, so the arts and the figures below them are always in one
+   vertical line, whatever the longest label turns out to be. A flex row per line
+   made each art step right with its own label's width, which is what left the
+   Activity figure hanging out of line with the currency above it. */
+.planner-owned-tooltip .planner-tooltip-body {
+  display: grid;
+  grid-template-columns: max-content 18px minmax(0, 1fr);
   align-items: center;
-  gap: 6px;
+  column-gap: 6px;
+  row-gap: 4px;
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
   font-size: 12px;
   font-weight: 700;
@@ -14224,8 +14231,14 @@ body.sim-mode {
   color: rgba(244, 239, 233, 0.84);
 }
 
-/* The art each figure counts: the shop currency for "still need", the game's
-   stamina icon for the stamina line. */
+/* A line hands its three parts to the body's grid instead of laying them out. */
+.planner-tooltip-line {
+  display: contents;
+}
+
+/* The art each figure counts: the shop currency for "still need", the hand-added
+   `times` art for the runs, the game's stamina icon for Activity, and the
+   currency again for what the runs leave behind. */
 .planner-tooltip-icon {
   width: 18px;
   height: 18px;
@@ -14234,18 +14247,28 @@ body.sim-mode {
   display: block;
 }
 
+/* A hidden art keeps its cell instead of pulling the figure into the art column. */
 .planner-tooltip-icon[hidden] {
-  display: none;
+  display: block;
+  visibility: hidden;
 }
 
 /* "Still need" is its own node so the currency art can sit between the words
    and the figure — the icon touches the number it counts, not the sentence. */
 .planner-tooltip-label {
-  flex: none;
+  white-space: nowrap;
   color: rgba(244, 239, 233, 0.72);
 }
 
-#planner-tooltip-need {
+/* A long figure wraps inside its own column instead of being clipped by the
+   tooltip's edge; its art stays beside it. */
+.planner-tooltip-value {
+  min-width: 0;
+}
+
+#planner-tooltip-need,
+#planner-tooltip-runs,
+#planner-tooltip-rest {
   color: #F8D070;
   font-variant-numeric: tabular-nums;
 }
@@ -17042,6 +17065,11 @@ span.planner-char-tile-img {
     left: 4px;
     width: 16px;
     height: 16px;
+  }
+  /* The tooltip is `fixed` under the cursor, so on a phone it never outgrows the
+     screen — the figures wrap inside their own column instead. */
+  .planner-owned-tooltip {
+    max-width: calc(100vw - 24px);
   }
   .planner-scroll {
     padding: 12px 12px 18px;

@@ -2612,7 +2612,9 @@ try {
     check("the card's currency art resolves", priced.resolves, JSON.stringify(priced));
 
     // The Owned field names its unit the same way: "<icon> <n>" inside one box,
-    // and each tooltip line reads label → art → figure.
+    // and each tooltip line reads label → art → figure. The label column is a
+    // fixed width, so the arts and the figures below them stack in one line
+    // instead of stepping right with each longer word.
     const owned = await page.evaluate(() => {
       const input = document.getElementById("planner-owned-input");
       const icon = document.getElementById("planner-owned-icon");
@@ -2626,34 +2628,102 @@ try {
         const p = parts(row);
         return p.every((item, i) => i === 0 || p[i - 1].r.right <= item.r.left + 1);
       };
+      const labels = lines.map((row) => row.querySelector(".planner-tooltip-label"));
+      const arts = lines.map((row) => row.querySelector(".planner-tooltip-icon").getBoundingClientRect());
+      const figures = lines.map((row) =>
+        row.querySelector(".planner-tooltip-value").getBoundingClientRect()
+      );
+      const shop = plannerShop();
+      const total = plannerTotalSpend(shop);
+      const held = Number(plannerOwned[shop.id]) || 0;
+      const still = Math.max(0, total - held);
+      const runs = Math.ceil(still / 300);
+      const figure = (id) => {
+        const text = document.getElementById(id).textContent.trim();
+        const lead = text.match(/^[0-9][0-9.,]*/);
+        return lead ? Number(lead[0].replace(/[^0-9]/g, "")) : NaN;
+      };
+      const restImg = document.getElementById("planner-tooltip-rest-icon");
       return {
         iconShown: getComputedStyle(icon).display !== "none",
         resolves: icon.naturalWidth > 0,
         inside: ico.left > box.left && ico.right <= box.right + 1,
         iconLeftOfBox: ico.left < box.left + box.width / 2,
         padLeft: parseFloat(getComputedStyle(input).paddingLeft),
-        needOrder: parts(lines[0]).map((p) => p.id),
-        needInOrder: inOrder(lines[0]),
-        stamOrder: parts(lines[1]).map((p) => p.id),
-        stamInOrder: inOrder(lines[1]),
+        count: lines.length,
+        order: lines.map((row) => parts(row).map((p) => p.id).join(",")),
+        inOrder: lines.every((row) => inOrder(row)),
+        labelTexts: labels.map((el) => el.textContent.trim()),
+        labelWidths: [...new Set(labels.map((el) => Math.round(el.getBoundingClientRect().width)))],
+        artLefts: [...new Set(arts.map((r) => Math.round(r.left)))],
+        figureLefts: [...new Set(figures.map((r) => Math.round(r.left)))],
         needText: document.getElementById("planner-tooltip-need").textContent.trim(),
-        staminaIcon: lines[1].querySelector("img").getAttribute("src"),
+        still,
+        runs,
+        runsText: figure("planner-tooltip-runs"),
+        activityText: figure("planner-tooltip-stamina"),
+        restText: figure("planner-tooltip-rest"),
+        expectedActivity: runs * 20,
+        expectedRest: held + runs * 300 - total,
+        staminaIcon: lines[2].querySelector("img").getAttribute("src"),
+        runsIconSrc: lines[1].querySelector("img").getAttribute("src"),
+        runsIconResolves: !!lines[1].querySelector("img")?.naturalWidth,
+        needIconSrc: document.getElementById("planner-tooltip-need-icon").getAttribute("src"),
+        restIcon: { src: restImg.getAttribute("src"), shown: !restImg.hidden },
       };
     });
     check("the Owned field draws the shop currency art inside the box", owned.iconShown && owned.resolves && owned.inside, JSON.stringify(owned));
     check("that art sits left of the number", owned.iconLeftOfBox && owned.padLeft >= 20, JSON.stringify(owned));
+    check("the tooltip draws four lines", owned.count === 4, String(owned.count));
     check(
-      "the still-need line reads label, currency art, figure",
-      owned.needOrder.join(",") === "planner-tooltip-need-label,planner-tooltip-need-icon,planner-tooltip-need" && owned.needInOrder,
-      JSON.stringify(owned.needOrder)
-    );
-    check(
-      "the stamina line reads label, stamina art, figure",
-      owned.stamOrder.join(",") === "planner-tooltip-stamina-label,planner-tooltip-icon,planner-tooltip-stamina" && owned.stamInOrder,
-      JSON.stringify(owned.stamOrder)
+      "every line reads label, art, figure",
+      owned.inOrder &&
+        owned.order[0] === "planner-tooltip-need-label,planner-tooltip-need-icon,planner-tooltip-need" &&
+        owned.order[1] === "planner-tooltip-runs-label,planner-tooltip-icon,planner-tooltip-runs" &&
+        owned.order[2] === "planner-tooltip-stamina-label,planner-tooltip-icon,planner-tooltip-stamina" &&
+        owned.order[3] === "planner-tooltip-rest-label,planner-tooltip-rest-icon,planner-tooltip-rest",
+      JSON.stringify(owned.order)
     );
     check("the figure is the bare number", /^[0-9][0-9.,]*$/.test(owned.needText), owned.needText);
     check("the stamina line keeps the game's stamina art", owned.staminaIcon === "images/random_icon/Stamina.webp", owned.staminaIcon);
+    check(
+      "the Times line draws the times art",
+      owned.runsIconSrc === "images/random_icon/times.png" && owned.runsIconResolves,
+      JSON.stringify({ src: owned.runsIconSrc, ok: owned.runsIconResolves })
+    );
+    check(
+      "the remainder carries the shop's currency art",
+      owned.restIcon.shown && owned.restIcon.src === owned.needIconSrc && !!owned.needIconSrc,
+      JSON.stringify(owned.restIcon)
+    );
+    check(
+      "every line hands its art the same left edge",
+      owned.labelWidths.length === 1 && owned.artLefts.length === 1 && owned.figureLefts.length === 1,
+      JSON.stringify(owned)
+    );
+    check("Times is the runs the shortfall takes", owned.runsText === owned.runs, `${owned.runsText} vs ${owned.runs}`);
+    check(
+      "Activity is whole runs, never a fraction of one",
+      owned.activityText === owned.expectedActivity && owned.expectedActivity % 20 === 0,
+      `${owned.activityText} vs ${owned.expectedActivity}`
+    );
+    check(
+      "the remainder is what the whole runs leave over",
+      owned.restText === owned.expectedRest,
+      `${owned.restText} vs ${owned.expectedRest}`
+    );
+
+    // The owner's own worked example: 3,000 held against an 80,850 bill is 260
+    // runs of 300 → 5,200 Activity (not the fractional 5,190) and 150 left.
+    const farmMath = await page.evaluate(() => {
+      const plan = plannerShopFarmRuns(80850 - 3000);
+      return { runs: plan.runs, activity: plan.activity, rest: 3000 + plan.currency - 80850 };
+    });
+    check(
+      "77,850 short is 260 runs, 5,200 Activity and 150 left over",
+      farmMath.runs === 260 && farmMath.activity === 5200 && farmMath.rest === 150,
+      JSON.stringify(farmMath)
+    );
 
     // Names clamp to two lines but the box is always two lines tall, and the
     // stepper is pinned to the card's foot — so a long name cannot push its

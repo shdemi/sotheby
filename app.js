@@ -12152,6 +12152,18 @@ function renderPlannerEvent() {
       needIcon.removeAttribute("src");
     }
   }
+  // The remainder is the same currency, so it carries the same art.
+  const restIcon = document.getElementById("planner-tooltip-rest-icon");
+  if (restIcon) {
+    if (money.icon) {
+      restIcon.src = money.icon;
+      restIcon.alt = "";
+      restIcon.hidden = false;
+    } else {
+      restIcon.hidden = true;
+      restIcon.removeAttribute("src");
+    }
+  }
 
   updatePlannerOwnedTooltip(totalSpend, currentOwned);
 }
@@ -12222,16 +12234,42 @@ function setPlannerTooltipLine(labelEl, valueEl, template, marker, figure) {
   const raw = template.indexOf(marker) >= 0 ? template : `${marker} ${template}`;
   const at = raw.indexOf(marker);
   if (labelEl) labelEl.textContent = raw.slice(0, at).trim();
-  valueEl.textContent = `${figure}${raw.slice(at + marker.length)}`.trim();
+  if (valueEl) valueEl.textContent = `${figure}${raw.slice(at + marker.length)}`.trim();
+}
+
+/**
+ * One run of an event's currency stage costs 20 Activity and pays 300 of the
+ * shop's currency, so a shop bill is paid in **whole runs**: 3,000 held against
+ * an 80,850 plan is 260 runs — 5,200 Activity, not the 7,917 a fractional
+ * `stillNeed / 15` produced — and those runs leave 150 of the currency over.
+ */
+const PLANNER_EVENT_RUN_ACTIVITY = 20;
+const PLANNER_EVENT_RUN_CURRENCY = 300;
+
+/** The runs a shop shortfall takes, the Activity they cost and the cash they bring. */
+function plannerShopFarmRuns(stillNeed) {
+  const runs = Math.ceil(Math.max(0, Number(stillNeed) || 0) / PLANNER_EVENT_RUN_CURRENCY);
+  return {
+    runs,
+    activity: runs * PLANNER_EVENT_RUN_ACTIVITY,
+    currency: runs * PLANNER_EVENT_RUN_CURRENCY,
+  };
 }
 
 function updatePlannerOwnedTooltip(totalSpend, owned) {
   const labelEl = document.getElementById("planner-tooltip-need-label");
   const needEl = document.getElementById("planner-tooltip-need");
+  const runsLabelEl = document.getElementById("planner-tooltip-runs-label");
+  const runsEl = document.getElementById("planner-tooltip-runs");
   const stamLabelEl = document.getElementById("planner-tooltip-stamina-label");
   const stamEl = document.getElementById("planner-tooltip-stamina");
+  const restLabelEl = document.getElementById("planner-tooltip-rest-label");
+  const restEl = document.getElementById("planner-tooltip-rest");
   if (!needEl || !stamEl) return;
-  const stillNeed = Math.max(0, totalSpend - owned);
+  const spend = Math.max(0, Number(totalSpend) || 0);
+  const held = Math.max(0, Number(owned) || 0);
+  const stillNeed = Math.max(0, spend - held);
+  const farm = plannerShopFarmRuns(stillNeed);
 
   setPlannerTooltipLine(
     labelEl,
@@ -12241,20 +12279,38 @@ function updatePlannerOwnedTooltip(totalSpend, owned) {
     plannerNumber(stillNeed)
   );
 
-  // 20 stamina -> 300 currency => stamina = ceil(stillNeed / 15)
-  const stamina = Math.ceil(stillNeed / 15);
+  setPlannerTooltipLine(
+    runsLabelEl,
+    runsEl,
+    t("planner.farmRuns", { n: "{n}" }),
+    "{n}",
+    plannerNumber(farm.runs)
+  );
+
+  // The Activity is the runs' own cost, so it is always a multiple of 20.
   const perDay = plannerActivityStamina();
   const perDayRoaring = plannerActivityStaminaRoaring();
-  const days = plannerNumber(Number((perDay > 0 ? stamina / perDay : 0).toFixed(1)));
+  const days = plannerNumber(Number((perDay > 0 ? farm.activity / perDay : 0).toFixed(1)));
   const daysRoaring = plannerNumber(
-    Number((perDayRoaring > 0 ? stamina / perDayRoaring : 0).toFixed(1))
+    Number((perDayRoaring > 0 ? farm.activity / perDayRoaring : 0).toFixed(1))
   );
   setPlannerTooltipLine(
     stamLabelEl,
     stamEl,
     t("planner.staminaCalcRoaring", { stamina: "{stamina}", days, daysRoaring }),
     "{stamina}",
-    plannerNumber(stamina)
+    plannerNumber(farm.activity)
+  );
+
+  // What the whole runs leave once the shop is paid for: a run never lands on the
+  // exact figure, so the overshoot (or a hold already past the bill) is printed
+  // rather than silently dropped.
+  setPlannerTooltipLine(
+    restLabelEl,
+    restEl,
+    t("planner.remainder", { n: "{n}" }),
+    "{n}",
+    plannerNumber(held + farm.currency - spend)
   );
 }
 
