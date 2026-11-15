@@ -890,6 +890,77 @@ ok(
     (Date.parse(`${patchPayouts.anchor}T00:00:00Z`) - Date.parse("2026-11-05T00:00:00Z")) % (patchPayouts.days * 86400000) === 0,
   String(patchPayouts.anchor),
 );
+// ---- farm drop table --------------------------------------------------------
+// `data/stages/farm.json` is the one table that does not come from St-Pavlov:
+// drop rates are community data (AGENTS.md §14, "The drop table"). It exists so
+// the Planner can
+// solve a farm route, so the checks are about it being usable, not about the
+// numbers themselves.
+const farm = (() => {
+  try {
+    return readJson(path.join(dir, "stages", "farm.json"));
+  } catch {
+    return null;
+  }
+})();
+const itemRows = read("items.json");
+const itemByName = new Map(itemRows.map((row) => [row.name, row]));
+const formulas = read("item_formulas.json");
+const craftableNames = new Set(
+  Object.keys(formulas).map((id) => (itemRows.find((row) => String(row.id) === String(id)) || {}).name).filter(Boolean),
+);
+const farmableNames = new Set();
+let farmProblems = [];
+if (!farm) {
+  farmProblems.push("missing");
+} else {
+  if (!/^\d+\.\d+$/.test(String(farm.patch || ""))) farmProblems.push("patch");
+  if (!Array.isArray(farm.stages) || farm.stages.length < 100) farmProblems.push("stages");
+  for (const stage of farm.stages || []) {
+    if (!stage.name || !stage.category) farmProblems.push(`row:${stage.name}`);
+    if (!(Number(stage.cost) > 0)) farmProblems.push(`cost:${stage.name}`);
+    const drops = Object.entries(stage.drops || {});
+    if (!drops.length) farmProblems.push(`empty:${stage.name}`);
+    for (const [name, rate] of drops) {
+      if (!itemByName.has(name)) farmProblems.push(`unknown:${name}`);
+      if (!(Number(rate) > 0)) farmProblems.push(`rate:${name}`);
+      farmableNames.add(name);
+    }
+    if (!["Story", "Hard", "Resource", "Insight"].includes(stage.category)) {
+      farmProblems.push(`category:${stage.category}`);
+    }
+  }
+  const names = (farm.stages || []).map((stage) => stage.name);
+  if (new Set(names).size !== names.length) farmProblems.push("duplicate stages");
+  // The two resource stages are what prices Dust and Sharpodonty.
+  for (const required of ["The Poussiere VI", "Mintage Aesthetics VI"]) {
+    if (!names.includes(required)) farmProblems.push(`missing stage ${required}`);
+  }
+}
+ok("farm table is usable", farmProblems.length === 0, farmProblems.slice(0, 6).join(" | "));
+
+// Every material a build plan can ask for must be reachable: either a stage drops
+// it, a Wishing Spring recipe makes it, or it belongs to one of the two shops the
+// farm plan lists separately (Oneiric Shop / Reveries). A material outside those
+// families would be silently dropped from a plan, which is the one failure a
+// reader would never notice.
+const neededNames = new Set();
+for (const row of Object.values(matsBook)) {
+  for (const key of ["insight", "resonance", "euphoria", "mastery", "frequency"]) {
+    for (const step of row[key] || []) {
+      for (const mat of step.materials || []) neededNames.add(mat.material);
+    }
+  }
+}
+neededNames.add("Dust");
+neededNames.add("Sharpodonty");
+const shopFamilies = new Set(["Resonate Materials", "Euphoria Materials"]);
+const unreachable = [...neededNames].filter((name) => {
+  if (farmableNames.has(name) || craftableNames.has(name)) return false;
+  const item = itemByName.get(name);
+  return !item || !shopFamilies.has(item.category);
+});
+ok("every plan material is reachable", unreachable.length === 0, unreachable.join(","));
 
 // ---- misc -------------------------------------------------------------------
 // ---- code rewards -----------------------------------------------------------

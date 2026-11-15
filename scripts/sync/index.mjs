@@ -30,6 +30,7 @@ import { ogIndex } from "./derive/ogIndex.mjs";
 import { codeRewardIndex } from "./derive/codeRewards.mjs";
 import { eventShopData } from "./derive/eventShop.mjs";
 import { bannerData, gachaRules } from "./derive/banners.mjs";
+import { farmStages } from "./derive/farm.mjs";
 
 const argOut = (() => {
   const i = process.argv.indexOf("--out");
@@ -109,6 +110,16 @@ const files = {
 
 for (const [name, data] of Object.entries(files)) {
   writeJson(path.join(argOut, name), data);
+}
+
+// The farm drop table comes from a third-party checkout that CI does not have, so
+// it is not part of `files`: without it the committed file is left alone
+// (AGENTS.md §14, "The drop table").
+const farm = farmStages(items);
+if (farm) {
+  writeJson(path.join(argOut, "stages", "farm.json"), farm);
+} else {
+  console.log("farm: no local Kornblume checkout, data/stages/farm.json left as committed");
 }
 
 console.log(`wrote ${Object.keys(files).length} files to ${path.relative(ROOT, argOut) || "."}`);

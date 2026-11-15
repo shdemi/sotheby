@@ -1449,42 +1449,55 @@
           </div>
         </div>
 
-        <!-- Character tab: pick the arcanists you still have to build, and read
-             the combined bill underneath. -->
+        <!-- Character tab: the loadout grid, the bill it adds up to, and the farm
+             route that pays for it. Every arcanist is a head icon — click to edit,
+             right-click to take them out of the plan without losing their settings
+             — and the four panels below are lightboxes over this tab. -->
         <div class="planner-pane" id="planner-pane-character" data-pane="character" hidden>
           <div class="planner-toolbar">
             <div class="planner-toolbar-lead">
               <span class="planner-patch" id="planner-char-count"></span>
+              <!-- A normal toolbar button, like Goal: the label, then the stamina a
+                   day is worth, so "how many days is that" is answerable at a glance. -->
+              <button type="button" class="btn btn-secondary planner-add-btn planner-activity-btn" id="planner-activity-btn" data-i18n-title="planner.activity" data-i18n-aria-label="planner.activity" title="Activity settings" aria-label="Activity settings">
+                <span data-i18n="planner.activityShort">Activity</span>
+                <span class="planner-activity-figure"><span class="planner-activity-value" id="planner-activity-value">240</span><span class="planner-activity-unit" data-i18n="planner.perDay">/day</span></span>
+              </button>
             </div>
             <div class="planner-toolbar-tail">
-              <button type="button" class="btn btn-secondary planner-add-btn" id="planner-char-add" data-i18n-title="planner.addArcanist" aria-label="Add arcanist" data-i18n-aria-label="planner.addArcanist">
+              <button type="button" class="btn btn-secondary planner-add-btn" id="planner-char-add" data-i18n-title="planner.addCharacter" aria-label="Add character" data-i18n-aria-label="planner.addCharacter">
                 <span class="planner-add-plus" aria-hidden="true">+</span>
-                <span data-i18n="planner.addArcanist">Add arcanist</span>
+                <span data-i18n="planner.addCharacter">Add character</span>
+              </button>
+              <button type="button" class="btn btn-secondary planner-add-btn" id="planner-goal-btn" data-i18n-title="planner.goalTitle" aria-label="Goal" data-i18n-aria-label="planner.goalTitle">
+                <span data-i18n="planner.goal">Goal</span>
               </button>
               <button type="button" class="btn btn-secondary planner-reset-btn" id="planner-char-clear" title="Reset the plan" data-i18n-title="planner.resetPlan" aria-label="Reset the plan" data-i18n-aria-label="planner.resetPlan">
                 <img src="images/random_icon/reset_png.png" alt="" class="planner-reset-icon" />
               </button>
             </div>
           </div>
-          <div class="planner-char-body">
-            <div class="planner-char-rail" id="planner-char-rail"></div>
-            <div class="planner-char-detail" id="planner-char-detail"></div>
-          </div>
-          <div class="planner-goal" id="planner-goal"></div>
 
-          <!-- "Add arcanist" picker, drawn over the tab like a lightbox. Search,
-               rarity filter and tile grid are the Manage modal's own pieces. -->
-          <div class="planner-picker" id="planner-picker" hidden>
-            <div class="planner-picker-card">
-              <div class="planner-picker-head">
-                <span class="archetype-section-title"><span data-i18n="planner.addArcanist">Add arcanist</span></span>
-                <button type="button" class="modal-close planner-picker-close" id="planner-picker-close" aria-label="Close" data-i18n-aria-label="action.close">
+          <div class="planner-char-scroll">
+            <div class="planner-char-rail" id="planner-char-rail"></div>
+            <p class="planner-rail-hint" id="planner-rail-hint"></p>
+            <div class="planner-farm" id="planner-farm"></div>
+          </div>
+
+          <!-- "Add character" picker, drawn over the tab like a lightbox. Search,
+               rarity filter and tile grid are the Manage modal's own pieces, and
+               the list is built the way that modal builds its roster. -->
+          <div class="planner-sheet planner-picker" id="planner-picker" hidden>
+            <div class="planner-sheet-card planner-picker-card">
+              <div class="planner-sheet-head">
+                <span class="archetype-section-title"><span data-i18n="planner.addCharacter">Add character</span></span>
+                <button type="button" class="modal-close planner-picker-close" id="planner-picker-close" data-sheet="planner-picker" aria-label="Close" data-i18n-aria-label="action.close">
                   <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
                 </button>
               </div>
               <div class="roster-toolbar planner-picker-toolbar">
                 <div class="roster-toolbar-left">
-                  <input type="text" class="search-input" id="planner-picker-search" placeholder="Search arcanists" data-i18n-placeholder="planner.searchArcanist" aria-label="Search arcanists" data-i18n-aria-label="planner.searchArcanist" />
+                  <input type="text" class="search-input" id="planner-picker-search" placeholder="Search characters" data-i18n-placeholder="planner.searchCharacter" aria-label="Search characters" data-i18n-aria-label="planner.searchCharacter" />
                   <div class="roster-toolbar-right">
                     <div class="filter-btn-group" id="planner-picker-rarity">
                       <button type="button" class="filter-btn" data-rarity="6">✦6</button>
@@ -1497,6 +1510,124 @@
                 </div>
               </div>
               <div class="roster-grid planner-picker-grid" id="planner-picker-grid"></div>
+            </div>
+          </div>
+
+          <!-- One character: the Character Setting modal's own frame (portrait, name,
+               rarity, close), opened from a head icon. Nothing is edited on the
+               grid itself. -->
+          <div class="planner-sheet" id="planner-char-editor" hidden>
+            <div class="planner-sheet-card planner-editor-card">
+              <div class="archetype-modal-header planner-editor-header">
+                <div class="modal-char-preview">
+                  <img id="planner-editor-portrait" src="" alt="preview" />
+                  <div class="modal-char-name-row">
+                    <h2 class="modal-char-title" id="planner-editor-title" data-i18n="planner.editCharacter">Edit character</h2>
+                    <button type="button" class="btn btn-secondary planner-editor-remove" id="planner-editor-remove" data-remove="" data-i18n="planner.remove">Remove</button>
+                  </div>
+                </div>
+                <button type="button" class="modal-close planner-sheet-close" id="planner-editor-close" data-sheet="planner-char-editor" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="planner-sheet-body planner-char-detail" id="planner-char-detail"></div>
+            </div>
+          </div>
+
+          <!-- The Goal lightbox: every arcanist the plan still counts, added up. -->
+          <div class="planner-sheet" id="planner-goal-sheet" hidden>
+            <div class="planner-sheet-card planner-goal-card">
+              <div class="planner-sheet-head">
+                <span class="archetype-section-title"><span data-i18n="planner.goalTitle">Goal</span></span>
+                <button type="button" class="modal-close planner-sheet-close" id="planner-goal-close" data-sheet="planner-goal-sheet" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="planner-sheet-body" id="planner-goal"></div>
+            </div>
+          </div>
+
+          <!-- Activity settings: what a day of stamina is worth. The Planner is a
+               stamina budget, so this one figure is the whole difference between
+               "two weeks" and "a month" (§14). Two switches, laid out the way the
+               Character Setting modal lays out a setting: label + value on one
+               row, the control underneath. -->
+          <div class="planner-sheet" id="planner-activity-sheet" hidden>
+            <div class="planner-sheet-card planner-activity-card">
+              <div class="planner-sheet-head">
+                <span class="archetype-section-title"><span data-i18n="planner.activity">Activity settings</span></span>
+                <button type="button" class="modal-close planner-sheet-close" id="planner-activity-close" data-sheet="planner-activity-sheet" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="planner-sheet-body planner-activity-body">
+                <div class="setting-group">
+                  <div class="setting-label-row">
+                    <label class="setting-label"><span data-i18n="planner.activityShort">Activity</span></label>
+                    <span class="setting-val-display" id="planner-activity-perday"></span>
+                  </div>
+                  <div class="planner-check-list">
+                    <label class="check-container planner-check-row">
+                      <input type="checkbox" id="planner-set-roaring" />
+                      <span class="check-box"></span>
+                      <span class="check-text"><span data-i18n="planner.roaringMonth">Roaring Month</span></span>
+                    </label>
+                    <label class="check-container planner-check-row">
+                      <input type="checkbox" id="planner-set-weekly" />
+                      <span class="check-box"></span>
+                      <span class="check-text"><span data-i18n="planner.weeklyActivity">Weekly Activeness</span></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wilderness: the idle board's daily Dust and Sharpodonty. It is not
+               stamina, so it does not shorten the route by itself — it lowers the
+               Dust/Sharpodonty the route has to find, which is why the solve reads
+               it (§14). Opened from the tree button on the Resources header. -->
+          <div class="planner-sheet" id="planner-wilderness-sheet" hidden>
+            <div class="planner-sheet-card planner-wilderness-card">
+              <div class="planner-sheet-head">
+                <span class="archetype-section-title"><span data-i18n="planner.wilderness">Wilderness</span></span>
+                <button type="button" class="modal-close planner-sheet-close" id="planner-wilderness-close" data-sheet="planner-wilderness-sheet" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="planner-sheet-body planner-activity-body">
+                <div class="setting-group">
+                  <div class="setting-label-row">
+                    <label class="setting-label"><span data-i18n="planner.wilderness">Wilderness</span></label>
+                    <span class="setting-val-display" id="planner-wilderness-state">Off</span>
+                  </div>
+                  <div class="toggle-group" id="planner-wilderness-toggle" role="group" aria-label="Wilderness" data-i18n-aria-label="planner.wilderness">
+                    <button type="button" class="btn-toggle" data-value="0" data-i18n="planner.off">Off</button>
+                    <button type="button" class="btn-toggle" data-value="1" data-i18n="planner.on">On</button>
+                  </div>
+                </div>
+                <div class="setting-group">
+                  <label class="setting-label"><span data-i18n="planner.dustBellTowers">Dust Bell Towers</span></label>
+                  <div class="planner-wilderness-selects" id="planner-wilderness-dust"></div>
+                </div>
+                <div class="setting-group">
+                  <label class="setting-label"><span data-i18n="planner.sharpodontyMarkets">Sharpodonty Markets</span></label>
+                  <div class="planner-wilderness-selects" id="planner-wilderness-gold"></div>
+                </div>
+                <div class="setting-group">
+                  <label class="setting-label" for="planner-wilderness-vigor"><span data-i18n="planner.vigor">Vigor</span></label>
+                  <div class="planner-vigor-row">
+                    <input type="number" min="0" step="1" value="50" class="planner-vigor-input" id="planner-wilderness-vigor" aria-label="Vigor" data-i18n-aria-label="planner.vigor" />
+                    <span class="planner-vigor-unit" aria-hidden="true">%</span>
+                  </div>
+                </div>
+                <div class="setting-group">
+                  <div class="setting-label-row">
+                    <label class="setting-label"><span data-i18n="planner.wildernessOutput">Daily output</span></label>
+                  </div>
+                  <div class="planner-wilderness-output" id="planner-wilderness-output"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

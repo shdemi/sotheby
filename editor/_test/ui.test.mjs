@@ -1171,6 +1171,26 @@ try {
         !tabsInfo.eventVisible,
       JSON.stringify(tabsInfo)
     );
+    {
+      // The Planner's own windows sit on a surface that is already dimmed: Activity
+      // settings, Wilderness, both Resets and the Event tab's quantity editor must not
+      // blur the page behind them as well.
+      const blur = await page.evaluate(() => {
+        const read = (el) => (el ? getComputedStyle(el).backdropFilter : "missing");
+        return {
+          planner: read(document.getElementById("planner-modal")),
+          confirm: read(document.getElementById("confirm-modal")),
+          slider: read(document.querySelector(".planner-slider-backdrop")),
+          // A window that is not the Planner's keeps the blurred backdrop.
+          builds: read(document.getElementById("builds-modal")),
+        };
+      });
+      check(
+        "the Planner's own windows do not blur the page behind them",
+        blur.planner === "none" && blur.confirm === "none" && blur.slider === "none" && blur.builds === "blur(3px)",
+        JSON.stringify(blur)
+      );
+    }
 
     /* ---- Calculator tab ---- */
     // Everything the tab shows is generated: `data/gacha_rules.json` prices a pull and
@@ -2869,6 +2889,32 @@ try {
     check("its tooltip still names it", !!reset.title, reset.title);
 
     await page.evaluate(() => document.getElementById("planner-clear").click());
+    await page.waitForTimeout(250);
+    const resetAsk = await page.evaluate(() => ({
+      open: getComputedStyle(document.getElementById("confirm-modal")).display !== "none",
+      message: document.getElementById("confirm-modal-message").textContent.trim(),
+      // Not one card has moved yet.
+      stillStepped: [...document.querySelectorAll(".planner-card")].some(
+        (card) => Number(card.querySelector(".planner-count").textContent.split("/")[0]) !== Number(card.dataset.max)
+      ),
+    }));
+    check(
+      "Reset asks before it throws the shop's picks away",
+      resetAsk.open && resetAsk.stillStepped && resetAsk.message.length > 0,
+      JSON.stringify(resetAsk)
+    );
+    const resetCancelled = await page.evaluate(() => {
+      document.getElementById("confirm-modal-btn-cancel").click();
+      return [...document.querySelectorAll(".planner-card")].some(
+        (card) => Number(card.querySelector(".planner-count").textContent.split("/")[0]) !== Number(card.dataset.max)
+      );
+    });
+    check("cancelling keeps the picks", resetCancelled, "a cancel must leave the shop alone");
+
+    await page.evaluate(() => {
+      document.getElementById("planner-clear").click();
+      document.getElementById("confirm-modal-btn-yes").click();
+    });
     await page.waitForTimeout(300);
     const afterReset = await page.evaluate(() => {
       const rows = [...document.querySelectorAll(".planner-card")].map((card) => {
@@ -2977,13 +3023,14 @@ try {
   }
 
   /* ------------------------------------------------------------------ *
-   * 10c. Planner (character progression)
+   * 10c. Planner (character plan and farm route)
    * ------------------------------------------------------------------ */
 
-  console.log("\n=== Planner: character progression ===");
+  console.log("\n=== Planner: character plan and farm route ===");
   {
     await page.evaluate(() => {
       localStorage.removeItem("r1999_planner_characters_v1");
+      localStorage.removeItem("r1999_planner_activity_v1");
       // The modal reopens on the tab it was left on, and the section above left it
       // on Event — start this half from a clean slate so Character is the default.
       localStorage.removeItem("r1999_planner_tab_v1");
@@ -2999,589 +3046,1257 @@ try {
 
     // Quantities live in `data-qty` (the badge prints a compact "894k", the way the
     // InfoBook's own item sticker does), so read the exact figure.
-    const readMats = (sel) =>
-      page.evaluate((s) => {
+    const readBill = (scope) =>
+      page.evaluate((selector) => {
         const out = {};
-        for (const card of document.querySelectorAll(`${s} .planner-mat`)) {
+        for (const card of document.querySelectorAll(`${selector} .planner-mat`)) {
           out[card.dataset.item] = Number(card.dataset.qty || 0);
         }
         return out;
-      }, sel);
-    const norm = (obj) => JSON.stringify(Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0])));
-    const setField = (id, value) =>
+      }, scope);
+    const normBill = (obj) =>
+      JSON.stringify(Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0])));
+    const sumBill = (...maps) => {
+      const acc = {};
+      for (const map of maps) for (const [key, value] of Object.entries(map)) acc[key] = (acc[key] || 0) + value;
+      return acc;
+    };
+    const pickName = (name) =>
+      page.evaluate((n) => document.querySelector(`#planner-picker-grid [data-pick="${n}"]`).click(), name);
+    const selectChar = (name) =>
+      page.evaluate((n) => document.querySelector(`#planner-char-rail [data-char="${n}"]`).click(), name);
+    const setField = (field, value) =>
       page.evaluate(
-        ([fieldId, v]) => {
-          const el = document.getElementById(fieldId);
+        ([f, v]) => {
+          const el = document.querySelector(`#planner-char-detail select[data-field="${f}"]`);
           el.value = String(v);
           el.dispatchEvent(new Event("change", { bubbles: true }));
         },
-        [id, value]
+        [field, value]
       );
-    const searchPicker = async (query) => {
-      await page.evaluate((q) => {
-        const input = document.getElementById("planner-picker-search");
-        input.value = q;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-      }, query);
-      await page.waitForTimeout(200);
+    const waitForRoute = async () => {
+      await page.waitForFunction(() => !!document.getElementById("planner-farm-stamina"), null, {
+        timeout: 25000,
+      });
+      await page.waitForTimeout(120);
     };
 
-    const emptyPane = await page.evaluate(() => ({
-      charVisible: !document.getElementById("planner-pane-character").hidden,
-      calcVisible: !document.getElementById("planner-pane-calculator").hidden,
-      eventVisible: !document.getElementById("planner-pane-event").hidden,
-      railEmpty: (document.querySelector(".planner-rail-empty")?.textContent || "").trim(),
-      railTiles: document.querySelectorAll(".planner-char-tile").length,
-      goalCards: document.querySelectorAll("#planner-goal .planner-mat").length,
-      goalAvatars: document.querySelectorAll("#planner-goal .planner-goal-avatar").length,
-      goalText: (document.getElementById("planner-goal").textContent || "").replace(/\s+/g, " ").trim(),
-      paneText: (document.getElementById("planner-pane-character").textContent || "").trim(),
-    }));
+    const empty = await page.evaluate(() => {
+      const rail = document.getElementById("planner-char-rail");
+      const farm = document.getElementById("planner-farm");
+      return {
+        charVisible: !document.getElementById("planner-pane-character").hidden,
+        calcVisible: !document.getElementById("planner-pane-calculator").hidden,
+        eventVisible: !document.getElementById("planner-pane-event").hidden,
+        railEmpty: (rail.querySelector(".planner-rail-empty")?.textContent || "").trim(),
+        // An empty plan is one sentence across the pane, not a grid cell: it spans
+        // every column and its text is centred, instead of hanging in the top-left.
+        railEmptyBox: (() => {
+          const p = rail.querySelector(".planner-rail-empty");
+          if (!p) return null;
+          const cs = getComputedStyle(p);
+          return {
+            align: cs.textAlign,
+            width: Math.round(p.getBoundingClientRect().width),
+            rail: Math.round(rail.getBoundingClientRect().width),
+          };
+        })(),
+        tiles: rail.querySelectorAll(".planner-char-tile").length,
+        hint: document.getElementById("planner-rail-hint").textContent.trim(),
+        count: document.getElementById("planner-char-count").textContent.trim(),
+        farm: farm.textContent.replace(/\s+/g, " ").trim(),
+        hasStamina: !!document.getElementById("planner-farm-stamina"),
+        activity: document.getElementById("planner-activity-value").textContent.trim(),
+        activityUnit: document.querySelector("#planner-activity-btn .planner-activity-unit").textContent.trim(),
+        buttons: ["planner-char-add", "planner-goal-btn", "planner-char-clear", "planner-activity-btn"].every(
+          (id) => !!document.getElementById(id)
+        ),
+        sheets: [...document.querySelectorAll("#planner-pane-character .planner-sheet")].map((s) => s.hidden),
+      };
+    });
     check(
-      "the Character tab opens on the plan, not the calculator",
-      emptyPane.charVisible && !emptyPane.eventVisible && !emptyPane.calcVisible,
-      JSON.stringify(emptyPane)
+      "pressing Character shows that tab alone",
+      empty.charVisible && !empty.calcVisible && !empty.eventVisible,
+      JSON.stringify(empty)
     );
     check(
       "an empty plan says so instead of drawing an empty grid",
-      emptyPane.railTiles === 0 && emptyPane.goalCards === 0 && !!emptyPane.railEmpty && !!emptyPane.paneText,
-      JSON.stringify(emptyPane)
+      empty.tiles === 0 && !!empty.railEmpty && empty.hint === "" && empty.count === "",
+      JSON.stringify(empty)
     );
-    // The Goal band on an empty plan is its title and nothing else — no
-    // "0 arcanists", no "add one" prompt.
     check(
-      "the empty Goal band is just its title",
-      emptyPane.goalAvatars === 0 && emptyPane.goalText.length <= 12,
-      JSON.stringify(emptyPane)
+      "that sentence sits in the middle of the pane, not in the top-left corner",
+      empty.railEmptyBox &&
+        empty.railEmptyBox.align === "center" &&
+        empty.railEmptyBox.width >= empty.railEmptyBox.rail - 1,
+      JSON.stringify(empty.railEmptyBox)
+    );
+    check(
+      "the farm route starts empty",
+      /Nothing left to farm/.test(empty.farm) && !empty.hasStamina,
+      empty.farm
+    );
+    check(
+      "the toolbar carries the stamina setting, Add, Goal and Reset",
+      empty.buttons && empty.activity === "240" && empty.activityUnit === "/day",
+      JSON.stringify(empty)
+    );
+    check(
+      "every panel starts closed",
+      empty.sheets.length === 5 && empty.sheets.every(Boolean),
+      JSON.stringify(empty.sheets)
     );
 
-    check(
-      "the picker starts closed",
-      (await page.evaluate(() => document.getElementById("planner-picker").hidden)) === true
-    );
+    // ---- the picker ------------------------------------------------------
     await page.evaluate(() => document.getElementById("planner-char-add").click());
     await page.waitForTimeout(300);
     const picker = await page.evaluate(() => {
-      const el = document.getElementById("planner-picker");
-      const tiles = [...el.querySelectorAll("[data-pick]")];
+      const sheet = document.getElementById("planner-picker");
+      const grid = document.getElementById("planner-picker-grid");
+      const tile = grid.querySelector("[data-pick]");
+      const box = sheet.getBoundingClientRect();
+      const pane = document.getElementById("planner-pane-character").getBoundingClientRect();
+      const names = [...grid.querySelectorAll("[data-pick]")].map((el) => el.dataset.pick);
       return {
-        hidden: el.hidden,
-        width: Math.round(el.getBoundingClientRect().width),
-        paneWidth: Math.round(document.getElementById("planner-pane-character").getBoundingClientRect().width),
-        tiles: tiles.length,
-        broken: tiles.filter((t) => {
-          const img = t.querySelector("img");
-          return img && img.naturalWidth === 0;
-        }).length,
-        named: tiles.filter((t) =>
-          (t.querySelector(".roster-char-name")?.textContent || "").trim()
-        ).length,
-        // The picker is built out of the Manage modal's own pieces.
-        rosterTiles: tiles.filter((t) => t.classList.contains("roster-char-item")).length,
-        boxes: tiles.filter((t) => t.querySelector(".roster-avatar-box")).length,
-        avatars: tiles.filter((t) => t.querySelector(".roster-avatar-box .roster-avatar-img")).length,
-        searchIsManage: !!el.querySelector(".roster-toolbar .search-input"),
-        rarityChips: el.querySelectorAll(".filter-btn-group .filter-btn").length,
+        open: !sheet.hidden,
+        covers: Math.abs(box.width - pane.width) < 2 && Math.abs(box.height - pane.height) < 2,
+        tiles: names.length,
+        manageStyle:
+          !!tile.querySelector(".roster-avatar-box") &&
+          !!tile.querySelector(".roster-avatar-img") &&
+          !!tile.querySelector(".roster-char-name"),
+        search: !!document.getElementById("planner-picker-search"),
+        chips: document.querySelectorAll("#planner-picker-rarity .filter-btn").length,
+        // The Manage modal's roster, so the curated exclusion list applies too.
+        excludesSchneider: !names.includes("Schneider"),
+        excludesDummy: !names.some((name) => /Machine D/.test(name)),
       };
     });
-    check("the add button opens the picker", picker.hidden === false, JSON.stringify(picker));
-    check("the picker covers the tab it belongs to", picker.width === picker.paneWidth, JSON.stringify(picker));
-    check("it lists the whole roster", picker.tiles > 100, String(picker.tiles));
     check(
-      "every tile draws a head icon and a name",
-      picker.broken === 0 && picker.named === picker.tiles,
+      "Add character opens a lightbox over the whole tab",
+      picker.open && picker.covers,
       JSON.stringify(picker)
     );
     check(
-      "the tiles are the Manage modal's roster tiles",
-      // Eight roster heads have no art in the asset cache, so the box is the
-      // requirement and the image is the common case.
-      picker.rosterTiles === picker.tiles &&
-        picker.boxes === picker.tiles &&
-        picker.avatars >= picker.tiles - 8,
+      "it lists the whole roster as Manage-style tiles",
+      picker.tiles > 100 && picker.manageStyle && picker.search && picker.chips === 5,
       JSON.stringify(picker)
     );
     check(
-      "the picker carries Manage's search box and rarity chips",
-      picker.searchIsManage && picker.rarityChips === 5,
-      JSON.stringify(picker)
+      "the picker is the Manage roster, so excluded characters never appear",
+      picker.excludesSchneider && picker.excludesDummy,
+      JSON.stringify({ tiles: picker.tiles, schneider: picker.excludesSchneider })
     );
 
-    // The rarity chips narrow the grid, and pressing one again widens it back.
-    const byRarity = await page.evaluate(() => {
-      const grid = document.getElementById("planner-picker-grid");
-      const count = () => grid.querySelectorAll("[data-pick]").length;
-      const chip = (r) => document.querySelector(`#planner-picker-rarity .filter-btn[data-rarity="${r}"]`);
-      const all = count();
-      chip("6").click();
-      const six = count();
-      const sixNames = [...grid.querySelectorAll("[data-pick]")].slice(0, 5).map((t) => t.dataset.pick);
-      chip("5").click();
-      const sixFive = count();
-      chip("6").click();
-      chip("5").click();
-      const back = count();
-      return { all, six, sixFive, back, sixNames, active: !!document.querySelector("#planner-picker-rarity .filter-btn.active") };
+    await page.evaluate(() => {
+      const input = document.getElementById("planner-picker-search");
+      input.value = "lucy";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.waitForTimeout(200);
+    const searched = await page.evaluate(() =>
+      [...document.querySelectorAll("#planner-picker-grid [data-pick]")].map((el) => el.dataset.pick)
+    );
+    check(
+      "the search box narrows the grid to one arcanist",
+      searched.length === 1 && /^lucy$/i.test(searched[0]),
+      JSON.stringify(searched)
+    );
+    await page.evaluate(() => {
+      const input = document.getElementById("planner-picker-search");
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
     });
     await page.waitForTimeout(150);
+    const rarity = await page.evaluate(() => {
+      const grid = document.getElementById("planner-picker-grid");
+      const chip = document.querySelector('#planner-picker-rarity .filter-btn[data-rarity="6"]');
+      const all = grid.querySelectorAll("[data-pick]").length;
+      chip.click();
+      const narrowed = grid.querySelectorAll("[data-pick]").length;
+      const active = chip.classList.contains("active");
+      chip.click();
+      return { all, narrowed, active, back: grid.querySelectorAll("[data-pick]").length };
+    });
     check(
-      "a rarity chip narrows the picker",
-      byRarity.six > 0 && byRarity.six < byRarity.all && byRarity.sixFive > byRarity.six,
-      JSON.stringify(byRarity)
-    );
-    check(
-      "pressing the chips off restores the whole roster",
-      byRarity.back === byRarity.all && !byRarity.active,
-      JSON.stringify(byRarity)
+      "a rarity chip narrows the grid and pressing it again widens it",
+      rarity.narrowed > 0 &&
+        rarity.narrowed < rarity.all &&
+        rarity.active &&
+        rarity.back === rarity.all,
+      JSON.stringify(rarity)
     );
 
-    await searchPicker("lucy");
-    const searched = await page.evaluate(() =>
-      [...document.querySelectorAll("#planner-picker [data-pick]")].map((t) => t.dataset.pick)
-    );
-    check("the picker searches the roster", searched.includes("Lucy"), JSON.stringify(searched.slice(0, 6)));
+    // Backdrop press closes it, the way every other lightbox does.
+    const backdrop = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-picker");
+      sheet.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      return sheet.hidden;
+    });
+    check("a press on the backdrop closes the picker", backdrop);
 
-    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Lucy"]').click());
+    // ---- add one character -----------------------------------------------
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(250);
+    await pickName("Lucy");
     await page.waitForTimeout(400);
     const added = await page.evaluate(() => {
-      const selects = [...document.querySelectorAll("#planner-char-detail .planner-field-select")];
-      const cs = selects.length ? getComputedStyle(selects[0]) : null;
+      const rail = document.getElementById("planner-char-rail");
+      const tile = rail.querySelector(".planner-char-tile");
+      const card = document.querySelector("#planner-char-editor .planner-sheet-card");
+      const style = getComputedStyle(card);
       return {
-        pickerHidden: document.getElementById("planner-picker").hidden,
-        rail: document.querySelectorAll(".planner-char-tile").length,
-        selected: document.querySelectorAll(".planner-char-tile.is-selected").length,
-        name: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
-        portrait: document.querySelector(".planner-char-portrait")?.naturalWidth || 0,
-        selects: selects.length,
-        appearance: cs ? cs.appearance || cs.webkitAppearance : "",
-        caret: cs ? /svg/.test(cs.backgroundImage) : false,
+        pickerClosed: document.getElementById("planner-picker").hidden,
+        editorOpen: !document.getElementById("planner-char-editor").hidden,
+        title: document.getElementById("planner-editor-title").textContent.trim(),
+        tiles: rail.querySelectorAll(".planner-char-tile").length,
+        grid: getComputedStyle(rail).display,
+        iconOnly:
+          !!tile.querySelector("img") &&
+          !tile.querySelector(".planner-char-tile-name") &&
+          tile.textContent.trim() === "",
+        selected: tile.classList.contains("is-selected"),
+        selectedBorder: getComputedStyle(tile).borderTopColor,
+        // The editor wears the Character Setting modal's own head: a portrait, the
+        // name, and a Remove button — no rarity plate and no status line.
+        portrait: document.getElementById("planner-editor-portrait").getAttribute("src") || "",
+        hasSub: !!document.getElementById("planner-editor-sub"),
+        rarityPlate: !!document.querySelector("#planner-char-editor .planner-editor-rarity"),
+        removeText: document.getElementById("planner-editor-remove").textContent.trim(),
+        removeImg: !!document.querySelector("#planner-editor-remove img"),
+        removeInHeader: document.getElementById("planner-editor-remove").dataset.remove,
+        cardFrame: style.borderTopColor,
+        cardRadius: style.borderTopRightRadius,
+        cardWash: /background\.png/.test(style.backgroundImage),
+        // The dark wash is gone: the card is the modal's own panel, not a scrim.
+        cardOverlay: /linear-gradient/.test(style.backgroundImage),
+        cardWidth: Math.round(card.getBoundingClientRect().width),
+        headBg: getComputedStyle(document.querySelector("#planner-char-editor .planner-editor-header"))
+          .backgroundColor,
+        titleFont: getComputedStyle(document.getElementById("planner-editor-title")).fontFamily,
+        // The head is one row: portrait + name on the left, the close button at the
+        // card's right edge — never a close that flows under the name.
+        headRow: (() => {
+          const head = document.querySelector("#planner-char-editor .planner-editor-header");
+          const close = head.querySelector(".planner-sheet-close");
+          const name = document.getElementById("planner-editor-title");
+          const hr = head.getBoundingClientRect();
+          const cr = close.getBoundingClientRect();
+          const nr = name.getBoundingClientRect();
+          return {
+            display: getComputedStyle(head).display,
+            wrap: getComputedStyle(head).flexWrap,
+            sameRow: Math.abs(cr.top + cr.height / 2 - (nr.top + nr.height / 2)) < 24,
+            closeInset: Math.round(hr.right - cr.right),
+          };
+        })(),
+        hint: document.getElementById("planner-rail-hint").textContent.trim(),
+        count: document.getElementById("planner-char-count").textContent.trim(),
       };
     });
-    check("picking an arcanist closes the picker", added.pickerHidden === true, JSON.stringify(added));
     check(
-      "it joins the rail and opens its detail pane",
-      added.rail === 1 && added.selected === 1 && added.name === "Lucy" && added.portrait > 0,
+      "picking a character closes the picker and opens its panel",
+      added.pickerClosed && added.editorOpen && /^Lucy$/.test(added.title),
       JSON.stringify(added)
     );
     check(
-      "the pane carries four from → to controls",
-      added.selects === 8,
-      `${added.selects} selects`
+      "the plan is a grid of head icons and nothing else",
+      added.grid === "grid" &&
+        added.tiles === 1 &&
+        added.iconOnly &&
+        !added.selected &&
+        added.selectedBorder !== "rgb(208, 81, 38)",
+      JSON.stringify(added)
     );
     check(
-      "the controls are the modal's own select",
-      added.appearance === "none" && added.caret === true,
+      "the editor is the Character Setting modal's own card, modal-width, no scrim",
+      /^rgb\(181, 88, 41\)$/.test(added.cardFrame) &&
+        added.cardRadius === "20px" &&
+        added.cardWash &&
+        !added.cardOverlay &&
+        added.cardWidth <= 440 &&
+        /^rgb\(33, 33, 33\)$/.test(added.headBg) &&
+        /Georgia/.test(added.titleFont),
+      JSON.stringify({
+        frame: added.cardFrame,
+        radius: added.cardRadius,
+        wash: added.cardWash,
+        overlay: added.cardOverlay,
+        width: added.cardWidth,
+        head: added.headBg,
+      })
+    );
+    check(
+      "its head carries the portrait, the name and a Remove button",
+      /images\/headicon_small\//.test(added.portrait) &&
+        !added.hasSub &&
+        !added.rarityPlate &&
+        added.removeText === "Remove" &&
+        !added.removeImg &&
+        added.removeInHeader === "Lucy",
+      JSON.stringify({
+        portrait: added.portrait,
+        hasSub: added.hasSub,
+        plate: added.rarityPlate,
+        remove: added.removeText,
+        img: added.removeImg,
+      })
+    );
+    check(
+      "the head keeps the name and the close button on one row",
+      added.headRow.display === "flex" &&
+        added.headRow.wrap === "nowrap" &&
+        added.headRow.sameRow &&
+        added.headRow.closeInset <= 24,
+      JSON.stringify(added.headRow)
+    );
+    check(
+      "the rail hint and the count follow the plan",
+      /right-click/.test(added.hint) && /^1\b/.test(added.count),
       JSON.stringify(added)
     );
 
-    const detailMats = await readMats("#planner-char-detail");
-    const goalMats = await readMats("#planner-goal");
-    const matArt = await page.evaluate(() => {
-      const imgs = [...document.querySelectorAll("#planner-char-detail .planner-mat-art img")];
-      return { count: imgs.length, broken: imgs.filter((i) => i.naturalWidth === 0).length };
-    });
-    check("the arcanist gets a bill", Object.keys(detailMats).length > 0, Object.keys(detailMats).join(","));
-    check("every quantity on it is positive", Object.values(detailMats).every((n) => n > 0), JSON.stringify(detailMats));
-    check(
-      "levelling costs are on the bill",
-      !!detailMats.Dust && !!detailMats.Sharpodonty,
-      Object.keys(detailMats).join(",")
-    );
-    check("every material draws its art", matArt.count > 0 && matArt.broken === 0, JSON.stringify(matArt));
-    check(
-      "the goal bar repeats a single arcanist's bill",
-      norm(goalMats) === norm(detailMats),
-      JSON.stringify({ goalMats, detailMats })
-    );
-
-    // Frequency picks a resonance pattern. The five tiles are the arcanist's own
-    // board (`talent_style`), each named and drawn with its own glyph, and a
-    // pick must bill exactly `pattern_costs.json`'s row for that pattern.
-    const patternData = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "pattern_costs.json"), "utf8"));
-    const freqUi = await page.evaluate(() => {
-      const tiles = [...document.querySelectorAll("#planner-char-detail .planner-freq-tile")];
+    const editor = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const cards = [...detail.querySelectorAll(".planner-mat")];
+      const first = cards[0];
+      const sticker = first?.querySelector(".planner-mat-sticker");
       return {
-        count: tiles.length,
-        names: tiles.map((t) => (t.querySelector(".planner-freq-name")?.textContent || "").trim()),
-        glyphs: tiles.map((t) => {
-          const img = t.querySelector("img");
-          return img ? { src: img.getAttribute("src"), ok: img.naturalWidth > 0 } : null;
-        }),
-        label: (document.querySelector("#planner-char-detail .planner-freq-row")?.closest(".planner-field")
-          ?.querySelector(".planner-field-label")?.textContent || "").trim(),
+        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
+        caret: getComputedStyle(detail.querySelector("select[data-field]")).backgroundImage,
+        quickGoal: !!document.getElementById("planner-quick-goal"),
+        // Remove lives in the header now, so the body carries no remove button.
+        remove: detail.querySelectorAll("[data-remove]").length,
+        groups: detail.querySelectorAll(".planner-char-controls .setting-group").length,
+        labels: [...detail.querySelectorAll(".setting-label span")].map((el) => el.textContent.trim()),
+        // The setting rules are `#edit-modal`'s own: 12px caps at #BFBFBF over a
+        // 1px rule, and the value in 13px gg sans.
+        labelStyle: (() => {
+          const el = detail.querySelector(".setting-label");
+          const cs = getComputedStyle(el);
+          const group = getComputedStyle(el.closest(".setting-group"));
+          const val = getComputedStyle(el.closest(".setting-group").querySelector(".setting-val-display"));
+          return [
+            cs.fontSize,
+            cs.color,
+            group.paddingBottom,
+            group.borderBottomWidth + " " + group.borderBottomStyle,
+            val.fontSize,
+            val.color,
+          ].join(" | ");
+        })(),
+        euphoria: detail.querySelectorAll(".planner-euphoria-checks input[type=checkbox]").length,
+        euphoriaIcons: [...detail.querySelectorAll(".planner-euphoria-checks .euphoria-check-icon")].map(
+          (img) => img.getAttribute("src") || ""
+        ),
+        euphoriaTiers: [...detail.querySelectorAll(".planner-euphoria-checks .euphoria-check-tier")].map(
+          (el) => el.textContent.trim()
+        ),
+        patterns: detail.querySelectorAll("[data-pattern]").length,
+        glyphs: [...detail.querySelectorAll("[data-pattern] img")].map((img) => img.getAttribute("src")),
+        cards: cards.length,
+        noName: !detail.querySelector(".planner-mat-name"),
+        sticker: !!first?.querySelector(".item-sticker-img") && !!first?.querySelector(".item-sticker-border"),
+        size: sticker ? Math.round(sticker.getBoundingClientRect().width) : 0,
+        badgeSize: first ? parseFloat(getComputedStyle(first.querySelector(".item-sticker-qty")).fontSize) : 0,
+        badge: first?.querySelector(".item-sticker-qty")?.textContent.trim() || "",
+        qty: Number(first?.dataset.qty || 0),
       };
     });
-    check("the arcanist gets five pattern tiles", freqUi.count === 5, JSON.stringify(freqUi));
     check(
-      "every tile is named and drawn with a real glyph",
-      freqUi.names.every(Boolean) && freqUi.glyphs.every((g) => g && g.ok && /images\/shape_pattern\//.test(g.src)),
-      JSON.stringify(freqUi),
+      "the panel opens on level 1 / Insight 0, built to the character's cap",
+      editor.fields.join(",") ===
+        "curInsight=0,goalInsight=3,curLevel=1,goalLevel=60,curReso=0,goalReso=10,curMastery=0,goalMastery=0",
+      JSON.stringify(editor.fields)
     );
     check(
-      "the tiles are the arcanist's own board",
-      norm(freqUi.names) === norm(Object.keys(patternData.Lucy)),
-      JSON.stringify({ ui: freqUi.names, data: Object.keys(patternData.Lucy) }),
+      "its from→to controls are the dressed-up native selects",
+      /^url\(/.test(editor.caret) && editor.quickGoal && editor.remove === 0,
+      JSON.stringify(editor)
     );
     check(
-      "the picker reads as a resonance pattern, not a bare number",
-      /pattern|调频|Mẫu/i.test(freqUi.label) && !/\d/.test(freqUi.names.join("")),
-      JSON.stringify({ label: freqUi.label, names: freqUi.names }),
+      "the settings are the Setting modal's own setting-groups",
+      editor.groups === 5 &&
+        editor.labels.includes("Insight") &&
+        editor.labels.includes("Resonance") &&
+        editor.labels.includes("Euphoria · Mastery") &&
+        editor.euphoria >= 1,
+      JSON.stringify({ groups: editor.groups, labels: editor.labels, euphoria: editor.euphoria })
+    );
+    check(
+      "a group is drawn the way the Character Setting modal draws one",
+      editor.labelStyle === "12px | rgb(191, 191, 191) | 10px | 1px solid | 13px | rgb(229, 231, 235)",
+      editor.labelStyle
+    );
+    check(
+      "a Euphoria facet is drawn as its portrait, tag and all",
+      editor.euphoriaIcons.length === editor.euphoria &&
+        editor.euphoriaIcons.every((src) => /images\/arcanists\/euphoria\/\d+_\d+\.webp$/.test(src)) &&
+        editor.euphoriaTiers.every((tier) => /^E\d+$/.test(tier)),
+      JSON.stringify({ icons: editor.euphoriaIcons, tiers: editor.euphoriaTiers })
+    );
+    check(
+      "the facet art is really there",
+      await page.evaluate(() =>
+        [...document.querySelectorAll("#planner-char-detail .planner-euphoria-checks .euphoria-check-icon")].every(
+          (img) => img.complete && img.naturalWidth > 0
+        )
+      )
+    );
+    check(
+      "the five resonance patterns draw their own glyphs",      editor.patterns === 5 &&
+        editor.glyphs.length === 5 &&
+        editor.glyphs.every((src) => src && /images\/shape_pattern\//.test(src)),
+      JSON.stringify(editor.glyphs)
+    );
+    check(
+      "the bill is a wall of item stickers with no name and no card box",
+      editor.cards > 10 && editor.noName && editor.sticker && editor.size >= 56 && editor.size <= 72,
+      JSON.stringify({ cards: editor.cards, size: editor.size })
+    );
+    check(
+      "the quantity badge scales with the art",
+      editor.badgeSize >= 9 && editor.badgeSize <= 12,
+      JSON.stringify({ size: editor.size, badge: editor.badgeSize })
+    );
+    check(
+      "the quantity badge is the compact form and data-qty the exact one",
+      /k|m/.test(editor.badge) && editor.qty > 10000 && String(editor.qty) !== editor.badge,
+      `${editor.badge} / ${editor.qty}`
     );
 
-    const patternName = freqUi.names[0];
-    const patternBill = patternData.Lucy[patternName];
-    await page.evaluate(() =>
-      document.querySelector("#planner-char-detail .planner-freq-tile").click()
-    );
-    await page.waitForTimeout(350);
-    const withPattern = await readMats("#planner-char-detail");
-    const patternDelta = {};
-    for (const mat of Object.keys(withPattern)) {
-      const delta = withPattern[mat] - (detailMats[mat] || 0);
-      if (delta) patternDelta[mat] = delta;
-    }
-    const expectedDelta = Object.fromEntries(patternBill.map((m) => [m.material, m.quantity]));
+    // ---- quick goal, and a plan whose current state is its goal ----------
+    const quick = await page.evaluate(() => {
+      document.getElementById("planner-quick-goal").click();
+      const detail = document.getElementById("planner-char-detail");
+      return [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`);
+    });
     check(
-      "picking a pattern bills that pattern",
-      norm(patternDelta) === norm(expectedDelta),
-      JSON.stringify({ expectedDelta, patternDelta }),
-    );
-    // Clicking the same tile again must take that bill back off.
-    await page.evaluate(() =>
-      document.querySelector("#planner-char-detail .planner-freq-tile").click()
-    );
-    await page.waitForTimeout(350);
-    check(
-      "unpicking it takes the bill back off",
-      norm(await readMats("#planner-char-detail")) === norm(detailMats),
-      JSON.stringify(await readMats("#planner-char-detail")),
-    );
-
-    const defaults = await page.evaluate(() => ({
-      curInsight: document.getElementById("planner-f-curInsight").value,
-      curLevel: document.getElementById("planner-f-curLevel").value,
-      goalInsight: document.getElementById("planner-f-goalInsight").value,
-      goalLevel: document.getElementById("planner-f-goalLevel").value,
-      goalReso: document.getElementById("planner-f-goalReso").value,
-    }));
-    check(
-      "a new plan starts at Lv.1 Insight 0 and ends at the cap",
-      defaults.curInsight === "0" &&
-        defaults.curLevel === "1" &&
-        defaults.goalInsight === "3" &&
-        defaults.goalLevel === "60",
-      JSON.stringify(defaults)
-    );
-
-    // The Quick goal button is the usual "this arcanist can fight now"
-    // breakpoint: 5★/6★ stop at Insight III Lv.30 with a full R10 board.
-    await page.evaluate(() => document.getElementById("planner-quick-goal").click());
-    await page.waitForTimeout(300);
-    const quick = await page.evaluate(() => ({
-      insight: document.getElementById("planner-f-goalInsight").value,
-      level: document.getElementById("planner-f-goalLevel").value,
-      reso: document.getElementById("planner-f-goalReso").value,
-      mats: document.querySelectorAll("#planner-char-detail .planner-mat").length,
-    }));
-    check(
-      "quick goal is the usual breakpoint (Insight III Lv.30 R10)",
-      quick.insight === "3" && quick.level === "30" && quick.reso === "10",
+      "Quick goal lands on the can-fight-now breakpoint",
+      quick.includes("goalInsight=3") && quick.includes("goalLevel=30") && quick.includes("goalReso=10"),
       JSON.stringify(quick)
     );
-    check("it still leaves a bill to farm", quick.mats > 0, JSON.stringify(quick));
 
-    // Walking the current state up to the goal must empty the bill: the costs
-    // are differences between two states, not a fixed package.
-    const goalState = await page.evaluate(() => ({
-      insight: document.getElementById("planner-f-goalInsight").value,
-      level: document.getElementById("planner-f-goalLevel").value,
-      reso: document.getElementById("planner-f-goalReso").value,
-    }));
-    await setField("planner-f-curInsight", goalState.insight);
-    await page.waitForTimeout(150);
-    await setField("planner-f-curLevel", goalState.level);
-    await page.waitForTimeout(150);
-    await setField("planner-f-goalLevel", goalState.level);
-    await page.waitForTimeout(150);
-    await setField("planner-f-curReso", goalState.reso);
-    await page.waitForTimeout(300);
-    const settled = await readMats("#planner-char-detail");
-    const settledGoal = await readMats("#planner-goal");
+    const sameState = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const set = (field, value) => {
+        const el = detail.querySelector(`select[data-field="${field}"]`);
+        el.value = String(value);
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      set("curInsight", 3);
+      set("curLevel", 30);
+      set("curReso", 10);
+      return {
+        cards: detail.querySelectorAll(".planner-mat").length,
+        bill: detail.querySelector(".planner-mat-grid")?.textContent.trim() || "",
+        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
+      };
+    });
     check(
-      "a plan with nothing left to farm has no bill",
-      Object.keys(settled).length === 0 && Object.keys(settledGoal).length === 0,
-      JSON.stringify(settled)
+      "a plan whose current state is its goal bills nothing",
+      sameState.cards === 0 && sameState.bill === "",
+      JSON.stringify(sameState)
     );
 
-    // Put the arcanist back at square one: the goal never moves down, so the
-    // bill has to come back.
-    await setField("planner-f-curLevel", 1);
-    await page.waitForTimeout(150);
-    await setField("planner-f-curInsight", 0);
-    await page.waitForTimeout(300);
+    const picks = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const masteryLocked = () =>
+        [...detail.querySelectorAll('select[data-field="curMastery"], select[data-field="goalMastery"]')].every(
+          (el) => el.disabled
+        );
+      const before = detail.querySelectorAll(".planner-mat").length;
+      const lockedBefore = masteryLocked();
+      const hintBefore = !!detail.querySelector(".planner-subsetting-hint");
+      detail.querySelector("[data-euphoria]").click();
+      const withEuphoria = detail.querySelectorAll(".planner-mat").length;
+      const euphoriaActive = detail.querySelector("[data-euphoria]").checked === true;
+      const lockedAfter = masteryLocked();
+      detail.querySelector("[data-pattern]").click();
+      const withPattern = detail.querySelectorAll(".planner-mat").length;
+      const patternActive = !!detail.querySelector("[data-pattern].is-active");
+      return {
+        before,
+        withEuphoria,
+        withPattern,
+        euphoriaActive,
+        patternActive,
+        lockedBefore,
+        lockedAfter,
+        hintBefore,
+      };
+    });
+    check(
+      "a picked Euphoria facet and resonance pattern add their own bill",
+      picks.before === 0 &&
+        picks.withEuphoria > 0 &&
+        picks.withPattern > picks.withEuphoria &&
+        picks.euphoriaActive &&
+        picks.patternActive,
+      JSON.stringify(picks)
+    );
+    check(
+      "Mastery is locked until a Euphoria facet is ticked",
+      picks.lockedBefore && picks.hintBefore && !picks.lockedAfter,
+      JSON.stringify(picks)
+    );
+
+    // Step the current state back down so the route has something to pay for.
+    const stepped = await page.evaluate(() => {
+      const detail = document.getElementById("planner-char-detail");
+      const set = (field, value) => {
+        const el = detail.querySelector(`select[data-field="${field}"]`);
+        el.value = String(value);
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      set("curInsight", 0);
+      set("curLevel", 1);
+      set("curReso", 0);
+      return {
+        cards: detail.querySelectorAll(".planner-mat").length,
+        fields: [...detail.querySelectorAll("select[data-field]")].map((s) => `${s.dataset.field}=${s.value}`),
+      };
+    });
     check(
       "stepping the current state back down grows the bill again",
-      Object.keys(await readMats("#planner-char-detail")).length > 0
+      stepped.cards > 10 && stepped.fields.includes("curInsight=0") && stepped.fields.includes("curReso=0"),
+      JSON.stringify(stepped)
     );
 
-    const savedRaw = await page.evaluate(() => localStorage.getItem("r1999_planner_characters_v1"));
-    check("the plan is saved locally", /"chars":\[\{/.test(String(savedRaw)), String(savedRaw).slice(0, 120));
+    // ---- the farm route --------------------------------------------------
+    await page.evaluate(() => plannerCloseSheets());
+    await waitForRoute();
+    const route = await page.evaluate(() => {
+      const host = document.getElementById("planner-farm");
+      const cards = [...host.querySelectorAll(".planner-farm-card")];
+      const farmed = cards.filter((card) => !card.classList.contains("is-craft"));
+      const crafted = cards.filter((card) => card.classList.contains("is-craft"));
+      const heads = [...host.querySelectorAll(".archetype-section-title span")].map((el) => el.textContent);
+      const total = Number(
+        (document.getElementById("planner-farm-stamina").textContent || "").replace(/[^\d]/g, "")
+      );
+      const daysText = document.getElementById("planner-farm-days").textContent;
+      const days = Number(((daysText.match(/[\d.,]+/) || ["0"])[0] || "0").replace(",", "."));
+      return {
+        total,
+        days,
+        heads,
+        cards: cards.length,
+        farmed: farmed.length,
+        crafted: crafted.length,
+        runs: cards.every((card) => Number(card.dataset.runs) >= 1),
+        drops: farmed.every((card) => card.querySelectorAll(".planner-farm-drop").length > 0),
+        craftSharpo: crafted.every((card) => !!card.querySelector(".planner-farm-sharpo img")),
+        shop: host.querySelectorAll(".planner-farm-shop-row").length,
+        shopStamina: [...host.querySelectorAll(".planner-farm-shop-row")].every(
+          (row) => row.dataset.stamina === undefined && !row.querySelector(".planner-farm-stamina")
+        ),
+        toggleText: (document.getElementById("planner-farm-wilderness")?.textContent || "").trim(),
+        toggleIcon: !!document.querySelector("#planner-farm-wilderness img"),
+        shopNames: [...host.querySelectorAll(".planner-farm-shop-name")].map((el) => el.textContent),
+      };
+    });
+    check(
+      "the route prices the whole bill in stamina",
+      route.total > 0 && route.cards > 5 && route.farmed > 4 && route.runs && route.drops,
+      JSON.stringify({ total: route.total, cards: route.cards, farmed: route.farmed, runs: route.runs, drops: route.drops })
+    );
+    check(
+      "a crafted material shows its Sharpodonty fee instead of drops",
+      route.crafted === 0 || route.craftSharpo,
+      JSON.stringify({ crafted: route.crafted, sharpo: route.craftSharpo })
+    );
+    {
+      // The shops the route cannot buy with stamina come first, then the stages in
+      // the game's own order, then the Wishing Spring crafts.
+      const order = ["Reveries", "Oneiric Shop", "Resources", "Insight materials", "Stages", "Wishing Spring"];
+      const present = order.filter((name) => route.heads.includes(name));
+      const positions = present.map((name) => route.heads.indexOf(name));
+      check(
+        "the route lists Reveries, the Oneiric Shop, the stages, then Wishing Spring",
+        route.heads[0] === "Farm route" &&
+          present.length >= 4 &&
+          positions.every((pos, i) => i === 0 || pos > positions[i - 1]),
+        JSON.stringify(route.heads)
+      );
+    }
+    {
+      // Three drops to a line: a fixed three-column row, so a card never wraps at
+      // two with the third stranded underneath.
+      const dropRows = await page.evaluate(() =>
+        [...document.querySelectorAll("#planner-farm .planner-farm-card")]
+          .filter((card) => card.querySelector(".planner-farm-drop"))
+          .map((card) => {
+            const drops = [...card.querySelectorAll(".planner-farm-drop")];
+            const tops = drops.map((el) => Math.round(el.getBoundingClientRect().top));
+            return {
+              drops: drops.length,
+              firstRow: tops.filter((top) => Math.abs(top - tops[0]) <= 2).length,
+              size: Math.round(drops[0].getBoundingClientRect().width),
+            };
+          })
+      );
+      check(
+        "a stage card lays its drops out three to a line",
+        dropRows.length > 0 &&
+          dropRows.every((row) => row.firstRow === Math.min(row.drops, 3)) &&
+          dropRows.some((row) => row.firstRow === 3),
+        JSON.stringify(dropRows.slice(0, 6))
+      );
+    }
+    check(
+      "the days are the total over the stamina a day is worth",
+      Math.abs(route.days - route.total / 240) <= 0.06,
+      `${route.days} vs ${route.total} / 240`
+    );
+    check(
+      "the Oneiric Shop rows carry no stamina price: those are bought, not farmed",
+      route.shop > 0 && route.shopStamina && route.shopNames.every((name) => !!name),
+      JSON.stringify({ rows: route.shop, clean: route.shopStamina, names: route.shopNames })
+    );
+    check(
+      "the Wilderness switch is its own word on the route bar, with no icon",
+      route.toggleText === "Wilderness" && !route.toggleIcon,
+      JSON.stringify({ text: route.toggleText, icon: route.toggleIcon })
+    );
+    check(
+      "every farmed material resolves to real art",
+      await page.evaluate(() =>
+        [...document.querySelectorAll("#planner-farm .planner-farm-drop .item-sticker-img")].every(
+          (img) => img.complete && img.naturalWidth > 0
+        )
+      )
+    );
 
+    // ---- activity settings ----------------------------------------------
+    const parseDays = (text) => Number(((String(text).match(/[\d.,]+/) || ["0"])[0] || "0").replace(",", "."));
+
+    const activity = await page.evaluate(() => {
+      document.getElementById("planner-activity-btn").click();
+      const sheet = document.getElementById("planner-activity-sheet");
+      const perDay = () => document.getElementById("planner-activity-perday").textContent.trim();
+      const toolbar = () => document.getElementById("planner-activity-btn").textContent.replace(/\s+/g, "");
+      const tick = (id) => {
+        const box = document.getElementById(id);
+        box.checked = true;
+        box.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      const out = {
+        open: !sheet.hidden,
+        groups: sheet.querySelectorAll(".setting-group").length,
+        ticks: [...sheet.querySelectorAll('input[type="checkbox"]')].map((el) => el.id),
+        toggles: sheet.querySelectorAll(".toggle-group").length,
+        buttons: sheet.querySelectorAll(".btn-toggle").length,
+        // The two boxes sit in one column at the right edge, not trailing their text.
+        boxEdges: [...sheet.querySelectorAll(".planner-check-row .check-box")].map((el) =>
+          Math.round(el.getBoundingClientRect().right)
+        ),
+        cardWidth: Math.round(sheet.querySelector(".planner-sheet-card").getBoundingClientRect().width),
+        viewport: window.innerWidth,
+        perDay: perDay(),
+        // Lazy mode and the Clear-Drop refills are gone from this panel.
+        hasRefills: !!document.getElementById("planner-set-refills"),
+        hasLazy: !!document.getElementById("planner-set-lazy"),
+        daysBefore: document.getElementById("planner-farm-days").textContent,
+      };
+      tick("planner-set-roaring");
+      out.afterRoar = {
+        perDay: perDay(),
+        toolbar: toolbar(),
+        checked: document.getElementById("planner-set-roaring").checked,
+        days: document.getElementById("planner-farm-days").textContent,
+      };
+      tick("planner-set-weekly");
+      out.afterWeekly = {
+        perDay: perDay(),
+        toolbar: toolbar(),
+        checked: document.getElementById("planner-set-weekly").checked,
+      };
+      out.stored = JSON.parse(localStorage.getItem("r1999_planner_activity_v1") || "null");
+      return out;
+    });
+    check(
+      "the activity panel is one setting-group of two tick boxes",
+      activity.open &&
+        activity.groups === 1 &&
+        activity.ticks.join(",") === "planner-set-roaring,planner-set-weekly" &&
+        activity.toggles === 0 &&
+        activity.buttons === 0,
+      JSON.stringify(activity)
+    );
+    check(
+      "the panel is modal-width and its two boxes share one column at the right",
+      activity.cardWidth <= 440 &&
+        activity.boxEdges.length === 2 &&
+        Math.abs(activity.boxEdges[0] - activity.boxEdges[1]) <= 1,
+      JSON.stringify({ card: activity.cardWidth, boxes: activity.boxEdges })
+    );
+    check(
+      "Lazy mode and the Clear-Drop refills are gone",
+      !activity.hasRefills && !activity.hasLazy,
+      JSON.stringify(activity)
+    );
+    check(
+      "a day starts at 240 stamina",
+      /240/.test(activity.perDay),
+      activity.perDay
+    );
+    check(
+      "Roaring Month pays 60 more a day and shortens the route",
+      /300/.test(activity.afterRoar.perDay) &&
+        /300\/day$/.test(activity.afterRoar.toolbar) &&
+        activity.afterRoar.checked &&
+        parseDays(activity.afterRoar.days) < parseDays(activity.daysBefore),
+      JSON.stringify({ before: activity.daysBefore, after: activity.afterRoar.days })
+    );
+    check(
+      "Weekly Activeness adds 240/7 a day",
+      /334/.test(activity.afterWeekly.perDay) && /334\/day$/.test(activity.afterWeekly.toolbar),
+      JSON.stringify(activity.afterWeekly)
+    );
+    check(
+      "the settings are saved locally, and only those two",
+      activity.stored?.roaringMonth === true &&
+        activity.stored?.weeklyActivity === true &&
+        !("refills" in (activity.stored || {})) &&
+        !("lazyModo" in (activity.stored || {})),
+      JSON.stringify(activity.stored)
+    );
+    await page.evaluate(() => document.querySelector('#planner-activity-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
+
+    // ---- wilderness ------------------------------------------------------
+    const wildBefore = await page.evaluate(() =>
+      Number((document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, ""))
+    );
+    const wildOpen = await page.evaluate(() => {
+      document.getElementById("planner-farm-wilderness").click();
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const output = {};
+      for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+        output[row.dataset.item] = Number(row.dataset.qty || 0);
+      }
+      const vigor = document.getElementById("planner-wilderness-vigor");
+      return {
+        open: !sheet.hidden,
+        state: document.getElementById("planner-wilderness-state").textContent.trim(),
+        selects: [...sheet.querySelectorAll("[data-wild]")].map((el) => `${el.dataset.wild}=${el.value}`),
+        vigor: vigor.value,
+        vigorType: vigor.type,
+        vigorMax: vigor.getAttribute("max"),
+        hasLazy: !!document.getElementById("planner-wilderness-lazy"),
+        output,
+      };
+    });
+    check(
+      "the tree button on the route opens the Wilderness board, off by default",
+      wildOpen.open && /Off/.test(wildOpen.state),
+      JSON.stringify(wildOpen)
+    );
+    check(
+      "it starts on three Lv.6 Dust towers and three Lv.6 markets, Vigor at 50",
+      wildOpen.selects.length === 6 &&
+        wildOpen.selects.every((row) => row.endsWith("=6")) &&
+        wildOpen.vigor === "50",
+      JSON.stringify({ selects: wildOpen.selects, vigor: wildOpen.vigor })
+    );
+    check(
+      "Vigor is a typed figure with no ceiling, not a capped slider",
+      wildOpen.vigorType === "number" && wildOpen.vigorMax === null,
+      JSON.stringify({ type: wildOpen.vigorType, max: wildOpen.vigorMax })
+    );
+    check(
+      "Lazy mode has no place on the board",
+      wildOpen.hasLazy === false,
+      JSON.stringify({ hasLazy: wildOpen.hasLazy })
+    );
+    check(
+      "a full board at the default 50% pays 29,160 Dust and 12,960 Sharpodonty a day",
+      wildOpen.output.Dust === 29160 && wildOpen.output.Sharpodonty === 12960,
+      JSON.stringify(wildOpen.output)
+    );
+
+    const wildOn = await page.evaluate(async () => {
+      document.querySelector('#planner-wilderness-toggle .btn-toggle[data-value="1"]').click();
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const output = {};
+      for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+        output[row.dataset.item] = Number(row.dataset.qty || 0);
+      }
+      const active = sheet.querySelector("#planner-wilderness-toggle .btn-toggle.active");
+      // `btn-toggle` carries a 0.2s transition, so the new colours are only readable
+      // once a frame has been painted.
+      await new Promise((r) => setTimeout(r, 300));
+      const cs = getComputedStyle(active);
+      return {
+        state: document.getElementById("planner-wilderness-state").textContent.trim(),
+        output,
+        saved: JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null"),
+        toggleActive: document.getElementById("planner-farm-wilderness").classList.contains("is-active"),
+        toggleBg: cs.backgroundColor,
+        toggleColor: cs.color,
+      };
+    });
+    check(
+      "turning it on is saved locally",
+      wildOn.saved?.enabled === true && /On/.test(wildOn.state),
+      JSON.stringify(wildOn.saved)
+    );
+    check(
+      "the chosen side of the switch is #D05126 with white text",
+      wildOn.toggleBg === "rgb(208, 81, 38)" && wildOn.toggleColor === "rgb(255, 255, 255)",
+      JSON.stringify({ bg: wildOn.toggleBg, color: wildOn.toggleColor })
+    );
+    {
+      // The payout is Dust/Sharpodonty, so the solve is handed them as a rate over
+      // the days it takes: the same route is worth less stamina.
+      await page.waitForFunction(
+        (before) => {
+          const total = Number(
+            (document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")
+          );
+          return total > 0 && total < before;
+        },
+        wildBefore,
+        { timeout: 25000 }
+      );
+      const wildRoute = await page.evaluate(() => ({
+        total: Number((document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")),
+        card: !!document.querySelector("#planner-farm .planner-farm-card.is-wilderness"),
+        days: document.querySelector("#planner-farm .planner-farm-card.is-wilderness")?.dataset.days || "",
+        toggleActive: document.getElementById("planner-farm-wilderness").classList.contains("is-active"),
+        drops: document.querySelectorAll("#planner-farm .planner-farm-card.is-wilderness .planner-farm-drop").length,
+      }));
+      check(
+        "the Wilderness credit shortens the route and shows its own card",
+        wildRoute.total > 0 && wildRoute.total < wildBefore && wildRoute.card && wildRoute.drops === 2,
+        JSON.stringify({ before: wildBefore, after: wildRoute.total, card: wildRoute.card, days: wildRoute.days })
+      );
+      check(
+        "the route bar shows the board is counted in",
+        wildRoute.toggleActive,
+        JSON.stringify(wildRoute)
+      );
+    }
+    const wildVigor = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const box = document.getElementById("planner-wilderness-vigor");
+      const read = () => {
+        const out = {};
+        for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+          out[row.dataset.item] = Number(row.dataset.qty || 0);
+        }
+        return out;
+      };
+      const type = (value) => {
+        box.value = String(value);
+        box.dispatchEvent(new Event("input", { bubbles: true }));
+        box.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      type(0);
+      const atZero = read();
+      type(120);
+      const atHigh = read();
+      const saved = JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null");
+      return { atZero, atHigh, saved: saved?.vigor, value: box.value };
+    });
+    check(
+      "Vigor adds its percentage to the payout, and goes past the old 50% cap",
+      wildVigor.atZero.Dust === 19440 &&
+        wildVigor.atZero.Sharpodonty === 8640 &&
+        Math.abs(wildVigor.atHigh.Dust - 810 * 2.2 * 24) <= 1 &&
+        Math.abs(wildVigor.atHigh.Sharpodonty - 360 * 2.2 * 24) <= 1 &&
+        wildVigor.saved === 120,
+      JSON.stringify(wildVigor)
+    );
+    await page.evaluate(() => {
+      // Put Vigor back, so the saved state is the plain board at 0%, but leave the
+      // board switched on: the reload has to bring both back.
+      const box = document.getElementById("planner-wilderness-vigor");
+      box.value = "0";
+      box.dispatchEvent(new Event("change", { bubbles: true }));
+      document.querySelector('#planner-wilderness-sheet [data-sheet]').click();
+    });
+    await page.waitForTimeout(900);
+
+    // ---- the Goal lightbox ----------------------------------------------
+    const lucyBill = await (async () => {
+      await selectChar("Lucy");
+      await page.waitForTimeout(250);
+      return readBill("#planner-char-detail");
+    })();
+    const goalOne = await page.evaluate(() => {
+      document.getElementById("planner-goal-btn").click();
+      const sheet = document.getElementById("planner-goal-sheet");
+      return {
+        open: !sheet.hidden,
+        cards: document.querySelectorAll("#planner-goal .planner-mat").length,
+        // The panel is the bill and nothing else: no count, no head icons, no heading.
+        chars: sheet.querySelectorAll(".planner-goal-char").length,
+        heads: sheet.querySelectorAll(".archetype-section-header").length,
+        counts: sheet.querySelectorAll(".setting-label-row, .setting-label").length,
+        width: Math.round(sheet.querySelector(".planner-sheet-card").getBoundingClientRect().width),
+        sticker: Math.round(
+          sheet.querySelector(".planner-mat-sticker")?.getBoundingClientRect().width || 0
+        ),
+      };
+    });
+    const goalOneBill = await readBill("#planner-goal");
+    check(
+      "Goal opens the whole plan's bill",
+      goalOne.open && goalOne.cards === Object.keys(lucyBill).length && normBill(goalOneBill) === normBill(lucyBill),
+      JSON.stringify({ cards: goalOne.cards, expected: Object.keys(lucyBill).length })
+    );
+    check(
+      "the Goal panel is just the bill: modal-width, no count, no head icons, no heading",
+      goalOne.width <= 440 &&
+        goalOne.chars === 0 &&
+        goalOne.heads === 0 &&
+        goalOne.counts === 0 &&
+        goalOne.sticker >= 56 &&
+        goalOne.sticker <= 72,
+      JSON.stringify(goalOne)
+    );
+    await page.evaluate(() => document.querySelector('#planner-goal-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
+
+    // ---- two arcanists ---------------------------------------------------
+    await page.evaluate(() => document.getElementById("planner-char-add").click());
+    await page.waitForTimeout(250);
+    await pickName("Jessica");
+    await page.waitForTimeout(400);
+    const jessBill = await readBill("#planner-char-detail");
+    await page.evaluate(() => {
+      if (!document.getElementById("planner-char-editor").hidden) plannerCloseSheets();
+    });
+    const twoTiles = await page.evaluate(() => ({
+      tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+      count: document.getElementById("planner-char-count").textContent.trim(),
+    }));
+    check(
+      "a second arcanist joins the grid",
+      twoTiles.tiles === 2 && /^2\b/.test(twoTiles.count),
+      JSON.stringify(twoTiles)
+    );
+    const goalTwo = await page.evaluate(() => {
+      document.getElementById("planner-goal-btn").click();
+      return document.querySelectorAll("#planner-goal .planner-mat").length;
+    });
+    const goalTwoBill = await readBill("#planner-goal");
+    check(
+      "the Goal bill is both arcanists summed",
+      normBill(goalTwoBill) === normBill(sumBill(lucyBill, jessBill)) && goalTwo > goalOne.cards,
+      JSON.stringify({ goal: Object.keys(goalTwoBill).length, expected: Object.keys(sumBill(lucyBill, jessBill)).length })
+    );
+    await page.evaluate(() => document.querySelector('#planner-goal-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
+
+    // ---- right-click leaves an arcanist out ------------------------------
+    const disabled = await page.evaluate(() => {
+      const tile = document.querySelector('#planner-char-rail [data-char="Jessica"]');
+      tile.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
+      const styles = getComputedStyle(document.querySelector('#planner-char-rail [data-char="Jessica"]'));
+      return {
+        off: document.querySelector('#planner-char-rail [data-char="Jessica"]').classList.contains("is-disabled"),
+        opacity: Number(styles.opacity),
+        grayscale: /grayscale/.test(styles.filter),
+        stillThere: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+        goal: (() => {
+          document.getElementById("planner-goal-btn").click();
+          const out = {};
+          for (const card of document.querySelectorAll("#planner-goal .planner-mat")) {
+            out[card.dataset.item] = Number(card.dataset.qty || 0);
+          }
+          document.querySelector('#planner-goal-sheet [data-sheet]').click();
+          return out;
+        })(),
+      };
+    });
+    check(
+      "right-click dims the tile but keeps it in the grid",
+      disabled.off && disabled.opacity < 0.5 && disabled.grayscale && disabled.stillThere === 2,
+      JSON.stringify(disabled)
+    );
+    check(
+      "a disabled arcanist drops out of the Goal bill",
+      normBill(disabled.goal) === normBill(lucyBill),
+      JSON.stringify({ goal: Object.keys(disabled.goal).length, expected: Object.keys(lucyBill).length })
+    );
+    const reEnabled = await page.evaluate(() => {
+      const tile = document.querySelector('#planner-char-rail [data-char="Jessica"]');
+      tile.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
+      document.getElementById("planner-goal-btn").click();
+      const out = {};
+      for (const card of document.querySelectorAll("#planner-goal .planner-mat")) {
+        out[card.dataset.item] = Number(card.dataset.qty || 0);
+      }
+      document.querySelector('#planner-goal-sheet [data-sheet]').click();
+      return out;
+    });
+    check(
+      "right-clicking it again puts it back in",
+      normBill(reEnabled) === normBill(sumBill(lucyBill, jessBill)),
+      JSON.stringify({ goal: Object.keys(reEnabled).length })
+    );
+
+    // ---- the plan survives a reload --------------------------------------
     await page.reload({ waitUntil: "networkidle" });
     await page.waitForTimeout(1400);
     await page.evaluate(() => document.getElementById("btn-planner").click());
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(700);
     const restored = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      selected: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
-      mats: document.querySelectorAll("#planner-char-detail .planner-mat").length,
-      goalLevel: document.getElementById("planner-f-goalLevel").value,
-    }));
-    check(
-      "the plan survives a reload",
-      restored.rail === 1 && restored.selected === "Lucy" && restored.mats > 0 && restored.goalLevel === "30",
-      JSON.stringify(restored)
-    );
-
-    // A second arcanist joins the plan, and the Goal bar becomes their sum.
-    await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(250);
-    await searchPicker("jessica");
-    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Jessica"]').click());
-    await page.waitForTimeout(400);
-    const twoUp = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      avatars: [...document.querySelectorAll("#planner-goal .planner-goal-avatar")].map(
-        (a) => a.dataset.char
+      tiles: [...document.querySelectorAll("#planner-char-rail .planner-char-tile")].map(
+        (el) => el.dataset.char
       ),
-      broken: [...document.querySelectorAll("#planner-goal .planner-goal-avatar img")].filter(
-        (i) => i.naturalWidth === 0
-      ).length,
-    }));
-    check("a second arcanist joins the rail", twoUp.rail === 2, JSON.stringify(twoUp));
-    // The Goal header is the plan as head icons — no "2 arcanists" text.
-    check(
-      "the goal header carries one avatar per arcanist",
-      twoUp.avatars.length === 2 && twoUp.avatars.includes("Lucy") && twoUp.avatars.includes("Jessica"),
-      JSON.stringify(twoUp)
-    );
-    check("every goal avatar draws its head icon", twoUp.broken === 0, JSON.stringify(twoUp));
-
-    const names = await page.evaluate(() =>
-      [...document.querySelectorAll(".planner-char-tile")].map((t) => t.dataset.char)
-    );
-    const perChar = {};
-    for (const name of names) {
-      await page.evaluate((n) => document.querySelector(`.planner-char-tile[data-char="${n}"]`).click(), name);
-      await page.waitForTimeout(250);
-      perChar[name] = await readMats("#planner-char-detail");
-    }
-    const summed = {};
-    for (const list of Object.values(perChar)) {
-      for (const [item, qty] of Object.entries(list)) summed[item] = (summed[item] || 0) + qty;
-    }
-    const goalTwo = await readMats("#planner-goal");
-    check(
-      "the goal bar is every arcanist's bill added up",
-      norm(summed) === norm(goalTwo),
-      JSON.stringify({ summed, goalTwo })
-    );
-
-    // Pressing a Goal head icon opens that arcanist, exactly like the rail.
-    const viaGoal = await page.evaluate(() => {
-      const avatar = document.querySelector('#planner-goal .planner-goal-avatar[data-char="Jessica"]');
-      avatar.click();
-      return {
-        selected: document.querySelector("#planner-char-detail .planner-char-name")?.textContent.trim(),
-        railSelected: document.querySelector(".planner-char-tile.is-selected")?.dataset.char,
-        goalSelected: document.querySelector(".planner-goal-avatar.is-selected")?.dataset.char,
-      };
-    });
-    await page.waitForTimeout(250);
-    const viaGoalMats = await readMats("#planner-char-detail");
-    check(
-      "a goal avatar opens that arcanist",
-      viaGoal.selected === "Jessica" &&
-        viaGoal.railSelected === "Jessica" &&
-        viaGoal.goalSelected === "Jessica",
-      JSON.stringify(viaGoal)
-    );
-    check(
-      "and the detail pane now bills that arcanist",
-      norm(viaGoalMats) === norm(perChar.Jessica),
-      JSON.stringify({ detail: viaGoalMats, expected: perChar.Jessica })
-    );
-
-    const align = await page.evaluate(() => {
-      const rows = new Map();
-      for (const card of document.querySelectorAll("#planner-goal .planner-mat")) {
-        const top = Math.round(card.getBoundingClientRect().top);
-        const list = rows.get(top) || { heights: [], qtys: [] };
-        list.heights.push(Math.round(card.getBoundingClientRect().height));
-        list.qtys.push(Math.round(card.querySelector(".planner-mat-qty").getBoundingClientRect().bottom));
-        rows.set(top, list);
-      }
-      const list = [...rows.values()];
-      return {
-        rows: list.length,
-        uneven: list.filter((r) => new Set(r.heights).size > 1).length,
-        unevenQty: list.filter((r) => new Set(r.qtys).size > 1).length,
-      };
-    });
-    check("material cards on a row share one height", align.uneven === 0, JSON.stringify(align));
-    check("their quantities line up", align.unevenQty === 0, JSON.stringify(align));
-
-    const beforeRemove = await page.evaluate(() => {
-      const count = document.querySelectorAll(".planner-char-tile").length;
-      document.querySelector(".planner-char-remove").click();
-      return count;
-    });
-    await page.waitForTimeout(300);
-    const afterRemove = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      selected: document.querySelectorAll(".planner-char-tile.is-selected").length,
-      name: (document.querySelector(".planner-char-name")?.textContent || "").trim(),
-    }));
-    check(
-      "removing an arcanist drops only that one",
-      afterRemove.rail === beforeRemove - 1,
-      JSON.stringify({ beforeRemove, afterRemove })
-    );
-    check(
-      "the pane falls back to the next arcanist",
-      afterRemove.selected === 1 && !!afterRemove.name,
-      JSON.stringify(afterRemove)
-    );
-
-    await page.evaluate(() => document.getElementById("planner-char-clear").click());
-    await page.waitForTimeout(300);
-    const cleared = await page.evaluate(() => ({
-      rail: document.querySelectorAll(".planner-char-tile").length,
-      goalCards: document.querySelectorAll("#planner-goal .planner-mat").length,
+      disabled: document.querySelectorAll("#planner-char-rail .planner-char-tile.is-disabled").length,
+      // 240 a day, +60 for the Roaring Month, +240/7 for a full weekly bar.
+      activity: document.getElementById("planner-activity-value").textContent.trim(),
+      wild: document.getElementById("planner-farm-wilderness")?.classList.contains("is-active"),
+      wildBlob: JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null"),
       saved: localStorage.getItem("r1999_planner_characters_v1"),
     }));
-    check("reset empties the plan", cleared.rail === 0 && cleared.goalCards === 0, JSON.stringify(cleared));
-    check("it clears the saved plan too", /"chars":\[\]/.test(String(cleared.saved)), String(cleared.saved).slice(0, 80));
-
-    // The two tabs are panes of one body, not two modals: switching to Event and
-    // back must leave the plan where it was, and an open picker cannot follow the
-    // reader into the other tab.
-    await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(250);
-    await searchPicker("lucy");
-    await page.evaluate(() => {
-      document.getElementById("planner-tab-event").click();
-      return document.getElementById("planner-picker").hidden;
-    });
-    await page.waitForTimeout(350);
-    const tabbed = await page.evaluate(() => ({
-      pickerHidden: document.getElementById("planner-picker").hidden,
-      charHidden: document.getElementById("planner-pane-character").hidden,
-      eventHidden: document.getElementById("planner-pane-event").hidden,
-      eventCards: document.querySelectorAll("#planner-sections .planner-card").length,
-    }));
     check(
-      "leaving the tab closes the picker",
-      tabbed.pickerHidden && tabbed.charHidden && !tabbed.eventHidden,
-      JSON.stringify(tabbed)
+      "the plan and its activity settings come back after a reload",
+      restored.tiles.length === 2 &&
+        restored.disabled === 0 &&
+        restored.activity === "334" &&
+        /"enabled":true/.test(String(restored.saved)),
+      JSON.stringify(restored)
     );
-    check("the Event tab is still the shop", tabbed.eventCards > 0, JSON.stringify(tabbed));
-    await page.evaluate(() => document.getElementById("planner-tab-character").click());
-    await page.waitForTimeout(350);
-    const backToChar = await page.evaluate(() => ({
-      charHidden: document.getElementById("planner-pane-character").hidden,
-      eventHidden: document.getElementById("planner-pane-event").hidden,
-      pickerHidden: document.getElementById("planner-picker").hidden,
-    }));
     check(
-      "coming back lands on the Character tab again",
-      !backToChar.charHidden && backToChar.eventHidden && backToChar.pickerHidden,
-      JSON.stringify(backToChar)
+      "the Wilderness board comes back switched on",
+      restored.wild === true && restored.wildBlob?.enabled === true && restored.wildBlob?.vigor === 0,
+      JSON.stringify({ wild: restored.wild, blob: restored.wildBlob })
+    );
+    await waitForRoute();
+    check(
+      "and the route is solved again without a press",
+      await page.evaluate(() => {
+        const total = Number(
+          (document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")
+        );
+        return total > 0;
+      })
     );
 
-    // The Character tab is translated like the rest of the modal.
-    await page.evaluate(() => {
-      plannerChars = [];
-      plannerCharSelected = "";
-      plannerAddCharacter("Lucy");
+    // ---- Chinese ---------------------------------------------------------
+    const cnChar = await page.evaluate(async () => {
+      document.querySelector('.lang-btn[data-lang="cn"]').click();
+      await new Promise((r) => setTimeout(r, 500));
+      return {
+        tab: document.getElementById("planner-tab-character").textContent.trim(),
+        add: document.getElementById("planner-char-add").textContent.trim(),
+        goal: document.getElementById("planner-goal-btn").textContent.trim(),
+        hint: document.getElementById("planner-rail-hint").textContent.trim(),
+        title: document.querySelector("#planner-farm .archetype-section-title span").textContent,
+        total: document.querySelector(".planner-farm-total-label").textContent,
+        activity: document.getElementById("planner-activity-perday").textContent.trim(),
+        item: document.querySelector("#planner-goal .planner-mat")?.dataset.item || "",
+      };
     });
-    await page.waitForTimeout(300);
-    await page.evaluate(() => setLanguage("cn"));
-    await page.waitForTimeout(800);
-    const cnChar = await page.evaluate(() => ({
-      tab: document.getElementById("planner-tab-character").textContent.trim(),
-      add: document.getElementById("planner-char-add").textContent.trim(),
-      goal: (document.querySelector("#planner-goal .archetype-section-title")?.textContent || "").trim(),
-      mats: (document.querySelector(".planner-char-mats-head .archetype-section-title")?.textContent || "").trim(),
-      placeholder: document.getElementById("planner-picker-search").placeholder,
-      item: (document.querySelector("#planner-goal .planner-mat-name")?.textContent || "").trim(),
-    }));
     check(
       "the Character tab is translated",
-      cnChar.tab !== "Character" &&
-        /[\u4e00-\u9fff]/.test(cnChar.tab + cnChar.add + cnChar.goal + cnChar.mats + cnChar.placeholder + cnChar.item),
+      /[\u4e00-\u9fff]/.test(cnChar.tab + cnChar.add + cnChar.goal + cnChar.hint + cnChar.title + cnChar.total + cnChar.activity),
       JSON.stringify(cnChar)
     );
-    await page.evaluate(() => setLanguage("en"));
-    await page.waitForTimeout(600);
-    await page.evaluate(() => {
-      plannerChars = [];
-      plannerCharSelected = "";
-      plannerSaveChars();
-      renderPlannerCharacter();
+    await page.evaluate(async () => {
+      document.querySelector('.lang-btn[data-lang="en"]').click();
+      await new Promise((r) => setTimeout(r, 400));
     });
-    await page.waitForTimeout(200);
 
-    // Phones: the rail becomes a strip on top, the controls one column, and the
-    // Goal bar keeps its own band under the detail instead of scrolling away.
-    await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(250);
-    await searchPicker("lucy");
-    await page.evaluate(() => document.querySelector('#planner-picker [data-pick="Lucy"]').click());
-    await page.waitForTimeout(400);
+    // ---- Vietnamese ------------------------------------------------------
+    // The game's own nouns are not translated into Vietnamese: the reader knows
+    // them the way the game prints them, so Activity, Wilderness, its two
+    // buildings and Vigor stay English while the sentence around them does not.
+    const viChar = await page.evaluate(async () => {
+      setLanguage("vi");
+      await new Promise((r) => setTimeout(r, 600));
+      return {
+        // Straight from the string table, so a render that has not caught up yet
+        // cannot make this pass or fail by accident.
+        total: t("planner.farmTotal"),
+        activity: t("planner.activityShort"),
+        activityTitle: t("planner.activity"),
+        perDay: t("planner.activityPerDay", { n: "240" }),
+        stamina: t("planner.staminaCalc", { stamina: "100", days: "1.0" }),
+        staminaRoaring: t("planner.staminaCalcRoaring", { stamina: "100", days: "1.0", daysRoaring: "1.0" }),
+        wild: t("planner.wilderness"),
+        towers: t("planner.dustBellTowers"),
+        markets: t("planner.sharpodontyMarkets"),
+        vigor: t("planner.vigor"),
+        // And the two places the reader sees them: the toolbar and the route bar.
+        toolButton: document.getElementById("planner-activity-btn").textContent.replace(/\s+/g, " ").trim(),
+        routeToggle: document.getElementById("planner-farm-wilderness").textContent.trim(),
+        // Something else in the same tab, to prove the locale really switched.
+        title: t("planner.farmTitle"),
+      };
+    });
+    check(
+      "the farm total is named for the game's own Activity",
+      viChar.total === "Total Activity" &&
+        /^Activity /.test(viChar.stamina) &&
+        /^Activity /.test(viChar.staminaRoaring),
+      JSON.stringify({ total: viChar.total, stamina: viChar.stamina, roaring: viChar.staminaRoaring })
+    );
+    check(
+      "Activity is not translated into Vietnamese",
+      viChar.activity === "Activity" &&
+        /Activity/.test(viChar.activityTitle) &&
+        /Activity/.test(viChar.perDay) &&
+        /Activity/.test(viChar.toolButton) &&
+        !/hoạt/i.test(viChar.activity + viChar.activityTitle + viChar.perDay + viChar.stamina + viChar.toolButton),
+      JSON.stringify(viChar)
+    );
+    check(
+      "Wilderness, its two buildings and Vigor keep their names",
+      viChar.wild === "Wilderness" &&
+        viChar.routeToggle === "Wilderness" &&
+        viChar.towers === "Dust Bell Towers" &&
+        viChar.markets === "Sharpodonty Markets" &&
+        viChar.vigor === "Vigor",
+      JSON.stringify(viChar)
+    );
+    check(
+      "the rest of the tab is still Vietnamese",
+      viChar.title !== "Farm route" && /[^\x00-\x7F]/.test(viChar.title),
+      viChar.title
+    );
+    await page.evaluate(async () => {
+      setLanguage("en");
+      await new Promise((r) => setTimeout(r, 400));
+    });
+
+    // ---- tablets and narrow desktops -------------------------------------
+    // 768px used to be the cliff where the toolbar lost a row to a full-width
+    // tail and the farm route dropped straight to one column. A tablet has the
+    // width for both.
+    for (const width of [768, 640]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.waitForTimeout(350);
+      const tablet = await page.evaluate(() => {
+        const pane = document.getElementById("planner-pane-character");
+        const toolbar = pane.querySelector(".planner-toolbar");
+        const tail = toolbar.querySelector(".planner-toolbar-tail");
+        const lead = toolbar.querySelector(".planner-toolbar-lead");
+        const grid = document.querySelector("#planner-farm .planner-farm-grid");
+        const lr = lead.getBoundingClientRect();
+        const tr = tail.getBoundingClientRect();
+        const toolbarBox = toolbar.getBoundingClientRect();
+        return {
+          toolbarH: Math.round(toolbarBox.height),
+          oneRow: Math.abs(lr.top - tr.top) < 8,
+          tailInset: Math.round(toolbarBox.right - tr.right),
+          farmCols: getComputedStyle(grid).gridTemplateColumns.split(" ").length,
+          sideways: document.documentElement.scrollWidth <= window.innerWidth + 1,
+        };
+      });
+      check(
+        `at ${width}px the Character toolbar keeps one row`,
+        tablet.oneRow && tablet.toolbarH <= 60 && tablet.tailInset <= 14,
+        JSON.stringify(tablet)
+      );
+      check(
+        `at ${width}px the farm route keeps more than one card per row`,
+        tablet.farmCols >= 2 && tablet.sideways,
+        JSON.stringify(tablet)
+      );
+    }
+
+    // ---- phones ----------------------------------------------------------
     await page.setViewportSize({ width: 390, height: 780 });
     await page.waitForTimeout(400);
     const phone = await page.evaluate(() => {
       const rail = document.getElementById("planner-char-rail");
-      const body = rail.closest(".planner-char-body");
-      const detail = document.getElementById("planner-char-detail");
-      const goal = document.getElementById("planner-goal");
-      const controls = document.querySelector(".planner-char-controls");
+      const column = rail.closest(".planner-char-scroll");
+      const card = document.querySelector(".planner-farm-card");
+      const sheet = document.getElementById("planner-activity-sheet");
+      const drop = document.querySelector("#planner-farm .planner-farm-drop");
       return {
-        bodyDir: getComputedStyle(body).flexDirection,
-        railDir: getComputedStyle(rail).flexDirection,
-        sameColumn: Math.abs(rail.getBoundingClientRect().left - detail.getBoundingClientRect().left) < 2,
-        goalBelow: goal.getBoundingClientRect().top >= detail.getBoundingClientRect().bottom - 1,
-        cols: getComputedStyle(controls).gridTemplateColumns.split(" ").length,
+        railGrid: getComputedStyle(rail).display === "grid",
+        railColumns: getComputedStyle(rail).gridTemplateColumns.split(" ").length,
+        oneScroller: getComputedStyle(column).overflowY === "auto",
+        cardFits: card ? card.getBoundingClientRect().width <= window.innerWidth : true,
+        sheetFixed: getComputedStyle(sheet).position === "fixed",
+        sideways: document.documentElement.scrollWidth <= window.innerWidth + 1,
+        // The art shrinks a step on a phone but never back to the old 38px thumbnail.
+        drop: drop ? Math.round(drop.getBoundingClientRect().width) : 0,
       };
     });
     check(
-      "the rail moves above the detail on a phone",
-      phone.bodyDir === "column" && phone.sameColumn && phone.railDir === "row",
+      "a phone keeps the icon grid and a single scrolling column",
+      phone.railGrid && phone.railColumns >= 2 && phone.oneScroller && phone.cardFits && phone.sideways,
       JSON.stringify(phone)
     );
-    check("the goal bar stays under the detail", phone.goalBelow, JSON.stringify(phone));
-    check("the controls stack to one column", phone.cols === 1, JSON.stringify(phone));
-
-    // The Goal head icons survive the phone width, and the picker's search box,
-    // rarity chips and Manage-style grid still fit without scrolling sideways.
-    const phoneGoal = await page.evaluate(() => {
-      const goal = document.getElementById("planner-goal");
-      const avatars = [...goal.querySelectorAll(".planner-goal-avatar")];
+    check("the panels are real lightboxes on a phone", phone.sheetFixed, JSON.stringify(phone));
+    // A closed lightbox has no boxes to measure, so open the editor first.
+    await page.evaluate(() => document.querySelector("#planner-char-rail .planner-char-tile").click());
+    await page.waitForTimeout(350);
+    const phoneBill = await page.evaluate(() => {
+      const sticker = document.querySelector("#planner-char-detail .planner-mat-sticker");
+      const badge = document.querySelector("#planner-char-detail .item-sticker-qty");
+      const sheet = document.getElementById("planner-char-editor");
+      const head = sheet.querySelector(".planner-editor-header");
+      const close = head.querySelector(".planner-sheet-close");
+      const name = document.getElementById("planner-editor-title");
+      const hr = head.getBoundingClientRect();
+      const cr = close.getBoundingClientRect();
+      const nr = name.getBoundingClientRect();
       return {
-        count: avatars.length,
-        inside: avatars.every((a) => a.getBoundingClientRect().right <= goal.getBoundingClientRect().right + 1),
-        head: Math.round(goal.querySelector(".planner-goal-head").getBoundingClientRect().height),
+        sticker: sticker ? Math.round(sticker.getBoundingClientRect().width) : 0,
+        badge: badge ? parseFloat(getComputedStyle(badge).fontSize) : 0,
+        sheetFixed: getComputedStyle(sheet).position === "fixed",
+        cardFits: document.querySelector("#planner-char-editor .planner-sheet-card").getBoundingClientRect().width <= window.innerWidth,
+        // The phone rule for the modal head wraps, which used to push the editor's
+        // close button under the name. It is a sheet head: one row, close at the edge.
+        closeInset: Math.round(hr.right - cr.right),
+        closeBesideName: cr.left > nr.right - 1,
+        headOneRow: Math.round(hr.height) <= 100,
       };
     });
     check(
-      "the goal avatars fit the phone band",
-      phoneGoal.count === 1 && phoneGoal.inside,
-      JSON.stringify(phoneGoal)
+      "the item art keeps its size on a phone, badge and frame with it",
+      phoneBill.sticker >= 52 && phoneBill.sticker <= 60 && phoneBill.badge >= 9 && phone.drop >= 44,
+      JSON.stringify({ sticker: phoneBill.sticker, badge: phoneBill.badge, drop: phone.drop })
     );
-
+    check(
+      "the editor is a fixed lightbox that fits a phone",
+      phoneBill.sheetFixed && phoneBill.cardFits,
+      JSON.stringify(phoneBill)
+    );
+    check(
+      "its head keeps the close button beside the name on a phone",
+      phoneBill.headOneRow && phoneBill.closeBesideName && phoneBill.closeInset <= 24,
+      JSON.stringify({
+        head: phoneBill.headOneRow,
+        beside: phoneBill.closeBesideName,
+        inset: phoneBill.closeInset,
+      })
+    );
+    await page.evaluate(() => document.querySelector('#planner-char-editor [data-sheet]').click());
+    await page.waitForTimeout(200);
+    await page.evaluate(() => document.getElementById("planner-farm-wilderness").click());
+    await page.waitForTimeout(300);
+    const phoneWild = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-wilderness-sheet");
+      const card = sheet.querySelector(".planner-sheet-card");
+      const selects = [...sheet.querySelectorAll("[data-wild]")];
+      return {
+        open: !sheet.hidden,
+        cardFits: card.getBoundingClientRect().width <= window.innerWidth,
+        fits: selects.every((el) => el.getBoundingClientRect().right <= window.innerWidth),
+        sideways: card.scrollWidth <= card.clientWidth + 1,
+        selects: selects.length,
+      };
+    });
+    check(
+      "the Wilderness board fits a phone",
+      phoneWild.open && phoneWild.cardFits && phoneWild.fits && phoneWild.sideways && phoneWild.selects === 6,
+      JSON.stringify(phoneWild)
+    );
+    await page.evaluate(() => document.querySelector('#planner-wilderness-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
     await page.evaluate(() => document.getElementById("planner-char-add").click());
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(300);
     const phonePicker = await page.evaluate(() => {
       const picker = document.getElementById("planner-picker");
       const grid = document.getElementById("planner-picker-grid");
@@ -3606,8 +4321,62 @@ try {
       JSON.stringify(phonePicker)
     );
     check("the phone grid never scrolls sideways", !phonePicker.sideways, JSON.stringify(phonePicker));
-    await page.evaluate(() => document.getElementById("planner-picker-close").click());
+    await page.evaluate(() => document.querySelector('#planner-picker [data-sheet]').click());
     await page.waitForTimeout(200);
+
+    // ---- reset -----------------------------------------------------------
+    const confirmAsk = await page.evaluate(() => {
+      document.getElementById("planner-char-clear").click();
+      const modal = document.getElementById("confirm-modal");
+      return {
+        open: getComputedStyle(modal).display !== "none",
+        title: document.getElementById("confirm-modal-title").textContent.trim(),
+        message: document.getElementById("confirm-modal-message").textContent.trim(),
+        // Nothing is dropped until the reader says yes.
+        tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+      };
+    });
+    check(
+      "Reset asks before it throws the plan away",
+      confirmAsk.open && confirmAsk.tiles === 2 && /plan/i.test(confirmAsk.title + confirmAsk.message),
+      JSON.stringify(confirmAsk)
+    );
+
+    const cancelled = await page.evaluate(() => {
+      document.getElementById("confirm-modal-btn-cancel").click();
+      return {
+        closed: getComputedStyle(document.getElementById("confirm-modal")).display === "none",
+        tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+      };
+    });
+    check(
+      "cancelling keeps the plan",
+      cancelled.closed && cancelled.tiles === 2,
+      JSON.stringify(cancelled)
+    );
+
+    const cleared = await page.evaluate(() => {
+      document.getElementById("planner-char-clear").click();
+      document.getElementById("confirm-modal-btn-yes").click();
+      return {
+        tiles: document.querySelectorAll("#planner-char-rail .planner-char-tile").length,
+        railEmpty: (document.querySelector(".planner-rail-empty")?.textContent || "").trim(),
+        count: document.getElementById("planner-char-count").textContent.trim(),
+        farm: document.getElementById("planner-farm").textContent.replace(/\s+/g, " ").trim(),
+        sheets: [...document.querySelectorAll("#planner-pane-character .planner-sheet")].every((s) => s.hidden),
+        saved: localStorage.getItem("r1999_planner_characters_v1"),
+      };
+    });
+    check(
+      "Reset empties the plan and closes every panel",
+      cleared.tiles === 0 && !!cleared.railEmpty && cleared.count === "" && cleared.sheets,
+      JSON.stringify(cleared)
+    );
+    check(
+      "and it clears the saved plan too",
+      /"chars":\[\]/.test(String(cleared.saved)),
+      String(cleared.saved).slice(0, 80)
+    );
 
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.waitForTimeout(300);

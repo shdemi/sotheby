@@ -1,0 +1,1520 @@
+{
+  "patch": "3.3",
+  "source": "https://github.com/windbow27/kornblume -> public/data/stages3_3_greedy.json",
+  "stages": [
+    {
+      "name": "1-14",
+      "category": "Story",
+      "cost": 12,
+      "drops": {
+        "Sharp Needle": 0.753009,
+        "Spell of Banishing": 0.196232,
+        "Silver Ore": 0.162219,
+        "Shattered Bones": 0.131345,
+        "Magnesia Crystal": 0.070644,
+        "Trembling Tooth": 0.074307
+      }
+    },
+    {
+      "name": "2-3H",
+      "category": "Hard",
+      "cost": 16,
+      "drops": {
+        "Holy Silver": 0.354331,
+        "Sharp Needle": 0.023622,
+        "Luminite Ore": 0.023622,
+        "Fox Tail": 0.031496,
+        "Perpetual Cog": 0.025984,
+        "Cicada Wings": 0.018898,
+        "Spell of Fortune": 0.022835,
+        "Rough Silver Ingot": 0.032283,
+        "Esoteric Bones": 0.029921,
+        "Milled Magnesia": 0.015748,
+        "Liquefied Terror": 0.030709,
+        "Silver Ore": 1.699213
+      }
+    },
+    {
+      "name": "2-6H",
+      "category": "Hard",
+      "cost": 16,
+      "drops": {
+        "Prophetic Bird": 0.44754,
+        "Sharp Needle": 0.022695,
+        "Luminite Ore": 0.023824,
+        "Fox Tail": 0.033983,
+        "Perpetual Cog": 0.023467,
+        "Cicada Wings": 0.032735,
+        "Spell of Fortune": 0.024358,
+        "Rough Silver Ingot": 0.022992,
+        "Esoteric Bones": 0.02519,
+        "Milled Magnesia": 0.024715,
+        "Liquefied Terror": 0.022695,
+        "Spell of Banishing": 1.975582
+      }
+    },
+    {
+      "name": "2-8H",
+      "category": "Hard",
+      "cost": 16,
+      "drops": {
+        "Bifurcated Skeleton": 0.304462,
+        "Sharp Needle": 0.023622,
+        "Luminite Ore": 0.026247,
+        "Fox Tail": 0.031496,
+        "Perpetual Cog": 0.028871,
+        "Cicada Wings": 0.023622,
+        "Spell of Fortune": 0.020997,
+        "Rough Silver Ingot": 0.015748,
+        "Esoteric Bones": 0.026247,
+        "Milled Magnesia": 0.023622,
+        "Liquefied Terror": 0.018373,
+        "Shattered Bones": 1.614173
+      }
+    },
+    {
+      "name": "2-12H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Biting Box": 0.306723,
+        "Sharp Needle": 0.042017,
+        "Luminite Ore": 0.037815,
+        "Fox Tail": 0.029412,
+        "Perpetual Cog": 0.033613,
+        "Cicada Wings": 0.02521,
+        "Spell of Fortune": 0.021008,
+        "Rough Silver Ingot": 0.029412,
+        "Esoteric Bones": 0.02521,
+        "Milled Magnesia": 0.02521,
+        "Liquefied Terror": 0.008403,
+        "Trembling Tooth": 0.987395
+      }
+    },
+    {
+      "name": "2-14H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Jeweled Egg": 0.333845,
+        "Sharp Needle": 0.046547,
+        "Luminite Ore": 0.047911,
+        "Fox Tail": 0.06104,
+        "Perpetual Cog": 0.042114,
+        "Cicada Wings": 0.051662,
+        "Spell of Fortune": 0.041432,
+        "Rough Silver Ingot": 0.045013,
+        "Esoteric Bones": 0.047229,
+        "Milled Magnesia": 0.04416,
+        "Liquefied Terror": 0.04416,
+        "Magnesia Crystal": 0.662404
+      }
+    },
+    {
+      "name": "3-3H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Clawed Pendulum": 0.233397,
+        "Spell of Fortune": 0.252372,
+        "Spell of Banishing": 1.358634,
+        "Silver Ore": 0.709677
+      }
+    },
+    {
+      "name": "3-5H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Solidus": 0.4625,
+        "Rough Silver Ingot": 0.39375,
+        "Spell of Banishing": 0.14375,
+        "Silver Ore": 1.50625,
+        "Shattered Bones": 0.0625,
+        "Magnesia Crystal": 0.03125,
+        "Trembling Tooth": 0.075
+      }
+    },
+    {
+      "name": "3-7H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Bifurcated Skeleton": 0.332014,
+        "Liquefied Terror": 0.217195,
+        "Shattered Bones": 0.65724,
+        "Trembling Tooth": 0.571267
+      }
+    },
+    {
+      "name": "3-8H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Holy Silver": 0.349169,
+        "Esoteric Bones": 0.311956,
+        "Silver Ore": 0.648456,
+        "Shattered Bones": 1.185273
+      }
+    },
+    {
+      "name": "3-9",
+      "category": "Story",
+      "cost": 14,
+      "drops": {
+        "Goose Neck": 0.25,
+        "Perpetual Cog": 0.016082,
+        "Cicada Wings": 0.017544,
+        "Spell of Fortune": 0.045322,
+        "Rough Silver Ingot": 0.030702,
+        "Esoteric Bones": 0.027778,
+        "Milled Magnesia": 0.026316,
+        "Liquefied Terror": 0.019006,
+        "Spell of Banishing": 0.74269
+      }
+    },
+    {
+      "name": "3-9H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Prophetic Bird": 0.418919,
+        "Luminite Ore": 0.013514,
+        "Fox Tail": 0.013514,
+        "Perpetual Cog": 0.006757,
+        "Cicada Wings": 0.013514,
+        "Spell of Fortune": 0.040541,
+        "Rough Silver Ingot": 0.540541,
+        "Esoteric Bones": 0.033784,
+        "Milled Magnesia": 0.033784,
+        "Liquefied Terror": 0.027027,
+        "Spell of Banishing": 0.581081
+      }
+    },
+    {
+      "name": "3-11H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Clawed Pendulum": 0.307183,
+        "Milled Magnesia": 0.121688,
+        "Spell of Banishing": 0.675732,
+        "Magnesia Crystal": 0.387029
+      }
+    },
+    {
+      "name": "3-13H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Murmur of Insanity": 0.022712,
+        "Salted Mandrake": 0.341176,
+        "Milled Magnesia": 0.137582,
+        "Magnesia Crystal": 0.679085
+      }
+    },
+    {
+      "name": "3-15",
+      "category": "Story",
+      "cost": 14,
+      "drops": {
+        "Golden Beetle": 0.217219,
+        "Sharp Needle": 0.025166,
+        "Luminite Ore": 0.018543,
+        "Fox Tail": 0.02649,
+        "Perpetual Cog": 0.023841,
+        "Cicada Wings": 0.022517,
+        "Spell of Fortune": 0.025166,
+        "Rough Silver Ingot": 0.022517,
+        "Esoteric Bones": 0.029139,
+        "Milled Magnesia": 0.027815,
+        "Liquefied Terror": 0.033113,
+        "Shattered Bones": 0.788079
+      }
+    },
+    {
+      "name": "4-3",
+      "category": "Story",
+      "cost": 16,
+      "drops": {
+        "Red Lacquer Slab": 0.27,
+        "Milled Magnesia": 0.145556,
+        "Spell of Banishing": 0.13,
+        "Silver Ore": 0.805556,
+        "Shattered Bones": 0.087778,
+        "Magnesia Crystal": 0.388889,
+        "Trembling Tooth": 0.056667
+      }
+    },
+    {
+      "name": "4-4",
+      "category": "Story",
+      "cost": 16,
+      "drops": {
+        "Golden Grass Incense": 0.281684,
+        "Sharp Needle": 0.022444,
+        "Fox Tail": 0.033975,
+        "Perpetual Cog": 0.023268,
+        "Cicada Wings": 0.02996,
+        "Spell of Fortune": 0.023165,
+        "Rough Silver Ingot": 0.024915,
+        "Esoteric Bones": 0.025842,
+        "Milled Magnesia": 0.022444,
+        "Liquefied Terror": 0.024709,
+        "Shattered Bones": 0.716154,
+        "Trembling Tooth": 0.001133
+      }
+    },
+    {
+      "name": "4-4H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Spell of Fortune": 0.884956,
+        "Liquefied Terror": 0.646018,
+        "Spell of Banishing": 0.707965
+      }
+    },
+    {
+      "name": "4-5H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Rough Silver Ingot": 0.685714,
+        "Milled Magnesia": 0.704762,
+        "Silver Ore": 0.714286,
+        "Magnesia Crystal": 0.333333
+      }
+    },
+    {
+      "name": "4-6",
+      "category": "Story",
+      "cost": 16,
+      "drops": {
+        "Goose Neck": 0.266272,
+        "Spell of Fortune": 0.136095,
+        "Spell of Banishing": 1.431953
+      }
+    },
+    {
+      "name": "4-10H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Biting Box": 0.288,
+        "Luminite Ore": 0.016,
+        "Fox Tail": 0.056,
+        "Perpetual Cog": 0.024,
+        "Cicada Wings": 0.016,
+        "Spell of Fortune": 0.016,
+        "Rough Silver Ingot": 0.472,
+        "Esoteric Bones": 0.008,
+        "Milled Magnesia": 0.048,
+        "Liquefied Terror": 0.016,
+        "Silver Ore": 0.72
+      }
+    },
+    {
+      "name": "4-11H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Prophetic Bird": 0.434951,
+        "Esoteric Bones": 0.337864,
+        "Spell of Banishing": 0.537864,
+        "Shattered Bones": 1.137864
+      }
+    },
+    {
+      "name": "4-13H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Holy Silver": 0.348643,
+        "Milled Magnesia": 0.204593,
+        "Silver Ore": 0.649269,
+        "Magnesia Crystal": 0.797495
+      }
+    },
+    {
+      "name": "4-18",
+      "category": "Story",
+      "cost": 16,
+      "drops": {
+        "Winged Key": 0.294318,
+        "Milled Magnesia": 0.138636,
+        "Silver Ore": 0.688636,
+        "Magnesia Crystal": 0.371591
+      }
+    },
+    {
+      "name": "4-20H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Bifurcated Skeleton": 0.340448,
+        "Spell of Fortune": 0.435386,
+        "Spell of Banishing": 2.085841,
+        "Shattered Bones": 0.656986
+      }
+    },
+    {
+      "name": "4-21H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Salted Mandrake": 0.299748,
+        "Liquefied Terror": 0.210327,
+        "Magnesia Crystal": 0.693955,
+        "Trembling Tooth": 0.607053
+      }
+    },
+    {
+      "name": "5-3H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Winged Key": 0.293074,
+        "Esoteric Bones": 0.306166,
+        "Silver Ore": 0.708615,
+        "Shattered Bones": 1.189611
+      }
+    },
+    {
+      "name": "5-4",
+      "category": "Story",
+      "cost": 18,
+      "drops": {
+        "Golden Beetle": 0.287142,
+        "Spell of Fortune": 0.001999,
+        "Rough Silver Ingot": 0.019987,
+        "Esoteric Bones": 0.139241,
+        "Milled Magnesia": 0.004664,
+        "Liquefied Terror": 0.003331,
+        "Spell of Banishing": 0.023984,
+        "Silver Ore": 0.001332,
+        "Shattered Bones": 0.586276
+      }
+    },
+    {
+      "name": "5-4H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Goose Neck": 0.297888,
+        "Sharp Needle": 0.023508,
+        "Luminite Ore": 0.024977,
+        "Fox Tail": 0.033425,
+        "Perpetual Cog": 0.023508,
+        "Cicada Wings": 0.032691,
+        "Spell of Fortune": 0.020937,
+        "Rough Silver Ingot": 0.529293,
+        "Esoteric Bones": 0.022957,
+        "Milled Magnesia": 0.021671,
+        "Liquefied Terror": 0.02461,
+        "Spell of Banishing": 0.686501
+      }
+    },
+    {
+      "name": "5-5H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Holy Silver": 0.344538,
+        "Liquefied Terror": 0.202881,
+        "Silver Ore": 0.654262,
+        "Trembling Tooth": 0.60024
+      }
+    },
+    {
+      "name": "5-7H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Bifurcated Skeleton": 0.377863,
+        "Esoteric Bones": 0.294656,
+        "Shattered Bones": 1.265649
+      }
+    },
+    {
+      "name": "5-8H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Prophetic Bird": 0.455041,
+        "Milled Magnesia": 0.277929,
+        "Spell of Banishing": 0.558583,
+        "Magnesia Crystal": 0.757493
+      }
+    },
+    {
+      "name": "5-9H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Salted Mandrake": 0.338583,
+        "Luminite Ore": 0.031496,
+        "Fox Tail": 0.007874,
+        "Perpetual Cog": 0.019685,
+        "Cicada Wings": 0.019685,
+        "Spell of Fortune": 0.035433,
+        "Rough Silver Ingot": 0.531496,
+        "Esoteric Bones": 0.023622,
+        "Milled Magnesia": 0.015748,
+        "Liquefied Terror": 0.023622,
+        "Magnesia Crystal": 0.665354
+      }
+    },
+    {
+      "name": "5-14H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Clawed Pendulum": 0.314537,
+        "Spell of Fortune": 0.137885,
+        "Spell of Banishing": 0.7163,
+        "Silver Ore": 0.681498
+      }
+    },
+    {
+      "name": "5-19H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Silver Bullet": 0.020498,
+        "Biting Box": 0.314422,
+        "Liquefied Terror": 0.097182,
+        "Silver Ore": 0.711201
+      }
+    },
+    {
+      "name": "6-4H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Prophetic Bird": 0.481651,
+        "Luminite Ore": 0.027523,
+        "Fox Tail": 0.009174,
+        "Cicada Wings": 0.266055,
+        "Spell of Fortune": 0.050459,
+        "Rough Silver Ingot": 0.03211,
+        "Esoteric Bones": 0.013761,
+        "Milled Magnesia": 0.018349,
+        "Liquefied Terror": 0.022936,
+        "Spell of Banishing": 0.518349
+      }
+    },
+    {
+      "name": "6-5H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Goose Neck": 0.295785,
+        "Fox Tail": 0.024709,
+        "Perpetual Cog": 0.012355,
+        "Cicada Wings": 0.025436,
+        "Spell of Fortune": 0.042878,
+        "Rough Silver Ingot": 0.029797,
+        "Esoteric Bones": 0.1875,
+        "Milled Magnesia": 0.022529,
+        "Liquefied Terror": 0.025436,
+        "Spell of Banishing": 0.680959,
+        "Silver Ore": 0.012355,
+        "Shattered Bones": 0.52689,
+        "Magnesia Crystal": 0.038517
+      }
+    },
+    {
+      "name": "6-6H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Biting Box": 0.273046,
+        "Spell of Fortune": 0.506418,
+        "Trembling Tooth": 0.725788
+      }
+    },
+    {
+      "name": "6-8H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Winged Key": 0.282579,
+        "Liquefied Terror": 0.127572,
+        "Magnesia Crystal": 0.721536,
+        "Trembling Tooth": 0.289438
+      }
+    },
+    {
+      "name": "6-10H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Bifurcated Skeleton": 0.328199,
+        "Esoteric Bones": 0.008294,
+        "Milled Magnesia": 0.278436,
+        "Shattered Bones": 0.67654,
+        "Magnesia Crystal": 0.71564
+      }
+    },
+    {
+      "name": "6-14H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Wyrmling Skeleton": 0.019972,
+        "Holy Silver": 0.353228,
+        "Rough Silver Ingot": 0.194496,
+        "Silver Ore": 1.399327
+      }
+    },
+    {
+      "name": "6-19H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Salted Mandrake": 0.292247,
+        "Perpetual Cog": 0.013917,
+        "Cicada Wings": 0.031809,
+        "Spell of Fortune": 0.033797,
+        "Rough Silver Ingot": 0.039761,
+        "Esoteric Bones": 0.222664,
+        "Milled Magnesia": 0.029821,
+        "Liquefied Terror": 0.031809,
+        "Shattered Bones": 0.532803,
+        "Magnesia Crystal": 0.701789
+      }
+    },
+    {
+      "name": "6-21H",
+      "category": "Hard",
+      "cost": 18,
+      "drops": {
+        "Golden Beetle": 0.283682,
+        "Rough Silver Ingot": 0.194066,
+        "Spell of Banishing": 0.707841,
+        "Silver Ore": 0.745686
+      }
+    },
+    {
+      "name": "7-3H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Salted Mandrake": 0.326258,
+        "Fox Tail": 0.050314,
+        "Perpetual Cog": 0.046384,
+        "Cicada Wings": 0.034591,
+        "Spell of Fortune": 0.066038,
+        "Rough Silver Ingot": 0.068396,
+        "Esoteric Bones": 0.070755,
+        "Milled Magnesia": 0.185535,
+        "Liquefied Terror": 0.050314,
+        "Magnesia Crystal": 1.048742
+      }
+    },
+    {
+      "name": "7-6H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Golden Grass Incense": 0.297297,
+        "Luminite Ore": 0.018018,
+        "Fox Tail": 0.153153,
+        "Cicada Wings": 0.009009,
+        "Spell of Fortune": 0.036036,
+        "Rough Silver Ingot": 0.072072,
+        "Esoteric Bones": 0.027027,
+        "Milled Magnesia": 0.045045,
+        "Liquefied Terror": 0.045045,
+        "Magnesia Crystal": 0.657658
+      }
+    },
+    {
+      "name": "7-7H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Bifurcated Skeleton": 0.391304,
+        "Sharp Needle": 0.054348,
+        "Luminite Ore": 0.065217,
+        "Fox Tail": 0.021739,
+        "Perpetual Cog": 0.036232,
+        "Cicada Wings": 0.050725,
+        "Spell of Fortune": 0.025362,
+        "Rough Silver Ingot": 0.050725,
+        "Esoteric Bones": 0.228261,
+        "Milled Magnesia": 0.057971,
+        "Liquefied Terror": 0.025362,
+        "Shattered Bones": 1.217391
+      }
+    },
+    {
+      "name": "7-10H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Winged Key": 0.331773,
+        "Fox Tail": 0.026087,
+        "Perpetual Cog": 0.02408,
+        "Cicada Wings": 0.257525,
+        "Spell of Fortune": 0.035452,
+        "Rough Silver Ingot": 0.04214,
+        "Esoteric Bones": 0.038796,
+        "Milled Magnesia": 0.035452,
+        "Liquefied Terror": 0.022074,
+        "Magnesia Crystal": 0.661538
+      }
+    },
+    {
+      "name": "7-12H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Prophetic Bird": 0.474501,
+        "Sharp Needle": 0.031042,
+        "Luminite Ore": 0.02439,
+        "Fox Tail": 0.055432,
+        "Perpetual Cog": 0.042129,
+        "Cicada Wings": 0.044346,
+        "Spell of Fortune": 0.521064,
+        "Rough Silver Ingot": 0.050998,
+        "Esoteric Bones": 0.046563,
+        "Milled Magnesia": 0.039911,
+        "Liquefied Terror": 0.044346,
+        "Spell of Banishing": 0.512195
+      }
+    },
+    {
+      "name": "7-16H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Goose Neck": 0.30701,
+        "Fox Tail": 0.020951,
+        "Perpetual Cog": 0.271555,
+        "Cicada Wings": 0.022562,
+        "Spell of Fortune": 0.033038,
+        "Rough Silver Ingot": 0.038678,
+        "Esoteric Bones": 0.024174,
+        "Milled Magnesia": 0.023368,
+        "Liquefied Terror": 0.020951,
+        "Spell of Banishing": 0.687349
+      }
+    },
+    {
+      "name": "7-19H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Holy Silver": 0.412281,
+        "Luminite Ore": 0.035088,
+        "Fox Tail": 0.02193,
+        "Perpetual Cog": 0.013158,
+        "Cicada Wings": 0.026316,
+        "Spell of Fortune": 0.035088,
+        "Rough Silver Ingot": 0.350877,
+        "Esoteric Bones": 0.013158,
+        "Milled Magnesia": 0.017544,
+        "Liquefied Terror": 0.017544,
+        "Silver Ore": 1.622807
+      }
+    },
+    {
+      "name": "7-20H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Clawed Pendulum": 0.341697,
+        "Rough Silver Ingot": 0.198085,
+        "Silver Ore": 1.375371
+      }
+    },
+    {
+      "name": "7-26H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Bogeyman": 0.014943,
+        "Biting Box": 0.310517,
+        "Sharp Needle": 0.022897,
+        "Luminite Ore": 0.025709,
+        "Fox Tail": 0.024424,
+        "Perpetual Cog": 0.025307,
+        "Cicada Wings": 0.023379,
+        "Spell of Fortune": 0.023459,
+        "Rough Silver Ingot": 0.024022,
+        "Esoteric Bones": 0.023942,
+        "Milled Magnesia": 0.022817,
+        "Liquefied Terror": 0.02354,
+        "Trembling Tooth": 0.685868
+      }
+    },
+    {
+      "name": "8-3H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Prophetic Bird": 0.513475,
+        "Luminite Ore": 0.046809,
+        "Fox Tail": 0.025532,
+        "Perpetual Cog": 0.029787,
+        "Cicada Wings": 0.042553,
+        "Spell of Fortune": 0.561702,
+        "Rough Silver Ingot": 0.062411,
+        "Esoteric Bones": 0.043972,
+        "Milled Magnesia": 0.046809,
+        "Liquefied Terror": 0.024113,
+        "Spell of Banishing": 0.483688
+      }
+    },
+    {
+      "name": "8-7H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Biting Box": 0.286885,
+        "Fox Tail": 0.016393,
+        "Perpetual Cog": 0.016393,
+        "Cicada Wings": 0.02459,
+        "Spell of Fortune": 0.040984,
+        "Rough Silver Ingot": 0.057377,
+        "Esoteric Bones": 0.040984,
+        "Milled Magnesia": 0.016393,
+        "Liquefied Terror": 0.163934,
+        "Trembling Tooth": 0.713115
+      }
+    },
+    {
+      "name": "8-10H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Holy Silver": 0.389937,
+        "Luminite Ore": 0.018868,
+        "Fox Tail": 0.031447,
+        "Perpetual Cog": 0.018868,
+        "Cicada Wings": 0.006289,
+        "Spell of Fortune": 0.037736,
+        "Rough Silver Ingot": 0.616352,
+        "Esoteric Bones": 0.012579,
+        "Milled Magnesia": 0.018868,
+        "Liquefied Terror": 0.025157,
+        "Silver Ore": 1.295597
+      }
+    },
+    {
+      "name": "8-11H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Golden Beetle": 0.306559,
+        "Esoteric Bones": 0.306927,
+        "Milled Magnesia": 0.001105,
+        "Shattered Bones": 0.693073,
+        "Trembling Tooth": 0.001105
+      }
+    },
+    {
+      "name": "8-15H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Winged Key": 0.327475,
+        "Fox Tail": 0.016651,
+        "Perpetual Cog": 0.019426,
+        "Cicada Wings": 0.246068,
+        "Spell of Fortune": 0.034228,
+        "Rough Silver Ingot": 0.046253,
+        "Esoteric Bones": 0.024052,
+        "Milled Magnesia": 0.031452,
+        "Liquefied Terror": 0.021277,
+        "Silver Ore": 0.00185,
+        "Magnesia Crystal": 0.651249
+      }
+    },
+    {
+      "name": "8-17H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Incorrupt Monkeypaw": 0.02565,
+        "Salted Mandrake": 0.331286,
+        "Milled Magnesia": 0.128251,
+        "Magnesia Crystal": 1.035405
+      }
+    },
+    {
+      "name": "8-18H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Golden Grass Incense": 0.266073,
+        "Sharp Needle": 0.02275,
+        "Luminite Ore": 0.012859,
+        "Fox Tail": 0.208704,
+        "Perpetual Cog": 0.018793,
+        "Cicada Wings": 0.011869,
+        "Spell of Fortune": 0.019782,
+        "Rough Silver Ingot": 0.021761,
+        "Esoteric Bones": 0.026706,
+        "Milled Magnesia": 0.019782,
+        "Liquefied Terror": 0.019782,
+        "Magnesia Crystal": 0.633037
+      }
+    },
+    {
+      "name": "8-20H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Bifurcated Skeleton": 0.35102,
+        "Luminite Ore": 0.061224,
+        "Fox Tail": 0.044898,
+        "Perpetual Cog": 0.036735,
+        "Cicada Wings": 0.040816,
+        "Spell of Fortune": 0.085714,
+        "Rough Silver Ingot": 0.065306,
+        "Esoteric Bones": 0.310204,
+        "Milled Magnesia": 0.04898,
+        "Liquefied Terror": 0.036735,
+        "Shattered Bones": 0.616327,
+        "Trembling Tooth": 0.02449
+      }
+    },
+    {
+      "name": "8-21",
+      "category": "Story",
+      "cost": 18,
+      "drops": {
+        "Solidus": 0.567442,
+        "Spell of Fortune": 0.181395,
+        "Rough Silver Ingot": 0.162791,
+        "Spell of Banishing": 1.516279,
+        "Silver Ore": 0.762791,
+        "Shattered Bones": 0.07907
+      }
+    },
+    {
+      "name": "8-21H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Goose Neck": 0.297685,
+        "Fox Tail": 0.024256,
+        "Perpetual Cog": 0.241455,
+        "Cicada Wings": 0.026461,
+        "Spell of Fortune": 0.029768,
+        "Rough Silver Ingot": 0.037486,
+        "Esoteric Bones": 0.023153,
+        "Milled Magnesia": 0.030871,
+        "Liquefied Terror": 0.012128,
+        "Spell of Banishing": 0.70011
+      }
+    },
+    {
+      "name": "9-1H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Red Lacquer Slab": 0.323382,
+        "Sharp Needle": 0.044104,
+        "Luminite Ore": 0.28837,
+        "Fox Tail": 0.055231,
+        "Perpetual Cog": 0.046139,
+        "Cicada Wings": 0.046139,
+        "Spell of Fortune": 0.041932,
+        "Rough Silver Ingot": 0.044646,
+        "Esoteric Bones": 0.042475,
+        "Milled Magnesia": 0.043425,
+        "Liquefied Terror": 0.047903,
+        "Shattered Bones": 0.657348
+      }
+    },
+    {
+      "name": "9-3H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Biting Box": 0.3125,
+        "Sharp Needle": 0.030242,
+        "Luminite Ore": 0.018145,
+        "Fox Tail": 0.034274,
+        "Perpetual Cog": 0.018145,
+        "Cicada Wings": 0.032258,
+        "Spell of Fortune": 0.018145,
+        "Rough Silver Ingot": 0.010081,
+        "Esoteric Bones": 0.018145,
+        "Milled Magnesia": 0.030242,
+        "Liquefied Terror": 0.221774,
+        "Trembling Tooth": 0.6875
+      }
+    },
+    {
+      "name": "9-6H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Holy Silver": 0.379104,
+        "Sharp Needle": 0.028731,
+        "Luminite Ore": 0.019403,
+        "Fox Tail": 0.038806,
+        "Perpetual Cog": 0.027985,
+        "Cicada Wings": 0.033209,
+        "Spell of Fortune": 0.023881,
+        "Rough Silver Ingot": 0.589179,
+        "Esoteric Bones": 0.01903,
+        "Milled Magnesia": 0.025373,
+        "Liquefied Terror": 0.020896,
+        "Silver Ore": 1.365672
+      }
+    },
+    {
+      "name": "9-7H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Clawed Pendulum": 0.321285,
+        "Rough Silver Ingot": 0.389558,
+        "Silver Ore": 0.665663
+      }
+    },
+    {
+      "name": "9-8H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Prophetic Bird": 0.504893,
+        "Sharp Needle": 0.045193,
+        "Luminite Ore": 0.042746,
+        "Fox Tail": 0.059442,
+        "Perpetual Cog": 0.04361,
+        "Cicada Wings": 0.051526,
+        "Spell of Fortune": 0.535262,
+        "Rough Silver Ingot": 0.043322,
+        "Esoteric Bones": 0.047064,
+        "Milled Magnesia": 0.043322,
+        "Liquefied Terror": 0.047208,
+        "Spell of Banishing": 0.489781
+      }
+    },
+    {
+      "name": "9-13H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Bifurcated Skeleton": 0.370968,
+        "Sharp Needle": 0.048387,
+        "Luminite Ore": 0.056452,
+        "Fox Tail": 0.052419,
+        "Perpetual Cog": 0.020161,
+        "Cicada Wings": 0.052419,
+        "Spell of Fortune": 0.028226,
+        "Rough Silver Ingot": 0.040323,
+        "Esoteric Bones": 0.310484,
+        "Milled Magnesia": 0.040323,
+        "Liquefied Terror": 0.040323,
+        "Shattered Bones": 0.629032
+      }
+    },
+    {
+      "name": "9-15H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Glowing Mothwing": 0.013821,
+        "Winged Key": 0.327551,
+        "Sharp Needle": 0.023905,
+        "Luminite Ore": 0.023059,
+        "Fox Tail": 0.036105,
+        "Perpetual Cog": 0.023482,
+        "Cicada Wings": 0.024399,
+        "Spell of Fortune": 0.023341,
+        "Rough Silver Ingot": 0.022706,
+        "Esoteric Bones": 0.023764,
+        "Milled Magnesia": 0.022989,
+        "Liquefied Terror": 0.023341,
+        "Magnesia Crystal": 0.669628
+      }
+    },
+    {
+      "name": "9-16H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Salted Mandrake": 0.312576,
+        "Sharp Needle": 0.045788,
+        "Luminite Ore": 0.042735,
+        "Fox Tail": 0.082418,
+        "Perpetual Cog": 0.051893,
+        "Cicada Wings": 0.081807,
+        "Spell of Fortune": 0.044567,
+        "Rough Silver Ingot": 0.045788,
+        "Esoteric Bones": 0.034188,
+        "Milled Magnesia": 0.307082,
+        "Liquefied Terror": 0.04884,
+        "Magnesia Crystal": 0.680708
+      }
+    },
+    {
+      "name": "10-2H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Golden Beetle": 0.313466,
+        "Esoteric Bones": 0.305188,
+        "Shattered Bones": 0.681567
+      }
+    },
+    {
+      "name": "10-4H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Winged Key": 0.328358,
+        "Sharp Needle": 0.023134,
+        "Luminite Ore": 0.023134,
+        "Fox Tail": 0.11791,
+        "Perpetual Cog": 0.020149,
+        "Cicada Wings": 0.251493,
+        "Spell of Fortune": 0.025,
+        "Rough Silver Ingot": 0.020896,
+        "Esoteric Bones": 0.025746,
+        "Milled Magnesia": 0.024627,
+        "Liquefied Terror": 0.020522,
+        "Magnesia Crystal": 0.664925
+      }
+    },
+    {
+      "name": "10-6H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Prophetic Bird": 0.574367,
+        "Luminite Ore": 0.026899,
+        "Fox Tail": 0.012658,
+        "Perpetual Cog": 0.018196,
+        "Cicada Wings": 0.018987,
+        "Spell of Fortune": 0.54193,
+        "Rough Silver Ingot": 0.033228,
+        "Esoteric Bones": 0.03481,
+        "Milled Magnesia": 0.02057,
+        "Liquefied Terror": 0.015823,
+        "Spell of Banishing": 0.421677
+      }
+    },
+    {
+      "name": "10-9H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Holy Silver": 0.482335,
+        "Sharp Needle": 0.023901,
+        "Luminite Ore": 0.022663,
+        "Fox Tail": 0.035184,
+        "Perpetual Cog": 0.02327,
+        "Cicada Wings": 0.032418,
+        "Spell of Fortune": 0.023682,
+        "Rough Silver Ingot": 0.391609,
+        "Esoteric Bones": 0.022809,
+        "Milled Magnesia": 0.022421,
+        "Liquefied Terror": 0.022712,
+        "Silver Ore": 0.513394
+      }
+    },
+    {
+      "name": "10-13H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Bifurcated Skeleton": 0.434564,
+        "Sharp Needle": 0.023136,
+        "Luminite Ore": 0.02115,
+        "Fox Tail": 0.022786,
+        "Perpetual Cog": 0.023136,
+        "Cicada Wings": 0.021734,
+        "Spell of Fortune": 0.025006,
+        "Rough Silver Ingot": 0.023487,
+        "Esoteric Bones": 0.322622,
+        "Milled Magnesia": 0.025473,
+        "Liquefied Terror": 0.025356,
+        "Shattered Bones": 0.563566
+      }
+    },
+    {
+      "name": "10-17H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Biting Box": 0.299513,
+        "Sharp Needle": 0.022998,
+        "Luminite Ore": 0.022998,
+        "Fox Tail": 0.027868,
+        "Perpetual Cog": 0.025703,
+        "Cicada Wings": 0.029762,
+        "Spell of Fortune": 0.025433,
+        "Rough Silver Ingot": 0.024351,
+        "Esoteric Bones": 0.020563,
+        "Milled Magnesia": 0.02381,
+        "Liquefied Terror": 0.210768,
+        "Trembling Tooth": 0.696158
+      }
+    },
+    {
+      "name": "10-19H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Red Lacquer Slab": 0.321397,
+        "Luminite Ore": 0.274236,
+        "Fox Tail": 0.039301,
+        "Perpetual Cog": 0.027074,
+        "Cicada Wings": 0.037555,
+        "Spell of Fortune": 0.077729,
+        "Rough Silver Ingot": 0.053275,
+        "Esoteric Bones": 0.041048,
+        "Milled Magnesia": 0.041921,
+        "Liquefied Terror": 0.036681,
+        "Shattered Bones": 0.666376
+      }
+    },
+    {
+      "name": "10-22H",
+      "category": "Hard",
+      "cost": 20,
+      "drops": {
+        "Watch Core": 0.01771,
+        "Goose Neck": 0.305785,
+        "Rough Silver Ingot": 0.188607,
+        "Spell of Banishing": 0.690673,
+        "Silver Ore": 0.75
+      }
+    },
+    {
+      "name": "11-2H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Salted Mandrake": 0.421927,
+        "Milled Magnesia": 0.392027,
+        "Spell of Banishing": 0.142857,
+        "Silver Ore": 0.059801,
+        "Shattered Bones": 0.069767,
+        "Magnesia Crystal": 1.003322,
+        "Trembling Tooth": 0.036545
+      }
+    },
+    {
+      "name": "11-5H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Clawed Pendulum": 0.436346,
+        "Sharp Needle": 0.022028,
+        "Luminite Ore": 0.021704,
+        "Fox Tail": 0.035957,
+        "Perpetual Cog": 0.025915,
+        "Cicada Wings": 0.03045,
+        "Spell of Fortune": 0.020732,
+        "Rough Silver Ingot": 0.410107,
+        "Esoteric Bones": 0.015549,
+        "Milled Magnesia": 0.022352,
+        "Liquefied Terror": 0.024295,
+        "Silver Ore": 0.561063
+      }
+    },
+    {
+      "name": "11-11H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Holy Silver": 0.585526,
+        "Sharp Needle": 0.052632,
+        "Luminite Ore": 0.026316,
+        "Fox Tail": 0.052632,
+        "Perpetual Cog": 0.059211,
+        "Cicada Wings": 0.065789,
+        "Spell of Fortune": 0.059211,
+        "Rough Silver Ingot": 0.421053,
+        "Esoteric Bones": 0.052632,
+        "Milled Magnesia": 0.039474,
+        "Liquefied Terror": 0.039474,
+        "Silver Ore": 0.414474
+      }
+    },
+    {
+      "name": "11-18H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Goose Neck": 0.373377,
+        "Perpetual Cog": 0.24026,
+        "Rough Silver Ingot": 0.217532,
+        "Spell of Banishing": 0.633117,
+        "Silver Ore": 0.730519
+      }
+    },
+    {
+      "name": "11-20H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Bifurcated Skeleton": 0.561368,
+        "Sharp Needle": 0.038229,
+        "Luminite Ore": 0.038229,
+        "Fox Tail": 0.026157,
+        "Perpetual Cog": 0.044266,
+        "Cicada Wings": 0.054326,
+        "Spell of Fortune": 0.038229,
+        "Rough Silver Ingot": 0.032193,
+        "Esoteric Bones": 0.350101,
+        "Milled Magnesia": 0.062374,
+        "Liquefied Terror": 0.042254,
+        "Shattered Bones": 0.434608
+      }
+    },
+    {
+      "name": "11-21H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Goldbell Spirit Bottle": 0.017719,
+        "Golden Grass Incense": 0.390277,
+        "Liquefied Terror": 0.091776,
+        "Shattered Bones": 0.002272,
+        "Magnesia Crystal": 0.616992,
+        "Trembling Tooth": 0.305316
+      }
+    },
+    {
+      "name": "12-3H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Jeweled Egg": 0.463106,
+        "Sharp Needle": 0.411551,
+        "Luminite Ore": 0.023533,
+        "Fox Tail": 0.033543,
+        "Perpetual Cog": 0.023681,
+        "Cicada Wings": 0.030265,
+        "Spell of Fortune": 0.02433,
+        "Rough Silver Ingot": 0.216051,
+        "Esoteric Bones": 0.023415,
+        "Milled Magnesia": 0.023179,
+        "Liquefied Terror": 0.022411,
+        "Silver Ore": 1.268846
+      }
+    },
+    {
+      "name": "12-5H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Holy Silver": 0.600749,
+        "Sharp Needle": 0.043353,
+        "Luminite Ore": 0.043929,
+        "Fox Tail": 0.066254,
+        "Perpetual Cog": 0.043353,
+        "Cicada Wings": 0.059484,
+        "Spell of Fortune": 0.044721,
+        "Rough Silver Ingot": 0.419271,
+        "Esoteric Bones": 0.043857,
+        "Milled Magnesia": 0.045225,
+        "Liquefied Terror": 0.044289,
+        "Silver Ore": 0.396226
+      }
+    },
+    {
+      "name": "12-7H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Prophetic Bird": 0.734904,
+        "Spell of Fortune": 0.488673,
+        "Milled Magnesia": 0.122992,
+        "Spell of Banishing": 0.259412,
+        "Magnesia Crystal": 0.374001
+      }
+    },
+    {
+      "name": "12-11H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Golden Beetle": 0.405714,
+        "Esoteric Bones": 0.291429,
+        "Spell of Banishing": 0.121429,
+        "Silver Ore": 0.095429,
+        "Shattered Bones": 0.663429,
+        "Magnesia Crystal": 0.055714,
+        "Trembling Tooth": 0.051429
+      }
+    },
+    {
+      "name": "12-17H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Biting Box": 0.40247,
+        "Liquefied Terror": 0.301157,
+        "Trembling Tooth": 0.891469
+      }
+    },
+    {
+      "name": "12-18H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Winged Key": 0.426892,
+        "Sharp Needle": 0.025,
+        "Luminite Ore": 0.025946,
+        "Fox Tail": 0.176757,
+        "Perpetual Cog": 0.025135,
+        "Cicada Wings": 0.256892,
+        "Spell of Fortune": 0.024865,
+        "Rough Silver Ingot": 0.02527,
+        "Esoteric Bones": 0.022162,
+        "Milled Magnesia": 0.022973,
+        "Liquefied Terror": 0.027297,
+        "Spell of Banishing": 0.126486,
+        "Silver Ore": 0.09973,
+        "Shattered Bones": 0.081216,
+        "Magnesia Crystal": 0.63,
+        "Trembling Tooth": 0.050135
+      }
+    },
+    {
+      "name": "12-21H",
+      "category": "Hard",
+      "cost": 25,
+      "drops": {
+        "Emerald Slate": 0.004564,
+        "Red Lacquer Slab": 0.393558,
+        "Sharp Needle": 0.044867,
+        "Luminite Ore": 0.044867,
+        "Fox Tail": 0.068464,
+        "Perpetual Cog": 0.048312,
+        "Cicada Wings": 0.063641,
+        "Spell of Fortune": 0.042628,
+        "Rough Silver Ingot": 0.043576,
+        "Esoteric Bones": 0.047193,
+        "Milled Magnesia": 0.044351,
+        "Liquefied Terror": 0.047279,
+        "Trembling Tooth": 0.599294
+      }
+    },
+    {
+      "name": "The Poussiere VI",
+      "category": "Resource",
+      "cost": 25,
+      "drops": {
+        "Dust": 12500,
+        "Sharpodonty": 250
+      }
+    },
+    {
+      "name": "Mintage Aesthetics VI",
+      "category": "Resource",
+      "cost": 25,
+      "drops": {
+        "Sharpodonty": 9000
+      }
+    },
+    {
+      "name": "Mountain Echoes II",
+      "category": "Insight",
+      "cost": 18,
+      "drops": {
+        "Page of Mineral Wealth": 2
+      }
+    },
+    {
+      "name": "Mountain Echoes IV",
+      "category": "Insight",
+      "cost": 24,
+      "drops": {
+        "Scroll of Mineral Wealth": 2
+      }
+    },
+    {
+      "name": "Mountain Echoes VI",
+      "category": "Insight",
+      "cost": 30,
+      "drops": {
+        "Tome of Mineral Wealth": 2
+      }
+    },
+    {
+      "name": "Starfall Locale II",
+      "category": "Insight",
+      "cost": 18,
+      "drops": {
+        "Page of Starlit Ascent": 2
+      }
+    },
+    {
+      "name": "Starfall Locale IV",
+      "category": "Insight",
+      "cost": 24,
+      "drops": {
+        "Scroll of Starlit Ascent": 2
+      }
+    },
+    {
+      "name": "Starfall Locale VI",
+      "category": "Insight",
+      "cost": 30,
+      "drops": {
+        "Tome of Starlit Ascent": 2
+      }
+    },
+    {
+      "name": "Sylvanus Shape II",
+      "category": "Insight",
+      "cost": 18,
+      "drops": {
+        "Page of Plantal Vimen": 2
+      }
+    },
+    {
+      "name": "Sylvanus Shape IV",
+      "category": "Insight",
+      "cost": 24,
+      "drops": {
+        "Scroll of Plantal Vimen": 2
+      }
+    },
+    {
+      "name": "Sylvanus Shape VI",
+      "category": "Insight",
+      "cost": 30,
+      "drops": {
+        "Tome of Plantal Vimen": 2
+      }
+    },
+    {
+      "name": "Brutes Wilds II",
+      "category": "Insight",
+      "cost": 18,
+      "drops": {
+        "Page of Beastly Thirst": 2
+      }
+    },
+    {
+      "name": "Brutes Wilds IV",
+      "category": "Insight",
+      "cost": 24,
+      "drops": {
+        "Scroll of Beastly Thirst": 2
+      }
+    },
+    {
+      "name": "Brutes Wilds VI",
+      "category": "Insight",
+      "cost": 30,
+      "drops": {
+        "Tome of Beastly Thirst": 2
+      }
+    }
+  ]
+}
