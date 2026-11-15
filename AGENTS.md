@@ -116,7 +116,7 @@ Three classes. Class C is not "data" in the pipeline sense — it is content.
 | `character_profiles.json` | `character.json → dmgType`, `character_battle_tag.json` | `dmgType`: 1=Reality, 2=Mental; `battleTag` is `101#117#122` → needs a role map |
 | `character_skills.json` | `character.json`, `character_rank_replace.json`, `skill.json`, `skill_effect.json`, `skill_passive_level.json`, `skill_ex_level.json`, `fight_device.json` + global `language_*` | **derived**: 139 characters; device heroes take stances/specials from `fight_device`; CN-only English + all Vietnamese live in `content/translations/skills.json` |
 | `characters_mats_required.json` | `character_rank.json`, `character_talent.json`, `talent_style_cost.json`, `item.json` + global `language_*` | **mixed**: `insight`/`resonance`/`frequency` derived; `stats`/`euphoria`/`mastery` come from `content/progression_costs.json` |
-| `pattern_costs.json` | `talent_style_cost.json` + `item.json` + global `language_*` | **derived**: one bill per (arcanist, resonance pattern) — the same rows `characters_mats_required.frequency[]` carries, keyed by pattern name so the InfoBook's pattern panel can price a pick |
+| `pattern_costs.json` | `talent_style_cost.json` + `item.json` + global `language_*` | **derived**: one bill per (arcanist, resonance pattern) — the same rows `characters_mats_required.frequency[]` carries, keyed by pattern name so the Planner's frequency picker can price a pick |
 | `progression_levels.json` | `character_cosume.json` | **derived**: what one level costs in Dust (`2#5`) + Sharpodonty (`2#3`), 10 groups by rarity set + insight, 410 rows; the `level` column is cumulative over the four insight tiers, so the band offset is the only translation (§14) |
 | `items.json` | `item.json` (`isShow === 1`), `currency.json`, `item_use.json` (category) + global `language_*` | **derived**: 425 entries keyed by game id; `subType` → category label; Vietnamese + the editorial `source` live in `content/translations/items.json` |
 | `item_formulas.json` | `formula.json` (`produce`, `costMaterial`, `costScore`) | key = produced item id; inputs are `costMaterial` + `costScore` |
@@ -520,8 +520,8 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
    choices, not a table lookup; it lives in `content/`.
 4. **`pattern_costs.json`:** the hand-typed file was deleted 2026-11-06 (unused). The name
    is back as a **generated** file — `talent_style_cost` prices the five craftable
-   resonance patterns per hero, which is what the Planner's Frequency picker and the
-   InfoBook's pattern panel both spend (§3 Class A, §14).
+   resonance patterns per hero, which is what the Planner's Frequency picker spends
+   (§3 Class A, §14).
 5. **`exclude_character` / `collab_character`:** hand-curated policy. Both now derive
    from `content/curation.json`.
 6. **Old psychube localStorage migration:** yes. `scripts/sync/legacy/psychube-migration.json`
@@ -989,8 +989,8 @@ The two views are **the app's own markup**, not a second design: the team view e
 `.team-card` / `.team-slots` / `.team-slot*` (the exact card the PNG export renders) straight
 on the page's `images/background.png`, and the character view calls `renderBuildsDetail()`
 and copies `#builds-detail` out — inside the InfoBook's own `.modal-card` frame
-(`.sim-build-card`) — dropping `.builds-share-btn`, `.char-skills-section`,
-`.char-mats-panel` and `.build-notes-box` so only the build shows. The notes callout is
+(`.sim-build-card`) — dropping `.builds-share-btn`, `.char-skills-section` and
+`.build-notes-box` so only the build shows. The notes callout is
 dropped because 105 of the 107 notes are just "Recommended Portrait: 0/1/2/5", which the
 chart already draws (only Charlie and Matilda carry prose). The rotation view reuses
 `rotationPlanHtml()` — the same hero, team, notes and rounds the Rotations modal draws —
@@ -1299,6 +1299,13 @@ currency icon, the row alignment and the Owned field's icon + tooltip.
 The build half of the modal, and its stamina half too: the arcanists still to be built, what
 each one costs, and the **farm route** that pays for every enabled one in stamina.
 
+**It is the only plan surface.** The InfoBook's character pane used to carry its own
+"Upgrade Materials & Progression" / "Total Required Materials" panel (level + insight pips,
+resonance from→to, pattern, euphoria, mastery, then the summed bill); it was removed on
+2026-11-15 because the Planner asks the same questions with a goal, a stamina cost and a
+route, so the InfoBook now shows the build (hero, skills, notes, charts, psychubes,
+resonance codes) and nothing that is a bill.
+
 **Shape.** Five layers over one pane, so a 30-arcanist plan still fits in one window:
 
 | Element | What it is |
@@ -1373,9 +1380,9 @@ asserts the computed values match the real modal's, so the two cannot drift.
   controls.** Both ends of each are drawn, because a step is a range:
   - `plannerInsightPicksHtml()` emits `.planner-insight-picks` → two `.planner-insight-row`s,
     each a `.planner-field-mini` label (From / To) over a `.char-mats-ins-boxes` run of
-    `.char-mats-ins-btn` buttons — the *same* button and `images/insight_icon/I<n>.png` art
-    the InfoBook's progression panel uses, so a tier is asked in the same units in both
-    panels. A pip carries `data-set` (= the field) and `data-value` (= the tier), draws
+    `.char-mats-ins-btn` buttons, with `images/insight_icon/I<n>.png` art — the same tier
+    art the rest of the app uses. A pip carries `data-set` (= the field) and `data-value`
+    (= the tier), draws
     `.is-active` on the current one and `aria-pressed`. The current row runs I0…cap and the
     goal row I<cur>…cap, so a tier the plan cannot step back to is not offered.
   - `plannerLevelSlidersHtml()` emits `.planner-level-sliders` → two `.planner-level-row`s,
@@ -1416,8 +1423,8 @@ asserts the computed values match the real modal's, so the two cannot drift.
   `mastery` (level 1..4) and `frequency` (one entry per craftable resonance pattern, in game
   order, `id` = the game's `styleId` 1..5 and `name` = the pattern's own name). Each step is
   `[{ material, quantity }]`, material names as `data/items.json` spells them.
-- `data/pattern_costs.json` is the same frequency bill keyed by pattern name, so the InfoBook's
-  pattern panel can price one pattern without walking the roster.
+- `data/pattern_costs.json` is the same frequency bill keyed by pattern name, so the Planner's
+  frequency picker can price one pattern without walking the roster.
 - `data/items.json` supplies the art (`images/items/icon/<id>.png`) and the names.
 - **Level EXP comes from `character_cosume`**, which prices every `(rare, level)` pair:
   `data/progression_levels.json` (`{ groups: [{ rarities, insight, levels: { "N": { dust,
@@ -1425,11 +1432,12 @@ asserts the computed values match the real modal's, so the two cannot drift.
   `level` column is cumulative over the four insight tiers (a 6★ runs 1..180), so the band
   offset — 0 / 30 / 70 / 120 — is the only translation, and the row for a level is the cost of
   *reaching* it. `app.js` `levelCostGroup()` /
-  `levelCostToLevel()` / `levelCostBetween()` / `levelExpBetween()` read it; the InfoBook's
-  `calculateCombinedCharacterMaterials` calls `levelExpBetween(rarity, 0, 1, insight, level)`
-  too, so **both surfaces agree** (before this they did not: the panel prorated the last
-  band linearly, which overstated a partially levelled arcanist — Insight II Lv.20 was
-  76,515 Dust by the old ratio, 55,400 by the real per-level curve). `npm run sync:verify`
+  `levelCostToLevel()` / `levelCostBetween()` / `levelExpBetween()` read it, and the Planner's
+  Character tab calls `levelExpBetween(rarity, 0, 1, insight, level)` so a partially levelled
+  arcanist is billed the real per-level curve (the InfoBook's own "Upgrade Materials &
+  Progression" panel used to ask the same question and prorated the last band linearly
+  instead — it was removed on 2026-11-15 because the Planner now owns the whole plan).
+  `npm run sync:verify`
   asserts the ten groups, the 2..max level range, positive integer costs, full
   rarity/insight coverage and the band totals (5★/6★ `27700/15080`, `100200/53100`,
   `406700/137200`, `810880/400600`; 4★ `20680/11200`, `75040/39720`, `305020/102780`;
@@ -1529,11 +1537,11 @@ modal):
   with `.item-sticker-qty` printing the quantity bottom-right — **no name under it and no card
   box around it**, because the art already carries its border and the bill is meant to read as
   a wall of art. The frame, the art and the badge scale together as one object: the badge is
-  `10px` at that size. It is the same size the InfoBook's own material list uses, so a bill
-  and the InfoBook ask for a thing in the same units (an earlier round drew them at 96px,
-  which read as oversized next to the InfoBook). The name lives in the `title` and the tests
-  never need it. The quantity in the badge is the compact form the InfoBook prints
-  (`formatMaterialQuantity`: `894k`, `1.3m`); the exact figure is on `data-qty` and in the
+  `10px` at that size. It is the size the game's own material list reads at, so a bill is a
+  wall of the same art everywhere (an earlier round drew them at 96px, which read as
+  oversized). The name lives in the `title` and the tests
+  never need it. The quantity in the badge is the compact form `formatMaterialQuantity()`
+  prints (`894k`, `1.3m`); the exact figure is on `data-qty` and in the
   tooltip, and the tests read `data-qty`, never the badge. A material with no art falls back to
   `.planner-mat-art-empty` (a dashed box). The farm route's drops (`plannerFarmStickerHtml`)
   are the same sticker sized by their grid column, and the shop rows at 48px.

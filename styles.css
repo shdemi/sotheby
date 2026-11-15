@@ -7544,8 +7544,7 @@ body.team-resizing * {
 
 .builds-modal-card.is-sotheby-theme .build-charts,
 .builds-modal-card.is-sotheby-theme .build-psychubes,
-.builds-modal-card.is-sotheby-theme .build-resonance-block,
-.builds-modal-card.is-sotheby-theme .char-mats-controls-box {
+.builds-modal-card.is-sotheby-theme .build-resonance-block {
   background: #181818 !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
@@ -7564,7 +7563,6 @@ body.team-resizing * {
 #builds-modal .builds-row-portrait,
 #builds-modal .builds-hero-portrait,
 #builds-modal .build-resonance-btn,
-#builds-modal .char-mats-tab-btn,
 #builds-modal .item-sticker,
 #builds-modal .item-sticker-qty,
 #builds-modal .listing-rule-select,
@@ -7902,11 +7900,6 @@ body.guide-rail-resizing * {
 }
 
 .builds-detail .build-notes-box {
-  animation: none !important;
-  animation-delay: 0s !important;
-}
-
-.builds-detail .char-mats-panel {
   animation: none !important;
   animation-delay: 0s !important;
 }
@@ -8286,7 +8279,6 @@ body.guide-rail-resizing * {
   .builds-detail .builds-hero-portrait img,
   .builds-detail .builds-grid,
   .builds-detail .build-notes-box,
-  .builds-detail .char-mats-panel,
   .build-chart-bar,
   .build-chart-val,
   .build-chart-badge {
@@ -8573,52 +8565,8 @@ body.guide-rail-resizing * {
   color: #8f8a83;
 }
 
-/* Character Materials Section (Upgrade Materials & Progression) */
-.char-mats-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 10px;
-  animation: none !important;
-}
-
-.char-mats-content {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.char-mats-controls-box {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.char-mats-controls-box .setting-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.char-mats-controls-box .setting-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.char-mats-controls-box .setting-label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: #B5B5B3;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-family: var(--primary-font);
-}
-
+/* Character Materials: the two pieces the psychube detail pane still wears.
+   The arcanist build's own progression panel moved to the Planner (§14). */
 .char-mats-sublabel {
   font-size: 0.62rem;
   font-weight: 700;
@@ -8628,83 +8576,6 @@ body.guide-rail-resizing * {
   font-family: var(--primary-font);
 }
 
-.char-mats-number-input {
-  width: 100%;
-  height: 32px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #f6f2ed;
-  font-family: var(--mono-font);
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 2px;
-  box-sizing: border-box;
-  text-align: center;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.char-mats-number-input:focus {
-  outline: none;
-  border-color: #ED7D31;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.char-mats-controls-box .setting-val-display {
-  font-size: 0.86rem;
-  font-weight: 800;
-  color: #f6f2ed;
-  font-family: var(--mono-font);
-}
-
-.char-mats-controls-box .insight-quick-picks {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-}
-
-.char-mats-controls-box .btn-pill-i {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 0;
-  height: 38px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #f6f2ed;
-  border-radius: 0;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.char-mats-controls-box .btn-pill-i:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.char-mats-controls-box .btn-pill-i.active {
-  background: rgba(237, 125, 49, 0.18);
-  color: #f6f2ed;
-  border-color: #ED7D31;
-  font-weight: 800;
-}
-
-.char-mats-controls-box .insight-btn-img {
-  max-height: 24px;
-  max-width: 24px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  pointer-events: none;
-  filter: brightness(0.9);
-  transition: transform 0.15s ease, filter 0.15s ease;
-}
-
-.char-mats-controls-box .btn-pill-i.active .insight-btn-img {
-  filter: brightness(1.2) drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
-  transform: scale(1.05);
-}
-
 .mats-result-grid {
   display: flex;
   flex-wrap: wrap;
@@ -8712,118 +8583,6 @@ body.guide-rail-resizing * {
   padding: 12px;
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Euphoria Picker */
-.euphoria-picker-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 4px;
-}
-
-.euphoria-pick-btn {
-  position: relative;
-  width: 58px;
-  height: 58px;
-  padding: 0;
-  border: 1px solid rgba(181, 181, 179, 0.35);
-  background: rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-  border-radius: 0;
-  overflow: hidden;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.euphoria-pick-btn:hover {
-  border-color: #ED7D31;
-  transform: translateY(-2px);
-}
-
-.euphoria-pick-btn.is-active {
-  border: 2px solid #ED7D31;
-  box-shadow: 0 0 10px rgba(237, 125, 49, 0.4);
-}
-
-.euphoria-pick-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.euphoria-pick-tier {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  font-size: 10px;
-  font-weight: 700;
-  font-family: var(--mono-font);
-  background: rgba(0, 0, 0, 0.75);
-  color: var(--accent-e, #04FFEE);
-  padding: 1px 4px;
-  line-height: 1.1;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  pointer-events: none;
-}
-
-.euphoria-pick-check {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 16px;
-  height: 16px;
-  background: #ED7D31;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-/* Shape pattern in Upgrade Materials */
-.char-mats-controls-box .shape-pattern-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.char-mats-controls-box .shape-pattern-btn {
-  height: 38px;
-  padding: 3px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.char-mats-controls-box .shape-pattern-btn:hover {
-  border-color: #B5B5B3;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.char-mats-controls-box .shape-pattern-btn.is-active {
-  border-color: #ED7D31;
-  background: rgba(208, 81, 38, 0.2);
-  box-shadow: inset 0 0 0 1px #ED7D31;
-}
-
-.char-mats-controls-box .shape-pattern-btn img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
 }
 
 /* Character Skills, Insights & Portrays Detail Section */
@@ -9355,6 +9114,7 @@ body.guide-rail-resizing * {
 /* Inheritance / Insights Board */
 .uttu-insights-board {
   --uttu-insight-icon: 28px;
+  --uttu-insight-icon-small: 21px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -9423,9 +9183,10 @@ body.guide-rail-resizing * {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   flex: none;
   width: var(--uttu-insight-icon);
+  height: var(--uttu-insight-icon);
   padding-top: 0;
 }
 
@@ -9434,6 +9195,14 @@ body.guide-rail-resizing * {
   height: var(--uttu-insight-icon);
   object-fit: contain;
   display: block;
+}
+
+/* Precognition and Insight I sit a step smaller than the Insight II/III badges.
+   The column keeps its full width and height, so the spine, the tag's vertical
+   centring and the row rhythm are unchanged. */
+.uttu-insight-icon.is-small {
+  width: var(--uttu-insight-icon-small);
+  height: var(--uttu-insight-icon-small);
 }
 
 .uttu-insight-content {
@@ -12775,27 +12544,7 @@ body.guide-rail-resizing * {
 
 
 
-/* Compact layout for Upgrade Materials & Progression controls */
-.char-mats-compact-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.char-mats-compact-level {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.char-mats-compact-insight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-}
-
+/* Compact insight tier pips (the Planner's Insight rows) */
 .char-mats-ins-boxes {
   display: flex;
   gap: 6px;
@@ -12828,12 +12577,6 @@ body.guide-rail-resizing * {
   width: 100%;
   height: 100%;
   object-fit: contain;
-}
-
-@media (max-width: 768px) {
-  .char-mats-compact-insight {
-    margin-left: 0;
-  }
 }
 
 /* ---------------- /sim share page ---------------- */

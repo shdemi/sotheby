@@ -6963,15 +6963,6 @@ function renderItemStickerHtml(itemOrName, qty = null, extraClass = "") {
   `;
 }
 
-/* State for character materials (all combined in one panel) */
-let charProgInsight = 3;
-let charProgLevel = 60;
-let charProgResonanceStart = 1;
-let charProgResonanceEnd = 10;
-let charProgPattern = null;
-let charEuphoriaSelectedTiers = new Set();
-let charMasteryLevel = 0;
-
 /** Material ordering: currency first, then the two ritual materials, then the rest. */
 const ITEM_CATEGORY_PRIORITY = {
   Currency: 0,
@@ -7047,326 +7038,6 @@ function getCharacterStatsAt(name, insight, level) {
 }
 
 let charSelectedSkinId = null;
-
-function calculateCombinedCharacterMaterials(name) {
-  const mats = getCharacterMats(name);
-  if (!mats) return [];
-  const rarity = Number(mats.rarity || getCharacterRarity(name) || 5);
-  const result = {};
-
-  // 1. Insight & Level materials
-  // Insight materials up to target insight
-  for (let ins = 1; ins <= charProgInsight; ins++) {
-    const insObj = (mats.insight || []).find((i) => i.insight === ins);
-    if (insObj && Array.isArray(insObj.materials)) {
-      insObj.materials.forEach((m) => {
-        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
-      });
-    }
-  }
-
-  // Cumulative Dust & Sharpodonty for levelling: the exact per-level cost of
-  // every tier below the target insight plus the levels reached inside it.
-  const exp = levelExpBetween(rarity, 0, 1, charProgInsight, charProgLevel);
-  if (exp.dust > 0) result["Dust"] = (result["Dust"] || 0) + exp.dust;
-  if (exp.sharpodonty > 0) {
-    result["Sharpodonty"] = (result["Sharpodonty"] || 0) + exp.sharpodonty;
-  }
-
-  // 2. Resonance materials (from charProgResonanceStart + 1 up to charProgResonanceEnd)
-  const startR = Math.min(charProgResonanceStart, charProgResonanceEnd);
-  const endR = Math.max(charProgResonanceStart, charProgResonanceEnd);
-  for (let r = startR + 1; r <= endR; r++) {
-    const resObj = (mats.resonance || []).find((x) => x.resonance === r);
-    if (resObj && Array.isArray(resObj.materials)) {
-      resObj.materials.forEach((m) => {
-        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
-      });
-    }
-  }
-
-  // 3. Pattern / Frequency Modulation materials (always allowed, independent of insight/resonance)
-  if (charProgPattern && charProgPattern !== DEFAULT_PATTERN) {
-    const canonical = resolveCharacterName(name);
-    const heroPatterns = patternCostsData[canonical] || patternCostsData[name] || {};
-    const patternCostList = heroPatterns[charProgPattern] || [];
-    patternCostList.forEach((m) => {
-      result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
-    });
-  }
-
-  // 4. Euphoria materials
-  (mats.euphoria || []).forEach((e) => {
-    if (charEuphoriaSelectedTiers.has(e.id) && Array.isArray(e.materials)) {
-      e.materials.forEach((m) => {
-        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
-      });
-    }
-  });
-
-  // 5. Mastery materials (from 1 up to charMasteryLevel)
-  for (let lvl = 1; lvl <= charMasteryLevel; lvl++) {
-    const masObj = (mats.mastery || []).find((m) => m.level === lvl);
-    if (masObj && Array.isArray(masObj.materials)) {
-      masObj.materials.forEach((m) => {
-        result[m.material] = (result[m.material] || 0) + Number(m.quantity || 0);
-      });
-    }
-  }
-
-  const rawList = Object.entries(result).map(([material, quantity]) => ({ material, quantity }));
-  return sortMaterialsByCategory(rawList);
-}
-
-function updateCharacterMatsOnly(name) {
-  const panel = document.getElementById("char-mats-panel-section");
-  if (!panel) {
-    renderBuildsDetail();
-    return;
-  }
-  panel.outerHTML = renderCharacterMatsSection(name);
-  const newPanel = document.getElementById("char-mats-panel-section");
-  if (newPanel) {
-    setupCharacterMatsListeners(newPanel);
-  }
-}
-
-
-function renderCharacterMatsSection(name) {
-  const mats = getCharacterMats(name);
-  if (!mats) return "";
-  const rarity = Number(mats.rarity || getCharacterRarity(name) || 5);
-  const maxInsight = getMaxInsightForRarity(rarity);
-  if (charProgInsight > maxInsight) charProgInsight = maxInsight;
-  const maxLvl = getMaxLevelForInsight(charProgInsight);
-  if (charProgLevel > maxLvl) charProgLevel = maxLvl;
-
-  // Highest resonance in data for this character/rarity (usually 10 for R2-R4, 15 for R5-R6)
-  const maxRes = Math.max(10, ...(mats.resonance || []).map((r) => r.resonance || 0));
-  if (charProgResonanceStart > maxRes) charProgResonanceStart = maxRes;
-  if (charProgResonanceEnd > maxRes) charProgResonanceEnd = maxRes;
-
-  const euphoriaList = mats.euphoria || [];
-  const hasEuphoria = euphoriaList.length > 0;
-  const charId = mats.id;
-  const availablePatterns = getPatternsForCharacter(name);
-
-  const reqMaterials = calculateCombinedCharacterMaterials(name);
-  const matsHtml = reqMaterials.length
-    ? reqMaterials.map((m) => renderItemStickerHtml(m.material, m.quantity)).join("")
-    : `<p class="hint">No materials required.</p>`;
-
-  // Insight quick-picks (I0 up to maxInsight)
-  const insightPicks = Array.from({ length: maxInsight + 1 }, (_, i) => i)
-    .map(
-      (ins) => `
-        <button type="button" class="btn-pill-i ${charProgInsight === ins ? "active" : ""}" data-mats-ins="${ins}">
-          <img src="images/insight_icon/I${ins}.png" alt="I${ins}" class="insight-btn-img" />
-        </button>`
-    )
-    .join("");
-
-  // Euphoria picker HTML (if character has euphoria)
-  let euphoriaSectionHtml = "";
-  if (hasEuphoria) {
-    const kornId = mats.kornId || charId;
-    const euphoriaButtons = euphoriaList
-      .map((e) => {
-        const isSelected = charEuphoriaSelectedTiers.has(e.id);
-        const imgPath = kornId ? `images/arcanists/euphoria/${kornId}_${e.id}.webp` : "";
-        return `
-          <button type="button" class="euphoria-pick-btn ${isSelected ? "is-active" : ""}" data-eup-id="${e.id}" title="Tier ${e.id}">
-            ${imgPath ? `<img src="${escapeHtml(imgPath)}" alt="" class="euphoria-pick-img" onerror="this.style.display='none'" />` : ""}
-            <span class="euphoria-pick-tier">E${e.id}</span>
-            ${isSelected ? `<span class="euphoria-pick-check">✓</span>` : ""}
-          </button>
-        `;
-      })
-      .join("");
-
-    euphoriaSectionHtml = `
-      <div class="setting-group" id="group-mats-euphoria">
-        <div class="setting-label-row">
-          <label class="setting-label"><span>${escapeHtml(t("builds.euphoria"))}</span></label>
-          <span class="setting-val-display" style="font-size: 0.72rem; color: #B5B5B3;">${charEuphoriaSelectedTiers.size ? escapeHtml(t("builds.selected", { n: charEuphoriaSelectedTiers.size })) : escapeHtml(t("builds.none"))}</span>
-        </div>
-        <div class="euphoria-picker-grid">${euphoriaButtons}</div>
-      </div>
-
-      <div class="setting-group" id="group-mats-mastery">
-        <div class="setting-label-row">
-          <label class="setting-label"><span>${escapeHtml(t("builds.mastery"))}</span></label>
-          <span class="setting-val-display" id="display-mats-mastery">Lv.${charMasteryLevel}</span>
-        </div>
-        <input type="range" id="input-mats-mastery" min="0" max="4" value="${charMasteryLevel}" class="custom-slider" style="margin-top: 8px;" />
-      </div>
-    `;
-  }
-
-  return `
-    <section class="build-section char-mats-panel" id="char-mats-panel-section">
-      <h4 class="build-section-title">${escapeHtml(t("builds.matsProgression"))}</h4>
-      <div class="char-mats-content">
-        <div class="char-mats-controls-box">
-          <!-- Compact Level and Insight Row like Psychube -->
-          <div class="char-mats-compact-row">
-            <div class="char-mats-compact-level">
-              <span class="char-mats-sublabel">${escapeHtml(t("builds.level"))}:</span>
-              <input type="range" id="input-mats-level" min="1" max="${maxLvl}" value="${charProgLevel}" class="custom-slider psychube-level-slider" />
-              <span class="psychube-level-number" id="display-mats-level">Lv.${charProgLevel}</span>
-            </div>
-
-            <div class="char-mats-compact-insight">
-              <span class="char-mats-sublabel">${escapeHtml(t("builds.insight"))}:</span>
-              <div class="char-mats-ins-boxes">
-                ${Array.from({ length: maxInsight + 1 }, (_, i) => i)
-                  .map(
-                    (ins) => `
-                      <button type="button" class="char-mats-ins-btn ${charProgInsight === ins ? "is-active" : ""}" data-mats-ins="${ins}" title="Insight ${ins}">
-                        <img src="images/insight_icon/I${ins}.png" alt="I${ins}" />
-                      </button>`
-                  )
-                  .join("")}
-              </div>
-            </div>
-          </div>
-
-          <!-- Resonance (Start to End) -->
-          <div class="setting-group" id="group-mats-resonance">
-            <div class="setting-label-row">
-              <label class="setting-label"><span>${escapeHtml(t("builds.resReasoning"))}</span></label>
-              <span class="setting-val-display" id="display-mats-resonance">R${charProgResonanceStart} → R${charProgResonanceEnd}</span>
-            </div>
-            <div style="display: flex; gap: 12px; align-items: center; margin-top: 8px;">
-              <div style="flex: 1; display: flex; align-items: center; gap: 6px;">
-                <span class="char-mats-sublabel" style="min-width: 32px;">${escapeHtml(t("builds.from"))}</span>
-                <input type="number" id="input-mats-resonance-start" min="1" max="${maxRes}" value="${charProgResonanceStart}" class="char-mats-number-input" />
-              </div>
-              <div style="flex: 1; display: flex; align-items: center; gap: 6px;">
-                <span class="char-mats-sublabel" style="min-width: 20px;">${escapeHtml(t("builds.to"))}</span>
-                <input type="number" id="input-mats-resonance-end" min="1" max="${maxRes}" value="${charProgResonanceEnd}" class="char-mats-number-input" />
-              </div>
-            </div>
-          </div>
-
-          ${
-            availablePatterns.length > 0
-              ? `
-              <div class="setting-group" id="group-mats-pattern">
-                <div class="setting-label-row">
-                  <label class="setting-label"><span>${escapeHtml(t("builds.pattern"))}</span></label>
-                  <span class="setting-val-display" id="display-mats-pattern" style="font-size: 0.76rem; color: #B5B5B3;">${charProgPattern ? escapeHtml(patternLabel(charProgPattern)) : escapeHtml(t("builds.none"))}</span>
-                </div>
-                <div class="shape-pattern-grid">
-                  ${availablePatterns
-                    .map((pat) => {
-                      const icon = getPatternIconPath(name, pat);
-                      const isSel = charProgPattern === pat;
-                      return `
-                        <button type="button" class="shape-pattern-btn ${isSel ? "is-active" : ""}" data-mats-pattern="${escapeHtml(pat)}" title="${escapeHtml(patternLabel(pat))}">
-                          ${icon ? `<img src="${escapeHtml(icon)}" alt="${escapeHtml(patternLabel(pat))}" />` : `<span class="shape-pattern-fallback"></span>`}
-                        </button>
-                      `;
-                    })
-                    .join("")}
-                </div>
-              </div>`
-              : ""
-          }
-
-          ${euphoriaSectionHtml}
-        </div>
-
-        <h4 class="build-section-title" style="margin-top: 8px;">${escapeHtml(t("builds.totalReqMaterials"))}</h4>
-        <div class="mats-result-grid">${matsHtml}</div>
-      </div>
-    </section>
-  `;
-}
-
-function setupCharacterMatsListeners(host) {
-  const currentName = buildsSelected;
-
-  // Insight clicks
-  host.querySelectorAll("[data-mats-ins]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      charProgInsight = Number(btn.dataset.matsIns);
-      const maxL = getMaxLevelForInsight(charProgInsight);
-      if (charProgLevel > maxL) charProgLevel = maxL;
-      updateCharacterMatsOnly(currentName);
-    });
-  });
-
-  // Level slider
-  const levelSlider = host.querySelector("#input-mats-level");
-  if (levelSlider) {
-    levelSlider.addEventListener("input", (e) => {
-      charProgLevel = Number(e.target.value);
-      const disp = host.querySelector("#display-mats-level");
-      if (disp) disp.textContent = `Lv.${charProgLevel}`;
-      updateCharacterMatsOnly(currentName);
-    });
-  }
-
-  // Resonance start input
-  const resStartSlider = host.querySelector("#input-mats-resonance-start");
-  if (resStartSlider) {
-    const handleStartChange = (e) => {
-      let val = Number(e.target.value);
-      if (Number.isNaN(val) || val < 1) val = 1;
-      charProgResonanceStart = val;
-      const disp = host.querySelector("#display-mats-resonance");
-      if (disp) disp.textContent = `R${charProgResonanceStart} → R${charProgResonanceEnd}`;
-      updateCharacterMatsOnly(currentName);
-    };
-    resStartSlider.addEventListener("change", handleStartChange);
-  }
-
-  // Resonance end input
-  const resEndSlider = host.querySelector("#input-mats-resonance-end");
-  if (resEndSlider) {
-    const handleEndChange = (e) => {
-      let val = Number(e.target.value);
-      if (Number.isNaN(val) || val < 1) val = 1;
-      charProgResonanceEnd = val;
-      const disp = host.querySelector("#display-mats-resonance");
-      if (disp) disp.textContent = `R${charProgResonanceStart} → R${charProgResonanceEnd}`;
-      updateCharacterMatsOnly(currentName);
-    };
-    resEndSlider.addEventListener("change", handleEndChange);
-  }
-
-  // Pattern buttons
-  host.querySelectorAll("[data-mats-pattern]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const pat = btn.dataset.matsPattern;
-      if (charProgPattern === pat) charProgPattern = null;
-      else charProgPattern = pat;
-      updateCharacterMatsOnly(currentName);
-    });
-  });
-
-  // Euphoria picker buttons
-  host.querySelectorAll("[data-eup-id]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = Number(btn.dataset.eupId);
-      if (charEuphoriaSelectedTiers.has(id)) charEuphoriaSelectedTiers.delete(id);
-      else charEuphoriaSelectedTiers.add(id);
-      updateCharacterMatsOnly(currentName);
-    });
-  });
-
-  // Mastery slider
-  const masSlider = host.querySelector("#input-mats-mastery");
-  if (masSlider) {
-    masSlider.addEventListener("input", (e) => {
-      charMasteryLevel = Number(e.target.value);
-      const disp = host.querySelector("#display-mats-mastery");
-      if (disp) disp.textContent = `Lv.${charMasteryLevel}`;
-      updateCharacterMatsOnly(currentName);
-    });
-  }
-}
 
 /* State for character skills tabs (Skills / Weapons / Insights / Portrays / Euphoria) */
 let charSkillsActiveTab = "skills"; // "skills" | "weapons" | "insights" | "portrays" | "euphoria"
@@ -8779,11 +8450,15 @@ function renderCharacterSkillsSection(name) {
                 : `${isCn ? "洞悉" : "Insight"} ${roman[insightNo - 1] || insightNo}`;
             const desc = pickLocalizedDesc(ins);
             const iconSrc = `images/insight_icon_dark/I${insightNo}.png`;
+            // Precognition (the pre-Insight badge) and Insight I draw a step smaller
+            // than the Insight II/III ones.
+            const iconClass =
+              insightNo <= 1 ? "uttu-insight-icon is-small" : "uttu-insight-icon";
 
             return `
               <div class="uttu-insight-row">
                 <div class="uttu-insight-badge-col">
-                  <img src="${iconSrc}" alt="${escapeHtml(insLabel)}" class="uttu-insight-icon" />
+                  <img src="${iconSrc}" alt="${escapeHtml(insLabel)}" class="${iconClass}" />
                 </div>
                 <div class="uttu-insight-content">
                   <div class="uttu-insight-tag">[${escapeHtml(insLabel)}]</div>
@@ -10441,10 +10116,7 @@ function renderBuildsDetail() {
       ${chartSection}
       ${sideSections ? `<div class="builds-column">${sideSections}</div>` : ""}
     </div>
-
-    ${renderCharacterMatsSection(name)}
   `;
-  setupCharacterMatsListeners(host);
   setupCharacterSkillsListeners(host);
 
   const shareBtn = host.querySelector("[data-builds-share]");
@@ -20561,13 +20233,13 @@ function simBuildHtml(char) {
     renderBuildsDetail();
   }
 
-  // Trim in a detached node so no listener ever touches the modal's own copy. Skills and
-  // materials are the InfoBook's farming list, and the notes callout just repeats the
-  // portrait chart ("Recommended Portrait: 0/1/2/5"), so a share page shows the build.
+  // Trim in a detached node so no listener ever touches the modal's own copy. Skills are
+  // the InfoBook's own reading pane, and the notes callout just repeats the portrait chart
+  // ("Recommended Portrait: 0/1/2/5"), so a share page shows the build.
   const holder = document.createElement("div");
   holder.innerHTML = html;
   holder
-    .querySelectorAll(".builds-share-btn, .char-skills-section, .char-mats-panel, .build-notes-box")
+    .querySelectorAll(".builds-share-btn, .char-skills-section, .build-notes-box")
     .forEach((el) => el.remove());
 
   const accent = rarityColor(getCharacterRarity(canonical));
