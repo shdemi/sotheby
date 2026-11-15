@@ -1442,14 +1442,9 @@
               <div class="archetype-modal-header planner-editor-header">
                 <div class="modal-char-preview">
                   <img id="planner-editor-portrait" src="" alt="preview" />
-                  <div>
-                    <div class="modal-char-name-row">
-                      <h2 class="modal-char-title" id="planner-editor-title" data-i18n="planner.editCharacter">Edit character</h2>
-                      <button type="button" class="btn-favourite planner-editor-remove" id="planner-editor-remove" data-remove="" title="Remove" data-i18n-title="planner.removeArcanist" aria-label="Remove" data-i18n-aria-label="planner.removeArcanist">
-                        <img src="images/random_icon/cross.png" alt="" class="btn-favourite-img planner-editor-remove-img" />
-                      </button>
-                    </div>
-                    <span class="modal-char-sub" id="planner-editor-sub"></span>
+                  <div class="modal-char-name-row">
+                    <h2 class="modal-char-title" id="planner-editor-title" data-i18n="planner.editCharacter">Edit character</h2>
+                    <button type="button" class="btn btn-secondary planner-editor-remove" id="planner-editor-remove" data-remove="" data-i18n="planner.remove">Remove</button>
                   </div>
                 </div>
                 <button type="button" class="modal-close planner-sheet-close" id="planner-editor-close" data-sheet="planner-char-editor" aria-label="Close" data-i18n-aria-label="action.close">
@@ -1541,11 +1536,11 @@
                   <div class="planner-wilderness-selects" id="planner-wilderness-gold"></div>
                 </div>
                 <div class="setting-group">
-                  <div class="setting-label-row">
-                    <label class="setting-label"><span data-i18n="planner.vigor">Vigor</span></label>
-                    <span class="setting-val-display" id="planner-vigor-value">0%</span>
+                  <label class="setting-label" for="planner-wilderness-vigor"><span data-i18n="planner.vigor">Vigor</span></label>
+                  <div class="planner-vigor-row">
+                    <input type="number" min="0" step="1" value="50" class="planner-vigor-input" id="planner-wilderness-vigor" aria-label="Vigor" data-i18n-aria-label="planner.vigor" />
+                    <span class="planner-vigor-unit" aria-hidden="true">%</span>
                   </div>
-                  <input type="range" class="custom-slider planner-wilderness-vigor" id="planner-wilderness-vigor" min="0" max="50" step="1" value="0" aria-label="Vigor" data-i18n-aria-label="planner.vigor" />
                 </div>
                 <div class="setting-group">
                   <div class="setting-label-row">

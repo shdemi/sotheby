@@ -12392,8 +12392,9 @@ let plannerWilderness = {
   gold1: 6,
   gold2: 6,
   gold3: 6,
-  vigor: 0,
-  lazyModo: false,
+  // A free figure, typed in the sheet: the game's Vigor is not capped at the 50%
+  // the old slider offered, so neither is this.
+  vigor: 50,
 };
 /** Level 0-6 → the multiplier the building adds (Kornblume's own tables). */
 const PLANNER_WILDERNESS_DUST = [0, 120, 150, 175, 210, 240, 270];
@@ -12406,17 +12407,23 @@ const PLANNER_WILDERNESS_GOLD = [0, 60, 75, 80, 96, 108, 120];
  */
 let plannerFarmData = null;
 let plannerFarmCache = null;
-let plannerFarmSolving = false;
+/** Signature of the solve in flight, or null. */
+let plannerFarmSolving = null;
+/** The plan moved while a solve was running: solve it again when that one lands. */
+let plannerFarmPending = false;
 let plannerFarmError = false;
+
+/**
+ * The solve budget. The model is a real material-balance MIP once a recipe has to
+ * *pay* for its inputs, and its integrality gap is around 2% on a full arcanist —
+ * wider than the 1% the old, craft-for-free model reached in 100 ms, so the search
+ * cannot stop on the gap and the clock is what bounds it. 1.2 s lands within a
+ * fifth of a percent of the best plan found in 8 s, and the route has to appear.
+ */
+const PLANNER_FARM_SOLVE = { tmlim: 1.2, mipgap: 0.02 };
 
 /** What the farm route cannot buy with stamina: the two shops' own currencies. */
 const PLANNER_SHOP_FAMILIES = { "Resonate Materials": "oneiric", "Euphoria Materials": "reveries" };
-/** Oneiric Shop stamina-equivalent per coin, by rarity (Kornblume's table). */
-const PLANNER_ONEIRIC_COST = { 3: 40, 4: 100, 5: 250, 6: 1500 };
-
-function plannerOneiricRate(item) {
-  return item ? PLANNER_ONEIRIC_COST[Number(item.rarity) || 0] || 0 : 0;
-}
 
 /** The tab the modal reopens on: the one the reader left, or Character. */
 const PLANNER_TAB_KEY = "r1999_planner_tab_v1";
@@ -12483,7 +12490,8 @@ function plannerWildernessLevel(value, fallback) {
 
 /**
  * Dust and Sharpodonty a day. Three buildings of each kind, multiplied by the
- * Vigor bonus (0-50%), over the 24 collections a board takes in a day.
+ * Vigor bonus (a free percentage, typed in the sheet), over the 24 collections a
+ * board takes in a day.
  */
 function plannerWildernessOutput(settings) {
   const state = settings || plannerWilderness;
@@ -12495,7 +12503,7 @@ function plannerWildernessOutput(settings) {
     (sum, level) => sum + (PLANNER_WILDERNESS_GOLD[plannerWildernessLevel(level, 6)] || 0),
     0
   );
-  const vigor = 1 + Math.min(50, Math.max(0, Number(state.vigor) || 0)) / 100;
+  const vigor = 1 + Math.max(0, Number(state.vigor) || 0) / 100;
   return {
     dust: Math.ceil(dust * vigor * 24),
     gold: Math.ceil(gold * vigor * 24),
@@ -12539,7 +12547,11 @@ function plannerLoadWilderness() {
     gold1: plannerWildernessLevel(row.gold1, 6),
     gold2: plannerWildernessLevel(row.gold2, 6),
     gold3: plannerWildernessLevel(row.gold3, 6),
-    vigor: Math.min(50, Math.max(0, Math.round(Number(row.vigor) || 0))),
+    // An absent Vigor is the default 50; a stored one is whatever was typed.
+    vigor:
+      row.vigor === undefined || row.vigor === null
+        ? 50
+        : Math.max(0, Math.round(Number(row.vigor) || 0)),
   };
 }
 
@@ -12834,15 +12846,28 @@ function plannerEuphoriaMasteryHtml(mats, plan) {
     .map((node) => `E${node.id}`)
     .join(", ");
   const gated = !plan.euphoria.length;
+  const charId = mats.id;
   const checks = nodes
     .map((node) => {
       const id = Number(node.id);
       const active = plan.euphoria.includes(id);
       const label = getEuphoriaDisplayName(plan.name, id) || `Euphoria ${id}`;
-      return `<label class="check-container" title="${escapeHtml(label)}">
+      // The facet is its own portrait, the way the Character Setting modal labels the
+      // same box; the tree's name stays in the tooltip, and takes over if art is missing.
+      const icon = charId ? `images/arcanists/euphoria/${charId}_${id}.webp` : "";
+      const face = icon
+        ? `<span class="euphoria-check-thumb">
+            <img class="euphoria-check-icon" src="${escapeHtml(icon)}" alt="${escapeHtml(
+              label
+            )}" onerror="this.parentElement.hidden=true;this.closest('.check-text').querySelector('.planner-euphoria-label').hidden=false" />
+            <span class="euphoria-check-tier">E${id}</span>
+          </span>
+          <span class="planner-euphoria-label" hidden>${escapeHtml(label)}</span>`
+        : `<span class="planner-euphoria-label">${escapeHtml(label)}</span>`;
+      return `<label class="check-container planner-euphoria-check" title="${escapeHtml(label)}">
           <input type="checkbox" data-euphoria="${id}"${active ? " checked" : ""} />
           <span class="check-box"></span>
-          <span class="check-text">${escapeHtml(label)}</span>
+          <span class="check-text">${face}</span>
         </label>`;
     })
     .join("");
@@ -13029,11 +13054,10 @@ function plannerCharRailHtml() {
   }
   return plannerChars
     .map((plan) => {
-      const selected = plan.name === plannerCharSelected;
       const enabled = plan.enabled !== false;
       const icon = characterDb[plan.name] || "";
       const label = escapeHtml(displayCharName(plan.name));
-      return `<button type="button" class="planner-char-tile${selected ? " is-selected" : ""}${
+      return `<button type="button" class="planner-char-tile${
         enabled ? "" : " is-disabled"
       }" data-char="${escapeHtml(plan.name)}" title="${label}" aria-label="${label}" aria-pressed="${
         enabled ? "true" : "false"
@@ -13120,6 +13144,8 @@ async function plannerFarmSolve(bill, sig) {
   /** name -> { stamina, coefs: Map<material, amount per unit> } */
   const variables = new Map();
   const craftCost = new Map();
+  /** Every material a recipe spends. Each one needs a balance row of its own. */
+  const craftInputs = new Set();
 
   const itemByName = new Map(itemsData.map((item) => [String(item.name).toLowerCase(), item]));
   const itemById = new Map(itemsData.map((item) => [String(item.id), item]));
@@ -13134,6 +13160,7 @@ async function plannerFarmSolve(bill, sig) {
       const amount = Number(row.quantity) || 0;
       if (row.material === "Sharpodonty") sharpo += amount;
       coefs.set(row.material, (coefs.get(row.material) || 0) - amount);
+      craftInputs.add(row.material);
     }
     variables.set(`craft␟${out.name}`, { stamina: 0, coefs });
     craftCost.set(out.name, sharpo);
@@ -13164,8 +13191,13 @@ async function plannerFarmSolve(bill, sig) {
     stageByName.set(stage.name, stage);
   }
 
+  // Only a positive coefficient can pay a material in: a stage drop or a recipe's
+  // output. A material that only ever gets *spent* (a shop currency a recipe eats)
+  // must not look farmable, or its constraint would be unsatisfiable.
   const reachable = new Set();
-  for (const variable of variables.values()) for (const key of variable.coefs.keys()) reachable.add(key);
+  for (const variable of variables.values()) {
+    for (const [key, amount] of variable.coefs) if (amount > 0) reachable.add(key);
+  }
 
   const needs = new Map();
   const shop = { oneiric: [], reveries: [] };
@@ -13183,8 +13215,7 @@ async function plannerFarmSolve(bill, sig) {
         casketCount += quantity;
         continue;
       }
-      const rate = family === "oneiric" ? plannerOneiricRate(item) : 0;
-      shop[family].push({ material, quantity, stamina: rate * quantity });
+      shop[family].push({ material, quantity });
       continue;
     }
     if (!reachable.has(material)) {
@@ -13198,7 +13229,6 @@ async function plannerFarmSolve(bill, sig) {
     shop.oneiric.push({
       material: (casket && casket.name) || "Crystal Casket",
       quantity: casketCount,
-      stamina: plannerOneiricRate(casket) * casketCount,
     });
   }
   shop.oneiric.sort((a, b) => b.quantity - a.quantity);
@@ -13215,7 +13245,19 @@ async function plannerFarmSolve(bill, sig) {
   };
   if (!needs.size) return empty;
 
-  const subjectTo = [...needs].map(([material, quantity]) => ({
+  // A recipe spends its inputs, and the model may only spend what it also pays for.
+  // Without a row per input the solver consumes them out of nothing: every craftable
+  // item would cost 0 stamina, which is what made "craft 10 Bifurcated Skeleton, 0
+  // stamina" the answer instead of farming the fodder. Materials that are already a
+  // bill line get their row from `needs`; every other input gets a plain `>= 0`.
+  const balance = [...craftInputs].filter(
+    (material) => !needs.has(material) && reachable.has(material)
+  );
+
+  const subjectTo = [
+    ...[...needs].map(([material, quantity]) => ({ material, quantity })),
+    ...balance.map((material) => ({ material, quantity: 0 })),
+  ].map(({ material, quantity }) => ({
     name: material,
     vars: [...variables]
       .filter(([, variable]) => variable.coefs.has(material))
@@ -13238,7 +13280,18 @@ async function plannerFarmSolve(bill, sig) {
   };
   // The ESM build returns a promise here (the CJS one is synchronous), so the
   // solve has to be awaited either way.
-  const solved = await glpk.solve(model, { tmlim: 8, mipgap: 0.01, msglev: glpk.GLP_MSG_OFF });
+  const solved = await glpk.solve(model, {
+    tmlim: PLANNER_FARM_SOLVE.tmlim,
+    mipgap: PLANNER_FARM_SOLVE.mipgap,
+    msglev: glpk.GLP_MSG_OFF,
+  });
+  // 2 = feasible (the 1% gap was reached), 5 = proven optimal. Anything else means
+  // the model found no plan at all, and returning `vars: {}` would print an empty
+  // route at 0 stamina as if the plan were free.
+  const status = Number((solved.result && solved.result.status) || 0);
+  if (status !== 2 && status !== 5) {
+    throw new Error(`farm solve found no plan (status ${status})`);
+  }
   const vars = (solved.result && solved.result.vars) || {};
 
   const resources = [];
@@ -13307,25 +13360,36 @@ async function plannerFarmSolve(bill, sig) {
 
 /** Starts the solve for the current bill, unless that bill is already solved. */
 function plannerFarmRefresh() {
+  if (!plannerFarmData) return;
   const bill = plannerFarmBill();
   const sig = plannerFarmSignature(bill);
   if (plannerFarmCache && plannerFarmCache.sig === sig) return;
-  if (!plannerFarmData) return;
-  if (plannerFarmSolving && plannerFarmSolving === sig) return;
+  // One solve at a time. Each one pays its whole time budget, so a solve started per
+  // slider press would queue up behind the one before it and the route would trail
+  // the plan by seconds. A plan that moves meanwhile is solved when this one lands.
+  if (plannerFarmSolving) {
+    if (plannerFarmSolving !== sig) plannerFarmPending = true;
+    return;
+  }
   plannerFarmSolving = sig;
+  plannerFarmPending = false;
   plannerFarmError = false;
+  const settle = (plan) => {
+    plannerFarmSolving = null;
+    // A solve for a bill the reader has already moved past is not the answer.
+    if (plan && sig === plannerFarmSignature(plannerFarmBill())) plannerFarmCache = plan;
+    plannerFarmPaint();
+    if (plannerFarmPending) {
+      plannerFarmPending = false;
+      plannerFarmRefresh();
+    }
+  };
   plannerFarmSolve(bill, sig)
-    .then((plan) => {
-      // A second press may have moved the plan on while this was solving.
-      if (plannerFarmSolving !== sig) return;
-      plannerFarmCache = plan;
-      plannerFarmSolving = false;
-      plannerFarmPaint();
-    })
+    .then(settle)
     .catch((error) => {
       console.warn("Could not solve the farm route", error);
-      if (plannerFarmSolving !== sig) return;
-      plannerFarmSolving = false;
+      plannerFarmSolving = null;
+      plannerFarmPending = false;
       plannerFarmError = true;
       plannerFarmPaint();
     });
@@ -13413,21 +13477,14 @@ function plannerFarmShopHtml(list) {
       const name = escapeHtml(
         item ? (currentLang === "cn" ? item.nameZh || item.name : item.name) : row.material
       );
+      // A shop row is a purchase, not a run: these two currencies are not farmed with
+      // stamina, so the row carries no stamina figure at all.
       return `
           <div class="planner-farm-shop-row" data-item="${escapeHtml(row.material)}" data-qty="${
         row.quantity
-      }" data-stamina="${row.stamina || 0}" title="${name} × ${escapeHtml(
-        plannerNumber(row.quantity)
-      )}">
+      }" title="${name} × ${escapeHtml(plannerNumber(row.quantity))}">
             ${plannerFarmStickerHtml(row.material, row.quantity, row.quantity)}
             <span class="planner-farm-shop-name">${name}</span>
-            ${
-              row.stamina
-                ? `<span class="planner-farm-stamina"><img src="images/random_icon/Stamina.webp" alt="" /><span>${escapeHtml(
-                    plannerNumber(row.stamina)
-                  )}</span></span>`
-                : ""
-            }
           </div>`;
     })
     .join("");
@@ -13444,9 +13501,7 @@ function plannerFarmPaint() {
       <span class="archetype-section-title"><span>${escapeHtml(t("planner.farmTitle"))}</span></span>
       <button type="button" class="planner-farm-toggle${wildOn ? " is-active" : ""}" id="planner-farm-wilderness" data-enabled="${
         wildOn ? "true" : "false"
-      }" title="${escapeHtml(t("planner.wilderness"))}" aria-label="${escapeHtml(t("planner.wilderness"))}">
-        <img src="images/items/wilderness_icon.png" alt="" />
-      </button>
+      }" aria-pressed="${wildOn ? "true" : "false"}">${escapeHtml(t("planner.wilderness"))}</button>
     </div>`;
 
   if (!plannerEnabledChars().length) {
@@ -13538,7 +13593,8 @@ function renderPlannerCharacter() {
     editorTitle.textContent = selected ? displayCharName(selected.name) : t("planner.editCharacter");
   }
   // The editor wears the Character Setting modal's head, so it carries the same
-  // portrait, rarity and one-line status instead of a title bar of its own.
+  // portrait and the arcanist's name — nothing else: the plan's own numbers are the
+  // settings under it.
   const portrait = document.getElementById("planner-editor-portrait");
   if (portrait) {
     const icon = selected ? characterDb[selected.name] || "" : "";
@@ -13549,20 +13605,6 @@ function renderPlannerCharacter() {
       portrait.removeAttribute("src");
       portrait.hidden = true;
     }
-  }
-  const sub = document.getElementById("planner-editor-sub");
-  if (sub) {
-    const rarity = selected
-      ? Number((getCharacterMats(selected.name) || {}).rarity || getCharacterRarity(selected.name) || 5)
-      : 0;
-    sub.innerHTML = selected
-      ? `<img class="planner-editor-rarity" src="images/colour_references/${rarity}.png" alt="" />` +
-        `<span>${escapeHtml(
-          `${plannerInsightLabel(selected.curInsight)} Lv.${selected.curLevel} → ${plannerInsightLabel(
-            selected.goalInsight
-          )} Lv.${selected.goalLevel}`
-        )}</span>`
-      : "";
   }
   const removeBtn = document.getElementById("planner-editor-remove");
   if (removeBtn) removeBtn.dataset.remove = selected ? selected.name : "";
@@ -13803,8 +13845,6 @@ function syncPlannerWildernessSheet() {
 
   const vigor = document.getElementById("planner-wilderness-vigor");
   if (vigor) vigor.value = String(plannerWilderness.vigor);
-  const vigorValue = document.getElementById("planner-vigor-value");
-  if (vigorValue) vigorValue.textContent = `${plannerWilderness.vigor}%`;
 
   const output = document.getElementById("planner-wilderness-output");
   if (output) output.innerHTML = plannerWildernessOutputHtml(plannerWildernessOutput());
@@ -13827,7 +13867,7 @@ function plannerSetWilderness(patch) {
     gold1: plannerWildernessLevel(plannerWilderness.gold1, 6),
     gold2: plannerWildernessLevel(plannerWilderness.gold2, 6),
     gold3: plannerWildernessLevel(plannerWilderness.gold3, 6),
-    vigor: Math.min(50, Math.max(0, Math.round(Number(plannerWilderness.vigor) || 0))),
+    vigor: Math.max(0, Math.round(Number(plannerWilderness.vigor) || 0)),
   };
   plannerSaveWilderness();
   syncPlannerWildernessSheet();
@@ -14262,14 +14302,12 @@ function setupPlannerListeners() {
         return;
       }
     });
-    // Dragging is a preview: the payout follows the handle, and the solve waits for
-    // the release so one drag stays one solve.
+    // Typing is a preview: the payout follows the box, and the solve waits for the
+    // box to settle so one figure stays one solve.
     wildSheet.addEventListener("input", (e) => {
       const vigor = e.target.closest("#planner-wilderness-vigor");
       if (!vigor) return;
-      plannerWilderness.vigor = Math.min(50, Math.max(0, Math.round(Number(vigor.value) || 0)));
-      const vigorValue = document.getElementById("planner-vigor-value");
-      if (vigorValue) vigorValue.textContent = `${plannerWilderness.vigor}%`;
+      plannerWilderness.vigor = Math.max(0, Math.round(Number(vigor.value) || 0));
       const output = document.getElementById("planner-wilderness-output");
       if (output) output.innerHTML = plannerWildernessOutputHtml(plannerWildernessOutput());
     });

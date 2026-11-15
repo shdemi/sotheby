@@ -1163,6 +1163,26 @@ try {
       tabsInfo.active === "planner-tab-character" && tabsInfo.charVisible && !tabsInfo.eventVisible,
       JSON.stringify(tabsInfo)
     );
+    {
+      // The Planner's own windows sit on a surface that is already dimmed: Activity
+      // settings, Wilderness, both Resets and the Event tab's quantity editor must not
+      // blur the page behind them as well.
+      const blur = await page.evaluate(() => {
+        const read = (el) => (el ? getComputedStyle(el).backdropFilter : "missing");
+        return {
+          planner: read(document.getElementById("planner-modal")),
+          confirm: read(document.getElementById("confirm-modal")),
+          slider: read(document.querySelector(".planner-slider-backdrop")),
+          // A window that is not the Planner's keeps the blurred backdrop.
+          builds: read(document.getElementById("builds-modal")),
+        };
+      });
+      check(
+        "the Planner's own windows do not blur the page behind them",
+        blur.planner === "none" && blur.confirm === "none" && blur.slider === "none" && blur.builds === "blur(3px)",
+        JSON.stringify(blur)
+      );
+    }
 
     // Everything below is the Event tab, so switch to it once.
     const openEventTab = async () => {
@@ -1796,6 +1816,18 @@ try {
         charVisible: !document.getElementById("planner-pane-character").hidden,
         eventVisible: !document.getElementById("planner-pane-event").hidden,
         railEmpty: (rail.querySelector(".planner-rail-empty")?.textContent || "").trim(),
+        // An empty plan is one sentence across the pane, not a grid cell: it spans
+        // every column and its text is centred, instead of hanging in the top-left.
+        railEmptyBox: (() => {
+          const p = rail.querySelector(".planner-rail-empty");
+          if (!p) return null;
+          const cs = getComputedStyle(p);
+          return {
+            align: cs.textAlign,
+            width: Math.round(p.getBoundingClientRect().width),
+            rail: Math.round(rail.getBoundingClientRect().width),
+          };
+        })(),
         tiles: rail.querySelectorAll(".planner-char-tile").length,
         hint: document.getElementById("planner-rail-hint").textContent.trim(),
         count: document.getElementById("planner-char-count").textContent.trim(),
@@ -1818,6 +1850,13 @@ try {
       "an empty plan says so instead of drawing an empty grid",
       empty.tiles === 0 && !!empty.railEmpty && empty.hint === "" && empty.count === "",
       JSON.stringify(empty)
+    );
+    check(
+      "that sentence sits in the middle of the pane, not in the top-left corner",
+      empty.railEmptyBox &&
+        empty.railEmptyBox.align === "center" &&
+        empty.railEmptyBox.width >= empty.railEmptyBox.rail - 1,
+      JSON.stringify(empty.railEmptyBox)
     );
     check(
       "the farm route starts empty",
@@ -1944,11 +1983,14 @@ try {
           !tile.querySelector(".planner-char-tile-name") &&
           tile.textContent.trim() === "",
         selected: tile.classList.contains("is-selected"),
+        selectedBorder: getComputedStyle(tile).borderTopColor,
         // The editor wears the Character Setting modal's own head: a portrait, the
-        // name, and one line saying where the plan starts and ends.
+        // name, and a Remove button — no rarity plate and no status line.
         portrait: document.getElementById("planner-editor-portrait").getAttribute("src") || "",
-        sub: document.getElementById("planner-editor-sub").textContent.trim(),
-        rarity: !!document.getElementById("planner-editor-sub").querySelector("img"),
+        hasSub: !!document.getElementById("planner-editor-sub"),
+        rarityPlate: !!document.querySelector("#planner-char-editor .planner-editor-rarity"),
+        removeText: document.getElementById("planner-editor-remove").textContent.trim(),
+        removeImg: !!document.querySelector("#planner-editor-remove img"),
         removeInHeader: document.getElementById("planner-editor-remove").dataset.remove,
         cardFrame: style.borderTopColor,
         cardRadius: style.borderTopRightRadius,
@@ -1959,6 +2001,22 @@ try {
         headBg: getComputedStyle(document.querySelector("#planner-char-editor .planner-editor-header"))
           .backgroundColor,
         titleFont: getComputedStyle(document.getElementById("planner-editor-title")).fontFamily,
+        // The head is one row: portrait + name on the left, the close button at the
+        // card's right edge — never a close that flows under the name.
+        headRow: (() => {
+          const head = document.querySelector("#planner-char-editor .planner-editor-header");
+          const close = head.querySelector(".planner-sheet-close");
+          const name = document.getElementById("planner-editor-title");
+          const hr = head.getBoundingClientRect();
+          const cr = close.getBoundingClientRect();
+          const nr = name.getBoundingClientRect();
+          return {
+            display: getComputedStyle(head).display,
+            wrap: getComputedStyle(head).flexWrap,
+            sameRow: Math.abs(cr.top + cr.height / 2 - (nr.top + nr.height / 2)) < 24,
+            closeInset: Math.round(hr.right - cr.right),
+          };
+        })(),
         hint: document.getElementById("planner-rail-hint").textContent.trim(),
         count: document.getElementById("planner-char-count").textContent.trim(),
       };
@@ -1970,7 +2028,11 @@ try {
     );
     check(
       "the plan is a grid of head icons and nothing else",
-      added.grid === "grid" && added.tiles === 1 && added.iconOnly && added.selected,
+      added.grid === "grid" &&
+        added.tiles === 1 &&
+        added.iconOnly &&
+        !added.selected &&
+        added.selectedBorder !== "rgb(208, 81, 38)",
       JSON.stringify(added)
     );
     check(
@@ -1992,12 +2054,28 @@ try {
       })
     );
     check(
-      "its head carries the portrait, the rarity and the from → to line",
+      "its head carries the portrait, the name and a Remove button",
       /images\/headicon_small\//.test(added.portrait) &&
-        added.rarity &&
-        /Lv\.1 →/.test(added.sub) &&
+        !added.hasSub &&
+        !added.rarityPlate &&
+        added.removeText === "Remove" &&
+        !added.removeImg &&
         added.removeInHeader === "Lucy",
-      JSON.stringify({ portrait: added.portrait, sub: added.sub, remove: added.removeInHeader })
+      JSON.stringify({
+        portrait: added.portrait,
+        hasSub: added.hasSub,
+        plate: added.rarityPlate,
+        remove: added.removeText,
+        img: added.removeImg,
+      })
+    );
+    check(
+      "the head keeps the name and the close button on one row",
+      added.headRow.display === "flex" &&
+        added.headRow.wrap === "nowrap" &&
+        added.headRow.sameRow &&
+        added.headRow.closeInset <= 24,
+      JSON.stringify(added.headRow)
     );
     check(
       "the rail hint and the count follow the plan",
@@ -2035,6 +2113,12 @@ try {
           ].join(" | ");
         })(),
         euphoria: detail.querySelectorAll(".planner-euphoria-checks input[type=checkbox]").length,
+        euphoriaIcons: [...detail.querySelectorAll(".planner-euphoria-checks .euphoria-check-icon")].map(
+          (img) => img.getAttribute("src") || ""
+        ),
+        euphoriaTiers: [...detail.querySelectorAll(".planner-euphoria-checks .euphoria-check-tier")].map(
+          (el) => el.textContent.trim()
+        ),
         patterns: detail.querySelectorAll("[data-pattern]").length,
         glyphs: [...detail.querySelectorAll("[data-pattern] img")].map((img) => img.getAttribute("src")),
         cards: cards.length,
@@ -2070,6 +2154,21 @@ try {
       "a group is drawn the way the Character Setting modal draws one",
       editor.labelStyle === "12px | rgb(191, 191, 191) | 10px | 1px solid | 13px | rgb(229, 231, 235)",
       editor.labelStyle
+    );
+    check(
+      "a Euphoria facet is drawn as its portrait, tag and all",
+      editor.euphoriaIcons.length === editor.euphoria &&
+        editor.euphoriaIcons.every((src) => /images\/arcanists\/euphoria\/\d+_\d+\.webp$/.test(src)) &&
+        editor.euphoriaTiers.every((tier) => /^E\d+$/.test(tier)),
+      JSON.stringify({ icons: editor.euphoriaIcons, tiers: editor.euphoriaTiers })
+    );
+    check(
+      "the facet art is really there",
+      await page.evaluate(() =>
+        [...document.querySelectorAll("#planner-char-detail .planner-euphoria-checks .euphoria-check-icon")].every(
+          (img) => img.complete && img.naturalWidth > 0
+        )
+      )
     );
     check(
       "the five resonance patterns draw their own glyphs",      editor.patterns === 5 &&
@@ -2217,8 +2316,10 @@ try {
         craftSharpo: crafted.every((card) => !!card.querySelector(".planner-farm-sharpo img")),
         shop: host.querySelectorAll(".planner-farm-shop-row").length,
         shopStamina: [...host.querySelectorAll(".planner-farm-shop-row")].every(
-          (row) => row.dataset.stamina !== undefined
+          (row) => row.dataset.stamina === undefined && !row.querySelector(".planner-farm-stamina")
         ),
+        toggleText: (document.getElementById("planner-farm-wilderness")?.textContent || "").trim(),
+        toggleIcon: !!document.querySelector("#planner-farm-wilderness img"),
         shopNames: [...host.querySelectorAll(".planner-farm-shop-name")].map((el) => el.textContent),
       };
     });
@@ -2276,9 +2377,14 @@ try {
       `${route.days} vs ${route.total} / 240`
     );
     check(
-      "oneiric-only materials are listed with their stamina, not farmed",
+      "the Oneiric Shop rows carry no stamina price: those are bought, not farmed",
       route.shop > 0 && route.shopStamina && route.shopNames.every((name) => !!name),
-      JSON.stringify(route.shopNames)
+      JSON.stringify({ rows: route.shop, clean: route.shopStamina, names: route.shopNames })
+    );
+    check(
+      "the Wilderness switch is its own word on the route bar, with no icon",
+      route.toggleText === "Wilderness" && !route.toggleIcon,
+      JSON.stringify({ text: route.toggleText, icon: route.toggleIcon })
     );
     check(
       "every farmed material resolves to real art",
@@ -2397,11 +2503,14 @@ try {
       for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
         output[row.dataset.item] = Number(row.dataset.qty || 0);
       }
+      const vigor = document.getElementById("planner-wilderness-vigor");
       return {
         open: !sheet.hidden,
         state: document.getElementById("planner-wilderness-state").textContent.trim(),
         selects: [...sheet.querySelectorAll("[data-wild]")].map((el) => `${el.dataset.wild}=${el.value}`),
-        vigor: document.getElementById("planner-wilderness-vigor").value,
+        vigor: vigor.value,
+        vigorType: vigor.type,
+        vigorMax: vigor.getAttribute("max"),
         hasLazy: !!document.getElementById("planner-wilderness-lazy"),
         output,
       };
@@ -2412,11 +2521,16 @@ try {
       JSON.stringify(wildOpen)
     );
     check(
-      "it starts on three Lv.6 Dust towers and three Lv.6 markets",
+      "it starts on three Lv.6 Dust towers and three Lv.6 markets, Vigor at 50",
       wildOpen.selects.length === 6 &&
         wildOpen.selects.every((row) => row.endsWith("=6")) &&
-        wildOpen.vigor === "0",
-      JSON.stringify(wildOpen.selects)
+        wildOpen.vigor === "50",
+      JSON.stringify({ selects: wildOpen.selects, vigor: wildOpen.vigor })
+    );
+    check(
+      "Vigor is a typed figure with no ceiling, not a capped slider",
+      wildOpen.vigorType === "number" && wildOpen.vigorMax === null,
+      JSON.stringify({ type: wildOpen.vigorType, max: wildOpen.vigorMax })
     );
     check(
       "Lazy mode has no place on the board",
@@ -2424,29 +2538,41 @@ try {
       JSON.stringify({ hasLazy: wildOpen.hasLazy })
     );
     check(
-      "a full board with no vigor pays 19,440 Dust and 8,640 Sharpodonty a day",
-      wildOpen.output.Dust === 19440 && wildOpen.output.Sharpodonty === 8640,
+      "a full board at the default 50% pays 29,160 Dust and 12,960 Sharpodonty a day",
+      wildOpen.output.Dust === 29160 && wildOpen.output.Sharpodonty === 12960,
       JSON.stringify(wildOpen.output)
     );
 
-    const wildOn = await page.evaluate(() => {
+    const wildOn = await page.evaluate(async () => {
       document.querySelector('#planner-wilderness-toggle .btn-toggle[data-value="1"]').click();
       const sheet = document.getElementById("planner-wilderness-sheet");
       const output = {};
       for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
         output[row.dataset.item] = Number(row.dataset.qty || 0);
       }
+      const active = sheet.querySelector("#planner-wilderness-toggle .btn-toggle.active");
+      // `btn-toggle` carries a 0.2s transition, so the new colours are only readable
+      // once a frame has been painted.
+      await new Promise((r) => setTimeout(r, 300));
+      const cs = getComputedStyle(active);
       return {
         state: document.getElementById("planner-wilderness-state").textContent.trim(),
         output,
         saved: JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null"),
         toggleActive: document.getElementById("planner-farm-wilderness").classList.contains("is-active"),
+        toggleBg: cs.backgroundColor,
+        toggleColor: cs.color,
       };
     });
     check(
       "turning it on is saved locally",
       wildOn.saved?.enabled === true && /On/.test(wildOn.state),
       JSON.stringify(wildOn.saved)
+    );
+    check(
+      "the chosen side of the switch is #D05126 with white text",
+      wildOn.toggleBg === "rgb(208, 81, 38)" && wildOn.toggleColor === "rgb(255, 255, 255)",
+      JSON.stringify({ bg: wildOn.toggleBg, color: wildOn.toggleColor })
     );
     {
       // The payout is Dust/Sharpodonty, so the solve is handed them as a rate over
@@ -2480,27 +2606,42 @@ try {
       );
     }
     const wildVigor = await page.evaluate(() => {
-      const slider = document.getElementById("planner-wilderness-vigor");
-      slider.value = "50";
-      slider.dispatchEvent(new Event("input", { bubbles: true }));
       const sheet = document.getElementById("planner-wilderness-sheet");
-      const output = {};
-      for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
-        output[row.dataset.item] = Number(row.dataset.qty || 0);
-      }
-      return { vigor: document.getElementById("planner-vigor-value").textContent.trim(), output };
+      const box = document.getElementById("planner-wilderness-vigor");
+      const read = () => {
+        const out = {};
+        for (const row of sheet.querySelectorAll(".planner-wilderness-stat")) {
+          out[row.dataset.item] = Number(row.dataset.qty || 0);
+        }
+        return out;
+      };
+      const type = (value) => {
+        box.value = String(value);
+        box.dispatchEvent(new Event("input", { bubbles: true }));
+        box.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      type(0);
+      const atZero = read();
+      type(120);
+      const atHigh = read();
+      const saved = JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null");
+      return { atZero, atHigh, saved: saved?.vigor, value: box.value };
     });
     check(
-      "Vigor adds its percentage to the payout",
-      wildVigor.vigor === "50%" && wildVigor.output.Dust === 29160 && wildVigor.output.Sharpodonty === 12960,
+      "Vigor adds its percentage to the payout, and goes past the old 50% cap",
+      wildVigor.atZero.Dust === 19440 &&
+        wildVigor.atZero.Sharpodonty === 8640 &&
+        Math.abs(wildVigor.atHigh.Dust - 810 * 2.2 * 24) <= 1 &&
+        Math.abs(wildVigor.atHigh.Sharpodonty - 360 * 2.2 * 24) <= 1 &&
+        wildVigor.saved === 120,
       JSON.stringify(wildVigor)
     );
     await page.evaluate(() => {
-      // Put the raised Vigor back, so the saved state is the plain full board, but
-      // leave the board switched on: the reload has to bring it back.
-      const slider = document.getElementById("planner-wilderness-vigor");
-      slider.value = "0";
-      slider.dispatchEvent(new Event("change", { bubbles: true }));
+      // Put Vigor back, so the saved state is the plain board at 0%, but leave the
+      // board switched on: the reload has to bring both back.
+      const box = document.getElementById("planner-wilderness-vigor");
+      box.value = "0";
+      box.dispatchEvent(new Event("change", { bubbles: true }));
       document.querySelector('#planner-wilderness-sheet [data-sheet]').click();
     });
     await page.waitForTimeout(900);
@@ -2690,6 +2831,104 @@ try {
       await new Promise((r) => setTimeout(r, 400));
     });
 
+    // ---- Vietnamese ------------------------------------------------------
+    // The game's own nouns are not translated into Vietnamese: the reader knows
+    // them the way the game prints them, so Activity, Wilderness, its two
+    // buildings and Vigor stay English while the sentence around them does not.
+    const viChar = await page.evaluate(async () => {
+      setLanguage("vi");
+      await new Promise((r) => setTimeout(r, 600));
+      return {
+        // Straight from the string table, so a render that has not caught up yet
+        // cannot make this pass or fail by accident.
+        total: t("planner.farmTotal"),
+        activity: t("planner.activityShort"),
+        activityTitle: t("planner.activity"),
+        perDay: t("planner.activityPerDay", { n: "240" }),
+        stamina: t("planner.staminaCalc", { stamina: "100", days: "1.0" }),
+        staminaRoaring: t("planner.staminaCalcRoaring", { stamina: "100", days: "1.0", daysRoaring: "1.0" }),
+        wild: t("planner.wilderness"),
+        towers: t("planner.dustBellTowers"),
+        markets: t("planner.sharpodontyMarkets"),
+        vigor: t("planner.vigor"),
+        // And the two places the reader sees them: the toolbar and the route bar.
+        toolButton: document.getElementById("planner-activity-btn").textContent.replace(/\s+/g, " ").trim(),
+        routeToggle: document.getElementById("planner-farm-wilderness").textContent.trim(),
+        // Something else in the same tab, to prove the locale really switched.
+        title: t("planner.farmTitle"),
+      };
+    });
+    check(
+      "the farm total is named for the game's own Activity",
+      viChar.total === "Total Activity" &&
+        /^Activity /.test(viChar.stamina) &&
+        /^Activity /.test(viChar.staminaRoaring),
+      JSON.stringify({ total: viChar.total, stamina: viChar.stamina, roaring: viChar.staminaRoaring })
+    );
+    check(
+      "Activity is not translated into Vietnamese",
+      viChar.activity === "Activity" &&
+        /Activity/.test(viChar.activityTitle) &&
+        /Activity/.test(viChar.perDay) &&
+        /Activity/.test(viChar.toolButton) &&
+        !/hoạt/i.test(viChar.activity + viChar.activityTitle + viChar.perDay + viChar.stamina + viChar.toolButton),
+      JSON.stringify(viChar)
+    );
+    check(
+      "Wilderness, its two buildings and Vigor keep their names",
+      viChar.wild === "Wilderness" &&
+        viChar.routeToggle === "Wilderness" &&
+        viChar.towers === "Dust Bell Towers" &&
+        viChar.markets === "Sharpodonty Markets" &&
+        viChar.vigor === "Vigor",
+      JSON.stringify(viChar)
+    );
+    check(
+      "the rest of the tab is still Vietnamese",
+      viChar.title !== "Farm route" && /[^\x00-\x7F]/.test(viChar.title),
+      viChar.title
+    );
+    await page.evaluate(async () => {
+      setLanguage("en");
+      await new Promise((r) => setTimeout(r, 400));
+    });
+
+    // ---- tablets and narrow desktops -------------------------------------
+    // 768px used to be the cliff where the toolbar lost a row to a full-width
+    // tail and the farm route dropped straight to one column. A tablet has the
+    // width for both.
+    for (const width of [768, 640]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.waitForTimeout(350);
+      const tablet = await page.evaluate(() => {
+        const pane = document.getElementById("planner-pane-character");
+        const toolbar = pane.querySelector(".planner-toolbar");
+        const tail = toolbar.querySelector(".planner-toolbar-tail");
+        const lead = toolbar.querySelector(".planner-toolbar-lead");
+        const grid = document.querySelector("#planner-farm .planner-farm-grid");
+        const lr = lead.getBoundingClientRect();
+        const tr = tail.getBoundingClientRect();
+        const toolbarBox = toolbar.getBoundingClientRect();
+        return {
+          toolbarH: Math.round(toolbarBox.height),
+          oneRow: Math.abs(lr.top - tr.top) < 8,
+          tailInset: Math.round(toolbarBox.right - tr.right),
+          farmCols: getComputedStyle(grid).gridTemplateColumns.split(" ").length,
+          sideways: document.documentElement.scrollWidth <= window.innerWidth + 1,
+        };
+      });
+      check(
+        `at ${width}px the Character toolbar keeps one row`,
+        tablet.oneRow && tablet.toolbarH <= 60 && tablet.tailInset <= 14,
+        JSON.stringify(tablet)
+      );
+      check(
+        `at ${width}px the farm route keeps more than one card per row`,
+        tablet.farmCols >= 2 && tablet.sideways,
+        JSON.stringify(tablet)
+      );
+    }
+
     // ---- phones ----------------------------------------------------------
     await page.setViewportSize({ width: 390, height: 780 });
     await page.waitForTimeout(400);
@@ -2723,11 +2962,22 @@ try {
       const sticker = document.querySelector("#planner-char-detail .planner-mat-sticker");
       const badge = document.querySelector("#planner-char-detail .item-sticker-qty");
       const sheet = document.getElementById("planner-char-editor");
+      const head = sheet.querySelector(".planner-editor-header");
+      const close = head.querySelector(".planner-sheet-close");
+      const name = document.getElementById("planner-editor-title");
+      const hr = head.getBoundingClientRect();
+      const cr = close.getBoundingClientRect();
+      const nr = name.getBoundingClientRect();
       return {
         sticker: sticker ? Math.round(sticker.getBoundingClientRect().width) : 0,
         badge: badge ? parseFloat(getComputedStyle(badge).fontSize) : 0,
         sheetFixed: getComputedStyle(sheet).position === "fixed",
         cardFits: document.querySelector("#planner-char-editor .planner-sheet-card").getBoundingClientRect().width <= window.innerWidth,
+        // The phone rule for the modal head wraps, which used to push the editor's
+        // close button under the name. It is a sheet head: one row, close at the edge.
+        closeInset: Math.round(hr.right - cr.right),
+        closeBesideName: cr.left > nr.right - 1,
+        headOneRow: Math.round(hr.height) <= 100,
       };
     });
     check(
@@ -2739,6 +2989,15 @@ try {
       "the editor is a fixed lightbox that fits a phone",
       phoneBill.sheetFixed && phoneBill.cardFits,
       JSON.stringify(phoneBill)
+    );
+    check(
+      "its head keeps the close button beside the name on a phone",
+      phoneBill.headOneRow && phoneBill.closeBesideName && phoneBill.closeInset <= 24,
+      JSON.stringify({
+        head: phoneBill.headOneRow,
+        beside: phoneBill.closeBesideName,
+        inset: phoneBill.closeInset,
+      })
     );
     await page.evaluate(() => document.querySelector('#planner-char-editor [data-sheet]').click());
     await page.waitForTimeout(200);
