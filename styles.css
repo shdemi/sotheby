@@ -14744,17 +14744,24 @@ span.planner-char-tile-img {
   object-fit: contain;
 }
 
+/* Three drops to a line: a stage's bill is a handful of materials, and a fixed
+   three-column row keeps every card's drops in the same rhythm instead of letting
+   a wrap decide it (two on one line, one stranded under it). A card is ~200px, so
+   the columns land near 60px and the sticker shrinks to fit its column. */
 .planner-farm-drops {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
 }
 
 /* A drop is the item sticker the bill uses: the art already carries its own frame,
-   so there is no card box around it, and it is large enough to read at a glance. */
+   so there is no card box around it. */
 .planner-farm-drop {
-  width: 64px;
-  height: 64px;
+  width: 100%;
+  max-width: 72px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  justify-self: start;
   flex: none;
   cursor: default;
 }
@@ -14766,8 +14773,8 @@ span.planner-char-tile-img {
 }
 
 .planner-farm-drop .item-sticker-qty {
-  font-size: 11px;
-  padding: 0 4px;
+  font-size: 10px;
+  padding: 0 3px;
   bottom: 2px;
   right: 2px;
 }
@@ -14844,16 +14851,28 @@ span.planner-char-tile-img {
   gap: 10px;
 }
 
-/* The editor wears the Character Setting modal's head: the portrait with its
-   accent frame, the name, and one line saying where the plan starts and ends. */
+/* The editor wears the Character Setting modal's head, exactly: #212121 above a
+   1px #D05126 line, the 52px portrait in its accent frame, the name in Georgia. */
 .planner-editor-header {
   flex: none;
-  padding: 12px 48px 10px 14px;
+  position: relative;
+  padding: 16px 22px 14px;
+  background: #212121;
+}
+
+.planner-editor-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: #D05126;
 }
 
 .planner-editor-header .modal-char-title {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: normal;
   letter-spacing: 0;
   color: #ECE5D9;
@@ -14891,12 +14910,12 @@ span.planner-char-tile-img {
   opacity: 1;
 }
 
-/* The settings are the Character Setting modal's own `setting-group`s: two
-   columns when the card is wide, one when it is not. */
+/* The settings are the Character Setting modal's own `setting-group`s, one under
+   another: the card is modal-wide (440px), so there is no second column. */
 .planner-char-controls {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 12px 16px;
+  grid-template-columns: 1fr;
+  gap: 12px;
   align-items: start;
 }
 
@@ -14979,10 +14998,8 @@ span.planner-char-tile-img {
   border-radius: 3px;
 }
 
-/* Euphoria facets: the game's own portrait, with the tier written on it.
-   Frequency is the resonance-pattern picker: the pattern's own glyph, with its
+/* Frequency is the resonance-pattern picker: the pattern's own glyph, with its
    name underneath (the game draws glyphs only, but a bill needs the name). */
-.planner-euphoria-row,
 .planner-freq-row {
   flex: 1;
   min-width: 0;
@@ -14991,7 +15008,6 @@ span.planner-char-tile-img {
   gap: 6px;
 }
 
-.planner-euphoria-tile,
 .planner-freq-tile {
   position: relative;
   padding: 0;
@@ -15001,12 +15017,6 @@ span.planner-char-tile-img {
   border-radius: 3px;
   cursor: pointer;
   transition: border-color 0.15s ease, opacity 0.15s ease;
-}
-
-.planner-euphoria-tile {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
 }
 
 .planner-freq-tile {
@@ -15019,17 +15029,11 @@ span.planner-char-tile-img {
   padding: 4px 3px 3px;
 }
 
-.planner-euphoria-tile img,
 .planner-freq-tile img {
   display: block;
   object-fit: cover;
   opacity: 0.55;
   transition: opacity 0.15s ease;
-}
-
-.planner-euphoria-tile img {
-  width: 100%;
-  height: 100%;
 }
 
 .planner-freq-tile img {
@@ -15058,60 +15062,68 @@ span.planner-char-tile-img {
   -webkit-box-orient: vertical;
 }
 
-.planner-euphoria-tile.is-active img,
 .planner-freq-tile.is-active img {
   opacity: 1;
 }
 
-.planner-euphoria-tile.is-active,
 .planner-freq-tile.is-active {
   border-color: #ED7D31;
 }
 
-.planner-euphoria-tile:hover,
 .planner-freq-tile:hover {
   border-color: rgba(237, 125, 49, 0.7);
 }
 
-.planner-euphoria-tile:focus-visible,
 .planner-freq-tile:focus-visible {
   outline: 2px solid #ED7D31;
   outline-offset: 1px;
 }
 
-.planner-euphoria-tag {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: 0 3px;
-  background: rgba(0, 0, 0, 0.78);
-  color: #ECE5D9;
-  font-size: 0.5rem;
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: 0.02em;
-  pointer-events: none;
-}
-
-.planner-euphoria-tile.is-active .planner-euphoria-tag,
 .planner-freq-tile.is-active .planner-freq-name {
   color: #ED7D31;
+}
+
+/* Euphoria is the Character Setting modal's own tick box, and Mastery is the same
+   setting: the game only offers the tiers once a facet is on, so the range sits
+   under the ticks and stays switched off (and says why) until one is ticked. */
+.planner-euphoria-checks {
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.planner-subsetting {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.planner-subsetting.is-disabled {
+  opacity: 0.45;
+}
+
+.planner-subsetting.is-disabled .planner-field-select {
+  cursor: not-allowed;
+}
+
+.planner-subsetting-hint {
+  margin: 6px 0 0;
+  font-size: 0.62rem;
+  line-height: 1.4;
+  color: #b9b5ae;
 }
 
 .planner-char-mats-head {
   margin-top: 2px;
 }
 
-/* Material cards: the Event tab's goods card, minus the stepper. The art is the
-   InfoBook's own item sticker — the game art over its rarity frame, with the
-   quantity in the dark badge in the bottom-right corner — so the card wraps a
-   sticker instead of drawing a frame of its own. */
 /* A bill is a wall of art: the game's own item sticker, no card box and no name
    under it. The name and the exact figure live in the tooltip, because a plan
-   can run to seventy materials and the names would drown the quantities. */
+   can run to seventy materials and the names would drown the quantities. The
+   stickers are the size the InfoBook's own material list uses, so a bill and the
+   InfoBook ask for the same thing in the same units. */
 .planner-mat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: 8px;
 }
 
@@ -15121,11 +15133,10 @@ span.planner-char-tile-img {
 }
 
 /* The item sticker is a label, not a control, so only the box size changes and
-   the lift is dropped. It is drawn large on purpose: the bill is meant to read as
-   a wall of art, and the art already carries the rarity frame. */
+   the lift is dropped. */
 .planner-mat .planner-mat-sticker {
-  width: 96px;
-  height: 96px;
+  width: 64px;
+  height: 64px;
   flex: none;
   cursor: default;
 }
@@ -15141,13 +15152,12 @@ span.planner-char-tile-img {
   transform: scale(1.18);
 }
 
-/* The badge is cut for the 68px InfoBook sticker; a 96px one carries a bigger
-   figure, scaled with the art so the corner stays proportionate. */
+/* The badge keeps its corner proportionate to the art it sits on. */
 .planner-mat .item-sticker-qty {
   bottom: 2px;
   right: 2px;
   padding: 0 4px;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .planner-mat-art-empty {
@@ -15170,6 +15180,13 @@ span.planner-char-tile-img {
   gap: 8px;
 }
 
+/* The figure the toolbar prints: the number, then the unit it is counted in, so
+   the button says "240/day" rather than a number with no denominator. */
+.planner-activity-figure {
+  display: inline-flex;
+  align-items: baseline;
+}
+
 .planner-activity-value {
   font-family: var(--mono-font);
   font-size: 0.72rem;
@@ -15178,28 +15195,30 @@ span.planner-char-tile-img {
   color: #ED7D31;
 }
 
+.planner-activity-unit {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #b9b5ae;
+}
+
 .planner-activity-body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 12px 14px 16px;
 }
 
-.planner-activity-readout {
+/* Two ticks in a modal-wide panel: the label stays on the left and the box on the
+   right, so both boxes line up in one column instead of trailing their own text. */
+.planner-check-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 8px 10px;
-  background: rgba(208, 81, 38, 0.12);
-  border-left: 2px solid #D05126;
-  border-radius: 4px;
+  gap: 8px;
 }
 
-.planner-activity-readout-line {
-  font-size: 0.68rem;
-  line-height: 1.5;
-  color: rgba(244, 239, 233, 0.9);
-  font-variant-numeric: tabular-nums;
+.planner-check-list .planner-check-row {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  width: 100%;
 }
 
 /* ---- Wilderness ----------------------------------------------------------- */
@@ -15243,30 +15262,6 @@ span.planner-char-tile-img {
   color: #ffffff;
 }
 
-/* The Goal sheet: whose bill it is, as the plan's own head icons. */
-.planner-goal-chars {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.planner-goal-char {
-  width: 40px;
-  height: 40px;
-  flex: none;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.planner-goal-char img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-
 /* ---- Lightboxes over the Character tab ------------------------------------ */
 
 /* The five panels are one object: a backdrop over the tab and a card on it, drawn
@@ -15287,18 +15282,20 @@ span.planner-char-tile-img {
   display: none;
 }
 
+/* Every sheet is the site's own modal: `.modal-card` with `.archetype-modal-card`'s
+   wallpaper, #B55829 frame and single rounded corner, and `#edit-modal`'s head —
+   #212121 above a 1px #D05126 line, the title in the same serif — so a Planner
+   panel and a Character Setting panel read as the same object. The card is as wide
+   as a normal modal, because these panels are settings, not tables. */
 .planner-sheet-card {
-  width: min(860px, 100%);
+  width: 100%;
+  max-width: 440px;
   max-height: 100%;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  /* The Character Setting modal's own card: the wallpaper behind a dark wash, the
-     orange frame, the single rounded corner. The wash keeps a wall of item art
-     readable over the texture. */
-  background-color: #212121;
-  background-image: linear-gradient(rgba(20, 18, 17, 0.84), rgba(20, 18, 17, 0.84)),
-    url("images/background.png");
+  background-color: var(--panel-bg);
+  background-image: url("images/background.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -15309,26 +15306,82 @@ span.planner-char-tile-img {
   overflow: hidden;
 }
 
+/* The head is the Character Setting modal's `.archetype-modal-header`. */
 .planner-sheet-head {
   flex: none;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px 12px 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 22px 14px;
+  background: #212121;
 }
 
+.planner-sheet-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: #D05126;
+}
+
+.planner-sheet-head .archetype-section-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #ECE5D9;
+}
+
+/* The body is `.archetype-modal-body`: the wallpaper shows through, one gap
+   between the groups, the same 22px gutter as the modal's own body. */
 .planner-sheet-body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 22px 20px;
+  background: transparent;
 }
 
-/* The Goal lightbox is a bill and nothing else, so its body is the grid. */
-.planner-goal-card .planner-sheet-body {
-  padding: 12px;
+/* The settings inside a sheet are the Character Setting modal's own: the label is
+   the tier-1 12px caps, the value its 13px gg sans, every group ruled off with the
+   same 1px line. `#edit-modal` scopes those rules to itself, so a sheet — which is
+   not inside that modal — repeats them here instead of inventing a look. */
+.planner-sheet .setting-group {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.planner-sheet .setting-group:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.planner-sheet .setting-label {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #BFBFBF;
+}
+
+.planner-sheet .setting-val-display {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #E5E7EB;
+}
+
+.planner-sheet .check-text {
+  font-size: 13px;
+  color: #E5E7EB;
 }
 
 /* ---- "Add arcanist" ------------------------------------------------------- */
@@ -15336,7 +15389,7 @@ span.planner-char-tile-img {
 /* The toolbar is the Manage modal's own (roster-toolbar + search-input +
    filter-btn-group), trimmed of the padding it carries inside that card. */
 .planner-picker-card {
-  width: min(680px, 100%);
+  max-width: 680px;
 }
 
 .planner-picker .roster-toolbar {
@@ -15690,12 +15743,12 @@ span.planner-char-tile-img {
     padding: 10px;
   }
   .planner-mat-grid {
-    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
     gap: 6px;
   }
   .planner-mat .planner-mat-sticker {
-    width: 76px;
-    height: 76px;
+    width: 56px;
+    height: 56px;
   }
   .planner-picker-grid {
     grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
@@ -15761,20 +15814,16 @@ span.planner-char-tile-img {
   /* The bill is the densest thing in the modal; it shrinks a step further
      instead of the grid turning into a horizontal scroll. */
   .planner-mat-grid {
-    grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
   }
   .planner-mat .planner-mat-sticker {
-    width: 66px;
-    height: 66px;
-  }
-  /* A 66px sticker needs a smaller badge, or "894k" eats half the art. */
-  .planner-mat .item-sticker-qty {
-    font-size: 10px;
-    padding: 0 3px;
-  }
-  .planner-farm-drop {
     width: 52px;
     height: 52px;
+  }
+  /* A 52px sticker needs a smaller badge, or "894k" eats half the art. */
+  .planner-mat .item-sticker-qty {
+    font-size: 9px;
+    padding: 0 3px;
   }
   .planner-add-btn {
     padding: 0 10px;

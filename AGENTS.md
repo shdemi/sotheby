@@ -1259,8 +1259,8 @@ each one costs, and the **farm route** that pays for every enabled one in stamin
 | Element | What it is |
 |---|---|
 | `#planner-char-rail` | the plan as a **grid of head icons**, nothing else |
-| `#planner-char-editor` | one arcanist's panel (lightbox): from → to controls, Euphoria + Frequency picks, their bill |
-| `#planner-goal-sheet` | the whole plan's bill, added up (lightbox) |
+| `#planner-char-editor` | one arcanist's panel (lightbox): from → to controls, the Euphoria · Mastery group, the Frequency picks, their bill |
+| `#planner-goal-sheet` | the whole plan's bill, added up (lightbox) — the bill and nothing else |
 | `#planner-activity-sheet` | the stamina budget (lightbox) |
 | `#planner-wilderness-sheet` | the Wilderness idle board (lightbox, §"Wilderness") |
 | `#planner-picker` | Add Character (lightbox) |
@@ -1280,22 +1280,44 @@ the reader). Every closer carries `data-sheet="<id>"`, and a press on the backdr
 too (`plannerOpenSheet()` / `plannerCloseSheets()`).
 
 **Every sheet is the Character Setting modal's own card.** `.planner-sheet-card` wears
-`#edit-modal`'s frame — `images/background.png` under the modal's dark wash, the `#B55829`
-border, `radius 0 20px 0 0`, the orange glow — at `min(860px, 100%)`, so a Planner panel and
-the mainboard's character editor read as the same object. That is the owner's call: the
-`Goal` / `Activity` / `Wilderness` / `Add Character` panels used to be their own flat dark
-cards.
+`#edit-modal`'s frame — `--panel-bg` over `images/background.png`, the `#B55829` border,
+`radius 0 20px 0 0`, the orange glow — at **`max-width: 440px`** (the picker is `680px`,
+because it is the Manage roster), so a Planner panel and the mainboard's character editor
+read as the same object at the same width. The head is `#edit-modal`'s
+`.archetype-modal-header` too: `#212121` above a 1px `#D05126` line, the title in the same
+26px Georgia. There is **no dark wash** over the wallpaper — an earlier round stacked a
+`linear-gradient` scrim on it, which made a sheet look like a different card. The body is
+`.archetype-modal-body` (`padding: 16px 22px 20px`, `display: flex; column; gap: 12px`).
+
+The **settings inside a sheet are `#edit-modal`'s own `setting-group`s**. `#edit-modal`
+scopes those rules to itself, so a sheet — which is not inside that modal — repeats them in
+`.planner-sheet .setting-group` / `.setting-label` / `.setting-val-display` / `.check-text`:
+12px bold caps at `#BFBFBF` with 0.5px spacing, the value in 13px gg sans `#E5E7EB`, every
+group ruled off with `padding-bottom: 10px` + a 1px `rgba(255,255,255,.06)` line. A test
+asserts the computed values match the real modal's, so the two cannot drift.
 
 - The **editor** goes further and prints `#edit-modal`'s header markup:
   `modal-char-preview` + `#planner-editor-portrait` + `modal-char-title` +
   `#planner-editor-sub` (the rarity, then `Lv.1 → Lv.60`), with the remove button
   (`#planner-editor-remove`) in the name row and the close button at the end of the header.
   `renderPlannerCharacter()` fills the portrait/rarity/subtitle, so the body carries no head
-  of its own and no second remove button.
+  of its own and no second remove button. `.planner-editor-header` is the same `#212121`
+  band with the same orange `::after` line and the same 26px Georgia title.
 - Every from → to control is a `setting-group` (`plannerRangeGroupHtml()`): label + value on
   one `setting-label-row`, the two dressed-up selects under it in `.planner-range-controls`.
-  Euphoria and Frequency are `setting-group.is-wide` with the picked value in the value slot,
-  so the six groups read as one column of settings.
+  The editor is **five groups in one column** — Insight, Level, Resonance, `Euphoria ·
+  Mastery`, Resonance Pattern — because the card is modal-wide (440px), so
+  `.planner-char-controls` is `grid-template-columns: 1fr` (it used to be
+  `repeat(auto-fit, minmax(300px, 1fr))` when the card was 860px wide).
+- **Euphoria and Mastery are one setting, ticked then ranged.** The game only offers a
+  mastery tier once a Euphoria facet is on, so `plannerEuphoriaMasteryHtml()` draws the
+  facets as the modal's own `.check-container` boxes (`data-euphoria` on the `<input>`, wired
+  on the detail pane's `change` not `click`) over a `.planner-subsetting` mastery range that is
+  `disabled` — with `planner.masteryNeedsEuphoria` as its hint — until one box is ticked.
+  `plannerClampPlan()` enforces the same rule on the data (`masteryCap = plan.euphoria.length
+  ? 4 : 0`), applied *after* the euphoria ids are filtered, so unticking the last facet drops
+  whatever mastery the plan carried. Euphoria used to be a row of portrait tiles
+  (`.planner-euphoria-tile`); those are gone.
 
 **Every number is already generated.**
 
@@ -1341,10 +1363,11 @@ nodes, plus `levelExpBetween()` for the levels in between. A plan whose current 
 its goal therefore bills **nothing** — the costs are steps, not a fixed package.
 
 **Clamps.** Resonance is capped by insight the way the game caps it (R0 at Insight 0, then
-R5 / R10 / R15 — `getMaxResonanceForInsight`), mastery is 0..4, the current state never
-sits above the goal, and a level is capped by its insight (30/40/50/60). `plannerClampPlan()`
-applies all of it on load and after every change, so a hand-edited localStorage blob cannot
-produce an impossible plan.
+R5 / R10 / R15 — `getMaxResonanceForInsight`), **mastery is 0..4 only once a Euphoria facet is
+ticked and 0 otherwise** (the `masteryCap` above, so unticking the last facet zeroes it), the
+current state never sits above the goal, and a level is capped by its insight (30/40/50/60).
+`plannerClampPlan()` applies all of it on load and after every change, so a hand-edited
+localStorage blob cannot produce an impossible plan.
 
 **The defaults** of a freshly added arcanist are level 1 / Insight 0 / R0 / mastery 0, with
 the goal at the arcanist's own cap (Insight III Lv.60 for 5★/6★, Insight II Lv.50 below
@@ -1385,8 +1408,10 @@ modal):
   (`#planner-activity-btn`: a normal `btn btn-secondary` like Goal, carrying the label and the
   stamina a day is worth — **no gear icon**) on the lead side, and Add Character
   (`#planner-char-add`) / Goal (`#planner-goal-btn`) / Reset (`#planner-char-clear`,
-  icon-only) on the tail. `.planner-char-scroll` is the **one** scroller of the tab and holds
-  `#planner-char-rail` → `#planner-rail-hint` → `#planner-farm`.
+  icon-only) on the tail. The figure reads **`240/day`**: `#planner-activity-value` is the
+  number and `.planner-activity-unit` the `planner.perDay` unit beside it (`/day`, `/ngày`,
+  `/天`), so the button says what it counts. `.planner-char-scroll` is the **one** scroller of
+  the tab and holds `#planner-char-rail` → `#planner-rail-hint` → `#planner-farm`.
 - **A tile is a head icon and nothing else** — no name, no rarity plate, no selection frame
   beyond the border. `.planner-char-rail` is
   `grid-template-columns: repeat(auto-fill, minmax(64px, 1fr))` with a 1:1 aspect ratio, so
@@ -1397,28 +1422,31 @@ modal):
   `.planner-sheet-body` (`flex: 1; min-height: 0; overflow-y: auto`), so the picker's roster
   scrolls inside a fixed card instead of pushing the modal taller.
 - Empty panes print `.guide-empty`; material lists use `.planner-mat-grid`
-  (`repeat(auto-fill, minmax(72px, 1fr))`).
-- **A material card is only the item sticker, and it is big.** `plannerMatCardHtml()` emits
+  (`repeat(auto-fill, minmax(64px, 1fr))`).
+- **A material card is only the item sticker, and it is `64px`.** `plannerMatCardHtml()` emits
   `.item-sticker` (the game's art over its rarity frame from
-  `images/items/border/<rarity>.webp`, art from `images/items/icon/<id>.png`) at **96×96**
+  `images/items/border/<rarity>.webp`, art from `images/items/icon/<id>.png`) at **64×64**
   with `.item-sticker-qty` printing the quantity bottom-right — **no name under it and no card
   box around it**, because the art already carries its border and the bill is meant to read as
   a wall of art. The frame, the art and the badge scale together as one object: the badge is
-  `12px` at that size. The owner accepted the consequence that only about four farm-stage
-  cards fit in a row at 1440px. The name lives in the `title` and the tests never need it. The
-  quantity in the badge is the compact form the InfoBook prints (`formatMaterialQuantity`:
-  `894k`, `1.3m`); the exact figure is on `data-qty` and in the tooltip, and the tests read
-  `data-qty`, never the badge. A material with no art falls back to `.planner-mat-art-empty`
-  (a dashed box). The farm route's drops (`plannerFarmStickerHtml`) are the same sticker at
-  **64px** (badge `11px`), and the shop rows at 48px.
+  `10px` at that size. It is the same size the InfoBook's own material list uses, so a bill
+  and the InfoBook ask for a thing in the same units (an earlier round drew them at 96px,
+  which read as oversized next to the InfoBook). The name lives in the `title` and the tests
+  never need it. The quantity in the badge is the compact form the InfoBook prints
+  (`formatMaterialQuantity`: `894k`, `1.3m`); the exact figure is on `data-qty` and in the
+  tooltip, and the tests read `data-qty`, never the badge. A material with no art falls back to
+  `.planner-mat-art-empty` (a dashed box). The farm route's drops (`plannerFarmStickerHtml`)
+  are the same sticker sized by their grid column, and the shop rows at 48px.
 - The section bars are the Appearance modal's `.archetype-section-header` /
   `.archetype-section-title`.
 - **Goal** (`#planner-goal-sheet`) is the whole plan's bill added up
   (`plannerGoalMaterials()` → `sortMaterialsByCategory`, so the grid reads in the game's own
-  category order). It opens on a `setting-group` header — `{n} in the plan` on the left,
-  `×{materials}` on the right — over `.planner-goal-chars`, the head icons of every arcanist it
-  counts, so the sum says whose it is. It lists enabled arcanists only; an empty plan says so,
-  and a plan where every arcanist is filed away says "Nothing left to farm."
+  category order) — **and nothing else**. It used to open on a `{n} in the plan` header with
+  `×{materials}` beside it and a row of the counted arcanists' head icons under a "Materials
+  needed" bar; the owner had all of that removed. `plannerGoalHtml()` now returns
+  `plannerMatGridHtml(...)` and no more, so the sheet is its title row over a wall of art. It
+  lists enabled arcanists only; an empty plan says so, and a plan where every arcanist is
+  filed away says "Nothing left to farm."
 - **The picker** (`#planner-picker`, "Add Character") is the **Manage modal's own roster**,
   drawn with the Manage modal's own pieces: a `.roster-toolbar` row holding `.search-input`
   (`#planner-picker-search`) and a `.filter-btn-group` of five rarity chips
@@ -1435,8 +1463,8 @@ modal):
 - On a phone (≤768px) the grid keeps its icon layout, `.planner-char-controls` and
   `.planner-farm-grid` collapse to one column, and the **whole tab scrolls as one column**
   (grid → farm route) with the toolbar on top, so there are never two nested scrollers. The
-  bill stickers step down to 76px (66px under 560px, badge `10px`) and farm drops to 52px —
-  smaller, but never back to the old 38px thumbnail.
+  bill stickers step down to 56px (52px under 560px, badge `9px`), and a farm drop is sized by
+  its grid column, never back to the old 38px thumbnail.
 
 ### Activity settings
 
@@ -1455,10 +1483,13 @@ no warehouse to schedule. `plannerActivityCost()` and `PLANNER_REFILL_COST` went
 `plannerActivityStaminaRoaring()` is the same day with a Roaring Month forced on, which is
 what the Event tab's Owned tooltip compares against.
 
-The panel is **two `setting-group`s, each with a label + value row over a `toggle-group`** of
-`Off` / `On` buttons (`#planner-set-roaring`, `#planner-set-weekly`, wired by
-`plannerSyncToggle()`), the same control the Character Setting modal uses, over a readout line
-(`#planner-activity-perday`) that states the whole day.
+The panel is **one `setting-group`**: a label + value row (`#planner-activity-perday`, the
+whole day, e.g. "240 stamina / day") over a `.planner-check-list` of **two tick boxes**
+(`#planner-set-roaring`, `#planner-set-weekly`, each the Character Setting modal's own
+`.check-container` + `.check-box` + `.check-text`, wired on `change`), which is how the owner
+wants a boolean drawn — the Off / On `toggle-group` pair it used to carry was too heavy for
+what is a two-item checklist. `.planner-check-row` is `flex-direction: row-reverse` so both
+boxes line up in one column at the card's right edge instead of trailing their own text.
 
 It is saved to `r1999_planner_activity_v1` (`plannerSaveActivity` / `plannerLoadActivity`). It
 is a **UI preference, not part of the plan**: the build plan carries no patch stamp and neither
@@ -1470,20 +1501,23 @@ solve does not change, only the day count — and `syncPlannerActivitySheet()` i
 ### Wilderness
 
 The idle board: three **Dust Bell Towers** and three **Sharpodonty Markets**, each built to a
-level 0–6, plus a Vigor bonus and a lazy collection. It is Kornblume's
-`PlannerWilderness.vue` + `processSharpoAndDust`, and it exists because a reader's board pays
-Dust and Sharpodonty every day whether the Planner knows about it or not.
+level 0–6, plus a Vigor bonus. It is Kornblume's `PlannerWilderness.vue` +
+`processSharpoAndDust`, and it exists because a reader's board pays Dust and Sharpodonty every
+day whether the Planner knows about it or not. **Only Dust and Sharpodonty come out of it**,
+and **there is no Lazy mode**: it was a clock assumption (Kornblume collected 20 of the day's
+24 cycles if you only log in once), and the owner had it stripped — the board is now just the
+buildings, the Vigor, and the two figures.
 
 ```js
-let plannerWilderness = { enabled: false, dust1..3: 6, gold1..3: 6, vigor: 0, lazyModo: false };
+let plannerWilderness = { enabled: false, dust1..3: 6, gold1..3: 6, vigor: 0 };
 const PLANNER_WILDERNESS_DUST = [0, 120, 150, 175, 210, 240, 270];  // per level 0..6
 const PLANNER_WILDERNESS_GOLD = [0,  60,  75,  80,  96, 108, 120];
 ```
 
-`plannerWildernessOutput()` = `ceil(sum(levels) × (1 + vigor/100) × (lazyModo ? 20 : 24))` for
-Dust and Sharpodonty separately. A full Lv.6 board with no Vigor is **19,440 Dust / 8,640
-Sharpodonty a day**; Vigor 50% is `29,160 / 12,960`; lazy mode is ×20 instead of ×24
-(`24,300` Dust). It is off by default, so nothing changes until the reader turns it on.
+`plannerWildernessOutput()` = `ceil(sum(levels) × (1 + vigor/100) × 24)` for Dust and
+Sharpodonty separately. A full Lv.6 board with no Vigor is **19,440 Dust / 8,640 Sharpodonty a
+day**; Vigor 50% is `29,160 / 12,960`. It is off by default, so nothing changes until the
+reader turns it on.
 
 **It is not stamina, and it is not a warehouse.** The solve has no "money already in hand"
 concept, so the payout is fed in as a **rate**: every stage's Dust/Sharpodonty coefficient gains
@@ -1497,11 +1531,11 @@ changing Activity settings re-solves too.
 the farm route's Resources header** (`.planner-farm-toggle`, `#planner-farm-wilderness`,
 `images/items/wilderness_icon.png` — hand-added, Myssal ships no per-block art), which carries
 `is-active` while the board counts. The sheet is the same `setting-group` stack as Activity: the
-on/off toggle, three level selects per building kind, a Vigor slider (0–50%), a Lazy mode
-checkbox, and a `#planner-wilderness-output` readout of the two figures. State is its own blob,
-`r1999_planner_wilderness_v1`, loaded by `plannerLoadWilderness()` — which `initApp` must call
-**between `plannerLoadActivity()` and `plannerLoadChars()`**, or the board opens switched off
-after every reload (it did, until this was fixed).
+on/off toggle, three level selects per building kind, a Vigor slider (0–50%), and a
+`#planner-wilderness-output` readout of the two figures — five groups, no Lazy switch. State is
+its own blob, `r1999_planner_wilderness_v1`, loaded by `plannerLoadWilderness()` — which
+`initApp` must call **between `plannerLoadActivity()` and `plannerLoadChars()`**, or the board
+opens switched off after every reload (it did, until this was fixed).
 
 ### Every reset asks first
 
@@ -1570,38 +1604,53 @@ same bill — while turning a Wilderness building up does, because it changes th
 discarded by re-checking the signature on resolve. Runs round the way Kornblume does —
 `exact % 1 >= 0.9 ? ceil : floor` — and cards are dropped when nothing survives the rounding.
 
-The panels are `Resources`, `Insight materials`, `Stages` (each card: stage name, `×runs`,
-stamina, then its drop stickers), `Wishing Spring` (craft cards, which carry the
-Sharpodonty fee instead of drops), then `Oneiric Shop` and `Reveries`. The head figure is
-`Total stamina <coin> 8,013` + `<days> days`, where the days are
-`plannerNumber(stamina / plannerActivityStamina())` to one decimal in the UI locale
+**Ordering.** The panels read **Reveries → Oneiric Shop → Resources → Insight materials →
+Stages → Wishing Spring**: the two shops the route cannot buy with stamina come first (they are
+money, not runs, so they answer "what else does this plan cost" before the stages do), then the
+stage groups in the game's own order, then the crafts. `plannerFarmPaint()` writes
+`${reveriesHtml}${oneiricHtml}${groupsHtml}${empty}`; the stage groups used to come first and
+the shops last. The head figure is `Total stamina <coin> 8,013` + `<days> days`, where the days
+are `plannerNumber(stamina / plannerActivityStamina())` to one decimal in the UI locale
 (`16.6` / `16,6`). With Wilderness on, a `.planner-farm-card.is-wilderness` card sits **first in
 Resources**: it states the days and the two figures the board contributed over those days
-(`data-days` carries the number), and its own `.planner-farm-drop` stickers are the same 64px
-art as any other drop. Its tree toggle is on that header, so the switch is reachable before the
-plan says anything.
+(`data-days` carries the number), and its own `.planner-farm-drop` stickers are the same art as
+any other drop. Its tree toggle is on that header, so the switch is reachable before the plan
+says anything.
+
+**Three drops to a line.** `.planner-farm-drops` is `display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr))` — a fixed three-column row rather than
+`flex-wrap`, which wrapped at two with the third stranded on its own line and left empty space
+beside it. A card is ~200px, so the columns land near 60px and each `.planner-farm-drop` is
+`width: 100%; max-width: 72px; aspect-ratio: 1 / 1` — the sticker shrinks to its column instead
+of overflowing it.
 
 **Verify.** `editor/_test/ui.test.mjs` drives the tab: the Character default, the empty state
 (no tiles, no count, "Nothing left to farm."), the five panels closed by default, the picker
 (opens, covers the tab, the whole roster, search, Manage-style tiles, rarity chips narrowing and
 widening, **no excluded character and no dummy in the list**, backdrop closes), adding a
 character (picker closes, editor opens on the `#edit-modal` card — `rgb(181, 88, 41)` frame,
-`20px` radius, the wallpaper wash, and a header portrait / rarity / `Lv.1 →` line with the
-remove button in it), the icon-only tile, the eight dressed-up selects in six `setting-group`s,
-the five pattern glyphs, the bill as bare 76–110px stickers with an 11–14px badge, no name and
-`data-qty` carrying the exact figure, Quick goal, a plan whose current state is its goal billing
-nothing and growing again when stepped back down, a picked Euphoria facet and pattern adding
-their own bill, the farm route (priced in stamina, runs ≥ 1, every drop with art, the group
-order, `days ≈ stamina / 240`, the shop panels), the activity panel (two `toggle-group`s and
-nothing else — 240 → 300 → 334 a day, **no refills and no lazy switch**, saved with only those
-two keys), Wilderness (off by default, three Lv.6 towers and three Lv.6 markets, `19,440 /
-8,640`, switching it on shortens the route and adds the `is-wilderness` card with two drop
-stickers, Vigor 50% → `29,160 / 12,960`, its lazy mode → `24,300`, both saved locally and both
-restored after a reload), Goal being the exact sum of the enabled arcanists, a second character
-joining the grid, right-click dimming a tile and dropping it from Goal and putting it back,
-persistence across a reload (plan + activity + Wilderness, route re-solved without a press), the
-Chinese labels, the phone layout (icon grid, one column, one scroller, panels as fixed
-lightboxes, no sideways scroll, the bill sticker ≥ 60px with its badge scaled, the Wilderness
-selects inside a 390px card), and **both Reset buttons asking first** (`ask → cancel keeps
-everything → yes clears`).
+`20px` radius, the wallpaper with **no `linear-gradient` scrim**, `≤440px` wide, the `#212121`
+head over its orange line and the Georgia title, and a header portrait / rarity / `Lv.1 →` line
+with the remove button in it), the icon-only tile, the eight dressed-up selects in **five**
+`setting-group`s (Insight, Level, Resonance, `Euphoria · Mastery`, Resonance Pattern) whose
+computed label/value/rule styles are asserted against the real modal's, the five pattern
+glyphs, Euphoria drawn as `input[type=checkbox]` boxes (`.planner-euphoria-checks`) with
+**Mastery disabled and hinting until a facet is ticked**, the bill as bare 56–72px stickers with
+a 9–12px badge, no name and `data-qty` carrying the exact figure, Quick goal, a plan whose
+current state is its goal billing nothing and growing again when stepped back down, a picked
+Euphoria facet and pattern adding their own bill, the farm route (priced in stamina, runs ≥ 1,
+every drop with art, the panel order above, **three drops to a line**, `days ≈ stamina / 240`,
+the shop panels), the activity panel (**one `setting-group`**, two ticks and no `toggle-group`
+or `btn-toggle` at all, both boxes sharing one right edge, `≤440px` wide — 240 → `300/day` →
+`334/day`, **no refills and no lazy switch**, saved with only those two keys), Wilderness (off
+by default, three Lv.6 towers and three Lv.6 markets, `19,440 / 8,640`, **no Lazy switch**,
+switching it on shortens the route and adds the `is-wilderness` card with two drop stickers,
+Vigor 50% → `29,160 / 12,960`, both saved locally and both restored after a reload), Goal being
+the exact sum of the enabled arcanists **and nothing but the bill** (no head icons, no
+`setting-label` count, `≤440px`), a second character joining the grid, right-click dimming a
+tile and dropping it from Goal and putting it back, persistence across a reload (plan +
+activity + Wilderness, route re-solved without a press), the Chinese labels, the phone layout
+(icon grid, one column, one scroller, panels as fixed lightboxes, no sideways scroll, the bill
+sticker 52–60px with its badge scaled, the Wilderness selects inside a 390px card), and **both
+Reset buttons asking first** (`ask → cancel keeps everything → yes clears`).
 

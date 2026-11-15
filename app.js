@@ -12483,8 +12483,7 @@ function plannerWildernessLevel(value, fallback) {
 
 /**
  * Dust and Sharpodonty a day. Three buildings of each kind, multiplied by the
- * Vigor bonus (0-50%), over 24 collections — or 20 when the reader only logs in
- * once a day, which is what Lazy mode means here.
+ * Vigor bonus (0-50%), over the 24 collections a board takes in a day.
  */
 function plannerWildernessOutput(settings) {
   const state = settings || plannerWilderness;
@@ -12497,10 +12496,9 @@ function plannerWildernessOutput(settings) {
     0
   );
   const vigor = 1 + Math.min(50, Math.max(0, Number(state.vigor) || 0)) / 100;
-  const cycles = state.lazyModo ? 20 : 24;
   return {
-    dust: Math.ceil(dust * vigor * cycles),
-    gold: Math.ceil(gold * vigor * cycles),
+    dust: Math.ceil(dust * vigor * 24),
+    gold: Math.ceil(gold * vigor * 24),
   };
 }
 
@@ -12542,7 +12540,6 @@ function plannerLoadWilderness() {
     gold2: plannerWildernessLevel(row.gold2, 6),
     gold3: plannerWildernessLevel(row.gold3, 6),
     vigor: Math.min(50, Math.max(0, Math.round(Number(row.vigor) || 0))),
-    lazyModo: row.lazyModo === true,
   };
 }
 
@@ -12618,13 +12615,17 @@ function plannerClampPlan(plan) {
   }
   plan.curReso = clamp(int(plan.curReso, 0), 0, plannerResoMax(plan.curInsight));
   plan.goalReso = clamp(int(plan.goalReso, plan.curReso), plan.curReso, plannerResoMax(plan.goalInsight));
-  plan.curMastery = clamp(int(plan.curMastery, 0), 0, 4);
-  plan.goalMastery = clamp(int(plan.goalMastery, plan.curMastery), plan.curMastery, 4);
 
   const euphoriaIds = (mats.euphoria || []).map((e) => Number(e.id));
   plan.euphoria = (Array.isArray(plan.euphoria) ? plan.euphoria : [])
     .map(Number)
     .filter((id) => euphoriaIds.includes(id));
+  // Mastery is gated by Euphoria: the game only offers the tiers once a facet is on,
+  // so a plan with no facet ticked carries none — and clearing the last facet drops
+  // whatever mastery it had.
+  const masteryCap = plan.euphoria.length ? 4 : 0;
+  plan.curMastery = clamp(int(plan.curMastery, 0), 0, masteryCap);
+  plan.goalMastery = clamp(int(plan.goalMastery, plan.curMastery), plan.curMastery, masteryCap);
   const frequencyIds = (mats.frequency || []).map((f) => Number(f.id));
   plan.frequency = (Array.isArray(plan.frequency) ? plan.frequency : [])
     .map(Number)
@@ -12785,7 +12786,7 @@ function plannerInsightLabel(insight) {
  * One "from → to" control. Both ends are native selects dressed in the modal's
  * own field style, so a step reads the same as the Event tab's shop picker.
  */
-function plannerSelectHtml(field, values, current, label, title) {
+function plannerSelectHtml(field, values, current, label, title, disabled) {
   const options = values
     .map((value) => {
       const text = label ? label(value) : String(value);
@@ -12796,7 +12797,7 @@ function plannerSelectHtml(field, values, current, label, title) {
     .join("");
   return `<select class="planner-field-select" id="planner-f-${field}" data-field="${field}" aria-label="${escapeHtml(
     title
-  )}" title="${escapeHtml(title)}">${options}</select>`;
+  )}" title="${escapeHtml(title)}"${disabled ? " disabled" : ""}>${options}</select>`;
 }
 
 /**
@@ -12818,36 +12819,68 @@ function plannerRangeGroupHtml(labelKey, values, curSelect, goalSelect) {
         </div>`;
 }
 
-function plannerEuphoriaHtml(mats, plan) {
+/**
+ * Euphoria and Mastery are one setting here: the game only offers a mastery tier
+ * once a Euphoria facet is on, so the two sit in the same group and the mastery
+ * range stays switched off until one facet is ticked. That is also why clearing
+ * the last facet clears mastery (`plannerClampPlan`).
+ */
+function plannerEuphoriaMasteryHtml(mats, plan) {
   const nodes = mats.euphoria || [];
-  if (!nodes.length) return "";
+  const hasMastery = Array.isArray(mats.mastery) && mats.mastery.length > 0;
+  if (!nodes.length && !hasMastery) return "";
   const picked = nodes
     .filter((node) => plan.euphoria.includes(Number(node.id)))
     .map((node) => `E${node.id}`)
     .join(", ");
-  const tiles = nodes
+  const gated = !plan.euphoria.length;
+  const checks = nodes
     .map((node) => {
-      const active = plan.euphoria.includes(Number(node.id));
-      const art = mats.id ? `images/arcanists/euphoria/${mats.id}_${node.id}.webp` : "";
-      return `<button type="button" class="planner-euphoria-tile${
-        active ? " is-active" : ""
-      }" data-euphoria="${node.id}" title="E${node.id}" aria-pressed="${active ? "true" : "false"}">
-            ${
-              art
-                ? `<img src="${escapeHtml(art)}" alt="" loading="lazy" onerror="this.style.display='none'" />`
-                : ""
-            }
-            <span class="planner-euphoria-tag">E${node.id}</span>
-          </button>`;
+      const id = Number(node.id);
+      const active = plan.euphoria.includes(id);
+      const label = getEuphoriaDisplayName(plan.name, id) || `Euphoria ${id}`;
+      return `<label class="check-container" title="${escapeHtml(label)}">
+          <input type="checkbox" data-euphoria="${id}"${active ? " checked" : ""} />
+          <span class="check-box"></span>
+          <span class="check-text">${escapeHtml(label)}</span>
+        </label>`;
     })
     .join("");
-  return `
-        <div class="setting-group is-wide">
+  const mastery = hasMastery
+    ? `<div class="planner-subsetting${gated ? " is-disabled" : ""}">
           <div class="setting-label-row">
-            <label class="setting-label"><span>${escapeHtml(t("builds.euphoria"))}</span></label>
+            <label class="setting-label"><span>${escapeHtml(t("builds.mastery"))}</span></label>
+            <span class="setting-val-display">${escapeHtml(`${plan.curMastery} → ${plan.goalMastery}`)}</span>
+          </div>
+          <div class="planner-range-controls">
+            ${plannerSelectHtml("curMastery", plannerSeries(0, 4), plan.curMastery, null, t("builds.mastery"), gated)}
+            <span class="planner-field-arrow" aria-hidden="true">→</span>
+            ${plannerSelectHtml(
+              "goalMastery",
+              plannerSeries(plan.curMastery, 4),
+              plan.goalMastery,
+              null,
+              t("builds.mastery"),
+              gated
+            )}
+          </div>
+          ${
+            gated
+              ? `<p class="planner-subsetting-hint">${escapeHtml(t("planner.masteryNeedsEuphoria"))}</p>`
+              : ""
+          }
+        </div>`
+    : "";
+  return `
+        <div class="setting-group is-wide planner-euphoria-mastery">
+          <div class="setting-label-row">
+            <label class="setting-label"><span>${escapeHtml(
+              `${t("builds.euphoria")} · ${t("builds.mastery")}`
+            )}</span></label>
             <span class="setting-val-display">${escapeHtml(picked || "—")}</span>
           </div>
-          <div class="planner-euphoria-row">${tiles}</div>
+          ${checks ? `<div class="euphoria-checkboxes planner-euphoria-checks">${checks}</div>` : ""}
+          ${mastery}
         </div>`;
 }
 
@@ -12969,19 +13002,7 @@ function plannerCharDetailHtml() {
             title("builds.resonance")
           )
         )}
-        ${plannerRangeGroupHtml(
-          "builds.mastery",
-          `${plan.curMastery} → ${plan.goalMastery}`,
-          plannerSelectHtml("curMastery", plannerSeries(0, 4), plan.curMastery, null, title("builds.mastery")),
-          plannerSelectHtml(
-            "goalMastery",
-            plannerSeries(plan.curMastery, 4),
-            plan.goalMastery,
-            null,
-            title("builds.mastery")
-          )
-        )}
-        ${plannerEuphoriaHtml(mats, plan)}
+        ${plannerEuphoriaMasteryHtml(mats, plan)}
         ${plannerFrequencyHtml(mats, plan)}
       </div>
 
@@ -13028,39 +13049,18 @@ function plannerCharRailHtml() {
 }
 
 /**
- * The Goal lightbox body: every enabled character's bill, added up, shown the way
- * the Character Setting modal shows a setting — a header row over the thing it
- * describes. The head icons say whose bill this is; the grid is the bill itself.
+ * The Goal lightbox body: every enabled character's bill, added up. It is the bill
+ * and nothing else — the wall of art says whose it is by what it asks for, and the
+ * sheet's own title says what the panel is.
  */
 function plannerGoalHtml() {
   if (!plannerChars.length) {
     return `<div class="guide-empty"><span>${escapeHtml(t("planner.noCharacters"))}</span></div>`;
   }
-  const enabled = plannerEnabledChars();
-  if (!enabled.length) {
+  if (!plannerEnabledChars().length) {
     return `<div class="guide-empty"><span>${escapeHtml(t("planner.farmEmpty"))}</span></div>`;
   }
-  const materials = plannerGoalMaterials();
-  const icons = enabled
-    .map((plan) => {
-      const icon = characterDb[plan.name] || "";
-      const label = escapeHtml(displayCharName(plan.name));
-      return `<span class="planner-goal-char" title="${label}">
-          ${icon ? `<img src="${escapeHtml(icon)}" alt="" loading="lazy" />` : ""}
-        </span>`;
-    })
-    .join("");
-  return `<div class="setting-group">
-      <div class="setting-label-row">
-        <label class="setting-label"><span>${escapeHtml(t("planner.charCount", { n: enabled.length }))}</span></label>
-        <span class="setting-val-display">×${escapeHtml(plannerNumber(materials.length))}</span>
-      </div>
-      <div class="planner-goal-chars">${icons}</div>
-    </div>
-    <div class="archetype-section-header planner-char-mats-head">
-      <span class="archetype-section-title"><span>${escapeHtml(t("planner.charMaterials"))}</span></span>
-    </div>
-    ${plannerMatGridHtml(materials, "planner.goalEmpty")}`;
+  return plannerMatGridHtml(plannerGoalMaterials(), "planner.goalEmpty");
 }
 
 /* ---- The farm route ------------------------------------------------------- */
@@ -13512,7 +13512,7 @@ function plannerFarmPaint() {
         t("planner.farmDays", { days: plannerNumber(days) })
       )}</span>
     </div>
-    ${groupsHtml}${oneiricHtml}${reveriesHtml}${empty}`;
+    ${reveriesHtml}${oneiricHtml}${groupsHtml}${empty}`;
 }
 
 function renderPlannerCharacter() {
@@ -13712,14 +13712,12 @@ function plannerOnOff(on) {
   return t(on ? "planner.on" : "planner.off");
 }
 
-/** Writes the activity switches back into the form, and the derived figures. */
+/** Writes the activity ticks back into the form, and the day they are worth. */
 function syncPlannerActivitySheet() {
-  plannerSyncToggle("planner-set-roaring", plannerActivity.roaringMonth);
-  plannerSyncToggle("planner-set-weekly", plannerActivity.weeklyActivity);
-  const roaringValue = document.getElementById("planner-roaring-value");
-  if (roaringValue) roaringValue.textContent = plannerOnOff(plannerActivity.roaringMonth);
-  const weeklyValue = document.getElementById("planner-weekly-value");
-  if (weeklyValue) weeklyValue.textContent = plannerOnOff(plannerActivity.weeklyActivity);
+  const roaring = document.getElementById("planner-set-roaring");
+  if (roaring) roaring.checked = plannerActivity.roaringMonth === true;
+  const weekly = document.getElementById("planner-set-weekly");
+  if (weekly) weekly.checked = plannerActivity.weeklyActivity === true;
   const perDay = document.getElementById("planner-activity-perday");
   if (perDay) perDay.textContent = t("planner.activityPerDay", { n: plannerNumber(plannerActivityStamina()) });
 }
@@ -13807,8 +13805,6 @@ function syncPlannerWildernessSheet() {
   if (vigor) vigor.value = String(plannerWilderness.vigor);
   const vigorValue = document.getElementById("planner-vigor-value");
   if (vigorValue) vigorValue.textContent = `${plannerWilderness.vigor}%`;
-  const lazy = document.getElementById("planner-wilderness-lazy");
-  if (lazy) lazy.checked = plannerWilderness.lazyModo;
 
   const output = document.getElementById("planner-wilderness-output");
   if (output) output.innerHTML = plannerWildernessOutputHtml(plannerWildernessOutput());
@@ -13832,7 +13828,6 @@ function plannerSetWilderness(patch) {
     gold2: plannerWildernessLevel(plannerWilderness.gold2, 6),
     gold3: plannerWildernessLevel(plannerWilderness.gold3, 6),
     vigor: Math.min(50, Math.max(0, Math.round(Number(plannerWilderness.vigor) || 0))),
-    lazyModo: plannerWilderness.lazyModo === true,
   };
   plannerSaveWilderness();
   syncPlannerWildernessSheet();
@@ -14141,16 +14136,17 @@ function setupPlannerListeners() {
   const charDetail = document.getElementById("planner-char-detail");
   if (charDetail) {
     charDetail.addEventListener("change", (e) => {
-      const field = e.target.closest("[data-field]");
-      if (!field) return;
-      plannerSetField(field.dataset.field, field.value);
-    });
-    charDetail.addEventListener("click", (e) => {
+      // Euphoria is a tick box: the box is what toggles the facet.
       const euphoria = e.target.closest("[data-euphoria]");
       if (euphoria) {
         plannerToggleList("euphoria", Number(euphoria.dataset.euphoria));
         return;
       }
+      const field = e.target.closest("[data-field]");
+      if (!field) return;
+      plannerSetField(field.dataset.field, field.value);
+    });
+    charDetail.addEventListener("click", (e) => {
       const pattern = e.target.closest("[data-pattern]");
       if (pattern) {
         plannerToggleList("frequency", Number(pattern.dataset.pattern));
@@ -14225,21 +14221,15 @@ function setupPlannerListeners() {
 
   /* ---- Activity settings -------------------------------------------------- */
 
-  // Both settings are two-button groups, the way the Character Setting modal draws
-  // an on/off field.
+  // Both settings are tick boxes, drawn with the Character Setting modal's own
+  // checkbox, so the panel reads as one more setting of that modal.
   const roaring = document.getElementById("planner-set-roaring");
   if (roaring) {
-    roaring.addEventListener("click", (e) => {
-      const btn = e.target.closest(".btn-toggle");
-      if (btn) plannerSetActivity({ roaringMonth: btn.dataset.value === "1" });
-    });
+    roaring.addEventListener("change", () => plannerSetActivity({ roaringMonth: roaring.checked }));
   }
   const weekly = document.getElementById("planner-set-weekly");
   if (weekly) {
-    weekly.addEventListener("click", (e) => {
-      const btn = e.target.closest(".btn-toggle");
-      if (btn) plannerSetActivity({ weeklyActivity: btn.dataset.value === "1" });
-    });
+    weekly.addEventListener("change", () => plannerSetActivity({ weeklyActivity: weekly.checked }));
   }
 
   /* ---- Wilderness --------------------------------------------------------- */
@@ -14271,8 +14261,6 @@ function setupPlannerListeners() {
         plannerSetWilderness({ vigor: Number(vigor.value) });
         return;
       }
-      const lazy = e.target.closest("#planner-wilderness-lazy");
-      if (lazy) plannerSetWilderness({ lazyModo: lazy.checked });
     });
     // Dragging is a preview: the payout follows the handle, and the solve waits for
     // the release so one drag stays one solve.

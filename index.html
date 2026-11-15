@@ -1382,7 +1382,7 @@
                    day is worth, so "how many days is that" is answerable at a glance. -->
               <button type="button" class="btn btn-secondary planner-add-btn planner-activity-btn" id="planner-activity-btn" data-i18n-title="planner.activity" data-i18n-aria-label="planner.activity" title="Activity settings" aria-label="Activity settings">
                 <span data-i18n="planner.activityShort">Activity</span>
-                <span class="planner-activity-value" id="planner-activity-value">240</span>
+                <span class="planner-activity-figure"><span class="planner-activity-value" id="planner-activity-value">240</span><span class="planner-activity-unit" data-i18n="planner.perDay">/day</span></span>
               </button>
             </div>
             <div class="planner-toolbar-tail">
@@ -1487,27 +1487,22 @@
                 </button>
               </div>
               <div class="planner-sheet-body planner-activity-body">
-                <div class="planner-activity-readout">
-                  <span class="planner-activity-readout-line" id="planner-activity-perday"></span>
-                </div>
                 <div class="setting-group">
                   <div class="setting-label-row">
-                    <label class="setting-label"><span data-i18n="planner.roaringMonth">Roaring Month</span></label>
-                    <span class="setting-val-display" id="planner-roaring-value">Off</span>
+                    <label class="setting-label"><span data-i18n="planner.activityShort">Activity</span></label>
+                    <span class="setting-val-display" id="planner-activity-perday"></span>
                   </div>
-                  <div class="toggle-group" id="planner-set-roaring" role="group" aria-label="Roaring Month" data-i18n-aria-label="planner.roaringMonth">
-                    <button type="button" class="btn-toggle" data-value="0" data-i18n="planner.off">Off</button>
-                    <button type="button" class="btn-toggle" data-value="1" data-i18n="planner.on">On</button>
-                  </div>
-                </div>
-                <div class="setting-group">
-                  <div class="setting-label-row">
-                    <label class="setting-label"><span data-i18n="planner.weeklyActivity">Weekly Activeness</span></label>
-                    <span class="setting-val-display" id="planner-weekly-value">Off</span>
-                  </div>
-                  <div class="toggle-group" id="planner-set-weekly" role="group" aria-label="Weekly Activeness" data-i18n-aria-label="planner.weeklyActivity">
-                    <button type="button" class="btn-toggle" data-value="0" data-i18n="planner.off">Off</button>
-                    <button type="button" class="btn-toggle" data-value="1" data-i18n="planner.on">On</button>
+                  <div class="planner-check-list">
+                    <label class="check-container planner-check-row">
+                      <input type="checkbox" id="planner-set-roaring" />
+                      <span class="check-box"></span>
+                      <span class="check-text"><span data-i18n="planner.roaringMonth">Roaring Month</span></span>
+                    </label>
+                    <label class="check-container planner-check-row">
+                      <input type="checkbox" id="planner-set-weekly" />
+                      <span class="check-box"></span>
+                      <span class="check-text"><span data-i18n="planner.weeklyActivity">Weekly Activeness</span></span>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -1551,13 +1546,6 @@
                     <span class="setting-val-display" id="planner-vigor-value">0%</span>
                   </div>
                   <input type="range" class="custom-slider planner-wilderness-vigor" id="planner-wilderness-vigor" min="0" max="50" step="1" value="0" aria-label="Vigor" data-i18n-aria-label="planner.vigor" />
-                </div>
-                <div class="setting-group">
-                  <label class="check-container">
-                    <input type="checkbox" id="planner-wilderness-lazy" />
-                    <span class="check-box"></span>
-                    <span class="check-text"><span data-i18n="planner.lazyWilderness">Lazy mode (collect once a day)</span></span>
-                  </label>
                 </div>
                 <div class="setting-group">
                   <div class="setting-label-row">
