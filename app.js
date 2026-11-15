@@ -13408,8 +13408,8 @@ function calcPillsHtml(banner) {
   const rule = calcRuleOf(banner);
   const version = calcVersionTag(banner);
   const pills = [
-    ...(version ? [calcPillHtml("", version, "is-version")] : []),
     calcPillHtml("", calcKindLabel(banner.type), "is-type"),
+    ...(version ? [calcPillHtml("", version, "is-version")] : []),
     calcPillHtml(t("planner.calcRelease"), calcShortDate(banner.start)),
     calcPillHtml(t("planner.calcEnds"), calcShortDate(banner.end)),
     calcPillHtml(t("planner.calcByEnd"), calcPullFigure(calcPullsBy(banner.end)), "is-pulls", true),
@@ -17037,10 +17037,33 @@ function setupEventListeners() {
   const panelStyling = document.getElementById("appearance-panel-styling");
   const panelTiers = document.getElementById("appearance-panel-tiers");
 
-  let currentAppearanceTab = "options";
+  /* The tab the modal reopens on: the one the reader left, or Options. It is a UI
+     preference, not part of the display options blob, so Reset leaves it alone. */
+  const APPEARANCE_TAB_KEY = "r1999_appearance_tab_v1";
+  const APPEARANCE_TABS = ["options", "styling", "tiers"];
+
+  function loadAppearanceTab() {
+    try {
+      const saved = localStorage.getItem(APPEARANCE_TAB_KEY);
+      return APPEARANCE_TABS.includes(saved) ? saved : APPEARANCE_TABS[0];
+    } catch (e) {
+      return APPEARANCE_TABS[0];
+    }
+  }
+
+  function saveAppearanceTab(tabName) {
+    try {
+      localStorage.setItem(APPEARANCE_TAB_KEY, tabName);
+    } catch (e) {
+      /* A blocked storage just means the modal opens on Options. */
+    }
+  }
+
+  let currentAppearanceTab = loadAppearanceTab();
 
   function switchAppearanceTab(tabName) {
     currentAppearanceTab = tabName;
+    saveAppearanceTab(tabName);
     if (tabBtnOptions) {
       tabBtnOptions.classList.toggle("active", tabName === "options");
       tabBtnOptions.setAttribute("aria-selected", tabName === "options" ? "true" : "false");
@@ -17066,7 +17089,7 @@ function setupEventListeners() {
     else if (tabName === "tiers") initListingState();
   }
 
-  function openAppearanceModal(tabName = "options") {
+  function openAppearanceModal(tabName = currentAppearanceTab) {
     if (!appearanceModal) return;
     switchAppearanceTab(tabName);
     appearanceModal.style.display = "flex";
@@ -17083,7 +17106,7 @@ function setupEventListeners() {
     });
   }
   if (btnAppearance) {
-    btnAppearance.addEventListener("click", () => openAppearanceModal("options"));
+    btnAppearance.addEventListener("click", () => openAppearanceModal());
   }
   if (tabBtnOptions) {
     tabBtnOptions.addEventListener("click", () => switchAppearanceTab("options"));

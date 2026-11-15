@@ -706,9 +706,12 @@ const gachaMap = readJson(path.join(ROOT, "scripts", "sync", "maps", "gacha.json
 const outliers = new Set(Object.keys(gachaMap.byBanner || {}));
 const limitedRows = banners.filter((b) => b.type === "Limited");
 ok(
-  "a Limited banner always hands out the free ten-pull",
-  limitedRows.length > 0 && limitedRows.every((b) => b.rule.freePulls >= 10),
-  [...new Set(limitedRows.map((b) => b.rule.freePulls))].join(","),
+  "a Limited banner always hands out the free ten-pull, unless the banner is a declared outlier",
+  limitedRows.length > 0 &&
+    limitedRows.every((b) => b.rule.freePulls >= 10 || outliers.has(b.name)),
+  [
+    ...new Set(limitedRows.filter((b) => b.rule.freePulls < 10 && !outliers.has(b.name)).map((b) => b.name)),
+  ].join(",") || [...new Set(limitedRows.map((b) => b.rule.freePulls))].join(","),
 );
 const strayFree = banners.filter((b) => b.rule.freePulls > 0 && b.type !== "Limited" && !outliers.has(b.name));
 ok(

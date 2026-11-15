@@ -3579,6 +3579,15 @@ body::before {
   font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
+/* The title keeps the serif the rest of the site's modals wear. The blanket `*` rule
+   above lands on the `<span>` inside the `<h2>`, so setting the family on the heading
+   alone (`:not(.archetype-modal-title)`) was not enough — the label still came out sans
+   in Appearance and Manage while Teams and Rotations read Georgia. */
+:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal, #appearance-modal) .archetype-modal-title,
+:is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal, #appearance-modal) .archetype-modal-title * {
+  font-family: Georgia, 'Times New Roman', serif !important;
+}
+
 :is(#listing-modal, #roster-modal, #confirm-modal, #export-json-modal, #edit-modal, #appearance-modal) .archetype-modal-header {
   padding: 16px 22px 14px;
   background: #212121 !important;
@@ -16154,7 +16163,7 @@ span.planner-char-tile-img {
 }
 
 /* The patch the run ships in — the sheet's own label (`3.9`, `4.0`, `AH Collab`) —
-   so a card reads `3.9` then `Debut` then the dates. */
+   so a card reads `Debut` then `3.9` then the dates. */
 .calc-pill.is-version {
   color: #ECE5D9;
   border-color: rgba(181, 181, 179, 0.8);

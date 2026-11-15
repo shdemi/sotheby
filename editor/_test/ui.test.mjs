@@ -707,8 +707,39 @@ try {
 
     await page.locator("#btn-appearance").click();
     await page.waitForTimeout(400);
-    const backToOptions = await readTabs();
-    check("reopening starts on Options again", activeTab(backToOptions) === "options", activeTab(backToOptions));
+    const backToLast = await readTabs();
+    check(
+      "reopening returns to the tab the reader left, not Options",
+      activeTab(backToLast) === "tiers" && oranges(backToLast).join(",") === "tiers",
+      activeTab(backToLast)
+    );
+    const storedTab = await page.evaluate(() => localStorage.getItem("r1999_appearance_tab_v1"));
+    check("the last tab is remembered in localStorage", storedTab === "tiers", String(storedTab));
+
+    /* The title wears the same serif the rest of the modals do. The blanket
+       `#appearance-modal .modal-card *` rule used to land on the `<span>` inside the
+       heading, so Appearance and Manage printed their titles in the body sans while
+       Teams and Rotations printed Georgia. */
+    const titleFonts = await page.evaluate(() => {
+      const read = (sel) => {
+        const el = document.querySelector(sel);
+        return el ? getComputedStyle(el).fontFamily : "";
+      };
+      return {
+        appearance: read("#appearance-modal .archetype-modal-title span"),
+        appearanceHead: read("#appearance-modal .archetype-modal-title"),
+        manage: read("#roster-modal .archetype-modal-title span"),
+        teams: read("#team-modal .archetype-modal-title span"),
+        rotations: read("#rotations-modal .archetype-modal-title"),
+      };
+    });
+    check(
+      "the Appearance and Manage titles wear the serif title font, like Teams and Rotations",
+      [titleFonts.appearance, titleFonts.appearanceHead, titleFonts.manage].every(
+        (family) => /Georgia/.test(family) && !/gg sans/.test(family)
+      ) && /Georgia/.test(titleFonts.teams),
+      JSON.stringify(titleFonts)
+    );
 
     await page.locator("#appearance-btn-close").click();
     await page.waitForTimeout(300);
@@ -1731,16 +1762,16 @@ try {
       JSON.stringify(calcAdded.order)
     );
     check(
-      "a card carries its patch, type, release, end and projected pulls as round tags",
+      "a card carries its kind, patch, release, end and projected pulls as round tags",
       calcAdded.pills.length === 5 &&
-        calcAdded.pills[0] === calcAdded.versionPill &&
-        /^\d+\.\d+$/.test(calcAdded.pills[0]) &&
-        /^(11|12|01|02|03)/.test(calcAdded.pills[2].replace(/[^\d/]/g, "")),
+        calcAdded.pills[1] === calcAdded.versionPill &&
+        /^\d+\.\d+$/.test(calcAdded.pills[1]) &&
+        /^(11|12|01|02|03)/.test(calcAdded.pills[3].replace(/[^\d/]/g, "")),
       JSON.stringify(calcAdded.pills)
     );
     check(
-      "the card's left rail is the banner's kind",
-      calcAdded.kind === calcAdded.pills[1] && calcAdded.edge !== "",
+      "the card's kind tag leads the pills and matches its left rail",
+      calcAdded.kind === calcAdded.pills[0] && calcAdded.edge !== "",
       JSON.stringify({ kind: calcAdded.kind, edge: calcAdded.edge, pills: calcAdded.pills })
     );
     // The rail is a colour per kind, so a long list reads at a glance. Each probe is a
@@ -1783,7 +1814,7 @@ try {
         probe.className = "calc-card";
         probe.dataset.kind = kind;
         probe.innerHTML =
-          '<span class="calc-card-pills"><span class="calc-pill is-version">4.0</span><span class="calc-pill is-type">Kind</span></span>';
+          '<span class="calc-card-pills"><span class="calc-pill is-type">Kind</span><span class="calc-pill is-version">4.0</span></span>';
         host.appendChild(probe);
         void probe.offsetWidth;
         const tag = probe.querySelector(".calc-pill.is-type");
@@ -2269,8 +2300,16 @@ try {
     // Debut / Rerun spend the Rate Up counter — a Ripples pool has its own.
     const tracks = await page.evaluate(() => {
       const pool = calcPickerPool();
-      const pick = (type) => (pool.find((row) => row.type === type) || {}).id || "";
-      const ids = { ripples: pick("Ripples"), limited: pick("Limited"), rerun: pick("Rerun") };
+      // The free ten-pull is a property of a Limited banner, but the owner keeps one
+      // exception (Beryl's On Fate's Cue), so the probe takes a Limited run that
+      // actually carries it rather than whichever one the calendar offers first.
+      const pick = (type, test = () => true) =>
+        (pool.find((row) => row.type === type && test(row)) || {}).id || "";
+      const ids = {
+        ripples: pick("Ripples"),
+        limited: pick("Limited", (row) => Number(row.rule && row.rule.freePulls) >= 10),
+        rerun: pick("Rerun"),
+      };
       for (const id of Object.values(ids)) calcAddBanner(id);
       calcSetPulls(ids.ripples, 80);
       calcSetPulls(ids.limited, 60);
@@ -2310,13 +2349,28 @@ try {
           labelPx: label ? parseFloat(getComputedStyle(label).fontSize) : 0,
         };
       });
+      // The owner's one exception to the free ten-pull: Beryl's On Fate's Cue hands
+      // out nothing, so its card must carry no perk pill at all.
+      const beryl = (pool.find((row) => row.name === "On Fate's Cue") || {}).id || "";
+      let berylPerks = null;
+      if (beryl) {
+        calcAddBanner(beryl);
+        calcSetPulls(beryl, 60);
+        calcRefresh();
+        berylPerks = [...cardOf(beryl).querySelectorAll(".calc-pill.is-perk")].map((p) => p.textContent.trim());
+      }
       document.getElementById("calc-reset").click();
-      return { ids, perks, dots, base, rateUpMoved, ripplesMoved, dotsArt };
+      return { ids, perks, dots, base, rateUpMoved, ripplesMoved, dotsArt, beryl, berylPerks };
     });
     check(
       "a Limited banner carries its free ten pulls",
       tracks.perks.limited.some((pill) => /10 free pulls/.test(pill)),
       JSON.stringify(tracks.perks.limited)
+    );
+    check(
+      "On Fate's Cue is the one Limited banner with no free ten pulls",
+      !!tracks.beryl && tracks.berylPerks.length === 0,
+      JSON.stringify({ id: tracks.beryl, perks: tracks.berylPerks })
     );
     check(
       "a Ripples pool carries its ten-pull discount and its first-6★ selector",
@@ -2569,6 +2623,38 @@ try {
       "a banner kind is a label, not the data's English word",
       calcCn.filters === 0 && calcCn.kinds.length > 0 && calcCn.kinds.every((k) => CJK.test(k)) && CJK.test(calcCn.meta),
       JSON.stringify({ kinds: calcCn.kinds, meta: calcCn.meta })
+    );
+    // The game's own shop and pass names, in the client's wording. An earlier round
+    // read them the way a machine translation would and shipped `低音商店` (a "bass
+    // shop") for the Bass Counter; these five are the strings the Chinese client prints.
+    const cnNames = await page.evaluate(() => ({
+      bass: t("planner.calcBass"),
+      jukeboxFree: t("planner.calcJukeboxFree"),
+      roaring: t("planner.calcRoaring"),
+      jukebox: t("planner.calcJukebox"),
+      offer: t("planner.calcOffer"),
+      monthly: t("planner.calcMonthly"),
+      helpJukebox: t("planner.calcHelpJukebox"),
+      helpMonthly: t("planner.calcHelpMonthly"),
+      staminaRoaring: t("planner.staminaCalcRoaring", { stamina: "1", days: "1", daysRoaring: "1" }),
+    }));
+    check(
+      "the CN tab prints the client's own names for the shops and the passes",
+      cnNames.bass === "低阶柜台" &&
+        cnNames.jukeboxFree === "吼吼点唱机" &&
+        cnNames.roaring === "咆哮的一月" &&
+        cnNames.jukebox === "典藏光碟" &&
+        cnNames.offer === "月度征集酬宾" &&
+        cnNames.monthly === "月度礼包独一律",
+      JSON.stringify(cnNames)
+    );
+    check(
+      "and the sentences that mention them follow",
+      /吼吼点唱机/.test(cnNames.helpJukebox) &&
+        /典藏光碟/.test(cnNames.helpJukebox) &&
+        /月度礼包独一律/.test(cnNames.helpMonthly) &&
+        /咆哮的一月/.test(cnNames.staminaRoaring),
+      JSON.stringify(cnNames)
     );
     await page.evaluate(() => setLanguage("en"));
     await page.waitForTimeout(600);

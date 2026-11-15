@@ -829,6 +829,26 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
 - `editor/`: keep. It reads/writes data over HTTP and exports a ZIP; it points at
   `content/` for hand-authored files and does not offer generated files.
 
+### The Appearance modal (Options / Styling / Tiers)
+
+Three tabs over one window (`#appearance-modal`, `switchAppearanceTab()`), and two things
+that are easy to break again:
+
+- **The open tab is remembered.** `switchAppearanceTab()` writes the tab to
+  `localStorage["r1999_appearance_tab_v1"]` (`options` / `styling` / `tiers`) and
+  `openAppearanceModal()` defaults to whatever was last stored, so the plain Appearance
+  button (`#btn-appearance`) reopens where the reader left off instead of jumping back to
+  Options. It is a UI preference only — it is not part of the display-options blob, so
+  Reset leaves it alone. `openOptionsModal()` / `openCustomizeModal()` / the listing button
+  still name their own tab explicitly.
+- **The title is serif, like every other modal.** A blanket
+  `:is(#listing-modal, #roster-modal, …) .modal-card *` rule sets the body sans on every
+  descendant, which landed on the `<span>` inside the `<h2 class="archetype-modal-title">`
+  and made Appearance and Manage print their headings in the body font while Teams,
+  Rotations and the rest printed Georgia. The fix is a `!important` serif on the heading
+  **and its descendants** (`.archetype-modal-title, .archetype-modal-title *`), placed right
+  after that blanket rule; a test compares Appearance, Manage and Teams computed families.
+
 ---
 
 ## 12. Promotional codes (`/api/codes`)
@@ -1941,7 +1961,10 @@ Yearning default to a 50/50 because the sheet does not explain them.
   the wrong starting point.
 - **`freePulls`** is the ten free pulls a **Limited** patch always hands out. It is not a
   discount: those pulls are free, so the card carries a `10 free pulls` perk pill and the
-  chart dot is charged the *cost*, not the typed count.
+  chart dot is charged the *cost*, not the typed count. **One banner overrides it**:
+  Beryl's `On Fate's Cue` ships `freePulls: 0` through `maps/gacha.json → byBanner`, so its
+  card carries no perk pill at all. `sync:verify` allows that only for a declared `byBanner`
+  name — a Limited run that is neither ten free pulls nor an outlier still fails the build.
 - **`discountFirst10`** is Ripples' first ten-pull: 10 pulls for the price of 7 (`7` Unilog
   for 10 pulls, the first one each patch), i.e. `−3` on the ten-pull.
 - **`selectFirstSix`** is Ripples' opening 6★: the first 6★ of the pool is chosen by the
@@ -2162,8 +2185,9 @@ One scroller, five sections, all of them the modal's own pieces, read top-down a
   asked for: **`Expected`**, then `Unilog`, `Clear Drop` and `Crystal Drop`, each with its own
   art and what the plan leaves in that purse.
 - **Banners** — the plan, ordered by release date. Each card is uma's Carat Calculator layout:
-  rate-up heads, the name, then round pills — **the patch (`[3.9]` → a `3.9` pill, the sheet's
-  own label, untranslated)**, `type`, `Release <date>`, `Ends <date>`, `By end <n>` (the pulls
+  rate-up heads, the name, then round pills — **`type` first** (the kind, wearing the card's
+  rail colour), then **the patch** (`[3.9]` → a `3.9` pill, the sheet's own label,
+  untranslated), `Release <date>`, `Ends <date>`, `By end <n>` (the pulls
   the income alone buys by then, again as the Unilog art), plus `Predicted` for a forecast row
   and a `.calc-pill.is-perk` per perk the banner carries (`10 free pulls`,
   `−3 on a ten-pull`, `First 6✦ selected`, `1 copy every 200 pulls`) — then the six odds chips
@@ -2235,7 +2259,7 @@ closed banner, release order, predictions present, **no type filter**, every row
 patch beside a bare name, three heads + `…` on a banner with more, Ripples on the Water for
 4.0 present), adding two banners (one
 card each, the second additive, the first gone from the picker, release order, five pills with
-the patch first, a rail colour per kind, six
+the kind first and the patch second, a rail colour per kind, six
 chips, a `type="number"` field, no cost figure, the Unilog art in the `By end` pill), typing a count
 (focus kept, odds move, two dots each labelled `−N` below the point and drawn with a portrait
 above it), a dot opening the info sheet (modal chrome, `Pulls/Cost/By end`, the rule, the perk
@@ -2243,7 +2267,8 @@ and pity-track notes, the six odds cards, the close button), the hold reading as
 Crystal Drop is counted, one more pull never lowering the odds, the DP's own edge cases (a
 simulation of the same band, a banked guarantee, hard pity at 70, no-rate-up, one copy for a
 Thread, monotonicity), the perks and the three pity tracks (a Limited card's `10 free pulls`, a
-Ripples card's `−3 on a ten-pull` + `First 6✦ selected`, a plain Rerun with neither, the dot
+Ripples card's `−3 on a ten-pull` + `First 6✦ selected`, a plain Rerun with neither, **Beryl's
+`On Fate's Cue` carrying no perk at all**, the dot
 charged the cost rather than the typed count, the Rate Up counter moving only the Rerun card and
 the Ripples counter only the Ripples card, and the dot art ≥ 20px with a ≥ 12px label), the
 portrait exchange (the perk pill, one copy at 200 pulls, the same copy shifting the levels and

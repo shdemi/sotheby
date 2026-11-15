@@ -27,6 +27,24 @@ const TOOL = path.join(ROOT, "ignore", "testCodeChube");
 const INPUT = path.join(TOOL, "needed to edit");
 const RESULTS = path.join(TOOL, "results");
 
+/**
+ * The icons that have both a source and a compose.py result to compare against.
+ * `ignore/` is a git-ignored local checkout, so the reference art comes and goes —
+ * and both folders can exist while being empty, which is why this counts files
+ * instead of only checking that the folders are there.
+ */
+function referenceIcons() {
+  if (!fs.existsSync(INPUT) || !fs.existsSync(RESULTS)) return [];
+  return fs
+    .readdirSync(INPUT)
+    .filter((f) => f.toLowerCase().endsWith(".png"))
+    .map((f) => path.basename(f, ".png"))
+    .filter((n) => fs.existsSync(path.join(RESULTS, `${n}.png`)))
+    .sort((a, b) => Number(a) - Number(b));
+}
+
+const NAMES = referenceIcons();
+
 let checks = 0;
 let failures = 0;
 function check(label, ok, detail) {
@@ -87,8 +105,10 @@ check("defaultFrame tolerates an empty list", icons.defaultFrame([]) === null);
  * 2. The real composite, in a browser
  * ------------------------------------------------------------------ */
 
-if (!fs.existsSync(INPUT) || !fs.existsSync(RESULTS)) {
-  console.log("\n=== browser composite: skipped (testCodeChube is not present) ===");
+if (!NAMES.length) {
+  // Nothing to compare against: the fixture art is not checked in (it is the local
+  // `ignore/` checkout). Say so instead of measuring zero icons and throwing.
+  console.log("\n=== browser composite: skipped (no reference art in testCodeChube) ===");
 } else {
   let chromium = null;
   try {
@@ -99,12 +119,7 @@ if (!fs.existsSync(INPUT) || !fs.existsSync(RESULTS)) {
   }
 
   if (chromium) {
-    const names = fs
-      .readdirSync(INPUT)
-      .filter((f) => f.toLowerCase().endsWith(".png"))
-      .map((f) => path.basename(f, ".png"))
-      .filter((n) => fs.existsSync(path.join(RESULTS, `${n}.png`)))
-      .sort((a, b) => Number(a) - Number(b));
+    const names = NAMES;
 
     const { createServer } = await import("node:http");
     const server = createServer((req, res) => {

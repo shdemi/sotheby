@@ -58,6 +58,9 @@
       "track": "solo",
       "freePulls": 100,
       "maxPulls": 100
+    },
+    "On Fate's Cue": {
+      "freePulls": 0
     }
   }
 }
