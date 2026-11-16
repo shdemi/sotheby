@@ -12426,6 +12426,9 @@ function calcOutcomeOn(date) {
  * pulls deducted) and is what the chart draws; `gross` ignores the plan and is what a
  * card's "by end" pill reports, so planning a banner never changes how many pulls
  * that banner says you can afford.
+ *
+ * The per-purse split the summary prints is not walked day by day: `calcPurseAfterPlan()`
+ * charges the whole plan against the window's purses, Unilogs first. See its note for why.
  */
 function calcSchedule() {
   const per = calcDropsPerPull();
@@ -12461,39 +12464,18 @@ function calcSchedule() {
   let balance = worth(held);
   let gross = balance;
   let planned = 0;
-  // The purses as they stand, so the summary can print what is left in each.
-  const purse = { ...held };
-
-  /**
-   * Pays `pulls` out of the purses, Unilogs first (they *are* the token), then Clear
-   * Drops, then Crystal Drops when that purse counts. What the purses cannot cover is
-   * not withdrawn — the balance below goes negative instead, which is the signal the
-   * plan is out of reach.
-   */
-  const pay = (pulls) => {
-    let owed = pulls;
-    const fromUni = Math.min(Math.max(0, purse.unilog), owed);
-    purse.unilog -= fromUni;
-    owed -= fromUni;
-    const fromClear = Math.min(Math.floor(Math.max(0, purse.clear) / per), owed);
-    purse.clear -= fromClear * per;
-    owed -= fromClear;
-    if (calcUseCrystal) {
-      const fromCrystal = Math.min(Math.floor(Math.max(0, purse.crystal) / per), owed);
-      purse.crystal -= fromCrystal * per;
-      owed -= fromCrystal;
-    }
-    return owed;
-  };
+  // Everything the reader holds plus everything the window pays, before the plan is
+  // charged — the plan is priced against this at the end, not day by day (see below).
+  const earned = { ...held };
 
   for (let i = 0; i <= days; i += 1) {
     const date = new Date(start.getTime() + i * 86400000);
     const iso = calcIso(date);
     const income = calcIncomeOn(date);
     const spend = calcOutcomeOn(date);
-    purse.unilog += income.unilog;
-    purse.clear += income.clear;
-    purse.crystal += income.crystal - spend;
+    earned.unilog += income.unilog;
+    earned.clear += income.clear;
+    earned.crystal += income.crystal - spend;
     const net = income.unilog * per + income.clear + (calcUseCrystal ? income.crystal - spend : 0);
 
     const entries = pullDays.get(iso) || [];
@@ -12502,7 +12484,6 @@ function calcSchedule() {
     balance += net - pulled * per;
     gross += net;
     planned += pulled;
-    pay(pulled);
     points.push({
       iso,
       index: i,
@@ -12526,7 +12507,55 @@ function calcSchedule() {
       });
     });
   }
-  return { points, dots, per, today, days, held: worth(held), heldPurse: held, purse, planned };
+  return {
+    points,
+    dots,
+    per,
+    today,
+    days,
+    held: worth(held),
+    heldPurse: held,
+    purse: calcPurseAfterPlan(earned, planned, per),
+    planned,
+  };
+}
+
+/**
+ * What each purse holds once the plan is paid, **Unilogs first, then Clear Drops, then
+ * Crystal Drops** — the order the game itself spends them in.
+ *
+ * The plan is priced against the whole window's purses rather than against whatever sat
+ * in them on each banner's own release day. Paying day by day spent the wrong purse: a
+ * banner already running was charged today, when a reader who holds nothing yet has not
+ * been paid the month's Unilogs, so Clear Drops paid for it and the Unilogs that landed
+ * afterwards stayed in the summary untouched. The reader's total therefore read
+ * `Unilog 138 · Clear 39,570` after a 100-pull plan instead of `Unilog 38 · Clear 41,550`.
+ * The balance curve still dips on the release day — that is the *timing* answer, and it
+ * is what says the banner cannot be pulled on that day.
+ *
+ * What the purses cannot cover is left as owed rather than invented: the purses stop at
+ * their leftovers and the chart's balance is the one that goes negative.
+ *
+ * Clear Drop and Crystal Drop are one drop pool — the game converts Clear to Crystal 1:1
+ * — so a pull is bought out of what the two hold together and only `Crystal Drop` pays
+ * once `Clear Drop` cannot. Buying a pull spends a whole `per` drops, so the pool keeps
+ * its remainder (under 180); the two purses are still reported apart, and `Expected`
+ * (the balance over `per`) therefore agrees with them as long as the plan is payable.
+ */
+function calcPurseAfterPlan(purse, pulls, per) {
+  const left = { ...purse };
+  let owed = Math.max(0, Math.floor(pulls));
+  const fromUnilog = Math.min(Math.max(0, Math.floor(left.unilog)), owed);
+  left.unilog -= fromUnilog;
+  owed -= fromUnilog;
+  // Crystal Drop is a paid purse: it adds nothing to the pool unless the reader opted in.
+  const drops = Math.max(0, Math.floor(left.clear)) + (calcUseCrystal ? Math.max(0, Math.floor(left.crystal)) : 0);
+  let spent = Math.min(owed, Math.floor(drops / per)) * per;
+  const fromClear = Math.min(spent, Math.floor(Math.max(0, left.clear) / per) * per);
+  left.clear -= fromClear;
+  spent -= fromClear;
+  left.crystal -= spent;
+  return left;
 }
 
 /**
@@ -13299,7 +13328,8 @@ function calcChartHtml() {
  * The row under the chart: what the plan leaves in each purse. A reader who has not
  * pre-converted Clear Drop into Unilogs needs the three counts side by side, so
  * `Expected` is the pulls the plan leaves and the line under it says where the pulls
- * come from.
+ * come from — already paid out in the game's own order (`calcPurseAfterPlan()`), so the
+ * Unilog purse empties first, then Clear Drop, then Crystal Drop.
  */
 function calcSummaryHtml() {
   const schedule = calcScheduleMemo();
@@ -13760,8 +13790,8 @@ function calcSkeleton() {
         title="${escapeHtml(t(`planner.calcSpan${months}`))}">${escapeHtml(t(`planner.calcSpan${months}`))}</button>`
   ).join("");
 
-  // Limbo and Lucidscape reset on the 1st and the 16th and pay the same reward each
-  // time; the note spells the two apart so the reader knows both resets are counted.
+  // Limbo and Lucidscape are two resets of the same reward; the note stays as the tick
+  // box's tooltip, but the tab no longer prints it as a visible line under the grid.
   const limboNote = t("planner.calcLimboNote", { drops: calcNumber(Number(limbo.drops) || 0) });
 
   return `
@@ -13875,7 +13905,6 @@ function calcSkeleton() {
               </div>`
           )}
         </div>
-        <p class="calc-hint">${escapeHtml(limboNote)}</p>
       </section>
       <section class="calc-section">
         <div class="archetype-section-header">

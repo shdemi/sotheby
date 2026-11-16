@@ -2121,11 +2121,25 @@ the anchor is on the 42-day lattice.
 because the reader does not pre-convert one currency into another: the tasks, Limbo, Roaring
 Month's daily half and most patch payouts pay **Clear Drops**, Roaring Month's lump and the
 Offer pay **Crystal Drops**, and the Bass Counter / packages / Roar Jukebox pay **Unilogs**.
-`calcSchedule()` walks all three side by side and pays a banner's pulls Unilog first (they
-*are* the token), then Clear Drop, then Crystal Drop **only when `calcUseCrystal` is on** (it
-is off by default — a reader who never spends Crystal Drop must not be told they can afford
-more than they can). `worth()` prices a purse set in drops (one Unilog is 180), so the curve
-stays one number while the summary prints each purse separately.
+`calcSchedule()` walks all three side by side, and `calcPurseAfterPlan()` charges the whole
+plan against the window's purses **Unilog first** (they *are* the token), **then Clear Drop,
+then Crystal Drop only when `calcUseCrystal` is on** (it is off by default — a reader who never
+spends Crystal Drop must not be told they can afford more than they can). `worth()` prices a
+purse set in drops (one Unilog is 180), so the curve stays one number while the summary prints
+each purse separately.
+
+The plan is priced against **the whole window's** purses, not against what each purse held on
+the banner's own release day. The first version paid day by day, inside the walk, and that was
+wrong in the summary: a banner already running is charged *today*, when a reader who holds
+nothing yet has not been paid the month's Unilogs, so Clear Drops paid for it and the Unilogs
+that landed afterwards were never spent — a 100-pull plan read `Unilog 138 · Clear Drop 39,570
+· Crystal 100` instead of `Unilog 38 · Clear 41,550 · Crystal 1,000`. The chart's balance is
+untouched by this: it still dips on the release day, because *that* is the timing answer (the
+banner cannot be pulled on that day), while the summary is the totals answer. Clear Drop and
+Crystal Drop are one drop pool (the game converts one to the other 1:1), so a pull is bought
+out of what the two hold together and only Crystal pays once Clear cannot; a pull costs a whole
+180, so the pool keeps its remainder. A plan the three purses cannot cover leaves them at those
+leftovers while the chart's balance goes negative.
 
 `calcSchedule()` walks one day at a time from today for `calcChartDays()` (the picked span ×
 `CALC_DAYS_PER_MONTH = 30`) and, on each day, adds `calcIncomeOn(date)` and subtracts
@@ -2213,8 +2227,10 @@ One scroller, five sections, all of them the modal's own pieces, read top-down a
 
   The bar carries a `[?]` (`#calc-help-open`, `.calc-help-btn`) that opens the income sheet —
   **an outline only**, no fill behind the glyph (`background: none`, a 1px `#ED7D31` ring that
-  brightens on hover) — and a help line under the grid spells Limbo and Lucidscape apart
-  (1st / 16th, 700 Clear Drop each).
+  brightens on hover). The help line that used to sit under the grid and spell Limbo and
+  Lucidscape apart (1st / 16th, 700 Clear Drop each) was **removed from the tab** on 2026-11-15
+  — the `[?]` sheet still carries the row, and the tick box keeps the sentence as its
+  `title` tooltip.
 - **Crystal Drop outcome** — the daily purchasing activity as the Event tab's shop picker, an
   `Other outcome` field for anything the ledger cannot know, and **`Use Crystal Drop to pull`**,
   a tick box that is **off by default**: until it is ticked the paid purse is carried and printed
@@ -2227,7 +2243,8 @@ One scroller, five sections, all of them the modal's own pieces, read top-down a
   (`#calc-span`, `.calc-span-btn`, the active one filled) and `Left: N`. Pressing a dot opens the
   banner-info sheet (`#calc-info`). Under the chart, `#calc-summary` prints the row the reader
   asked for: **`Expected`**, then `Unilog`, `Clear Drop` and `Crystal Drop`, each with its own
-  art and what the plan leaves in that purse.
+  art and what the plan leaves in that purse — paid in the game's order (Unilogs first, then
+  Clear Drop, then Crystal Drop), see "Three purses, not one balance" above.
 - **Banners** — the plan, ordered by release date. Each card is uma's Carat Calculator layout:
   rate-up heads, the name, then round pills — **`type` first** (the kind, wearing the card's
   rail colour), then **the patch** (`[3.9]` → a `3.9` pill, the sheet's own label,
@@ -2293,11 +2310,17 @@ three paid ones unticked, the `Roar Jukebox` box on (`+2 /patch`), `Login 7/15/2
 `+180 /month`, Limbo reading
 `+1,400 /month` in Clear Drops, the patch yields (`+1,200` / `+480` / `+120` / `+2` / `+2` / `+5`)
 and each badge's purse art (Clear for the Clear sources, Unilog for the rest), Crystal Drop off
-by default, the `1/2/3/6` span control on six months, the four summary cells with their art, the
-three currency icons, the empty list and the dotless chart, the shipped pull constants and every
+by default, the `1/2/3/6` span control on six months, the four summary cells with their art —
+**paid out Unilogs first, then Clear Drop, then Crystal Drop** (a plan the Unilog purse covers
+leaves Clear/Crystal untouched; one it cannot cover dips into Clear, and one Clear cannot cover
+reaches Crystal last; a plan no purse can pay stops at the remainders instead of going
+negative) — the three currency icons, the empty list and the dotless chart, the shipped pull
+constants and every
 ledger constant (incl. `limbo.monthlyDrops`, `weeklyTask.drops`, `cumulativeLogin.drops`,
 `roaringMonth.instantCrystal`, `offerOfTheMonth.unilog`, `patch.signIn`, the patch payouts incl.
-`devBroadcast`), and that the removed chrome really is gone (server switch, past toggle,
+`devBroadcast`), the removal of the Limbo / Lucidscape line (Drop income carries no `.calc-hint`,
+the sentence lives on as the tick box's tooltip), and that the removed chrome really is gone
+(server switch, past toggle,
 projection, steppers). Then the picker (opens, Global only, no Standard/Beginner, no
 closed banner, release order, predictions present, **no type filter**, every row tagging its
 patch beside a bare name, three heads + `…` on a banner with more, Ripples on the Water for
@@ -2320,6 +2343,7 @@ nothing before the threshold, and **the trade repeating** — `P`5 = 100% at 560
 `[?]` sheet (opens, its three groups, 19 rows split 10 / 5 / 4 with an amount and a cadence, the
 Daily Tasks note claiming no Sunday bonus, the modal chrome, its close button), the reload,
 Reset, and the Chinese switch (every section, the two groups, both
-pity tracks, the summary labels, the tick-box yield, the span chips, the help lines, the `[?]`
+pity tracks, the summary labels, the tick-box yield, the span chips, the `[?]`
 sheet's title/groups/note, the empty note, the `+ Add banner` label and each banner kind come
-out Chinese, and switching back restores the English labels).
+out Chinese, and switching back restores the English labels). The removal of the Limbo /
+Lucidscape help line is asserted at the same time: Drop income carries **no** `.calc-hint`.

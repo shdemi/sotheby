@@ -1375,6 +1375,13 @@ try {
           document.querySelectorAll(".calc-projection, #calc-projection").length,
           document.querySelectorAll(".calc-banner-stepper").length,
         ],
+        // The Limbo / Lucidscape line that used to sit under the income grid is gone: the
+        // tick box keeps the sentence as its tooltip and the "?" sheet repeats it.
+        incomeHints: byTitle("Drop income").querySelectorAll(".calc-hint").length,
+        limboTooltip: (() => {
+          const box = document.getElementById("calc-limbo");
+          return (box && box.closest(".calc-check").title) || "";
+        })(),
         ledger: calcRules.income,
         pull: calcRules.pull,
         rules: calcRules.rates,
@@ -1406,6 +1413,11 @@ try {
       "a “?” on the income bar opens the sheet that explains every source",
       calc.help,
       String(calc.help)
+    );
+    check(
+      "the Limbo / Lucidscape sentence is no longer a line under the income grid",
+      calc.incomeHints === 0 && /Lucidscape/.test(calc.limboTooltip),
+      JSON.stringify({ hints: calc.incomeHints, tooltip: calc.limboTooltip })
     );
     check(
       "the “?” is drawn as an outline, with no fill behind it",
@@ -2185,6 +2197,111 @@ try {
       "the summary prints the expected pulls under the chart",
       held.expected.length > 0 && held.stored && held.stored.useCrystal === true,
       JSON.stringify({ expected: held.expected, useCrystal: held.stored?.useCrystal })
+    );
+
+    // The summary's three purses are paid in the game's own order — Unilogs first, then
+    // Clear Drops, then Crystal Drop — and the plan is charged against the whole window's
+    // purses, not against whatever sat in them on each banner's release day. Paying day
+    // by day spent the wrong purse: a banner already running was charged today, before
+    // the month's Unilogs had been paid, so Clear Drops covered it and the Unilogs that
+    // landed later were never touched.
+    const purses = await page.evaluate(() => {
+      const banner = calcListBanners()[0];
+      const fields = {
+        unilog: document.getElementById("calc-unilog"),
+        clear: document.getElementById("calc-clear"),
+        crystal: document.getElementById("calc-crystal"),
+        useCrystal: document.getElementById("calc-useCrystal"),
+      };
+      const before = {
+        unilog: fields.unilog.value,
+        clear: fields.clear.value,
+        crystal: fields.crystal.value,
+        useCrystal: fields.useCrystal.checked,
+        pulls: calcPulls(banner.id),
+      };
+      const type = (el, value) => {
+        el.value = String(value);
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      const run = (unilog, clear, crystal, useCrystal, pulls) => {
+        type(fields.unilog, unilog);
+        type(fields.clear, clear);
+        type(fields.crystal, crystal);
+        if (fields.useCrystal.checked !== useCrystal) type(fields.useCrystal, "");
+        calcSetPulls(banner.id, pulls);
+        calcScheduleCache = { key: "", value: null };
+        const schedule = calcScheduleMemo();
+        calcRefresh({});
+        return {
+          purse: { ...schedule.purse },
+          cells: [...document.querySelectorAll("#calc-summary .calc-summary-cell")].map((cell) => ({
+            label: cell.querySelector(".calc-summary-label").textContent.trim(),
+            value: cell.querySelector(".calc-summary-value").textContent.trim(),
+          })),
+        };
+      };
+      // 100 pulls against a hoard that is nearly all Clear Drops, with the Unilogs
+      // arriving over the window rather than being held today.
+      const base = run(0, 1980, 1000, true, 0);
+      // A plan the Unilog purse covers on its own takes nothing else…
+      const shallowPulls = Math.max(1, Math.min(50, base.purse.unilog));
+      const shallow = run(0, 1980, 1000, true, shallowPulls);
+      // …a plan it cannot cover alone takes the rest out of Clear Drop…
+      const over = run(0, 1980, 1000, true, base.purse.unilog + 10);
+      // …and one Clear Drop cannot cover either reaches Crystal Drop last.
+      const deepBase = run(0, 1980, 4000, true, 0);
+      const deep = run(
+        0,
+        1980,
+        4000,
+        true,
+        deepBase.purse.unilog + Math.floor(deepBase.purse.clear / 180) + 10
+      );
+      // A plan no purse can pay stops at the remainders rather than going negative.
+      const short = run(0, 1980, 0, true, 4000);
+      // Crystal Drop pays nothing until the reader opts in.
+      const paid = run(0, 1980, 40000, false, 100);
+      type(fields.unilog, before.unilog);
+      type(fields.clear, before.clear);
+      type(fields.crystal, before.crystal);
+      if (fields.useCrystal.checked !== before.useCrystal) type(fields.useCrystal, "");
+      calcSetPulls(banner.id, before.pulls);
+      calcScheduleCache = { key: "", value: null };
+      calcRefresh({});
+      return { base, shallow, shallowPulls, over, deepBase, deep, short, paid };
+    });
+    check(
+      "the summary pays the plan out of Unilogs first and leaves Clear Drop alone while they last",
+      purses.shallow.purse.unilog === purses.base.purse.unilog - purses.shallowPulls &&
+        purses.shallow.purse.clear === purses.base.purse.clear &&
+        purses.shallow.purse.crystal === purses.base.purse.crystal,
+      JSON.stringify({ shallow: purses.shallow.purse, base: purses.base.purse, pulls: purses.shallowPulls })
+    );
+    check(
+      "Clear Drop pays only what the Unilog purse could not",
+      purses.over.purse.unilog === 0 && purses.over.purse.clear === purses.base.purse.clear - 10 * 180,
+      JSON.stringify({ over: purses.over.purse, base: purses.base.purse })
+    );
+    check(
+      "Crystal Drop comes last: ten pulls past the Clear Drop purse, and no more",
+      purses.deep.purse.unilog === 0 &&
+        purses.deep.purse.clear < 180 &&
+        purses.deep.purse.crystal === purses.deepBase.purse.crystal - 10 * 180,
+      JSON.stringify({ deep: purses.deep.purse, base: purses.deepBase.purse })
+    );
+    check(
+      "a wallet that cannot cover the plan stops at its remainders, never below zero",
+      purses.short.purse.unilog === 0 &&
+        purses.short.purse.clear >= 0 &&
+        purses.short.purse.clear < 180 &&
+        purses.short.purse.crystal === 0,
+      JSON.stringify(purses.short)
+    );
+    check(
+      "Crystal Drop stays untouched while the reader has not opted into spending it",
+      purses.paid.purse.crystal === 40000,
+      JSON.stringify(purses.paid)
     );
 
     // The DP is the whole feature, so it is checked against its own edge cases rather
