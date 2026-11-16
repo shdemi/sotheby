@@ -14369,6 +14369,15 @@ span.planner-char-tile-img {
   margin-top: 0;
 }
 
+/* The two switches the route bar carries (Wilderness, Warehouse), kept together at
+   the header's right edge. */
+.planner-farm-actions {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* The Wilderness switch on the route's own bar: its own word — the board's icon
    lives in the sheet — brighter once the board is counted in the solve. */
 .planner-farm-toggle {
@@ -15133,6 +15142,109 @@ span.planner-char-tile-img {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: #ffffff;
+}
+
+/* ---- Warehouse ----------------------------------------------------------- */
+
+/* A wall of slots rather than a stack of settings, so the card is as wide as the
+   roster picker: 64px slots line up in nine columns at this width. It is scoped to
+   `.planner-sheet` because `.planner-sheet-card` (which sets 440px) comes later in
+   this file, so an unscoped rule of the same weight would lose to it. */
+.planner-sheet .planner-warehouse-card {
+  max-width: 680px;
+}
+
+.planner-warehouse-body {
+  gap: 10px;
+}
+
+.planner-warehouse-hint {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #9C9791;
+}
+
+.planner-warehouse-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* One slot: the bill's own item sticker over the figure the reader types. The frame
+   and the art come from `.item-sticker`; the slot is not a button, so it does not
+   lift under the cursor. */
+.planner-warehouse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 14px 10px;
+}
+
+.planner-warehouse-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.planner-warehouse-sticker {
+  width: 64px;
+  height: 64px;
+  max-width: 100%;
+  cursor: default;
+}
+
+.planner-warehouse-sticker:hover,
+.planner-warehouse-sticker:hover .item-sticker-img,
+.planner-warehouse-sticker:hover .item-sticker-border {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.planner-warehouse-input {
+  width: 100%;
+  max-width: 64px;
+  height: 22px;
+  padding: 0 2px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+  color: #ffffff;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+  -moz-appearance: textfield;
+}
+
+.planner-warehouse-input::-webkit-outer-spin-button,
+.planner-warehouse-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.planner-warehouse-input:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.planner-warehouse-input:focus {
+  outline: none;
+  border-color: #ED7D31;
+}
+
+.planner-warehouse-foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.planner-warehouse-reset:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* ---- Lightboxes over the Character tab ------------------------------------ */
@@ -16977,6 +17089,17 @@ span.planner-char-tile-img {
     min-width: 26px;
     padding: 0 4px;
     font-size: 0.6rem;
+  }
+  .planner-warehouse-grid {
+    grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+    gap: 10px 6px;
+  }
+  .planner-warehouse-sticker {
+    width: 54px;
+    height: 54px;
+  }
+  .planner-warehouse-input {
+    max-width: 54px;
   }
 }
 

@@ -1630,6 +1630,32 @@
               </div>
             </div>
           </div>
+
+          <!-- Warehouse: what the reader already holds. It is not a plan and not a
+               buff — it is stock the farm route subtracts, so the route only pays for
+               the shortage (§14). Opened from the Warehouse button on the route bar.
+               Every material the tab can bill gets a slot, and the category chips
+               narrow the wall the way the Manage modal's do. -->
+          <div class="planner-sheet" id="planner-warehouse-sheet" hidden>
+            <div class="planner-sheet-card planner-warehouse-card">
+              <div class="planner-sheet-head">
+                <span class="archetype-section-title"><span data-i18n="planner.warehouse">Warehouse</span></span>
+                <button type="button" class="modal-close planner-sheet-close" id="planner-warehouse-close" data-sheet="planner-warehouse-sheet" aria-label="Close" data-i18n-aria-label="action.close">
+                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+                </button>
+              </div>
+              <div class="planner-sheet-body planner-warehouse-body">
+                <span class="planner-warehouse-hint" data-i18n="planner.warehouseHint">Record what you already hold. The farm route only pays for the rest.</span>
+                <div class="filter-btn-group planner-warehouse-filter" id="planner-warehouse-filter"></div>
+                <div class="planner-warehouse-grid" id="planner-warehouse-grid"></div>
+                <div class="planner-warehouse-foot">
+                  <button type="button" class="btn btn-secondary planner-add-btn planner-warehouse-reset" id="planner-warehouse-reset">
+                    <span data-i18n="planner.warehouseReset">Reset warehouse</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Event tab: price the event shop the global client is running. -->

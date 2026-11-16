@@ -1145,7 +1145,8 @@ The 23rd modal: an InfoBook-shaped window with **three mode tabs, Calculator, Ch
 then Event**. Calculator (§15) is a pull ledger: what the reader holds and earns, a balance
 curve over the span they pick with a dot per planned banner, a pity counter per pool family, and
 the odds of P0…P5 for each banner's typed pull count; Character is a build plan — what each
-arcanist still needs, and what that costs in stamina once it is farmed; Event prices the event
+arcanist still needs, what that costs in stamina once it is farmed, and what the reader
+already holds so the route only pays the shortage (§"Warehouse"); Event prices the event
 shop the global client is currently running. All three read generated data, so `npm run sync`
 moves them to a new patch with no hand edit in `app.js` (the drop table in Character's farm
 route is the one table whose numbers come from outside St-Pavlov — see §"The farm route").
@@ -1306,7 +1307,7 @@ resonance from→to, pattern, euphoria, mastery, then the summed bill); it was r
 route, so the InfoBook now shows the build (hero, skills, notes, charts, psychubes,
 resonance codes) and nothing that is a bill.
 
-**Shape.** Five layers over one pane, so a 30-arcanist plan still fits in one window:
+**Shape.** Six layers over one pane, so a 30-arcanist plan still fits in one window:
 
 | Element | What it is |
 |---|---|
@@ -1315,6 +1316,7 @@ resonance codes) and nothing that is a bill.
 | `#planner-goal-sheet` | the whole plan's bill, added up (lightbox) — the bill and nothing else |
 | `#planner-activity-sheet` | the stamina budget (lightbox) |
 | `#planner-wilderness-sheet` | the Wilderness idle board (lightbox, §"Wilderness") |
+| `#planner-warehouse-sheet` | the stock the reader already holds (lightbox, §"Warehouse") |
 | `#planner-picker` | Add Character (lightbox) |
 | `#planner-farm` | the farm route, under the grid |
 
@@ -1326,7 +1328,7 @@ its rule drops from the site orange to grey) —
 but drops out of the Goal bill and out of the farm route, so a reader can build one arcanist
 now and file the rest away with one press each.
 
-All five panels are `.planner-sheet` lightboxes over the tab only: `position: absolute;
+All six panels are `.planner-sheet` lightboxes over the tab only: `position: absolute;
 inset: 0` inside `#planner-pane-character`, so a reader on the Event tab never sees them, and
 `position: fixed` on a phone (an absolutely positioned overlay would scroll out from under
 the reader). Every closer carries `data-sheet="<id>"`, and a press on the backdrop closes it
@@ -1492,6 +1494,7 @@ buildLevelCostData(await readJson(levelCostsRes));
 buildPlannerFarmData(await readJson(farmStagesRes));
 plannerLoadActivity();
 plannerLoadWilderness();
+plannerLoadWarehouse();
 plannerLoadChars();
 loadPlannerTab();
 ```
@@ -1681,8 +1684,11 @@ carries both** (`plannerWildernessSignature()` → `wild=<dust>:<gold>:<staminaP
 changing Activity settings re-solves too.
 
 **Where it lives.** `#planner-wilderness-sheet` is a lightbox opened from a plain **text**
-button on the farm route's Resources header (`.planner-farm-toggle`,
-`#planner-farm-wilderness`): the word "Wilderness" in the button's own 10px caps, no icon —
+button on the farm route's own title bar — `.planner-farm-actions` at the right end of the
+"Farm route" header, where it is the **second** of the bar's two switches: Warehouse
+(`#planner-farm-warehouse`) comes first, Wilderness (`.planner-farm-toggle`,
+`#planner-farm-wilderness`) to its right. It is the word "Wilderness" in the button's own
+10px caps, no icon —
 the board's art lives inside the sheet — and it carries `is-active` (brighter border, a
 tint and white text) while the board counts. The sheet is the same `setting-group` stack as
 Activity: an on/off pair drawn as `#edit-modal`'s own `.btn-toggle` switches
@@ -1692,6 +1698,68 @@ groups, no Lazy switch. State is its own blob, `r1999_planner_wilderness_v1`, lo
 `plannerLoadWilderness()` — which `initApp` must call **between `plannerLoadActivity()` and
 `plannerLoadChars()`**, or the board opens switched off after every reload (it did, until
 this was fixed).
+
+### Warehouse
+
+The other half of the same question. Wilderness says what the board *pays*; the Warehouse says
+what the reader **already holds**, and the solve only prices the shortage. It is Kornblume's
+`PlannerWarehouse.vue` + `composables/warehouse.ts` + the `warehouse.forEach` block in
+`glpkSolver.ts`, reduced to what this app needs: no event-shop import (the Planner has no
+"materials from this event" action), no `localStorage` snapshot plumbing (this app already has
+one blob), and no flex Insight Caskets (this app's bills name their tiers directly).
+
+**It is stock, not a buff.** The solve subtracts it from the bill:
+
+```js
+const quantity = (Number(raw) || 0) - plannerWarehouseOnHand(material);
+if (!(quantity > 0)) continue;          // fully covered: no constraint, no run
+```
+
+and a recipe input that is not itself a bill line gets its balance row lowered instead of
+zeroed (`{ material, quantity: -plannerWarehouseOnHand(material) }`), so stock can pay for a
+craft rather than a run. A 6★ Resonate Material still collapses into the Crystal Caskets it
+costs, and the casket total is reduced by the caskets held — which is why recording one
+`Interlaced Shudder` removes the `Crystal Casket 1` line from the Oneiric Shop.
+
+**What it can hold.** `plannerWarehouseRoster()` walks every material a bill can name — the
+four steps of `characters_mats_required` (insight, resonance, euphoria, mastery), the five
+frequency patterns, plus `Dust`, `Sharpodonty` and `Crystal Casket` — and keeps the ones
+`data/items.json` resolves, ordered by `sortMaterialsByCategory`. That is **73 slots** over
+five families: Currency, Resonate Materials, Insight Materials, Choice Pack, Euphoria
+Materials. It is built from the shipped bills rather than a hand list, so a new material joins
+the wall when the patch bills it.
+
+**State.** `r1999_planner_warehouse_v1` is a plain `{ "<material>": qty }` map holding only
+non-zero rows, capped at `PLANNER_WAREHOUSE_MAX = 999999`. Like the build plan it is **not
+patch-stamped** — stock outlives a patch — but `plannerLoadWarehouse()` normalises each key to
+the shipped spelling and drops a material no bill names any more, and `plannerSetWarehouse()`
+writes the clamped figure back into the box so a rejected keystroke cannot stay on screen.
+
+**It is part of the solve signature.** `plannerFarmSignature()` returns
+`<bill rows>§<wilderness sig>§<plannerWarehouseSignature()>`, because stock changes the answer
+the way a Dust Bell Tower does. Recording a figure therefore re-solves; re-typing the same
+figure does not.
+
+**The sheet.** `#planner-warehouse-sheet` is the sixth lightbox over the Character tab, opened
+from the **first** plain **text** button on the farm route's bar (`#planner-farm-warehouse`, in
+`.planner-farm-actions` to the left of `#planner-farm-wilderness`), carrying `is-active` while
+anything is recorded. It wears the same `.planner-sheet-card` frame as every other sheet but at
+**680px**, the roster picker's width, because it is a wall of slots rather than a stack of
+settings — `.planner-sheet .planner-warehouse-card` is scoped so it outranks the 440px base
+rule that comes later in the file. A slot is the 64px item sticker (no hover lift, it is not a
+button) over a `type=number` box with the spinner hidden; the grid is
+`repeat(auto-fill, minmax(64px, 1fr))`, so it reads eight columns on a desktop, eleven at 768px
+and five on a phone, where the slots step down to 54px. The chips above it are the Manage
+modal's `.filter-btn`s — one or more narrow the wall, pressing the same chip again widens it —
+and Reset is `disabled` while nothing is recorded.
+
+**A pressed chip scopes the Reset** the way Kornblume's does: with a partial selection it
+clears only those families (`planner.warehouseResetCatsMsg`), and with none or all pressed it
+clears everything (`planner.warehouseResetMsg`). Either way it asks first.
+
+`initApp` calls `plannerLoadWarehouse()` **between `plannerLoadWilderness()` and
+`plannerLoadChars()`** — after `buildInfoBookData`, or the roster has nothing to normalise
+against.
 
 ### Every reset asks first
 
@@ -1770,9 +1838,11 @@ crystal casket — so the four of them collapse into the caskets they cost (Korn
 can supply goes to `unreachable` rather than being dropped in silence.
 
 **Caching and ordering.** The bill is the sum over `plannerEnabledChars()`, and
-`plannerFarmSignature()` (material=quantity, sorted, then `§` + the Wilderness signature) keys
+`plannerFarmSignature()` (material=quantity, sorted, then `§` + the Wilderness signature, then
+`§` + the Warehouse signature) keys
 `plannerFarmCache`, so flipping between arcanists or re-opening the editor does not re-solve the
-same bill — while turning a Wilderness building up does, because it changes the coefficients.
+same bill — while turning a Wilderness building up or recording Warehouse stock does, because
+each changes the problem (§"Warehouse").
 `plannerFarmRefresh()` starts a solve only when the signature moved; a stale promise is
 discarded by re-checking the signature on resolve. Runs round the way Kornblume does —
 `exact % 1 >= 0.9 ? ceil : floor` — and cards are dropped when nothing survives the rounding.
@@ -1787,8 +1857,8 @@ are `plannerNumber(stamina / plannerActivityStamina())` to one decimal in the UI
 (`16.6` / `16,6`). With Wilderness on, a `.planner-farm-card.is-wilderness` card sits **first in
 Resources**: it states the days and the two figures the board contributed over those days
 (`data-days` carries the number), and its own `.planner-farm-drop` stickers are the same art as
-any other drop. Its plain "Wilderness" text button is on that header, so the switch is
-reachable before the plan says anything.
+any other drop. Both switches ride on the route's title bar, so they are reachable before the
+plan says anything — and on an empty plan too.
 
 **Three drops to a line.** `.planner-farm-drops` is `display: grid;
 grid-template-columns: repeat(3, minmax(0, 1fr))` — a fixed three-column row rather than
@@ -1798,7 +1868,7 @@ beside it. A card is ~200px, so the columns land near 60px and each `.planner-fa
 of overflowing it.
 
 **Verify.** `editor/_test/ui.test.mjs` drives the tab: the Character default, the empty state
-(no tiles, no count, "Nothing left to farm."), the five panels closed by default, the picker
+(no tiles, no count, "Nothing left to farm."), the six panels closed by default, the picker
 (opens, covers the tab, the whole roster, search, Manage-style tiles, rarity chips narrowing and
 widening, **no excluded character and no dummy in the list**, backdrop closes), adding a
 character (picker closes, editor opens on the `#edit-modal` card — `rgb(181, 88, 41)` frame,
@@ -1827,13 +1897,19 @@ by default, three Lv.6 towers and three Lv.6 markets at the default Vigor 50 →
 `29,160 / 12,960`, **no Lazy switch**, Vigor a `type=number` box with no `max` that goes past
 the old 50% cap to `120` (`810 × 2.2 × 24`), switching it on shortens the route and adds the
 `is-wilderness` card with two drop stickers, both saved locally and both restored after a
-reload), Goal being
+reload), the Warehouse (its switch to the left of Wilderness on the route bar, the 73-slot wall over a
+`type=number` box, the category chips narrowing and widening, a typed figure saved and the bar
+saying it counts, a rejected or oversized figure landing on the committed number, stock
+subtracted from the bill — a fully covered bill costs nothing, and a held 6★ Resonate Material
+or Crystal Casket pays for its shop line — the Reset asking first and scoped to the pressed
+chips, and the stock restored after a reload), Goal being
 the exact sum of the enabled arcanists **and nothing but the bill** (no head icons, no
 `setting-label` count, `≤440px`), a second character joining the grid, right-click dimming a
 tile and dropping it from Goal and putting it back, persistence across a reload (plan +
 activity + Wilderness, route re-solved without a press), the Chinese labels, the phone layout
 (icon grid, one column, one scroller, panels as fixed lightboxes, no sideways scroll, the bill
-sticker 52–60px with its badge scaled, the Wilderness selects inside a 390px card), and **both
+sticker 52–60px with its badge scaled, the Wilderness selects inside a 390px card, the
+Warehouse slots stepping down to 54px in five columns), and **both
 Reset buttons asking first** (`ask → cancel keeps everything → yes clears`).
 
 Two of those checks exist because of the 2026-11-14 responsiveness pass: the **tablet row**

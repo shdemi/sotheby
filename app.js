@@ -1561,6 +1561,7 @@ async function initApp() {
     buildCalculatorData(await readJson(bannersRes), await readJson(gachaRes));
     plannerLoadActivity();
     plannerLoadWilderness();
+    plannerLoadWarehouse();
     plannerLoadChars();
     // Reopen the Planner on the tab the reader left, not always on Calculator.
     loadPlannerTab();
@@ -14384,6 +14385,9 @@ function calcToggleFromBox(key, on) {
 const PLANNER_CHARS_KEY = "r1999_planner_characters_v1";
 const PLANNER_ACTIVITY_KEY = "r1999_planner_activity_v1";
 const PLANNER_WILDERNESS_KEY = "r1999_planner_wilderness_v1";
+const PLANNER_WAREHOUSE_KEY = "r1999_planner_warehouse_v1";
+/** The largest quantity a warehouse slot accepts; a hand-edited blob cannot exceed it either. */
+const PLANNER_WAREHOUSE_MAX = 999999;
 
 let plannerChars = [];
 let plannerCharSelected = "";
@@ -14429,6 +14433,18 @@ let plannerWilderness = {
 /** Level 0-6 → the multiplier the building adds (Kornblume's own tables). */
 const PLANNER_WILDERNESS_DUST = [0, 120, 150, 175, 210, 240, 270];
 const PLANNER_WILDERNESS_GOLD = [0, 60, 75, 80, 96, 108, 120];
+
+/**
+ * The Warehouse: what the reader already holds of each material the plan can
+ * spend, keyed by the item's own name, in a plain `{ "<material>": quantity }`
+ * map (only non-zero rows are kept). It is not a plan — it is stock the solve
+ * subtracts, so the route only farms the shortage (§14).
+ */
+let plannerWarehouse = {};
+/** The category chips the sheet is narrowed to; empty means every category. */
+const plannerWarehouseCats = new Set();
+/** The roster the sheet lists, built once from the generated bills. */
+let plannerWarehouseRosterCache = null;
 
 /**
  * The farm route. `plannerFarmData` is `data/stages/farm.json`, `plannerFarmCache`
@@ -14594,6 +14610,236 @@ function plannerLoadWilderness() {
         ? 50
         : Math.max(0, Math.round(Number(row.vigor) || 0)),
   };
+}
+
+/* ---- Warehouse ------------------------------------------------------------ */
+
+/**
+ * Every material the Planner can spend, which is what the Warehouse can record:
+ * the four bills `characters_mats_required.json` carries (insight tiers, resonance
+ * steps, the picked Euphoria facets and Mastery tiers, the resonance patterns), the
+ * Dust and Sharpodonty a level costs, and the Crystal Casket a 6★ Resonate Material
+ * collapses into. Ordered the way every other material wall on the tab is.
+ */
+function plannerWarehouseRoster() {
+  if (plannerWarehouseRosterCache) return plannerWarehouseRosterCache;
+  const names = new Set(["Dust", "Sharpodonty", "Crystal Casket"]);
+  const addSteps = (steps) => {
+    for (const step of steps || []) {
+      for (const row of (step && step.materials) || []) if (row && row.material) names.add(row.material);
+    }
+  };
+  for (const mats of Object.values(charactersMatsData || {})) {
+    addSteps(mats.insight);
+    addSteps(mats.resonance);
+    addSteps(mats.euphoria);
+    addSteps(mats.mastery);
+    addSteps(mats.frequency);
+  }
+  const rows = [];
+  for (const name of names) {
+    const item = getItemByName(name);
+    if (item) rows.push({ material: item.name, quantity: 0 });
+  }
+  plannerWarehouseRosterCache = sortMaterialsByCategory(rows)
+    .map((row) => getItemByName(row.material))
+    .filter(Boolean);
+  return plannerWarehouseRosterCache;
+}
+
+/** The category a roster row belongs to, in the reader's language. */
+function plannerWarehouseCategoryLabel(item) {
+  if (!item) return "";
+  if (currentLang === "cn") return item.categoryZh || item.category || "";
+  if (currentLang === "vi") return item.categoryVi || item.category || "";
+  return item.category || "";
+}
+
+/** One slot's figure, clamped to what the field itself accepts. */
+function plannerWarehouseQty(material) {
+  const n = Math.round(Number(plannerWarehouse[material]) || 0);
+  return Math.min(PLANNER_WAREHOUSE_MAX, Math.max(0, n));
+}
+
+/** How many items the warehouse records at all — the route bar's own "is it counted". */
+function plannerWarehouseTotal() {
+  return Object.keys(plannerWarehouse).reduce((sum, name) => sum + plannerWarehouseQty(name), 0);
+}
+
+/**
+ * How much of a material the reader already holds. The solve asks by the name the
+ * bill uses, which is the item's own name, but a hand-written blob may disagree on
+ * case, so the lookup falls back to a case-insensitive match.
+ */
+function plannerWarehouseOnHand(material) {
+  const key = String(material || "");
+  if (!key) return 0;
+  if (key in plannerWarehouse) return plannerWarehouseQty(key);
+  const lower = key.toLowerCase();
+  const match = Object.keys(plannerWarehouse).find((name) => name.toLowerCase() === lower);
+  return match ? plannerWarehouseQty(match) : 0;
+}
+
+/** The stock is part of what a solved route was solved for, like Wilderness. */
+function plannerWarehouseSignature() {
+  const rows = Object.keys(plannerWarehouse)
+    .filter((name) => plannerWarehouseQty(name) > 0)
+    .sort((a, b) => a.localeCompare(b))
+    .map((name) => `${name}=${plannerWarehouseQty(name)}`);
+  return rows.length ? `wh=${rows.join(",")}` : "wh=empty";
+}
+
+function plannerSaveWarehouse() {
+  try {
+    localStorage.setItem(PLANNER_WAREHOUSE_KEY, JSON.stringify(plannerWarehouse));
+  } catch (e) {
+    /* private mode / quota: the stock still counts for this session */
+  }
+}
+
+function plannerLoadWarehouse() {
+  plannerWarehouse = {};
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(PLANNER_WAREHOUSE_KEY) || "null");
+  } catch (e) {
+    saved = null;
+  }
+  if (!saved || typeof saved !== "object" || Array.isArray(saved)) return;
+  // Only what the shipped data still bills is kept, under the shipped spelling, so
+  // a renamed material cannot linger in the blob forever.
+  const canonical = new Map(plannerWarehouseRoster().map((item) => [String(item.name).toLowerCase(), item.name]));
+  for (const [name, quantity] of Object.entries(saved)) {
+    const key = canonical.get(String(name).trim().toLowerCase());
+    if (!key) continue;
+    const qty = Math.min(PLANNER_WAREHOUSE_MAX, Math.max(0, Math.round(Number(quantity) || 0)));
+    if (qty > 0) plannerWarehouse[key] = qty;
+  }
+}
+
+/** One slot: the game's item sticker, then the figure the reader types under it. */
+function plannerWarehouseTileHtml(item) {
+  const name = escapeHtml(
+    currentLang === "cn" ? item.nameZh || item.name : item.name
+  );
+  const qty = plannerWarehouseQty(item.name);
+  return `<div class="planner-warehouse-tile" data-ware-item="${escapeHtml(item.name)}">
+      <div class="item-sticker planner-warehouse-sticker" title="${name}">
+        ${item.border ? `<img src="${escapeHtml(item.border)}" alt="" class="item-sticker-border" loading="lazy" />` : ""}
+        ${
+          item.icon
+            ? `<img src="${escapeHtml(item.icon)}" alt="" class="item-sticker-img" loading="lazy" />`
+            : `<span class="planner-mat-art-empty" aria-hidden="true"></span>`
+        }
+      </div>
+      <input type="number" inputmode="numeric" min="0" step="1" max="${PLANNER_WAREHOUSE_MAX}" value="${qty}" class="planner-warehouse-input" data-ware="${escapeHtml(
+        item.name
+      )}" aria-label="${name}" title="${name}" />
+    </div>`;
+}
+
+/** The slots the current category chips leave, in the roster's own order. */
+function plannerWarehouseList() {
+  const roster = plannerWarehouseRoster();
+  if (!plannerWarehouseCats.size) return roster;
+  return roster.filter((item) => plannerWarehouseCats.has(item.category));
+}
+
+function plannerWarehouseGridHtml() {
+  const list = plannerWarehouseList();
+  if (!list.length) {
+    return `<div class="guide-empty"><span>${escapeHtml(t("planner.warehouseEmpty"))}</span></div>`;
+  }
+  return list.map(plannerWarehouseTileHtml).join("");
+}
+
+/**
+ * Writes the sheet from the saved stock: the category chips, the slots, and the
+ * Reset button's state. It is called when the sheet opens, when a chip is pressed
+ * and on a language change; a typed figure is committed without a rebuild, so the
+ * field keeps the caret.
+ */
+function syncPlannerWarehouseSheet() {
+  const roster = plannerWarehouseRoster();
+  const cats = [];
+  for (const item of roster) {
+    if (item.category && !cats.includes(item.category)) cats.push(item.category);
+  }
+  const filter = document.getElementById("planner-warehouse-filter");
+  if (filter) {
+    filter.innerHTML = cats
+      .map((cat) => {
+        const sample = roster.find((item) => item.category === cat);
+        return `<button type="button" class="filter-btn${
+          plannerWarehouseCats.has(cat) ? " active" : ""
+        }" data-ware-cat="${escapeHtml(cat)}" aria-pressed="${
+          plannerWarehouseCats.has(cat) ? "true" : "false"
+        }">${escapeHtml(plannerWarehouseCategoryLabel(sample))}</button>`;
+      })
+      .join("");
+  }
+  const grid = document.getElementById("planner-warehouse-grid");
+  if (grid) grid.innerHTML = plannerWarehouseGridHtml();
+  const reset = document.getElementById("planner-warehouse-reset");
+  if (reset) reset.disabled = plannerWarehouseTotal() <= 0;
+}
+
+function openPlannerWarehouse() {
+  // `plannerOpenSheet` syncs the sheet, so opening it twice costs one build.
+  plannerOpenSheet("planner-warehouse-sheet");
+}
+
+/** Commits one slot. An empty or zero box means "none of it", so the row is dropped. */
+function plannerSetWarehouse(material, value) {
+  const name = String(material || "");
+  if (!name) return;
+  const qty = Math.min(PLANNER_WAREHOUSE_MAX, Math.max(0, Math.round(Number(value) || 0)));
+  if (qty > 0) plannerWarehouse[name] = qty;
+  else delete plannerWarehouse[name];
+  plannerSaveWarehouse();
+  // The box shows what was actually stored: a rejected keystroke ("abc", "-5") and a
+  // figure past the ceiling both land on the committed number instead of staying typed.
+  const input = document.querySelector(
+    `#planner-warehouse-grid [data-ware="${CSS.escape(name)}"]`
+  );
+  if (input && input.value !== String(qty)) input.value = String(qty);
+  // The stock is a constraint of the solve, so the route is worked out again; the
+  // signature carries it, so an unchanged figure costs nothing.
+  plannerFarmRefresh();
+  plannerFarmPaint();
+  const reset = document.getElementById("planner-warehouse-reset");
+  if (reset) reset.disabled = plannerWarehouseTotal() <= 0;
+}
+
+/**
+ * The families a Reset would clear. Kornblume's own rule: with a partial chip
+ * selection the Reset clears only those families (the chips are the selection), and
+ * with none or all of them pressed it clears the whole warehouse. Returns `null` for
+ * "everything".
+ */
+function plannerWarehouseResetCategories() {
+  const roster = plannerWarehouseRoster();
+  const cats = [];
+  for (const item of roster) if (item.category && !cats.includes(item.category)) cats.push(item.category);
+  if (!plannerWarehouseCats.size || plannerWarehouseCats.size >= cats.length) return null;
+  return cats.filter((cat) => plannerWarehouseCats.has(cat));
+}
+
+function plannerResetWarehouse() {
+  const cats = plannerWarehouseResetCategories();
+  if (!cats) {
+    plannerWarehouse = {};
+  } else {
+    const roster = plannerWarehouseRoster();
+    const clear = new Set(
+      roster.filter((item) => cats.includes(item.category)).map((item) => item.name)
+    );
+    for (const name of Object.keys(plannerWarehouse)) if (clear.has(name)) delete plannerWarehouse[name];
+  }
+  plannerSaveWarehouse();
+  syncPlannerWarehouseSheet();
+  plannerFarmRefresh();
+  plannerFarmPaint();
 }
 
 /** The farm table, handed over by `initApp` once `data/stages/farm.json` is in. */
@@ -15209,7 +15455,9 @@ function plannerFarmBill() {
 /**
  * Cache key for a solved route. The Wilderness settings belong in it because they
  * change the Dust/Sharpodonty coefficients the solve works with, so turning a Dust
- * Bell Tower up is a different problem, not just a different label.
+ * Bell Tower up is a different problem, not just a different label. The Warehouse
+ * belongs in it for the same reason at the other end: it lowers what the route has
+ * to find, so recording one more material is a different problem too.
  */
 function plannerFarmSignature(bill) {
   const rows = Object.entries(bill)
@@ -15217,7 +15465,7 @@ function plannerFarmSignature(bill) {
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([material, qty]) => `${material}=${qty}`)
     .join("|");
-  return `${rows}§${plannerWildernessSignature()}`;
+  return `${rows}§${plannerWildernessSignature()}§${plannerWarehouseSignature()}`;
 }
 
 let plannerGlpkFactory = null;
@@ -15312,7 +15560,10 @@ async function plannerFarmSolve(bill, sig) {
   // hands it out through a Crystal Casket, so the four of them collapse into the
   // caskets they cost (Kornblume's `processResonanceMaterials`).
   let casketCount = 0;
-  for (const [material, quantity] of Object.entries(bill)) {
+  for (const [material, raw] of Object.entries(bill)) {
+    // What the Warehouse already holds is not farmed again: the route only pays for
+    // the shortage, which is the whole point of recording stock (§14 "Warehouse").
+    const quantity = (Number(raw) || 0) - plannerWarehouseOnHand(material);
     if (!(quantity > 0)) continue;
     const item = itemByName.get(material.toLowerCase());
     const family = item && PLANNER_SHOP_FAMILIES[item.category];
@@ -15330,6 +15581,8 @@ async function plannerFarmSolve(bill, sig) {
     }
     needs.set(material, quantity);
   }
+  // The caskets are a material of their own, so the warehouse can hold them too.
+  casketCount -= plannerWarehouseOnHand("Crystal Casket");
   if (casketCount > 0) {
     const casket = itemByName.get("crystal casket");
     shop.oneiric.push({
@@ -15355,14 +15608,15 @@ async function plannerFarmSolve(bill, sig) {
   // Without a row per input the solver consumes them out of nothing: every craftable
   // item would cost 0 stamina, which is what made "craft 10 Bifurcated Skeleton, 0
   // stamina" the answer instead of farming the fodder. Materials that are already a
-  // bill line get their row from `needs`; every other input gets a plain `>= 0`.
-  const balance = [...craftInputs].filter(
-    (material) => !needs.has(material) && reachable.has(material)
-  );
+  // bill line get their row from `needs`; every other input gets its own, lowered by
+  // whatever the Warehouse holds so stock can pay for a craft instead of a run.
+  const balance = [...craftInputs]
+    .filter((material) => !needs.has(material) && reachable.has(material))
+    .map((material) => ({ material, quantity: -plannerWarehouseOnHand(material) }));
 
   const subjectTo = [
     ...[...needs].map(([material, quantity]) => ({ material, quantity })),
-    ...balance.map((material) => ({ material, quantity: 0 })),
+    ...balance,
   ].map(({ material, quantity }) => ({
     name: material,
     vars: [...variables]
@@ -15600,14 +15854,22 @@ function plannerFarmShopHtml(list) {
 function plannerFarmPaint() {
   const host = document.getElementById("planner-farm");
   if (!host) return;
-  // The Wilderness switch rides on the route's own title, so it is reachable
-  // before the plan says anything (turn it on, then look at what shortens).
+  // The Warehouse and Wilderness switches ride on the route's own title, so both are
+  // reachable before the plan says anything (turn one on, then look at what shortens).
   const wildOn = plannerWilderness.enabled;
+  const wareOn = plannerWarehouseTotal() > 0;
   const title = `<div class="archetype-section-header planner-farm-head">
       <span class="archetype-section-title"><span>${escapeHtml(t("planner.farmTitle"))}</span></span>
-      <button type="button" class="planner-farm-toggle${wildOn ? " is-active" : ""}" id="planner-farm-wilderness" data-enabled="${
-        wildOn ? "true" : "false"
-      }" aria-pressed="${wildOn ? "true" : "false"}">${escapeHtml(t("planner.wilderness"))}</button>
+      <div class="planner-farm-actions">
+        <button type="button" class="planner-farm-toggle${wareOn ? " is-active" : ""}" id="planner-farm-warehouse" data-stock="${
+          wareOn ? "true" : "false"
+        }" aria-pressed="${wareOn ? "true" : "false"}" title="${escapeHtml(
+    t("planner.warehouseHint")
+  )}">${escapeHtml(t("planner.warehouse"))}</button>
+        <button type="button" class="planner-farm-toggle${wildOn ? " is-active" : ""}" id="planner-farm-wilderness" data-enabled="${
+          wildOn ? "true" : "false"
+        }" aria-pressed="${wildOn ? "true" : "false"}">${escapeHtml(t("planner.wilderness"))}</button>
+      </div>
     </div>`;
 
   if (!plannerEnabledChars().length) {
@@ -15691,6 +15953,11 @@ function renderPlannerCharacter() {
   // The activity panel is a lightbox of this tab, so its readouts follow the
   // language with the rest of it (the numbers are formatted for the locale).
   syncPlannerActivitySheet();
+  // The Warehouse sheet is a grid of slots, so it is only rebuilt while it is up —
+  // that is what relabels it on a language change without stealing the caret from a
+  // reader typing a figure.
+  const warehouseSheet = document.getElementById("planner-warehouse-sheet");
+  if (warehouseSheet && !warehouseSheet.hidden) syncPlannerWarehouseSheet();
   if (detail) detail.innerHTML = plannerCharDetailHtml();
   if (goal) goal.innerHTML = plannerGoalHtml();
   const editorTitle = document.getElementById("planner-editor-title");
@@ -15812,6 +16079,7 @@ function plannerOpenSheet(id) {
   }
   if (id === "planner-activity-sheet") syncPlannerActivitySheet();
   if (id === "planner-wilderness-sheet") syncPlannerWildernessSheet();
+  if (id === "planner-warehouse-sheet") syncPlannerWarehouseSheet();
 }
 
 function plannerCloseSheets() {
@@ -16450,11 +16718,12 @@ function setupPlannerListeners() {
 
   /* ---- Wilderness --------------------------------------------------------- */
 
-  // The route's tree button opens the board; the sheet owns everything else.
+  // The route's own bar carries both switches; the sheets own everything else.
   const farmHost = document.getElementById("planner-farm");
   if (farmHost) {
     farmHost.addEventListener("click", (e) => {
       if (e.target.closest("#planner-farm-wilderness")) openPlannerWilderness();
+      else if (e.target.closest("#planner-farm-warehouse")) openPlannerWarehouse();
     });
   }
   const wildToggle = document.getElementById("planner-wilderness-toggle");
@@ -16487,6 +16756,47 @@ function setupPlannerListeners() {
       const output = document.getElementById("planner-wilderness-output");
       if (output) output.innerHTML = plannerWildernessOutputHtml(plannerWildernessOutput());
     });
+  }
+
+  /* ---- Warehouse ---------------------------------------------------------- */
+
+  const wareSheet = document.getElementById("planner-warehouse-sheet");
+  if (wareSheet) {
+    // The category chips are the Manage modal's filter buttons: one or more narrow the
+    // wall, pressing the same chip again widens it back (Kornblume's own filter).
+    const wareFilter = document.getElementById("planner-warehouse-filter");
+    if (wareFilter) {
+      wareFilter.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-ware-cat]");
+        if (!btn) return;
+        const cat = btn.dataset.wareCat;
+        if (plannerWarehouseCats.has(cat)) plannerWarehouseCats.delete(cat);
+        else plannerWarehouseCats.add(cat);
+        syncPlannerWarehouseSheet();
+      });
+    }
+    // One figure is one commit: typing does not re-solve, leaving the box does. The
+    // grid is not rebuilt, so the caret stays in the field the reader is on.
+    wareSheet.addEventListener("change", (e) => {
+      const input = e.target.closest("[data-ware]");
+      if (!input) return;
+      plannerSetWarehouse(input.dataset.ware, input.value);
+    });
+    const wareReset = document.getElementById("planner-warehouse-reset");
+    if (wareReset) {
+      wareReset.addEventListener("click", () => {
+        if (plannerWarehouseTotal() <= 0) return;
+        // A partial chip selection is what a Reset acts on, so the sentence says so.
+        const partial = !!plannerWarehouseResetCategories();
+        showConfirmModal(
+          t("planner.warehouseReset"),
+          t(partial ? "planner.warehouseResetCatsMsg" : "planner.warehouseResetMsg"),
+          () => {
+            plannerResetWarehouse();
+          }
+        );
+      });
+    }
   }
 
   // The header button and everything inside the body: remove lives in the header.

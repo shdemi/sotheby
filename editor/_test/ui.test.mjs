@@ -3688,7 +3688,7 @@ try {
     );
     check(
       "every panel starts closed",
-      empty.sheets.length === 5 && empty.sheets.every(Boolean),
+      empty.sheets.length === 6 && empty.sheets.every(Boolean),
       JSON.stringify(empty.sheets)
     );
 
@@ -4600,6 +4600,390 @@ try {
     });
     await page.waitForTimeout(900);
 
+    // ---- warehouse -------------------------------------------------------
+    // The Warehouse is the other half of the route: Wilderness says what the board
+    // pays, the Warehouse says what the reader already holds, and the solve only
+    // prices the shortage.
+    const wareBar = await page.evaluate(() => {
+      const actions = document.querySelector("#planner-farm .planner-farm-actions");
+      const buttons = actions ? [...actions.querySelectorAll(".planner-farm-toggle")] : [];
+      const wild = document.getElementById("planner-farm-wilderness");
+      const ware = document.getElementById("planner-farm-warehouse");
+      const box = ware.getBoundingClientRect();
+      const wildBox = wild.getBoundingClientRect();
+      return {
+        together: buttons.length,
+        order: buttons.map((el) => el.id).join(","),
+        text: (ware.textContent || "").trim(),
+        icon: !!ware.querySelector("img"),
+        leftOfWild: box.right <= wildBox.left + 1 && Math.abs(box.top - wildBox.top) <= 1,
+        active: ware.classList.contains("is-active"),
+        stock: ware.dataset.stock,
+        hint: ware.getAttribute("title") || "",
+      };
+    });
+    check(
+      "the Warehouse switch sits to the left of Wilderness on the route bar",
+      wareBar.together === 2 &&
+        wareBar.order === "planner-farm-warehouse,planner-farm-wilderness" &&
+        wareBar.leftOfWild,
+      JSON.stringify(wareBar)
+    );
+    check(
+      "it is its own word with no icon, and starts empty",
+      wareBar.text === "Warehouse" &&
+        !wareBar.icon &&
+        wareBar.active === false &&
+        wareBar.stock === "false" &&
+        /already hold/.test(wareBar.hint),
+      JSON.stringify(wareBar)
+    );
+
+    {
+      // The subtraction itself, without waiting on the tab's own solve: the same bill
+      // is solved with an empty warehouse, with enough stock to cover it and with a
+      // partial hoard. Nothing here touches the saved blob.
+      const wareStock = await page.evaluate(async () => {
+        const keep = { ...plannerWarehouse };
+        const run = async (stock) => {
+          plannerWarehouse = stock;
+          return plannerFarmSolve({ Dust: 100000 }, "test-" + JSON.stringify(stock));
+        };
+        const bare = await run({});
+        const covered = await run({ Dust: 100000 });
+        const part = await run({ Dust: 40000 });
+        // A 6★ Resonate Material is not a Oneiric Shop line: it collapses into the
+        // Crystal Caskets it costs, and stock in caskets is stock in that too.
+        plannerWarehouse = {};
+        const casket = await plannerFarmSolve({ "Hoarse Echo": 2 }, "test-casket");
+        plannerWarehouse = { "Crystal Casket": 2 };
+        const casketHeld = await plannerFarmSolve({ "Hoarse Echo": 2 }, "test-casket-held");
+        plannerWarehouse = keep;
+        return {
+          bare: bare.stamina,
+          covered: { stamina: covered.stamina, empty: !!covered.empty },
+          part: part.stamina,
+          casket: casket.oneiric.map((row) => `${row.material}=${row.quantity}`),
+          casketHeld: casketHeld.oneiric.map((row) => `${row.material}=${row.quantity}`),
+        };
+      });
+      check(
+        "stock is subtracted from the bill: fully covered bills cost nothing, part of one costs less",
+        wareStock.bare > 0 &&
+          wareStock.covered.stamina === 0 &&
+          wareStock.covered.empty &&
+          wareStock.part > 0 &&
+          wareStock.part < wareStock.bare,
+        JSON.stringify(wareStock)
+      );
+      check(
+        "caskets held in the warehouse pay for a 6★ Resonate Material",
+        wareStock.casket.join() === "Crystal Casket=2" && wareStock.casketHeld.length === 0,
+        JSON.stringify({ bare: wareStock.casket, held: wareStock.casketHeld })
+      );
+    }
+
+    await page.evaluate(() => document.getElementById("planner-farm-warehouse").click());
+    await page.waitForTimeout(400);
+    const wareOpen = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-warehouse-sheet");
+      const grid = document.getElementById("planner-warehouse-grid");
+      const tiles = [...grid.querySelectorAll("[data-ware-item]")];
+      const inputs = tiles.map((tile) => tile.querySelector("[data-ware]"));
+      const sticker = tiles[0].querySelector(".planner-warehouse-sticker");
+      const box = sheet.getBoundingClientRect();
+      const pane = document.getElementById("planner-pane-character").getBoundingClientRect();
+      // Every slot has to be a material some bill can name, or the reader can record
+      // stock that nothing ever spends.
+      const billed = new Set(["Dust", "Sharpodonty", "Crystal Casket"]);
+      for (const mats of Object.values(charactersMatsData || {})) {
+        for (const key of ["insight", "resonance", "euphoria", "mastery", "frequency"]) {
+          for (const step of mats[key] || []) {
+            for (const row of (step && step.materials) || []) if (row && row.material) billed.add(row.material);
+          }
+        }
+      }
+      return {
+        open: !sheet.hidden,
+        covers: Math.abs(box.width - pane.width) < 2 && Math.abs(box.height - pane.height) < 2,
+        width: Math.round(sheet.querySelector(".planner-sheet-card").getBoundingClientRect().width),
+        hint: sheet.querySelector(".planner-warehouse-hint").textContent.trim(),
+        chips: [...sheet.querySelectorAll("[data-ware-cat]")].map((el) => el.textContent.trim()),
+        tiles: tiles.length,
+        roster: plannerWarehouseRoster().length,
+        stray: tiles.filter((tile) => !billed.has(tile.dataset.wareItem)).map((tile) => tile.dataset.wareItem),
+        names: ["Dust", "Sharpodonty", "Crystal Casket", "Hoarse Echo"].filter((name) =>
+          tiles.some((tile) => tile.dataset.wareItem === name)
+        ),
+        numbers:
+          inputs.length === tiles.length &&
+          inputs.every((el) => el.type === "number" && el.step === "1" && el.value === "0"),
+        sticker: Math.round(sticker.getBoundingClientRect().width),
+        // The wall is taller than the card, so the art below the fold stays lazy. Every
+        // slot carries the game's own icon path, and the first row has really decoded it.
+        art: tiles.every((tile) =>
+          /images\/items\/icon\//.test(tile.querySelector(".item-sticker-img")?.getAttribute("src") || "")
+        ),
+        artLoaded: tiles.slice(0, 4).every((tile) => {
+          const img = tile.querySelector(".item-sticker-img");
+          return !!img && img.complete && img.naturalWidth > 0;
+        }),
+        resetDisabled: document.getElementById("planner-warehouse-reset").disabled,
+      };
+    });
+    check(
+      "the Warehouse is a lightbox over the tab, the picker's own width",
+      wareOpen.open && wareOpen.covers && wareOpen.width > 440 && wareOpen.width <= 680,
+      JSON.stringify(wareOpen)
+    );
+    check(
+      "it lists every material a bill can name, as a sticker over a number box",
+      wareOpen.tiles === wareOpen.roster &&
+        wareOpen.tiles > 60 &&
+        wareOpen.stray.length === 0 &&
+        wareOpen.names.length === 4 &&
+        wareOpen.numbers &&
+        wareOpen.sticker === 64 &&
+        wareOpen.art &&
+        wareOpen.artLoaded,
+      JSON.stringify({ tiles: wareOpen.tiles, stray: wareOpen.stray, names: wareOpen.names, sticker: wareOpen.sticker })
+    );
+    check(
+      "its category chips are the material families, and Reset is dead while nothing is recorded",
+      wareOpen.chips.length >= 4 && wareOpen.chips.includes("Currency") && wareOpen.resetDisabled,
+      JSON.stringify({ chips: wareOpen.chips, reset: wareOpen.resetDisabled })
+    );
+
+    const wareFilter = await page.evaluate(() => {
+      const chip = (name) =>
+        [...document.querySelectorAll("#planner-warehouse-filter [data-ware-cat]")].find(
+          (el) => el.dataset.wareCat === name
+        );
+      const shown = () =>
+        [...document.querySelectorAll("#planner-warehouse-grid [data-ware-item]")].map((el) => el.dataset.wareItem);
+      const before = shown().length;
+      chip("Currency").click();
+      const narrowed = shown();
+      const pressed = chip("Currency")?.getAttribute("aria-pressed");
+      const active = chip("Currency")?.classList.contains("active");
+      chip("Currency").click();
+      const widened = shown().length;
+      return { before, narrowed, pressed, active, widened };
+    });
+    check(
+      "a category chip narrows the wall to that family, and pressing it again widens it",
+      wareFilter.before === wareFilter.widened &&
+        wareFilter.before > wareFilter.narrowed.length &&
+        wareFilter.narrowed.length > 0 &&
+        wareFilter.narrowed.every((name) => ["Dust", "Sharpodonty"].includes(name)) &&
+        wareFilter.active &&
+        wareFilter.pressed === "true",
+      JSON.stringify(wareFilter)
+    );
+
+    const wareTyped = await page.evaluate(() => {
+      const input = document.querySelector('#planner-warehouse-grid [data-ware="Dust"]');
+      input.value = "5000";
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      const ware = document.getElementById("planner-farm-warehouse");
+      return {
+        saved: JSON.parse(localStorage.getItem("r1999_planner_warehouse_v1") || "null"),
+        total: plannerWarehouseTotal(),
+        active: ware.classList.contains("is-active"),
+        stock: ware.dataset.stock,
+        resetDisabled: document.getElementById("planner-warehouse-reset").disabled,
+      };
+    });
+    check(
+      "a typed figure is saved, and the route bar says the warehouse counts",
+      wareTyped.saved?.Dust === 5000 &&
+        wareTyped.total === 5000 &&
+        wareTyped.active &&
+        wareTyped.stock === "true" &&
+        !wareTyped.resetDisabled,
+      JSON.stringify(wareTyped)
+    );
+
+    const wareClamp = await page.evaluate(() => {
+      const input = document.querySelector('#planner-warehouse-grid [data-ware="Sharpodonty"]');
+      const type = (value) => {
+        input.value = value;
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        return input.value;
+      };
+      const negative = type("-5");
+      const negativeSaved = "Sharpodonty" in plannerWarehouse;
+      const tooBig = type("99999999");
+      const tooBigSaved = plannerWarehouse.Sharpodonty;
+      type("0");
+      return { negative, negativeSaved, tooBig, tooBigSaved, cleared: !("Sharpodonty" in plannerWarehouse) };
+    });
+    check(
+      "a rejected or oversized figure lands on the committed number, and zero clears the slot",
+      wareClamp.negative === "0" &&
+        !wareClamp.negativeSaved &&
+        wareClamp.tooBig === "999999" &&
+        wareClamp.tooBigSaved === 999999 &&
+        wareClamp.cleared,
+      JSON.stringify(wareClamp)
+    );
+
+    {
+      // Record the whole bill, and the route has nothing left to work out.
+      await page.evaluate(() => {
+        const bill = plannerFarmBill();
+        for (const [material, quantity] of Object.entries(bill)) {
+          const input = document.querySelector(
+            `#planner-warehouse-grid [data-ware="${CSS.escape(material)}"]`
+          );
+          if (!input) continue;
+          input.value = String(Math.ceil(quantity));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      });
+      await page.waitForFunction(
+        () => {
+          const total = document.getElementById("planner-farm-stamina");
+          if (!total) return false;
+          return Number((total.textContent || "").replace(/[^\d]/g, "")) === 0;
+        },
+        null,
+        { timeout: 25000 }
+      );
+      const wareCovered = await page.evaluate(() => ({
+        total: Number((document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")),
+        stages: document.querySelectorAll("#planner-farm .planner-farm-card").length,
+        shop: document.querySelectorAll("#planner-farm .planner-farm-shop-row").length,
+        active: document.getElementById("planner-farm-warehouse").classList.contains("is-active"),
+        stock: plannerWarehouseTotal(),
+      }));
+      check(
+        "a bill the warehouse already covers costs no stamina at all",
+        wareCovered.total === 0 &&
+          wareCovered.stages === 0 &&
+          wareCovered.shop === 0 &&
+          wareCovered.active &&
+          wareCovered.stock > 5000,
+        JSON.stringify(wareCovered)
+      );
+    }
+
+    const wareResetAsk = await page.evaluate(() => {
+      document.getElementById("planner-warehouse-reset").click();
+      const modal = document.getElementById("confirm-modal");
+      return {
+        open: getComputedStyle(modal).display !== "none",
+        title: document.getElementById("confirm-modal-title").textContent.trim(),
+        message: document.getElementById("confirm-modal-message").textContent.trim(),
+      };
+    });
+    check(
+      "Reset asks first",
+      wareResetAsk.open && /Reset warehouse/.test(wareResetAsk.title) && /Clear/.test(wareResetAsk.message),
+      JSON.stringify(wareResetAsk)
+    );
+    const wareResetCancel = await page.evaluate(() => {
+      document.getElementById("confirm-modal-btn-cancel").click();
+      return {
+        total: plannerWarehouseTotal(),
+        saved: JSON.parse(localStorage.getItem("r1999_planner_warehouse_v1") || "null"),
+        open: getComputedStyle(document.getElementById("confirm-modal")).display !== "none",
+      };
+    });
+    check(
+      "cancelling keeps the whole warehouse",
+      wareResetCancel.total > 5000 && Object.keys(wareResetCancel.saved || {}).length > 0 && !wareResetCancel.open,
+      JSON.stringify({ total: wareResetCancel.total, open: wareResetCancel.open })
+    );
+
+    await page.evaluate(() => {
+      document.getElementById("planner-warehouse-reset").click();
+      document.getElementById("confirm-modal-btn-yes").click();
+    });
+    const wareResetDone = await page.evaluate(() => ({
+      total: plannerWarehouseTotal(),
+      saved: JSON.parse(localStorage.getItem("r1999_planner_warehouse_v1") || "null"),
+      values: [...document.querySelectorAll("#planner-warehouse-grid [data-ware]")].map((el) => el.value),
+      resetDisabled: document.getElementById("planner-warehouse-reset").disabled,
+      active: document.getElementById("planner-farm-warehouse").classList.contains("is-active"),
+    }));
+    check(
+      "yes empties it: every box reads zero, the button greys out and the saved stock is gone",
+      wareResetDone.total === 0 &&
+        Object.keys(wareResetDone.saved || {}).length === 0 &&
+        wareResetDone.values.length > 60 &&
+        wareResetDone.values.every((value) => value === "0") &&
+        wareResetDone.resetDisabled &&
+        !wareResetDone.active,
+      JSON.stringify({ total: wareResetDone.total, saved: wareResetDone.saved, values: wareResetDone.values.length })
+    );
+    await page.waitForFunction(
+      () => {
+        const total = document.getElementById("planner-farm-stamina");
+        return (total && Number((total.textContent || "").replace(/[^\d]/g, "")) > 0) || !plannerFarmSolving;
+      },
+      null,
+      { timeout: 25000 }
+    );
+    await waitForRoute();
+    check(
+      "with the warehouse empty the route prices the whole bill again",
+      await page.evaluate(
+        () => Number((document.getElementById("planner-farm-stamina")?.textContent || "").replace(/[^\d]/g, "")) > 0
+      )
+    );
+
+    // Leave a figure behind: the reload below has to bring it back, and a partial
+    // hoard has to land on a route that is still worth solving.
+    const wareKept = await page.evaluate(() => {
+      const input = document.querySelector('#planner-warehouse-grid [data-ware="Dust"]');
+      input.value = "5000";
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      document.querySelector('#planner-warehouse-sheet [data-sheet]').click();
+      return {
+        closed: document.getElementById("planner-warehouse-sheet").hidden,
+        saved: JSON.parse(localStorage.getItem("r1999_planner_warehouse_v1") || "null"),
+      };
+    });
+    check(
+      "the sheet closes, leaving the stock saved",
+      wareKept.closed && wareKept.saved?.Dust === 5000,
+      JSON.stringify(wareKept)
+    );
+
+    // A chip selection is what a Reset acts on (Kornblume's own rule), so a partial
+    // selection clears only those families and leaves the rest of the stock alone.
+    const wareScoped = await page.evaluate(() => {
+      document.getElementById("planner-farm-warehouse").click();
+      const chip = (cat) => document.querySelector(`#planner-warehouse-filter [data-ware-cat="${cat}"]`);
+      const resonate = document.querySelector('#planner-warehouse-grid [data-ware="Hoarse Echo"]');
+      resonate.value = "3";
+      resonate.dispatchEvent(new Event("change", { bubbles: true }));
+      chip("Resonate Materials").click();
+      document.getElementById("planner-warehouse-reset").click();
+      const message = document.getElementById("confirm-modal-message").textContent.trim();
+      document.getElementById("confirm-modal-btn-yes").click();
+      const afterChip = { ...plannerWarehouse };
+      const saved = JSON.parse(localStorage.getItem("r1999_planner_warehouse_v1") || "null");
+      // With no chip pressed the Reset is the whole warehouse again.
+      chip("Resonate Materials").click();
+      document.getElementById("planner-warehouse-reset").click();
+      const fullMessage = document.getElementById("confirm-modal-message").textContent.trim();
+      document.getElementById("confirm-modal-btn-cancel").click();
+      document.querySelector('#planner-warehouse-sheet [data-sheet]').click();
+      return { message, fullMessage, afterChip, saved };
+    });
+    check(
+      "a pressed chip scopes the Reset to that family; with none pressed it clears everything",
+      /selected categories/.test(wareScoped.message) &&
+        !("Hoarse Echo" in wareScoped.afterChip) &&
+        wareScoped.afterChip.Dust === 5000 &&
+        !("Hoarse Echo" in (wareScoped.saved || {})) &&
+        wareScoped.saved?.Dust === 5000 &&
+        /every quantity/.test(wareScoped.fullMessage),
+      JSON.stringify(wareScoped)
+    );
+
     // ---- the Goal lightbox ----------------------------------------------
     const lucyBill = await (async () => {
       await selectChar("Lucy");
@@ -4734,6 +5118,8 @@ try {
       activity: document.getElementById("planner-activity-value").textContent.trim(),
       wild: document.getElementById("planner-farm-wilderness")?.classList.contains("is-active"),
       wildBlob: JSON.parse(localStorage.getItem("r1999_planner_wilderness_v1") || "null"),
+      ware: document.getElementById("planner-farm-warehouse")?.classList.contains("is-active"),
+      wareBlob: JSON.parse(localStorage.getItem("r1999_planner_warehouse_v1") || "null"),
       saved: localStorage.getItem("r1999_planner_characters_v1"),
     }));
     check(
@@ -4748,6 +5134,11 @@ try {
       "the Wilderness board comes back switched on",
       restored.wild === true && restored.wildBlob?.enabled === true && restored.wildBlob?.vigor === 0,
       JSON.stringify({ wild: restored.wild, blob: restored.wildBlob })
+    );
+    check(
+      "the warehouse comes back too, and the route is priced against it",
+      restored.ware === true && restored.wareBlob?.Dust === 5000,
+      JSON.stringify({ ware: restored.ware, blob: restored.wareBlob })
     );
     await waitForRoute();
     check(
@@ -4772,6 +5163,7 @@ try {
         title: document.querySelector("#planner-farm .archetype-section-title span").textContent,
         total: document.querySelector(".planner-farm-total-label").textContent,
         activity: document.getElementById("planner-activity-perday").textContent.trim(),
+        warehouse: document.getElementById("planner-farm-warehouse").textContent.trim(),
         item: document.querySelector("#planner-goal .planner-mat")?.dataset.item || "",
       };
     });
@@ -4779,6 +5171,11 @@ try {
       "the Character tab is translated",
       /[\u4e00-\u9fff]/.test(cnChar.tab + cnChar.add + cnChar.goal + cnChar.hint + cnChar.title + cnChar.total + cnChar.activity),
       JSON.stringify(cnChar)
+    );
+    check(
+      "the Warehouse switch is named in Chinese too",
+      cnChar.warehouse === "仓库",
+      JSON.stringify({ warehouse: cnChar.warehouse })
     );
     await page.evaluate(async () => {
       document.querySelector('.lang-btn[data-lang="en"]').click();
@@ -4808,6 +5205,8 @@ try {
         // And the two places the reader sees them: the toolbar and the route bar.
         toolButton: document.getElementById("planner-activity-btn").textContent.replace(/\s+/g, " ").trim(),
         routeToggle: document.getElementById("planner-farm-wilderness").textContent.trim(),
+        warehouse: t("planner.warehouse"),
+        warehouseRoute: document.getElementById("planner-farm-warehouse").textContent.trim(),
         // Something else in the same tab, to prove the locale really switched.
         title: t("planner.farmTitle"),
       };
@@ -4836,6 +5235,11 @@ try {
         viChar.markets === "Sharpodonty Markets" &&
         viChar.vigor === "Vigor",
       JSON.stringify(viChar)
+    );
+    check(
+      "the Warehouse switch reads in Vietnamese, beside the English Wilderness",
+      viChar.warehouse === "Kho đồ" && viChar.warehouseRoute === "Kho đồ",
+      JSON.stringify({ warehouse: viChar.warehouse, route: viChar.warehouseRoute })
     );
     check(
       "the rest of the tab is still Vietnamese",
@@ -4975,6 +5379,39 @@ try {
       JSON.stringify(phoneWild)
     );
     await page.evaluate(() => document.querySelector('#planner-wilderness-sheet [data-sheet]').click());
+    await page.waitForTimeout(200);
+    await page.evaluate(() => document.getElementById("planner-farm-warehouse").click());
+    await page.waitForTimeout(300);
+    const phoneWare = await page.evaluate(() => {
+      const sheet = document.getElementById("planner-warehouse-sheet");
+      const card = sheet.querySelector(".planner-sheet-card");
+      const grid = document.getElementById("planner-warehouse-grid");
+      const inputs = [...grid.querySelectorAll("[data-ware]")];
+      const chips = [...document.querySelectorAll("#planner-warehouse-filter [data-ware-cat]")];
+      return {
+        open: !sheet.hidden,
+        position: getComputedStyle(sheet).position,
+        cardFits: card.getBoundingClientRect().width <= window.innerWidth,
+        sideways: card.scrollWidth <= card.clientWidth + 1,
+        inputsFit: inputs.every((el) => el.getBoundingClientRect().right <= window.innerWidth),
+        chipsFit: chips.length > 0 && chips.every((el) => el.getBoundingClientRect().right <= window.innerWidth),
+        columns: getComputedStyle(grid).gridTemplateColumns.split(" ").length,
+        sticker: Math.round(grid.querySelector(".planner-warehouse-sticker").getBoundingClientRect().width),
+      };
+    });
+    check(
+      "the Warehouse wall fits a phone, its slots stepped down one size",
+      phoneWare.open &&
+        phoneWare.position === "fixed" &&
+        phoneWare.cardFits &&
+        phoneWare.sideways &&
+        phoneWare.inputsFit &&
+        phoneWare.chipsFit &&
+        phoneWare.columns >= 3 &&
+        phoneWare.sticker === 54,
+      JSON.stringify(phoneWare)
+    );
+    await page.evaluate(() => document.querySelector('#planner-warehouse-sheet [data-sheet]').click());
     await page.waitForTimeout(200);
     await page.evaluate(() => document.getElementById("planner-char-add").click());
     await page.waitForTimeout(300);
