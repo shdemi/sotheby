@@ -80,7 +80,7 @@ without the local tooling folder.
 | **Characters** | rarity, afflatus, resonance shape, euphoria (both tiers + CN-only flag), exclude / collab / future-sight flags, CN name, name transfer. Sorted newest first, by ArcanistMap id descending |
 | **Psychubes** | name, CN name, release patch, tags, CN-only flag, plus **import a new icon**. Rarity 6 first |
 | **Team Presets** | add / delete presets, drag presets and the members inside a variant, per-member euphoria, substitutes with their own psychube and euphoria |
-| **Rotations** | the card plan: drag AP slots and skill cards into a round, tag slots, add bracket callouts, mark ultimate cards |
+| **Rotations** | the card plan: drag AP slots and skill cards into a round, tag slots, add bracket callouts, mark ultimate cards; export one plan as a `.rotation.json` and import one back |
 | **Patterns & Skins** | Future Sight skins and name transfer |
 | **Review** | validation report and the exact pending diff |
 
@@ -153,6 +153,41 @@ actions.
   and the text; **Pick** re-picks the range by clicking two cards. Esc cancels the
   pick. Notes whose ranges do not overlap share a lane, so two callouts over
   different cards sit side by side.
+
+#### Exporting and importing a rotation
+
+Build plans get passed around, so one rotation can leave as its own file: every
+row in the rotation list carries an **Export** button, and the detail head has
+**Export rotation** for the plan already open. Both download
+`<rotationId>.rotation.json`:
+
+```json
+{ "kind": "sothebys-mansion.rotation", "version": 1, "exportedAt": "…",
+  "rotation": { "id": "beryl-w-isolde-p0-r10", "…": "…" } }
+```
+
+The file holds the rotation, not the whole `rotations.json`, so the receiver adds
+one plan and their own list is left alone. It names characters and skills, not
+images, so it opens in any checkout of the repository.
+
+**Import rotation** (beside **+ New rotation**) takes such a file — dropped on the
+drop zone, chosen with the picker, or pasted into the box — and appends it to the
+end of `rotations.json` as a pending change. It is tolerant on purpose:
+`readRotationTransfer()` accepts the export file, a bare rotation object, a plain
+array and a whole `rotations.json`. Everything is then rewritten against this
+dataset by `normalizeImportedRotation()`:
+
+- an id that is already taken gains a `-2` / `-3` suffix (`guideRotationId()`);
+- an unknown character, archetype, tuning or slot tag is **dropped**, and an
+  unknown psychube is kept as written — none of it can block the ZIP, so each drop
+  is reported in the dialog instead;
+- a callout or round note that points past the cards it can cover is clamped;
+- cards are trimmed to what their slot layout holds, and a Tuning slot keeps its
+  `Tuning_S1` / `Tuning_S2` card.
+
+The dialog stays open after an import, so several files can go in one after
+another, and the report stays until the next one. Esc, the backdrop and **Close**
+shut it.
 
 Card frames live in `GUIDE_CARD_FRAMES` (`editor/model.js`) and `ROT_CARD_FRAMES`
 (`app.js`), one entry per frame:
@@ -297,7 +332,8 @@ npm run test:ui      # just the browser suite
 | `icon.test.mjs` | Geometry and frame detection in Node; the browser composite compared against `compose.py`'s output — every difference must be premultiplied-alpha rounding on the art's top edge, never a colour shift or a footer mistake; `editor/frame.png` loads and is the default |
 | `e2e.test.mjs` | The save path: copies `data/` to a scratch directory, applies a realistic session, then checks untouched files are byte-identical, diffs stay minimal, and a fresh load sees every change |
 | `ui.test.mjs` | Runs the real page in a browser: euphoria buttons, the essential checkbox, substitute euphoria and shape pickers all re-render when clicked; focus survives the re-render; the change reaches the Review diff; no Open folder control exists; noindex is set; **the download really is a ZIP containing the changed file at its repository path**; no console errors |
-| `rotation-ui.test.mjs` | The card-plan editor: the round header offers no AP buttons; the palette opens on AP; dropping a stamp inserts an empty slot; dropping a card fills it; a tag toggles on and off; **+ Note** picks a slot range and keeps its text; no page errors |
+| `rotation-ui.test.mjs` | The card-plan editor: the round header offers no AP buttons; the palette opens on AP; dropping a stamp inserts an empty slot; dropping a card fills it; a tag toggles on and off; **+ Note** picks a slot range and keeps its text; every row exports its own `.rotation.json` (a real download, correct envelope, the row is not selected by the press); the detail head exports the open plan; the Import dialog opens from the list, appends the pasted rotation at the end, reports an unknown member instead of writing it, clears the box and closes on Esc; no page errors |
+| `rotation-transfer.test.mjs` | Export / import without a browser: the envelope's kind, version and timestamp; **every shipped rotation round-trips** (same plan, warning-free, a fresh id, still valid); a colliding id becomes `-2` then `-3` and two rotations in one file are told apart; unknown characters / archetypes / tunings / tags are dropped and reported while an unknown psychube is kept; callouts and round notes are clamped; text, tuning and legacy slot shapes; every accepted payload (file, bare object, pasted text, array, whole `rotations.json`) and every refused one; only `rotations.json` changes |
 
 The UI suite exists because of a bug a model-level test cannot see: the data was
 correct and the file was correctly marked dirty, but the control kept its old

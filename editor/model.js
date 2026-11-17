@@ -230,6 +230,13 @@ export function guideSlotLayout(slot) {
   return LEGACY_SLOT_TAGS[type] ? "normal" : type;
 }
 
+/** How many cards a layout holds: one, two, or three for the OR variants. */
+export function guideSlotCardLimit(layout) {
+  if (layout === "double_or" || layout === "or3") return 3;
+  if (layout === "or") return 2;
+  return 1;
+}
+
 /** A slot's tags, including the one a legacy type implies. */
 export function guideSlotTags(slot) {
   const tags = Array.isArray(slot?.tags) ? slot.tags.filter((tag) => typeof tag === "string") : [];
@@ -256,6 +263,115 @@ export const GUIDE_ICON_TAGS = [
 
 /** The four tunings a rotation can be built around. */
 export const TUNINGS = ["First Melody", "Grand Orchestra", "Unfinished Tune", "Atonal Sequence"];
+
+/* ------------------------------------------------------------------ *
+ * Rotation transfer — one rotation exported, one imported
+ * ------------------------------------------------------------------ */
+
+/**
+ * The marker on an exported rotation.
+ *
+ * A rotation is the one piece of content that is written by somebody else and
+ * still has to arrive intact, so it travels as its own small file: export one
+ * rotation, hand the file over, import it in another editor. Nothing outside the
+ * file is needed — cards name a character and a skill, not an image — so the same
+ * file works in any checkout of this repository.
+ */
+export const ROTATION_TRANSFER_KIND = "sothebys-mansion.rotation";
+export const ROTATION_TRANSFER_VERSION = 1;
+
+/** The languages a note can be written in, matching the editor's note switch. */
+export const NOTE_TEXT_LANGS = ["en", "vi", "cn"];
+
+/** One rotation as the file a share hands over. */
+export function rotationTransferFile(rotation, when = new Date()) {
+  return {
+    kind: ROTATION_TRANSFER_KIND,
+    version: ROTATION_TRANSFER_VERSION,
+    exportedAt: when.toISOString(),
+    rotation: JSON.parse(JSON.stringify(rotation)),
+  };
+}
+
+/**
+ * The rotations inside whatever was pasted or dropped.
+ *
+ * Tolerant on purpose, because people pass these around in chat: an export file,
+ * a bare rotation object, a whole `rotations.json` and a plain array all land
+ * here. Only an unreadable file throws.
+ *
+ * @returns {object[]}
+ */
+export function readRotationTransfer(input) {
+  let value = input;
+  if (typeof value === "string") {
+    const text = value.trim();
+    if (!text) throw new Error("There is nothing to import.");
+    try {
+      value = JSON.parse(text);
+    } catch (e) {
+      throw new Error(`That is not valid JSON (${e.message}).`);
+    }
+  }
+  if (Array.isArray(value)) {
+    if (value.length === 0) throw new Error("The list is empty.");
+    return value;
+  }
+  if (!value || typeof value !== "object") throw new Error("Expected a rotation object.");
+  if (value.rotation && typeof value.rotation === "object") return [value.rotation];
+  if (Array.isArray(value.rotations)) {
+    if (value.rotations.length === 0) throw new Error("That file has no rotations.");
+    return value.rotations;
+  }
+  if (value.id || value.name || value.members || value.rounds) return [value];
+  throw new Error("No rotation in there — expected a .rotation.json export, or an entry from rotations.json.");
+}
+
+/**
+ * A note as the editor writes it: plain text, or `{ en, vi, cn }`. Anything else
+ * becomes "" so a malformed note cannot reach the file.
+ */
+export function normalizeNoteText(value) {
+  if (typeof value === "string") return value.trim() ? value : "";
+  if (!value || typeof value !== "object" || Array.isArray(value)) return "";
+  const out = {};
+  for (const lang of NOTE_TEXT_LANGS) {
+    const text = value[lang];
+    if (typeof text === "string" && text.trim()) out[lang] = text;
+  }
+  return Object.keys(out).length ? out : "";
+}
+
+/**
+ * A bracket callout, trimmed to the cards or rounds it can point at. Returns null
+ * when there is nothing left for it to underline.
+ */
+export function normalizeImportedCallout(source, count, what, label, warnings) {
+  if (!source || typeof source !== "object") return null;
+  if (count === 0) {
+    warnings.push(`${label}: a callout covered no ${what}s, so it was dropped.`);
+    return null;
+  }
+  const from = Math.round(Number(source.from));
+  const to = Math.round(Number(source.to));
+  if (!Number.isFinite(from) || !Number.isFinite(to)) {
+    warnings.push(`${label}: a callout had no ${what} range, so it was dropped.`);
+    return null;
+  }
+  const low = Math.min(from, to);
+  const high = Math.max(from, to);
+  const start = Math.max(0, Math.min(count - 1, low));
+  const end = Math.max(0, Math.min(count - 1, high));
+  if (start !== low || end !== high) {
+    warnings.push(`${label}: a callout pointed outside the ${what}s it can cover, so it was trimmed.`);
+  }
+  const callout = { from: start, to: end };
+  if (GUIDE_ANNOTATION_STYLES.includes(source.style)) callout.style = source.style;
+  else if (source.style) warnings.push(`${label}: callout style "${source.style}" is unknown, so it was cleared.`);
+  const text = normalizeNoteText(source.text);
+  if (text !== "") callout.text = text;
+  return callout;
+}
 
 /* ------------------------------------------------------------------ *
  * Name resolution (mirrors app.js)
@@ -1117,13 +1233,20 @@ export class Model {
   }
 
   /** A URL-safe id that does not collide with an existing rotation. */
-  guideRotationId(name) {
+  /**
+   * A URL-safe id that does not collide with an existing rotation.
+   *
+   * `extra` holds ids that are not in the file yet — an import hands out several
+   * ids before any of them is written, so they have to count as taken.
+   */
+  guideRotationId(name, extra) {
     const base =
       String(name || "rotation")
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "") || "rotation";
     const taken = new Set(this.guideRotations().map((r) => r && r.id));
+    for (const id of extra || []) taken.add(id);
     let id = base;
     let n = 2;
     while (taken.has(id)) id = `${base}-${n++}`;
@@ -1180,6 +1303,181 @@ export class Model {
     doc.insertAt(["rotations"], index + 1, copy);
     this.reload();
     return copyId;
+  }
+
+  /* ---- guide: rotation transfer ---- */
+
+  /** One rotation as the file the Export button downloads, or null. */
+  exportGuideRotation(id) {
+    const rotation = this.guideRotation(id);
+    return rotation ? rotationTransferFile(rotation) : null;
+  }
+
+  /**
+   * Appends rotations from an export file (or a pasted payload) to
+   * `rotations.json` and returns the ids it wrote.
+   *
+   * Everything is rewritten against the local dataset first. A plan exported
+   * from somebody else's checkout can name a character this one does not have,
+   * and an unknown name would fail validation and block the ZIP, so such an
+   * entry is dropped and reported in `warnings` instead of being written.
+   *
+   * @param {string|object} input a `.rotation.json` file, pasted text, or a parsed value
+   * @returns {{ids: string[], warnings: string[]}}
+   */
+  importGuideRotations(input) {
+    const doc = this.doc("rotations.json");
+    if (!doc) throw new Error("rotations.json is not loaded.");
+    const incoming = readRotationTransfer(input);
+
+    const warnings = [];
+    // Ids are handed out before anything is written, so two rotations in the
+    // same file cannot land on the same id.
+    const taken = new Set(this.guideRotations().map((rotation) => rotation && rotation.id));
+    const prepared = [];
+    for (const source of incoming) {
+      if (!source || typeof source !== "object" || Array.isArray(source)) {
+        warnings.push("Skipped an entry that is not a rotation object.");
+        continue;
+      }
+      prepared.push(this.normalizeImportedRotation(source, taken, warnings));
+    }
+    if (prepared.length === 0) return { ids: [], warnings };
+
+    if (!doc.nodeAt(["rotations"])) doc.setProperty([], "rotations", []);
+    for (const rotation of prepared) doc.append(["rotations"], rotation);
+    this.reload();
+    return { ids: prepared.map((rotation) => rotation.id), warnings };
+  }
+
+  /**
+   * One incoming rotation, rewritten into the shape this repository stores: the
+   * fields the editor knows, in the order `rotations.json` writes them, with
+   * every name mapped to a local one.
+   */
+  normalizeImportedRotation(source, taken, warnings) {
+    const name = String(source.name || source.id || "").trim() || "Imported rotation";
+    const label = `"${name}"`;
+    if (!String(source.name || "").trim()) {
+      warnings.push(`${label}: the file had no name, so it was called "Imported rotation".`);
+    }
+
+    const id = this.guideRotationId(source.id || name, taken);
+    taken.add(id);
+
+    const archetypes = [];
+    for (const tag of Array.isArray(source.archetypes) ? source.archetypes : source.archetype ? [source.archetype] : []) {
+      if (!ROTATION_ARCHETYPES.includes(tag)) {
+        warnings.push(`${label}: archetype "${tag}" does not exist here, so it was dropped.`);
+        continue;
+      }
+      // Raid and Focused Flashback exclude each other; the first one wins.
+      if (EXCLUSIVE_ARCHETYPES.includes(tag) && archetypes.some((t) => EXCLUSIVE_ARCHETYPES.includes(t))) {
+        warnings.push(`${label}: "${tag}" replaces the exclusive archetype already set, so it was dropped.`);
+        continue;
+      }
+      if (!archetypes.includes(tag)) archetypes.push(tag);
+    }
+
+    let tuning = String(source.tuning || "");
+    if (tuning && !TUNINGS.includes(tuning)) {
+      warnings.push(`${label}: tuning "${tuning}" is not one of the four, so it was cleared.`);
+      tuning = "";
+    }
+
+    const members = [];
+    for (const entry of Array.isArray(source.members) ? source.members : []) {
+      const raw = typeof entry === "string" ? entry : entry && entry.character;
+      const character = this.resolve(raw);
+      if (!character || !this.characters.includes(character)) {
+        if (raw) warnings.push(`${label}: member "${raw}" is not a character here, so it was dropped.`);
+        continue;
+      }
+      const member = { character };
+      const psychube = entry && typeof entry === "object" ? String(entry.psychube || "").trim() : "";
+      if (psychube) member.psychube = this.matchImportedPsychube(psychube, label, warnings);
+      const portrait = Math.round(Number(entry && typeof entry === "object" ? entry.portrait : 0) || 0);
+      if (portrait > 0) member.portrait = Math.min(portrait, 5);
+      members.push(member);
+    }
+
+    const rounds = [];
+    const sourceRounds = Array.isArray(source.rounds)
+      ? source.rounds
+      : Array.isArray(source.turns)
+        ? source.turns.map((turn) => ({
+            note: "",
+            slots: (Array.isArray(turn && turn.cards) ? turn.cards : []).map((card) => ({ cards: card ? [card] : [] })),
+          }))
+        : [];
+    for (const sourceRound of sourceRounds) {
+      const round = sourceRound && typeof sourceRound === "object" ? sourceRound : {};
+      const roundLabel = `${label} round ${rounds.length + 1}`;
+      const slots = [];
+      for (const sourceSlot of Array.isArray(round.slots) ? round.slots : []) {
+        const slot = this.normalizeSlot(sourceSlot);
+        if (Array.isArray(slot.tags)) {
+          slot.tags = slot.tags.filter((tag) => {
+            if (GUIDE_SLOT_TAGS.some((entry) => entry.key === tag)) return true;
+            warnings.push(`${roundLabel}: tag "${tag}" does not exist here, so it was dropped.`);
+            return false;
+          });
+          if (slot.tags.length === 0) delete slot.tags;
+          // The custom tag draws its words from `tagText`; without it the plate is blank.
+          if (!slot.tags?.includes(GUIDE_SLOT_TAG_TEXT_KEY)) delete slot.tagText;
+        }
+        // A Tuning slot carries S1 or S2 as its card, and that card is the whole
+        // point of the stamp — `normalizeSlot` drops cards on text-like slots, so
+        // the one the editor itself writes has to be put back.
+        if (slot.type === "tuning") {
+          const tuning = (Array.isArray(sourceSlot && sourceSlot.cards) ? sourceSlot.cards : []).find((card) =>
+            /\/Tuning_S\d+\.png$/i.test(String(card && card.special))
+          );
+          if (tuning) slot.cards = [{ special: String(tuning.special) }];
+        }
+        if (Array.isArray(slot.cards)) {
+          slot.cards = slot.cards.filter((card) => {
+            if (card.special || this.characters.includes(card.character)) return true;
+            warnings.push(`${roundLabel}: card "${card.character}" is not a character here, so it was dropped.`);
+            return false;
+          });
+          const limit = guideSlotCardLimit(slot.type || "normal");
+          if (slot.cards.length > limit) {
+            warnings.push(`${roundLabel}: a ${slot.type || "normal"} slot holds ${limit} card(s), so the extras were dropped.`);
+            slot.cards = slot.cards.slice(0, limit);
+          }
+        }
+        slots.push(slot);
+      }
+
+      const entry = { note: normalizeNoteText(round.note), slots };
+      const annotations = [];
+      for (const sourceNote of Array.isArray(round.annotations) ? round.annotations : []) {
+        const annotation = normalizeImportedCallout(sourceNote, slots.length, "slot", roundLabel, warnings);
+        if (annotation) annotations.push(annotation);
+      }
+      if (annotations.length) entry.annotations = annotations;
+      rounds.push(entry);
+    }
+
+    const roundNotes = [];
+    for (const sourceNote of Array.isArray(source.roundNotes) ? source.roundNotes : []) {
+      const note = normalizeImportedCallout(sourceNote, rounds.length, "round", label, warnings);
+      if (note) roundNotes.push(note);
+    }
+
+    const rotation = { id, name, archetypes, tuning, members, notes: normalizeNoteText(source.notes), rounds };
+    if (roundNotes.length) rotation.roundNotes = roundNotes;
+    return rotation;
+  }
+
+  /** The psychube name as `psychube_id.json` spells it, or the raw value. */
+  matchImportedPsychube(value, label, warnings) {
+    const key = String(value).trim().toLowerCase();
+    const hit = this.psychubes.find((psychube) => String(psychube.name).toLowerCase() === key);
+    if (hit) return hit.name;
+    warnings.push(`${label}: psychube "${value}" is not in psychube_id.json; it was kept as written.`);
+    return String(value).trim();
   }
 
   /** Copies a round, places the copy right after it and returns its new index. */
@@ -1839,7 +2137,14 @@ export class Model {
 
   normalizeCard(card) {
     if (!card) return null;
-    if (card.special) return { special: String(card.special) };
+    if (card.special) {
+      // A stand-in card ("Any", "Move") can carry a surface too: Ramona's plan
+      // lays her decoration over the generic card, so the surface has to survive
+      // a round trip as well.
+      const entry = { special: String(card.special) };
+      if (guideCardSurface(card.surface)) entry.surface = card.surface;
+      return entry;
+    }
     if (!card.character) return null;
     const entry = { character: this.resolve(card.character) || String(card.character), skill: Number(card.skill) || 1 };
     // The exact icon variant (e.g. an alternative card) is pinned when known.

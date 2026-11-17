@@ -17,6 +17,7 @@ const SUITES = [
   ["e2e", "e2e.test.mjs"],
   ["ui", "ui.test.mjs"],
   ["rotation-ui", "rotation-ui.test.mjs"],
+  ["rotation-transfer", "rotation-transfer.test.mjs"],
   ["codes", "codes.test.mjs"],
   ["og", "og.test.mjs"],
 ];

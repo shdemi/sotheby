@@ -2982,6 +2982,18 @@ function renderRotationList() {
       el("div", { class: "row-flags" }, rotationMembers(rotation).slice(0, 4).map((member) =>
         el("img", { src: state.model.character(member.character).avatar, class: "row-face", alt: "", title: member.character })
       )),
+      // Every rotation carries its own Export: a plan is the unit people pass
+      // around, so it leaves as its own file, not as the whole rotations.json.
+      el("button", {
+        class: "row-act",
+        text: "Export",
+        title: `Download “${rotation.name || rotation.id}” as a .rotation.json file`,
+        "aria-label": `Export ${rotation.name || rotation.id}`,
+        onclick: (e) => {
+          e.stopPropagation();
+          exportRotation(rotation.id);
+        },
+      }),
     ]);
 
     // Same pattern as the team presets list: only the handle starts a drag so
@@ -3051,6 +3063,13 @@ function renderRotationList() {
           afterEdit();
         },
       }),
+      // One Import for the whole list: the file says which rotation it carries.
+      el("button", {
+        class: "chip",
+        text: "Import rotation",
+        title: "Import a .rotation.json exported from another editor",
+        onclick: openRotationImport,
+      }),
     ])
   );
 
@@ -3058,6 +3077,117 @@ function renderRotationList() {
     state.guide.rotation = rotations[0] ? rotations[0].id : null;
   }
   renderRotationDetail();
+}
+
+/* ------------------------------------------------------------------ *
+ * Rotation transfer — one rotation out as a file, one back in
+ * ------------------------------------------------------------------ */
+
+/**
+ * Downloads one rotation as the file the Import button reads back.
+ *
+ * The file holds the rotation, not the whole `rotations.json`: the receiver
+ * imports one plan and their own list is left alone. Nothing outside the file is
+ * needed — a card names a character and a skill, not an image — so the same file
+ * works in any checkout of this repository.
+ */
+function exportRotation(id) {
+  const payload = state.model.exportGuideRotation(id);
+  if (!payload) {
+    banner("That rotation is no longer in the list.");
+    return;
+  }
+  const filename = `${payload.rotation.id}.rotation.json`;
+  files.downloadFile(filename, `${JSON.stringify(payload, null, 2)}\n`);
+  banner(`Exported “${payload.rotation.name || payload.rotation.id}” as ${filename}.`, "info");
+}
+
+/** Opens the import dialog with an empty box and no leftover report. */
+function openRotationImport() {
+  const dialog = $("rotation-import");
+  if (!dialog) return;
+  $("rotation-import-text").value = "";
+  const report = $("rotation-import-report");
+  report.hidden = true;
+  report.replaceChildren();
+  dialog.hidden = false;
+  $("rotation-import-text").focus();
+}
+
+function closeRotationImport() {
+  const dialog = $("rotation-import");
+  if (dialog) dialog.hidden = true;
+}
+
+function rotationImportLine(text, kind) {
+  return el("div", { class: `import-line ${kind}`, text });
+}
+
+/**
+ * Imports whatever is in the box.
+ *
+ * The dialog stays open afterwards, so several files can be dropped one after
+ * another; the report stays until the next import so the ids that changed can be
+ * read.
+ */
+function runRotationImport() {
+  const report = $("rotation-import-report");
+  const text = $("rotation-import-text").value;
+  report.replaceChildren();
+  report.hidden = false;
+
+  if (!text.trim()) {
+    report.appendChild(rotationImportLine("Drop a file or paste the JSON first.", "err"));
+    return;
+  }
+
+  let result;
+  try {
+    result = state.model.importGuideRotations(text);
+  } catch (e) {
+    report.appendChild(rotationImportLine(e.message, "err"));
+    return;
+  }
+
+  if (result.ids.length === 0) {
+    report.appendChild(rotationImportLine("Nothing could be imported — every entry in there was skipped.", "err"));
+    for (const warning of result.warnings) report.appendChild(rotationImportLine(warning, "warn"));
+    return;
+  }
+
+  const names = result.ids.map((id) => (state.model.guideRotation(id) || {}).name || id);
+  report.appendChild(
+    rotationImportLine(
+      result.ids.length === 1
+        ? `Imported “${names[0]}” as ${result.ids[0]}, at the end of the list, as a pending change.`
+        : `Imported ${result.ids.length} rotations: ${names.join(", ")}.`,
+      "ok"
+    )
+  );
+  for (const warning of result.warnings) report.appendChild(rotationImportLine(warning, "warn"));
+
+  state.guide.rotation = result.ids[0] || state.guide.rotation;
+  state.guide.hand = null;
+  state.guide.notePick = null;
+  $("rotation-import-text").value = "";
+  afterEdit();
+  banner(`Imported ${result.ids.length} rotation(s) into rotations.json. Download the ZIP to keep them.`, "info");
+}
+
+/** Fills the box from a dropped or chosen file, then imports it straight away. */
+function loadRotationImportFile(file) {
+  if (!file) return;
+  const report = $("rotation-import-report");
+  const reader = new FileReader();
+  reader.onload = () => {
+    $("rotation-import-text").value = String(reader.result || "");
+    runRotationImport();
+  };
+  reader.onerror = () => {
+    report.hidden = false;
+    report.replaceChildren(rotationImportLine(`Could not read ${file.name}.`, "err"));
+  };
+  reader.readAsText(file);
 }
 
 /** The panel's position and size survive a reload of the page. */
@@ -3438,6 +3568,12 @@ function renderRotationDetail() {
         el("div", { class: "detail-sub", text: `${rounds.length} round(s) → rotations.json` }),
       ]),
       renderNoteLangSwitch(),
+      el("button", {
+        class: "btn btn-sm",
+        text: "Export rotation",
+        title: "Download this rotation as a .rotation.json file to hand to another editor",
+        onclick: () => exportRotation(id),
+      }),
       el("button", {
         class: "btn btn-sm",
         text: "Duplicate rotation",
@@ -4673,7 +4809,48 @@ function wire() {
   $("picker").addEventListener("click", (e) => {
     if (e.target === $("picker")) closePicker();
   });
+
+  // Rotation import: a dropped file imports itself, pasted JSON waits for the button.
+  const importDialog = $("rotation-import");
+  if (importDialog) {
+    importDialog.addEventListener("click", (e) => {
+      if (e.target === importDialog) closeRotationImport();
+    });
+    $("rotation-import-cancel").addEventListener("click", closeRotationImport);
+    $("rotation-import-go").addEventListener("click", runRotationImport);
+    $("rotation-import-file").addEventListener("change", (e) => {
+      loadRotationImportFile(e.target.files && e.target.files[0]);
+      e.target.value = "";
+    });
+    const drop = $("rotation-import-drop");
+    drop.addEventListener("click", () => $("rotation-import-file").click());
+    drop.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        $("rotation-import-file").click();
+      }
+    });
+    for (const type of ["dragenter", "dragover"]) {
+      drop.addEventListener(type, (e) => {
+        e.preventDefault();
+        drop.classList.add("over");
+      });
+    }
+    for (const type of ["dragleave", "dragend"]) {
+      drop.addEventListener(type, () => drop.classList.remove("over"));
+    }
+    drop.addEventListener("drop", (e) => {
+      e.preventDefault();
+      drop.classList.remove("over");
+      loadRotationImportFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+    });
+  }
+
   document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && $("rotation-import") && !$("rotation-import").hidden) {
+      closeRotationImport();
+      return;
+    }
     if (e.key === "Escape" && state.picker) closePicker();
     if (e.key === "Escape" && state.guide.notePick) {
       state.guide.notePick = null;

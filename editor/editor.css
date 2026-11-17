@@ -423,6 +423,28 @@ body {
 }
 .drag-handle:active { cursor: grabbing; }
 
+/* A small per-row action: the rotation's own Export button. */
+.row-act {
+  flex: none;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.row-act:hover {
+  color: var(--text);
+  border-color: var(--gold-soft);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 /* substitute editor (legacy rules removed; see the team slots block above) */
 
 /* icon import */
@@ -449,7 +471,8 @@ body {
   font-size: 12px;
   cursor: pointer;
 }
-.drop-zone:hover, .drop-zone.over { border-color: var(--gold-soft); color: var(--text); }
+.drop-zone:hover, .drop-zone.over, .drop-zone:focus-visible { border-color: var(--gold-soft); color: var(--text); }
+.drop-zone:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 2px; }
 input[type="file"] { display: none; }
 
 .wide { padding: 18px 22px; max-width: 1000px; }
@@ -696,6 +719,8 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
 }
 .modal-head { display: flex; gap: 10px; padding: 12px; border-bottom: 1px solid var(--border-subtle); flex: none; }
 .modal-head input { flex: 1; }
+.modal-title { flex: 1; font-size: 14px; font-weight: 600; align-self: center; }
+.modal-narrow { width: min(620px, 92vw); }
 .modal-body { overflow: auto; padding: 12px; }
 .picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
 .picker-grid button {
@@ -720,6 +745,24 @@ textarea { width: 100%; font-family: var(--mono); font-size: 12px; resize: verti
   margin: 0 auto 5px;
 }
 .picker-grid .n { font-size: 11px; line-height: 1.25; word-break: break-word; }
+
+/* rotation import: drop zone, paste box, and the line-per-outcome report */
+.modal-narrow .drop-zone { margin-bottom: 14px; }
+.import-report {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.import-line { line-height: 1.45; word-break: break-word; }
+.import-line.ok { color: var(--ok); }
+.import-line.warn { color: var(--warn); }
+.import-line.err { color: var(--bad); }
 
 /* scrollbars */
 ::-webkit-scrollbar { width: 10px; height: 10px; }

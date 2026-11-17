@@ -453,6 +453,91 @@ const otherArt = await page.evaluate(() =>
 );
 check("dropping Move fills the slot with its art", otherArt === "../images/card_modulo/Move.png", String(otherArt));
 
+console.log("\n=== every rotation exports itself, and one can be imported back ===");
+// The list: one Export per row, and a single Import that serves the whole list.
+const transferList = await page.evaluate(() => {
+  const rows = [...document.querySelectorAll("#rotation-list-body .row")];
+  return {
+    rows: rows.length,
+    exports: rows.filter((row) => row.querySelector(".row-act")?.textContent === "Export").length,
+    chips: [...document.querySelectorAll("#rotation-list .list-filters .chip")].map((chip) => chip.textContent),
+  };
+});
+check(
+  "every row carries its own Export",
+  transferList.rows > 0 && transferList.exports === transferList.rows,
+  JSON.stringify(transferList)
+);
+check(
+  "one Import sits beside + New rotation",
+  transferList.chips.includes("+ New rotation") && transferList.chips.includes("Import rotation"),
+  JSON.stringify(transferList.chips)
+);
+
+// A row's Export downloads one file named after the rotation it carries, and the
+// press must not also select the row it sits in.
+const detailBefore = await page.textContent("#rotation-detail .detail-title, #rotation-detail h2");
+const [exportDownload] = await Promise.all([
+  page.waitForEvent("download"),
+  (await page.$$("#rotation-list-body .row .row-act"))[1].click(),
+]);
+const exportFile = exportDownload.suggestedFilename();
+const exportBody = JSON.parse(fs.readFileSync(await exportDownload.path(), "utf8"));
+check("the download is named after the rotation", /^[a-z0-9-]+\.rotation\.json$/.test(exportFile), exportFile);
+check(
+  "the file is a rotation envelope",
+  exportBody.kind === "sothebys-mansion.rotation" && exportBody.version === 1 && exportBody.rotation?.id === exportFile.replace(/\.rotation\.json$/, ""),
+  exportFile
+);
+check(
+  "exporting a row does not select it",
+  (await page.textContent("#rotation-detail .detail-title, #rotation-detail h2")) === detailBefore,
+  detailBefore
+);
+
+// The detail head carries the same action for the rotation on screen.
+const [detailDownload] = await Promise.all([
+  page.waitForEvent("download"),
+  page.click('#rotation-detail button:has-text("Export rotation")'),
+]);
+check("the detail head exports the open rotation too", /\.rotation\.json$/.test(detailDownload.suggestedFilename()), detailDownload.suggestedFilename());
+
+// Import: paste a rotation from "another editor", one known and one unknown name.
+const listBefore = await page.evaluate(() => document.querySelectorAll("#rotation-list-body .row").length);
+await page.click('#rotation-list .list-filters .chip:has-text("Import rotation")');
+await page.waitForTimeout(200);
+check("the Import chip opens the dialog", await page.isVisible("#rotation-import"), "hidden");
+
+const fixture = {
+  id: "import-fixture",
+  name: "Imported fixture",
+  archetypes: ["Raid"],
+  tuning: "",
+  members: [{ character: "Lucy" }, { character: "Nobody At All" }],
+  notes: "",
+  rounds: [{ note: "", slots: [{ cards: [{ character: "Lucy", skill: 1 }] }] }],
+};
+await page.fill("#rotation-import-text", JSON.stringify(fixture));
+await page.click("#rotation-import-go");
+await page.waitForTimeout(500);
+const report = await page.evaluate(() => ({
+  open: !document.getElementById("rotation-import").hidden,
+  ok: [...document.querySelectorAll("#rotation-import-report .import-line.ok")].map((n) => n.textContent),
+  warn: [...document.querySelectorAll("#rotation-import-report .import-line.warn")].map((n) => n.textContent),
+  rows: document.querySelectorAll("#rotation-list-body .row").length,
+  last: [...document.querySelectorAll("#rotation-list-body .row-name")].pop()?.textContent,
+  cleared: document.getElementById("rotation-import-text").value === "",
+}));
+check("the dialog stays open for a second file", report.open, JSON.stringify(report.open));
+check("the import is reported as a success", report.ok.some((line) => /Imported/.test(line)), JSON.stringify(report.ok));
+check("the unknown member is reported, not written", report.warn.some((line) => /Nobody At All/.test(line)), JSON.stringify(report.warn));
+check("the rotation joins the end of the list", report.rows === listBefore + 1 && report.last === "Imported fixture", `${listBefore} -> ${report.rows}, last ${report.last}`);
+check("the box is cleared for the next import", report.cleared, "still full");
+
+await page.keyboard.press("Escape");
+await page.waitForTimeout(200);
+check("Escape closes the dialog", !(await page.isVisible("#rotation-import")), "still open");
+
 console.log("\n=== no page errors ===");
 check("the page stayed clean", pageErrors.length === 0, pageErrors.join(" | "));
 

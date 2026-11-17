@@ -217,6 +217,34 @@
   <span class="fh-grip fh-se" data-edge="se" title="Drag to resize"></span>
 </div>
 
+<!-- rotation import: a dropped file, or JSON pasted in -->
+<div class="modal-backdrop" id="rotation-import" hidden>
+  <div class="modal modal-narrow">
+    <div class="modal-head">
+      <div class="modal-title">Import rotation</div>
+      <button class="btn btn-ghost" id="rotation-import-cancel">Close</button>
+    </div>
+    <div class="modal-body">
+      <p class="hint">
+        Takes a <code>.rotation.json</code> exported from this editor, a bare rotation object, or a whole
+        <code>rotations.json</code>. The rotation is added to the end of the list as a pending change; characters and
+        psychubes are matched to this dataset, and anything that cannot be matched is reported rather than written.
+      </p>
+      <div class="drop-zone" id="rotation-import-drop" role="button" tabindex="0">Drop a .rotation.json here, or click to choose one</div>
+      <input type="file" id="rotation-import-file" accept=".json,application/json">
+      <div class="field">
+        <label class="field-label" for="rotation-import-text">…or paste the JSON</label>
+        <textarea id="rotation-import-text" rows="8" spellcheck="false"
+          placeholder='{ "kind": "sothebys-mansion.rotation", "rotation": { … } }'></textarea>
+      </div>
+      <div class="import-report" id="rotation-import-report" hidden></div>
+      <div class="field-row">
+        <button class="btn btn-primary" id="rotation-import-go">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="app.js"></script>
 </body>
 </html>
