@@ -2662,7 +2662,8 @@
   "members": [
   {
     "character": "Beryl",
-    "psychube": "Long Night Talk"
+    "psychube": "Long Night Talk",
+    "portrait": 2
   },
   {
     "character": "Isolde",
