@@ -1924,8 +1924,16 @@ input.guide-round-note-input:focus { outline: none; border-left-color: var(--sig
   .app {
     position: static;
     grid-template-rows: auto auto auto;
+    /* The plan's card strip has a wide min-content width. Without an explicit
+       minmax(0, …) column the single grid track grows to it and pushes the
+       whole page sideways. */
+    grid-template-columns: minmax(0, 1fr);
     min-height: 100%;
   }
+  .topbar,
+  .stage,
+  .rail,
+  .workbench { min-width: 0; }
   .topbar {
     flex-wrap: wrap;
     gap: 8px;
