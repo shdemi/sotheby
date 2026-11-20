@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Rotation workbench. Not part of the public site.">
+<title>Sotheby's Mansion — Rotation Workbench</title>
+<link rel="icon" href="../images/web_icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="rotation.css">
+</head>
+<body>
+
+<div class="boot" id="boot">
+  <div class="boot-inner">
+    <div class="boot-kicker mono">SITE/01 · INITIALIZATION</div>
+    <div class="boot-word">ROTATION</div>
+    <div class="boot-line"><span id="boot-bar"></span></div>
+    <div class="boot-status mono" id="boot-status">LINKING RENDERER 000%</div>
+  </div>
+</div>
+
+<div class="app frame" id="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="../images/web_icon.png" alt="" class="brand-icon">
+      <div class="brand-text">
+        <span class="brand-kicker mono">SOTHEBY'S MANSION</span>
+        <span class="brand-title">ROTATION<span class="brand-slash">/</span>WORKBENCH</span>
+      </div>
+    </div>
+
+    <nav class="topnav" aria-label="Sections">
+      <a class="topnav-link is-active" href="#plans"><span class="topnav-idx mono">01</span> Plans</a>
+      <a class="topnav-link" href="#plan"><span class="topnav-idx mono">02</span> Plan</a>
+      <a class="topnav-link" href="#identity"><span class="topnav-idx mono">03</span> Identity</a>
+      <a class="topnav-link" href="#team"><span class="topnav-idx mono">04</span> Team</a>
+      <a class="topnav-link" href="#rounds"><span class="topnav-idx mono">05</span> Rounds</a>
+    </nav>
+
+    <div class="topbar-tail">
+      <span class="source mono" id="source-label" title="Where the data is coming from">…</span>
+      <span class="pending mono" id="pending-label">NO CHANGES</span>
+      <button class="btn btn-primary" id="btn-save" disabled>Download</button>
+    </div>
+  </header>
+
+  <main class="stage">
+
+    <aside class="rail" id="plans">
+      <div class="sec-head">
+        <span class="sec-idx mono">01</span>
+        <span class="sec-name mono">PLANS</span>
+        <span class="sec-line"></span>
+        <span class="sec-meta mono" id="rotation-count">00 / 00</span>
+      </div>
+
+      <div class="rail-tools">
+        <input type="search" id="rotation-search" class="field-input rail-search" placeholder="Search plan, archetype, member…" autocomplete="off">
+        <div class="rail-filters" id="rotation-filters"></div>
+        <div class="rail-actions">
+          <button class="btn btn-sm" id="rotation-new" title="Create a plan">+ New</button>
+          <button class="btn btn-sm" id="rotation-import-open" title="Import a .rotation.json">Import</button>
+        </div>
+      </div>
+
+      <div class="rail-body" id="rotation-list-body"></div>
+    </aside>
+
+    <section class="workbench" id="rotation-detail" aria-live="polite">
+      <div class="empty-state">
+        <span class="empty-mark mono">?</span>
+        <span class="empty-text mono">SELECT A PLAN</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="statusbar">
+    <span class="status-dot" id="status-dot"></span>
+    <span class="status-text mono" id="status-text">READ-ONLY · DOWNLOADS A ZIP OF YOUR CHANGES</span>
+    <span class="status-spacer"></span>
+    <span class="status-hint mono">DRAG A CARD · CLICK A GAP · HOVER FOR TOOLS</span>
+  </footer>
+
+</div>
+
+<div class="banner" id="banner" hidden></div>
+
+<!-- character / psychube picker -->
+<div class="hud-backdrop" id="picker" hidden>
+  <div class="hud-card hud-card-wide cut">
+    <div class="hud-head">
+      <span class="hud-kicker mono">SELECT</span>
+      <input type="search" id="picker-search" class="field-input" placeholder="Search…" autocomplete="off">
+      <button class="btn btn-ghost" id="picker-cancel">Cancel</button>
+    </div>
+    <div class="hud-body picker-grid" id="picker-body"></div>
+  </div>
+</div>
+
+<!-- rotation import: a dropped file, or JSON pasted in -->
+<div class="hud-backdrop" id="rotation-import" hidden>
+  <div class="hud-card hud-card-narrow cut">
+    <div class="hud-head">
+      <span class="hud-kicker mono">IMPORT ROTATION</span>
+      <button class="btn btn-ghost" id="rotation-import-cancel">Close</button>
+    </div>
+    <div class="hud-body">
+      <p class="hud-note">
+        Takes a <code>.rotation.json</code> exported from this bench, a bare rotation object, or a whole
+        <code>rotations.json</code>. The plan is added to the end of the list as a pending change; characters and
+        psychubes are matched to this dataset, and anything that cannot be matched is reported rather than written.
+      </p>
+      <div class="drop-zone" id="rotation-import-drop" role="button" tabindex="0">Drop a .rotation.json here, or click to choose one</div>
+      <input type="file" id="rotation-import-file" accept=".json,application/json">
+      <div class="field">
+        <label class="field-label mono" for="rotation-import-text">…OR PASTE THE JSON</label>
+        <textarea id="rotation-import-text" class="field-input" rows="8" spellcheck="false"
+          placeholder='{ "kind": "sothebys-mansion.rotation", "rotation": { … } }'></textarea>
+      </div>
+      <div class="import-report" id="rotation-import-report" hidden></div>
+      <div class="field-row">
+        <button class="btn btn-primary" id="rotation-import-go">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- floating card palette: drag it anywhere, resize from the corner -->
+<div class="float-hand cut" id="float-hand" hidden>
+  <div class="hand-head" id="float-hand-head">
+    <span class="hand-kicker mono" id="float-hand-title">CARDS</span>
+    <span class="hand-grip mono">⠿</span>
+    <button class="hand-close" id="float-hand-close" title="Hide the card panel">×</button>
+  </div>
+  <div class="hand-body" id="float-hand-body"></div>
+  <span class="fh-grip fh-n" data-edge="n" title="Drag to resize"></span>
+  <span class="fh-grip fh-s" data-edge="s" title="Drag to resize"></span>
+  <span class="fh-grip fh-w" data-edge="w" title="Drag to resize"></span>
+  <span class="fh-grip fh-e" data-edge="e" title="Drag to resize"></span>
+  <span class="fh-grip fh-nw" data-edge="nw" title="Drag to resize"></span>
+  <span class="fh-grip fh-ne" data-edge="ne" title="Drag to resize"></span>
+  <span class="fh-grip fh-sw" data-edge="sw" title="Drag to resize"></span>
+  <span class="fh-grip fh-se" data-edge="se" title="Drag to resize"></span>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

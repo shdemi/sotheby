@@ -44,6 +44,12 @@ It also prints the app and editor URLs.
 If you prefer the stock server, `python -m http.server 8000` works too — just
 hard-refresh (Ctrl+Shift+R) after changing any file.
 
+> **Rotations live in `rotation/`.** The Rotation half of the editor has been split
+> out into its own workbench at <http://localhost:8000/rotation/> (`rotation/README.md`
+> is the long form). It is still an editor — it imports this folder's `model.js` and
+> `files.js` instead of copying them — and it downloads only `rotations.json`. The
+> Rotations tab here keeps working until the split is finished.
+
 ## The workflow
 
 1. Open the editor and make your changes.
