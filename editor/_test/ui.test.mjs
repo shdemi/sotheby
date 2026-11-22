@@ -1779,6 +1779,12 @@ try {
         cards: cards.length,
         order: cards.map((c) => c.dataset.banner),
         pills: [...card.querySelectorAll(".calc-card-pills .calc-pill")].map((p) => p.textContent.trim()),
+        // The five structural pills (kind, patch, release, ends, by end). A banner
+        // that ships perks appends `.is-perk` pills after them, so the count is
+        // taken over the structural ones rather than the whole row.
+        basePills: [...card.querySelectorAll(".calc-card-pills .calc-pill:not(.is-perk)")].map((p) =>
+          p.textContent.trim()
+        ),
         chips: [...card.querySelectorAll(".calc-chip")].map((c) => c.dataset.p),
         chipOdds: [...card.querySelectorAll(".calc-chip")].map((c) => Number(c.dataset.odds)),
         input: {
@@ -1826,11 +1832,11 @@ try {
     );
     check(
       "a card carries its kind, patch, release, end and projected pulls as round tags",
-      calcAdded.pills.length === 5 &&
-        calcAdded.pills[1] === calcAdded.versionPill &&
-        /^\d+\.\d+$/.test(calcAdded.pills[1]) &&
-        /^(11|12|01|02|03)/.test(calcAdded.pills[3].replace(/[^\d/]/g, "")),
-      JSON.stringify(calcAdded.pills)
+      calcAdded.basePills.length === 5 &&
+        calcAdded.basePills[1] === calcAdded.versionPill &&
+        /^\d+\.\d+$/.test(calcAdded.basePills[1]) &&
+        /^(11|12|01|02|03)/.test(calcAdded.basePills[3].replace(/[^\d/]/g, "")),
+      JSON.stringify(calcAdded.basePills)
     );
     check(
       "the card's kind tag leads the pills and matches its left rail",
@@ -1979,6 +1985,10 @@ try {
       return {
         value: document.getElementById("calc-crystal").value,
         focused: document.activeElement.className,
+        // A Ripples pool hands its first 6✦ to a selector, so P0 is 100% by rule;
+        // the copy the counter actually moves is P1. The assertion below reads the
+        // rule rather than assuming which banner the calendar offers first.
+        selectFirstSix: !!calcRuleOf(calcBanner(card.dataset.banner)).selectFirstSix,
         chips: [...after.querySelectorAll(".calc-chip")].map((c) => Number(c.dataset.odds)),
         dots: dots.length,
         label: dots[0] ? dots[0].querySelector(".calc-dot-label").textContent : "",
@@ -2017,8 +2027,8 @@ try {
     check("typing a pull count does not steal the focus", /calc-pull-input/.test(typed.focused), typed.focused);
     check(
       "80 pulls buy real odds on the first banner",
-      typed.chips[0] > 0 && typed.chips[0] < 1,
-      JSON.stringify(typed.chips)
+      typed.selectFirstSix ? typed.chips[0] === 1 : typed.chips[0] > 0 && typed.chips[0] < 1,
+      JSON.stringify({ chips: typed.chips, selectFirstSix: typed.selectFirstSix })
     );
     check(
       "the chart draws one dot per planned banner",
@@ -2111,7 +2121,11 @@ try {
         figures: [...body.querySelectorAll(".calc-figure")].map((f) => f.querySelector(".calc-figure-label").textContent),
         odds: [...body.querySelectorAll(".calc-odd-card")].map((c) => c.dataset.p),
         notes: [...body.querySelectorAll(".calc-info-note")].map((n) => n.textContent.trim()),
-        pills: [...document.querySelectorAll("#calc-info .calc-pill")].map((p) => p.textContent.trim()),
+        pills: [...document.querySelectorAll("#calc-info .calc-pill:not(.is-perk)")].map((p) => p.textContent.trim()),
+        perkPills: document.querySelectorAll("#calc-info .calc-pill.is-perk").length,
+        cardPerks: document.querySelectorAll(
+          `#calc-banners .calc-card[data-banner="${dot.dataset.banner}"] .calc-pill.is-perk`
+        ).length,
         heads: document.querySelectorAll("#calc-info-heads .calc-head").length,
         card: document.querySelector("#calc-info .calc-info-card").className,
       };
@@ -2134,8 +2148,12 @@ try {
     );
     check(
       "it lists the banner's perk and its pity track as notes",
-      info.notes.length >= 1 && info.pills.length === 5,
-      JSON.stringify({ notes: info.notes, pills: info.pills })
+      // One note per perk pill plus the pity-track note, and the five structural
+      // pills (kind, patch, release, ends, by end) ahead of the perks.
+      info.pills.length === 5 &&
+        info.notes.length === info.perkPills + 1 &&
+        info.perkPills === info.cardPerks,
+      JSON.stringify({ notes: info.notes, pills: info.pills, perks: info.perkPills, card: info.cardPerks })
     );
     check("its close button closes it", info.closed, String(info.closed));
 
@@ -2235,6 +2253,10 @@ try {
         calcRefresh({});
         return {
           purse: { ...schedule.purse },
+          // What the plan costs in pulls: the typed count minus the banner's own
+          // perks (free pulls, the discounted ten-pull). This, not the typed count,
+          // is what the purses are charged.
+          cost: calcBannerCostPulls(banner, pulls),
           cells: [...document.querySelectorAll("#calc-summary .calc-summary-cell")].map((cell) => ({
             label: cell.querySelector(".calc-summary-label").textContent.trim(),
             value: cell.querySelector(".calc-summary-value").textContent.trim(),
@@ -2273,22 +2295,30 @@ try {
     });
     check(
       "the summary pays the plan out of Unilogs first and leaves Clear Drop alone while they last",
-      purses.shallow.purse.unilog === purses.base.purse.unilog - purses.shallowPulls &&
+      purses.shallow.purse.unilog === purses.base.purse.unilog - purses.shallow.cost &&
         purses.shallow.purse.clear === purses.base.purse.clear &&
         purses.shallow.purse.crystal === purses.base.purse.crystal,
-      JSON.stringify({ shallow: purses.shallow.purse, base: purses.base.purse, pulls: purses.shallowPulls })
+      JSON.stringify({ shallow: purses.shallow.purse, base: purses.base.purse, cost: purses.shallow.cost })
     );
     check(
       "Clear Drop pays only what the Unilog purse could not",
-      purses.over.purse.unilog === 0 && purses.over.purse.clear === purses.base.purse.clear - 10 * 180,
-      JSON.stringify({ over: purses.over.purse, base: purses.base.purse })
+      purses.over.purse.unilog === 0 &&
+        purses.over.purse.clear ===
+          purses.base.purse.clear - (purses.over.cost - purses.base.purse.unilog) * 180,
+      JSON.stringify({ over: purses.over.purse, base: purses.base.purse, cost: purses.over.cost })
     );
+    // Clear Drop is emptied to its remainder, so Crystal Drop covers exactly what is
+    // left of the plan's cost (which the banner's perks may have shaved).
+    const deepOwed =
+      purses.deep.cost * 180 -
+      purses.deepBase.purse.unilog * 180 -
+      (purses.deepBase.purse.clear - purses.deep.purse.clear);
     check(
-      "Crystal Drop comes last: ten pulls past the Clear Drop purse, and no more",
+      "Crystal Drop comes last: it pays only what Unilog and Clear Drop could not",
       purses.deep.purse.unilog === 0 &&
         purses.deep.purse.clear < 180 &&
-        purses.deep.purse.crystal === purses.deepBase.purse.crystal - 10 * 180,
-      JSON.stringify({ deep: purses.deep.purse, base: purses.deepBase.purse })
+        purses.deep.purse.crystal === purses.deepBase.purse.crystal - deepOwed,
+      JSON.stringify({ deep: purses.deep.purse, base: purses.deepBase.purse, cost: purses.deep.cost, owed: deepOwed })
     );
     check(
       "a wallet that cannot cover the plan stops at its remainders, never below zero",
