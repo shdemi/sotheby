@@ -1164,12 +1164,57 @@ try {
       slots: document.querySelectorAll(".rot-slot").length,
       filled: [...document.querySelectorAll(".rot-card img")].filter((i) => i.naturalWidth > 0).length,
       team: document.querySelectorAll(".rot-member").length,
+      // The round counter is a number framed by a corner bracket: nothing on the
+      // box itself, an L mark in its ::after hugging the bottom right corner.
+      roundNo: (() => {
+        const el = document.querySelector(".rot-round-no");
+        if (!el) return null;
+        const cs = getComputedStyle(el);
+        const mark = getComputedStyle(el, "::after");
+        const box = el.getBoundingClientRect();
+        return {
+          borders: [cs.borderTopWidth, cs.borderRightWidth, cs.borderBottomWidth, cs.borderLeftWidth],
+          corners: [cs.borderTopLeftRadius, cs.borderTopRightRadius, cs.borderBottomRightRadius, cs.borderBottomLeftRadius],
+          box: { width: box.width, height: box.height },
+          mark: {
+            width: parseFloat(mark.width),
+            height: parseFloat(mark.height),
+            right: mark.right,
+            bottom: mark.bottom,
+            borders: [mark.borderTopWidth, mark.borderRightWidth, mark.borderBottomWidth, mark.borderLeftWidth],
+            corners: [mark.borderTopLeftRadius, mark.borderTopRightRadius, mark.borderBottomRightRadius, mark.borderBottomLeftRadius],
+          },
+        };
+      })(),
     }));
     check("clicking a rotation renders its plan", plan.browseVisible && plan.detailVisible);
     check("the card plan renders its rounds", plan.turns > 0, String(plan.turns));
     check("each round has card slots", plan.slots > 0, String(plan.slots));
     check("the skill cards load", plan.filled > 0, String(plan.filled));
     check("the rotation names its team", plan.team > 0, String(plan.team));
+    check(
+      "the round counter itself carries no border and no radius",
+      plan.roundNo &&
+        plan.roundNo.borders.every((w) => w === "0px") &&
+        plan.roundNo.corners.every((w) => w === "0px"),
+      JSON.stringify(plan.roundNo && { borders: plan.roundNo.borders, corners: plan.roundNo.corners })
+    );
+    check(
+      "the round counter is marked by a square corner bracket at the bottom right",
+      plan.roundNo &&
+        plan.roundNo.mark.right === "0px" &&
+        plan.roundNo.mark.bottom === "0px" &&
+        plan.roundNo.mark.borders[0] === "0px" &&
+        plan.roundNo.mark.borders[3] === "0px" &&
+        parseFloat(plan.roundNo.mark.borders[1]) > 0 &&
+        parseFloat(plan.roundNo.mark.borders[2]) > 0 &&
+        plan.roundNo.mark.corners.every((w) => w === "0px") &&
+        // A corner mark, not a full rule down the side: both arms are shorter
+        // than the box they sit in.
+        plan.roundNo.mark.width < plan.roundNo.box.width &&
+        plan.roundNo.mark.height < plan.roundNo.box.height,
+      JSON.stringify(plan.roundNo && plan.roundNo.mark)
+    );
 
     await page.evaluate(() => document.querySelector('.rotation-filter[data-tag="Burn"]').click());
     await page.waitForTimeout(350);
@@ -1256,24 +1301,18 @@ try {
       JSON.stringify(tabsInfo)
     );
     {
-      // The Planner's own windows sit on a surface that is already dimmed: Activity
-      // settings, Wilderness, both Resets and the Event tab's quantity editor must not
-      // blur the page behind them as well.
-      const blur = await page.evaluate(() => {
-        const read = (el) => (el ? getComputedStyle(el).backdropFilter : "missing");
-        return {
-          planner: read(document.getElementById("planner-modal")),
-          confirm: read(document.getElementById("confirm-modal")),
-          slider: read(document.querySelector(".planner-slider-backdrop")),
-          // A window that is not the Planner's keeps the blurred backdrop.
-          builds: read(document.getElementById("builds-modal")),
-        };
-      });
-      check(
-        "the Planner's own windows do not blur the page behind them",
-        blur.planner === "none" && blur.confirm === "none" && blur.slider === "none" && blur.builds === "blur(3px)",
-        JSON.stringify(blur)
+      // Every modal dims the page with an 86% black scrim and no blur. A full-viewport
+      // `backdrop-filter` made the browser re-raster the whole backdrop on every
+      // repaint of the window on top: InfoBook measured ~100 ms per scroll frame
+      // against ~16 ms without it, Team Presets ~95 ms against ~18 ms, the rotation
+      // list ~105 ms against ~20 ms. At 86% black the blur was invisible anyway
+      // (mean pixel difference 0.2-0.4/255 between screenshots).
+      const blurred = await page.evaluate(() =>
+        [...document.querySelectorAll(".modal-backdrop, [class*='backdrop']")]
+          .filter((el) => getComputedStyle(el).backdropFilter !== "none")
+          .map((el) => `${el.id || el.className}: ${getComputedStyle(el).backdropFilter}`)
       );
+      check("no modal scrim blurs the page behind it", blurred.length === 0, JSON.stringify(blurred));
     }
 
     /* ---- Calculator tab ---- */
