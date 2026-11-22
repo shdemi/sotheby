@@ -380,7 +380,6 @@ before sanitising state, and merges duplicate targets with `mergePsychubeState()
       render.mjs             render sample cards to .tmp-og/*.png
     build_stages_data.mjs    (existing, fold into sync/)
   editor/                    JSON editor (keep working; reads/writes `content/`)
-  rotation/                  standalone Rotation workbench (§11; imports ../editor/{model,files}.js)
   images/                    asset cache (generated from Myssal)
 ```
 
@@ -829,17 +828,11 @@ These were open questions; answers are settled as of Phase 1 (2026-11-06).
   only 14 of the 30 shipped files).
 - `editor/`: keep. It reads/writes data over HTTP and exports a ZIP; it points at
   `content/` for hand-authored files and does not offer generated files.
-- `rotation/`: the Rotation editor split out of `editor/` (2026-11-17), served at
-  `/rotation/`. It is still an **editor**, not a reader-facing page — new plans are
-  authored here. It imports `../editor/model.js` and `../editor/files.js` rather than
-  copying them, loads `content/rotations.json` through `files.loadAll()`, and its
-  Download button exports only the `rotations.json` delta that
-  `Model.validate()` reports. The shell is three static files (`index.html`,
-  `rotation.css`, `app.js`, no build step): a black HUD of mono microtype, numbered
-  `01 PLANS` / `02 PLAN` / `03 IDENTITY` / `04 TEAM` / `05 ROUNDS` heads, hairlines
-  and cut corners, wrapping the shipped `.guide-*` card geometry so a plan draws
-  there exactly as the app draws it. `editor/`'s own Rotations tab is still present
-  until the split is finished.
+- Rotations are authored in `editor/`'s **Rotations** tab and nowhere else. A standalone
+  workbench was split out into `rotation/` on 2026-11-17 and **removed on 2026-11-21**:
+  it was a second surface over the same `content/rotations.json`, and the owner wants
+  one. Do not recreate it — extend the editor tab (its model lives in
+  `editor/model.js`, its tests in `editor/_test/rotation-*.test.mjs`).
 
 ### The Appearance modal (Options / Styling / Tiers)
 
