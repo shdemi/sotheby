@@ -2662,8 +2662,7 @@
   "members": [
   {
     "character": "Beryl",
-    "psychube": "Long Night Talk",
-    "portrait": 2
+    "psychube": "Long Night Talk"
   },
   {
     "character": "Isolde",
@@ -3733,6 +3732,2461 @@
       ]
     }
   ]
+},
+    {
+  "id": "noire",
+  "name": "Noire w/ Hissabeth",
+  "archetypes": [],
+  "tuning": "",
+  "members": [
+  {
+    "character": "Noire",
+    "psychube": "Rehearsal of Dreams"
+  },
+  {
+    "character": "Hissabeth",
+    "psychube": "Never-Ending Q&A"
+  },
+  {
+    "character": "Moldir",
+    "psychube": "Family Mentor"
+  },
+  {
+    "character": "Narcissus",
+    "psychube": "Tides Held Within"
+  }
+],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 2,
+    "icon": "images/skills/31160121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Moldir",
+    "skill": 2,
+    "icon": "images/skills/31210121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Noire",
+    "skill": 2,
+    "icon": "images/skills/31110121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Narcissus",
+    "skill": 1,
+    "icon": "images/skills/31570111.png"
+  }
+]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Narcissus",
+    "skill": 3,
+    "icon": "images/skills/31570131.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Hissabeth",
+      "skill": 4,
+      "icon": "images/skills/31160141.png"
+    }
+  ]
+},
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 1,
+    "icon": "images/skills/31160111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Moldir",
+    "skill": 1,
+    "icon": "images/skills/31210111.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 3,
+    "icon": "images/skills/31160131.png"
+  }
+]
+},
+        {
+  "type": "normal",
+  "cards": [
+  {
+    "character": "Noire",
+    "skill": 2,
+    "icon": "images/skills/31110121.png"
+  }
+]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Moldir",
+    "skill": 3,
+    "icon": "images/skills/31210131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Moldir",
+    "skill": 2,
+    "icon": "images/skills/31210121.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 1,
+    "icon": "images/skills/31160111.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Hissabeth",
+      "skill": 4,
+      "icon": "images/skills/31160141.png"
+    }
+  ]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Hissabeth",
+      "skill": 3,
+      "icon": "images/skills/31160131.png"
+    }
+  ]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Noire",
+      "skill": 3,
+      "icon": "images/skills/31110131.png"
+    }
+  ],
+  "tags": ["ap-free"]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Noire",
+      "skill": 2,
+      "icon": "images/skills/31110121.png"
+    }
+  ]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Narcissus",
+    "skill": 1,
+    "icon": "images/skills/31570111.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Hissabeth",
+      "skill": 2,
+      "icon": "images/skills/31160121.png"
+    }
+  ]
+},
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 1,
+    "icon": "images/skills/31160111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Hissabeth",
+      "skill": 3,
+      "icon": "images/skills/31160131.png"
+    }
+  ]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Noire",
+      "skill": 2,
+      "icon": "images/skills/31110121.png"
+    }
+  ]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Narcissus",
+    "skill": 3,
+    "icon": "images/skills/31570131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 1,
+    "icon": "images/skills/31160111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Hissabeth",
+      "skill": 3,
+      "icon": "images/skills/31160131.png"
+    }
+  ]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Moldir",
+      "skill": 2,
+      "icon": "images/skills/31210121.png"
+    }
+  ]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Noire",
+      "skill": 3,
+      "icon": "images/skills/31110131.png"
+    }
+  ],
+  "tags": ["ap-free"]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Noire",
+      "skill": 2,
+      "icon": "images/skills/31110121.png"
+    }
+  ]
+}
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "cards": [
+  {
+    "character": "Moldir",
+    "skill": 3,
+    "icon": "images/skills/31210131.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 1,
+    "icon": "images/skills/31160111.png"
+  }
+]
+        },
+        {
+          "cards": [
+  {
+    "character": "Hissabeth",
+    "skill": 4,
+    "icon": "images/skills/31160141.png"
+  }
+]
+        },
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Moldir",
+      "skill": 1,
+      "icon": "images/skills/31210111.png"
+    }
+  ]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Hissabeth",
+      "skill": 3,
+      "icon": "images/skills/31160131.png"
+    }
+  ]
+},
+        {
+  "type": "normal",
+  "cards": [
+    {
+      "character": "Noire",
+      "skill": 2,
+      "icon": "images/skills/31110121.png"
+    }
+  ]
+}
+      ]
+    }
+  ]
+},
+    {
+  "id": "recoleta-dynamo",
+  "name": "Recoleta Dynamo",
+  "archetypes": ["Dynamo"],
+  "tuning": "Unfinished Tune",
+  "members": [
+    {
+      "character": "Recoleta",
+      "psychube": "The Final Roll"
+    },
+    {
+      "character": "Enigma",
+      "psychube": "The Third Commitment"
+    },
+    {
+      "character": "Charon",
+      "psychube": "Buds Yet to Bloom"
+    },
+    {
+      "character": "Ulrich",
+      "psychube": "On the Hand of Time"
+    }
+  ],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Charon",
+              "skill": 2,
+              "icon": "images/skills/31280121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 5,
+              "icon": "images/skills/31140151.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 1,
+              "icon": "images/skills/31070111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 2,
+              "icon": "images/skills/31070121.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 3,
+              "icon": "images/skills/31140131.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Enigma",
+              "skill": 3,
+              "icon": "images/skills/31430131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Charon",
+              "skill": 3,
+              "icon": "images/skills/31280131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 1,
+              "icon": "images/skills/31070111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 2,
+              "icon": "images/skills/31070121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 5,
+              "icon": "images/skills/31140151.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 2,
+          "to": 3,
+          "style": "bracket",
+          "text": "There can be Enigma's card"
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 3,
+              "icon": "images/skills/31070131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 3,
+              "icon": "images/skills/31140131.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Enigma",
+              "skill": 3,
+              "icon": "images/skills/31430131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Charon",
+              "skill": 3,
+              "icon": "images/skills/31280131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 5,
+              "icon": "images/skills/31140151.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 3,
+              "icon": "images/skills/31070131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 3,
+              "icon": "images/skills/31140131.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Enigma",
+              "skill": 3,
+              "icon": "images/skills/31430131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Charon",
+              "skill": 3,
+              "icon": "images/skills/31280131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Enigma",
+              "skill": 2,
+              "icon": "images/skills/31430121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 1,
+              "icon": "images/skills/31070111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 5,
+              "icon": "images/skills/31140151.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 3,
+          "to": 3,
+          "style": "bracket",
+          "text": "This can be an Enigma card"
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 1,
+              "icon": "images/skills/31140111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 2,
+              "icon": "images/skills/31140121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ulrich",
+              "skill": 3,
+              "icon": "images/skills/31070131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Recoleta",
+              "skill": 3,
+              "icon": "images/skills/31140131.png"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+},
+    {
+  "id": "cornerstone",
+  "name": "Cornerstone",
+  "archetypes": ["Extra Action"],
+  "tuning": "Unfinished Tune",
+  "members": [
+    {
+      "character": "Cornerstone",
+      "psychube": "On the Hand of Time"
+    },
+    {
+      "character": "Flutterpage",
+      "psychube": "In Their Figures"
+    },
+    {
+      "character": "Rhiannon",
+      "psychube": "The Soft Rain of Yesterday"
+    },
+    {
+      "character": "J",
+      "psychube": "Family Mentor"
+    }
+  ],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 1,
+              "icon": "images/skills/31460111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Flutterpage",
+              "skill": 2,
+              "icon": "images/skills/31050121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "J",
+              "skill": 2,
+              "icon": "images/skills/30940121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "J",
+              "skill": 1,
+              "icon": "images/skills/30940111.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 4,
+              "icon": "images/skills/31460141.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 2,
+              "icon": "images/skills/31400121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Flutterpage",
+              "skill": 1,
+              "icon": "images/skills/31050111.png"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "preferred",
+          "cards": [
+            {
+              "character": "Flutterpage",
+              "skill": 2,
+              "icon": "images/skills/31050121.png"
+            },
+            {
+              "character": "Flutterpage",
+              "skill": 1,
+              "icon": "images/skills/31050111.png"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "preferred",
+          "cards": [
+            {
+              "character": "J",
+              "skill": 1,
+              "icon": "images/skills/30940111.png"
+            },
+            {
+              "character": "J",
+              "skill": 2,
+              "icon": "images/skills/30940121.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "or",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 2,
+              "icon": "images/skills/31460122.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 1,
+              "icon": "images/skills/31460112.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Flutterpage",
+              "skill": 3,
+              "icon": "images/skills/31050131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 3,
+              "icon": "images/skills/31400131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "Cornerstone",
+          "cards": [
+            {
+              "special": "images/card_modulo/Move.png"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 1,
+              "icon": "images/skills/31400111.png"
+            },
+            {
+              "character": "Cornerstone",
+              "skill": 2,
+              "icon": "images/skills/31400121.png"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "Preferred",
+          "cards": [
+            {
+              "character": "J",
+              "skill": 1,
+              "icon": "images/skills/30940111.png"
+            },
+            {
+              "character": "J",
+              "skill": 2,
+              "icon": "images/skills/30940121.png"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 2,
+          "to": 2,
+          "style": "bracket",
+          "text": "move and MERGE a Cornerstone card."
+        },
+        {
+          "from": 4,
+          "to": 4,
+          "style": "bracket",
+          "text": "skip this if you do not have enough AP."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 5,
+              "icon": "images/skills/31460151.png"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 2,
+              "icon": "images/skills/31460122.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 1,
+              "icon": "images/skills/31460112.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "J",
+              "skill": 3,
+              "icon": "images/skills/30940131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 3,
+              "icon": "images/skills/31400131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "Cornerstone",
+          "cards": [
+            {
+              "special": "images/card_modulo/Move.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 1,
+              "icon": "images/skills/31400111.png"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 2,
+          "to": 2,
+          "style": "bracket",
+          "text": "Use this Ultimate every 3 rounds."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "double_or",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 4,
+              "icon": "images/skills/31460141.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 2,
+              "icon": "images/skills/31460122.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 1,
+              "icon": "images/skills/31460112.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 3,
+              "icon": "images/skills/31400131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "Cornerstone",
+          "cards": [
+            {
+              "special": "images/card_modulo/Move.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 1,
+              "icon": "images/skills/31400111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 2,
+              "icon": "images/skills/31400121.png"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 3,
+          "to": 4,
+          "style": "bracket",
+          "text": "If you have only one of these two cards, simply move that card."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "double_or",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 4,
+              "icon": "images/skills/31460141.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 2,
+              "icon": "images/skills/31460122.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 1,
+              "icon": "images/skills/31460112.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 3,
+              "icon": "images/skills/31400131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "Cornerstone",
+          "cards": [
+            {
+              "special": "images/card_modulo/Move.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Flutterpage",
+              "skill": 2,
+              "icon": "images/skills/31050121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Flutterpage",
+              "skill": 1,
+              "icon": "images/skills/31050111.png"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 3,
+          "to": 4,
+          "style": "bracket",
+          "text": "Prepare Flutterpage's Ultimate again immediately after her channel ends."
+        },
+        {
+          "from": 1,
+          "to": 1,
+          "style": "bracket",
+          "text": "Use this Ultimate every round."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "double_or",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 4,
+              "icon": "images/skills/31460141.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 2,
+              "icon": "images/skills/31460122.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 1,
+              "icon": "images/skills/31460112.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Flutterpage",
+              "skill": 3,
+              "icon": "images/skills/31050131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "J",
+              "skill": 3,
+              "icon": "images/skills/30940131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 3,
+              "icon": "images/skills/31400131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "Cornerstone",
+          "cards": [
+            {
+              "special": "images/card_modulo/Move.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 1,
+              "icon": "images/skills/31400111.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "double_or",
+          "tags": ["ap-free"],
+          "cards": [
+            {
+              "character": "Rhiannon",
+              "skill": 4,
+              "icon": "images/skills/31460141.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 2,
+              "icon": "images/skills/31460122.png"
+            },
+            {
+              "character": "Rhiannon",
+              "skill": 1,
+              "icon": "images/skills/31460112.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 3,
+              "icon": "images/skills/31400131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Cornerstone",
+              "skill": 2,
+              "icon": "images/skills/31400121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "Cornerstone",
+          "cards": [
+            {
+              "special": "images/card_modulo/Move.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "J",
+              "skill": 1,
+              "icon": "images/skills/30940111.png"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 0,
+          "to": 4,
+          "style": "bracket",
+          "text": "Can be substituted with moving a Cornerstone card another time."
+        }
+      ]
+    }
+  ]
+},
+    {
+  "id": "ramona-w-willow-2",
+  "name": "Ramona w/ Perchta",
+  "archetypes": ["Poison"],
+  "tuning": "First Melody",
+  "members": [
+    {
+      "character": "Ramona",
+      "psychube": "Falling for a Sweet Phenomenon"
+    },
+    {
+      "character": "Willow",
+      "psychube": "Offbeat Strides"
+    },
+    {
+      "character": "Tuesday",
+      "psychube": "And the Maid Says"
+    },
+    {
+      "character": "Perchta",
+      "psychube": "The Coffin of Purity"
+    }
+  ],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 2,
+              "icon": "images/skills/30980121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Perchta",
+              "skill": 1,
+              "icon": "images/skills/31590111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Perchta",
+              "skill": 2,
+              "icon": "images/skills/31590121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 3,
+              "icon": "images/skills/30980131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 3,
+              "icon": "images/skills/31420131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Perchta",
+              "skill": 3,
+              "icon": "images/skills/31590131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 3,
+              "icon": "images/skills/31040131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            },
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 2,
+              "icon": "images/skills/31040121.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 2,
+              "icon": "images/skills/30980121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Perchta",
+              "skill": 3,
+              "icon": "images/skills/31590131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 3,
+              "icon": "images/skills/31420131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 3,
+              "icon": "images/skills/30980131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 3,
+              "icon": "images/skills/31420131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Perchta",
+              "skill": 2,
+              "icon": "images/skills/31590121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 2,
+              "icon": "images/skills/31040121.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Perchta",
+              "skill": 3,
+              "icon": "images/skills/31590131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 2,
+              "icon": "images/skills/31040121.png"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+},
+    {
+  "id": "ramona-w-willow-marsha",
+  "name": "Ramona Marsha Sustain",
+  "tuning": "",
+  "members": [
+    {
+      "character": "Ramona",
+      "psychube": "Falling for a Sweet Phenomenon"
+    },
+    {
+      "character": "Willow",
+      "psychube": "Offbeat Strides"
+    },
+    {
+      "character": "Tuesday",
+      "psychube": "And the Maid Says"
+    },
+    {
+      "character": "Marsha",
+      "psychube": "Family Mentor"
+    }
+  ],
+  "notes": "",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 2,
+              "icon": "images/skills/30980121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 3,
+              "icon": "images/skills/30980131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 3,
+              "icon": "images/skills/31420131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 3,
+              "icon": "images/skills/31040131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 2,
+              "icon": "images/skills/30980121.png"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            },
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "preferred",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 2,
+              "icon": "images/skills/31040121.png"
+            },
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 2,
+              "icon": "images/skills/31040121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Marsha",
+              "skill": 3,
+              "icon": "images/skills/31270131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 1,
+              "icon": "images/skills/31420111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 3,
+              "icon": "images/skills/31420131.png"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Tuesday",
+              "skill": 3,
+              "icon": "images/skills/30980131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 1,
+              "icon": "images/skills/31040111.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 3,
+              "icon": "images/skills/31420131.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 2,
+              "icon": "images/skills/31040121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": []
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "special": "images/card_modulo/Any.png",
+              "surface": "ramona"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Willow",
+              "skill": 2,
+              "icon": "images/skills/31040121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "character": "Ramona",
+              "skill": 2,
+              "icon": "images/skills/31420121.png",
+              "surface": "ramona"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "archetypes": ["Poison"]
 }
   ]
 }
