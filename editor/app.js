@@ -2886,11 +2886,23 @@ const TUNING_ICONS = {
 };
 
 /**
+ * The special cards the palette offers below the characters' own. Their art
+ * ships as `images/skills/<id>.png`; `data/guide_cards.json` (which used to
+ * list them) was dropped, so the editor carries the set itself.
+ */
+const SPECIAL_CARD_IDS = [
+  "780011", "780012", "780013", "780014", "780015",
+  "780021", "780022", "780023", "780024", "780025",
+  "780091", "780092", "780093", "780094", "780095",
+];
+const SPECIAL_CARD_ICONS = SPECIAL_CARD_IDS.map((id) => `images/skills/${id}.png`);
+
+/**
  * Special cards are grouped by id; Tuning_S*.png are not special cards.
  * Archetype (760100) and Myth (770*) cards are no longer offered at all.
  */
 const SPECIAL_GROUPS = [
-  { key: "energy", label: "Energy cards", test: (id) => id.startsWith("780") },
+  { key: "special", label: "Special cards", test: (id) => id.startsWith("780") },
 ];
 
 function rotationMembers(rotation) {
@@ -3513,7 +3525,15 @@ function renderRotationHand(id) {
       children.push(block);
     }
 
-    const specials = specialCardIcons().filter((icon) => !/\/Tuning_S\d+\.png$/i.test(icon));
+    // The owner's special set comes first, in its declared order; anything
+    // `guide_cards.json` still carries is appended, so the palette survives that
+    // file's return. Tuning art is not a card and is filtered out either way.
+    const specials = [
+      ...new Set([
+        ...SPECIAL_CARD_ICONS,
+        ...specialCardIcons().filter((icon) => !/\/Tuning_S\d+\.png$/i.test(icon)),
+      ]),
+    ];
     for (const group of SPECIAL_GROUPS) {
       const icons = specials.filter((icon) => group.test((icon.split("/").pop() || "").replace(/\.png$/i, "")));
       if (icons.length === 0) continue;
@@ -3521,11 +3541,12 @@ function renderRotationHand(id) {
       const grid = el("div", { class: "special-card-grid" });
       for (const icon of icons) {
         const payload = { kind: "card", special: icon };
+        const id = (icon.split("/").pop() || "").replace(/\.png$/i, "");
         const card = el("button", {
           class: "guide-hand-card is-special",
-          title: group.label.replace(/s$/, ""),
+          title: `${group.label.replace(/s$/, "")} ${id} — drag onto a slot`,
           draggable: "true",
-          onclick: () => armClick(payload, `${group.label.replace(/s$/, "")} armed — click a slot to place it.`),
+          onclick: () => armClick(payload, `${group.label.replace(/s$/, "")} ${id} armed — click a slot to place it.`),
         }, [el("img", { src: `../${icon}`, alt: "" })]);
         card.addEventListener("dragstart", (e) => armDrag(e, payload));
         grid.appendChild(card);

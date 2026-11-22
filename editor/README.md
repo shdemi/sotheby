@@ -131,8 +131,9 @@ actions.
   `images/card_modulo/Normal.png`, so the AP order can be laid out before the art
   exists. Dropping a skill card straight into a round inserts a slot already
   filled with it, so the stamp is only needed when the cards are not decided yet.
-- **Cards** lists every member's skills plus the special cards. Dropping one on an
-  empty slot fills it; dropping it on a filled slot replaces the card; dropping it
+- **Cards** lists every member's skills, then the **Special cards** under their own
+  heading — the 15 ownerless cards `780011`–`780095` in `images/skills/`. Dropping one
+  on an empty slot fills it; dropping it on a filled slot replaces the card; dropping it
   on a gap inserts a new slot.
 - **Extra** holds three sections. **Tags** — `AP Free`, `Precast` and `Custom` — are
   dropped on a slot to add or remove them; the tag lives on the slot, not on the

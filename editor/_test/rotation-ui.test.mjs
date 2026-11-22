@@ -172,6 +172,40 @@ const afterCard = await roundInfo(0);
 check("the placeholder became a card", afterCard.placeholders === afterStamp.placeholders - 1, JSON.stringify(afterCard));
 check("the slot count is unchanged", afterCard.slots === afterStamp.slots, `${afterCard.slots}`);
 
+console.log("\n=== the special cards sit below the characters' cards ===");
+const specials = await page.evaluate(() => {
+  const body = document.getElementById("float-hand-body");
+  const title = [...body.querySelectorAll(".hand-group-title")].find((n) => n.textContent.trim() === "Special cards");
+  const grid = [...body.querySelectorAll(".special-card-grid")].pop() || null;
+  return {
+    title: title ? title.textContent.trim() : "",
+    belowMembers:
+      !!title &&
+      !!body.querySelector(".hand-member") &&
+      (body.querySelector(".hand-member").compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
+    ids: grid
+      ? [...grid.querySelectorAll("img")].map((img) =>
+          (img.getAttribute("src") || "").split("/").pop().replace(/\.png$/i, "")
+        )
+      : [],
+    art: grid
+      ? [...grid.querySelectorAll("img")].every((img) => (img.getAttribute("src") || "").startsWith("../images/skills/"))
+      : false,
+  };
+});
+check(
+  "a Special cards group follows the character blocks",
+  specials.title === "Special cards" && specials.belowMembers,
+  JSON.stringify(specials)
+);
+check(
+  "it offers the 15 special ids in order, each with its own art",
+  specials.ids.join(",") ===
+    "780011,780012,780013,780014,780015,780021,780022,780023,780024,780025,780091,780092,780093,780094,780095" &&
+    specials.art,
+  JSON.stringify(specials)
+);
+
 console.log("\n=== a tag toggles on a slot ===");
 await page.click('#float-hand .hand-tabs .chip:has-text("Extra")');
 await page.waitForTimeout(300);
