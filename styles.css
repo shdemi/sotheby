@@ -17538,35 +17538,39 @@ span.planner-char-tile-img {
   color: #F5E1C3;
 }
 
-.tracker-pool-sub {
+.tracker-pool-pities {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  gap: 18px;
+  margin-top: 2px;
+}
+
+.tracker-pool-pity-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tracker-pool-pity-val {
   font-family: var(--mono-font);
   font-variant-numeric: tabular-nums;
-  font-size: 0.62rem;
-  color: #B5B5B3;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
-.tracker-pool-card.is-active .tracker-pool-sub {
-  color: #ECE5D9;
+.tracker-pool-pity-val.is-six { color: #E09532; }
+.tracker-pool-pity-val.is-five { color: #B895C4; }
+
+.tracker-pool-pity-lbl {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.56rem;
+  color: #9a9a9a;
+  letter-spacing: 0.03em;
 }
 
-.tracker-mini-pity-track {
-  width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-}
-
-.tracker-mini-pity-fill {
-  height: 100%;
-  background: #ED7D31;
-}
-
-.tracker-pool-card.is-active .tracker-mini-pity-fill {
-  background: #ED7D31;
+.tracker-pool-card.is-active .tracker-pool-pity-lbl {
+  color: #d1cbc2;
 }
 
 .tracker-rail-sep {
@@ -17618,8 +17622,97 @@ span.planner-char-tile-img {
 
 .tracker-rarity-seg-6 { background: #ED7D31; }
 .tracker-rarity-seg-5 { background: #F6C34A; }
-.tracker-rarity-seg-4 { background: #A5B9E7; }
+.tracker-rarity-seg-4 { background: #65466E; }
 .tracker-rarity-seg-3 { background: #6b6761; }
+
+.tracker-rarity-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  font-family: var(--mono-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.6rem;
+  color: #B5B5B3;
+  padding-top: 2px;
+}
+
+.tracker-rarity-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tracker-dot {
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+}
+
+.tracker-dot.is-6 { background: #ED7D31; }
+.tracker-dot.is-5 { background: #F6C34A; }
+.tracker-dot.is-4 { background: #65466E; }
+.tracker-dot.is-3 { background: #6b6761; }
+.tracker-dot.is-2 { background: #46433e; }
+
+/* Compact 6✦ Showcase Grid (wuwa-style circular portraits + pity badge) */
+.tracker-compact-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 4px 2px;
+}
+
+.tracker-compact-item {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  cursor: pointer;
+}
+
+.tracker-compact-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: none;
+  display: block;
+  -webkit-mask-image: radial-gradient(circle 12.5px at calc(100% - 7.5px) calc(100% - 7.5px), transparent 96%, #000 100%);
+  mask-image: radial-gradient(circle 12.5px at calc(100% - 7.5px) calc(100% - 7.5px), transparent 96%, #000 100%);
+}
+
+.tracker-compact-spark {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  font-size: 0.72rem;
+  line-height: 1;
+  color: #F6C34A;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+}
+
+.tracker-compact-pity {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  border-radius: 50%;
+  font-family: var(--mono-font);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: #218358;
+}
+
+.tracker-compact-pity.is-mid { background-color: #9E6C00; }
+.tracker-compact-pity.is-bad { background-color: #CE2C31; }
 
 /* Clickable Banner Link inside 6✦ Showcase */
 .tracker-record-banner-btn {
@@ -17709,11 +17802,28 @@ span.planner-char-tile-img {
 }
 
 .tracker-dist-axis {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
+  height: 14px;
   font-family: var(--mono-font);
   font-size: 0.58rem;
   color: #8f8a83;
+}
+
+.tracker-dist-axis > span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.tracker-dist-axis > span:first-child {
+  left: 0;
+  transform: none;
+}
+
+.tracker-dist-axis > span:last-child {
+  left: auto;
+  right: 0;
+  transform: none;
 }
 
 .tracker-dist-col {

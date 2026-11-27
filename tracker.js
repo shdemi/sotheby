@@ -8,6 +8,8 @@
  */
 (function () {
   const TRACKER_STORAGE_KEY = "r1999_pull_tracker_v1";
+  const DUSHUO_RATEUP_KEY = "r1999_pull_tracker_dushuo_v1";
+  const COMPACT_VIEW_KEY = "r1999_pull_tracker_compact_v1";
   const TESSERACT_CDN = "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
 
   const SPECIAL_ARCANISTS = [
@@ -18,7 +20,9 @@
 
   const SPECIAL_BANNER_NAMES = new Set([
     "Invitation From the Water",
+    "Invitation from the Water",
     "Abundance of the Water",
+    "Abundance of the Water: The First Milestone",
     "Yearning of the Water",
     "Revelation of the Water",
     "Promise of the Water",
@@ -29,6 +33,11 @@
     "From the Lake's Heart",
   ]);
 
+  const BANNER_ALIASES = {
+    "the myth at her fingertips": "myth at her fingertips",
+    "abundance of the water": "abundance of the water: the first milestone",
+  };
+
   const EVENT_LIMITED_NAMES = new Set([
     "Till the Last Drop",
     "Thoughts in Cylinder",
@@ -37,6 +46,7 @@
     "A Prophet Guided by Time",
     "Wine-Dark Reflections of the Eagle",
     "The Myth at Her Fingertips",
+    "Myth at Her Fingertips",
     "On Fate's Cue",
     "Her Heart-Cut Spring",
     "Analysis of Metallic Dramaturgy",
@@ -46,14 +56,18 @@
   let pulls = [];
   let selectedPool = "all"; // "all" | "char" | "event" | "special" | "standard"
   let selectedBanner = null; // null or banner name string
+  let showcaseCompact = localStorage.getItem(COMPACT_VIEW_KEY) === "1";
+  let dushuoRateUp = localStorage.getItem(DUSHUO_RATEUP_KEY) || "";
   let historySearch = "";
-  let historyRarities = new Set([6, 5, 4, 3, 2]);
+  let historyRarities = new Set([6]);
   let historyPage = 1;
   const HISTORY_PAGE_SIZE = 10;
   let editingRowIndex = -1;
 
   let bannersLoaded = false;
   let bannerMetaMap = new Map();
+  let yearningRuns = []; // [{ startMs, endMs, targets: Set<string> }]
+  let dushuoTargets = []; // string[]
   let allBannerNames = [];
   let rarityMap = {};
   let allArcanistNames = [];
@@ -188,6 +202,18 @@
           const existing = bannerMetaMap.get(key);
           const targets = new Set((b.targets || []).map((x) => x.name));
           const fiveStar = new Set((b.fiveStar || []).map((x) => x.name));
+
+          if (key === "yearning of the water" && b.server === "global" && b.start && b.end && targets.size > 0) {
+            yearningRuns.push({
+              startMs: new Date(b.start + "T00:00:00Z").getTime() - 2 * 86400000,
+              endMs: new Date(b.end + "T23:59:59Z").getTime() + 2 * 86400000,
+              targets,
+            });
+          }
+          if (key === "the snow of dushuo" && targets.size > 0 && dushuoTargets.length === 0) {
+            dushuoTargets = Array.from(targets).sort();
+          }
+
           if (!existing) {
             bannerMetaMap.set(key, {
               name: b.name,
@@ -217,12 +243,22 @@
   function classifyBannerMeta(b) {
     const type = String(b.type || "");
     const name = String(b.name || "");
+    const nl = name.toLowerCase();
     if (type === "Beginner" || name === "The First Drop of Rain") return "beginner";
     if (type === "Standard" || name === "Amongst the Lake") return "standard";
-    if (type === "Limited" || type === "Event" || type === "Collab" || EVENT_LIMITED_NAMES.has(name)) return "event";
-    if (type === "Ripples" || type === "Yearning" || SPECIAL_BANNER_NAMES.has(name) || b.rule?.kind === "thread" || b.rule?.kind === "inGroup") {
+    if (type === "Ripples" || nl === "ripples on the water" || b.rule?.track === "ripples") return "ripples";
+    // Check Special Banners BEFORE Event (since Abundance / Invitation are tagged Event in banners.json)
+    if (
+      type === "Yearning" ||
+      SPECIAL_BANNER_NAMES.has(name) ||
+      nl.startsWith("abundance of the water") ||
+      nl.startsWith("invitation from the water") ||
+      b.rule?.kind === "thread" ||
+      b.rule?.kind === "inGroup"
+    ) {
       return "special";
     }
+    if (type === "Limited" || type === "Event" || type === "Collab" || EVENT_LIMITED_NAMES.has(name)) return "event";
     return "char";
   }
 
@@ -230,19 +266,29 @@
     const clean = String(bannerName || "").trim();
     const key = clean.toLowerCase();
     if (bannerMetaMap.has(key)) return bannerMetaMap.get(key);
+    const aliasKey = BANNER_ALIASES[key] || (key.startsWith("the ") ? key.slice(4) : "");
+    if (aliasKey && bannerMetaMap.has(aliasKey)) return bannerMetaMap.get(aliasKey);
     if (clean === "The First Drop of Rain") {
       return { name: clean, category: "beginner", targets: new Set(), fiveStar: new Set(), track: "solo", kind: "none", version: "1.0" };
     }
     if (clean === "Amongst the Lake") {
       return { name: clean, category: "standard", targets: new Set(), fiveStar: new Set(), track: "solo", kind: "none", version: "1.0" };
     }
+    if (key === "ripples on the water") {
+      return { name: clean, category: "ripples", targets: new Set(), fiveStar: new Set(), track: "ripples", kind: "none", version: "" };
+    }
     if (EVENT_LIMITED_NAMES.has(clean)) {
       return { name: clean, category: "event", targets: new Set(), fiveStar: new Set(), track: "rateUp", kind: "rateUp", version: "" };
     }
     if (SPECIAL_BANNER_NAMES.has(clean)) {
-      return { name: clean, category: "special", targets: new Set(), fiveStar: new Set(), track: clean.includes("Ripples") ? "ripples" : "solo", kind: "none", version: "" };
+      return { name: clean, category: "special", targets: new Set(), fiveStar: new Set(), track: "solo", kind: "none", version: "" };
     }
     return { name: clean, category: "char", targets: new Set(), fiveStar: new Set(), track: "rateUp", kind: "rateUp", version: "" };
+  }
+
+  function getYearningTargets(ts) {
+    const run = yearningRuns.find((r) => ts >= r.startMs && ts <= r.endMs);
+    return run ? run.targets : null;
   }
 
   function getCategoryForPull(pull) {
@@ -298,7 +344,26 @@
         st.pity6 = 0;
 
         if (p.banner === "Ripples on the Water" || info.track === "ripples") {
-          wl6 = "G";
+          // Ripples has no 50/50 — don't count toward G or WR
+          wl6 = "-";
+        } else if (p.banner === "Yearning of the Water") {
+          // Yearning has no guarantee — only Win (1) or Lose (0) against the 2-char pair for that run
+          const yTargets = getYearningTargets(p.timestamp);
+          if (yTargets && yTargets.size > 0) {
+            wl6 = yTargets.has(p.arcanist) ? "W" : "L";
+          }
+        } else if (p.banner === "The Snow of Dushuo") {
+          if (dushuoRateUp) {
+            if (st.guaranteed6) {
+              wl6 = "G";
+              st.guaranteed6 = false;
+            } else if (p.arcanist === dushuoRateUp) {
+              wl6 = "W";
+            } else {
+              wl6 = "L";
+              st.guaranteed6 = true;
+            }
+          }
         } else if ((p.category === "char" || p.category === "event") && info.targets.size > 0) {
           if (st.guaranteed6) {
             wl6 = "G";
@@ -338,7 +403,7 @@
       };
     });
 
-    const summarizeList = (list, activePity6 = 0, guaranteed6 = false) => {
+    const summarizeList = (list, activePity6 = 0, guaranteed6 = false, activePity5 = 0) => {
       const total = list.length;
       const sixes = list.filter((x) => x.rarity === 6);
       const fives = list.filter((x) => x.rarity === 5);
@@ -369,6 +434,7 @@
         rate6: total > 0 ? (sixes.length / total) * 100 : 0,
         rate5: total > 0 ? (fives.length / total) * 100 : 0,
         currentPity6: activePity6,
+        currentPity5: activePity5,
         guaranteed6,
       };
     };
@@ -377,22 +443,26 @@
       all: enriched,
       char: enriched.filter((x) => x.category === "char"),
       event: enriched.filter((x) => x.category === "event"),
+      ripples: enriched.filter((x) => x.category === "ripples"),
       special: enriched.filter((x) => x.category === "special"),
       standard: enriched.filter((x) => x.category === "standard" || x.category === "beginner"),
     };
 
     const charTrack = getTrack("char_shared");
     const latestEventPull = [...byPool.event].pop();
-    const latestEventTrack = latestEventPull ? getTrack(latestEventPull.trackKey) : { pity6: 0, guaranteed6: false };
-    const ripplesTrack = getTrack("special:Ripples on the Water");
+    const latestEventTrack = latestEventPull ? getTrack(latestEventPull.trackKey) : { pity6: 0, pity5: 0, guaranteed6: false };
+    const ripplesTrack = getTrack("ripples:Ripples on the Water");
+    const latestSpecialPull = [...byPool.special].pop();
+    const latestSpecialTrack = latestSpecialPull ? getTrack(latestSpecialPull.trackKey) : { pity6: 0, pity5: 0, guaranteed6: false };
     const standardTrack = getTrack("standard:Amongst the Lake");
 
     const poolSummaries = {
-      all: summarizeList(byPool.all, charTrack.pity6, charTrack.guaranteed6),
-      char: summarizeList(byPool.char, charTrack.pity6, charTrack.guaranteed6),
-      event: summarizeList(byPool.event, latestEventTrack.pity6, latestEventTrack.guaranteed6),
-      special: summarizeList(byPool.special, ripplesTrack.pity6, false),
-      standard: summarizeList(byPool.standard, standardTrack.pity6, false),
+      all: summarizeList(byPool.all, charTrack.pity6, charTrack.guaranteed6, charTrack.pity5),
+      char: summarizeList(byPool.char, charTrack.pity6, charTrack.guaranteed6, charTrack.pity5),
+      event: summarizeList(byPool.event, latestEventTrack.pity6, latestEventTrack.guaranteed6, latestEventTrack.pity5),
+      ripples: summarizeList(byPool.ripples, ripplesTrack.pity6, false, ripplesTrack.pity5),
+      special: summarizeList(byPool.special, latestSpecialTrack.pity6, false, latestSpecialTrack.pity5),
+      standard: summarizeList(byPool.standard, standardTrack.pity6, false, standardTrack.pity5),
     };
 
     return {
@@ -407,14 +477,14 @@
 
   function pityColorClass(pity) {
     if (pity == null) return "";
-    if (pity <= 35) return "tracker-val-good";
-    if (pity <= 55) return "tracker-val-mid";
+    if (pity <= 43) return "tracker-val-good";
+    if (pity <= 59) return "tracker-val-mid";
     return "tracker-val-bad";
   }
 
   function pityBarClass(pity) {
-    if (pity <= 35) return "is-good";
-    if (pity <= 55) return "is-mid";
+    if (pity <= 43) return "is-good";
+    if (pity <= 59) return "is-mid";
     return "is-bad";
   }
 
@@ -430,8 +500,8 @@
   }
 
   function renderWlTag(wl) {
-    if (wl === "W") return `<span class="tracker-wl-tag is-w">WIN 50/50</span>`;
-    if (wl === "L") return `<span class="tracker-wl-tag is-l">LOSE 50/50</span>`;
+    if (wl === "W") return `<span class="tracker-wl-tag is-w">WIN</span>`;
+    if (wl === "L") return `<span class="tracker-wl-tag is-l">LOSE</span>`;
     if (wl === "G") return `<span class="tracker-wl-tag is-g">GUARANTEED</span>`;
     return `<span class="tracker-wl-tag is-n">—</span>`;
   }
@@ -440,6 +510,10 @@
     const contentEl = document.getElementById("tracker-content");
     const anomalyEl = document.getElementById("tracker-anomaly-banner");
     if (!contentEl) return;
+
+    // Preserve scroll positions across re-renders (fixes jump-to-top on delete / pagination / filter)
+    const prevDetailScroll = contentEl.querySelector(".tracker-detail")?.scrollTop || 0;
+    const prevRailScroll = contentEl.querySelector(".tracker-rail")?.scrollTop || 0;
 
     const data = computeAnalytics();
     const anomalies = getAnomalyTimestamps(data.desc);
@@ -465,6 +539,11 @@
 
     contentEl.innerHTML = renderSplitLayout(data, anomalies);
     bindSplitEvents();
+
+    const newDetail = contentEl.querySelector(".tracker-detail");
+    const newRail = contentEl.querySelector(".tracker-rail");
+    if (newDetail) newDetail.scrollTop = prevDetailScroll;
+    if (newRail) newRail.scrollTop = prevRailScroll;
   }
 
   function renderEmptyState() {
@@ -506,6 +585,7 @@
     const pools = [
       { id: "all", label: tr("tracker.totalSummary", "All Pools") },
       { id: "char", label: tr("tracker.cat.char", "Character (Rate-Up)") },
+      { id: "ripples", label: "Ripples on the Water" },
       { id: "event", label: tr("tracker.cat.event", "Event / Limited") },
       { id: "special", label: tr("tracker.cat.special", "Special Banners") },
       { id: "standard", label: `${tr("tracker.cat.standard", "Standard")} & ${tr("tracker.cat.beginner", "Beginner")}` },
@@ -515,20 +595,37 @@
       .map((p) => {
         const s = data.poolSummaries[p.id];
         const active = selectedPool === p.id && !selectedBanner;
-        const pct = Math.min(100, Math.round((s.currentPity6 / 70) * 100));
+        const noSharedPity = p.id === "all" || p.id === "event" || p.id === "special";
+        const pityRowHtml = noSharedPity
+          ? `
+            <div class="tracker-pool-pities">
+              <div class="tracker-pool-pity-item">
+                <span class="tracker-pool-pity-val is-six">${s.sixCount}</span>
+                <span class="tracker-pool-pity-lbl">6✦ Total</span>
+              </div>
+              <div class="tracker-pool-pity-item">
+                <span class="tracker-pool-pity-val is-five">${s.fiveCount}</span>
+                <span class="tracker-pool-pity-lbl">5✦ Total</span>
+              </div>
+            </div>`
+          : `
+            <div class="tracker-pool-pities">
+              <div class="tracker-pool-pity-item">
+                <span class="tracker-pool-pity-val is-six">${s.currentPity6}/70</span>
+                <span class="tracker-pool-pity-lbl">6✦ Pity</span>
+              </div>
+              <div class="tracker-pool-pity-item">
+                <span class="tracker-pool-pity-val is-five">${s.currentPity5}/20</span>
+                <span class="tracker-pool-pity-lbl">5✦ Pity</span>
+              </div>
+            </div>`;
         return `
           <button type="button" class="tracker-pool-card ${active ? "is-active" : ""}" data-select-pool="${p.id}">
             <div class="tracker-pool-top">
               <span class="tracker-pool-name">${escapeHtml(p.label)}</span>
               <span class="tracker-pool-count">${s.total}</span>
             </div>
-            <div class="tracker-pool-sub">
-              <span>6✦: ${s.sixCount} (${s.avg6 ? s.avg6.toFixed(1) : "—"})</span>
-              <span>${s.wr6 != null ? `WR ${s.wr6.toFixed(0)}%` : `Pity ${s.currentPity6}/70`}</span>
-            </div>
-            <div class="tracker-mini-pity-track">
-              <div class="tracker-mini-pity-fill" style="width:${pct}%"></div>
-            </div>
+            ${pityRowHtml}
           </button>
         `;
       })
@@ -539,60 +636,76 @@
     const activeChrono = selectedBanner ? poolChrono.filter((x) => x.banner === selectedBanner) : poolChrono;
     const activeDesc = [...activeChrono].reverse();
 
-    // Goyfield-inspired Overview Highlights for the Left Rail (from current pool)
+    // Overview Highlights for the Left Rail (from current pool)
     const sixesPool = poolChrono.filter((x) => x.rarity === 6 && x.pity6 != null);
-    const luckiest = sixesPool.length ? sixesPool.reduce((a, b) => (b.pity6 < a.pity6 ? b : a)) : null;
-    const unluckiest = sixesPool.length ? sixesPool.reduce((a, b) => (b.pity6 > a.pity6 ? b : a)) : null;
-    const earlyCount = sixesPool.filter((x) => x.pity6 <= 35).length;
+    const earlyCount = sixesPool.filter((x) => x.pity6 <= 43).length;
     const softCount = sixesPool.filter((x) => x.pity6 >= 60).length;
     const earlyPct = sixesPool.length ? ((earlyCount / sixesPool.length) * 100).toFixed(0) + "%" : "—";
     const softPct = sixesPool.length ? ((softCount / sixesPool.length) * 100).toFixed(0) + "%" : "—";
 
-    let curStreak = 0;
-    let bestStreak = 0;
-    let runStreak = 0;
+    let curWinStreak = 0;
+    let bestWinStreak = 0;
+    let runWin = 0;
+    let curLoseStreak = 0;
+    let worstLoseStreak = 0;
+    let runLose = 0;
     sixesPool.forEach((x) => {
       if (x.wl6 === "W") {
-        runStreak += 1;
-        if (runStreak > bestStreak) bestStreak = runStreak;
+        runWin += 1;
+        if (runWin > bestWinStreak) bestWinStreak = runWin;
+        runLose = 0;
       } else if (x.wl6 === "L") {
-        runStreak = 0;
+        runLose += 1;
+        if (runLose > worstLoseStreak) worstLoseStreak = runLose;
+        runWin = 0;
       }
     });
     for (let i = sixesPool.length - 1; i >= 0; i--) {
-      if (sixesPool[i].wl6 === "W") curStreak += 1;
+      if (sixesPool[i].wl6 === "W") curWinStreak += 1;
       else if (sixesPool[i].wl6 === "L") break;
     }
+    for (let i = sixesPool.length - 1; i >= 0; i--) {
+      if (sixesPool[i].wl6 === "L") curLoseStreak += 1;
+      else if (sixesPool[i].wl6 === "W") break;
+    }
 
+    const c6 = poolChrono.filter((x) => x.rarity === 6).length;
+    const c5 = poolChrono.filter((x) => x.rarity === 5).length;
+    const c4 = poolChrono.filter((x) => x.rarity === 4).length;
+    const c3 = poolChrono.filter((x) => x.rarity === 3).length;
+    const c2 = poolChrono.filter((x) => x.rarity === 2).length;
     const tot = poolChrono.length || 1;
-    const r6p = (poolChrono.filter((x) => x.rarity === 6).length / tot) * 100;
-    const r5p = (poolChrono.filter((x) => x.rarity === 5).length / tot) * 100;
-    const r4p = (poolChrono.filter((x) => x.rarity === 4).length / tot) * 100;
+    const r6p = (c6 / tot) * 100;
+    const r5p = (c5 / tot) * 100;
+    const r4p = (c4 / tot) * 100;
     const r3p = Math.max(0, 100 - r6p - r5p - r4p);
 
     const railHighlightsHtml = `
       <div class="tracker-rail-highlights">
         <div class="tracker-hl-row">
-          <span>Luckiest 6✦</span>
-          <span class="tracker-hl-val tracker-val-good">${luckiest ? `${escapeHtml(getArcanistLabel(luckiest.arcanist))} (${luckiest.pity6})` : "—"}</span>
-        </div>
-        <div class="tracker-hl-row">
-          <span>Unluckiest 6✦</span>
-          <span class="tracker-hl-val tracker-val-bad">${unluckiest ? `${escapeHtml(getArcanistLabel(unluckiest.arcanist))} (${unluckiest.pity6})` : "—"}</span>
-        </div>
-        <div class="tracker-hl-row">
-          <span>Early (≤35) / Soft (≥60)</span>
+          <span>Early (≤43) / Soft (≥60)</span>
           <span class="tracker-hl-val">${earlyPct} / ${softPct}</span>
         </div>
         <div class="tracker-hl-row">
-          <span>50/50 Streak (Cur / Best)</span>
-          <span class="tracker-hl-val">${curStreak}W / ${bestStreak}W</span>
+          <span>50/50 Win Streak (Cur / Best)</span>
+          <span class="tracker-hl-val tracker-val-good">${curWinStreak}W / ${bestWinStreak}W</span>
+        </div>
+        <div class="tracker-hl-row">
+          <span>50/50 Lose Streak (Cur / Worst)</span>
+          <span class="tracker-hl-val tracker-val-bad">${curLoseStreak}L / ${worstLoseStreak}L</span>
         </div>
         <div class="tracker-rarity-stack" title="6✦ ${r6p.toFixed(1)}% • 5✦ ${r5p.toFixed(1)}% • 4✦ ${r4p.toFixed(1)}% • 2-3✦ ${r3p.toFixed(1)}%">
           <div class="tracker-rarity-seg-6" style="width:${r6p.toFixed(2)}%"></div>
           <div class="tracker-rarity-seg-5" style="width:${r5p.toFixed(2)}%"></div>
           <div class="tracker-rarity-seg-4" style="width:${r4p.toFixed(2)}%"></div>
           <div class="tracker-rarity-seg-3" style="width:${r3p.toFixed(2)}%"></div>
+        </div>
+        <div class="tracker-rarity-legend">
+          <span><i class="tracker-dot is-6"></i>6✦ ${c6}</span>
+          <span><i class="tracker-dot is-5"></i>5✦ ${c5}</span>
+          <span><i class="tracker-dot is-4"></i>4✦ ${c4}</span>
+          <span><i class="tracker-dot is-3"></i>3✦ ${c3}</span>
+          <span><i class="tracker-dot is-2"></i>2✦ ${c2}</span>
         </div>
       </div>
     `;
@@ -619,7 +732,8 @@
       ? activeSummary.fiveCount > 0 ? activeSummary.total / activeSummary.fiveCount : 0
       : activeSummary.avg5;
 
-    const currentPityCardHtml = selectedBanner
+    const hideCurrentPity = selectedPool === "all" || selectedPool === "event" || selectedPool === "special" || Boolean(selectedBanner);
+    const currentPityCardHtml = hideCurrentPity
       ? ""
       : `
         <div class="tracker-kpi-card">
@@ -637,7 +751,7 @@
       `;
 
     const kpiHtml = `
-      <div class="tracker-kpi-grid ${selectedBanner ? "is-3col" : ""}">
+      <div class="tracker-kpi-grid ${hideCurrentPity ? "is-3col" : ""}">
         <div class="tracker-kpi-card is-highlight">
           <div class="tracker-kpi-label">
             <span>${escapeHtml(tr("tracker.summons", "Summons"))}</span>
@@ -677,38 +791,62 @@
       </div>
     `;
 
-    // 6✦ Headhunting Records Timeline
+    // 6✦ Showcase (Timeline vs Compact Grid)
     const sixesDesc = activeDesc.filter((p) => p.rarity === 6);
     const recordsHtml =
       sixesDesc.length === 0
         ? `<div style="padding:14px;text-align:center;font-family:var(--mono-font);font-size:0.72rem;color:var(--text-muted);">${escapeHtml(tr("tracker.noPullsInCat", "No 6✦ pulls in this selection"))}</div>`
-        : sixesDesc
-            .map((p) => {
-              const barPct = Math.min(100, Math.round(((p.pity6 || 0) / 70) * 100));
-              return `
-                <div class="tracker-record-row">
-                  <img src="${escapeHtml(getArcanistIcon(p.arcanist))}" alt="" class="tracker-record-avatar" loading="lazy" />
-                  <div class="tracker-record-info">
-                    <span class="tracker-record-name">${escapeHtml(getArcanistLabel(p.arcanist))}</span>
-                    <button type="button" class="tracker-record-banner-btn" data-select-banner="${escapeHtml(p.banner)}" title="View banner pulls">${escapeHtml(p.banner)}</button>
+        : showcaseCompact
+          ? `<div class="tracker-compact-grid">${sixesDesc
+              .map((p) => {
+                const pity = p.pity6 ?? 0;
+                const pCls = pity <= 43 ? "" : pity <= 59 ? "is-mid" : "is-bad";
+                const wlCls = p.wl6 === "W" || p.wl6 === "G" ? "is-win" : p.wl6 === "L" ? "is-lose" : "";
+                const spark = p.wl6 === "W" || p.wl6 === "G" ? `<span class="tracker-compact-spark">✦</span>` : "";
+                return `
+                  <div class="tracker-compact-item" data-select-banner="${escapeHtml(p.banner)}" data-c-name="${escapeHtml(getArcanistLabel(p.arcanist))}" data-c-banner="${escapeHtml(p.banner)}" data-c-pity="${pity}" data-c-wl="${escapeHtml(p.wl6)}" data-c-date="${escapeHtml(new Date(p.timestamp).toLocaleDateString())}">
+                    <img src="${escapeHtml(getArcanistIcon(p.arcanist))}" alt="${escapeHtml(getArcanistLabel(p.arcanist))}" class="tracker-compact-avatar" loading="lazy" />
+                    ${spark}
+                    <span class="tracker-compact-pity ${pCls}">${p.pity6 ?? "?"}</span>
                   </div>
-                  <div class="tracker-record-bar-cell">
-                    <div class="tracker-record-bar-track">
-                      <div class="tracker-record-bar-fill ${pityBarClass(p.pity6 || 0)}" style="width:${barPct}%"></div>
+                `;
+              })
+              .join("")}</div>`
+          : sixesDesc
+              .map((p) => {
+                const barPct = Math.min(100, Math.round(((p.pity6 || 0) / 70) * 100));
+                return `
+                  <div class="tracker-record-row">
+                    <img src="${escapeHtml(getArcanistIcon(p.arcanist))}" alt="" class="tracker-record-avatar" loading="lazy" />
+                    <div class="tracker-record-info">
+                      <span class="tracker-record-name">${escapeHtml(getArcanistLabel(p.arcanist))}</span>
+                      <button type="button" class="tracker-record-banner-btn" data-select-banner="${escapeHtml(p.banner)}" title="View banner pulls">${escapeHtml(p.banner)}</button>
                     </div>
-                    <span class="tracker-record-pity-num ${pityColorClass(p.pity6)}">${p.pity6 ?? "?"}</span>
+                    <div class="tracker-record-bar-cell">
+                      <div class="tracker-record-bar-track">
+                        <div class="tracker-record-bar-fill ${pityBarClass(p.pity6 || 0)}" style="width:${barPct}%"></div>
+                      </div>
+                      <span class="tracker-record-pity-num ${pityColorClass(p.pity6)}">${p.pity6 ?? "?"}</span>
+                    </div>
+                    <div>${renderWlTag(p.wl6)}</div>
+                    <div class="tracker-record-date">${new Date(p.timestamp).toLocaleDateString()}</div>
                   </div>
-                  <div>${renderWlTag(p.wl6)}</div>
-                  <div class="tracker-record-date">${new Date(p.timestamp).toLocaleDateString()}</div>
-                </div>
-              `;
-            })
-            .join("");
+                `;
+              })
+              .join("");
+
+    const hasDushuo = selectedBanner === "The Snow of Dushuo";
+    const dushuoPickerHtml = hasDushuo && dushuoTargets.length > 0
+      ? `<select id="tracker-dushuo-select" class="tracker-select-sm" title="Select your rate-up for The Snow of Dushuo">
+          <option value="">Dushuo Rate-Up…</option>
+          ${dushuoTargets.map((n) => `<option value="${escapeHtml(n)}" ${dushuoRateUp === n ? "selected" : ""}>${escapeHtml(getArcanistLabel(n))}</option>`).join("")}
+        </select>`
+      : "";
 
     // Full History Table for this selection
     const q = historySearch.trim().toLowerCase();
     const filteredHistory = activeDesc.filter((p) => {
-      if (!historyRarities.has(p.rarity)) return false;
+      if (historyRarities.size > 0 && !historyRarities.has(p.rarity)) return false;
       if (q) {
         const hay = `${p.arcanist} ${getArcanistLabel(p.arcanist)} ${p.banner}`.toLowerCase();
         if (!hay.includes(q)) return false;
@@ -774,7 +912,7 @@
       </datalist>
     `;
 
-    // Pity Distribution 6✦ (1..70) & 5✦ (1..10) with chess-piece-style tooltip data
+    // Pity Distribution 6✦ (1..70, all orange) & 5✦ (1..20)
     const bins6 = Array.from({ length: 70 }, () => []);
     activeChrono.forEach((p) => {
       if (p.rarity === 6 && p.pity6 >= 1 && p.pity6 <= 70) {
@@ -793,9 +931,9 @@
       })
       .join("");
 
-    const bins5 = Array(10).fill(0);
+    const bins5 = Array(20).fill(0);
     activeChrono.forEach((p) => {
-      if (p.rarity === 5 && p.pity5 >= 1 && p.pity5 <= 10) bins5[p.pity5 - 1] += 1;
+      if (p.rarity === 5 && p.pity5 >= 1 && p.pity5 <= 20) bins5[p.pity5 - 1] += 1;
     });
     const max5 = Math.max(1, ...bins5);
     const total5InDist = bins5.reduce((s, c) => s + c, 0);
@@ -815,7 +953,7 @@
             <span style="font-family:var(--mono-font);font-size:0.65rem;color:#8f8a83;">${sixesDesc.length}</span>
           </div>
           <div class="tracker-dist-bars">${dist6Html}</div>
-          <div class="tracker-dist-axis"><span>1</span><span>20</span><span>40</span><span>60</span><span>70</span></div>
+          <div class="tracker-dist-axis"><span>1</span><span style="left:${((20 - 0.5) / 70 * 100).toFixed(2)}%">20</span><span style="left:${((40 - 0.5) / 70 * 100).toFixed(2)}%">40</span><span style="left:${((60 - 0.5) / 70 * 100).toFixed(2)}%">60</span><span>70</span></div>
         </div>
         <div class="tracker-dist-card">
           <div class="tracker-dist-title">
@@ -823,7 +961,7 @@
             <span style="font-family:var(--mono-font);font-size:0.65rem;color:#8f8a83;">${activeSummary.fiveCount}</span>
           </div>
           <div class="tracker-dist-bars">${dist5Html}</div>
-          <div class="tracker-dist-axis"><span>1</span><span>3</span><span>5</span><span>7</span><span>10</span></div>
+          <div class="tracker-dist-axis"><span>1</span><span style="left:${((5 - 0.5) / 20 * 100).toFixed(2)}%">5</span><span style="left:${((10 - 0.5) / 20 * 100).toFixed(2)}%">10</span><span style="left:${((15 - 0.5) / 20 * 100).toFixed(2)}%">15</span><span>20</span></div>
         </div>
       </div>
     `;
@@ -855,6 +993,10 @@
         <div class="tracker-section">
           <div class="tracker-section-head">
             <h4 class="tracker-section-title">${escapeHtml(tr("tracker.showcase6", "6✦ Showcase"))} (${sixesDesc.length})</h4>
+            <div style="display:flex;align-items:center;gap:8px;">
+              ${dushuoPickerHtml}
+              <button type="button" class="btn btn-secondary btn-sm" id="tracker-compact-toggle">${showcaseCompact ? "Timeline View" : "Compact View"}</button>
+            </div>
           </div>
           <div class="tracker-records-list">${recordsHtml}</div>
         </div>
@@ -926,6 +1068,18 @@
       renderTracker();
     });
 
+    document.getElementById("tracker-compact-toggle")?.addEventListener("click", () => {
+      showcaseCompact = !showcaseCompact;
+      localStorage.setItem(COMPACT_VIEW_KEY, showcaseCompact ? "1" : "0");
+      renderTracker();
+    });
+
+    document.getElementById("tracker-dushuo-select")?.addEventListener("change", (e) => {
+      dushuoRateUp = e.target.value;
+      localStorage.setItem(DUSHUO_RATEUP_KEY, dushuoRateUp);
+      renderTracker();
+    });
+
     // Chess-piece-style hover tooltip for Pity Distribution bars
     let distTip = document.getElementById("tracker-dist-tooltip");
     if (!distTip) {
@@ -953,7 +1107,7 @@
             : "";
         distTip.innerHTML = `
           <div style="font-weight: 700; color: #fff; margin-bottom: 2px;">Pity ${pity} (${rarity}✦)</div>
-          <div>${count} pull${count === 1 ? "" : "s"} (${pct}%)</div>
+          <div>${count} character${count === 1 ? "" : "s"} (${pct}%)</div>
           ${entriesHtml}
         `;
         distTip.style.display = "block";
@@ -966,6 +1120,35 @@
         distTip.style.top = `${top}px`;
       });
       col.addEventListener("mouseleave", () => {
+        distTip.style.display = "none";
+      });
+    });
+
+    document.querySelectorAll(".tracker-compact-item").forEach((item) => {
+      item.addEventListener("mouseenter", () => {
+        const name = item.dataset.cName || "";
+        const banner = item.dataset.cBanner || "";
+        const pity = item.dataset.cPity || "?";
+        const wl = item.dataset.cWl || "-";
+        const date = item.dataset.cDate || "";
+        const wlText = wl === "W" ? "WIN 50/50" : wl === "L" ? "LOSE 50/50" : wl === "G" ? "GUARANTEED" : "";
+        distTip.innerHTML = `
+          <div style="font-weight: 700; color: #fff; margin-bottom: 2px;">${escapeHtml(name)}</div>
+          <div style="color:#9a9a9a;margin-bottom:4px;">${escapeHtml(banner)}</div>
+          <div>Pity: <span style="color:#fff;font-weight:700;">${escapeHtml(pity)}</span></div>
+          ${wlText ? `<div>${wlText}</div>` : ""}
+          ${date ? `<div style="color:#9a9a9a;">${escapeHtml(date)}</div>` : ""}
+        `;
+        distTip.style.display = "block";
+        const r = item.getBoundingClientRect();
+        const tw = distTip.offsetWidth;
+        const th = distTip.offsetHeight;
+        const left = Math.max(8, Math.min(window.innerWidth - tw - 8, r.left + r.width / 2 - tw / 2));
+        const top = Math.max(8, r.top - th - 8);
+        distTip.style.left = `${left}px`;
+        distTip.style.top = `${top}px`;
+      });
+      item.addEventListener("mouseleave", () => {
         distTip.style.display = "none";
       });
     });
@@ -1046,18 +1229,26 @@
   }
 
   function addManualPull() {
-    const newPull = {
-      id: `manual_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-      arcanist: allArcanistNames[0] || "Melania",
-      rarity: 6,
-      banner: selectedBanner || "Amongst the Lake",
-      timestamp: Date.now(),
-    };
-    pulls.push(newPull);
-    editingRowIndex = pulls.length - 1;
-    historyPage = 1;
-    savePullsToStorage();
-    renderTracker();
+    const modal = document.getElementById("tracker-add-modal");
+    if (!modal) return;
+    const arcInput = document.getElementById("tracker-add-arcanist");
+    const rarSelect = document.getElementById("tracker-add-rarity");
+    const banInput = document.getElementById("tracker-add-banner");
+    const dtInput = document.getElementById("tracker-add-date");
+    if (arcInput) arcInput.value = "";
+    if (rarSelect) rarSelect.value = "6";
+    if (banInput) banInput.value = selectedBanner || "Amongst the Lake";
+    if (dtInput) {
+      const now = new Date();
+      dtInput.value = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 19);
+    }
+    modal.style.display = "flex";
+    arcInput?.focus();
+  }
+
+  function closeAddPullModal() {
+    const modal = document.getElementById("tracker-add-modal");
+    if (modal) modal.style.display = "none";
   }
 
   /* ---------------- Dual Export / Import ---------------- */
@@ -1485,6 +1676,7 @@
     if (modal) modal.style.display = "none";
     const dataModal = document.getElementById("tracker-data-modal");
     if (dataModal) dataModal.style.display = "none";
+    closeAddPullModal();
     const distTip = document.getElementById("tracker-dist-tooltip");
     if (distTip) distTip.style.display = "none";
   }
@@ -1519,6 +1711,42 @@
     document.getElementById("tracker-data-btn-close")?.addEventListener("click", closeTrackerDataModal);
     dataModal?.addEventListener("click", (e) => {
       if (e.target === dataModal) closeTrackerDataModal();
+    });
+
+    const addModal = document.getElementById("tracker-add-modal");
+    document.getElementById("tracker-add-btn-close")?.addEventListener("click", closeAddPullModal);
+    document.getElementById("tracker-add-cancel")?.addEventListener("click", closeAddPullModal);
+    addModal?.addEventListener("click", (e) => {
+      if (e.target === addModal) closeAddPullModal();
+    });
+    document.getElementById("tracker-add-arcanist")?.addEventListener("input", (e) => {
+      const norm = normalizeArcanistName(e.target.value);
+      if (rarityMap[norm]) {
+        const sel = document.getElementById("tracker-add-rarity");
+        if (sel) sel.value = String(rarityMap[norm]);
+      }
+    });
+    document.getElementById("tracker-add-confirm")?.addEventListener("click", () => {
+      const arc = normalizeArcanistName(document.getElementById("tracker-add-arcanist")?.value);
+      const rar = Number(document.getElementById("tracker-add-rarity")?.value || 6);
+      const ban = String(document.getElementById("tracker-add-banner")?.value || "").trim() || "Amongst the Lake";
+      const dtStr = document.getElementById("tracker-add-date")?.value;
+      const ts = dtStr ? new Date(dtStr).getTime() : Date.now();
+      if (!arc || isNaN(ts)) {
+        notify("Please enter a valid character and date.");
+        return;
+      }
+      pulls.push({
+        id: `manual_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        arcanist: arc,
+        rarity: getArcanistRarity(arc, rar),
+        banner: ban,
+        timestamp: ts,
+      });
+      pulls.sort((a, b) => a.timestamp - b.timestamp);
+      savePullsToStorage();
+      closeAddPullModal();
+      renderTracker();
     });
 
     document.getElementById("tracker-upload-btn")?.addEventListener("click", () => {

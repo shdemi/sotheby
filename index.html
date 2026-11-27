@@ -1920,6 +1920,46 @@
     </div>
   </div>
 
+  <!-- Pull Tracker Add Pull Sub-Modal -->
+  <div id="tracker-add-modal" class="modal-backdrop" style="display: none; z-index: 1100;">
+    <div class="modal-card archetype-modal-card" style="max-width: 440px;">
+      <div class="archetype-modal-header">
+        <h2 class="archetype-modal-title"><span data-i18n="tracker.addPull">Add Pull</span></h2>
+        <button class="modal-close" id="tracker-add-btn-close"><img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" /></button>
+      </div>
+      <div class="modal-body archetype-modal-body json-modal-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="json-section">
+          <label class="json-section-label" for="tracker-add-arcanist" data-i18n="tracker.arcanist">Arcanist</label>
+          <input type="text" id="tracker-add-arcanist" class="tracker-inline-input" style="width:100%;height:34px;box-sizing:border-box;" list="tracker-arcanist-datalist" placeholder="e.g. Melania" />
+        </div>
+        <div class="json-section" style="display:grid;grid-template-columns:1fr 2fr;gap:10px;">
+          <div>
+            <label class="json-section-label" for="tracker-add-rarity" data-i18n="tracker.rarity">Rarity</label>
+            <select id="tracker-add-rarity" class="tracker-select-sm" style="width:100%;height:34px;">
+              <option value="6">6✦</option>
+              <option value="5">5✦</option>
+              <option value="4">4✦</option>
+              <option value="3">3✦</option>
+              <option value="2">2✦</option>
+            </select>
+          </div>
+          <div>
+            <label class="json-section-label" for="tracker-add-banner" data-i18n="tracker.banner">Banner</label>
+            <input type="text" id="tracker-add-banner" class="tracker-inline-input" style="width:100%;height:34px;box-sizing:border-box;" list="tracker-banner-datalist" placeholder="e.g. Amongst the Lake" />
+          </div>
+        </div>
+        <div class="json-section">
+          <label class="json-section-label" for="tracker-add-date" data-i18n="tracker.date">Summon Time</label>
+          <input type="datetime-local" step="1" id="tracker-add-date" class="tracker-inline-input" style="width:100%;height:34px;box-sizing:border-box;" />
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:8px;">
+        <button type="button" class="btn btn-secondary" id="tracker-add-cancel"><span data-i18n="action.cancel">Cancel</span></button>
+        <button type="button" class="btn btn-secondary tracker-btn-accent" id="tracker-add-confirm"><span data-i18n="tracker.save">Save</span></button>
+      </div>
+    </div>
+  </div>
+
   <!-- Rotation Presets Modal -->
   <div id="rotation-presets-modal" class="modal-backdrop rotation-presets-backdrop" style="display: none;">
     <div class="modal-card archetype-modal-card rotation-presets-card">
