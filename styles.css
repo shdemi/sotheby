@@ -10545,6 +10545,21 @@ body.guide-rail-resizing * {
 }
 
 /* Promotional codes: rail rows */
+.codes-section-header {
+  padding: 10px 14px 6px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8f8a83;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.codes-section-header:not(:first-child) {
+  margin-top: 10px;
+}
+
 .codes-row {
   display: flex;
   justify-content: space-between;

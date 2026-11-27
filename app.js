@@ -9756,12 +9756,12 @@ let promoCodeSelected = null;
 let promoCodeError = "";
 let promoCodesPromise = null;
 
-/** `permanent` and `current` flattened into one list, each row tagged. */
+/** `current` and `permanent` flattened into one list, each row tagged. */
 function promoCodeEntries() {
   if (!promoCodeData) return [];
   const rows = [];
-  (promoCodeData.permanent || []).forEach((entry) => rows.push({ ...entry, permanent: true }));
   (promoCodeData.current || []).forEach((entry) => rows.push({ ...entry, permanent: false }));
+  (promoCodeData.permanent || []).forEach((entry) => rows.push({ ...entry, permanent: true }));
   return rows;
 }
 
@@ -9894,18 +9894,28 @@ function renderCodesRail() {
     promoCodeSelected = entries[0] ? entries[0].code : null;
   }
 
-  list.innerHTML = entries.length
-    ? entries
-        .map((entry) => {
-          const badge = promoExpiryBadge(entry);
-          return `
-            <button type="button" class="codes-row${entry.code === promoCodeSelected ? " is-active" : ""}" data-code="${escapeHtml(entry.code)}">
-              <span class="codes-row-code">${escapeHtml(entry.code)}</span>
-              <span class="codes-row-meta codes-badge-${badge.kind}">${escapeHtml(badge.label)}</span>
-            </button>`;
-        })
-        .join("")
-    : guideEmptyState("codes.empty");
+  const renderCodeRow = (entry) => `
+    <button type="button" class="codes-row${entry.code === promoCodeSelected ? " is-active" : ""}" data-code="${escapeHtml(entry.code)}">
+      <span class="codes-row-code">${escapeHtml(entry.code)}</span>
+    </button>`;
+
+  const currentEntries = entries.filter((entry) => !entry.permanent);
+  const permanentEntries = entries.filter((entry) => entry.permanent);
+  const sections = [];
+  if (currentEntries.length) {
+    sections.push(
+      `<div class="codes-section-header">${escapeHtml(t("codes.current"))}</div>`,
+      currentEntries.map(renderCodeRow).join(""),
+    );
+  }
+  if (permanentEntries.length) {
+    sections.push(
+      `<div class="codes-section-header">${escapeHtml(t("codes.permanent"))}</div>`,
+      permanentEntries.map(renderCodeRow).join(""),
+    );
+  }
+
+  list.innerHTML = sections.length ? sections.join("") : guideEmptyState("codes.empty");
 
   list.querySelectorAll(".codes-row").forEach((row) => {
     row.addEventListener("click", () => {
