@@ -509,6 +509,8 @@
   function renderTracker() {
     const contentEl = document.getElementById("tracker-content");
     const anomalyEl = document.getElementById("tracker-anomaly-banner");
+    const distTip = document.getElementById("tracker-dist-tooltip");
+    if (distTip) distTip.style.display = "none";
     if (!contentEl) return;
 
     // Preserve scroll positions across re-renders (fixes jump-to-top on delete / pagination / filter)
@@ -1151,6 +1153,9 @@
       item.addEventListener("mouseleave", () => {
         distTip.style.display = "none";
       });
+      item.addEventListener("click", () => {
+        distTip.style.display = "none";
+      });
     });
 
     document.getElementById("tracker-history-search")?.addEventListener("input", (e) => {
@@ -1719,13 +1724,88 @@
     addModal?.addEventListener("click", (e) => {
       if (e.target === addModal) closeAddPullModal();
     });
-    document.getElementById("tracker-add-arcanist")?.addEventListener("input", (e) => {
+    const addArcInput = document.getElementById("tracker-add-arcanist");
+    const addArcMenu = document.getElementById("tracker-add-arc-menu");
+    const addBanInput = document.getElementById("tracker-add-banner");
+    const addBanMenu = document.getElementById("tracker-add-ban-menu");
+
+    function renderArcCombo(q) {
+      if (!addArcMenu) return;
+      const ql = String(q || "").trim().toLowerCase();
+      const matches = allArcanistNames
+        .filter((n) => !ql || n.toLowerCase().includes(ql) || getArcanistLabel(n).toLowerCase().includes(ql))
+        .slice(0, 40);
+      if (matches.length === 0) {
+        addArcMenu.classList.remove("is-open");
+        return;
+      }
+      addArcMenu.innerHTML = matches
+        .map((n) => {
+          const r = getArcanistRarity(n);
+          const rCls = r === 6 ? "is-6" : r === 5 ? "is-5" : "";
+          return `
+            <button type="button" class="tracker-combo-item" data-pick-arc="${escapeHtml(n)}">
+              <img src="${escapeHtml(getArcanistIcon(n))}" alt="" class="tracker-combo-avatar" />
+              <span>${escapeHtml(getArcanistLabel(n))}</span>
+              <span class="tracker-combo-rarity ${rCls}">${r}✦</span>
+            </button>
+          `;
+        })
+        .join("");
+      addArcMenu.classList.add("is-open");
+      addArcMenu.querySelectorAll("[data-pick-arc]").forEach((btn) => {
+        btn.addEventListener("mousedown", (ev) => {
+          ev.preventDefault();
+          const picked = btn.dataset.pickArc;
+          if (addArcInput) addArcInput.value = picked;
+          const sel = document.getElementById("tracker-add-rarity");
+          if (sel) sel.value = String(getArcanistRarity(picked));
+          addArcMenu.classList.remove("is-open");
+        });
+      });
+    }
+
+    function renderBanCombo(q) {
+      if (!addBanMenu) return;
+      const ql = String(q || "").trim().toLowerCase();
+      const matches = allBannerNames.filter((b) => !ql || b.toLowerCase().includes(ql)).slice(0, 40);
+      if (matches.length === 0) {
+        addBanMenu.classList.remove("is-open");
+        return;
+      }
+      addBanMenu.innerHTML = matches
+        .map(
+          (b) => `
+          <button type="button" class="tracker-combo-item" data-pick-ban="${escapeHtml(b)}">
+            <span>${escapeHtml(b)}</span>
+          </button>
+        `
+        )
+        .join("");
+      addBanMenu.classList.add("is-open");
+      addBanMenu.querySelectorAll("[data-pick-ban]").forEach((btn) => {
+        btn.addEventListener("mousedown", (ev) => {
+          ev.preventDefault();
+          if (addBanInput) addBanInput.value = btn.dataset.pickBan;
+          addBanMenu.classList.remove("is-open");
+        });
+      });
+    }
+
+    addArcInput?.addEventListener("focus", () => renderArcCombo(addArcInput.value));
+    addArcInput?.addEventListener("input", (e) => {
+      renderArcCombo(e.target.value);
       const norm = normalizeArcanistName(e.target.value);
       if (rarityMap[norm]) {
         const sel = document.getElementById("tracker-add-rarity");
         if (sel) sel.value = String(rarityMap[norm]);
       }
     });
+    addArcInput?.addEventListener("blur", () => setTimeout(() => addArcMenu?.classList.remove("is-open"), 120));
+
+    addBanInput?.addEventListener("focus", () => renderBanCombo(addBanInput.value));
+    addBanInput?.addEventListener("input", (e) => renderBanCombo(e.target.value));
+    addBanInput?.addEventListener("blur", () => setTimeout(() => addBanMenu?.classList.remove("is-open"), 120));
     document.getElementById("tracker-add-confirm")?.addEventListener("click", () => {
       const arc = normalizeArcanistName(document.getElementById("tracker-add-arcanist")?.value);
       const rar = Number(document.getElementById("tracker-add-rarity")?.value || 6);

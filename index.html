@@ -1385,6 +1385,10 @@
           <div class="planner-toolbar">
             <div class="planner-toolbar-lead">
               <span class="planner-patch" id="calc-today"></span>
+              <span class="calc-toolbar-kpis" id="calc-toolbar-kpis">
+                <button type="button" class="calc-kpi is-clickable" id="calc-kpi-held" title="Settings" data-i18n-title="planner.calcSettings"></button>
+                <span class="calc-kpi" id="calc-kpi-left"></span>
+              </span>
             </div>
             <div class="planner-toolbar-tail">
               <button type="button" class="btn btn-secondary planner-add-btn" id="calc-add" title="Add a banner" data-i18n-title="planner.calcAddBanner" aria-label="Add a banner" data-i18n-aria-label="planner.calcAddBanner">
@@ -1393,6 +1397,13 @@
               </button>
               <button type="button" class="btn btn-secondary planner-reset-btn" id="calc-reset" title="Reset the calculator" data-i18n-title="planner.calcReset" aria-label="Reset the calculator" data-i18n-aria-label="planner.calcReset">
                 <img src="images/random_icon/reset_png.png" alt="" class="planner-reset-icon" />
+              </button>
+              <button type="button" class="btn btn-secondary planner-add-btn calc-settings-btn" id="calc-settings-btn" title="Settings" data-i18n-title="planner.calcSettings" aria-label="Settings" data-i18n-aria-label="planner.calcSettings" aria-expanded="false">
+                <svg class="calc-settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span data-i18n="planner.calcSettings">Settings</span>
               </button>
             </div>
           </div>
@@ -1487,7 +1498,24 @@
           <div class="planner-char-scroll">
             <div class="planner-char-rail" id="planner-char-rail"></div>
             <p class="planner-rail-hint" id="planner-rail-hint"></p>
+            <div class="planner-char-viewbar" id="planner-char-viewbar">
+              <div class="calc-span" role="tablist" aria-label="Character plan view">
+                <button type="button" class="calc-span-btn is-active" data-char-view="farm" role="tab" aria-selected="true" data-i18n="planner.farmTitle">Farm route</button>
+                <button type="button" class="calc-span-btn" data-char-view="warehouse" role="tab" aria-selected="false" data-i18n="planner.warehouse">Warehouse</button>
+                <button type="button" class="calc-span-btn" data-char-view="goal" role="tab" aria-selected="false" data-i18n="planner.goalTitle">Goal</button>
+              </div>
+            </div>
             <div class="planner-farm" id="planner-farm"></div>
+            <div class="planner-warehouse-inline" id="planner-warehouse-inline" hidden>
+              <span class="planner-warehouse-hint" data-i18n="planner.warehouseHint">Record what you already hold. The farm route only pays for the rest.</span>
+              <div class="planner-warehouse-grid" id="planner-warehouse-grid"></div>
+              <div class="planner-warehouse-foot">
+                <button type="button" class="btn btn-secondary planner-add-btn planner-warehouse-reset" id="planner-warehouse-reset">
+                  <span data-i18n="planner.warehouseReset">Reset warehouse</span>
+                </button>
+              </div>
+            </div>
+            <div class="planner-goal-inline" id="planner-goal-inline" hidden></div>
           </div>
 
           <!-- "Add character" picker, drawn over the tab like a lightbox. Search,
@@ -1637,31 +1665,6 @@
             </div>
           </div>
 
-          <!-- Warehouse: what the reader already holds. It is not a plan and not a
-               buff — it is stock the farm route subtracts, so the route only pays for
-               the shortage (§14). Opened from the Warehouse button on the route bar.
-               Every material the tab can bill gets a slot, and the category chips
-               narrow the wall the way the Manage modal's do. -->
-          <div class="planner-sheet" id="planner-warehouse-sheet" hidden>
-            <div class="planner-sheet-card planner-warehouse-card">
-              <div class="planner-sheet-head">
-                <span class="archetype-section-title"><span data-i18n="planner.warehouse">Warehouse</span></span>
-                <button type="button" class="modal-close planner-sheet-close" id="planner-warehouse-close" data-sheet="planner-warehouse-sheet" aria-label="Close" data-i18n-aria-label="action.close">
-                  <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
-                </button>
-              </div>
-              <div class="planner-sheet-body planner-warehouse-body">
-                <span class="planner-warehouse-hint" data-i18n="planner.warehouseHint">Record what you already hold. The farm route only pays for the rest.</span>
-                <div class="filter-btn-group planner-warehouse-filter" id="planner-warehouse-filter"></div>
-                <div class="planner-warehouse-grid" id="planner-warehouse-grid"></div>
-                <div class="planner-warehouse-foot">
-                  <button type="button" class="btn btn-secondary planner-add-btn planner-warehouse-reset" id="planner-warehouse-reset">
-                    <span data-i18n="planner.warehouseReset">Reset warehouse</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Event tab: price the event shop the global client is running. -->
@@ -1930,7 +1933,10 @@
       <div class="modal-body archetype-modal-body json-modal-body" style="display:flex;flex-direction:column;gap:12px;">
         <div class="json-section">
           <label class="json-section-label" for="tracker-add-arcanist" data-i18n="tracker.arcanist">Arcanist</label>
-          <input type="text" id="tracker-add-arcanist" class="tracker-inline-input" style="width:100%;height:34px;box-sizing:border-box;" list="tracker-arcanist-datalist" placeholder="e.g. Melania" />
+          <div class="tracker-combo-wrap" id="tracker-add-arc-wrap">
+            <input type="text" id="tracker-add-arcanist" class="tracker-inline-input" style="width:100%;height:34px;box-sizing:border-box;" autocomplete="off" placeholder="e.g. Melania" />
+            <div class="tracker-combo-menu" id="tracker-add-arc-menu"></div>
+          </div>
         </div>
         <div class="json-section" style="display:grid;grid-template-columns:1fr 2fr;gap:10px;">
           <div>
@@ -1945,7 +1951,10 @@
           </div>
           <div>
             <label class="json-section-label" for="tracker-add-banner" data-i18n="tracker.banner">Banner</label>
-            <input type="text" id="tracker-add-banner" class="tracker-inline-input" style="width:100%;height:34px;box-sizing:border-box;" list="tracker-banner-datalist" placeholder="e.g. Amongst the Lake" />
+            <div class="tracker-combo-wrap" id="tracker-add-ban-wrap">
+              <input type="text" id="tracker-add-banner" class="tracker-inline-input" style="width:100%;height:34px;box-sizing:border-box;" autocomplete="off" placeholder="e.g. Amongst the Lake" />
+              <div class="tracker-combo-menu" id="tracker-add-ban-menu"></div>
+            </div>
           </div>
         </div>
         <div class="json-section">
