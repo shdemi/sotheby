@@ -13163,12 +13163,12 @@ function calcOddsChips(banner, pulls) {
     return `<span class="calc-card-note">${escapeHtml(t("planner.calcRuleNone"))}</span>`;
   }
   return calcOddsOf(banner, pulls)
-    .map(
-      (value, level) =>
-        `<span class="calc-chip" data-p="${level}" data-odds="${value.toFixed(4)}"><b>P${level}</b>${calcPercent(
-          value
-        )}</span>`
-    )
+    .map((value, level) => {
+      const cls = value >= 0.8 ? " is-likely" : value >= 0.5 ? " is-possible" : "";
+      return `<span class="calc-chip${cls}" data-p="${level}" data-odds="${value.toFixed(4)}"><b>P${level}</b>${calcPercent(
+        value
+      )}</span>`;
+    })
     .join("");
 }
 
@@ -13232,8 +13232,9 @@ function calcCardHtml(banner) {
   const pulls = calcPulls(banner.id);
   const chips = calcOddsChips(banner, pulls);
   const maxPulls = calcMaxPulls(banner);
+  const deficit = pulls > maxPulls;
   return `
-        <article class="calc-card" data-banner="${escapeHtml(banner.id)}" data-kind="${escapeHtml(
+        <article class="calc-card${deficit ? " is-deficit" : ""}" data-banner="${escapeHtml(banner.id)}" data-kind="${escapeHtml(
     banner.type || ""
   )}">
           <div class="calc-card-head">
@@ -13244,11 +13245,18 @@ function calcCardHtml(banner) {
   )}</span>
               <span class="calc-card-pills">${calcPillsHtml(banner)}</span>
             </span>
-            <button type="button" class="calc-card-remove" data-calc-action="remove" data-banner-id="${escapeHtml(
-              banner.id
-            )}" title="${escapeHtml(t("planner.calcRemoveBanner"))}" aria-label="${escapeHtml(
+            <span class="calc-card-actions">
+              <button type="button" class="calc-help-btn calc-card-info" data-calc-action="info" data-banner-id="${escapeHtml(
+                banner.id
+              )}" title="${escapeHtml(t("planner.calcDetails"))}" aria-label="${escapeHtml(
+    t("planner.calcDetails")
+  )}">i</button>
+              <button type="button" class="calc-card-remove" data-calc-action="remove" data-banner-id="${escapeHtml(
+                banner.id
+              )}" title="${escapeHtml(t("planner.calcRemoveBanner"))}" aria-label="${escapeHtml(
     t("planner.calcRemoveBanner")
   )}">×</button>
+            </span>
           </div>
           <div class="calc-card-odds">${chips}</div>
           <div class="calc-card-foot">
@@ -13262,7 +13270,7 @@ function calcCardHtml(banner) {
               t("planner.calcMaxPullsHint", { date: calcShortDate(banner.end) })
             )}">
               <span class="calc-pull-label">${escapeHtml(t("planner.calcMaxPulls"))}</span>
-              <span class="calc-max-value" data-max-pulls="${escapeHtml(banner.id)}">${calcPullFigure(
+              <span class="calc-max-value${deficit ? " is-deficit" : ""}" data-max-pulls="${escapeHtml(banner.id)}">${calcPullFigure(
     maxPulls
   )}</span>
             </div>
@@ -13400,11 +13408,16 @@ function calcChartHtml() {
     })
     .join("");
 
+  const areaPoints = points.length
+    ? `${x(0).toFixed(1)},${y(min).toFixed(1)} ${line} ${x(points.length - 1).toFixed(1)},${y(min).toFixed(1)}`
+    : "";
+
   return `<svg class="calc-chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img"
       aria-label="${escapeHtml(t("planner.calcChartHint"))}">
       <defs>${clips.join("")}</defs>
       ${grid.join("")}
       ${zero}
+      ${areaPoints ? `<polygon class="calc-chart-area" points="${areaPoints}" />` : ""}
       <polyline class="calc-chart-line" points="${line}" />
       ${ticks}
       ${markers}
@@ -13881,7 +13894,42 @@ function calcSkeleton() {
   // box's tooltip, but the tab no longer prints it as a visible line under the grid.
   const limboNote = t("planner.calcLimboNote", { drops: calcNumber(Number(limbo.drops) || 0) });
 
+  const outcomeOpen = calcUseCrystal || calcDaily > 0 || calcOther > 0 ? " open" : "";
+
   return `
+      <div class="calc-col-right">
+      <section class="calc-section calc-section-chart">
+        <div class="archetype-section-header">
+          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcChart"))}</span></span>
+          <span class="calc-chart-bar">
+            <span class="calc-span" id="calc-span" role="group" aria-label="${escapeHtml(t("planner.calcSpan"))}">${spans}</span>
+            <span class="calc-hold-total" id="calc-chart-total"></span>
+          </span>
+        </div>
+        <div class="calc-chart" id="calc-chart"></div>
+        <div class="calc-summary" id="calc-summary"></div>
+        <p class="calc-hint">${escapeHtml(t("planner.calcChartHint"))}</p>
+      </section>
+      <section class="calc-section calc-section-banners">
+        <div class="archetype-section-header">
+          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcBanners"))}</span></span>
+          <span class="calc-hold-total" id="calc-banner-total"></span>
+        </div>
+        <div class="calc-banner-list" id="calc-banners"></div>
+      </section>
+      </div>
+      <div class="calc-drawer" id="calc-drawer" aria-hidden="true">
+        <div class="calc-drawer-backdrop" id="calc-drawer-backdrop"></div>
+        <aside class="calc-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="calc-drawer-title">
+          <div class="archetype-modal-header calc-drawer-head">
+            <h2 class="archetype-modal-title" id="calc-drawer-title">${escapeHtml(t("planner.calcSettings"))}</h2>
+            <button type="button" class="modal-close" id="calc-drawer-close" aria-label="${escapeHtml(
+              t("action.close")
+            )}">
+              <img src="images/random_icon/cross.png" alt="Close" class="modal-close-img" />
+            </button>
+          </div>
+          <div class="calc-drawer-body calc-col-left">
       <section class="calc-section">
         <div class="archetype-section-header">
           <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcCurrent"))}</span></span>
@@ -13914,6 +13962,10 @@ function calcSkeleton() {
         <div class="archetype-section-header">
           <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcIncome"))}</span></span>
           <span class="calc-section-tail">
+            <span class="calc-span calc-preset-bar">
+              <button type="button" class="calc-span-btn" data-calc-preset="f2p">${escapeHtml(t("planner.calcPresetF2P"))}</button>
+              <button type="button" class="calc-span-btn" data-calc-preset="monthly">${escapeHtml(t("planner.calcPresetMonthly"))}</button>
+            </span>
             <span class="calc-hold-total" id="calc-income-total"></span>
             <button type="button" class="calc-help-btn" id="calc-help-open"
               title="${escapeHtml(t("planner.calcHelpOpen"))}" aria-label="${escapeHtml(
@@ -13993,10 +14045,10 @@ function calcSkeleton() {
           )}
         </div>
       </section>
-      <section class="calc-section">
-        <div class="archetype-section-header">
+      <details class="calc-section calc-details"${outcomeOpen}>
+        <summary class="archetype-section-header calc-details-summary">
           <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcOutcome"))}</span></span>
-        </div>
+        </summary>
         <div class="calc-outcome">
           <label class="calc-field">
             <span class="calc-field-label">${escapeHtml(t("planner.calcDaily"))}</span>
@@ -14017,26 +14069,10 @@ function calcSkeleton() {
           ${toggle("useCrystal", t("planner.calcUseCrystal"), calcUseCrystal, "", t("planner.calcCrystalHint"))}
         </div>
         <p class="calc-hint">${escapeHtml(t("planner.calcCrystalHint"))}</p>
-      </section>
-      <section class="calc-section">
-        <div class="archetype-section-header">
-          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcChart"))}</span></span>
-          <span class="calc-chart-bar">
-            <span class="calc-span" id="calc-span" role="group" aria-label="${escapeHtml(t("planner.calcSpan"))}">${spans}</span>
-            <span class="calc-hold-total" id="calc-chart-total"></span>
-          </span>
-        </div>
-        <div class="calc-chart" id="calc-chart"></div>
-        <div class="calc-summary" id="calc-summary"></div>
-        <p class="calc-hint">${escapeHtml(t("planner.calcChartHint"))}</p>
-      </section>
-      <section class="calc-section">
-        <div class="archetype-section-header">
-          <span class="archetype-section-title"><span>${escapeHtml(t("planner.calcBanners"))}</span></span>
-          <span class="calc-hold-total" id="calc-banner-total"></span>
-        </div>
-        <div class="calc-banner-list" id="calc-banners"></div>
-      </section>`;
+      </details>
+          </div>
+        </aside>
+      </div>`;
 }
 
 /** Paints the saved numbers back into the fields after a (re)mount. */
@@ -14085,7 +14121,13 @@ function calcFillFields() {
 function calcRefreshMaxPulls() {
   for (const box of document.querySelectorAll("#calc-banners [data-max-pulls]")) {
     const banner = calcBanner(box.dataset.maxPulls);
-    if (banner) box.innerHTML = calcPullFigure(calcMaxPulls(banner));
+    if (!banner) continue;
+    const maxPulls = calcMaxPulls(banner);
+    const deficit = calcPulls(banner.id) > maxPulls;
+    box.innerHTML = calcPullFigure(maxPulls);
+    box.classList.toggle("is-deficit", deficit);
+    const card = box.closest(".calc-card");
+    if (card) card.classList.toggle("is-deficit", deficit);
   }
 }
 
@@ -14124,10 +14166,21 @@ function calcRefresh(parts) {
     income.title = t("planner.calcHoldTotal", { n: calcNumber(earned / schedule.per) });
   }
   const chartTotal = document.getElementById("calc-chart-total");
+  const left = calcPullsLeft();
   if (chartTotal) {
-    const left = calcPullsLeft();
     chartTotal.innerHTML = `${escapeHtml(t("planner.calcChartLeft", { n: calcSigned(left) }))}${calcCurrencyIcon(2)}`;
     chartTotal.title = t("planner.calcHoldTotal", { n: calcNumber(left) });
+  }
+  const kpiHeld = document.getElementById("calc-kpi-held");
+  if (kpiHeld) {
+    const heldPulls = Math.floor(schedule.held / schedule.per);
+    kpiHeld.innerHTML = `<span class="calc-kpi-label">${escapeHtml(t("planner.calcHold"))}</span><span class="calc-kpi-val">${calcPullFigure(heldPulls)}</span>`;
+  }
+  const kpiLeft = document.getElementById("calc-kpi-left");
+  if (kpiLeft) {
+    kpiLeft.classList.toggle("is-negative", left < 0);
+    kpiLeft.classList.toggle("is-positive", left > 0);
+    kpiLeft.innerHTML = `<span class="calc-kpi-label">${escapeHtml(t("planner.calcExpected"))}</span><span class="calc-kpi-val">${escapeHtml(calcSigned(left))}${calcCurrencyIcon(2)}</span>`;
   }
   const bannerTotal = document.getElementById("calc-banner-total");
   if (bannerTotal) {
@@ -14219,6 +14272,20 @@ function closeCalcHelp() {
   if (host) host.hidden = true;
 }
 
+function setCalcDrawerOpen(open) {
+  const drawer = document.getElementById("calc-drawer");
+  const btn = document.getElementById("calc-settings-btn");
+  if (drawer) {
+    drawer.classList.toggle("is-open", !!open);
+    drawer.setAttribute("aria-hidden", open ? "false" : "true");
+  }
+  if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function closeCalcDrawer() {
+  setCalcDrawerOpen(false);
+}
+
 function renderPlannerCalculator() {
   const host = document.getElementById("planner-calculator");
   if (!host) return;
@@ -14251,40 +14318,54 @@ function setupPlannerCalculator() {
   const add = document.getElementById("calc-add");
   if (add) add.addEventListener("click", openCalcPicker);
 
+  const settingsBtn = document.getElementById("calc-settings-btn");
+  if (settingsBtn) {
+    settingsBtn.addEventListener("click", () => {
+      const drawer = document.getElementById("calc-drawer");
+      setCalcDrawerOpen(!(drawer && drawer.classList.contains("is-open")));
+    });
+  }
+
+  const kpiHeld = document.getElementById("calc-kpi-held");
+  if (kpiHeld) kpiHeld.addEventListener("click", () => setCalcDrawerOpen(true));
+
   const reset = document.getElementById("calc-reset");
   if (reset) {
     reset.addEventListener("click", () => {
-      calcCrystal = 0;
-      calcClear = 0;
-      calcUnilog = 0;
-      calcPityRateUp = 0;
-      calcGuaranteedRateUp = false;
-      calcPityRipples = 0;
-      calcGuaranteedRipples = false;
-      calcLimbo = true;
-      calcLogin = true;
-      calcJukeboxFree = true;
-      calcBass = true;
-      calcStoryStage = true;
-      calcCharacterStory = true;
-      calcWebEvent = true;
-      calcEventShop = true;
-      calcRoaring = false;
-      calcJukebox = false;
-      calcOffer = false;
-      calcMonthly = 0;
-      calcPatchly = 0;
-      calcDaily = 0;
-      calcOther = 0;
-      calcUseCrystal = false;
-      calcMonths = CALC_DEFAULT_SPAN;
-      calcList = [];
-      calcPlans = {};
-      closeCalcInfo();
-      closeCalcPicker();
-      closeCalcHelp();
-      calcSaveState();
-      renderPlannerCalculator();
+      showConfirmModal(t("planner.calcReset"), t("planner.calcResetMsg"), () => {
+        calcCrystal = 0;
+        calcClear = 0;
+        calcUnilog = 0;
+        calcPityRateUp = 0;
+        calcGuaranteedRateUp = false;
+        calcPityRipples = 0;
+        calcGuaranteedRipples = false;
+        calcLimbo = true;
+        calcLogin = true;
+        calcJukeboxFree = true;
+        calcBass = true;
+        calcStoryStage = true;
+        calcCharacterStory = true;
+        calcWebEvent = true;
+        calcEventShop = true;
+        calcRoaring = false;
+        calcJukebox = false;
+        calcOffer = false;
+        calcMonthly = 0;
+        calcPatchly = 0;
+        calcDaily = 0;
+        calcOther = 0;
+        calcUseCrystal = false;
+        calcMonths = CALC_DEFAULT_SPAN;
+        calcList = [];
+        calcPlans = {};
+        closeCalcInfo();
+        closeCalcPicker();
+        closeCalcHelp();
+        closeCalcDrawer();
+        calcSaveState();
+        renderPlannerCalculator();
+      });
     });
   }
 
@@ -14389,8 +14470,31 @@ function setupPlannerCalculator() {
   });
 
   host.addEventListener("click", (event) => {
+    if (event.target.closest("#calc-drawer-backdrop") || event.target.closest("#calc-drawer-close")) {
+      closeCalcDrawer();
+      return;
+    }
     if (event.target.closest("#calc-help-open")) {
       openCalcHelp();
+      return;
+    }
+    const preset = event.target.closest("[data-calc-preset]");
+    if (preset) {
+      const mode = preset.dataset.calcPreset;
+      calcLimbo = true;
+      calcLogin = true;
+      calcJukeboxFree = true;
+      calcBass = true;
+      calcStoryStage = true;
+      calcCharacterStory = true;
+      calcWebEvent = true;
+      calcEventShop = true;
+      calcRoaring = mode === "monthly";
+      calcJukebox = false;
+      calcOffer = false;
+      calcSaveState();
+      calcFillFields();
+      calcRefresh();
       return;
     }
     const span = event.target.closest("[data-calc-span]");
@@ -14404,21 +14508,58 @@ function setupPlannerCalculator() {
       return;
     }
     const action = event.target.closest("[data-calc-action]");
-    if (action && action.dataset.calcAction === "remove") {
-      calcRemoveBanner(action.dataset.bannerId);
-      calcRefresh();
-      return;
+    if (action) {
+      if (action.dataset.calcAction === "remove") {
+        calcRemoveBanner(action.dataset.bannerId);
+        calcRefresh();
+        return;
+      }
+      if (action.dataset.calcAction === "info") {
+        openCalcInfo(action.dataset.bannerId);
+        return;
+      }
     }
     const dot = event.target.closest(".calc-dot");
     if (dot) openCalcInfo(dot.dataset.banner);
   });
 
+  const setBannerHover = (id, on) => {
+    if (!id) return;
+    for (const el of host.querySelectorAll(".calc-dot[data-banner], .calc-card[data-banner]")) {
+      if (el.dataset.banner === id) el.classList.toggle("is-hover", on);
+    }
+  };
+  host.addEventListener("mouseover", (event) => {
+    const target = event.target.closest(".calc-dot[data-banner], .calc-card[data-banner]");
+    if (target) setBannerHover(target.dataset.banner, true);
+  });
+  host.addEventListener("mouseout", (event) => {
+    const target = event.target.closest(".calc-dot[data-banner], .calc-card[data-banner]");
+    if (target && !target.contains(event.relatedTarget)) setBannerHover(target.dataset.banner, false);
+  });
+
   host.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      const drawer = document.getElementById("calc-drawer");
+      if (drawer && drawer.classList.contains("is-open")) {
+        event.stopPropagation();
+        closeCalcDrawer();
+      }
+      return;
+    }
     if (event.key !== "Enter" && event.key !== " ") return;
     const dot = event.target.closest(".calc-dot");
     if (!dot) return;
     event.preventDefault();
     openCalcInfo(dot.dataset.banner);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const drawer = document.getElementById("calc-drawer");
+    if (drawer && drawer.classList.contains("is-open")) {
+      closeCalcDrawer();
+    }
   });
 }
 
@@ -14846,24 +14987,7 @@ function plannerWarehouseGridHtml() {
  * field keeps the caret.
  */
 function syncPlannerWarehouseSheet() {
-  const roster = plannerWarehouseRoster();
-  const cats = [];
-  for (const item of roster) {
-    if (item.category && !cats.includes(item.category)) cats.push(item.category);
-  }
-  const filter = document.getElementById("planner-warehouse-filter");
-  if (filter) {
-    filter.innerHTML = cats
-      .map((cat) => {
-        const sample = roster.find((item) => item.category === cat);
-        return `<button type="button" class="filter-btn${
-          plannerWarehouseCats.has(cat) ? " active" : ""
-        }" data-ware-cat="${escapeHtml(cat)}" aria-pressed="${
-          plannerWarehouseCats.has(cat) ? "true" : "false"
-        }">${escapeHtml(plannerWarehouseCategoryLabel(sample))}</button>`;
-      })
-      .join("");
-  }
+  plannerWarehouseCats.clear();
   const grid = document.getElementById("planner-warehouse-grid");
   if (grid) grid.innerHTML = plannerWarehouseGridHtml();
   const reset = document.getElementById("planner-warehouse-reset");
@@ -14871,8 +14995,7 @@ function syncPlannerWarehouseSheet() {
 }
 
 function openPlannerWarehouse() {
-  // `plannerOpenSheet` syncs the sheet, so opening it twice costs one build.
-  plannerOpenSheet("planner-warehouse-sheet");
+  setPlannerCharView("warehouse");
 }
 
 /** Commits one slot. An empty or zero box means "none of it", so the row is dropped. */
@@ -15494,17 +15617,21 @@ function plannerCharRailHtml() {
     .map((plan) => {
       const enabled = plan.enabled !== false;
       const icon = characterDb[plan.name] || "";
+      const rarity = getCharacterRarity(plan.name) || 6;
       const label = escapeHtml(displayCharName(plan.name));
-      return `<button type="button" class="planner-char-tile${
-        enabled ? "" : " is-disabled"
-      }" data-char="${escapeHtml(plan.name)}" title="${label}" aria-label="${label}" aria-pressed="${
-        enabled ? "true" : "false"
-      }">
-          ${
-            icon
-              ? `<img class="planner-char-tile-img" src="${escapeHtml(icon)}" alt="" loading="lazy" />`
-              : `<span class="planner-char-tile-img" aria-hidden="true"></span>`
-          }
+      return `<button type="button" class="planner-char-card${enabled ? "" : " is-disabled"}" data-char="${escapeHtml(
+        plan.name
+      )}" data-rarity="${rarity}" title="${label}" aria-label="${label}" aria-pressed="${enabled ? "true" : "false"}">
+          <span class="planner-char-card-art">
+            ${
+              icon
+                ? `<img class="planner-char-tile-img" src="${escapeHtml(icon)}" alt="" loading="lazy" />`
+                : `<span class="planner-char-tile-img" aria-hidden="true"></span>`
+            }
+          </span>
+          <span class="planner-char-card-name${
+            isItalicNameCharacter(plan.name) ? " is-italic-name" : ""
+          }">${label}</span>
         </button>`;
     })
     .join("");
@@ -15943,15 +16070,9 @@ function plannerFarmPaint() {
   // The Warehouse and Wilderness switches ride on the route's own title, so both are
   // reachable before the plan says anything (turn one on, then look at what shortens).
   const wildOn = plannerWilderness.enabled;
-  const wareOn = plannerWarehouseTotal() > 0;
   const title = `<div class="archetype-section-header planner-farm-head">
       <span class="archetype-section-title"><span>${escapeHtml(t("planner.farmTitle"))}</span></span>
       <div class="planner-farm-actions">
-        <button type="button" class="planner-farm-toggle${wareOn ? " is-active" : ""}" id="planner-farm-warehouse" data-stock="${
-          wareOn ? "true" : "false"
-        }" aria-pressed="${wareOn ? "true" : "false"}" title="${escapeHtml(
-    t("planner.warehouseHint")
-  )}">${escapeHtml(t("planner.warehouse"))}</button>
         <button type="button" class="planner-farm-toggle${wildOn ? " is-active" : ""}" id="planner-farm-wilderness" data-enabled="${
           wildOn ? "true" : "false"
         }" aria-pressed="${wildOn ? "true" : "false"}">${escapeHtml(t("planner.wilderness"))}</button>
@@ -16042,10 +16163,11 @@ function renderPlannerCharacter() {
   // The Warehouse sheet is a grid of slots, so it is only rebuilt while it is up —
   // that is what relabels it on a language change without stealing the caret from a
   // reader typing a figure.
-  const warehouseSheet = document.getElementById("planner-warehouse-sheet");
-  if (warehouseSheet && !warehouseSheet.hidden) syncPlannerWarehouseSheet();
+  if (plannerCharView === "warehouse") syncPlannerWarehouseSheet();
   if (detail) detail.innerHTML = plannerCharDetailHtml();
   if (goal) goal.innerHTML = plannerGoalHtml();
+  const goalInline = document.getElementById("planner-goal-inline");
+  if (goalInline) goalInline.innerHTML = plannerGoalHtml();
   const editorTitle = document.getElementById("planner-editor-title");
   const selected = plannerCurrentPlan();
   if (editorTitle) {
@@ -16162,6 +16284,10 @@ function plannerOpenSheet(id) {
   if (id === "planner-goal-sheet") {
     const goal = document.getElementById("planner-goal");
     if (goal) goal.innerHTML = plannerGoalHtml();
+  const goalInline = document.getElementById("planner-goal-inline");
+  if (goalInline) goalInline.innerHTML = plannerGoalHtml();
+  const viewbar = document.getElementById("planner-char-viewbar");
+  if (viewbar) viewbar.hidden = !plannerChars.length;
   }
   if (id === "planner-activity-sheet") syncPlannerActivitySheet();
   if (id === "planner-wilderness-sheet") syncPlannerWildernessSheet();
@@ -16194,9 +16320,31 @@ function openPlannerEditor(name) {
   plannerOpenSheet("planner-char-editor");
 }
 
+let plannerCharView = "farm";
+
+function setPlannerCharView(view) {
+  plannerCharView = view === "goal" ? "goal" : view === "warehouse" ? "warehouse" : "farm";
+  const farm = document.getElementById("planner-farm");
+  const wareInline = document.getElementById("planner-warehouse-inline");
+  const goalInline = document.getElementById("planner-goal-inline");
+  if (farm) farm.hidden = plannerCharView !== "farm";
+  if (wareInline) wareInline.hidden = plannerCharView !== "warehouse";
+  if (goalInline) goalInline.hidden = plannerCharView !== "goal";
+  if (plannerCharView === "warehouse") syncPlannerWarehouseSheet();
+  document.querySelectorAll("#planner-char-viewbar [data-char-view]").forEach((btn) => {
+    const active = btn.dataset.charView === plannerCharView;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  const goalBtn = document.getElementById("planner-goal-btn");
+  if (goalBtn) goalBtn.classList.toggle("is-active", plannerCharView === "goal");
+}
+
 function openPlannerGoal() {
+  setPlannerCharView(plannerCharView === "goal" ? "farm" : "goal");
   renderPlannerCharacter();
-  plannerOpenSheet("planner-goal-sheet");
+  const target = document.getElementById("planner-char-viewbar");
+  if (target && plannerCharView === "goal") target.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 /** Sets a two-button on/off group (`.toggle-group` + `.btn-toggle`). */
@@ -16344,9 +16492,8 @@ function plannerAddCharacter(name) {
   plannerChars.push(plan);
   plannerCharSelected = plan.name;
   plannerSaveChars();
-  closePlannerPicker();
+  renderPlannerPicker();
   renderPlannerCharacter();
-  plannerOpenSheet("planner-char-editor");
 }
 
 /** Right-click on a tile: keep the settings, drop it from the plan's totals. */
@@ -16464,6 +16611,8 @@ function plannerQuickGoal() {
 function setPlannerTab(tab) {
   plannerActiveTab = PLANNER_TABS.includes(tab) ? tab : PLANNER_TABS[0];
   savePlannerTab();
+  const modalCard = document.querySelector("#planner-modal .planner-modal-card");
+  if (modalCard) modalCard.classList.toggle("is-calculator", plannerActiveTab === "calculator");
   document.querySelectorAll("#planner-modal .builds-mode-btn").forEach((btn) => {
     const active = btn.dataset.mode === plannerActiveTab;
     btn.classList.toggle("is-active", active);
@@ -16478,6 +16627,7 @@ function setPlannerTab(tab) {
   closeCalcPicker();
   closeCalcInfo();
   closeCalcHelp();
+  closeCalcDrawer();
   plannerCloseSheets();
   renderPlanner();
 }
@@ -16686,6 +16836,15 @@ function setupPlannerListeners() {
     });
   }
 
+  const viewbar = document.getElementById("planner-char-viewbar");
+  if (viewbar) {
+    viewbar.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-char-view]");
+      if (!btn) return;
+      setPlannerCharView(btn.dataset.charView);
+    });
+  }
+
   const charDetail = document.getElementById("planner-char-detail");
   if (charDetail) {
     charDetail.addEventListener("change", (e) => {
@@ -16846,21 +17005,8 @@ function setupPlannerListeners() {
 
   /* ---- Warehouse ---------------------------------------------------------- */
 
-  const wareSheet = document.getElementById("planner-warehouse-sheet");
+  const wareSheet = document.getElementById("planner-warehouse-inline");
   if (wareSheet) {
-    // The category chips are the Manage modal's filter buttons: one or more narrow the
-    // wall, pressing the same chip again widens it back (Kornblume's own filter).
-    const wareFilter = document.getElementById("planner-warehouse-filter");
-    if (wareFilter) {
-      wareFilter.addEventListener("click", (e) => {
-        const btn = e.target.closest("[data-ware-cat]");
-        if (!btn) return;
-        const cat = btn.dataset.wareCat;
-        if (plannerWarehouseCats.has(cat)) plannerWarehouseCats.delete(cat);
-        else plannerWarehouseCats.add(cat);
-        syncPlannerWarehouseSheet();
-      });
-    }
     // One figure is one commit: typing does not re-solve, leaving the box does. The
     // grid is not rebuilt, so the caret stays in the field the reader is on.
     wareSheet.addEventListener("change", (e) => {
