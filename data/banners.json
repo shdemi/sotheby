@@ -17256,7 +17256,12 @@
       "start": "2026-11-26",
       "end": "2026-12-10",
       "poolId": 41121,
-      "targets": [],
+      "targets": [
+        {
+          "id": 3160,
+          "name": "Evelyn"
+        }
+      ],
       "fiveStar": [
         {
           "id": 3022,
@@ -17826,7 +17831,12 @@
       "start": "2027-02-18",
       "end": "2027-03-04",
       "poolId": 41121,
-      "targets": [],
+      "targets": [
+        {
+          "id": 3160,
+          "name": "Evelyn"
+        }
+      ],
       "fiveStar": [
         {
           "id": 3022,

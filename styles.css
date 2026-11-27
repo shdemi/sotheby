@@ -9113,7 +9113,7 @@ body.guide-rail-resizing * {
 /* Inheritance / Insights Board */
 .uttu-insights-board {
   --uttu-insight-icon: 28px;
-  --uttu-insight-icon-small: 21px;
+  --uttu-insight-icon-small: 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -10074,13 +10074,19 @@ body.guide-rail-resizing * {
   color: #4e6697;
   font-weight: 700;
   cursor: pointer;
-  text-decoration: underline dotted rgba(78, 102, 151, 0.45);
+  text-decoration: underline solid rgba(78, 102, 151, 0.75);
+  text-underline-offset: 2px;
   transition: color 0.15s ease, opacity 0.15s ease;
 }
 
 .skill-kw-bracket:hover {
   color: #60a5fa;
   text-decoration: underline solid #60a5fa;
+}
+
+.skill-kw-bracket-plain {
+  color: #4e6697;
+  font-weight: 700;
 }
 
 .skill-kw-number {
@@ -10092,7 +10098,8 @@ body.guide-rail-resizing * {
   color: #a1800b;
   font-weight: 700;
   cursor: pointer;
-  text-decoration: underline dotted rgba(161, 128, 11, 0.45);
+  text-decoration: underline solid rgba(161, 128, 11, 0.75);
+  text-underline-offset: 2px;
   transition: color 0.15s ease, opacity 0.15s ease;
 }
 
@@ -10146,6 +10153,16 @@ body.guide-rail-resizing * {
   flex: 1;
 }
 
+.uttu-term-popover-skill-icon {
+  width: 24px;
+  height: 33px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  flex-shrink: 0;
+  display: block;
+}
+
 .uttu-term-popover-title {
   font-family: var(--primary-font, Georgia, serif);
   font-size: 16px;
@@ -10192,6 +10209,7 @@ body.guide-rail-resizing * {
   color: #afaba3;
   white-space: pre-wrap;
   overflow-y: auto;
+  overscroll-behavior: contain;
   flex: 1;
 }
 
@@ -10208,6 +10226,40 @@ body.guide-rail-resizing * {
 .uttu-term-popover-body .skill-kw-bracket {
   color: #4e6697;
   font-weight: 700;
+}
+
+.uttu-term-popover-body .skill-kw-bracket-plain {
+  color: #4e6697;
+  font-weight: 700;
+}
+
+.uttu-term-popover-nested {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  margin-top: 10px;
+  padding-top: 10px;
+  white-space: normal;
+}
+
+.uttu-term-popover-nested-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.uttu-term-popover-nested-title {
+  font-family: var(--primary-font, Georgia, serif);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #e7e3db;
+}
+
+.uttu-term-popover-nested-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #afaba3;
+  white-space: pre-wrap;
 }
 
 /* Psychube detail view */

@@ -1361,5 +1361,12 @@
   "R10-15": "AvwlNFU0UzwDPBM6JDkAMBIwEDAwTENIMkhCTFImUA=="
 },
     "psychubes": ["Aurora After Winter", "The Coffin of Purity"],
-    "pattern": "Overindulgence"}
+    "pattern": "Overindulgence"},
+  "Evelyn": {"resonance": {
+  "R10-12": "APQkOEU4BSUEK0QoUSpQJAEtEUAxQCBCMkQASEA=",
+  "R13-14": "APQkOEU4BSUEK0QoUSpQJAEtEUAxQCBCMkQASEA=",
+  "R15": "APQkOgQpBThFK0Q0ADQCKFEkISYgQEIsQEhA"
+},
+    "pattern": "Aspirational",
+    "psychubes": ["An Edible Puzzle", "Never-Ending Q&A"]}
 }

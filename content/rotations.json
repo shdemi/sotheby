@@ -6187,6 +6187,640 @@
     }
   ],
   "archetypes": ["Poison"]
+},
+    {
+  "id": "the-twins-w-copp-lia",
+  "name": "The Twins w/ coppélia",
+  "archetypes": ["Conduit"],
+  "tuning": "Atonal Sequence",
+  "members": [
+    {
+      "character": "The Twins",
+      "psychube": "The Dance of Science"
+    },
+    {
+      "character": "Hedone",
+      "psychube": "Arrow of Verdict"
+    },
+    {
+      "character": "Coppélia",
+      "psychube": "The Silent Anthem"
+    },
+    {
+      "character": "Everecho",
+      "psychube": "A Dream Beyond Light"
+    }
+  ],
+  "notes": "Asonal Sequence: Remove a Star Energy I or [Pulse Amplification) card when possible.\nEfficient Conversion: Use the Efficient Conversion card if you get it, but only once a round, the effect does not stack.\nLight's Might: Use this Chaotic Energy card if you need to heal",
+  "rounds": [
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "x2",
+          "cards": [
+            {
+              "special": "images/skills/780011.png",
+              "surface": "conduit"
+            },
+            {
+              "character": "The Twins",
+              "skill": 9,
+              "icon": "images/skills/31490191.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "x3",
+          "cards": [
+            {
+              "special": "images/skills/780012.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Everecho",
+              "skill": 1,
+              "icon": "images/skills/31450111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Coppélia",
+              "skill": 2,
+              "icon": "images/skills/31440121.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 1,
+              "icon": "images/skills/31560111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490112.png",
+              "surface": "conduit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "x3",
+          "cards": [
+            {
+              "special": "images/skills/780011.png",
+              "surface": "conduit"
+            },
+            {
+              "character": "The Twins",
+              "skill": 9,
+              "icon": "images/skills/31490191.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "x2",
+          "cards": [
+            {
+              "special": "images/skills/780012.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 4,
+              "icon": "images/skills/31560144.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Everecho",
+              "skill": 1,
+              "icon": "images/skills/31450111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Coppélia",
+              "skill": 2,
+              "icon": "images/skills/31440121.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490112.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 3,
+              "icon": "images/skills/31560131.png",
+              "frame": "ultimate",
+              "surface": "conduit-ultimate"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 5,
+          "to": 6,
+          "style": "bracket",
+          "text": "Switch The Twins' Ultimate back to Set A."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "tags": ["precast", "custom"],
+          "tagText": "x1",
+          "cards": [
+            {
+              "special": "images/skills/780092.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "x2",
+          "cards": [
+            {
+              "special": "images/skills/780011.png",
+              "surface": "conduit"
+            },
+            {
+              "character": "The Twins",
+              "skill": 9,
+              "icon": "images/skills/31490191.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "x3",
+          "cards": [
+            {
+              "special": "images/skills/780012.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Everecho",
+              "skill": 3,
+              "icon": "images/skills/31450131.png",
+              "frame": "ultimate",
+              "surface": "conduit-ultimate"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Coppélia",
+              "skill": 2,
+              "icon": "images/skills/31440121.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 1,
+              "icon": "images/skills/31560111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 3,
+              "icon": "images/skills/31490131.png",
+              "frame": "ultimate",
+              "surface": "conduit-ultimate"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 0,
+          "to": 0,
+          "style": "bracket",
+          "text": "Generate with Tuning."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "tags": ["precast", "custom"],
+          "tagText": "x1",
+          "cards": [
+            {
+              "special": "images/skills/780092.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "x3",
+          "cards": [
+            {
+              "special": "images/skills/780011.png",
+              "surface": "conduit"
+            },
+            {
+              "character": "The Twins",
+              "skill": 9,
+              "icon": "images/skills/31490191.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "x2",
+          "cards": [
+            {
+              "special": "images/skills/780012.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Everecho",
+              "skill": 1,
+              "icon": "images/skills/31450111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 1,
+              "icon": "images/skills/31560111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490112.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Coppélia",
+              "skill": 3,
+              "icon": "images/skills/31440131.png",
+              "frame": "ultimate",
+              "surface": "conduit-ultimate"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 0,
+          "to": 0,
+          "style": "bracket",
+          "text": "Generate with Tuning."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "normal",
+          "tags": ["precast", "custom"],
+          "tagText": "x1",
+          "cards": [
+            {
+              "special": "images/skills/780092.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["custom"],
+          "tagText": "x2",
+          "cards": [
+            {
+              "special": "images/skills/780011.png",
+              "surface": "conduit"
+            },
+            {
+              "character": "The Twins",
+              "skill": 9,
+              "icon": "images/skills/31490191.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "tags": ["custom"],
+          "tagText": "x3",
+          "cards": [
+            {
+              "special": "images/skills/780012.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 4,
+              "icon": "images/skills/31560144.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Everecho",
+              "skill": 1,
+              "icon": "images/skills/31450111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Coppélia",
+              "skill": 2,
+              "icon": "images/skills/31440121.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 1,
+              "icon": "images/skills/31490112.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 3,
+              "icon": "images/skills/31560131.png",
+              "frame": "ultimate",
+              "surface": "conduit-ultimate"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 0,
+          "to": 0,
+          "style": "bracket",
+          "text": "Generate with Tuning."
+        }
+      ]
+    },
+    {
+      "note": "",
+      "slots": [
+        {
+          "type": "or",
+          "cards": [
+            {
+              "special": "images/skills/780012.png",
+              "surface": "conduit"
+            },
+            {
+              "special": "images/skills/780022.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "tags": ["precast"],
+          "cards": [
+            {
+              "special": "images/skills/780092.png",
+              "surface": "conduit"
+            },
+            {
+              "special": "images/skills/780092.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Everecho",
+              "skill": 3,
+              "icon": "images/skills/31450131.png",
+              "frame": "ultimate",
+              "surface": "conduit-ultimate"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Coppélia",
+              "skill": 2,
+              "icon": "images/skills/31440121.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "Hedone",
+              "skill": 1,
+              "icon": "images/skills/31560111.png",
+              "surface": "conduit"
+            }
+          ]
+        },
+        {
+          "type": "normal",
+          "cards": [
+            {
+              "character": "The Twins",
+              "skill": 3,
+              "icon": "images/skills/31490131.png",
+              "frame": "ultimate",
+              "surface": "conduit-ultimate"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "from": 0,
+          "to": 1,
+          "style": "bracket",
+          "text": "Charge 10 Energies (5 rank II cards) of any kind on rounds when The Twins use their Ultimate."
+        }
+      ]
+    }
+  ]
 }
   ]
 }

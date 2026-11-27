@@ -7298,8 +7298,108 @@ function pickLocalizedLabel(label) {
   return label.en || label.zh || "";
 }
 
-function formatSkillKeywords(text) {
+let activeSkillCharName = null;
+
+function resolveTermEntry(termText, charName) {
+  if (!termText) return null;
+  const lookupTerm = termText.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
+  const cleanTerm = lookupTerm.toLowerCase();
+  if (!cleanTerm) return null;
+
+  let found = null;
+
+  // 1. Look in skillGlossaryData (exact key, lowercase, or by nameZh/nameEn matching)
+  if (skillGlossaryData) {
+    if (skillGlossaryData[lookupTerm]) found = skillGlossaryData[lookupTerm];
+    else if (skillGlossaryData[cleanTerm]) found = skillGlossaryData[cleanTerm];
+    else {
+      for (const v of Object.values(skillGlossaryData)) {
+        if (!v) continue;
+        if ((v.nameZh && v.nameZh === lookupTerm) || (v.nameEn && v.nameEn.toLowerCase() === cleanTerm)) {
+          found = v;
+          break;
+        }
+      }
+    }
+  }
+
+  // 2. Look in character's own skills / insights / weapons
+  const resolvedChar = charName ? (characterSkillsData[charName] ? charName : resolveCharacterName(charName)) : null;
+  if (resolvedChar && characterSkillsData && characterSkillsData[resolvedChar]) {
+    const c = characterSkillsData[resolvedChar];
+    for (const s of (c.skills || [])) {
+      if ((s.nameEn && s.nameEn.toLowerCase() === cleanTerm) || (s.nameZh && (s.nameZh === lookupTerm || s.nameZh.toLowerCase() === cleanTerm))) {
+        if (found) {
+          return s.icon && !found.icon ? { ...found, icon: s.icon } : found;
+        }
+        const r1 = s.ranks ? (s.ranks["1"] || Object.values(s.ranks)[0] || {}) : s;
+        return {
+          nameEn: s.nameEn,
+          nameZh: s.nameZh || s.nameEn,
+          descEn: r1.descEn || s.descEn,
+          descZh: r1.descZh || s.descZh || r1.descEn || s.descEn,
+          descVi: r1.descVi || s.descVi || "",
+          tagEn: s.type || "Skill",
+          tagZh: s.type === "Ultimate" ? "至终仪式" : (s.type === "Special" ? "特殊术式" : "神秘术"),
+          icon: s.icon || "",
+        };
+      }
+    }
+    if (found) return found;
+    for (const ins of (c.insights || [])) {
+      if ((ins.nameEn && ins.nameEn.toLowerCase() === cleanTerm) || (ins.nameZh && (ins.nameZh === lookupTerm || ins.nameZh.toLowerCase() === cleanTerm))) {
+        return {
+          nameEn: ins.nameEn,
+          nameZh: ins.nameZh || ins.nameEn,
+          descEn: ins.descEn,
+          descZh: ins.descZh || ins.descEn,
+          descVi: ins.descVi || "",
+          tagEn: "Insight",
+          tagZh: "传承",
+        };
+      }
+    }
+    if (Array.isArray(c.weapons)) {
+      for (const w of c.weapons) {
+        if ((w.nameEn && w.nameEn.toLowerCase() === cleanTerm) || (w.nameZh && (w.nameZh === lookupTerm || w.nameZh.toLowerCase() === cleanTerm))) {
+          return {
+            nameEn: w.nameEn,
+            nameZh: w.nameZh || w.nameEn,
+            descEn: w.mainDescEn,
+            descZh: w.mainDescZh || w.mainDescEn,
+            descVi: w.mainDescVi || "",
+            tagEn: "Weapon",
+            tagZh: "武器",
+          };
+        }
+        for (const cb of (w.combos || [])) {
+          if ((cb.daggerEn && cb.daggerEn.toLowerCase() === cleanTerm) || (cb.daggerZh && (cb.daggerZh === lookupTerm || cb.daggerZh.toLowerCase() === cleanTerm))) {
+            return {
+              nameEn: cb.daggerEn,
+              nameZh: cb.daggerZh || cb.daggerEn,
+              descEn: cb.descEn,
+              descZh: cb.descZh || cb.descEn,
+              descVi: cb.descVi || "",
+              tagEn: "Combo",
+              tagZh: "组合",
+            };
+          }
+        }
+      }
+    }
+    if (found) return found;
+  }
+
+  return found;
+}
+
+function formatSkillKeywords(text, opts = {}) {
   if (!text) return "";
+  const charName = opts.charName !== undefined
+    ? opts.charName
+    : (infoBookActiveTab === "characters" ? activeSkillCharName : null);
+  const excludeTerms = opts.excludeTerms || null;
+
   let s = String(text)
     .replace(/<id:[^>]+>/g, "")
     .replace(/<\/?nobr>/gi, "")
@@ -7312,14 +7412,24 @@ function formatSkillKeywords(text) {
     return placeholder;
   };
 
+  const renderBracket = (cleanTerm, open, close) => {
+    const norm = cleanTerm.replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim().toLowerCase();
+    const isExcluded = excludeTerms && excludeTerms.has(norm);
+    const hasTooltip = !isExcluded && Boolean(resolveTermEntry(cleanTerm, charName));
+    if (hasTooltip) {
+      return addToken(`<span class="skill-kw-bracket" data-term="${escapeHtml(cleanTerm)}">${open}${escapeHtml(cleanTerm)}${close}</span>`);
+    }
+    return addToken(`<span class="skill-kw-bracket-plain">${open}${escapeHtml(cleanTerm)}${close}</span>`);
+  };
+
   // 1. Extract bracketed terms: [keyword] and 【keyword】
   s = s.replace(/\[(.*?)\]/g, (match, p1) => {
     const cleanTerm = p1.replace(/<id:[^>]+>/g, "").trim();
-    return addToken(`<span class="skill-kw-bracket" data-term="${escapeHtml(cleanTerm)}">[${escapeHtml(cleanTerm)}]</span>`);
+    return renderBracket(cleanTerm, "[", "]");
   });
   s = s.replace(/【(.*?)】/g, (match, p1) => {
     const cleanTerm = p1.replace(/<id:[^>]+>/g, "").trim();
-    return addToken(`<span class="skill-kw-bracket" data-term="${escapeHtml(cleanTerm)}">【${escapeHtml(cleanTerm)}】</span>`);
+    return renderBracket(cleanTerm, "【", "】");
   });
 
   // 2. Escape HTML on surrounding text
@@ -7382,122 +7492,80 @@ function showTermPopover(targetEl, termText, charName) {
   if (!termText || !targetEl) return;
 
   const isCn = currentLang === "cn";
-  // Some game terms keep the quotes the game wraps around a name
-  // (`["Seven Friends"]`, `【“七友人”】`); the glossary keys are unquoted.
-  const lookupTerm = termText.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
-  const cleanTerm = lookupTerm.toLowerCase();
-
-  let found = null;
-  // 1. Look in skillGlossaryData (exact key, lowercase, or by nameZh/nameEn matching)
-  if (skillGlossaryData) {
-    if (skillGlossaryData[lookupTerm]) {
-      found = skillGlossaryData[lookupTerm];
-    } else if (skillGlossaryData[cleanTerm]) {
-      found = skillGlossaryData[cleanTerm];
-    } else {
-      for (const [k, v] of Object.entries(skillGlossaryData)) {
-        if (!v) continue;
-        if ((v.nameZh && v.nameZh === lookupTerm) || (v.nameEn && v.nameEn.toLowerCase() === cleanTerm)) {
-          found = v;
-          break;
-        }
-      }
-    }
-  }
-
-  // 2. Look in character's own skills / insights / weapons
-  if (!found && charName && characterSkillsData && characterSkillsData[charName]) {
-    const c = characterSkillsData[charName];
-    for (const s of (c.skills || [])) {
-      if ((s.nameEn && s.nameEn.toLowerCase() === cleanTerm) || (s.nameZh && (s.nameZh === lookupTerm || s.nameZh.toLowerCase() === cleanTerm))) {
-        const r1 = s.ranks ? (s.ranks["1"] || Object.values(s.ranks)[0] || {}) : s;
-        found = {
-          nameEn: s.nameEn,
-          nameZh: s.nameZh || s.nameEn,
-          descEn: r1.descEn || s.descEn,
-          descZh: r1.descZh || s.descZh || r1.descEn || s.descEn,
-          descVi: r1.descVi || s.descVi || "",
-          tagEn: s.type || "Skill",
-          tagZh: s.type === "Ultimate" ? "至终仪式" : (s.type === "Special" ? "特殊术式" : "神秘术"),
-        };
-        break;
-      }
-    }
-    if (!found) {
-      for (const ins of (c.insights || [])) {
-        if ((ins.nameEn && ins.nameEn.toLowerCase() === cleanTerm) || (ins.nameZh && (ins.nameZh === lookupTerm || ins.nameZh.toLowerCase() === cleanTerm))) {
-          found = {
-            nameEn: ins.nameEn,
-            nameZh: ins.nameZh || ins.nameEn,
-            descEn: ins.descEn,
-            descZh: ins.descZh || ins.descEn,
-            descVi: ins.descVi || "",
-            tagEn: "Insight",
-            tagZh: "传承",
-          };
-          break;
-        }
-      }
-    }
-    if (!found && Array.isArray(c.weapons)) {
-      for (const w of c.weapons) {
-        if ((w.nameEn && w.nameEn.toLowerCase() === cleanTerm) || (w.nameZh && (w.nameZh === lookupTerm || w.nameZh.toLowerCase() === cleanTerm))) {
-          found = {
-            nameEn: w.nameEn,
-            nameZh: w.nameZh || w.nameEn,
-            descEn: w.mainDescEn,
-            descZh: w.mainDescZh || w.mainDescEn,
-            descVi: w.mainDescVi || "",
-            tagEn: "Weapon",
-            tagZh: "武器",
-          };
-          break;
-        }
-        for (const cb of (w.combos || [])) {
-          if ((cb.daggerEn && cb.daggerEn.toLowerCase() === cleanTerm) || (cb.daggerZh && (cb.daggerZh === lookupTerm || cb.daggerZh.toLowerCase() === cleanTerm))) {
-            found = {
-              nameEn: cb.daggerEn,
-              nameZh: cb.daggerZh || cb.daggerEn,
-              descEn: cb.descEn,
-              descZh: cb.descZh || cb.descEn,
-              descVi: cb.descVi || "",
-              tagEn: "Combo",
-              tagZh: "组合",
-            };
-            break;
-          }
-        }
-        if (found) break;
-      }
-    }
-  }
-
+  const found = resolveTermEntry(termText, charName);
   if (!found) return;
-
-  // Measure target coordinates before creating popover
-  const rect = targetEl.getBoundingClientRect();
-
-  // If clicked term is NOT inside an existing popover, close previous popovers
-  const parentPopover = targetEl.closest(".uttu-term-popover");
-  if (!parentPopover) {
-    closeAllTermPopovers();
-  }
 
   const title = isCn ? (found.nameZh || found.nameEn) : (found.nameEn || found.nameZh);
   const desc = pickLocalizedDesc(found);
   const tag = isCn ? (found.tagZh || found.tagEn) : (found.tagEn || found.tagZh);
+  const iconHtml = found.icon
+    ? `<img class="uttu-term-popover-skill-icon" src="${escapeHtml(found.icon)}" alt="" />`
+    : "";
+
+  const registerShownTerms = (set) => {
+    const raw = termText.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim().toLowerCase();
+    if (raw) set.add(raw);
+    if (found.nameEn) set.add(found.nameEn.trim().toLowerCase());
+    if (found.nameZh) set.add(found.nameZh.trim().toLowerCase());
+  };
+
+  const bindInnerKeywords = (container, popover) => {
+    container.querySelectorAll(".skill-kw-bracket, .skill-kw-stat").forEach((innerKw) => {
+      innerKw.addEventListener("click", (e) => {
+        e.stopPropagation();
+        showTermPopover(innerKw, innerKw.dataset.term, popover._charName ?? charName);
+      });
+    });
+  };
+
+  // If clicked inside an existing popover, append the nested term directly below inside the same box
+  const parentPopover = targetEl.closest(".uttu-term-popover");
+  if (parentPopover) {
+    if (!parentPopover._shownTerms) parentPopover._shownTerms = new Set();
+    const cleanClick = termText.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim().toLowerCase();
+    if (parentPopover._shownTerms.has(cleanClick)) return;
+    registerShownTerms(parentPopover._shownTerms);
+
+    const bodyEl = parentPopover.querySelector(".uttu-term-popover-body");
+    if (!bodyEl) return;
+
+    const nested = document.createElement("div");
+    nested.className = "uttu-term-popover-nested";
+    nested.innerHTML = `<div class="uttu-term-popover-nested-head">${iconHtml}<span class="uttu-term-popover-nested-title">${escapeHtml(title)}</span>${tag ? `<span class="uttu-term-popover-tag">${escapeHtml(tag)}</span>` : ""}</div><div class="uttu-term-popover-nested-desc">${formatSkillKeywords(desc, { charName: parentPopover._charName ?? charName, excludeTerms: parentPopover._shownTerms })}</div>`;
+    bodyEl.appendChild(nested);
+    bindInnerKeywords(nested, parentPopover);
+
+    // Keep the taller popover clamped inside the viewport so its bottom never clips off-screen
+    const updatedRect = parentPopover.getBoundingClientRect();
+    if (updatedRect.bottom > window.innerHeight - 16) {
+      const clampedTop = Math.max(16, window.innerHeight - updatedRect.height - 16);
+      parentPopover.style.top = `${Math.round(clampedTop)}px`;
+    }
+
+    nested.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    return;
+  }
+
+  // Top-level click: close any previous popovers and open a fresh one
+  const rect = targetEl.getBoundingClientRect();
+  closeAllTermPopovers();
 
   const popover = document.createElement("div");
   popover.className = "uttu-term-popover";
+  popover._charName = charName;
+  popover._shownTerms = new Set();
+  registerShownTerms(popover._shownTerms);
+
   popover.innerHTML = `
     <div class="uttu-term-popover-head">
       <div class="uttu-term-popover-head-left">
+        ${iconHtml}
         <h5 class="uttu-term-popover-title">${escapeHtml(title)}</h5>
         ${tag ? `<span class="uttu-term-popover-tag">${escapeHtml(tag)}</span>` : ""}
       </div>
       <button type="button" class="uttu-term-popover-close" aria-label="Close">✕</button>
     </div>
-    <div class="uttu-term-popover-body">${formatSkillKeywords(desc)}</div>
+    <div class="uttu-term-popover-body">${formatSkillKeywords(desc, { charName, excludeTerms: popover._shownTerms })}</div>
   `;
 
   popover.querySelector(".uttu-term-popover-close").addEventListener("click", (e) => {
@@ -7505,13 +7573,23 @@ function showTermPopover(targetEl, termText, charName) {
     closeTermPopover(popover);
   });
 
-  // Allow clicking inside terms within this popover body to stack/open nested term popover
-  popover.querySelectorAll(".skill-kw-bracket, .skill-kw-stat").forEach((innerKw) => {
-    innerKw.addEventListener("click", (e) => {
-      e.stopPropagation();
-      showTermPopover(innerKw, innerKw.dataset.term, charName);
-    });
-  });
+  bindInnerKeywords(popover, popover);
+
+  // Prevent wheel scrolling inside the popover from chaining to the background modal/page
+  popover.addEventListener("wheel", (e) => {
+    const bodyEl = popover.querySelector(".uttu-term-popover-body");
+    if (!bodyEl) return;
+    const canScroll = bodyEl.scrollHeight > bodyEl.clientHeight;
+    if (!canScroll) {
+      e.preventDefault();
+      return;
+    }
+    const atTop = bodyEl.scrollTop <= 0 && e.deltaY < 0;
+    const atBottom = bodyEl.scrollTop + bodyEl.clientHeight >= bodyEl.scrollHeight - 1 && e.deltaY > 0;
+    if (atTop || atBottom) {
+      e.preventDefault();
+    }
+  }, { passive: false });
 
   document.body.appendChild(popover);
   activeTermPopovers.push(popover);
@@ -7526,6 +7604,10 @@ function showTermPopover(targetEl, termText, charName) {
   if (top < 16) {
     top = rect.bottom + 8;
   }
+  // Clamp bottom edge within viewport
+  if (top + popRect.height > window.innerHeight - 16) {
+    top = Math.max(16, window.innerHeight - popRect.height - 16);
+  }
 
   // Clamp right edge within viewport
   if (left + popRect.width > window.innerWidth - 16) {
@@ -7535,7 +7617,6 @@ function showTermPopover(targetEl, termText, charName) {
 
   popover.style.left = `${Math.round(left)}px`;
   popover.style.top = `${Math.round(top)}px`;
-  // Ensure newer stacked popover appears on top of earlier ones
   popover.style.zIndex = `${10005 + activeTermPopovers.length}`;
 }
 
@@ -7547,6 +7628,7 @@ function renderCharacterSkillsSection(name) {
 
   // Top mode buttons: Skills / Weapons / Insight / Portrait / Euphoria
   const canonicalName = resolveCharacterName(name);
+  activeSkillCharName = canonicalName;
   const heroEuphoriaList = characterEuphoriasData[name] || characterEuphoriasData[canonicalName] || null;
   const hasCharEuphoria = Array.isArray(heroEuphoriaList) && heroEuphoriaList.length > 0;
   const hasWeapons = Array.isArray(skillInfo.weapons) && skillInfo.weapons.length > 0;

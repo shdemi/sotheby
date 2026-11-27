@@ -4965,6 +4965,32 @@
     ]
   },
   {
+    "id": 3160,
+    "name": "伊芙琳",
+    "nameEng": "Evelyn",
+    "roleBirthday": "1/7",
+    "live2d": [
+      {
+        "id": 316001,
+        "name": "伊芙琳",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "",
+        "characterSkinNameEng": "",
+        "skinDescription": "偶尔大吼大跳，经常吃“糖”健脑。"
+      },
+      {
+        "id": 316002,
+        "name": "伊芙琳",
+        "nameEng": "",
+        "des": "",
+        "characterSkin": "疯谜题",
+        "characterSkinNameEng": "Mad as a Riddle",
+        "skinDescription": "至于十字街之外的正义，听说她一个人全包了。"
+      }
+    ]
+  },
+  {
     "id": 3163,
     "name": "格林杜尔",
     "nameEng": "Glyndŵr",

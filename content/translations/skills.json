@@ -10557,8 +10557,8 @@
       "3|": {
         "nameEn": "The Thirteenth Feat",
         "nameVi": "The Thirteenth Feat",
-        "descEn": "[Switch: At Full Draw]\nMass attack, deals 800% Reality DMG to all enemies, and deals additional [Static Genesis DMG] to the primary target equal to 100% of [Aesthetic of Might], while dealing 50% [Static Genesis DMG] to non-primary targets. If [Flame Undying] is not held in the Spelldock at attack time, generates 1 [Flame Undying] in the Spelldock; otherwise, this attack deals an additional 800% Reality DMG. After attacking, grants self 1 stack of [Conduit Calibration II], and clears the recorded value of [Aesthetic of Might].",
-        "descVi": "[Switch: At Full Draw]\nTấn công diện rộng, gây 800% Reality DMG lên toàn bộ kẻ địch, đồng thời gây thêm [Static Genesis DMG] lên mục tiêu chính bằng 100% [Aesthetic of Might], trong khi gây 50% [Static Genesis DMG] lên các mục tiêu không phải mục tiêu chính. Nếu lúc tấn công không có [Flame Undying] trong Spelldock, tạo 1 [Flame Undying] trong Spelldock; nếu không, đòn tấn công này gây thêm 800% Reality DMG. Sau khi tấn công, cấp cho bản thân 1 cộng dồn [Conduit Calibration II], và xóa giá trị đã ghi nhận của [Aesthetic of Might].",
+        "descEn": "[Switch: At Full Draw]\nMass attack, deals 800% Reality DMG to all enemies, and deals additional [Static Genesis DMG] to the primary target equal to 100% of [Absolute Prowess], while dealing 50% [Static Genesis DMG] to non-primary targets. If [Flame Undying] is not held in the Spelldock at attack time, generates 1 [Flame Undying] in the Spelldock; otherwise, this attack deals an additional 800% Reality DMG. After attacking, grants self 1 stack of [Conduit Calibration II], and clears the recorded value of [Absolute Prowess].",
+        "descVi": "[Switch: At Full Draw]\nTấn công diện rộng, gây 800% Reality DMG lên toàn bộ kẻ địch, đồng thời gây thêm [Static Genesis DMG] lên mục tiêu chính bằng 100% [Absolute Prowess], trong khi gây 50% [Static Genesis DMG] lên các mục tiêu không phải mục tiêu chính. Nếu lúc tấn công không có [Flame Undying] trong Spelldock, tạo 1 [Flame Undying] trong Spelldock; nếu không, đòn tấn công này gây thêm 800% Reality DMG. Sau khi tấn công, cấp cho bản thân 1 cộng dồn [Conduit Calibration II], và xóa giá trị đã ghi nhận của [Absolute Prowess].",
         "artEn": "For the next celebration, the sun should rise once again.",
         "artVi": "Cho lễ hội kế tiếp, mặt trời nên mọc lên một lần nữa."
       },
@@ -10585,8 +10585,8 @@
       "0": {
         "nameEn": "Precognition",
         "nameVi": "Precognition",
-        "descEn": "Does not gain regular Incantations or Ultimates; activates [Conduits] using Resonance Energy to cast Incantations. Moxie is replaced by Harmonization.\nUpon entering battle, generates 1 card of [Flame Undying] in the Spelldock and gains [Aesthetic of Might].",
-        "descVi": "Không nhận Incantation hay Ultimate thông thường; kích hoạt [Conduits] bằng Resonance Energy để thi triển Incantation. Moxie được thay thế bằng Harmonization.\nKhi vào trận, tạo 1 thẻ [Flame Undying] trong Spelldock và nhận [Aesthetic of Might]."
+        "descEn": "Does not gain regular Incantations or Ultimates; activates [Conduits] using Resonance Energy to cast Incantations. Moxie is replaced by Harmonization.\nUpon entering battle, generates 1 card of [Flame Undying] in the Spelldock and gains [Absolute Prowess].",
+        "descVi": "Không nhận Incantation hay Ultimate thông thường; kích hoạt [Conduits] bằng Resonance Energy để thi triển Incantation. Moxie được thay thế bằng Harmonization.\nKhi vào trận, tạo 1 thẻ [Flame Undying] trong Spelldock và nhận [Absolute Prowess]."
       },
       "1": {
         "nameEn": "Pride of the Ever-Victorious",
@@ -10625,8 +10625,8 @@
         "descVi": "[The Thirteenth Feat] Reality DMG gây ra tăng thành 1200%; [At Full Draw] [Seared] giờ giúp tăng DMG Dealt thêm 16% khi bị Conduit tấn công."
       },
       "5": {
-        "descEn": "[Flame Undying] Each 1 point of Energy smelted now accumulates [Flame Undying] Energy increased to 2 points, maximum accumulated smelted Energy increased to 8 points, and maximum stored Energy increased to 12 points. [Precognition] [Flame Undying] generated on battle entry has its initial recorded Energy increased to 6 points. [Aesthetic of Might] records damage dealt by allies' Incantations increased to 18%, and when target has [Seared], additional recorded value is increased to 18%. 2 [Mineral Energy II] in the deck grant Mineral Energy increased to 3 points.",
-        "descVi": "[Flame Undying] Mỗi 1 điểm Energy nung chảy giờ tích lũy Energy của [Flame Undying] tăng thành 2 điểm, Energy nung chảy tích lũy tối đa tăng thành 8 điểm, và Energy lưu trữ tối đa tăng thành 12 điểm. [Precognition] [Flame Undying] tạo ra khi vào trận có Energy ghi nhận ban đầu tăng thành 6 điểm. [Aesthetic of Might] giá trị sát thương do Incantation của đồng minh ghi nhận tăng thành 18%, và khi mục tiêu có [Seared], giá trị ghi nhận bổ sung tăng thành 18%. 2 [Mineral Energy II] trong bộ bài cấp Mineral Energy tăng thành 3 điểm."
+        "descEn": "[Flame Undying] Each 1 point of Energy smelted now accumulates [Flame Undying] Energy increased to 2 points, maximum accumulated smelted Energy increased to 8 points, and maximum stored Energy increased to 12 points. [Precognition] [Flame Undying] generated on battle entry has its initial recorded Energy increased to 6 points. [Absolute Prowess] records damage dealt by allies' Incantations increased to 18%, and when target has [Seared], additional recorded value is increased to 18%. 2 [Mineral Energy II] in the deck grant Mineral Energy increased to 3 points.",
+        "descVi": "[Flame Undying] Mỗi 1 điểm Energy nung chảy giờ tích lũy Energy của [Flame Undying] tăng thành 2 điểm, Energy nung chảy tích lũy tối đa tăng thành 8 điểm, và Energy lưu trữ tối đa tăng thành 12 điểm. [Precognition] [Flame Undying] tạo ra khi vào trận có Energy ghi nhận ban đầu tăng thành 6 điểm. [Absolute Prowess] giá trị sát thương do Incantation của đồng minh ghi nhận tăng thành 18%, và khi mục tiêu có [Seared], giá trị ghi nhận bổ sung tăng thành 18%. 2 [Mineral Energy II] trong bộ bài cấp Mineral Energy tăng thành 3 điểm."
       }
     }
   },
@@ -11079,6 +11079,117 @@
       "5": {
         "descEn": "[Fight for Extra Treats]: When [Rhyfelwr Adar Llwch Gwin] is present, the [Annwn's Blessing] and [Shadowless Hunter] used in sequence are increased to rank 3.",
         "descVi": "[Fight for Extra Treats]: Khi có [Rhyfelwr Adar Llwch Gwin], [Annwn's Blessing] và [Shadowless Hunter] khi sử dụng liên tiếp được tăng lên hạng 3."
+      }
+    }
+  },
+  "3160": {
+    "nameEn": "Evelyn",
+    "nameZh": "伊芙琳",
+    "nameVi": "Evelyn",
+    "skills": {
+      "1|": {
+        "nameEn": "Odd-Flavor Conception",
+        "nameVi": "Odd-Flavor Conception",
+        "ranks": {
+          "1": {
+            "descEn": "1-target attack. Deals 200% Reality DMG; consumes 2 stacks of [Deduction] to increase this attack's Incantation Might by 80%. For each time this incantation is cast this round, this attack deals an additional 500% Reality DMG, counting up to 8 times. If the incantation is rewritten as [Odd-Flavor Candy], deducts 1 Thread Point after attacking; otherwise, shifts self 1 position forward.",
+            "descVi": "Tấn công đơn mục tiêu. Gây 200% Reality DMG; tiêu hao 2 cộng dồn [Deduction] để tăng Incantation Might của đòn này thêm 80%. Mỗi lần incantation này được thi triển trong round, đòn tấn công gây thêm 500% Reality DMG, tính tối đa 8 lần. Nếu incantation được Rewrite thành [Odd-Flavor Candy], trừ 1 Thread Point sau khi tấn công; nếu không, dịch chuyển bản thân về trước 1 vị trí.",
+            "artEn": "A cool, refreshing bite.",
+            "artVi": "Một ngụm mát lạnh."
+          },
+          "2": {
+            "descEn": "1-target attack. Deals 300% Reality DMG; consumes 2 stacks of [Deduction] to increase this attack's Incantation Might by 80%. For each time this incantation is cast this round, this attack deals an additional 500% Reality DMG, counting up to 8 times. If the incantation is rewritten as [Odd-Flavor Candy], deducts 1 Thread Point after attacking; otherwise, shifts self 1 position forward.",
+            "descVi": "Tấn công đơn mục tiêu. Gây 300% Reality DMG; tiêu hao 2 cộng dồn [Deduction] để tăng Incantation Might của đòn này thêm 80%. Mỗi lần incantation này được thi triển trong round, đòn tấn công gây thêm 500% Reality DMG, tính tối đa 8 lần. Nếu incantation được Rewrite thành [Odd-Flavor Candy], trừ 1 Thread Point sau khi tấn công; nếu không, dịch chuyển bản thân về trước 1 vị trí.",
+            "artEn": "First a cool, refreshing bite, then a rush of sour and spice.",
+            "artVi": "Thoạt đầu là một ngụm mát lạnh, rồi trào dâng vị chua cay."
+          },
+          "3": {
+            "descEn": "1-target attack. Deals 500% Reality DMG; consumes 2 stacks of [Deduction] to increase this attack's Incantation Might by 80%. For each time this incantation is cast this round, this attack deals an additional 500% Reality DMG, counting up to 8 times. If the incantation is rewritten as [Odd-Flavor Candy], deducts 1 Thread Point after attacking; otherwise, shifts self 1 position forward.",
+            "descVi": "Tấn công đơn mục tiêu. Gây 500% Reality DMG; tiêu hao 2 cộng dồn [Deduction] để tăng Incantation Might của đòn này thêm 80%. Mỗi lần incantation này được thi triển trong round, đòn tấn công gây thêm 500% Reality DMG, tính tối đa 8 lần. Nếu incantation được Rewrite thành [Odd-Flavor Candy], trừ 1 Thread Point sau khi tấn công; nếu không, dịch chuyển bản thân về trước 1 vị trí.",
+            "artEn": "First a cool, refreshing bite, then waves of sour and spice—wondrous conceptions burst forth amid flashing thoughts.",
+            "artVi": "Thoạt đầu là một ngụm mát lạnh, rồi bao nhiêu vị chua cay ùa tới—những ý tưởng kỳ diệu bật ra giữa dòng suy nghĩ lóe sáng."
+          }
+        }
+      },
+      "2|": {
+        "nameEn": "Fact Reconstruction",
+        "nameVi": "Fact Reconstruction",
+        "ranks": {
+          "1": {
+            "descEn": "Mass attack. Deals 200% Reality DMG to all enemies; after attacking, gains 8 stacks of [Deduction] and shifts self 1 position backward.",
+            "descVi": "Tấn công diện rộng. Gây 200% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, nhận 8 cộng dồn [Deduction] và dịch chuyển bản thân về sau 1 vị trí.",
+            "artEn": "Stay faithful to the guidance of evidence.",
+            "artVi": "Trung thành với sự dẫn lối của chứng cứ."
+          },
+          "2": {
+            "descEn": "Mass attack. Deals 300% Reality DMG to all enemies; after attacking, gains 10 stacks of [Deduction] and shifts self 1 position backward.",
+            "descVi": "Tấn công diện rộng. Gây 300% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, nhận 10 cộng dồn [Deduction] và dịch chuyển bản thân về sau 1 vị trí.",
+            "artEn": "Stay faithful to the guidance of evidence—such is a detective's creed.",
+            "artVi": "Trung thành với sự dẫn lối của chứng cứ—đó là tôn chỉ của thám tử."
+          },
+          "3": {
+            "descEn": "Mass attack. Deals 500% Reality DMG to all enemies; after attacking, gains 12 stacks of [Deduction] and shifts self 1 position backward.",
+            "descVi": "Tấn công diện rộng. Gây 500% Reality DMG lên toàn bộ kẻ địch; sau khi tấn công, nhận 12 cộng dồn [Deduction] và dịch chuyển bản thân về sau 1 vị trí.",
+            "artEn": "Stay faithful to the guidance of evidence—such is a detective's creed, though don't pass up a chance to imagine boldly.",
+            "artVi": "Trung thành với sự dẫn lối của chứng cứ—đó là tôn chỉ của thám tử, nhưng cũng đừng bỏ lỡ cơ hội tưởng tượng táo bạo."
+          }
+        }
+      },
+      "3|": {
+        "nameEn": "Truth Follows the Trail",
+        "nameVi": "Truth Follows the Trail",
+        "descEn": "Mass attack. Deals 2000% Reality DMG to all enemies; consumes 5 stacks of [Deduction] to increase this attack's Ultimate Might by 100%.\nFor each time [Odd-Flavor Conception] is cast this round, this attack deals an additional 800% Reality DMG, counting up to 8 times.\nIf [Odd-Flavor Conception] has been cast 6 or more times this round, this attack gains DMG Bonus +80% and Critical DMG +80%;\nafter attacking, grants self [Mind Reorganization].",
+        "descVi": "Tấn công diện rộng. Gây 2000% Reality DMG lên toàn bộ kẻ địch; tiêu hao 5 cộng dồn [Deduction] để tăng Ultimate Might của đòn này thêm 100%.\nMỗi lần [Odd-Flavor Conception] được thi triển trong round, đòn tấn công gây thêm 800% Reality DMG, tính tối đa 8 lần.\nNếu [Odd-Flavor Conception] đã được thi triển từ 6 lần trở lên trong round, đòn tấn công nhận DMG Bonus +80% và Critical DMG +80%;\nsau khi tấn công, bản thân nhận [Mind Reorganization].",
+        "artEn": "A detective's proudest reward—ending the story with \"Case closed.\"",
+        "artVi": "Phần thưởng đáng tự hào nhất của một thám tử—khép lại câu chuyện bằng hai chữ \"phá án\"."
+      }
+    },
+    "insights": {
+      "0": {
+        "nameEn": "Premonition",
+        "nameVi": "Premonition",
+        "descEn": "At the start of each round, generates 1 [Thread: Odd-Flavor Candy] at a random position other than self's own position (up to 4 Thread Points may exist at each position);\nEvelyn cannot gain Ultimate; Moxie is replaced by Thread Points; whenever gaining 1 Thread Point, generates 1 rank-1 [Odd-Flavor Conception] rewritten as [Odd-Flavor Candy];\nwhen [Odd-Flavor Conception] rewritten as [Odd-Flavor Candy] is cast 5 or more times in the same round, automatically casts the Ultimate once at the end of the round.",
+        "descVi": "Khi bắt đầu mỗi round, tạo 1 [Thread: Odd-Flavor Candy] tại vị trí ngẫu nhiên không phải vị trí của bản thân (mỗi vị trí có thể tồn tại tối đa 4 Thread Point);\nEvelyn không thể nhận Ultimate; Moxie được thay bằng Thread Point; mỗi khi nhận 1 Thread Point, tạo 1 [Odd-Flavor Conception] hạng 1 được Rewrite thành [Odd-Flavor Candy];\nkhi [Odd-Flavor Conception] được Rewrite thành [Odd-Flavor Candy] được thi triển từ 5 lần trở lên trong cùng 1 round, tự động thi triển Ultimate 1 lần khi kết thúc round."
+      },
+      "1": {
+        "nameEn": "Flawless Chain of Evidence",
+        "nameVi": "Flawless Chain of Evidence",
+        "descEn": "Whenever all allies gain 1 Thread Point, Evelyn gains 1 stack of [Deduction].",
+        "descVi": "Mỗi khi toàn bộ phe ta nhận 1 Thread Point, Evelyn nhận 1 cộng dồn [Deduction]."
+      },
+      "2": {
+        "nameEn": "Flawless Chain of Evidence II",
+        "nameVi": "Flawless Chain of Evidence II",
+        "descEn": "DMG Dealt +8% when entering battle.",
+        "descVi": "Khi vào trận, DMG Dealt +8%."
+      },
+      "3": {
+        "nameEn": "Flawless Chain of Evidence III",
+        "nameVi": "Flawless Chain of Evidence III",
+        "descEn": "When entering battle, self Thread Points +2.",
+        "descVi": "Khi vào trận, Thread Point của bản thân +2."
+      }
+    },
+    "portrays": {
+      "1": {
+        "descEn": "[Premonition]: Thread Points gained by self when entering battle is increased to 4; [Odd-Flavor Conception]: additional Reality DMG dealt per cast of this incantation this round is increased to 800%; [Truth Follows the Trail] / [Mind Reorganization]: Evelyn additionally gains rank-3 [Odd-Flavor Conception] rewritten as [Odd-Flavor Candy], and the maximum number of cards gained is increased to 2.",
+        "descVi": "[Premonition]: Thread Point bản thân nhận được khi vào trận tăng thành 4; [Odd-Flavor Conception]: Reality DMG gây thêm cho mỗi lần thi triển incantation này trong round tăng thành 800%; [Truth Follows the Trail] / [Mind Reorganization]: Evelyn nhận thêm [Odd-Flavor Conception] hạng 3 được Rewrite thành [Odd-Flavor Candy], số lượng tối đa có thể nhận tăng thành 2."
+      },
+      "2": {
+        "descEn": "[Truth Follows the Trail]: additional Reality DMG dealt per cast of [Odd-Flavor Conception] this round is increased to 1000%; if [Odd-Flavor Conception] has been cast 6 or more times this round, the DMG Bonus and Critical DMG gained are increased to 120%/120%.",
+        "descVi": "[Truth Follows the Trail]: Reality DMG gây thêm cho mỗi lần thi triển [Odd-Flavor Conception] trong round tăng thành 1000%; nếu [Odd-Flavor Conception] đã được thi triển từ 6 lần trở lên trong round, DMG Bonus và Critical DMG nhận được tăng thành 120%/120%."
+      },
+      "3": {
+        "descEn": "[Odd-Flavor Conception]: Reality DMG dealt at incantation rank 1/2/3 is increased to 240%/360%/600%, and Incantation Might gained when consuming [Deduction] is increased to 100%;\n[Fact Reconstruction]: stacks of [Deduction] gained at incantation rank 1/2/3 are increased to 12/15/18.",
+        "descVi": "[Odd-Flavor Conception]: Reality DMG gây ra ở incantation hạng 1/2/3 tăng thành 240%/360%/600%, và Incantation Might nhận được khi tiêu hao [Deduction] tăng thành 100%;\n[Fact Reconstruction]: số cộng dồn [Deduction] nhận được ở incantation hạng 1/2/3 tăng thành 12/15/18."
+      },
+      "4": {
+        "descEn": "[Truth Follows the Trail]: Reality DMG dealt is increased to 3000%, and Ultimate Might gained when consuming [Deduction] is increased to 120%.",
+        "descVi": "[Truth Follows the Trail]: Reality DMG gây ra tăng thành 3000%, và Ultimate Might nhận được khi tiêu hao [Deduction] tăng thành 120%."
+      },
+      "5": {
+        "descEn": "[Odd-Flavor Conception]: additional Reality DMG dealt per cast of this incantation this round is increased to 1100%; [Truth Follows the Trail] / [Mind Reorganization]: Evelyn additionally gains rank-3 [Odd-Flavor Conception] rewritten as [Odd-Flavor Candy], and the maximum number of cards gained is increased to 3.",
+        "descVi": "[Odd-Flavor Conception]: Reality DMG gây thêm cho mỗi lần thi triển incantation này trong round tăng thành 1100%; [Truth Follows the Trail] / [Mind Reorganization]: Evelyn nhận thêm [Odd-Flavor Conception] hạng 3 được Rewrite thành [Odd-Flavor Candy], số lượng tối đa có thể nhận tăng thành 3."
       }
     }
   },

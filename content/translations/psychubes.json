@@ -812,24 +812,24 @@
     "descVi": "Tham vọng, truy cầu, những vòng vèo của định mệnh,\nThời gian, dư ảnh, bóng tối của hào quang,\nCuối cùng cũng được diện kiến,\nNgàn đêm chan chứa những phép màu.",
     "amplifications": {
       "1": {
-        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.2%}, counting up to 6 points.",
-        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.2%}, tính tối đa 6 điểm."
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases Incantation Might by {2.2%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might thêm {2.2%}, tính tối đa 6 điểm."
       },
       "2": {
-        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.4%}, counting up to 6 points.",
-        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.4%}, tính tối đa 6 điểm."
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases Incantation Might by {2.4%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might thêm {2.4%}, tính tối đa 6 điểm."
       },
       "3": {
-        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.6%}, counting up to 6 points.",
-        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.6%}, tính tối đa 6 điểm."
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases Incantation Might by {2.6%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might thêm {2.6%}, tính tối đa 6 điểm."
       },
       "4": {
-        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {1.8%}, counting up to 6 points.",
-        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {1.8%}, tính tối đa 6 điểm."
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases Incantation Might by {2.8%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might thêm {2.8%}, tính tối đa 6 điểm."
       },
       "5": {
-        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases all allies' Incantation Might by {2%}, counting up to 6 points.",
-        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might của toàn bộ phe ta thêm {2%}, tính tối đa 6 điểm."
+        "descEn": "When all allies attack, for every 1 point of Eureka the carrier has, increases Incantation Might by {3%}, counting up to 6 points.",
+        "descVi": "Khi toàn bộ phe ta tấn công, với mỗi 1 điểm Eureka mà người trang bị có, tăng Incantation Might thêm {3%}, tính tối đa 6 điểm."
       }
     }
   },
@@ -2311,7 +2311,29 @@
   },
   "1581": {
     "descEn": "Jam splatters across the plate,\nInspiration blooms in the eye;\nOne second the octopus gummies are still screaming,\nThe next, the soma sweets burst into hysterics;\nWith a single squelching cut,\nThe answer is revealed!",
-    "descVi": "Mứt bắn tung tóe trên đĩa,\nLinh cảm nở rộ trong ánh mắt;\nGiây trước kẹo bạch tuộc còn đang gào thét,\nGiây sau kẹo soma đã cười điên dại;\nMột nhát cắt \"phập\",\nĐáp án lộ diện!"
+    "descVi": "Mứt bắn tung tóe trên đĩa,\nLinh cảm nở rộ trong ánh mắt;\nGiây trước kẹo bạch tuộc còn đang gào thét,\nGiây sau kẹo soma đã cười điên dại;\nMột nhát cắt \"phập\",\nĐáp án lộ diện!",
+    "amplifications": {
+      "1": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Beast], Critical DMG +{12%};\nAfter the carrier is shifted, DMG Bonus +{4%}, stacking up to 3 times, lasting 3 rounds.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Beast], Critical DMG +{12%};\nSau khi người trang bị bị dịch chuyển, DMG Bonus +{4%}, cộng dồn tối đa 3 lần, duy trì 3 round."
+      },
+      "2": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Beast], Critical DMG +{15%};\nAfter the carrier is shifted, DMG Bonus +{5%}, stacking up to 3 times, lasting 3 rounds.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Beast], Critical DMG +{15%};\nSau khi người trang bị bị dịch chuyển, DMG Bonus +{5%}, cộng dồn tối đa 3 lần, duy trì 3 round."
+      },
+      "3": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Beast], Critical DMG +{18%};\nAfter the carrier is shifted, DMG Bonus +{6%}, stacking up to 3 times, lasting 3 rounds.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Beast], Critical DMG +{18%};\nSau khi người trang bị bị dịch chuyển, DMG Bonus +{6%}, cộng dồn tối đa 3 lần, duy trì 3 round."
+      },
+      "4": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Beast], Critical DMG +{21%};\nAfter the carrier is shifted, DMG Bonus +{7%}, stacking up to 3 times, lasting 3 rounds.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Beast], Critical DMG +{21%};\nSau khi người trang bị bị dịch chuyển, DMG Bonus +{7%}, cộng dồn tối đa 3 lần, duy trì 3 round."
+      },
+      "5": {
+        "descEn": "When entering battle, if the carrier's Afflatus is [Beast], Critical DMG +{24%};\nAfter the carrier is shifted, DMG Bonus +{8%}, stacking up to 3 times, lasting 3 rounds.",
+        "descVi": "Khi vào trận, nếu Afflatus của người trang bị là [Beast], Critical DMG +{24%};\nSau khi người trang bị bị dịch chuyển, DMG Bonus +{8%}, cộng dồn tối đa 3 lần, duy trì 3 round."
+      }
+    }
   },
   "4103": {
     "descVi": "Thơ ca có thuộc về trang giấy da?\nThơ ca có thuộc về vỏ óc chó và mực?\nThơ ca có thuộc về quý tộc và nhà vua?\nKhông, đêm tuyết nói, thơ ca chỉ thuộc về chính nó.",

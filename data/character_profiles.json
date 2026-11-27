@@ -29,6 +29,14 @@
     "roleTagsZh": ["输出", "辅助", "额外行动", "追击"],
     "nameZh": "格林杜尔"
   },
+  "Evelyn": {
+    "id": 3160,
+    "dmgType": "Reality",
+    "dmgTypeZh": "现实创伤",
+    "roleTags": ["DPS", "Shift", "Rewrite"],
+    "roleTagsZh": ["输出", "位移", "改写"],
+    "nameZh": "伊芙琳"
+  },
   "Perchta": {
     "id": 3159,
     "dmgType": "Reality",

@@ -10795,6 +10795,98 @@
       }
     ]
   },
+  "Evelyn": {
+    "Elucidation": [
+      {
+        "material": "Fruit of Good and Evil",
+        "quantity": 1
+      },
+      {
+        "material": "Bogeyman",
+        "quantity": 2
+      },
+      {
+        "material": "Jeweled Egg",
+        "quantity": 3
+      },
+      {
+        "material": "Sharpodonty",
+        "quantity": 120000
+      }
+    ],
+    "Genuinity": [
+      {
+        "material": "Serpent Scepter",
+        "quantity": 1
+      },
+      {
+        "material": "Glowing Mothwing",
+        "quantity": 2
+      },
+      {
+        "material": "Red Lacquer Slab",
+        "quantity": 3
+      },
+      {
+        "material": "Sharpodonty",
+        "quantity": 120000
+      }
+    ],
+    "Stupefaction": [
+      {
+        "material": "Golden Fleece",
+        "quantity": 1
+      },
+      {
+        "material": "Rhizobox Rabbit",
+        "quantity": 2
+      },
+      {
+        "material": "Bifurcated Skeleton",
+        "quantity": 4
+      },
+      {
+        "material": "Sharpodonty",
+        "quantity": 120000
+      }
+    ],
+    "Aspirational": [
+      {
+        "material": "Rheingold",
+        "quantity": 1
+      },
+      {
+        "material": "Wyrmling Skeleton",
+        "quantity": 2
+      },
+      {
+        "material": "Golden Beetle",
+        "quantity": 3
+      },
+      {
+        "material": "Sharpodonty",
+        "quantity": 120000
+      }
+    ],
+    "Hyperphrenia": [
+      {
+        "material": "Serpent Scepter",
+        "quantity": 1
+      },
+      {
+        "material": "Goldbell Spirit Bottle",
+        "quantity": 2
+      },
+      {
+        "material": "Winged Key",
+        "quantity": 3
+      },
+      {
+        "material": "Sharpodonty",
+        "quantity": 120000
+      }
+    ]
+  },
   "Glyndŵr": {
     "Elucidation": [
       {

@@ -1256,6 +1256,51 @@
       "psychubes": ["6:1555", "6:1556"],
       "resonance": ["R10-11"]
     },
+    "Evelyn": {
+      "id": 3160,
+      "name": "Evelyn",
+      "display": "Evelyn",
+      "nameZh": "伊芙琳",
+      "rarity": 6,
+      "afflatus": "Beast",
+      "dmgType": "Reality",
+      "dmgTypeZh": "现实创伤",
+      "roleTags": ["DPS", "Shift", "Rewrite"],
+      "roleTagsZh": ["输出", "位移", "改写"],
+      "head": "images/headicon_small/316001.png",
+      "shape": "Plus shape",
+      "pattern": "Aspirational",
+      "patternIcon": "images/shape_pattern/Plus shape/Aspirational.png",
+      "patternColor": "#F67E26",
+      "portrait": "",
+      "chart": {
+        "label": "",
+        "bars": [
+          {
+            "badge": "P1",
+            "val": 40
+          },
+          {
+            "badge": "P2",
+            "val": 11
+          },
+          {
+            "badge": "P3",
+            "val": 6
+          },
+          {
+            "badge": "P4",
+            "val": 7
+          },
+          {
+            "badge": "P5",
+            "val": 34
+          }
+        ]
+      },
+      "psychubes": ["6:1581", "6:1546"],
+      "resonance": ["R10-12", "R13-14", "R15"]
+    },
     "Everecho": {
       "id": 3145,
       "name": "Everecho",
