@@ -49,7 +49,7 @@
   let historySearch = "";
   let historyRarities = new Set([6, 5, 4, 3, 2]);
   let historyPage = 1;
-  const HISTORY_PAGE_SIZE = 20;
+  const HISTORY_PAGE_SIZE = 10;
   let editingRowIndex = -1;
 
   let bannersLoaded = false;
