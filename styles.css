@@ -17238,3 +17238,905 @@ span.planner-char-tile-img {
     font-size: 0.64rem;
   }
 }
+
+/* ================= PULL TRACKER (Sotheby's Mansion Native Palette) ================= */
+
+#tracker-modal { z-index: 1000; }
+
+.tracker-modal-card {
+  max-width: 1320px;
+  width: 100%;
+  height: min(90vh, 860px);
+  display: flex;
+  flex-direction: column;
+  animation: rotationsModalIn 0.32s cubic-bezier(0.16, 0.84, 0.32, 1) both;
+}
+
+.tracker-modal-header {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tracker-header-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tracker-btn-accent {
+  border-color: rgba(224, 149, 50, 0.65) !important;
+  color: #F5E1C3 !important;
+  background: rgba(224, 149, 50, 0.12) !important;
+  background-image: none !important;
+}
+
+.tracker-btn-accent:hover {
+  background: rgba(224, 149, 50, 0.22) !important;
+  border-color: #E09532 !important;
+}
+
+.tracker-select-sm {
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 2px;
+  border: 1px solid var(--panel-border);
+  background: rgba(15, 16, 20, 0.92);
+  color: #ECE5D9;
+  font-family: var(--mono-font);
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.tracker-data-dropdown { position: relative; }
+
+.tracker-data-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(18, 17, 16, 0.98);
+  border: 1px solid rgba(224, 149, 50, 0.45);
+  border-radius: 2px;
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 40;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.72);
+}
+
+.tracker-data-dropdown.is-open .tracker-data-menu { display: flex; }
+
+.tracker-data-section-label {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #E09532;
+  padding: 4px 8px 2px;
+}
+
+.tracker-data-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: #ECE5D9;
+  font-family: var(--mono-font);
+  font-size: 0.7rem;
+  padding: 7px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.tracker-data-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #F5E1C3;
+}
+
+.tracker-data-item.is-danger { color: #E2726B; }
+.tracker-data-item.is-danger:hover { background: rgba(208, 81, 38, 0.16); }
+
+.tracker-data-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 2px;
+}
+
+.tracker-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.tracker-body.is-dragover::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 2px dashed #E09532;
+  background: rgba(224, 149, 50, 0.07);
+  pointer-events: none;
+  z-index: 25;
+}
+
+.tracker-ocr-banner {
+  background: rgba(24, 21, 18, 0.96);
+  border-bottom: 1px solid rgba(224, 149, 50, 0.35);
+  padding: 10px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: none;
+}
+
+.tracker-ocr-status {
+  font-family: var(--mono-font);
+  font-size: 0.72rem;
+  color: #F5E1C3;
+}
+
+.tracker-ocr-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.tracker-ocr-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #E09532;
+  transition: width 0.2s ease;
+}
+
+.tracker-anomaly-banner {
+  background: rgba(208, 81, 38, 0.14);
+  border-bottom: 1px solid rgba(208, 81, 38, 0.45);
+  color: #F5E1C3;
+  padding: 7px 18px;
+  font-family: var(--mono-font);
+  font-size: 0.68rem;
+  flex: none;
+}
+
+.tracker-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Empty Dropzone */
+.tracker-empty-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+}
+
+.tracker-dropzone {
+  max-width: 560px;
+  width: 100%;
+  border: 1px dashed rgba(224, 149, 50, 0.4);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 40px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.tracker-dropzone:hover {
+  border-color: #E09532;
+  background: rgba(94, 69, 36, 0.14);
+}
+
+.tracker-dropzone-icon { width: 46px; height: 46px; object-fit: contain; opacity: 0.92; }
+.tracker-dropzone-text { font-family: var(--mono-font); font-size: 0.76rem; color: #B5B5B3; line-height: 1.5; }
+.tracker-dropzone-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 4px; }
+
+/* Left Rail (matches .rotations-browse) */
+.tracker-rail {
+  flex: 0 0 300px;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 18px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.tracker-rail-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8f8a83;
+  padding: 2px 2px 0;
+}
+
+/* Left Rail Pool Buttons — matches InfoBook card & active row */
+.tracker-pool-card {
+  width: 100%;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.tracker-pool-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.tracker-pool-card.is-active {
+  background: rgba(208, 81, 38, 0.16);
+  border-color: #ED7D31;
+  padding-right: 26px;
+}
+
+.tracker-pool-card.is-active::after {
+  content: '›';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ED7D31;
+  line-height: 1;
+}
+
+.tracker-pool-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tracker-pool-name {
+  font-family: var(--serif-font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ECE5D9;
+}
+
+.tracker-pool-card.is-active .tracker-pool-name {
+  color: #F5E1C3;
+}
+
+.tracker-pool-count {
+  font-family: var(--mono-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ECE5D9;
+}
+
+.tracker-pool-card.is-active .tracker-pool-count {
+  color: #F5E1C3;
+}
+
+.tracker-pool-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-family: var(--mono-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.62rem;
+  color: #B5B5B3;
+}
+
+.tracker-pool-card.is-active .tracker-pool-sub {
+  color: #ECE5D9;
+}
+
+.tracker-mini-pity-track {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.tracker-mini-pity-fill {
+  height: 100%;
+  background: #ED7D31;
+}
+
+.tracker-pool-card.is-active .tracker-mini-pity-fill {
+  background: #ED7D31;
+}
+
+.tracker-rail-sep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+  flex: none;
+}
+
+/* Left Rail Account Highlights (Goyfield-inspired overview stats) */
+.tracker-rail-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 11px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+}
+
+.tracker-hl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--mono-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.65rem;
+  color: #B5B5B3;
+}
+
+.tracker-hl-val {
+  color: #ECE5D9;
+  font-weight: 700;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tracker-rarity-stack {
+  display: flex;
+  height: 5px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.tracker-rarity-seg-6 { background: #ED7D31; }
+.tracker-rarity-seg-5 { background: #F6C34A; }
+.tracker-rarity-seg-4 { background: #A5B9E7; }
+.tracker-rarity-seg-3 { background: #6b6761; }
+
+/* Clickable Banner Link inside 6✦ Showcase */
+.tracker-record-banner-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--mono-font);
+  font-size: 0.61rem;
+  color: #8f8a83;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.tracker-record-banner-btn:hover {
+  color: #ED7D31;
+  text-decoration: underline;
+}
+
+/* Pity Distribution Histograms (Goyfield-style) */
+.tracker-dist-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+}
+
+.tracker-dist-card {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tracker-dist-title {
+  font-family: var(--serif-font);
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tracker-dist-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  height: 92px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 4px 2px 0;
+}
+
+.tracker-dist-col {
+  flex: 1 1 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.tracker-dist-col:last-child {
+  border-right: none;
+}
+
+.tracker-dist-bar {
+  width: 100%;
+  background: #E09532;
+  min-height: 0;
+  transition: opacity 0.12s ease;
+}
+
+.tracker-dist-bar.is-soft {
+  background: #D05126;
+}
+
+.tracker-dist-col:hover .tracker-dist-bar {
+  opacity: 0.8;
+}
+
+.tracker-dist-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono-font);
+  font-size: 0.58rem;
+  color: #8f8a83;
+}
+
+.tracker-dist-col {
+  cursor: pointer;
+}
+
+.tracker-dist-col:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Matches .chess-piece-tooltip on mainboard */
+.tracker-dist-tooltip {
+  position: fixed;
+  z-index: 2000;
+  background-color: rgba(17, 17, 17, 0.97);
+  background-image: none;
+  color: rgba(244, 239, 233, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
+  white-space: nowrap;
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+@media (max-width: 1080px) {
+  .tracker-dist-grid { grid-template-columns: 1fr; }
+}
+
+/* Right Detail Pane */
+.tracker-detail {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tracker-detail-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tracker-detail-title {
+  font-family: 'Amiri', var(--serif-font);
+  font-size: 28px;
+  font-weight: 700;
+  color: #ECE5D9;
+  margin: 0;
+}
+
+.tracker-detail-subtitle {
+  font-family: var(--mono-font);
+  font-size: 0.68rem;
+  color: #8f8a83;
+}
+
+/* 4 KPI Summary Cards (Flat dark ink + hairline borders, Sotheby's palette) */
+.tracker-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tracker-kpi-grid.is-3col {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tracker-kpi-card {
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 11px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tracker-kpi-card.is-highlight {
+  border-color: rgba(224, 149, 50, 0.42);
+  background: rgba(94, 69, 36, 0.18);
+}
+
+.tracker-kpi-label {
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8f8a83;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tracker-kpi-num {
+  font-family: var(--serif-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  line-height: 1.15;
+}
+
+.tracker-kpi-foot {
+  font-family: var(--mono-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.66rem;
+  color: #B5B5B3;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tracker-pity-bar-wrap { margin-top: 3px; }
+
+.tracker-pity-bar-track {
+  position: relative;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.tracker-pity-bar-fill {
+  height: 100%;
+  background: #E09532;
+}
+
+/* Muted Sotheby's Mansion semantic tones — no neon */
+.tracker-val-good { color: #8fb88e !important; }
+.tracker-val-mid { color: #E09532 !important; }
+.tracker-val-bad { color: #E2726B !important; }
+
+/* Section Card using .archetype-section-header spine */
+.tracker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tracker-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 6px 12px;
+  border-left: 3px solid #E09532;
+  background: rgba(0, 0, 0, 0.36);
+}
+
+.tracker-section-title {
+  font-family: var(--serif-font);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #ECE5D9;
+  margin: 0;
+}
+
+/* 6★ Headhunting Records Pity Timeline */
+.tracker-records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tracker-record-row {
+  display: grid;
+  grid-template-columns: 34px minmax(140px, 1.2fr) minmax(130px, 1.5fr) 96px minmax(100px, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--mono-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.7rem;
+}
+
+.tracker-record-row:hover {
+  background: rgba(94, 69, 36, 0.18);
+  border-color: rgba(224, 149, 50, 0.3);
+}
+
+.tracker-record-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  object-fit: cover;
+  border: 1px solid rgba(224, 149, 50, 0.45);
+}
+
+.tracker-record-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tracker-record-name {
+  font-family: var(--serif-font);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #F5E1C3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tracker-record-banner {
+  font-size: 0.61rem;
+  color: #8f8a83;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tracker-record-bar-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tracker-record-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.tracker-record-bar-fill { height: 100%; }
+.tracker-record-bar-fill.is-good { background: #6d9b6c; }
+.tracker-record-bar-fill.is-mid { background: #E09532; }
+.tracker-record-bar-fill.is-bad { background: #D05126; }
+
+.tracker-record-pity-num {
+  min-width: 24px;
+  text-align: right;
+  font-weight: 700;
+}
+
+.tracker-record-date {
+  text-align: right;
+  font-size: 0.62rem;
+  color: #8f8a83;
+}
+
+.tracker-wl-tag {
+  display: inline-block;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 2px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid transparent;
+}
+
+.tracker-wl-tag.is-w { color: #8fb88e; border-color: rgba(109, 155, 108, 0.6); background: rgba(109, 155, 108, 0.12); }
+.tracker-wl-tag.is-l { color: #E2726B; border-color: rgba(208, 81, 38, 0.6); background: rgba(208, 81, 38, 0.12); }
+.tracker-wl-tag.is-g { color: #A5B9E7; border-color: rgba(165, 185, 231, 0.55); background: rgba(74, 119, 201, 0.12); }
+.tracker-wl-tag.is-n { color: #8f8a83; border-color: rgba(255, 255, 255, 0.1); }
+
+.tracker-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-family: 'gg sans', 'Noto Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tracker-badge-pill.is-guaranteed { color: #A5B9E7; border: 1px solid rgba(165, 185, 231, 0.5); }
+.tracker-badge-pill.is-5050 { color: #E09532; border: 1px solid rgba(224, 149, 50, 0.5); }
+
+/* History Table */
+.tracker-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tracker-rarity-chip {
+  padding: 2px 7px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  color: #B5B5B3;
+  font-family: var(--mono-font);
+  font-size: 0.65rem;
+  cursor: pointer;
+}
+
+.tracker-rarity-chip.is-active {
+  border-color: #E09532;
+  background: rgba(224, 149, 50, 0.14);
+  color: #F5E1C3;
+  font-weight: 700;
+}
+
+/* History Table — InfoBook card surface + In-game Record column structure */
+.tracker-history-table-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.tracker-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--serif-font);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+}
+
+.tracker-history-table th {
+  text-align: center;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ECE5D9;
+  font-family: var(--serif-font);
+  font-size: 0.76rem;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tracker-history-table th:last-child {
+  border-right: none;
+}
+
+.tracker-history-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #ECE5D9;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.tracker-history-table td:first-child {
+  font-family: var(--mono-font);
+  font-size: 0.68rem;
+  color: #8f8a83;
+}
+
+.tracker-history-table tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tracker-history-table tr.is-r6 td.tracker-cell-name {
+  color: #ED7D31;
+  font-weight: 700;
+}
+
+.tracker-history-table tr.is-r5 td.tracker-cell-name {
+  color: #F6C34A;
+  font-weight: 700;
+}
+
+.tracker-history-table tr.is-anomaly td {
+  box-shadow: inset 3px 0 0 #D05126;
+}
+
+.tracker-pull-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+  object-fit: cover;
+  border: 1px solid rgba(181, 181, 179, 0.28);
+}
+
+.tracker-inline-input {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ECE5D9;
+  border-radius: 2px;
+  padding: 3px 6px;
+  font-family: var(--mono-font);
+  font-size: 0.7rem;
+}
+
+.tracker-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 6px 0 2px;
+  font-family: var(--serif-font);
+  font-size: 0.88rem;
+  color: #ECE5D9;
+}
+
+@media (max-width: 1080px) {
+  .tracker-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tracker-rail { flex-basis: 250px; }
+  .tracker-record-row { grid-template-columns: 32px minmax(110px, 1fr) minmax(90px, 1fr) 76px; }
+  .tracker-record-date { display: none; }
+}
+
+@media (max-width: 768px) {
+  .tracker-modal-card { height: min(94vh, 900px); max-height: 94dvh; }
+  .tracker-content { flex-direction: column; overflow-y: auto; }
+  .tracker-rail { flex: none; width: 100%; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1); max-height: 260px; }
+  .tracker-detail { overflow-y: visible; padding: 14px 14px 20px; }
+  .tracker-kpi-grid { grid-template-columns: 1fr; }
+}
+

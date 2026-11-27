@@ -402,6 +402,10 @@ function refreshDynamicTranslations() {
   // The Planner builds its section titles and row labels in JS too.
   const plannerModal = document.getElementById("planner-modal");
   if (plannerModal && plannerModal.style.display !== "none") renderPlanner();
+  const trackerModal = document.getElementById("tracker-modal");
+  if (trackerModal && trackerModal.style.display !== "none" && typeof window.renderTrackerModal === "function") {
+    window.renderTrackerModal();
+  }
 }
 
 let characterDb = {}; // { "Name": "images/headicon_small/..." }
